@@ -79858,7 +79858,14 @@ export const MeditrakDeviceSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
@@ -79886,7 +79893,14 @@ export const MeditrakDeviceCreateSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
@@ -79916,7 +79930,14 @@ export const MeditrakDeviceUpdateSchema = {
 		"install_id": {
 			"type": "string"
 		},
+		"last_login_time": {
+			"type": "string",
+			"format": "date-time"
+		},
 		"platform": {
+			"type": "string"
+		},
+		"refresh_token": {
 			"type": "string"
 		},
 		"user_id": {
@@ -81137,9 +81158,6 @@ export const RefreshTokenSchema = {
 		"id": {
 			"type": "string"
 		},
-		"meditrak_device_id": {
-			"type": "string"
-		},
 		"token": {
 			"type": "string"
 		},
@@ -81163,9 +81181,6 @@ export const RefreshTokenCreateSchema = {
 		},
 		"expiry": {
 			"type": "number"
-		},
-		"meditrak_device_id": {
-			"type": "string"
 		},
 		"token": {
 			"type": "string"
@@ -81191,9 +81206,6 @@ export const RefreshTokenUpdateSchema = {
 			"type": "number"
 		},
 		"id": {
-			"type": "string"
-		},
-		"meditrak_device_id": {
 			"type": "string"
 		},
 		"token": {
