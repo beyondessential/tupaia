@@ -22,7 +22,7 @@ import { useNavigateToEntity } from '../utils';
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
 interface PolygonProps {
-  $displayType?: string;
+  $active?: string;
   $shade?: string;
 }
 
@@ -36,9 +36,13 @@ const ActivePolygon = styled(Polygon)<PolygonProps>`
 
 const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
   fill: ${({ $shade }) => $shade};
+  stroke: ${({ $shade, $active }) => ($active ? POLYGON_HIGHLIGHT : $shade)};
   fill-opacity: 0.5;
   &:hover {
-    fill-opacity: 0.8;
+    fill-opacity: ${({ $active }) =>
+      $active
+        ? 0.5
+        : 0.8}; // don't add hover effect when it is the active polygon because it isn't clickable
   }
 `;
 
@@ -88,21 +92,25 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
   const polygons = measureData.filter(m => !!m.region);
 
   function getDisplayType(measure) {
+    const isActive = measure.code === activeEntityCode;
+    if (measure.isHidden) {
+      // when the measure is hidden, the entity polygon is still visible, but it doesn't have a shade applied. When it is active it should be the active polygon, otherwise it should be a basic polygon
+      return isActive ? DISPLAY_TYPES.active : DISPLAY_TYPES.basic;
+    }
     if (
       isPolygonSerieses &&
-      selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase()
+      selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase().replace('_', '') // handle differences between camelCase and snake_case
     ) {
       // The active entity is part of the data visual so display it as a shaded polygon rather
       // than an active polygon
       return DISPLAY_TYPES.shaded;
     }
-    if (measure?.code === activeEntityCode) {
+    if (isActive) {
       return DISPLAY_TYPES.active;
     }
-    if (measure.isHidden) {
-      return DISPLAY_TYPES.basic;
-    }
-    if (isPolygonSerieses) {
+
+    // only show shaded polygons if there is a measure value, i.e. it is not a navigation polygon (like a sibling etc)
+    if (isPolygonSerieses && measure?.value !== undefined) {
       return DISPLAY_TYPES.shaded;
     }
 
@@ -125,8 +133,8 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
         return (
           <PolygonComponent
             positions={region}
-            $displayType={displayType}
             $shade={shade}
+            $active={code === activeEntityCode}
             eventHandlers={{
               click: onClick,
             }}
