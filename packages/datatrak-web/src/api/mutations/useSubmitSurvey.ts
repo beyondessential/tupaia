@@ -22,7 +22,7 @@ type SurveyResponseData = {
   countryId?: Entity['id'];
   questions?: SurveyScreenComponent[];
   answers?: Answers;
-  surveyStartTime: string;
+  surveyStartTime?: string;
 };
 
 // Process the survey response data into the format expected by the endpoint
