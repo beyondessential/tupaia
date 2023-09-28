@@ -360,7 +360,9 @@ export interface MeditrakDevice {
   'config'?: any | null;
   'id': string;
   'install_id': string;
+  'last_login_time'?: Date | null;
   'platform'?: string | null;
+  'refresh_token'?: string | null;
   'user_id': string;
 }
 export interface MeditrakSyncQueue {
@@ -464,7 +466,6 @@ export interface RefreshToken {
   'device'?: string | null;
   'expiry'?: number | null;
   'id': string;
-  'meditrak_device_id'?: string | null;
   'token': string;
   'user_id': string;
 }
