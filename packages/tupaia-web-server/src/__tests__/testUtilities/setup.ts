@@ -18,14 +18,9 @@ import {
 import { TestModelRegistry } from './testModelRegistry';
 import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
 import { createApp } from '../../app';
-import * as utils from '../../utils';
 
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');
-
-// Skip the accessible countries filter
-jest.spyOn(utils, 'generateAccessibleCountryFilter').mockReturnValue({});
-jest.mock('../../app/middleware/attachAccessPolicy');
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);

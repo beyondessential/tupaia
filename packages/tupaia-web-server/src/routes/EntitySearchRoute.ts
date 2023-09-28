@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import camelcaseKeys from 'camelcase-keys';
 import { TupaiaWebEntitySearchRequest } from '@tupaia/types';
-import { generateAccessibleCountryFilter, generateFrontendExcludedFilter } from '../utils';
+import { generateFrontendExcludedFilter } from '../utils';
 
 const DEFAULT_FIELDS = ['code', 'name', 'qualified_name'];
 
@@ -26,17 +26,16 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const project = (
       await ctx.services.central.fetchResources('projects', {
         filter: { code: projectCode },
-        columns: ['config', 'permission_groups'],
+        columns: ['config'],
       })
     )[0];
-    const { permission_groups: permissionGroups, config } = project;
+    const { config } = project;
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
     const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
       filter: {
         ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-        ...generateAccessibleCountryFilter(this.req.accessPolicy, permissionGroups),
       },
       ...query,
       page,
