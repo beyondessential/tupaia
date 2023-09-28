@@ -6,7 +6,8 @@
 import axios from 'axios';
 import FetchError from './fetchError';
 
-export const API_URL = import.meta.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8110/v1';
+// export const API_URL = import.meta.env.REACT_APP_DATATRAK_WEB_API_URL || 'http://localhost:8110/v1';
+export const API_URL = 'http://localhost:8110/v1';
 
 // withCredentials needs to be set for cookies to save @see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
 axios.defaults.withCredentials = true;
