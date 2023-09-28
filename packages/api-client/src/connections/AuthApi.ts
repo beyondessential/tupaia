@@ -21,8 +21,6 @@ type AuthDetails = {
   emailAddress: string;
   password: string;
   deviceName: string;
-  devicePlatform?: string;
-  installId?: string;
 };
 
 export class AuthApi extends BaseApi {
