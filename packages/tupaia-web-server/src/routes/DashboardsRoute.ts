@@ -129,7 +129,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       [
         ({ relation }: { relation: DashboardRelation }) => (relation.sort_order === null ? 1 : 0), // Puts null values last
         ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
-        ({ item }: { item: DashboardItem }) => item.code,
+        ({ item }: { item: DashboardItem }) => item.config?.name,
       ],
     );
 
