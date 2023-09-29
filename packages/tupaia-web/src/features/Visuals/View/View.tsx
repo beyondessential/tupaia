@@ -118,6 +118,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         }
         config={viewConfig}
         isEnlarged={isEnlarged}
+        isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
       />
       {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}
     </>
