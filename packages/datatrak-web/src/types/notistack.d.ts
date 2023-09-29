@@ -6,6 +6,6 @@ import { VariantType, SharedProps, OptionsObject as BaseOptionsObject } from 'no
 
 declare module 'notistack' {
   export interface OptionsObject<V extends VariantType = VariantType> extends BaseOptionsObject<V> {
-    icon?: React.ReactNode;
+    Icon?: React.ComponentType;
   }
 }

@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
-import { SnackbarContent, CustomContentProps, closeSnackbar } from 'notistack';
+import React from 'react';
+import { SnackbarContent, CustomContentProps, closeSnackbar, OptionsObject } from 'notistack';
 import styled from 'styled-components';
 import { IconButton, Typography } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
@@ -72,16 +72,20 @@ const Message = styled(Typography)`
 `;
 
 interface ToastProps extends CustomContentProps {
-  icon: ReactNode;
+  Icon?: OptionsObject['Icon'];
 }
 
 export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) => {
-  const { id, icon, message, variant, ...notistackProps } = props;
+  const { id, Icon, message, variant, ...notistackProps } = props;
 
   return (
     <Wrapper ref={ref} role="alert" {...notistackProps}>
       <Container $variant={variant}>
-        {icon && <IconWrapper>{icon}</IconWrapper>}
+        {Icon && (
+          <IconWrapper>
+            <Icon />
+          </IconWrapper>
+        )}
         <Message color={variant === 'error' ? 'error' : 'textPrimary'}>{message}</Message>
         <CloseButton onClick={() => closeSnackbar(id)} $variant={variant}>
           <Close />

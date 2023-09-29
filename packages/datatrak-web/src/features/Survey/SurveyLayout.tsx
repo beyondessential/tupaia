@@ -9,6 +9,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Paper as MuiPaper } from '@material-ui/core';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
@@ -62,6 +63,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 `;
 
 const FormActions = styled.div`
@@ -86,6 +88,15 @@ const ButtonGroup = styled.div`
   }
 `;
 
+const LoadingContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+`;
 /**
  * This layout is used for the survey screens as well as the review screen.
  */
@@ -94,7 +105,6 @@ export const SurveyLayout = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
-    startTime,
     setFormData,
     formData,
     isLast,
@@ -103,9 +113,9 @@ export const SurveyLayout = () => {
     numberOfScreens,
     isReviewScreen,
   } = useSurveyForm();
-  const { mutate: submitSurvey } = useSubmitSurvey();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
+  const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
     setFormData({ ...formData, ...data });
@@ -125,10 +135,6 @@ export const SurveyLayout = () => {
     handleStep(path, data);
   });
 
-  const handleSubmitForm = data => {
-    submitSurvey({ ...data, startTime });
-  };
-
   const navigateNext = data => {
     const path = isLast
       ? generatePath(ROUTES.SURVEY_REVIEW, params)
@@ -140,7 +146,7 @@ export const SurveyLayout = () => {
   };
 
   const handleSubmitScreen = handleSubmit(data => {
-    if (isReviewScreen) return handleSubmitForm(data);
+    if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
   });
 
@@ -165,20 +171,34 @@ export const SurveyLayout = () => {
             <Paper>
               <Form onSubmit={handleSubmitScreen} noValidate>
                 <Outlet />
+                {isSubmittingSurvey && (
+                  <LoadingContainer>
+                    <SpinningLoader />
+                  </LoadingContainer>
+                )}
                 <FormActions>
                   <Button
                     onClick={onStepPrevious}
                     startIcon={<ArrowBackIosIcon />}
                     variant="text"
                     color="default"
+                    disabled={isSubmittingSurvey}
                   >
                     Back
                   </Button>
                   <ButtonGroup>
-                    <Button onClick={openCancelModal} variant="outlined">
+                    <Button
+                      onClick={openCancelModal}
+                      variant="outlined"
+                      disabled={isSubmittingSurvey}
+                    >
                       Cancel
                     </Button>
-                    <Button type="submit" onClick={handleSubmitScreen}>
+                    <Button
+                      type="submit"
+                      onClick={handleSubmitScreen}
+                      disabled={isSubmittingSurvey}
+                    >
                       {nextButtonText}
                     </Button>
                   </ButtonGroup>

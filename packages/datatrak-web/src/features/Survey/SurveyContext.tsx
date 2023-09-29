@@ -3,8 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { Dispatch, createContext, useContext, useReducer } from 'react';
+import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 import { formatSurveyScreenQuestions } from './utils';
@@ -21,6 +22,7 @@ type SurveyFormContextType = {
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
   surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
+  surveyStartTime?: string;
 };
 
 const defaultContext = {
@@ -42,11 +44,12 @@ export enum ACTION_TYPES {
   SET_FORM_DATA = 'SET_FORM_DATA',
   TOGGLE_SIDE_MENU = 'TOGGLE_SIDE_MENU',
   RESET_FORM_DATA = 'RESET_FORM_DATA',
+  SET_SURVEY_START_TIME = 'SET_SURVEY_START_TIME',
 }
 
 interface SurveyFormAction {
   type: ACTION_TYPES;
-  payload?: Record<string, any> | null;
+  payload?: Record<string, any> | string | null;
 }
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
@@ -73,6 +76,11 @@ export const surveyReducer = (
       return {
         ...state,
         formData: {},
+      };
+    case ACTION_TYPES.SET_SURVEY_START_TIME:
+      return {
+        ...state,
+        surveyStartTime: action.payload as string,
       };
     default:
       return state;
@@ -117,6 +125,17 @@ export const SurveyContext = ({ children }) => {
   if (activeScreen.length && activeScreen[0].questionText) {
     screenHeader = activeScreen[0].questionText;
   }
+
+  useEffect(() => {
+    const updateStartTime = () => {
+      dispatch({
+        type: ACTION_TYPES.SET_SURVEY_START_TIME,
+        payload: moment().toISOString(),
+      });
+    };
+    // update the start time when a survey is started, so that it can be passed on when submitting the survey
+    updateStartTime();
+  }, [surveyCode]);
 
   return (
     <SurveyFormContext.Provider
