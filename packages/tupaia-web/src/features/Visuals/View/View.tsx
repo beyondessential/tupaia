@@ -104,6 +104,9 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, viewConfig);
+
+  // Only show the hover effect if the view is not enlarged and there is no period granularity, because this means that the view is not expandable
+  const showHoverEffect = !isEnlarged && !config?.periodGranularity;
   return (
     <>
       <Component
@@ -116,7 +119,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         config={viewConfig}
         isEnlarged={isEnlarged}
       />
-      <DashboardInfoHover infoText={viewConfig.description} />
+      {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}
     </>
   );
 };
