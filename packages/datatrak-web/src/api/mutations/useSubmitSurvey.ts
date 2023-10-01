@@ -81,6 +81,14 @@ export const processSurveyResponse = ({
       continue;
     }
 
+    // base answer object to be added to the answers array
+    const answerObject = {
+      id,
+      question_id: questionId,
+      type: questionType,
+      body: answer,
+    };
+
     // Handle special question types
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
     switch (questionType) {
@@ -105,20 +113,13 @@ export const processSurveyResponse = ({
           });
         }
         answersToSubmit.push({
-          id: id,
-          question_id: questionId,
-          type: questionType,
+          ...answerObject,
           body: value,
         });
         break;
       }
       default:
-        answersToSubmit.push({
-          id: id,
-          question_id: questionId,
-          type: questionType,
-          body: answer,
-        });
+        answersToSubmit.push(answerObject);
         break;
     }
   }
