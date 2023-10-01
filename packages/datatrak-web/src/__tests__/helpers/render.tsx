@@ -3,28 +3,26 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { MemoryRouter, Routes } from 'react-router-dom';
 import '@testing-library/jest-dom';
-import { render as r } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
-import { ROUTES } from '../../constants';
-import { SurveyPage } from '../../views';
+import { SurveyPageRoutes } from '../../Routes';
 
 export function renderComponent(children) {
-  return r(children, { wrapper: AppProviders });
+  return render(children, { wrapper: AppProviders });
 }
 
-export function renderPage(activeUrl, PageRoute) {
-  return r(
+export function renderPage(activeUrl) {
+  return render(
     <AppProviders>
       <MemoryRouter initialEntries={[activeUrl]}>
-        <Routes>{PageRoute}</Routes>
+        <Routes>{SurveyPageRoutes}</Routes>
       </MemoryRouter>
     </AppProviders>,
   );
 }
 
 export function renderSurveyPage(activeUrl) {
-  const routePath = ROUTES.SURVEY_SCREEN;
-  return renderPage(activeUrl, <Route path={routePath} element={<SurveyPage />} />);
+  return renderPage(activeUrl);
 }
