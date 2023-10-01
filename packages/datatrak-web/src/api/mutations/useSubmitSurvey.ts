@@ -15,7 +15,15 @@ import { useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
 import { successToast } from '../../utils';
 
-type Answers = Record<string, unknown>;
+type AutocompleteAnswer = {
+  isNew: boolean;
+  optionSetId: string;
+  value: string;
+};
+
+type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+
+type Answers = Record<string, Answer>;
 
 type SurveyResponseData = {
   surveyId?: Survey['id'];
@@ -23,6 +31,23 @@ type SurveyResponseData = {
   questions?: SurveyScreenComponent[];
   answers?: Answers;
   surveyStartTime?: string;
+};
+
+type CreatedOption = {
+  option_set_id: string;
+  value: string;
+  label: string;
+};
+
+type SurveyResponse = {
+  survey_id: Survey['id'];
+  start_time: string;
+  data_time: string;
+  entity_id: Entity['id'];
+  end_time: string;
+  timestamp: string;
+  timezone: string;
+  options_created: CreatedOption[];
 };
 
 // Process the survey response data into the format expected by the endpoint
@@ -36,7 +61,7 @@ export const processSurveyResponse = ({
   const timezone = getBrowserTimeZone();
   const timestamp = moment().toISOString();
   // Fields to be used in the survey response
-  const surveyResponseData = {
+  const surveyResponse = {
     survey_id: surveyId,
     start_time: surveyStartTime,
     data_time: timestamp,
@@ -44,7 +69,8 @@ export const processSurveyResponse = ({
     end_time: timestamp,
     timestamp,
     timezone,
-  } as Record<string, unknown>;
+    options_created: [] as CreatedOption[],
+  } as SurveyResponse;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -61,11 +87,29 @@ export const processSurveyResponse = ({
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
-        surveyResponseData.data_time = moment(answer).toISOString();
+        surveyResponse.data_time = moment(answer as string).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
       case 'PrimaryEntity': {
-        surveyResponseData.entity_id = answer;
+        surveyResponse.entity_id = answer as string;
+        break;
+      }
+      case 'Autocomplete': {
+        // if the answer is a new option, add it to the options_created array to be added to the DB
+        const { isNew, value, optionSetId } = answer as AutocompleteAnswer;
+        if (isNew) {
+          surveyResponse.options_created.push({
+            option_set_id: optionSetId,
+            value,
+            label: value,
+          });
+        }
+        answersToSubmit.push({
+          id: id,
+          question_id: questionId,
+          type: questionType,
+          body: value,
+        });
         break;
       }
       default:
@@ -79,7 +123,7 @@ export const processSurveyResponse = ({
     }
   }
 
-  return { ...surveyResponseData, answers: answersToSubmit };
+  return { ...surveyResponse, answers: answersToSubmit };
 };
 
 // utility hook for getting survey response data
