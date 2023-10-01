@@ -5,13 +5,30 @@
 import { useUser } from '../../../api/queries';
 import { useSurveyForm } from '../../Survey/SurveyContext';
 
-export const useEntityBaseFilters = config => {
+type AttributesConfigType = {
+  entity: {
+    filter: {
+      type: string[];
+      grandparentId: { questionId: string };
+      parentId: { questionId: string };
+      attributes: Record<string, { questionId: string }>;
+    };
+  };
+};
+export const useEntityBaseFilters = (config: AttributesConfigType) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const { data: userData } = useUser();
   const countryCode = userData?.country?.code;
-  const { parentId, grandparentId, type } = config.entity;
 
-  const filters = { countryCode, type };
+  const filters = { countryCode } as Record<string, string | string[]>;
+
+  const { filter } = config.entity;
+  if (!filter) {
+    return filters;
+  }
+
+  const { parentId, grandparentId, type } = filter;
+  filters.type = type;
 
   if (parentId && parentId.questionId) {
     filters['parentId'] = getAnswerByQuestionId(parentId.questionId);
@@ -22,14 +39,12 @@ export const useEntityBaseFilters = config => {
   return filters;
 };
 
-type AttributesConfigType = { entity: { attributes: Record<string, { questionId: string }> } };
-
 /*
  * Returns a function that filters entities based on configured attribute values and questions
  */
 export const useAttributeFilter = (questionConfig: AttributesConfigType) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  const { attributes: questionAttributes } = questionConfig.entity;
+  const { attributes: questionAttributes } = questionConfig.entity?.filter;
   if (!questionAttributes) {
     return null;
   }
