@@ -19,7 +19,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe.only('Survey', () => {
+describe('Survey', () => {
   it('displays a survey screen', async () => {
     renderSurveyPage('/survey/test/1');
     await waitForElementToBeRemoved(() => screen.queryByRole(/progressbar*/i));
