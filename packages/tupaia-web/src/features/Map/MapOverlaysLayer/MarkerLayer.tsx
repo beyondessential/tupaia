@@ -10,6 +10,7 @@ import {
   MeasurePopup,
   MeasureData,
   Series,
+  POLYGON_MEASURE_TYPES,
 } from '@tupaia/ui-map-components';
 import { useNavigateToEntity } from '../utils';
 
@@ -19,8 +20,10 @@ interface MarkerLayerProps {
 }
 
 export const MarkerLayer = ({ measureData = [], serieses = [] }: MarkerLayerProps) => {
+  const hasPointSerieses = serieses.some(s => !POLYGON_MEASURE_TYPES.includes(s.type));
   const navigateToEntity = useNavigateToEntity();
-  const markerMeasures = measureData.filter(m => !!m.point).filter(m => !m.isHidden);
+  if (!hasPointSerieses) return null;
+  const markerMeasures = measureData.filter(m => !!m.point && !m.isHidden);
   return (
     <LayerGroup>
       {markerMeasures.map((measure: MeasureData) => {
