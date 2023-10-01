@@ -2,7 +2,6 @@
   "name": "@tupaia/datatrak-web",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "description": "Web app that collects data for the Tupaia project",
   "repository": {
     "type": "git",
@@ -33,6 +32,7 @@
   },
   "devDependencies": {
     "@mui/types": "^7.2.4",
+    "@testing-library/react": "12.1.2",
     "@tupaia/types": "1.0.0",
     "@types/leaflet": "^1.7.1",
     "@types/material-ui": "^0.21.12",
@@ -55,7 +55,8 @@
     "start-web-config-server": "yarn workspace @tupaia/web-config-server start-dev",
     "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
     "start-servers": "npm-run-all -c -l -p start-central-server start-web-config-server start-datatrak-web-server start-entity-server",
-    "test": "yarn package:test"
+    "test": "yarn test:jest",
+    "test:jest": "yarn package:test --env=jsdom"
   },
   "msw": {
     "workerDirectory": "public"

@@ -77,6 +77,17 @@ const SurveyStartRedirect = () => {
  *
  * **/
 
+export const SurveyPageRoutes = (
+  <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
+    <Route index element={<SurveyStartRedirect />} />
+    <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
+    <Route element={<SurveyLayout />}>
+      <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
+      <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
+    </Route>
+  </Route>
+);
+
 export const Routes = () => {
   return (
     <RouterRoutes>
@@ -96,11 +107,9 @@ export const Routes = () => {
                 </LoggedInRedirect>
               }
             />
-
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-
             <Route element={<PrivateRoute />}>
               <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
               <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
@@ -114,14 +123,7 @@ export const Routes = () => {
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
-            <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
-              <Route index element={<SurveyStartRedirect />} />
-              <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
-              <Route element={<SurveyLayout />}>
-                <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
-                <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
-              </Route>
-            </Route>
+            {SurveyPageRoutes}
           </Route>
         </Route>
         <Route path="*" element={<NotFoundPage />} />
