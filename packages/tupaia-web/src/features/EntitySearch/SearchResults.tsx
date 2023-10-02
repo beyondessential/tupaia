@@ -105,8 +105,8 @@ export const SearchResults = ({ searchValue, onClose }: SearchResultsProps) => {
   };
 
   const showLoadMoreButton = resultsCount > pageSize;
-  // Remove the extra result
-  const displayResults = searchResults.slice(0, -1);
+  // Remove the extra result only when the load more button is shown, otherwise the last result gets chopped off when there are no more results to load
+  const displayResults = showLoadMoreButton ? searchResults.slice(0, -1) : searchResults;
 
   return (
     <Container>

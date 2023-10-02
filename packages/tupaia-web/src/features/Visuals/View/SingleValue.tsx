@@ -30,15 +30,20 @@ const Title = styled(Typography).attrs({
 interface SingleValueProps {
   report: ViewReport;
   config: ViewConfig;
+  isMultiSingleValue?: boolean;
 }
 
-export const SingleValue = ({ report: { data = [] }, config }: SingleValueProps) => {
+export const SingleValue = ({
+  report: { data = [] },
+  config,
+  isMultiSingleValue,
+}: SingleValueProps) => {
   const { dataColor } = (config || {}) as SingleValueViewConfig;
   const { value, name } = data[0] || {};
-
   return (
     <>
-      {name && <Title>{name}</Title>}
+      {/** only display the name field if is multiSingleValue viewType because the main title does not get displayed in this case */}
+      {name && isMultiSingleValue && <Title>{name}</Title>}
       <Text $dataColor={dataColor}>{value}</Text>
     </>
   );
