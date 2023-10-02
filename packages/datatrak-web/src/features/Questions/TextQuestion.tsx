@@ -11,7 +11,10 @@ import { TextInput } from '../../components';
 const Wrapper = styled.div`
   width: 100%;
   .MuiFormControlLabel-root {
-    width: calc(100% - 3.5rem);
+    width: 100%;
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      width: calc(100% - 3.5rem);
+    }
   }
 `;
 

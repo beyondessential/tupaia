@@ -8,9 +8,14 @@ import { Dialog, Paper } from '@material-ui/core';
 import { ProjectSelectForm, RequestProjectAccess } from '../../features';
 
 const Wrapper = styled(Paper)`
-  padding: 1.5rem 2.5rem 1.25rem;
+  padding: 1rem 1.25rem;
   max-width: none;
   width: 48rem;
+  margin: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 1.5rem 2.5rem 1.25rem;
+    margin: 2rem;
+  }
 `;
 
 interface ModalProps {

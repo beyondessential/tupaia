@@ -9,18 +9,16 @@ import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { useUser } from '../../api/queries';
-import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
 import { ProjectSelectModal } from './ProjectSelectModal';
 
 const Wrapper = styled.div`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
+  padding-left: 1.5rem;
 `;
 
 const Details = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
 
   > span {
     color: ${props => props.theme.palette.text.primary};
@@ -29,18 +27,40 @@ const Details = styled.div`
     font-size: 1.2em;
     margin-left: 0.5rem;
   }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const ProjectButton = styled(Button).attrs({
   variant: 'text',
 })`
+  padding: 0;
+  justify-content: flex-start;
+  .MuiButton-label {
+    line-height: 1;
+    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  }
   color: ${props => props.theme.palette.text.secondary};
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-
   &:hover {
     color: ${props => props.theme.palette.action.hover};
     text-decoration: underline;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    justify-content: center;
+    &:before {
+      content: '';
+      border-left: 1px solid ${props => props.theme.palette.text.secondary};
+      height: 1.2rem;
+    }
+    .MuiButton-label {
+      padding-left: 0.5rem;
+      line-height: 1.4;
+      font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    }
   }
 `;
 
@@ -54,6 +74,12 @@ const LoginLink = styled(AuthLink).attrs({
 })`
   border-radius: 4rem;
   border-color: ${props => props.theme.palette.text.primary};
+`;
+
+const UserName = styled(Typography)`
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  }
 `;
 
 /**
@@ -75,14 +101,11 @@ export const UserInfo = () => {
       <Wrapper>
         {isLoggedIn ? (
           <Details>
-            <Typography>{user.name}</Typography>
+            <UserName>{user.name}</UserName>
             {user?.projectId && (
-              <>
-                <span>|</span>
-                <ProjectButton onClick={openProjectModal} tooltip="Change project">
-                  {user.project?.name}
-                </ProjectButton>
-              </>
+              <ProjectButton onClick={openProjectModal} tooltip="Change project">
+                {user.project?.name}
+              </ProjectButton>
             )}
           </Details>
         ) : (

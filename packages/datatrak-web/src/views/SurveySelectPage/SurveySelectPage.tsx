@@ -14,6 +14,7 @@ import { Survey } from '../../types';
 import { useSurveys } from '../../api/queries';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
 import { useUserCountries } from './useUserCountries';
+import { MOBILE_HEADER_HEIGHT } from '../../constants';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -28,13 +29,17 @@ const Container = styled(Paper).attrs({
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100%;
-    height: 100%;
     border-radius: 0;
     border-left: none;
     border-right: none;
+    &.MuiPaper-root {
+      height: 100%;
+    }
     // parent selector - targets the parent of this container
     div:has(&) {
       padding: 0;
+      align-items: flex-start;
+      height: calc(100vh ${MOBILE_HEADER_HEIGHT});
     }
   }
 `;

@@ -10,5 +10,8 @@ export const ScrollableBody = styled.div`
   height: 100%;
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 2.5rem;
+  padding: 1rem 1rem 1rem 3rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem 2.5rem;
+  }
 `;

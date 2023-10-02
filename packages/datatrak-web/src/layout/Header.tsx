@@ -7,11 +7,12 @@ import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link as MuiLink } from '@material-ui/core';
 import { PageContainer } from '../components';
-import { HEADER_HEIGHT } from '../constants';
+import { HEADER_HEIGHT, MOBILE_HEADER_HEIGHT } from '../constants';
 import { UserMenu } from './UserMenu';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
+  width: 100%;
 `;
 
 const Container = styled(PageContainer).attrs({
@@ -19,10 +20,21 @@ const Container = styled(PageContainer).attrs({
 })`
   position: relative;
   z-index: 1;
-  height: ${HEADER_HEIGHT};
+  height: ${MOBILE_HEADER_HEIGHT};
   display: flex;
   align-items: center;
   justify-content: space-between;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    height: ${HEADER_HEIGHT};
+  }
+`;
+const LogoLink = styled(MuiLink).attrs({
+  color: 'inherit',
+  component: RouterLink,
+})`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 const StyledImg = styled.img`
@@ -34,9 +46,9 @@ export const Header = () => {
   return (
     <Wrapper>
       <Container>
-        <MuiLink color="inherit" component={RouterLink} to="/">
+        <LogoLink to="/">
           <StyledImg src="/datatrak-logo-black.svg" alt="tupaia-logo" />
-        </MuiLink>
+        </LogoLink>
         <UserMenu />
       </Container>
     </Wrapper>

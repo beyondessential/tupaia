@@ -6,7 +6,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { To } from 'react-router';
 import { useFormContext } from 'react-hook-form';
-import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
+import {
+  Drawer as BaseDrawer,
+  ListItem,
+  List,
+  ButtonProps,
+  useTheme,
+  useMediaQuery,
+} from '@material-ui/core';
 import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
 import { ButtonLink } from '../../../../components';
@@ -15,19 +22,20 @@ export const SIDE_MENU_WIDTH = '20rem';
 
 const Drawer = styled(BaseDrawer).attrs({
   anchor: 'left',
-  variant: 'persistent',
   elevation: 0,
 })`
   flex-shrink: 0;
-  width: ${SIDE_MENU_WIDTH};
   position: relative;
   height: 100%;
+  width: ${SIDE_MENU_WIDTH};
   .MuiPaper-root {
     width: 100%;
     position: absolute;
-    background-color: transparent;
     border-right: none;
     height: 100%;
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      background-color: transparent;
+    }
   }
 `;
 
@@ -68,8 +76,22 @@ const SurveyScreenTitle = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
 `;
 
+const Header = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  button {
+    border-radius: 3rem 0 0 3rem;
+    position: static;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    display: none;
+  }
+`;
+
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
+  const theme = useTheme();
+  const isPersistent = useMediaQuery(theme.breakpoints.up('md'));
   const {
     sideMenuOpen,
     toggleSideMenu,
@@ -85,7 +107,14 @@ export const SurveySideMenu = () => {
   return (
     <>
       <SideMenuButton />
-      <Drawer open={sideMenuOpen} onClose={toggleSideMenu}>
+      <Drawer
+        open={sideMenuOpen}
+        onClose={toggleSideMenu}
+        variant={isPersistent ? 'persistent' : 'temporary'}
+      >
+        <Header>
+          <SideMenuButton />
+        </Header>
         <SurveyMenuContent>
           {Object.entries(surveyScreenComponents!).map(([key, screen]) => (
             <SurveyMenuItem

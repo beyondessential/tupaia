@@ -20,7 +20,10 @@ const Drawer = styled(MuiDrawer)`
 const Paper = styled(MuiPaper)`
   min-width: 70vw;
   border-radius: 0;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 0 1.5rem;
+  }
 `;
 
 const MenuHeader = styled.div`
@@ -44,18 +47,12 @@ const CloseButton = styled(IconButton).attrs({
   padding: 0.8rem;
 `;
 
-const UserName = styled(Typography)`
-  width: 100%;
-  color: ${({ theme }) => theme.palette.text.secondary};
-  padding-left: 0.5rem;
-`;
-
 interface DrawerMenuProps {
   menuOpen: boolean;
   onCloseMenu: () => void;
 }
 export const DrawerMenu = ({ menuOpen, onCloseMenu }: DrawerMenuProps) => {
-  const { isLoggedIn, data } = useUser();
+  const { isLoggedIn } = useUser();
   // When not logged in, show the login and register buttons in the drawer menu
   const additionalMenuItems = isLoggedIn
     ? []
@@ -78,8 +75,6 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu }: DrawerMenuProps) => {
       disablePortal
     >
       <MenuHeader>
-        {/** When logged in, show the user name at the top of the drawer menu */}
-        {isLoggedIn && <UserName>{data?.name}</UserName>}
         <CloseButton onClick={onCloseMenu}>
           <MenuCloseIcon />
         </CloseButton>
