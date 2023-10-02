@@ -9,15 +9,12 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderComponent } from '../../helpers/render.tsx';
 import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion.tsx';
-import { handlers } from '../../../../mocks/handlers.js';
 
 jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'theParentQuestionAnswer',
   }),
 }));
-
-const server = setupServer(...handlers);
 
 const options = [
   {
@@ -38,8 +35,7 @@ const options = [
     value: 'green',
   },
 ];
-
-server.use(
+const server = setupServer(
   rest.get('*/v1/optionSets/theOptionSetId/options', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(options));
   }),
