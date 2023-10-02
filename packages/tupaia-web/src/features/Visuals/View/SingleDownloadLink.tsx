@@ -5,8 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport } from '../../../types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
 import { transformDownloadLink } from '../../../utils';
 
 const LinkText = styled(Link).attrs({

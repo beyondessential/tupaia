@@ -12,11 +12,13 @@ export {
   DatatrakWebSurveyScreenComponentsRequest,
 } from './datatrak-web-server';
 export {
+  TupaiaWebChangePasswordRequest,
   TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEntitiesRequest,
   TupaiaWebEntityRequest,
   TupaiaWebEntitySearchRequest,
+  TupaiaWebExportSurveyResponsesRequest,
   TupaiaWebLegacyDashboardReportRequest,
   TupaiaWebLegacyMapOverlayReportRequest,
   TupaiaWebMapOverlaysRequest,

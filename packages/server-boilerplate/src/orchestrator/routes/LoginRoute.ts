@@ -14,6 +14,7 @@ import { Credentials } from '../types';
 export interface LoginRequest extends Request<EmptyObject, AuthResponse, Credentials> {
   ctx: {
     verifyLogin?: (accessPolicy: AccessPolicy) => void;
+    apiName?: string;
   };
 }
 
@@ -27,9 +28,10 @@ export class LoginRoute extends Route<LoginRequest> {
   }
 
   public async buildResponse() {
+    const { apiName } = this.req.ctx;
     const credentials = this.req.body;
 
-    const response = await this.authConnection.login(credentials);
+    const response = await this.authConnection.login(credentials, apiName);
 
     if (this.req.ctx.verifyLogin) {
       this.req.ctx.verifyLogin(new AccessPolicy(response.accessPolicy));

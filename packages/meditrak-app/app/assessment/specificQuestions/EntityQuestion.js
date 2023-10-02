@@ -43,6 +43,16 @@ const DumbEntityQuestion = props => {
     return <CodeGeneratorQuestion {...props} />;
   }
 
+  // RN-984 if selected entity is not in the list, clear the selected entity
+  const { selectedEntityId, validEntities } = props;
+  if (selectedEntityId) {
+    const selectedEntity = validEntities.find(entity => entity.id === selectedEntityId);
+    if (!selectedEntity) {
+      props.onClear();
+      return null;
+    }
+  }
+
   const EntityListSelector = (
     <EntityList startOpen={isOnlyQuestionOnScreen} onRowPress={props.onSelectEntity} {...props} />
   );

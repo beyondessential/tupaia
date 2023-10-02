@@ -60,6 +60,8 @@ const getPresentationOptionFromCondition = (
   value: any,
 ) => {
   const { conditions = [] } = options;
+  // handle undefined values so they don't accidentally get displayed as the default condition
+  if (value === undefined) return null;
 
   const option = conditions.find(
     ({ condition }: { condition: PresentationOptionCondition['condition'] }) => {
@@ -107,7 +109,9 @@ export const getPresentationOption = (options: PresentationOptions, value: any) 
 };
 
 export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
-  return Object.keys(presentationOptions).length > 0;
+  return (
+    Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
+  );
 }
 
 export function checkIfApplyDotStyle(

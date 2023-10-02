@@ -8,8 +8,9 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
+import { ViewReport } from '@tupaia/types';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemConfig, ViewReport } from '../../types';
+import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
 
 const ExpandableButton = styled(Button).attrs({
@@ -33,7 +34,6 @@ const ExpandableButton = styled(Button).attrs({
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: ${({ theme }) => theme.palette.common.black};
     border: none;
     top: 0;
     left: 0;
@@ -41,8 +41,8 @@ const ExpandableButton = styled(Button).attrs({
     margin-top: 0;
     &:hover,
     &:focus-visible {
-      opacity: 0.7;
-      background-color: ${({ theme }) => theme.palette.common.black};
+      background-color: rgba(32, 33, 36, 0.6);
+      opacity: 1;
     }
   }
 `;
@@ -52,11 +52,9 @@ const ExpandButtonText = styled.span`
 `;
 
 const ZoomInIcon = styled(MuiZoomIcon)`
-  margin-right: 1rem;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: 3rem;
-    height: 3rem;
-    margin-right: 0;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `;
 
@@ -100,8 +98,7 @@ export const ExpandItemButton = () => {
   const text = getText();
 
   return (
-    <ExpandableButton onClick={handleExpandDashboardItem}>
-      <ZoomInIcon />
+    <ExpandableButton onClick={handleExpandDashboardItem} startIcon={<ZoomInIcon />}>
       <ExpandButtonText>{text}</ExpandButtonText>
     </ExpandableButton>
   );

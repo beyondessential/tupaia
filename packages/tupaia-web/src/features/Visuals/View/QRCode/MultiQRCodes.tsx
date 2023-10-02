@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { ViewReport } from '../../../../types';
+import { ViewReport } from '@tupaia/types';
 import styled from 'styled-components';
 import { List as MuiList, ListItem as MuiListItem } from '@material-ui/core';
 import { QrCodeImage } from '@tupaia/ui-components';
