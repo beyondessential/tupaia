@@ -45,7 +45,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe('Example test', () => {
+describe('Autocomplete Question', () => {
   const onChange = jest.fn();
   const props = {
     id: 'theId',
