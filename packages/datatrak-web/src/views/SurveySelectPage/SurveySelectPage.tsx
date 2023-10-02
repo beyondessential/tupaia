@@ -39,7 +39,7 @@ const Container = styled(Paper).attrs({
     div:has(&) {
       padding: 0;
       align-items: flex-start;
-      height: calc(100vh ${MOBILE_HEADER_HEIGHT});
+      height: calc(100vh - ${MOBILE_HEADER_HEIGHT});
     }
   }
 `;

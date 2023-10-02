@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { ButtonLink, PageContainer as BasePageContainer } from '../components';
+import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { MOBILE_BREAKPOINT, ROUTES } from '../constants';
-import { Typography, Link } from '@material-ui/core';
+import { ButtonLink, PageContainer as BasePageContainer } from '../components';
+import { ROUTES } from '../constants';
 
 const PageContainer = styled(BasePageContainer)`
   background: url('/landing-page-background.svg');
@@ -57,6 +57,7 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
   text-align: center;
   width: 100%;
+  max-width: 20rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 11rem;
   }
@@ -79,13 +80,13 @@ const TextWrapper = styled.div`
 `;
 
 const Text = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.375rem;
   }
 `;
 
 const DesktopText = styled.span`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }
 `;
@@ -94,6 +95,8 @@ const SurveysImage = styled.img`
   width: auto;
   height: calc(100% + 3rem);
   position: absolute;
+  display: flex;
+  align-items: center;
   right: 0rem;
   top: -1.5rem;
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -108,9 +111,7 @@ const SurveyAlertContent = styled.div`
   flex-direction: column-reverse;
   align-items: flex-start;
   width: 70%;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    width: 80%;
-  }
+  padding-right: 2rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     width: 100%;
@@ -133,9 +134,8 @@ export const LandingPage = () => {
                 <DesktopText>
                   You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share
                   news, stories and information with the Tupaia community. To collect data offline
-                  download our app meditrak from Google Play or Apple App Store
+                  download our app meditrak from Google Play or Apple App Store.
                 </DesktopText>
-                .
               </Text>
             </TextWrapper>
           </SurveyAlertContent>

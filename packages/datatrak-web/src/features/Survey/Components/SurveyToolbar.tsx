@@ -11,6 +11,7 @@ import { TopProgressBar } from '../../../components';
 import { useSurvey, useUser } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
+import { useIsMobile } from '../../../utils';
 
 const Toolbar = styled.div`
   height: ${SURVEY_TOOLBAR_HEIGHT};
@@ -26,20 +27,19 @@ const Toolbar = styled.div`
 `;
 
 const SurveyTitleWrapper = styled.div`
-  padding: 1.3rem;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1.3rem;
+  }
 `;
 
 const SurveyIcon = styled(Description).attrs({
   color: 'primary',
 })`
   margin-right: 0.5rem;
-`;
-
-const SurveyTitle = styled(Typography).attrs({
-  variant: 'h1',
-})`
-  display: flex;
-  align-items: center;
 `;
 
 const CountryName = styled.span`
@@ -52,16 +52,29 @@ export const SurveyToolbar = () => {
   const { screenNumber, numberOfScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   const { data: user } = useUser();
+  const isMobile = useIsMobile();
+
+  const getDisplaySurveyName = () => {
+    const maxSurveyNameLength = 50;
+    if (!survey?.name) return '';
+    if (isMobile) {
+      return survey?.name.length > maxSurveyNameLength
+        ? `${survey?.name.slice(0, maxSurveyNameLength)}...`
+        : survey?.name;
+    }
+    return survey?.name;
+  };
+  const surveyName = getDisplaySurveyName();
 
   return (
     <Toolbar>
       <SurveyTitleWrapper>
+        <SurveyIcon />
         {survey?.name && (
-          <SurveyTitle>
-            <SurveyIcon />
-            {survey?.name}{' '}
+          <Typography variant="h1">
+            {surveyName}
             {user?.country?.name && <CountryName>| {user?.country?.name}</CountryName>}
-          </SurveyTitle>
+          </Typography>
         )}
       </SurveyTitleWrapper>
       {screenNumber && (

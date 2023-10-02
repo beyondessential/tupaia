@@ -7,13 +7,17 @@ import React from 'react';
 import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 import { TextInput } from '../../components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 3.5rem);
   .MuiFormControlLabel-root {
     width: 100%;
-    ${({ theme }) => theme.breakpoints.up('md')} {
-      width: calc(100% - 3.5rem);
+  }
+  .MuiFormControlLabel-label {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    @media (min-width: ${MOBILE_BREAKPOINT}) {
+      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
     }
   }
 `;

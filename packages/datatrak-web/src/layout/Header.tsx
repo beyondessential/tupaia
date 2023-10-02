@@ -32,14 +32,12 @@ const LogoLink = styled(MuiLink).attrs({
   color: 'inherit',
   component: RouterLink,
 })`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
+  height: ${MOBILE_HEADER_HEIGHT};
+  padding: 1rem 0.5rem;
+  display: flex;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    height: ${HEADER_HEIGHT};
   }
-`;
-
-const StyledImg = styled.img`
-  height: 3.5rem;
-  width: auto;
 `;
 
 export const Header = () => {
@@ -47,7 +45,7 @@ export const Header = () => {
     <Wrapper>
       <Container>
         <LogoLink to="/">
-          <StyledImg src="/datatrak-logo-black.svg" alt="tupaia-logo" />
+          <img src="/datatrak-logo-black.svg" alt="tupaia-logo" />
         </LogoLink>
         <UserMenu />
       </Container>

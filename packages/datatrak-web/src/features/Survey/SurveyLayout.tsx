@@ -21,6 +21,7 @@ import {
 } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
+import { useIsMobile } from '../../utils';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${MOBILE_HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -32,7 +33,6 @@ const ScrollableLayout = styled.div`
 `;
 const Wrapper = styled.div`
   display: flex;
-  padding-top: 0.25rem;
   overflow: hidden;
   flex: 1;
   align-items: flex-start;
@@ -68,8 +68,10 @@ const Paper = styled(MuiPaper).attrs({
   position: relative;
   display: flex;
   flex-direction: column;
+  border-radius: 0;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: 1rem;
+    border-radius: 4px;
   }
 `;
 
@@ -145,6 +147,7 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData });
   const { handleSubmit } = formContext;
+  const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
@@ -186,7 +189,9 @@ export const SurveyLayout = () => {
 
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
-    if (isLast) return 'Review and submit';
+    if (isLast) {
+      return isMobile ? 'Review' : 'Review and submit';
+    }
     return 'Next';
   };
 

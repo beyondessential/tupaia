@@ -6,17 +6,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { To } from 'react-router';
 import { useFormContext } from 'react-hook-form';
-import {
-  Drawer as BaseDrawer,
-  ListItem,
-  List,
-  ButtonProps,
-  useTheme,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
 import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
 import { ButtonLink } from '../../../../components';
+import { useIsMobile } from '../../../../utils';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -27,13 +21,16 @@ const Drawer = styled(BaseDrawer).attrs({
   flex-shrink: 0;
   position: relative;
   height: 100%;
-  width: ${SIDE_MENU_WIDTH};
+  width: 100%;
+  max-width: ${SIDE_MENU_WIDTH};
   .MuiPaper-root {
     width: 100%;
     position: absolute;
     border-right: none;
     height: 100%;
-    ${({ theme }) => theme.breakpoints.up('md')} {
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    .MuiPaper-root {
       background-color: transparent;
     }
   }
@@ -90,8 +87,7 @@ const Header = styled.div`
 
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
-  const theme = useTheme();
-  const isPersistent = useMediaQuery(theme.breakpoints.up('md'));
+  const isMobile = useIsMobile();
   const {
     sideMenuOpen,
     toggleSideMenu,
@@ -110,7 +106,7 @@ export const SurveySideMenu = () => {
       <Drawer
         open={sideMenuOpen}
         onClose={toggleSideMenu}
-        variant={isPersistent ? 'persistent' : 'temporary'}
+        variant={isMobile ? 'temporary' : 'persistent'}
       >
         <Header>
           <SideMenuButton />

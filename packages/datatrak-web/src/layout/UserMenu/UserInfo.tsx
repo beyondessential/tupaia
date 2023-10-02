@@ -3,23 +3,24 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { useUser } from '../../api/queries';
 import { ROUTES } from '../../constants';
-import { ProjectSelectModal } from './ProjectSelectModal';
 
 const Wrapper = styled.div`
-  padding-left: 1.5rem;
+  padding-left: 1rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-left: 1.5rem;
+  }
 `;
 
 const Details = styled.div`
   display: flex;
-  flex-direction: column;
-
+  align-items: center;
   > span {
     color: ${props => props.theme.palette.text.primary};
     position: relative;
@@ -27,9 +28,8 @@ const Details = styled.div`
     font-size: 1.2em;
     margin-left: 0.5rem;
   }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    flex-direction: row;
-    align-items: center;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
@@ -77,50 +77,41 @@ const LoginLink = styled(AuthLink).attrs({
 `;
 
 const UserName = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.down('md')} {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
 `;
 
+const AuthButtons = styled.div`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
+`;
 /**
  * This is the displayed user name OR the login/register buttons on desktop
  */
-export const UserInfo = () => {
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
+export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void }) => {
   const { isLoggedIn, data: user } = useUser();
-  const openProjectModal = () => {
-    setProjectModalOpen(true);
-  };
-
-  const closeProjectModal = () => {
-    setProjectModalOpen(false);
-  };
 
   return (
-    <>
-      <Wrapper>
-        {isLoggedIn ? (
-          <Details>
-            <UserName>{user.name}</UserName>
-            {user?.projectId && (
-              <ProjectButton onClick={openProjectModal} tooltip="Change project">
-                {user.project?.name}
-              </ProjectButton>
-            )}
-          </Details>
-        ) : (
-          <>
-            <AuthLink variant="text" to={ROUTES.REGISTER}>
-              Register
-            </AuthLink>
-            <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
-          </>
-        )}
-      </Wrapper>
-      {/*Open prop?*/}
-      {projectModalOpen && (
-        <ProjectSelectModal open onClose={closeProjectModal} projectId={user.projectId} />
+    <Wrapper>
+      {isLoggedIn ? (
+        <Details>
+          <UserName>{user.name}</UserName>
+          {user?.projectId && (
+            <ProjectButton onClick={openProjectModal} tooltip="Change project">
+              {user.project?.name}
+            </ProjectButton>
+          )}
+        </Details>
+      ) : (
+        <AuthButtons>
+          <AuthLink variant="text" to={ROUTES.REGISTER}>
+            Register
+          </AuthLink>
+          <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
+        </AuthButtons>
       )}
-    </>
+    </Wrapper>
   );
 };

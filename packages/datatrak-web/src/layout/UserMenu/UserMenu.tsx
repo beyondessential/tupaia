@@ -9,6 +9,7 @@ import { IconButton } from '@tupaia/ui-components';
 import { DrawerMenu } from './DrawerMenu';
 import { PopoverMenu } from './PopoverMenu';
 import { UserInfo } from './UserInfo';
+import { ProjectSelectModal } from './ProjectSelectModal';
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,6 +38,14 @@ const MenuIcon = styled(MuiMenuIcon)`
  */
 export const UserMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const openProjectModal = () => {
+    setProjectModalOpen(true);
+  };
+
+  const closeProjectModal = () => {
+    setProjectModalOpen(false);
+  };
 
   const onCloseMenu = () => {
     setMenuOpen(false);
@@ -47,12 +56,17 @@ export const UserMenu = () => {
   };
   return (
     <Wrapper>
-      <UserInfo />
+      <UserInfo openProjectModal={openProjectModal} />
       <MenuButton onClick={toggleUserMenu} id="user-menu-button">
         <MenuIcon />
       </MenuButton>
       <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
-      <DrawerMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />
+      <DrawerMenu
+        menuOpen={menuOpen}
+        onCloseMenu={onCloseMenu}
+        openProjectModal={openProjectModal}
+      />
+      {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
     </Wrapper>
   );
 };
