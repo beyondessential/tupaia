@@ -12,6 +12,7 @@ type ServerAuthResponse = {
   accessToken?: string;
   refreshToken?: string;
   user?: {
+    id: string;
     email: string;
     accessPolicy: AccessPolicyObject;
   };
