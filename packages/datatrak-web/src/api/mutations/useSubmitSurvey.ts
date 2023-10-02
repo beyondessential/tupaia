@@ -15,7 +15,16 @@ import { useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
 import { successToast } from '../../utils';
 
-type Answers = Record<string, unknown>;
+type AutocompleteAnswer = {
+  isNew?: boolean;
+  optionSetId: string;
+  value: string;
+  label: string;
+};
+
+type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+
+type Answers = Record<string, Answer>;
 
 export const isUpsertEntityQuestion = config => {
   if (!config?.entity) {
@@ -38,6 +47,23 @@ type SurveyResponseData = {
   questions?: SurveyScreenComponent[];
   answers?: Answers;
   surveyStartTime?: string;
+};
+
+type CreatedOption = {
+  option_set_id: string;
+  value: string;
+  label: string;
+};
+
+type SurveyResponse = {
+  survey_id: Survey['id'];
+  start_time: string;
+  data_time: string;
+  entity_id: Entity['id'];
+  end_time: string;
+  timestamp: string;
+  timezone: string;
+  options_created: CreatedOption[];
 };
 
 type SurveyResponse = {
@@ -65,9 +91,12 @@ export const processSurveyResponse = ({
     survey_id: surveyId,
     start_time: surveyStartTime,
     entity_id: countryId,
+    end_time: timestamp,
     data_time: timestamp,
     timestamp,
     timezone,
+    options_created: [] as CreatedOption[],
+  } as SurveyResponse;
     entities_upserted: [],
   } as SurveyResponse;
   // Process answers and save the response in the database
@@ -94,6 +123,7 @@ export const processSurveyResponse = ({
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
+        surveyResponse.data_time = moment(answer as string).toISOString();
         surveyResponse.data_time = moment(answer).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
@@ -109,6 +139,23 @@ export const processSurveyResponse = ({
           });
         }
         answersToSubmit.push(answerObject);
+        surveyResponse.entity_id = answer as string;
+        break;
+      }
+      case 'Autocomplete': {
+        // if the answer is a new option, add it to the options_created array to be added to the DB
+        const { isNew, value, label, optionSetId } = answer as AutocompleteAnswer;
+        if (isNew) {
+          surveyResponse.options_created.push({
+            option_set_id: optionSetId,
+            value,
+            label,
+          });
+        }
+        answersToSubmit.push({
+          ...answerObject,
+          body: value,
+        });
         break;
       }
       default:
@@ -117,6 +164,7 @@ export const processSurveyResponse = ({
     }
   }
 
+  return { ...surveyResponse, answers: answersToSubmit };
   return {
     ...surveyResponse,
     answers: answersToSubmit,
@@ -124,7 +172,7 @@ export const processSurveyResponse = ({
 };
 
 // utility hook for getting survey response data
-const useSurveyResponseData = () => {
+export const useSurveyResponseData = () => {
   const { data: user } = useUser();
   const { surveyCode } = useParams();
   const { surveyStartTime, surveyScreenComponents } = useSurveyForm();
@@ -154,6 +202,7 @@ export const useSubmitSurvey = () => {
         answers,
       });
 
+      await post('surveyResponse', {
       await post('submitSurvey', {
         data: processedResponse,
       });

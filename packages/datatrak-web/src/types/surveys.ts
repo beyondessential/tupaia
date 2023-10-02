@@ -33,7 +33,6 @@ export type SurveyQuestionFieldProps = {
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
-  inputRef: Ref<HTMLInputElement>;
   controllerProps: ControllerRenderProps;
 };
 

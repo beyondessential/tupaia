@@ -46,7 +46,7 @@ export interface BaseAutocompleteProps {
   error?: boolean;
   disabled?: boolean;
   helperText?: string;
-  onChange?: (event: Event, newValue: string) => void;
+  onChange?: (event: Event, newValue: any) => void;
   getOptionSelected?: (option: any, value: any) => boolean;
   getOptionLabel?: (option: any) => string;
   placeholder?: string;

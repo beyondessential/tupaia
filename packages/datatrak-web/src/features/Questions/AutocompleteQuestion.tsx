@@ -3,10 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
+import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api/queries';
 
@@ -63,6 +64,10 @@ const StyledPaper = styled(Paper).attrs({
     &[data-focus='true'] {
       background-color: #ebf5ff;
     }
+    &[aria-selected='true'] {
+      background-color: #ebf5ff;
+      opacity: 1;
+    }
   }
 `;
 
@@ -71,26 +76,89 @@ export const AutocompleteQuestion = ({
   label,
   name,
   optionSetId,
-  controllerProps: { value = null, onChange, ref },
+  config = {},
+  controllerProps: { value: selectedValue = null, onChange, ref },
 }: SurveyQuestionInputProps) => {
-  const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(optionSetId);
+  const [inputValue, setInputValue] = useState('');
+  const { autocomplete = {} } = config;
+  const { attributes, createNew } = autocomplete;
+  const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
+    optionSetId,
+    attributes,
+  );
+
+  const getOptionSelected = (
+    option: Option,
+    selectedOption?: {
+      label: string;
+      value: string;
+    } | null,
+  ) => option.value === selectedOption?.value;
+
+  const getOptions = () => {
+    let options = data || [];
+    // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
+    if (!createNew || !inputValue || options.find(option => option.value === inputValue))
+      return options;
+    // if we have selected a newly created option, add it to the list of options
+    if (selectedValue?.value === inputValue)
+      return [
+        ...options,
+        {
+          label: inputValue,
+          value: inputValue,
+        },
+      ];
+    // add an 'add' option to the list of options
+    return [
+      ...options,
+      {
+        label: `Add "${inputValue}"`,
+        value: inputValue,
+      },
+    ];
+  };
+
+  const options = getOptions();
+
+  const handleSelectOption = (option: Option) => {
+    const { value } = option;
+    // if the option is not in the list of options, it is a new option
+    if (!data?.find(o => o.value === value)) {
+      onChange({
+        value,
+        label: value,
+        isNew: true,
+        optionSetId,
+      });
+    } else {
+      onChange(option);
+    }
+  };
 
   return (
     <Autocomplete
       id={id}
       label={label}
       name={name!}
-      value={value}
-      onChange={(_e, value) => onChange(value)}
+      value={selectedValue?.value || null}
+      onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
+      onInputChange={(_e, value) => setInputValue(value)}
+      inputValue={inputValue}
       inputRef={ref}
-      options={data?.map(option => option.value) || []}
-      getOptionSelected={(option, value) => option === value}
+      options={options}
+      getOptionLabel={option =>
+        typeof option === 'string' ? option : option.label || option.value
+      }
+      getOptionSelected={getOptionSelected}
       loading={isLoading || !isFetched}
       error={isError}
       helperText={error ? (error as Error).message : ''}
       placeholder="Search..."
       muiProps={{
         PaperComponent: StyledPaper,
+        freeSolo: !!createNew,
+        getOptionDisabled: option => getOptionSelected(option, selectedValue),
       }}
     />
   );
