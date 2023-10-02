@@ -11,7 +11,9 @@ import { CENTRAL_API_RESPONSES } from './fixtures';
 const surveyResponseDataTableService = new DataTableServiceBuilder()
   .setServiceType(DataTableType.survey_responses)
   .setContext({
-    apiClient: new MockTupaiaApiClient({ central: new MockCentralApi(CENTRAL_API_RESPONSES) }),
+    apiClient: new MockTupaiaApiClient({
+      central: new MockCentralApi({ mockData: CENTRAL_API_RESPONSES }),
+    }),
   })
   .build();
 
