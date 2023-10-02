@@ -80,7 +80,7 @@ describe('socialFeed', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
+        refreshToken: CAT_USER_SESSION.refreshToken,
         apiClientUserId: undefined,
       }),
     );

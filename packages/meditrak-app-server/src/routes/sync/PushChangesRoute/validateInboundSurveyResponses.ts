@@ -13,8 +13,12 @@ export const validateSurveyResponseObject = (surveyResponseObject: RawSurveyResp
     throw new ValidationError('Payload must contain survey_response_object');
   }
 
-  return ajvValidate<MeditrakSurveyResponseRequest>(
-    MeditrakSurveyResponseRequestSchema,
-    surveyResponseObject,
-  );
+  try {
+    return ajvValidate<MeditrakSurveyResponseRequest>(
+      MeditrakSurveyResponseRequestSchema,
+      surveyResponseObject,
+    );
+  } catch (err: any) {
+    throw new ValidationError(`Survey response validation error: ${err.message}`);
+  }
 };

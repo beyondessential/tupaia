@@ -1,6 +1,6 @@
 import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
-import { stripTimezoneFromDate } from '@tupaia/utils';
+import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
 import keyBy from 'lodash.keyby';
 import { upsertAnswers } from '../../dataAccessors';
 
@@ -66,7 +66,7 @@ function buildResponseRecord(user, entitiesByCode, body) {
     if (value) return new Date(value).toISOString();
     if (timestamp) return new Date(timestamp).toISOString();
 
-    throw new Error(`Must provide ${parameterName} or timestamp`);
+    throw new ValidationError(`Must provide ${parameterName} or timestamp`);
   };
 
   const startTime = defaultToTimestampOrThrow(inputStartTime, 'start_time');
