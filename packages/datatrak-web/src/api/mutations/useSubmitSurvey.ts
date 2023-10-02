@@ -16,7 +16,7 @@ import { useSurvey, useUser } from '../queries';
 import { successToast } from '../../utils';
 
 type AutocompleteAnswer = {
-  isNew: boolean;
+  isNew?: boolean;
   optionSetId: string;
   value: string;
   label: string;
@@ -129,7 +129,7 @@ export const processSurveyResponse = ({
 };
 
 // utility hook for getting survey response data
-const useSurveyResponseData = () => {
+export const useSurveyResponseData = () => {
   const { data: user } = useUser();
   const { surveyCode } = useParams();
   const { surveyStartTime, surveyScreenComponents } = useSurveyForm();
@@ -159,7 +159,7 @@ export const useSubmitSurvey = () => {
         answers,
       });
 
-      await post('/surveyResponse', {
+      await post('surveyResponse', {
         data: processedResponse,
       });
     },
