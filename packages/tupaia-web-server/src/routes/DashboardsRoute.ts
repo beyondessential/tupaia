@@ -6,14 +6,10 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  Entity,
-  DashboardItem,
-  DashboardRelation,
-  Dashboard,
-  TupaiaWebDashboardsRequest,
-} from '@tupaia/types';
+import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
+
+import { DashboardRelationType } from '../models/DashboardRelation';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -87,33 +83,27 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
-      filter: {
-        // Attached to the given dashboards
-        dashboard_id: {
-          comparator: 'IN',
-          comparisonValue: dashboards.map((d: Dashboard) => d.id),
-        },
-        // For the root entity type
-        entity_types: {
-          comparator: '@>',
-          comparisonValue: [rootEntity.type],
-        },
-        // Within the selected project
-        project_codes: {
-          comparator: '@>',
-          comparisonValue: [projectCode],
-        },
+    const dashboardRelations = await this.req.models.dashboardRelation.find({
+      // Attached to the given dashboards
+      dashboard_id: dashboards.map((d: Dashboard) => d.id),
+      // For the root entity type
+      entity_types: {
+        comparator: '@>',
+        comparisonValue: [rootEntity.type],
       },
-      // Override the default limit of 100 records
-      pageSize: DEFAULT_PAGE_SIZE,
+      // Within the selected project
+      project_codes: {
+        comparator: '@>',
+        comparisonValue: [projectCode],
+      },
     });
 
+    // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
       filter: {
         id: {
           comparator: 'IN',
-          comparisonValue: dashboardRelations.map((dr: DashboardRelation) => dr.child_id),
+          comparisonValue: dashboardRelations.map((dr: DashboardRelationType) => dr.child_id),
         },
       },
       // Override the default limit of 100 records
@@ -122,13 +112,14 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     // Merged and sorted to make mapping easier
     const mergedItemRelations = orderBy(
-      dashboardRelations.map((relation: DashboardRelation) => ({
+      dashboardRelations.map((relation: DashboardRelationType) => ({
         relation,
         item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
       })),
       [
-        ({ relation }: { relation: DashboardRelation }) => (relation.sort_order === null ? 1 : 0), // Puts null values last
-        ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
+        ({ relation }: { relation: DashboardRelationType }) =>
+          relation.sort_order === null ? 1 : 0, // Puts null values last
+        ({ relation }: { relation: DashboardRelationType }) => relation.sort_order,
         ({ item }: { item: DashboardItem }) => item.code,
       ],
     );
@@ -139,7 +130,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         // Filter by the relations, map to the items
         items: mergedItemRelations
           .filter(
-            ({ relation }: { relation: DashboardRelation }) =>
+            ({ relation }: { relation: DashboardRelationType }) =>
               relation.dashboard_id === dashboard.id,
           )
           .map(({ item }: { item: DashboardItem }) => ({
