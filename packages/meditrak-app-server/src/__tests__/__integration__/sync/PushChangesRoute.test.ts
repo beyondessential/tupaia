@@ -22,7 +22,6 @@ import {
   setupDummySyncQueue,
   setupTestApp,
   setupTestUser,
-  CentralApiMock,
   grantUserAccess,
   revokeAccess,
 } from '../../utilities';
@@ -35,7 +34,6 @@ import {
   upsertUserEntityPermission,
   insertEntityAndFacility,
 } from '../../utilities/database';
-import { upsertSurveyResponsesMock } from '../../utilities/CentralApiMock';
 import { RawSurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
 
 const clinicId = generateTestId();
@@ -74,6 +72,8 @@ const S3ClientMock = {
     mockS3Bucket.files = [...mockS3Bucket.files, fileName];
   },
 };
+
+const upsertSurveyResponsesMock = jest.fn();
 
 jest.mock('@tupaia/utils', () => {
   const original = jest.requireActual('@tupaia/utils');
@@ -118,17 +118,22 @@ describe('changes (POST)', () => {
   let authHeader: string;
   const models = getTestModels() as TestModelRegistry;
   const syncQueue = setupDummySyncQueue(models);
-  const centralApiMock = new CentralApiMock();
 
   beforeAll(async () => {
-    app = await setupTestApp({ central: centralApiMock });
+    app = await setupTestApp({
+      central: {
+        createSurveyResponses: (surveyResponses: Record<string, unknown>[]) => {
+          upsertSurveyResponsesMock(surveyResponses);
+        },
+      },
+    });
 
     const user = await setupTestUser();
     userId = user.id;
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
+        refreshToken: CAT_USER_SESSION.refreshToken,
         apiClientUserId: undefined,
       }),
     );

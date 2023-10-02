@@ -4,6 +4,7 @@
  */
 
 import { TestableServer } from '@tupaia/server-boilerplate';
+import { MockCentralApi } from '@tupaia/api-client';
 import { setupTestApp } from '../utilities';
 
 const mockResponseMsg = 'Successfully created user';
@@ -13,11 +14,7 @@ describe('user', () => {
 
   beforeAll(async () => {
     app = await setupTestApp({
-      central: {
-        async registerUserAccount(userFields: Record<string, unknown>) {
-          return { message: mockResponseMsg, id: userFields.id };
-        },
-      },
+      central: new MockCentralApi(),
     });
   });
 
@@ -29,7 +26,7 @@ describe('user', () => {
         body: user,
       });
 
-      expect(response.body).toEqual({ message: mockResponseMsg, id: userId });
+      expect(response.body).toEqual({ message: mockResponseMsg, userId });
     });
   });
 });

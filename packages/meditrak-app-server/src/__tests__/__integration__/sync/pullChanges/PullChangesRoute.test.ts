@@ -125,7 +125,7 @@ describe('changes (GET)', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
+        refreshToken: CAT_USER_SESSION.refreshToken,
         apiClientUserId: undefined,
       }),
     );
