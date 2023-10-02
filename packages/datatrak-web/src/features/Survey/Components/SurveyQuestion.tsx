@@ -79,13 +79,7 @@ export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProp
       name={getNameForController(name, type)}
       control={control}
       render={renderProps => (
-        <FieldComponent
-          {...props}
-          controllerProps={renderProps}
-          name={name}
-          type={type}
-          ref={renderProps.ref}
-        />
+        <FieldComponent {...props} controllerProps={renderProps} name={name} type={type} />
       )}
     />
   );

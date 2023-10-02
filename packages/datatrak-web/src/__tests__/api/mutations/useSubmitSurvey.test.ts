@@ -9,15 +9,15 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { QuestionType } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { processSurveyResponse, useSubmitSurvey } from '../../../api/mutations/useSubmitSurvey';
+import { processSurveyResponse, useSubmitSurvey } from '../../../api/mutations';
 import { renderMutation } from '../../helpers/render';
 import { successToast } from '../../../utils';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
 
 // Mock out the useSurveyResponseData hook so that we don't need tp mock out everything that that hook uses
-jest.mock('../../../api/mutations/useSubmitSurvey', () => {
-  const actual = jest.requireActual('../../../api/mutations/useSubmitSurvey');
+jest.mock('../../../api/mutations', () => {
+  const actual = jest.requireActual('../../../api/mutations');
   return {
     ...actual,
     useSurveyResponseData: jest.fn().mockReturnValue({
@@ -100,7 +100,9 @@ describe('processSurveyResponse', () => {
     timestamp: moment().toISOString(),
     timezone: getBrowserTimeZone(),
     options_created: [],
+    entities_upserted: [],
   };
+
   it('should process the survey response with standard question types', () => {
     const result = processSurveyResponse({
       ...responseData,
@@ -294,6 +296,52 @@ describe('processSurveyResponse', () => {
           id: '1',
           question_id: 'question1',
           type: QuestionType.Autocomplete,
+          body: 'answer1',
+        },
+      ],
+    });
+  });
+
+  it('should add new records to entities_upserted when type is "Entity" and config is set', () => {
+    const result = processSurveyResponse({
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          questionType: QuestionType.Entity,
+          config: {
+            entity: {
+              createNew: true,
+            },
+          },
+          id: '1',
+          componentNumber: 1,
+          questionText: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: 'answer1',
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      entities_upserted: [
+        {
+          questionId: 'question1',
+          config: {
+            entity: {
+              createNew: true,
+            },
+          },
+        },
+      ],
+      answers: [
+        {
+          id: '1',
+          question_id: 'question1',
+          type: QuestionType.Entity,
           body: 'answer1',
         },
       ],
