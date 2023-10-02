@@ -28,6 +28,8 @@ import {
   EntitiesRoute,
   ProjectRequest,
   ProjectRoute,
+  SubmitSurveyRoute,
+  SubmitSurveyRequest,
 } from '../routes';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -39,6 +41,7 @@ export function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))

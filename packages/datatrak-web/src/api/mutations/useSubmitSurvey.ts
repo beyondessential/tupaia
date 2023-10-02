@@ -9,7 +9,7 @@ import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { post } from '../api';
-import { Entity, Survey, SurveyScreenComponent } from '../../types';
+import { Entity, EntityQuestionConfig, Survey, SurveyScreenComponent } from '../../types';
 import { ROUTES } from '../../constants';
 import { useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
@@ -17,12 +17,37 @@ import { successToast } from '../../utils';
 
 type Answers = Record<string, unknown>;
 
+export const isUpsertEntityQuestion = config => {
+  if (!config?.entity) {
+    return false;
+  }
+  if (config.entity.createNew) {
+    return true;
+  }
+  return config.entity.fields && Object.keys(config.entity.fields).length > 0;
+};
+
+type EntityUpsert = {
+  questionId: string;
+  config: EntityQuestionConfig;
+};
+
 type SurveyResponseData = {
   surveyId?: Survey['id'];
   countryId?: Entity['id'];
   questions?: SurveyScreenComponent[];
   answers?: Answers;
   surveyStartTime?: string;
+};
+
+type SurveyResponse = {
+  survey_id: Survey['id'];
+  start_time: string;
+  data_time: string;
+  entity_id: Entity['id'];
+  timestamp: string;
+  timezone: string;
+  entities_upserted: EntityUpsert[];
 };
 
 // Process the survey response data into the format expected by the endpoint
@@ -36,15 +61,15 @@ export const processSurveyResponse = ({
   const timezone = getBrowserTimeZone();
   const timestamp = moment().toISOString();
   // Fields to be used in the survey response
-  const surveyResponseData = {
+  const surveyResponse = {
     survey_id: surveyId,
     start_time: surveyStartTime,
-    data_time: timestamp,
     entity_id: countryId,
-    end_time: timestamp,
+    data_time: timestamp,
     timestamp,
     timezone,
-  } as Record<string, unknown>;
+    entities_upserted: [],
+  } as SurveyResponse;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -55,31 +80,47 @@ export const processSurveyResponse = ({
       continue;
     }
 
+    // base answer object to be added to the answers array
+    const answerObject = {
+      id,
+      question_id: questionId,
+      type: questionType,
+      body: answer,
+    };
+
     // Handle special question types
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
     switch (questionType) {
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
-        surveyResponseData.data_time = moment(answer).toISOString();
+        surveyResponse.data_time = moment(answer).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
       case 'PrimaryEntity': {
-        surveyResponseData.entity_id = answer;
+        surveyResponse.entity_id = answer as string;
+        break;
+      }
+      case 'Entity': {
+        if (isUpsertEntityQuestion(question.config)) {
+          surveyResponse.entities_upserted.push({
+            questionId,
+            config: question.config as EntityQuestionConfig,
+          });
+        }
+        answersToSubmit.push(answerObject);
         break;
       }
       default:
-        answersToSubmit.push({
-          id: id,
-          question_id: questionId,
-          type: questionType,
-          body: answer,
-        });
+        answersToSubmit.push(answerObject);
         break;
     }
   }
 
-  return { ...surveyResponseData, answers: answersToSubmit };
+  return {
+    ...surveyResponse,
+    answers: answersToSubmit,
+  };
 };
 
 // utility hook for getting survey response data
@@ -113,7 +154,7 @@ export const useSubmitSurvey = () => {
         answers,
       });
 
-      await post('/surveyResponse', {
+      await post('submitSurvey', {
         data: processedResponse,
       });
     },

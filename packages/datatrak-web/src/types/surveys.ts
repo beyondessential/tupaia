@@ -36,3 +36,16 @@ export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
   inputRef: Ref<HTMLInputElement>;
   controllerProps: ControllerRenderProps;
 };
+
+export type EntityQuestionConfig = {
+  entity: {
+    createNew: boolean;
+    fields: Record<string, string | {}>;
+    filter: {
+      type: string[];
+      grandparentId: { questionId: string };
+      parentId: { questionId: string };
+      attributes: Record<string, { questionId: string }>;
+    };
+  };
+};
