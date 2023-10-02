@@ -6,8 +6,8 @@
 import { useMutation } from 'react-query';
 import moment from 'moment';
 import { generatePath, useNavigate, useParams } from 'react-router';
-import { Coconut } from '../../components';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { Coconut } from '../../components';
 import { post } from '../api';
 import { Entity, EntityQuestionConfig, Survey, SurveyScreenComponent } from '../../types';
 import { ROUTES } from '../../constants';
@@ -64,15 +64,6 @@ type SurveyResponse = {
   timestamp: string;
   timezone: string;
   options_created: CreatedOption[];
-};
-
-type SurveyResponse = {
-  survey_id: Survey['id'];
-  start_time: string;
-  data_time: string;
-  entity_id: Entity['id'];
-  timestamp: string;
-  timezone: string;
   entities_upserted: EntityUpsert[];
 };
 
@@ -95,8 +86,7 @@ export const processSurveyResponse = ({
     data_time: timestamp,
     timestamp,
     timezone,
-    options_created: [] as CreatedOption[],
-  } as SurveyResponse;
+    options_created: [],
     entities_upserted: [],
   } as SurveyResponse;
   // Process answers and save the response in the database
@@ -124,7 +114,6 @@ export const processSurveyResponse = ({
       case 'SubmissionDate':
       case 'DateOfData':
         surveyResponse.data_time = moment(answer as string).toISOString();
-        surveyResponse.data_time = moment(answer).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
       case 'PrimaryEntity': {
@@ -165,10 +154,6 @@ export const processSurveyResponse = ({
   }
 
   return { ...surveyResponse, answers: answersToSubmit };
-  return {
-    ...surveyResponse,
-    answers: answersToSubmit,
-  };
 };
 
 // utility hook for getting survey response data
@@ -202,7 +187,6 @@ export const useSubmitSurvey = () => {
         answers,
       });
 
-      await post('surveyResponse', {
       await post('submitSurvey', {
         data: processedResponse,
       });
