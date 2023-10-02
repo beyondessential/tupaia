@@ -122,10 +122,12 @@ export const AutocompleteQuestion = ({
   const options = getOptions();
 
   const handleSelectOption = (option: Option) => {
+    const { value } = option;
     // if the option is not in the list of options, it is a new option
-    if (!data?.find(o => o.value === option?.value)) {
+    if (!data?.find(o => o.value === value)) {
       onChange({
-        ...option,
+        value,
+        label: value,
         isNew: true,
         optionSetId,
       });

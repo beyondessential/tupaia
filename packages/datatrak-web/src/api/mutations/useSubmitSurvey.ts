@@ -19,6 +19,7 @@ type AutocompleteAnswer = {
   isNew: boolean;
   optionSetId: string;
   value: string;
+  label: string;
 };
 
 type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
@@ -104,12 +105,12 @@ export const processSurveyResponse = ({
       }
       case 'Autocomplete': {
         // if the answer is a new option, add it to the options_created array to be added to the DB
-        const { isNew, value, optionSetId } = answer as AutocompleteAnswer;
+        const { isNew, value, label, optionSetId } = answer as AutocompleteAnswer;
         if (isNew) {
           surveyResponse.options_created.push({
             option_set_id: optionSetId,
             value,
-            label: value,
+            label,
           });
         }
         answersToSubmit.push({

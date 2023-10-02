@@ -25,11 +25,11 @@ export const useAutocompleteOptions = (
         if (!attributeFilters) return data;
         return data.filter((option: Option) => {
           // If there are no attributes on the option, return true
-          if (!option?.attributes) return true;
+          if (!option.attributes) return true;
           // return only the options that match all attribute filters
           return Object.entries(attributeFilters).every(([attribute, config]) => {
             const attributeValue = getAnswerByQuestionId(config.questionId);
-            return option?.attributes?.[attribute] === attributeValue;
+            return option.attributes[attribute] === attributeValue;
           });
         });
       },
