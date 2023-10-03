@@ -36,31 +36,26 @@ const Details = styled.div`
 const ProjectButton = styled(Button).attrs({
   variant: 'text',
 })`
-  padding: 0;
-  justify-content: flex-start;
+  margin-left: 0.5rem;
+  padding-left: 0;
+  padding-right: 0.5rem;
+  justify-content: center;
   .MuiButton-label {
-    line-height: 1;
-    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    padding-left: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
   color: ${props => props.theme.palette.text.secondary};
   &:hover {
     color: ${props => props.theme.palette.action.hover};
     text-decoration: underline;
   }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    justify-content: center;
-    &:before {
-      content: '';
-      border-left: 1px solid ${props => props.theme.palette.text.secondary};
-      height: 1.2rem;
-    }
-    .MuiButton-label {
-      padding-left: 0.5rem;
-      line-height: 1.4;
-      font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    }
+
+  &:before {
+    content: '';
+    border-left: 1px solid ${props => props.theme.palette.text.secondary};
+    height: 1.2rem;
   }
 `;
 
