@@ -102,7 +102,7 @@ export const surveyReducer = (
   }
 };
 
-const filterVisibleQuestions = (question: SurveyScreenComponent, formData: Record<string, any>) => {
+const getIsQuestionVisible = (question: SurveyScreenComponent, formData: Record<string, any>) => {
   if (!question.visibilityCriteria || !Object.keys(question.visibilityCriteria).length) return true;
   const { visibilityCriteria } = question;
   const { _conjunction = 'or', ...dependantQuestions } = visibilityCriteria;
@@ -120,12 +120,15 @@ export const SurveyContext = ({ children }) => {
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
+
   const { formData } = state;
 
   // filter out screens that have no visible questions
-  const visibleScreens = Object.values(surveyScreenComponents).filter(screen =>
-    screen.some(question => filterVisibleQuestions(question, formData)),
-  );
+  const visibleScreens = surveyScreenComponents
+    ? Object.values(surveyScreenComponents).filter(screen =>
+        screen?.some(question => getIsQuestionVisible(question, formData)),
+      )
+    : [];
 
   const numberOfScreens = visibleScreens.length;
   const isLast = screenNumber === numberOfScreens;
@@ -133,21 +136,25 @@ export const SurveyContext = ({ children }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1] || [];
 
   const getDisplayQuestions = () => {
+    const flattenedScreenComponents = surveyScreenComponents
+      ? Object.values(surveyScreenComponents).flat()
+      : [];
     // If the first question is an instruction, don't render it since we always just
     // show the text of first questions as the heading. Format the questions with a question number to display
     const visibleQuestions = (activeScreen?.length && activeScreen[0].questionType === 'Instruction'
       ? activeScreen.slice(1)
       : activeScreen
     )
-      .filter(question => filterVisibleQuestions(question, formData))
+      .filter(question => getIsQuestionVisible(question, formData))
       .map(question => {
         const { questionId } = question;
         if (
-          Object.values(surveyScreenComponents).some(
-            ([_screenNumber, screen]) =>
-              screen?.visibilityCriteria &&
-              Object.keys(screen?.visibilityCriteria).includes(questionId),
-          )
+          flattenedScreenComponents.some(component => {
+            return (
+              component?.visibilityCriteria &&
+              Object.keys(component?.visibilityCriteria).includes(questionId)
+            );
+          })
         ) {
           // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
           return {
