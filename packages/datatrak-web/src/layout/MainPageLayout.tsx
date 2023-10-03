@@ -8,6 +8,7 @@ import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { HEADER_HEIGHT, MOBILE_HEADER_HEIGHT } from '../constants';
 import { Header } from '.';
+import { MobileAppPrompt } from '../features';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -27,6 +28,7 @@ export const MainPageLayout = () => {
     <PageWrapper>
       <Header />
       <Outlet />
+      <MobileAppPrompt />
     </PageWrapper>
   );
 };

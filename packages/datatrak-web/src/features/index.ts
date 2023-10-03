@@ -14,3 +14,4 @@ export {
   useSurveyForm,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
+export { MobileAppPrompt } from './MobileAppPrompt';
