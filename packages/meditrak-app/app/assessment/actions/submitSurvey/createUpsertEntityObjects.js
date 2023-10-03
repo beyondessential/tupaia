@@ -35,7 +35,7 @@ const buildEntity = async (state, database, fields, entityId, answers) => {
   }
   if (!entity.parent) {
     const country = getSelectedCountry();
-    entity.parent_id = country.entity(database).id;
+    entity.parent = country.entity(database);
   }
   if (!entity.code) {
     entity.code = entityId;
