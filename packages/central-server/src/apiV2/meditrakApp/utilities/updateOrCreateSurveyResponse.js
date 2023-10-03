@@ -89,7 +89,7 @@ const upsertEntities = async (models, newAndUpdatedEntities, surveyId) => {
 
   return Promise.all(
     newAndUpdatedEntities.map(async entity => {
-      const existentEntity = models.entity.findOne({ id: entity.id });
+      const existentEntity = await models.entity.findOne({ id: entity.id });
 
       if (existentEntity) {
         return models.entity.updateOrCreate(
