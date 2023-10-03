@@ -63,35 +63,27 @@ const getNameForController = (name, type) => {
   return type === 'PrimaryEntity' ? 'entityId' : name;
 };
 
-// question types which can control other questions via on visibility criteria
-const DEPENDABLE_QUESTION_TYPES = [
-  'Entity',
-  'PrimaryEntity',
-  'Autocomplete',
-  'Binary',
-  'Checkbox',
-  'Radio',
-];
-
 /**
  * This is the component that renders a single question in a survey.
  */
-export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProps) => {
+export const SurveyQuestion = ({
+  type,
+  name,
+  updateFormDataOnChange,
+  ...props
+}: SurveyQuestionFieldProps) => {
   const { control } = useFormContext();
-  const { shouldUpdateScreenOnChange, setFormData, formData } = useSurveyForm();
+  const { setSingleAnswer } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
     return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
-  // If the question is a dependable question, update the form data when the value changes. This is so that if there are questions on the same screen that depend on the value of this question, they will be updated when the value changes. This shouldn't have much of a performance impact because the type of questions that are involved are clickable instead of type-able.
+  // If the question dictates the visibility of any other questions, we need to update the formData when the value changes, so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact, and we are only updating the formData for the question that is changing, not the entire formData object.
   const handleOnChange = e => {
-    if (shouldUpdateScreenOnChange && DEPENDABLE_QUESTION_TYPES.includes(type)) {
-      setFormData({
-        ...formData,
-        [name]: e.target.value,
-      });
+    if (updateFormDataOnChange) {
+      setSingleAnswer(name, e.target.value);
     }
   };
 
@@ -100,19 +92,20 @@ export const SurveyQuestion = ({ type, name, ...props }: SurveyQuestionFieldProp
     <Controller
       name={getNameForController(name, type)}
       control={control}
-      render={renderProps => (
+      render={({ onChange, ref, ...renderProps }) => (
         <FieldComponent
           {...props}
           controllerProps={{
             ...renderProps,
+            ref,
             onChange: e => {
               handleOnChange(e);
-              renderProps.onChange(e);
+              onChange(e);
             },
           }}
           name={name}
           type={type}
-          ref={renderProps.ref}
+          ref={ref}
         />
       )}
     />
