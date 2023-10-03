@@ -30,6 +30,7 @@ export type SurveyQuestionFieldProps = {
   detailLabel?: string | null;
   options?: SurveyScreenComponent['questionOptions'];
   optionSetId?: SurveyScreenComponent['questionOptionSetId'];
+  updateOnBlur?: boolean;
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
