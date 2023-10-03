@@ -4,10 +4,12 @@
  */
 import React from 'react';
 import { MemoryRouter, Routes } from 'react-router-dom';
+import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
 import { SurveyPageRoutes } from '../../Routes';
+import { UseMutationResult } from 'react-query';
 
 export function renderComponent(children) {
   return render(children, { wrapper: AppProviders });
@@ -26,3 +28,17 @@ export function renderPage(activeUrl) {
 export function renderSurveyPage(activeUrl) {
   return renderPage(activeUrl);
 }
+
+// Utility function to render a mutation hook with the AppProviders wrapper
+export const renderMutation = (
+  hook,
+  options = {},
+): {
+  result: {
+    current: UseMutationResult;
+  };
+  waitFor: (callback: () => void) => Promise<void>;
+} => {
+  const wrapper = ({ children }) => <AppProviders>{children}</AppProviders>;
+  return renderHook(hook, { wrapper, ...options });
+};
