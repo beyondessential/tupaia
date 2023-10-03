@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Link as RouterLink } from 'react-router-dom';
+import { LinkProps, Link as RouterLink } from 'react-router-dom';
 import { Link as MuiLink } from '@material-ui/core';
 import { PageContainer } from '../components';
 import { HEADER_HEIGHT, MOBILE_HEADER_HEIGHT } from '../constants';
@@ -31,7 +31,7 @@ const Container = styled(PageContainer).attrs({
 const LogoLink = styled(MuiLink).attrs({
   color: 'inherit',
   component: RouterLink,
-})`
+})<LinkProps>`
   height: ${MOBILE_HEADER_HEIGHT};
   padding: 1rem 0.5rem;
   display: flex;
