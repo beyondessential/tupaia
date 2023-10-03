@@ -6,7 +6,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { ButtonLink, PageContainer as BasePageContainer } from '../components';
+import { ButtonLink as BaseButtonLink, PageContainer as BasePageContainer } from '../components';
 import { ROUTES } from '../constants';
 
 const PageContainer = styled(BasePageContainer)`
@@ -37,17 +37,15 @@ const SurveyAlert = styled.div`
   }
 `;
 
-const OutlinedButton = styled(ButtonLink).attrs({
-  variant: 'outlined',
-})`
-  margin-top: 1rem;
+const ButtonLink = styled(BaseButtonLink)`
   font-size: 1rem;
-`;
-
-const PrimaryButton = styled(ButtonLink)`
-  font-size: 1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   & ~ .MuiButtonBase-root {
     margin-left: 0; // override default margin from ui-components
+  }
+  &:last-child {
+    margin-top: 1rem;
   }
 `;
 
@@ -125,8 +123,10 @@ export const LandingPage = () => {
         <SurveyAlert>
           <SurveyAlertContent>
             <ButtonWrapper>
-              <PrimaryButton to={ROUTES.SURVEY_SELECT}>Select survey</PrimaryButton>
-              <OutlinedButton to="#">Explore Data</OutlinedButton>
+              <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
+              <ButtonLink to="#" variant="outlined">
+                Explore Data
+              </ButtonLink>
             </ButtonWrapper>
             <TextWrapper>
               <Text>
