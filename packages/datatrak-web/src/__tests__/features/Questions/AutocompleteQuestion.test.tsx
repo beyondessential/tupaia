@@ -7,8 +7,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { renderComponent } from '../../helpers/render.tsx';
-import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion.tsx';
+import { renderComponent } from '../../helpers/render';
+import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
 
 jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -66,7 +66,7 @@ describe('Autocomplete Question', () => {
     renderComponent(<AutocompleteQuestion {...props} />);
   });
 
-  it('renders all the options when there is no attribute filtering involved', () => {
+  it('renders all the options when there is no attribute filtering involved', async () => {
     renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
@@ -80,7 +80,7 @@ describe('Autocomplete Question', () => {
     });
   });
 
-  it('renders only the filtered options when there are attribute filters defined', () => {
+  it('renders only the filtered options when there are attribute filters defined', async () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
@@ -118,7 +118,7 @@ describe('Autocomplete Question', () => {
     );
 
     const searchInput = screen.getByRole('textbox');
-    userEvent.type(searchInput, 'Purple');
+    await userEvent.type(searchInput, 'Purple');
 
     const displayOptions = await screen.findAllByRole('option');
     expect(displayOptions.length).toBe(1);
@@ -139,7 +139,7 @@ describe('Autocomplete Question', () => {
     );
 
     const searchInput = screen.getByRole('textbox');
-    userEvent.type(searchInput, 'Purple');
+    await userEvent.type(searchInput, 'Purple');
 
     const displayOption = await screen.findByRole('option', { name: 'Add "Purple"' });
     userEvent.click(displayOption);
