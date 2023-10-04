@@ -47,6 +47,12 @@ const StyledRadioGroup = styled(RadioGroup)`
     .MuiFormControlLabel-label {
       font-size: 0.875rem;
     }
+    &:has([aria-invalid='true']) {
+      border-color: ${({ theme }) => theme.palette.error.main};
+      .MuiSvgIcon-root {
+        color: ${({ theme }) => theme.palette.error.main};
+      }
+    }
   }
   .MuiSvgIcon-root {
     font-size: 1.25rem;
@@ -58,7 +64,8 @@ export const RadioQuestion = ({
   label,
   name,
   options,
-  controllerProps: { onChange, value, ref },
+  required,
+  controllerProps: { onChange, value, ref, invalid },
 }: SurveyQuestionInputProps) => {
   // This is a controlled component because value and onChange are required props
   return (
@@ -70,8 +77,10 @@ export const RadioQuestion = ({
       inputRef={ref}
       options={options || []}
       value={value || ''}
+      required={required}
       inputProps={{
         ['aria-describedby']: `question_number_${id}`,
+        ['aria-invalid']: invalid,
       }}
     />
   );

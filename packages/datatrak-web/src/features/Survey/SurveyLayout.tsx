@@ -113,8 +113,8 @@ export const SurveyLayout = () => {
     numberOfScreens,
     isReviewScreen,
   } = useSurveyForm();
-  const formContext = useForm({ defaultValues: formData });
-  const { handleSubmit } = formContext;
+  const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit' });
+  const { handleSubmit, getValues } = formContext;
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
@@ -122,7 +122,8 @@ export const SurveyLayout = () => {
     navigate(path);
   };
 
-  const onStepPrevious = handleSubmit(data => {
+  const onStepPrevious = () => {
+    const data = getValues();
     let path = ROUTES.SURVEY_SELECT;
     const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
     if (prevScreenNumber) {
@@ -133,7 +134,7 @@ export const SurveyLayout = () => {
     }
 
     handleStep(path, data);
-  });
+  };
 
   const navigateNext = data => {
     const path = isLast
@@ -145,7 +146,7 @@ export const SurveyLayout = () => {
     handleStep(path, data);
   };
 
-  const handleSubmitScreen = handleSubmit(data => {
+  const handleClickSubmit = handleSubmit(data => {
     if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
   });
@@ -169,7 +170,7 @@ export const SurveyLayout = () => {
           <SurveySideMenu />
           <Container $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
             <Paper>
-              <Form onSubmit={handleSubmitScreen} noValidate>
+              <Form onSubmit={handleClickSubmit} noValidate>
                 <Outlet />
                 {isSubmittingSurvey && (
                   <LoadingContainer>
@@ -194,11 +195,7 @@ export const SurveyLayout = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      type="submit"
-                      onClick={handleSubmitScreen}
-                      disabled={isSubmittingSurvey}
-                    >
+                    <Button type="submit" disabled={isSubmittingSurvey}>
                       {nextButtonText}
                     </Button>
                   </ButtonGroup>

@@ -21,6 +21,7 @@ import {
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
+import { FormHelperText } from '@material-ui/core';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
@@ -37,6 +38,13 @@ const Placeholder = ({ name, type, id }) => {
     </QuestionPlaceholder>
   );
 };
+
+const QuestionWrapper = styled.div`
+  width: 100%;
+  .MuiFormHelperText-root.Mui-error {
+    color: ${props => props.theme.palette.error.dark};
+  }
+`;
 
 export enum QUESTION_TYPES {
   Binary = BinaryQuestion,
@@ -70,10 +78,11 @@ export const SurveyQuestion = ({
   type,
   name,
   updateFormDataOnChange,
+  validationCriteria = {},
   ...props
 }: SurveyQuestionFieldProps) => {
-  const { control } = useFormContext();
-  const { setSingleAnswer } = useSurveyForm();
+  const { control, errors } = useFormContext();
+  const { setSingleAnswer, formData } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -87,27 +96,79 @@ export const SurveyQuestion = ({
     }
   };
 
+  const { mandatory: required, min, max } = validationCriteria;
+
+  const getRules = () => {
+    // If the question is an instruction, we don't need to validate it, it will never need to be answered
+    if (type === 'Instruction') {
+      return {};
+    }
+    // If the question is a geolocate question, we need to validate it differently, as it is a compound question. The coordinates need to be validated separately.
+    if (type === 'Geolocate') {
+      return {
+        validate: {
+          required: value => (value?.latitude && value?.longitude) || 'Required',
+          coordinatesAreValid: value => {
+            return value?.latitude < -90 ||
+              value?.latitude > 90 ||
+              value?.longitude < -180 ||
+              value?.longitude > 180
+              ? 'Invalid coordinates'
+              : true;
+          },
+        },
+      };
+    }
+    return {
+      required: required ? 'Required' : false,
+      min: min ? { value: min, message: `Minimum value is ${min}` } : undefined,
+      max: max ? { value: max, message: `Maximum value is ${max}` } : undefined,
+    };
+  };
+
+  const controllerName = getNameForController(name, type);
+
+  const getDefaultValue = () => {
+    if (type?.includes('Date')) return new Date();
+    return formData[controllerName] || '';
+  };
+
+  const rules = getRules();
+
+  const defaultValue = getDefaultValue();
+
+  // display the entity error in it's own component because otherwise it will end up at the bottom of the big list of entities
+  const displayError = errors[name] && errors[name].message && !type.includes('Entity');
   // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
   return (
-    <Controller
-      name={getNameForController(name, type)}
-      control={control}
-      render={({ onChange, ref, ...renderProps }) => (
-        <FieldComponent
-          {...props}
-          controllerProps={{
-            ...renderProps,
-            ref,
-            onChange: e => {
-              handleOnChange(e);
-              onChange(e);
-            },
-          }}
-          name={name}
-          type={type}
-          ref={ref}
-        />
-      )}
-    />
+    <QuestionWrapper>
+      <Controller
+        name={controllerName}
+        control={control}
+        rules={rules}
+        defaultValue={defaultValue}
+        render={({ onChange, ref, ...renderProps }, { invalid }) => (
+          <FieldComponent
+            {...props}
+            controllerProps={{
+              ...renderProps,
+              invalid,
+              ref,
+              onChange: e => {
+                handleOnChange(e);
+                onChange(e);
+              },
+            }}
+            required={required}
+            min={min}
+            max={max}
+            name={controllerName}
+            type={type}
+            ref={ref}
+          />
+        )}
+      />
+      {displayError && <FormHelperText error>*{errors[name].message}</FormHelperText>}
+    </QuestionWrapper>
   );
 };

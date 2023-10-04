@@ -43,9 +43,6 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           questionNumber,
           updateFormDataOnChange,
         }) => {
-          if (validationCriteria?.mandatory === true) {
-            console.log('mandatory question', questionCode);
-          }
           return (
             <QuestionWrapper key={questionId} $isInstruction={questionType === 'Instruction'}>
               {questionNumber && (
@@ -65,6 +62,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
                 label={questionLabel || questionText}
                 optionSetId={questionOptionSetId}
                 updateFormDataOnChange={updateFormDataOnChange}
+                validationCriteria={validationCriteria}
               />
             </QuestionWrapper>
           );
