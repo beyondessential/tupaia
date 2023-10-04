@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { screen, waitForElementToBeRemoved, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderSurveyPage } from './helpers/render';
@@ -22,13 +22,16 @@ afterAll(() => server.close());
 describe('Survey', () => {
   it('displays a survey screen', async () => {
     renderSurveyPage('/survey/test/1');
-    await waitForElementToBeRemoved(() => screen.queryByRole(/progressbar*/i));
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Demo Land Sections 1-3');
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(
+      'Demo Land Sections 1-3',
+    );
+    expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(
       'Select Kiribati Archipelago',
     );
     fireEvent.click(screen.getByRole('button', { name: /next*/i }));
     await screen.findByText('Select Kiribati Council');
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Select Kiribati Council');
+    expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(
+      'Select Kiribati Council',
+    );
   });
 });

@@ -7,8 +7,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { renderComponent } from '../../helpers/render.tsx';
-import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion.tsx';
+import { renderComponent } from '../../helpers/render';
+import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
 
 jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -66,13 +66,13 @@ describe('Example test', () => {
     renderComponent(<AutocompleteQuestion {...props} />);
   });
 
-  it('renders all the options when there is no attribute filtering involved', () => {
+  it('renders all the options when there is no attribute filtering involved', async () => {
     renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();
 
-    const displayOptions = screen.getAllByRole('option');
+    const displayOptions = await screen.findAllByRole('option');
     expect(displayOptions.length).toBe(options.length);
     displayOptions.forEach((option, index) => {
       const text = options[index].label || options[index].value;
@@ -80,7 +80,7 @@ describe('Example test', () => {
     });
   });
 
-  it('renders only the filtered options when there are attribute filters defined', () => {
+  it('renders only the filtered options when there are attribute filters defined', async () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
@@ -99,13 +99,13 @@ describe('Example test', () => {
     const openButton = screen.getByTitle('Open');
     openButton.click();
 
-    const displayOptions = screen.getAllByRole('option');
+    const displayOptions = await screen.findAllByRole('option');
     expect(displayOptions.length).toBe(2);
     expect(displayOptions[0]).toHaveTextContent('Blue');
     expect(displayOptions[1]).toHaveTextContent('green');
   });
 
-  it('renders a "create new" option when createNew is enabled and there is an input value in the search', () => {
+  it('renders a "create new" option when createNew is enabled and there is an input value in the search', async () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
@@ -120,13 +120,13 @@ describe('Example test', () => {
     const searchInput = screen.getByRole('textbox');
     userEvent.type(searchInput, 'Purple');
 
-    const displayOptions = screen.getAllByRole('option');
+    const displayOptions = await screen.findAllByRole('option');
     expect(displayOptions.length).toBe(1);
 
     expect(displayOptions[0]).toHaveTextContent('Add "Purple"');
   });
 
-  it('Calls the onChange method with a new option when "Add ..." option is selected', () => {
+  it('Calls the onChange method with a new option when "Add ..." option is selected', async () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
@@ -141,7 +141,7 @@ describe('Example test', () => {
     const searchInput = screen.getByRole('textbox');
     userEvent.type(searchInput, 'Purple');
 
-    const displayOption = screen.getByRole('option', { name: 'Add "Purple"' });
+    const displayOption = await screen.findByRole('option', { name: 'Add "Purple"' });
     userEvent.click(displayOption);
 
     expect(onChange).toHaveBeenCalledWith({
@@ -152,13 +152,13 @@ describe('Example test', () => {
     });
   });
 
-  it('Calls the onChange method with the option when an existing option is selected', () => {
+  it('Calls the onChange method with the option when an existing option is selected', async () => {
     renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
     openButton.click();
 
-    const displayOption = screen.getByRole('option', { name: options[0].label });
+    const displayOption = await screen.findByRole('option', { name: options[0].label });
     userEvent.click(displayOption);
 
     expect(onChange).toHaveBeenCalledWith(options[0]);

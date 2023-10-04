@@ -67,7 +67,7 @@ export const EntityQuestion = ({
     onChange(entity.value);
   };
 
-  const { data: searchResults, isLoading } = useSearchResults(searchValue, config);
+  const { data: searchResults, isLoading, isFetched } = useSearchResults(searchValue, config);
 
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
@@ -87,7 +87,7 @@ export const EntityQuestion = ({
         onChangeSearch={onChangeSearch}
         searchValue={searchValue}
       />
-      {isLoading ? (
+      {!isFetched || isLoading ? (
         <SpinningLoader />
       ) : (
         <ResultsList value={value} onSelect={onSelect} searchResults={displayResults} />

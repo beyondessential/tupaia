@@ -76,7 +76,7 @@ jest.mock('moment', () => {
 });
 
 const server = setupServer(
-  rest.post('*/v1/surveyResponse', (_, res, ctx) => {
+  rest.post('*/v1/submitSurvey', (_, res, ctx) => {
     return res(ctx.status(200));
   }),
 );
@@ -302,7 +302,7 @@ describe('processSurveyResponse', () => {
     });
   });
 
-  it('should add new records to entities_upserted when type is "Entity" and config is set', () => {
+  it('should add to entities_upserted when type is "Entity" and a create config is set', () => {
     const result = processSurveyResponse({
       ...responseData,
       questions: [
@@ -337,6 +337,37 @@ describe('processSurveyResponse', () => {
           },
         },
       ],
+      answers: [
+        {
+          id: '1',
+          question_id: 'question1',
+          type: QuestionType.Entity,
+          body: 'answer1',
+        },
+      ],
+    });
+  });
+
+  it('should not add to entities_upserted when type is "Entity" and a create config is not set', () => {
+    const result = processSurveyResponse({
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          questionType: QuestionType.Entity,
+          id: '1',
+          componentNumber: 1,
+          questionText: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: 'answer1',
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
       answers: [
         {
           id: '1',

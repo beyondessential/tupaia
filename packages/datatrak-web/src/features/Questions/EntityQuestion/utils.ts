@@ -13,7 +13,7 @@ export const useEntityBaseFilters = (config: EntityQuestionConfig) => {
 
   const filters = { countryCode } as Record<string, string | string[]>;
 
-  const { filter } = config.entity;
+  const filter = config?.entity?.filter;
   if (!filter) {
     return filters;
   }
@@ -35,15 +35,15 @@ export const useEntityBaseFilters = (config: EntityQuestionConfig) => {
  */
 export const useAttributeFilter = (questionConfig: EntityQuestionConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  const { attributes: questionAttributes } = questionConfig.entity?.filter;
-  if (!questionAttributes) {
+  const attributes = questionConfig.entity?.filter?.attributes;
+  if (!attributes) {
     return null;
   }
 
-  const filterValues = Object.entries(questionAttributes).reduce((acc, [key, config]) => {
+  const filterValues = Object.entries(attributes).reduce((acc, [key, config]) => {
     // Get the answer from the configured question
     const filterValue = getAnswerByQuestionId(config.questionId);
-    return filterValue ? acc : { ...acc, [key]: filterValue };
+    return filterValue ? { ...acc, [key]: filterValue } : acc;
   }, {});
 
   // No answer was selected for the question to filter, return all
@@ -53,7 +53,7 @@ export const useAttributeFilter = (questionConfig: EntityQuestionConfig) => {
 
   return entity =>
     Object.entries(filterValues).every(([key, value]) => {
-      const { attributes: entityAttributes } = entity.toJson();
-      return entityAttributes[key] === value;
+      const { attributes } = entity;
+      return attributes[key] === value;
     });
 };
