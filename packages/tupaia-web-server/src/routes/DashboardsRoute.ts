@@ -105,6 +105,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparator: 'IN',
           comparisonValue: dashboardRelations.map((dr: DashboardRelationType) => dr.child_id),
         },
+        permission_groups: {
+          comparator: '&&',
+          comparisonValue: ['BES Admin'],
+        },
       },
       // Override the default limit of 100 records
       pageSize: DEFAULT_PAGE_SIZE,
