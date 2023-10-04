@@ -21,7 +21,6 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
     const { answers, entities_upserted, country_id } = surveyResponseData;
 
     const upsertEntityObjects = await createUpsertEntityObjects(
-      // @ts-ignore
       this.req.models,
       entities_upserted,
       answers,

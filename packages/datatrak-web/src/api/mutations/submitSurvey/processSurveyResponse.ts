@@ -5,7 +5,7 @@
 
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
-import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyRequest as RequestT, UserAccount } from '@tupaia/types';
 import { isUpsertEntityQuestion } from './utils';
 import { Entity, Survey, SurveyScreenComponent } from '../../../types';
 
@@ -16,18 +16,22 @@ type AutocompleteAnswer = {
   label: string;
 };
 
-type Answers = RequestT.Answers | AutocompleteAnswer;
+type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+
+export type AnswersT = Record<string, Answer>;
 
 type SurveyResponseData = {
+  userId?: UserAccount['id'];
   surveyId?: Survey['id'];
   countryId?: Entity['id'];
   questions?: SurveyScreenComponent[];
-  answers?: Answers;
+  answers?: AnswersT;
   surveyStartTime?: string;
 };
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = ({
+  userId,
   surveyId,
   countryId,
   questions = [],
@@ -38,6 +42,7 @@ export const processSurveyResponse = ({
   const timestamp = moment().toISOString();
   // Fields to be used in the survey response
   const surveyResponse = {
+    user_id: userId,
     survey_id: surveyId,
     start_time: surveyStartTime,
     entity_id: countryId,

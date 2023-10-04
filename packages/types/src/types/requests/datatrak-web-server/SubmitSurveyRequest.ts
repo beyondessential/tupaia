@@ -2,8 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { Country, Entity, Survey } from '../../models';
+import { MeditrakSurveyResponseRequest } from '../central-server/MeditrakSurveyResponseRequest';
 
 export type EntityQuestionConfig = {
   entity: {
@@ -29,20 +28,7 @@ export type CreatedOption = {
   label: string;
 };
 
-type Answer = string | number | boolean | null | undefined;
-
-export type Answers = Record<string, Answer>;
-
-type SurveyResponse = {
-  answers: Answers;
-  survey_id: Survey['id'];
-  start_time: string;
-  data_time: string;
-  entity_id: Entity['id'];
-  country_id: Country['id'];
-  end_time: string;
-  timestamp: string;
-  timezone: string;
+type SurveyResponse = MeditrakSurveyResponseRequest & {
   options_created: CreatedOption[];
   entities_upserted: EntityUpsert[];
 };

@@ -3,21 +3,20 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { ModelRegistry } from '@tupaia/database';
 import { DatatrakWebSubmitSurveyRequest as RequestT, Entity, Country } from '@tupaia/types';
+import { DatatrakWebServerModelRegistry } from '../types';
 
-export interface DatatrakModelRegistry extends ModelRegistry {
-  readonly entity: any;
-}
+type Answers = RequestT.ReqBody['answers'];
+type EntityUpsertT = RequestT.EntityUpsert;
 
 const buildEntity = async (
-  models: DatatrakModelRegistry,
-  entityObject: RequestT.EntityUpsert,
-  answers: RequestT.Answers,
+  models: DatatrakWebServerModelRegistry,
+  entityObject: EntityUpsertT,
+  answers: Answers,
   countryId: Country['id'],
 ) => {
   const { questionId, config } = entityObject;
-  const entityId = answers[questionId] as Entity['id'];
+  const entityId = answers.find(answer => answer.question_id === questionId)?.body as Entity['id'];
   const entity = { id: entityId } as Entity;
 
   for (const [fieldName, value] of Object.entries(config.entity.fields)) {
@@ -26,7 +25,11 @@ const buildEntity = async (
       return;
     }
 
-    const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
+    // const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
+    const fieldValue =
+      typeof value === 'string'
+        ? value
+        : answers.find(answer => answer.question_id === value.questionId)?.body;
     if (fieldName === 'parentId') {
       const entityRecord = await models.entity.findById(fieldValue);
       entity.parent_id = entityRecord.id;
@@ -56,9 +59,9 @@ const buildEntity = async (
 };
 
 export const createUpsertEntityObjects = async (
-  models: DatatrakModelRegistry,
-  entitiesUpserted: RequestT.EntityUpsert[],
-  answers: RequestT.Answers,
+  models: DatatrakWebServerModelRegistry,
+  entitiesUpserted: EntityUpsertT[],
+  answers: Answers,
   countryId: Country['id'],
 ) => {
   const upsertEntities = [];

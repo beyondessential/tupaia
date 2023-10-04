@@ -41,7 +41,7 @@ type OptionCreated = {
 };
 
 export interface MeditrakSurveyResponseRequest {
-  id: Id;
+  id?: Id;
   /**
    * @format iso-date-time
    */
