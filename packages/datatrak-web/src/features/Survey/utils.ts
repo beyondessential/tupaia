@@ -30,3 +30,7 @@ export const formatSurveyScreenQuestions = (
     };
   });
 };
+
+export const getAllSurveyComponents = (surveyScreens?: SurveyScreenComponent[][]) => {
+  return surveyScreens?.flat() ?? [];
+};

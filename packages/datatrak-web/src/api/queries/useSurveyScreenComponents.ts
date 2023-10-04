@@ -16,5 +16,5 @@ export const useSurveyScreenComponents = surveyCode => {
 
   const mappedData = groupBy(sortBy(data, 'componentNumber'), 'surveyScreenScreenNumber');
 
-  return { ...query, data: mappedData };
+  return { ...query, data: Object.values(mappedData) };
 };

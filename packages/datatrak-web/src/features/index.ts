@@ -12,5 +12,6 @@ export {
   SurveyLayout,
   SurveyToolbar,
   useSurveyForm,
+  getAllSurveyComponents,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';

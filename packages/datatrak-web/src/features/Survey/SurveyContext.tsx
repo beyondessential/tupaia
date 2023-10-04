@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
-import { formatSurveyScreenQuestions } from './utils';
+import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
 
 type SurveyFormContextType = {
   startTime: string;
@@ -21,7 +21,7 @@ type SurveyFormContextType = {
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
-  surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
+  surveyScreenComponents?: SurveyScreenComponent[][];
   visibleScreens?: SurveyScreenComponent[][];
   surveyStartTime?: string;
 };
@@ -125,8 +125,8 @@ export const SurveyContext = ({ children }) => {
 
   // filter out screens that have no visible questions
   const visibleScreens = surveyScreenComponents
-    ? Object.values(surveyScreenComponents).filter(screen =>
-        screen?.some(question => getIsQuestionVisible(question, formData)),
+    ? surveyScreenComponents.filter(screen =>
+        screen.some(question => getIsQuestionVisible(question, formData)),
       )
     : [];
 
@@ -136,9 +136,7 @@ export const SurveyContext = ({ children }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1] || [];
 
   const getDisplayQuestions = () => {
-    const flattenedScreenComponents = surveyScreenComponents
-      ? Object.values(surveyScreenComponents).flat()
-      : [];
+    const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
     // If the first question is an instruction, don't render it since we always just
     // show the text of first questions as the heading. Format the questions with a question number to display
     const visibleQuestions = (activeScreen?.length && activeScreen[0].questionType === 'Instruction'
@@ -218,8 +216,29 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
 
+  // reset the value of any questions that are no longer visible, so that they don't get submitted with the form and skew the results
+  const resetInvisibleQuestions = (newFormData: Record<string, any>) => {
+    const { surveyScreenComponents, formData } = surveyFormContext;
+    const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
+    const updatedFormData = { ...formData, ...newFormData };
+
+    flattenedScreenComponents.forEach(component => {
+      const { questionId, visibilityCriteria } = component;
+      if (
+        visibilityCriteria &&
+        !getIsQuestionVisible(component, updatedFormData) &&
+        updatedFormData.hasOwnProperty(questionId)
+      ) {
+        delete updatedFormData[questionId];
+      }
+    });
+
+    return updatedFormData;
+  };
+
   const setFormData = (formData: Record<string, any>) => {
-    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: formData });
+    const updatedFormData = resetInvisibleQuestions(formData);
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: updatedFormData });
   };
 
   const resetForm = () => {
