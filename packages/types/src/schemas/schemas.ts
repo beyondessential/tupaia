@@ -37857,6 +37857,193 @@ export const ProjectResponseSchema = {
 	]
 } 
 
+export const EntityQuestionConfigSchema = {
+	"properties": {
+		"entity": {
+			"type": "object",
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"filter": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"grandparentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"parentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"attributes": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"attributes",
+						"grandparentId",
+						"parentId",
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"createNew",
+				"fields",
+				"filter"
+			]
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"entity"
+	]
+} 
+
+export const EntityUpsertSchema = {
+	"properties": {
+		"questionId": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"properties": {
+				"entity": {
+					"type": "object",
+					"properties": {
+						"createNew": {
+							"type": "boolean"
+						},
+						"fields": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"filter": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"grandparentId": {
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								"parentId": {
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								"attributes": {
+									"type": "object",
+									"additionalProperties": false
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"attributes",
+								"grandparentId",
+								"parentId",
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"createNew",
+						"fields",
+						"filter"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"entity"
+			]
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"config",
+		"questionId"
+	]
+} 
+
+export const CreatedOptionSchema = {
+	"properties": {
+		"option_set_id": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"option_set_id",
+		"value"
+	]
+} 
+
+export const AnswersSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const InitialResponseSchema = {
 	"properties": {
 		"id": {
