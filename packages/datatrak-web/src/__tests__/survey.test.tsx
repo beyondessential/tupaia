@@ -32,7 +32,7 @@ describe('Survey', () => {
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Select Kiribati Council');
   });
 
-  it.only('renders only visible questions when visibility criteria is applicable', async () => {
+  it('renders only visible questions when visibility criteria is applicable', async () => {
     renderSurveyPage('/survey/test/5');
     await waitForElementToBeRemoved(() => screen.queryByRole(/progressbar*/i));
     // has 1 question to start with
