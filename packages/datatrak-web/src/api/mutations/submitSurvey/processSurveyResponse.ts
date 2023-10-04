@@ -53,7 +53,7 @@ export const processSurveyResponse = ({
     timezone,
     options_created: [],
     entities_upserted: [],
-    answers: {},
+    answers: [],
   } as RequestT.ReqBody;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];

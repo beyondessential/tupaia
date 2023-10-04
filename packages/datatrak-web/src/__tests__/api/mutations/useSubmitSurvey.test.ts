@@ -86,13 +86,16 @@ afterAll(() => server.close());
 
 describe('processSurveyResponse', () => {
   const responseData = {
+    userId: 'theUserId',
     surveyId: 'theSurveyId',
     countryId: 'theCountryId',
     surveyStartTime: 'theStartTime',
   };
 
   const processedResponseData = {
+    country_id: 'theCountryId',
     survey_id: 'theSurveyId',
+    user_id: 'theUserId',
     start_time: 'theStartTime',
     data_time: moment().toISOString(),
     entity_id: 'theCountryId',
