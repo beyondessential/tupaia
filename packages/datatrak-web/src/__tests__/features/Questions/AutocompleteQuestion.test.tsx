@@ -7,8 +7,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { renderComponent } from '../../helpers/render';
-import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
+import { renderComponent } from '../../helpers/render.tsx';
+import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion.tsx';
 
 jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -45,7 +45,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe('Example test', () => {
+describe('Autocomplete Question', () => {
   const onChange = jest.fn();
   const props = {
     id: 'theId',
@@ -66,7 +66,7 @@ describe('Example test', () => {
     renderComponent(<AutocompleteQuestion {...props} />);
   });
 
-  it('renders all the options when there is no attribute filtering involved', async () => {
+  it('renders all the options when there is no attribute filtering involved', () => {
     renderComponent(<AutocompleteQuestion {...props} />);
 
     const openButton = screen.getByTitle('Open');
@@ -80,7 +80,7 @@ describe('Example test', () => {
     });
   });
 
-  it('renders only the filtered options when there are attribute filters defined', async () => {
+  it('renders only the filtered options when there are attribute filters defined', () => {
     renderComponent(
       <AutocompleteQuestion
         {...props}
