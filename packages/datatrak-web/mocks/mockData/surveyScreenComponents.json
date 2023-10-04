@@ -283,7 +283,7 @@
     "isFollowUp": false,
     "visibilityCriteria": {
       "7": ["temporarily closed"],
-      "8": ["lack of staff"],
+      "8": "lack of staff",
       "_conjunction": "and"
     },
     "validationCriteria": {

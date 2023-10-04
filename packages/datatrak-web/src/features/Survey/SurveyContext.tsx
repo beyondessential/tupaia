@@ -111,7 +111,8 @@ const getIsQuestionVisible = (question: SurveyScreenComponent, formData: Record<
 
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
     const answer = formData[questionId];
-    return validAnswers.includes(answer);
+    if (answer === undefined) return false;
+    return Array.isArray(validAnswers) ? validAnswers?.includes(answer) : validAnswers === answer;
   });
 };
 
