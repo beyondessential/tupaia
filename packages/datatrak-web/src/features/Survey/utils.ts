@@ -11,12 +11,14 @@ export const convertNumberToLetter = (number: number) => {
   return alphabet[number];
 };
 
+const READ_ONLY_QUESTION_TYPES = ['Instruction', 'Condition', 'Arithmetic'];
+
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],
   screenNumber: number | string,
 ) => {
   const nonInstructionQuestions = questions.filter(
-    question => question.questionType !== 'Instruction',
+    question => !READ_ONLY_QUESTION_TYPES.includes(question.questionType),
   );
 
   return questions.map(question => {

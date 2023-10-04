@@ -1,0 +1,61 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
+import React from 'react';
+import { SurveyQuestionInputProps } from '../../types';
+import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
+import { Tooltip } from '@tupaia/ui-components';
+
+const Wrapper = styled.div`
+  width: 100%;
+  padding: 0.8rem 0;
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.palette.divider};
+  display: flex; // to get the label to not be full width, so that the tooltip only applies over the label text
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+`;
+
+const Label = styled(Typography).attrs({
+  variant: 'h4',
+})`
+  font-size: 1rem;
+  cursor: pointer;
+`;
+
+const HelperText = styled(Typography)`
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+`;
+
+const ValueWrapper = styled.div`
+  margin-top: 1rem;
+  min-height: 2rem; // so that the space is reserved even when there is no value
+`;
+const Value = styled(Typography)`
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+`;
+
+export const ReadOnlyQuestion = ({
+  label,
+  controllerProps: { value },
+  detailLabel,
+}: SurveyQuestionInputProps) => {
+  return (
+    <Wrapper>
+      <Tooltip title="Complete questions above to calculate">
+        <Label>{label}</Label>
+      </Tooltip>
+      {detailLabel && <HelperText>{detailLabel}</HelperText>}
+      <ValueWrapper>
+        <Value>{value}</Value>
+      </ValueWrapper>
+    </Wrapper>
+  );
+};

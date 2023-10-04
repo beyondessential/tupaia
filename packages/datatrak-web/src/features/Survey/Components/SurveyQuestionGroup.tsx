@@ -48,7 +48,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           }
           return (
             <QuestionWrapper key={questionId} $isInstruction={questionType === 'Instruction'}>
-              {questionNumber && (
+              {questionType !== 'Instruction' && (
                 <QuestionNumber id={`question_number_${questionId}`}>
                   {questionNumber}
                 </QuestionNumber>

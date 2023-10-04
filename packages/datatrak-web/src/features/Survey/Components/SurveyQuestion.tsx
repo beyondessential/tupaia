@@ -18,6 +18,7 @@ import {
   CodeGeneratorQuestion,
   EntityQuestion,
   AutocompleteQuestion,
+  ReadOnlyQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -56,7 +57,7 @@ export enum QUESTION_TYPES {
   PrimaryEntity = EntityQuestion,
   CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
-  Condition = Placeholder,
+  Condition = ReadOnlyQuestion,
 }
 
 const getNameForController = (name, type) => {
@@ -73,7 +74,7 @@ export const SurveyQuestion = ({
   ...props
 }: SurveyQuestionFieldProps) => {
   const { control } = useFormContext();
-  const { setSingleAnswer } = useSurveyForm();
+  const { setFormData } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
@@ -83,7 +84,9 @@ export const SurveyQuestion = ({
   // If the question dictates the visibility of any other questions, we need to update the formData when the value changes, so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact, and we are only updating the formData for the question that is changing, not the entire formData object.
   const handleOnChange = e => {
     if (updateFormDataOnChange) {
-      setSingleAnswer(name, e.target.value);
+      setFormData({
+        [name]: e.target.value,
+      });
     }
   };
 

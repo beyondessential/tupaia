@@ -14,11 +14,25 @@ export interface Params {
 type VisibilityCriteria = Record<Question['id'], any> & {
   _conjunction?: string;
 };
+
+type Condition = {
+  formula: string;
+  defaultValues?: Record<string, unknown>;
+};
+
+type ConditionConfig = {
+  conditions: Record<string, Condition>;
+};
+
+type Config = Record<string, unknown> & {
+  condition?: ConditionConfig;
+};
+
 export type InitialResponse = Omit<
   SurveyScreenComponent,
   'config' | 'validation_criteria' | 'visibility_criteria'
 > & {
-  config?: Record<string, unknown> | null;
+  config?: Config | null;
   validation_criteria?: Record<string, unknown> | null;
   visibility_criteria?: VisibilityCriteria | null;
   ['question.name']?: Question['name'];
