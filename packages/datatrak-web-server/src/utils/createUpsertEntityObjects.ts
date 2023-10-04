@@ -4,7 +4,7 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { Entity } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyRequest as RequestT, Entity } from '@tupaia/types';
 
 export interface DatatrakModelRegistry extends ModelRegistry {
   readonly entity: any;
@@ -12,26 +12,9 @@ export interface DatatrakModelRegistry extends ModelRegistry {
 
 type SurveyAnswers = Record<string, any>;
 
-type EntityQuestionConfig = {
-  entity: {
-    createNew: boolean;
-    fields: Record<string, string | { questionId: string }>;
-    filter: {
-      type: string[];
-      grandparentId: { questionId: string };
-      parentId: { questionId: string };
-      attributes: Record<string, { questionId: string }>;
-    };
-  };
-};
-
-type EntityUpsert = {
-  questionId: string;
-  config: EntityQuestionConfig;
-};
 const buildEntity = async (
   models: DatatrakModelRegistry,
-  entityObject: EntityUpsert,
+  entityObject: RequestT.EntityUpsert,
   answers: SurveyAnswers,
 ) => {
   const { questionId, config } = entityObject;
@@ -75,8 +58,8 @@ const buildEntity = async (
 
 export const createUpsertEntityObjects = async (
   models: DatatrakModelRegistry,
-  entitiesUpserted: EntityUpsert[],
-  answers: SurveyAnswers,
+  entitiesUpserted: RequestT.EntityUpsert[],
+  answers: RequestT.Answers,
 ) => {
   const upsertEntities = [];
 

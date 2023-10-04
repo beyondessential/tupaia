@@ -4,9 +4,9 @@
  */
 import { useUser } from '../../../api/queries';
 import { useSurveyForm } from '../../Survey/SurveyContext';
-import { EntityQuestionConfig } from '../../../types';
+import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
 
-export const useEntityBaseFilters = (config: EntityQuestionConfig) => {
+export const useEntityBaseFilters = (config: RequestT.EntityQuestionConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const { data: userData } = useUser();
   const countryCode = userData?.country?.code;
@@ -33,7 +33,7 @@ export const useEntityBaseFilters = (config: EntityQuestionConfig) => {
 /*
  * Returns a function that filters entities based on configured attribute values and questions
  */
-export const useAttributeFilter = (questionConfig: EntityQuestionConfig) => {
+export const useAttributeFilter = (questionConfig: RequestT.EntityQuestionConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const attributes = questionConfig.entity?.filter?.attributes;
   if (!attributes) {

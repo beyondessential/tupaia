@@ -5,9 +5,26 @@
 
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
-import { EntityQuestionConfig } from '../../../types';
+import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
 import { isUpsertEntityQuestion } from './utils';
-import { SurveyResponseData, SurveyResponse, AutocompleteAnswer } from './types';
+import { Entity, Survey, SurveyScreenComponent } from '../../../types';
+
+type AutocompleteAnswer = {
+  isNew?: boolean;
+  optionSetId: string;
+  value: string;
+  label: string;
+};
+
+type Answers = RequestT.Answers | AutocompleteAnswer;
+
+type SurveyResponseData = {
+  surveyId?: Survey['id'];
+  countryId?: Entity['id'];
+  questions?: SurveyScreenComponent[];
+  answers?: Answers;
+  surveyStartTime?: string;
+};
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = ({
@@ -30,7 +47,8 @@ export const processSurveyResponse = ({
     timezone,
     options_created: [],
     entities_upserted: [],
-  } as SurveyResponse;
+    answers: {},
+  } as RequestT.ReqBody;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -66,7 +84,7 @@ export const processSurveyResponse = ({
         if (isUpsertEntityQuestion(question.config)) {
           surveyResponse.entities_upserted.push({
             questionId,
-            config: question.config as EntityQuestionConfig,
+            config: question.config as RequestT.EntityQuestionConfig,
           });
         }
         answersToSubmit.push(answerObject);

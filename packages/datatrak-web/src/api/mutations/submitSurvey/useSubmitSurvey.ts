@@ -5,6 +5,7 @@
 
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
+import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
 import { Coconut } from '../../../components';
 import { post } from '../../api';
 import { ROUTES } from '../../../constants';
@@ -12,7 +13,6 @@ import { useSurveyForm } from '../../../features';
 import { useSurvey, useUser } from '../../queries';
 import { successToast } from '../../../utils';
 import { processSurveyResponse } from './processSurveyResponse';
-import { Answers } from './types';
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
@@ -34,8 +34,8 @@ export const useSubmitSurvey = () => {
 
   const surveyResponseData = useSurveyResponseData();
 
-  return useMutation<any, Error, Answers, unknown>(
-    async (answers: Answers) => {
+  return useMutation<any, Error, RequestT.Answers, unknown>(
+    async (answers: RequestT.Answers) => {
       if (!answers) {
         return;
       }
