@@ -4,21 +4,20 @@
  */
 
 import { ModelRegistry } from '@tupaia/database';
-import { DatatrakWebSubmitSurveyRequest as RequestT, Entity } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyRequest as RequestT, Entity, Country } from '@tupaia/types';
 
 export interface DatatrakModelRegistry extends ModelRegistry {
   readonly entity: any;
 }
 
-type SurveyAnswers = Record<string, any>;
-
 const buildEntity = async (
   models: DatatrakModelRegistry,
   entityObject: RequestT.EntityUpsert,
-  answers: SurveyAnswers,
+  answers: RequestT.Answers,
+  countryId: Country['id'],
 ) => {
   const { questionId, config } = entityObject;
-  const entityId = answers[questionId];
+  const entityId = answers[questionId] as Entity['id'];
   const entity = { id: entityId } as Entity;
 
   for (const [fieldName, value] of Object.entries(config.entity.fields)) {
@@ -42,16 +41,16 @@ const buildEntity = async (
     return entity;
   }
 
-  // const selectedCountry = () => models.country.findById(selectedCountryId);
-  // if (!entity.countryCode) {
-  //   entity.countryCode = selectedCountry.code;
-  // }
-  // if (!entity.parent_id) {
-  //   entity.parent_id = selectedCountry.entity.id;
-  // }
-  // if (!entity.code) {
-  //   entity.code = entityId;
-  // }
+  const selectedCountry = await models.entity.findById('Entity', countryId);
+  if (!entity.country_code) {
+    entity.country_code = selectedCountry.code;
+  }
+  if (!entity.parent_id) {
+    entity.parent_id = selectedCountry.entity.id;
+  }
+  if (!entity.code) {
+    entity.code = entityId;
+  }
 
   return entity;
 };
@@ -60,11 +59,12 @@ export const createUpsertEntityObjects = async (
   models: DatatrakModelRegistry,
   entitiesUpserted: RequestT.EntityUpsert[],
   answers: RequestT.Answers,
+  countryId: Country['id'],
 ) => {
   const upsertEntities = [];
 
   for (const entityObject of entitiesUpserted) {
-    const entity = await buildEntity(models, entityObject, answers);
+    const entity = await buildEntity(models, entityObject, answers, countryId);
     upsertEntities.push(entity);
   }
 

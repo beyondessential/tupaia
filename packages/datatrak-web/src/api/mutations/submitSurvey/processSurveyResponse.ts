@@ -41,6 +41,7 @@ export const processSurveyResponse = ({
     survey_id: surveyId,
     start_time: surveyStartTime,
     entity_id: countryId,
+    country_id: countryId,
     end_time: timestamp,
     data_time: timestamp,
     timestamp,

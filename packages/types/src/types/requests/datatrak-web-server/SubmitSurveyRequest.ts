@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, Survey } from '../../models';
+import { Country, Entity, Survey } from '../../models';
 
 export type EntityQuestionConfig = {
   entity: {
@@ -39,6 +39,7 @@ type SurveyResponse = {
   start_time: string;
   data_time: string;
   entity_id: Entity['id'];
+  country_id: Country['id'];
   end_time: string;
   timestamp: string;
   timezone: string;

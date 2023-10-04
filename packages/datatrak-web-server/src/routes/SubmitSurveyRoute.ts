@@ -18,13 +18,14 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
     const { central: centralApi } = this.req.ctx.services;
     const surveyResponseData = this.req.body;
-    const { answers, entities_upserted } = surveyResponseData;
+    const { answers, entities_upserted, country_id } = surveyResponseData;
 
     const upsertEntityObjects = await createUpsertEntityObjects(
       // @ts-ignore
       this.req.models,
       entities_upserted,
       answers,
+      country_id,
     );
 
     return centralApi.createSurveyResponses([
