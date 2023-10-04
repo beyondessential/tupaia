@@ -32,7 +32,7 @@ import {
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
-import { SurveyLayout } from './features';
+import { SurveyLayout, useSurveyForm } from './features';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -77,13 +77,30 @@ const SurveyStartRedirect = () => {
  *
  * **/
 
+// This is to redirect the user to the start of the survey if they try to access a screen that is not visible on the survey
+const SurveyPageRedirect = ({ children }) => {
+  const { screenNumber } = useParams();
+  const { visibleScreens } = useSurveyForm();
+  if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
+    return <SurveyStartRedirect />;
+  }
+  return children;
+};
+
 export const SurveyPageRoutes = (
   <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
-      <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
+      <Route
+        path={ROUTES.SURVEY_SCREEN}
+        element={
+          <SurveyPageRedirect>
+            <SurveyScreen />
+          </SurveyPageRedirect>
+        }
+      />
     </Route>
   </Route>
 );
