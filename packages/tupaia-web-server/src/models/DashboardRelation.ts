@@ -14,7 +14,7 @@ type DashboardRelationFields = Readonly<{
   child_id: string;
   entity_types: string[];
   project_codes: string[];
-  permission_groups: string;
+  permission_groups: string[];
   sort_order: number;
 }>;
 
