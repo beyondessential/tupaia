@@ -112,6 +112,7 @@ export const SurveyLayout = () => {
     sideMenuOpen,
     numberOfScreens,
     isReviewScreen,
+    visibleScreens,
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit' });
   const { handleSubmit, getValues } = formContext;
@@ -146,10 +147,50 @@ export const SurveyLayout = () => {
     handleStep(path, data);
   };
 
-  const handleClickSubmit = handleSubmit(data => {
+  const onError = errors => {
+    // If we're not on the review screen, we don't need to do anything, because the errors get focussed and handled by react-hook-form
+    if (!isReviewScreen) return;
+
+    // Group the errors by screen number, so that we can easily navigate to the first screen with errors
+    const errorFieldsByPage = Object.entries(errors).reduce((acc, [questionId, error]) => {
+      const screenIndex = visibleScreens?.findIndex(screen =>
+        screen.find(question => question.questionId === questionId),
+      );
+
+      if (!screenIndex || screenIndex === -1) return acc;
+      const screenNum = screenIndex + 1;
+      return {
+        ...acc,
+        [screenNum]: {
+          ...acc[screenNum],
+          [questionId]: error,
+        },
+      };
+    }, {});
+    // Find the first screen with errors
+    const [surveyScreenToSnapTo, screenErrors] = Object.entries(errorFieldsByPage)[0];
+    if (!surveyScreenToSnapTo) return;
+    // we have to serialize the errors for the location state as per https://github.com/remix-run/react-router/issues/8792. We can't just set the errors manually in the form because when we navigate to the screen, the form errors will reset
+    const stringifiedErrors = JSON.stringify(screenErrors);
+    navigate(
+      generatePath(ROUTES.SURVEY_SCREEN, {
+        ...params,
+        screenNumber: surveyScreenToSnapTo,
+      }),
+      {
+        state: {
+          errors: stringifiedErrors,
+        },
+      },
+    );
+  };
+
+  const onSubmit = data => {
     if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
-  });
+  };
+
+  const handleClickSubmit = handleSubmit(onSubmit, onError);
 
   const openCancelModal = () => {
     setCancelModalOpen(true);

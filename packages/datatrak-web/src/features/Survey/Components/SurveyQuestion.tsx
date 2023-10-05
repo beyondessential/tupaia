@@ -6,6 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useFormContext, Controller } from 'react-hook-form';
+import { FormHelperText } from '@material-ui/core';
 import {
   BinaryQuestion,
   DateQuestion,
@@ -21,7 +22,6 @@ import {
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
-import { FormHelperText } from '@material-ui/core';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
