@@ -37857,6 +37857,16 @@ export const ProjectResponseSchema = {
 	]
 } 
 
+export const VisibilityCriteriaSchema = {
+	"properties": {
+		"_conjunction": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object"
+} 
+
 export const InitialResponseSchema = {
 	"properties": {
 		"id": {
@@ -37895,8 +37905,13 @@ export const InitialResponseSchema = {
 			"additionalProperties": false
 		},
 		"visibility_criteria": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"_conjunction": {
+					"type": "string"
+				}
+			}
 		},
 		"question.name": {
 			"type": "string"
@@ -37990,6 +38005,11 @@ export const CamelCasedInitialResponseSchema = {
 		},
 		"visibilityCriteria": {
 			"type": "object",
+			"properties": {
+				"Conjunction": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"questionName": {

@@ -11,7 +11,7 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { post } from '../api';
 import { Entity, Survey, SurveyScreenComponent } from '../../types';
 import { ROUTES } from '../../constants';
-import { useSurveyForm } from '../../features';
+import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
 import { successToast } from '../../utils';
 
@@ -137,7 +137,7 @@ export const useSurveyResponseData = () => {
   return {
     surveyStartTime,
     surveyId: survey?.id,
-    questions: Object.values(surveyScreenComponents!).reduce((acc, val) => acc.concat(val), []), // flattened array of survey questions
+    questions: getAllSurveyComponents(surveyScreenComponents), // flattened array of survey questions
     countryId: user?.country?.id,
   };
 };

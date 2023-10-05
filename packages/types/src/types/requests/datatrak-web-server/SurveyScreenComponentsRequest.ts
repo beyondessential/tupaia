@@ -10,13 +10,17 @@ export interface Params {
   surveyCode: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type VisibilityCriteria = Record<Question['id'], any> & {
+  _conjunction?: string;
+};
 export type InitialResponse = Omit<
   SurveyScreenComponent,
   'config' | 'validation_criteria' | 'visibility_criteria'
 > & {
   config?: Record<string, unknown> | null;
   validation_criteria?: Record<string, unknown> | null;
-  visibility_criteria?: Record<string, unknown> | null;
+  visibility_criteria?: VisibilityCriteria | null;
   ['question.name']?: Question['name'];
   ['question.code']?: Question['code'];
   ['question.text']?: Question['text'];

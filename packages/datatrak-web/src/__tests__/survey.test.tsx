@@ -31,4 +31,45 @@ describe('Survey', () => {
     await screen.findByText('Select Kiribati Council');
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Select Kiribati Council');
   });
+
+  it('renders only visible questions when visibility criteria is applicable', async () => {
+    renderSurveyPage('/survey/test/5');
+    // has 1 question to start with
+    expect(screen.getAllByRole('radiogroup').length).toBe(1);
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Is the facility open?');
+
+    // after selecting 'permanently closed' option, the next question, 'why is the facility closed?' should appear
+    fireEvent.click(screen.getByRole('radio', { name: /permanently closed*/i }));
+    expect(screen.getAllByRole('radiogroup').length).toBe(2);
+    expect(screen.getByText('Why is the facility closed?')).toBeInTheDocument();
+
+    // after selecting 'permanently closed' option, the next question, 'why is the facility closed?' should appear
+    fireEvent.click(screen.getByRole('radio', { name: /temporarily closed*/i }));
+    expect(screen.getAllByRole('radiogroup').length).toBe(2);
+    expect(screen.getByText('Why is the facility closed?')).toBeInTheDocument();
+
+    // after selecting 'lack of staff' option, 2 more questions should appear
+    fireEvent.click(screen.getByRole('radio', { name: /lack of staff*/i }));
+    expect(screen.getByLabelText('How many staff do you have?')).toBeInTheDocument();
+    expect(screen.getByLabelText('How many staff do you need?')).toBeInTheDocument();
+
+    // change the answer to 'open' and the other 3 questions should disappear
+    fireEvent.click(screen.getByRole('radio', { name: /open*/i }));
+    expect(screen.getAllByRole('radiogroup').length).toBe(1);
+  });
+
+  it('updates the sidebar page list based on visible questions on a screen', async () => {
+    renderSurveyPage('/survey/test/5');
+
+    // this current page starts off as the last page, so the next page should not be in the list of survey screens, and the submit button should be the 'review and submit' button
+    expect(screen.queryByText('Does the facility have staff housing?')).not.toBeInTheDocument();
+    expect(screen.queryByText('Next')).not.toBeInTheDocument();
+    expect(screen.queryByText('Review and submit')).toBeInTheDocument();
+
+    // after selecting the 'open' option, the next page, 'does the facility have staff housing?' should appear in the menu and the submit button should be the 'next' button
+    fireEvent.click(screen.getByRole('radio', { name: /open*/i }));
+    expect(screen.queryByText('Does the facility have staff housing?')).toBeInTheDocument();
+    expect(screen.queryByText('Next')).toBeInTheDocument();
+    expect(screen.queryByText('Review and submit')).not.toBeInTheDocument();
+  });
 });
