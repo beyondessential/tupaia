@@ -10,24 +10,29 @@ import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/
 import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
 import { ButtonLink } from '../../../../components';
+import { useIsMobile } from '../../../../utils';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
 const Drawer = styled(BaseDrawer).attrs({
   anchor: 'left',
-  variant: 'persistent',
   elevation: 0,
 })`
   flex-shrink: 0;
-  width: ${SIDE_MENU_WIDTH};
   position: relative;
   height: 100%;
+  width: 100%;
+  max-width: ${SIDE_MENU_WIDTH};
   .MuiPaper-root {
     width: 100%;
     position: absolute;
-    background-color: transparent;
     border-right: none;
     height: 100%;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    .MuiPaper-root {
+      background-color: transparent;
+    }
   }
 `;
 
@@ -68,8 +73,21 @@ const SurveyScreenTitle = styled.span`
   font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
 `;
 
+const Header = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  button {
+    border-radius: 3rem 0 0 3rem;
+    position: static;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    display: none;
+  }
+`;
+
 export const SurveySideMenu = () => {
   const { getValues } = useFormContext();
+  const isMobile = useIsMobile();
   const {
     sideMenuOpen,
     toggleSideMenu,
@@ -85,7 +103,14 @@ export const SurveySideMenu = () => {
   return (
     <>
       <SideMenuButton />
-      <Drawer open={sideMenuOpen} onClose={toggleSideMenu}>
+      <Drawer
+        open={sideMenuOpen}
+        onClose={toggleSideMenu}
+        variant={isMobile ? 'temporary' : 'persistent'}
+      >
+        <Header>
+          <SideMenuButton />
+        </Header>
         <SurveyMenuContent>
           {visibleScreens?.map((screen, i) => {
             const num = i + 1;

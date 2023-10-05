@@ -5,3 +5,4 @@
 
 export { errorToast, successToast } from './toast';
 export { useDebounce } from './useDebounce';
+export { useIsMobile } from './useIsMobile';

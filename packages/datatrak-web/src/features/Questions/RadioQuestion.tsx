@@ -15,9 +15,14 @@ const StyledRadioGroup = styled(RadioGroup)`
   margin-bottom: 0;
   legend {
     color: ${({ theme }) => theme.palette.text.primary};
-    font-size: 1rem;
     margin-bottom: 1rem;
-    line-height: 1.5;
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    font-size: 0.875rem;
+    line-height: 1.2;
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      font-size: 1rem;
+      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    }
   }
   .MuiFormGroup-root {
     display: flex;
@@ -65,7 +70,7 @@ export const RadioQuestion = ({
     <StyledRadioGroup
       onChange={onChange}
       id={id}
-      label={label}
+      label={label?.replace(/\xA0/g, ' ')} // replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping
       name={name!}
       inputRef={ref}
       options={options || []}
