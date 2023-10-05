@@ -19,8 +19,6 @@ export const DataGrid = ({
   density = 'compact',
 }: DataGridProps) => {
   return (
-    <div style={{ height: 300, width: '100%' }}>
-      <MuiDataGrid rows={rows} columns={columns} autoPageSize={autoPageSize} density={density} />
-    </div>
+    <MuiDataGrid rows={rows} columns={columns} autoPageSize={autoPageSize} density={density} />
   );
 };

@@ -16,6 +16,7 @@ const Container = styled.div`
   width: 100%;
   padding: 3rem;
   background: ${COLORS.LIGHTGREY};
+  height: 600px;
 
   > div {
     max-width: 900px;
@@ -40,6 +41,11 @@ const columns = [
   { field: 'col2', headerName: 'Column 2', width: 150 },
 ];
 
+const columnsWithFlex = [
+  { field: 'col1', headerName: 'Column 1', minWidth: 150, flex: 1 },
+  { field: 'col2', headerName: 'Column 2', minWidth: 150, flex: 1 },
+];
+
 
 export const Default = () => {
 
@@ -55,6 +61,15 @@ export const AutoPageSize = () => {
   return (
     <Container>
       <DataGrid columns={columns} rows={rows} autoPageSize={true}/>
+    </Container>
+  );
+};
+
+export const FlexColumns = () => {
+
+  return (
+    <Container>
+      <DataGrid columns={columnsWithFlex} rows={rows}/>
     </Container>
   );
 };
