@@ -140,7 +140,7 @@ export const SurveyQuestion = ({
     return formData?.[controllerName] || '';
   };
 
-  const rules = getRules(ttype, validationCriteria);
+  const rules = getRules(type, validationCriteria);
 
   const defaultValue = getDefaultValue();
 
