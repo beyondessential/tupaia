@@ -34874,6 +34874,37 @@ export const DataTableSchema = {
 	]
 } 
 
+export const DatatrakSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const DhisInstanceSchema = {
 	"properties": {
 		"code": {
@@ -35092,6 +35123,7 @@ export const EntitySchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -35107,6 +35139,7 @@ export const EntitySchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -35334,6 +35367,66 @@ export const IndicatorSchema = {
 		"builder",
 		"code",
 		"id"
+	]
+} 
+
+export const LandingPageSchema = {
+	"properties": {
+		"contact_us": {
+			"type": "string"
+		},
+		"extended_title": {
+			"type": "string"
+		},
+		"external_link": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"include_name_in_header": {
+			"type": "boolean"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"long_bio": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"phone_number": {
+			"type": "string"
+		},
+		"primary_hexcode": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"secondary_hexcode": {
+			"type": "string"
+		},
+		"url_segment": {
+			"type": "string"
+		},
+		"website_url": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"url_segment"
 	]
 } 
 
@@ -36193,6 +36286,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -36208,6 +36302,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -36358,6 +36453,27 @@ export const QuestionSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		}
 	},
@@ -36771,6 +36887,37 @@ export const SyncGroupLogSchema = {
 	]
 } 
 
+export const TupaiaWebSessionSchema = {
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"id",
+		"refresh_token"
+	]
+} 
+
 export const UserAccountSchema = {
 	"properties": {
 		"creation_date": {
@@ -36807,6 +36954,7 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
+		"preferences": {},
 		"primary_platform": {
 			"enum": [
 				"lesmis",
@@ -36938,6 +37086,31 @@ export const ServiceTypeSchema = {
 	"type": "string"
 } 
 
+export const QuestionTypeSchema = {
+	"enum": [
+		"Arithmetic",
+		"Autocomplete",
+		"Binary",
+		"Checkbox",
+		"CodeGenerator",
+		"Condition",
+		"Date",
+		"DateOfData",
+		"DateTime",
+		"Entity",
+		"File",
+		"FreeText",
+		"Geolocate",
+		"Instruction",
+		"Number",
+		"Photo",
+		"PrimaryEntity",
+		"Radio",
+		"SubmissionDate"
+	],
+	"type": "string"
+} 
+
 export const PrimaryPlatformSchema = {
 	"enum": [
 		"lesmis",
@@ -36969,6 +37142,7 @@ export const EntityTypeSchema = {
 		"disaster",
 		"district",
 		"facility",
+		"farm",
 		"fetp_graduate",
 		"field_station",
 		"fiji_aspen_facility",
@@ -36984,6 +37158,7 @@ export const EntityTypeSchema = {
 		"nursing_zone",
 		"postcode",
 		"project",
+		"repair_request",
 		"school",
 		"sub_catchment",
 		"sub_district",
@@ -37109,6 +37284,7 @@ export const EntityCreatedSchema = {
 				"disaster",
 				"district",
 				"facility",
+				"farm",
 				"fetp_graduate",
 				"field_station",
 				"fiji_aspen_facility",
@@ -37124,6 +37300,7 @@ export const EntityCreatedSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37278,6 +37455,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"disaster",
 							"district",
 							"facility",
+							"farm",
 							"fetp_graduate",
 							"field_station",
 							"fiji_aspen_facility",
@@ -37293,6 +37471,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"nursing_zone",
 							"postcode",
 							"project",
+							"repair_request",
 							"school",
 							"sub_catchment",
 							"sub_district",
@@ -37554,6 +37733,7 @@ export const ResBodySchema = {
 					"disaster",
 					"district",
 					"facility",
+					"farm",
 					"fetp_graduate",
 					"field_station",
 					"fiji_aspen_facility",
@@ -37569,6 +37749,7 @@ export const ResBodySchema = {
 					"nursing_zone",
 					"postcode",
 					"project",
+					"repair_request",
 					"school",
 					"sub_catchment",
 					"sub_district",
@@ -37747,7 +37928,7 @@ export const EntityQuestionConfigSchema = {
 	"required": [
 		"entity"
 	]
-}
+} 
 
 export const EntityUpsertSchema = {
 	"properties": {
@@ -37834,7 +38015,7 @@ export const EntityUpsertSchema = {
 		"config",
 		"questionId"
 	]
-}
+} 
 
 export const CreatedOptionSchema = {
 	"properties": {
@@ -37855,7 +38036,7 @@ export const CreatedOptionSchema = {
 		"option_set_id",
 		"value"
 	]
-}
+} 
 
 export const VisibilityCriteriaSchema = {
 	"properties": {
@@ -37865,7 +38046,7 @@ export const VisibilityCriteriaSchema = {
 	},
 	"additionalProperties": false,
 	"type": "object"
-}
+} 
 
 export const InitialResponseSchema = {
 	"properties": {
@@ -37923,6 +38104,27 @@ export const InitialResponseSchema = {
 			"type": "string"
 		},
 		"question.type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		},
 		"question.options": {
@@ -38001,6 +38203,27 @@ export const CamelCasedInitialResponseSchema = {
 			"type": "string"
 		},
 		"questionType": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
 			"type": "string"
 		},
 		"questionOptions": {

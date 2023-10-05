@@ -180,6 +180,14 @@ export interface DataTable {
   'permission_groups': string[];
   'type': DataTableType;
 }
+export interface DatatrakSession {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'id': string;
+  'refresh_token': string;
+}
 export interface DhisInstance {
   'code': string;
   'config': any;
@@ -289,6 +297,23 @@ export interface Indicator {
   'code': string;
   'config'?: any;
   'id': string;
+}
+export interface LandingPage {
+  'contact_us'?: string | null;
+  'extended_title'?: string | null;
+  'external_link'?: string | null;
+  'id': string;
+  'image_url'?: string | null;
+  'include_name_in_header'?: boolean | null;
+  'logo_url'?: string | null;
+  'long_bio'?: string | null;
+  'name': string;
+  'phone_number'?: string | null;
+  'primary_hexcode'?: string | null;
+  'project_codes'?: string[] | null;
+  'secondary_hexcode'?: string | null;
+  'url_segment': string;
+  'website_url'?: string | null;
 }
 export interface LegacyReport {
   'code': string;
@@ -433,7 +458,7 @@ export interface Question {
   'option_set_id'?: string | null;
   'options'?: string[] | null;
   'text': string;
-  'type': string;
+  'type': QuestionType;
 }
 export interface RefreshToken {
   'device'?: string | null;
@@ -522,6 +547,14 @@ export interface SyncGroupLog {
   'sync_group_code': string;
   'timestamp'?: Date | null;
 }
+export interface TupaiaWebSession {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'id': string;
+  'refresh_token': string;
+}
 export interface UserAccount {
   'creation_date'?: Date | null;
   'email': string;
@@ -534,6 +567,7 @@ export interface UserAccount {
   'password_hash': string;
   'password_salt': string;
   'position'?: string | null;
+  'preferences'?: any;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
@@ -575,6 +609,27 @@ export enum ServiceType {
   'kobo' = 'kobo',
   'data-lake' = 'data-lake',
   'superset' = 'superset',
+}
+export enum QuestionType {
+  'Arithmetic' = 'Arithmetic',
+  'Autocomplete' = 'Autocomplete',
+  'Binary' = 'Binary',
+  'Checkbox' = 'Checkbox',
+  'CodeGenerator' = 'CodeGenerator',
+  'Condition' = 'Condition',
+  'Date' = 'Date',
+  'DateOfData' = 'DateOfData',
+  'DateTime' = 'DateTime',
+  'Entity' = 'Entity',
+  'FreeText' = 'FreeText',
+  'Geolocate' = 'Geolocate',
+  'Instruction' = 'Instruction',
+  'Number' = 'Number',
+  'Photo' = 'Photo',
+  'PrimaryEntity' = 'PrimaryEntity',
+  'Radio' = 'Radio',
+  'SubmissionDate' = 'SubmissionDate',
+  'File' = 'File',
 }
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
@@ -622,6 +677,8 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
+  'farm' = 'farm',
+  'repair_request' = 'repair_request',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
