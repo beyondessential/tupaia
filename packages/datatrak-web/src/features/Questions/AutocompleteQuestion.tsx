@@ -10,11 +10,15 @@ import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api/queries';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Autocomplete = styled(BaseAutocomplete)`
-  width: 100%;
+  width: calc(100% - 3.5rem);
   max-width: 25rem;
 
+  .MuiFormControl-root {
+    margin-bottom: 0;
+  }
   fieldset:disabled & {
     .MuiAutocomplete-clearIndicator {
       display: none; // hide the clear button when disabled on review screen
@@ -23,8 +27,11 @@ const Autocomplete = styled(BaseAutocomplete)`
 
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    @media (min-width: ${MOBILE_BREAKPOINT}) {
+      font-size: 1rem;
+    }
   }
   .MuiOutlinedInput-notchedOutline {
     border: none;
@@ -43,7 +50,7 @@ const Autocomplete = styled(BaseAutocomplete)`
     border: none;
   }
   .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
-    padding: 0.6rem 0.25rem;
+    padding: 0.6rem 0;
     font-size: 0.875rem;
   }
 

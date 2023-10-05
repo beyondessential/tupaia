@@ -6,24 +6,28 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dialog, Paper } from '@material-ui/core';
 import { ProjectSelectForm, RequestProjectAccess } from '../../features';
+import { useUser } from '../../api/queries';
 
 const Wrapper = styled(Paper)`
-  padding: 1.5rem 2.5rem 1.25rem;
+  padding: 1rem 1.25rem;
   max-width: none;
   width: 48rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 1.5rem 2.5rem 1.25rem;
+    margin: 2rem;
+  }
 `;
 
 interface ModalProps {
-  open: boolean;
   onClose: () => void;
-  projectId?: string;
 }
 
-export const ProjectSelectModal = ({ open, onClose, projectId }: ModalProps) => {
+export const ProjectSelectModal = ({ onClose }: ModalProps) => {
+  const { data: user } = useUser();
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
 
   return (
-    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal>
+    <Dialog open onClose={onClose} PaperComponent={Wrapper}>
       {requestAccessProjectCode ? (
         <RequestProjectAccess
           projectCode={requestAccessProjectCode}
@@ -32,7 +36,7 @@ export const ProjectSelectModal = ({ open, onClose, projectId }: ModalProps) => 
       ) : (
         <ProjectSelectForm
           variant="modal"
-          projectId={projectId}
+          projectId={user?.projectId}
           onClose={onClose}
           onRequestAccess={setRequestAccessProjectCode}
         />
