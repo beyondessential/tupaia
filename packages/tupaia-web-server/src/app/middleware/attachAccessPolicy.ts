@@ -15,13 +15,15 @@ export const attachAccessPolicy: RequestHandler = async (req, res, next) => {
   if (!apiUser) {
     throw new Error('API Client not found');
   }
-  const apiAccessPolicy = new AccessPolicy(await accessPolicyBuilder.getPolicyForUser(apiUser.id));
+  const apiAccessPolicy = await accessPolicyBuilder.getPolicyForUser(apiUser.id);
 
-  // The session accessPolicy is the raw user access policy
-  // We need to merge with the api access policy for full access
-  req.accessPolicy = req.session
-    ? mergeAccessPolicies(req.session.accessPolicy, apiAccessPolicy)
-    : apiAccessPolicy;
+  // If we have a session, merge it with the api user
+  // Otherwise just use the api user policy
+  req.accessPolicy = new AccessPolicy(
+    req.session
+      ? mergeAccessPolicies(req.session.accessPolicy.policy, apiAccessPolicy)
+      : apiAccessPolicy,
+  );
 
   next();
 };
