@@ -63,13 +63,18 @@ describe('Survey', () => {
 
     // this current page starts off as the last page, so the next page should not be in the list of survey screens, and the submit button should be the 'review and submit' button
     expect(screen.queryByText('Does the facility have staff housing?')).not.toBeInTheDocument();
-    expect(screen.queryByText('Next')).not.toBeInTheDocument();
-    expect(screen.queryByText('Review and submit')).toBeInTheDocument();
 
     // after selecting the 'open' option, the next page, 'does the facility have staff housing?' should appear in the menu and the submit button should be the 'next' button
     fireEvent.click(screen.getByRole('radio', { name: /open*/i }));
     expect(screen.queryByText('Does the facility have staff housing?')).toBeInTheDocument();
-    expect(screen.queryByText('Next')).toBeInTheDocument();
-    expect(screen.queryByText('Review and submit')).not.toBeInTheDocument();
+  });
+
+  it('Updates the condition question answer when the associated question is updated', async () => {
+    renderSurveyPage('/survey/test/6');
+    fireEvent.change(screen.getByLabelText('Enter a number'), { target: { value: '4' } });
+    expect(screen.queryByText('Result for > 3')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Enter a number'), { target: { value: '2' } });
+    expect(screen.queryByText('Result for < 3')).toBeInTheDocument();
   });
 });

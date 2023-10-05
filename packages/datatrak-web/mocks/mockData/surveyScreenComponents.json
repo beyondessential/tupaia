@@ -332,5 +332,62 @@
     ],
     "surveyScreenScreenNumber": 6,
     "questionOptionSetId": null
+  },
+  {
+    "id": "12",
+    "questionId": "12",
+    "screenId": "6412504dec4eba30850179410",
+    "componentNumber": 1,
+    "answersEnablingFollowUp": [],
+    "isFollowUp": false,
+    "visibilityCriteria": {},
+    "validationCriteria": {},
+    "questionLabel": null,
+    "detailLabel": null,
+    "config": {},
+    "questionName": "Enter a number",
+    "questionCode": "MCSR11",
+    "questionText": "Enter a number",
+    "questionType": "Number",
+    "questionOptions": [],
+    "surveyScreenScreenNumber": 7,
+    "questionOptionSetId": null
+  },
+  {
+    "id": "13",
+    "questionId": "13",
+    "screenId": "6412504dec4eba30850179411",
+    "componentNumber": 2,
+    "answersEnablingFollowUp": [],
+    "isFollowUp": false,
+    "visibilityCriteria": {},
+    "validationCriteria": {},
+    "questionLabel": null,
+    "detailLabel": null,
+    "config": {
+      "condition": {
+        "conditions": {
+          "Result for > 3": {
+            "formula": "$12 >= 3",
+            "defaultValues": {
+              "MCSR11": "1"
+            }
+          },
+          "Result for < 3": {
+            "formula": "$12 < 3",
+            "defaultValues": {
+              "MCSR11": "1"
+            }
+          }
+        }
+      }
+    },
+    "questionName": "This is the result of the question above",
+    "questionCode": "MCSR12",
+    "questionText": "This is the result of the question above",
+    "questionType": "Condition",
+    "questionOptions": [],
+    "surveyScreenScreenNumber": 7,
+    "questionOptionSetId": null
   }
 ]

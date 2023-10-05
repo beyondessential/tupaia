@@ -7,9 +7,12 @@ import React, { Dispatch, createContext, useContext, useEffect, useReducer } fro
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { BooleanExpressionParser } from '@tupaia/expression-parser';
+import { DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
 import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
+
+type ConditionConfig = DatatrakWebSurveyScreenComponentsRequest.ConditionConfig;
 
 type SurveyFormContextType = {
   startTime: string;
@@ -243,7 +246,7 @@ export const useSurveyForm = () => {
 
     // loop through all conditional questions and update the formData with the result of the condition
     conditionalQuestions.forEach(question => {
-      const { conditions } = question.config?.condition;
+      const { conditions } = question.config?.condition as ConditionConfig;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(conditions[resultValue]),
       );

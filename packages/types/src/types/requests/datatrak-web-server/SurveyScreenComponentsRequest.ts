@@ -20,7 +20,7 @@ type Condition = {
   defaultValues?: Record<string, unknown>;
 };
 
-type ConditionConfig = {
+export type ConditionConfig = {
   conditions: Record<string, Condition>;
 };
 
