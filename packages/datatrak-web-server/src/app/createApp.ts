@@ -41,6 +41,7 @@ export function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    // @ts-ignore
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))

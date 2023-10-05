@@ -27,7 +27,6 @@ const buildEntity = async (
       return;
     }
 
-    // const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
     const fieldValue =
       typeof value === 'string'
         ? value

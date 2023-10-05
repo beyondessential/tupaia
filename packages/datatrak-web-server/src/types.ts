@@ -4,7 +4,10 @@
  */
 
 import { ModelRegistry, EntityModel } from '@tupaia/database';
+import { SurveyScreenComponent } from '@tupaia/types';
 
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly entity: EntityModel;
+
+  readonly surveyScreenComponent: SurveyScreenComponent;
 }
