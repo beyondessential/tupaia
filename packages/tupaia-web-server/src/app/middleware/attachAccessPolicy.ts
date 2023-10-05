@@ -20,7 +20,7 @@ export const attachAccessPolicy: RequestHandler = async (req, res, next) => {
   // The session accessPolicy is the raw user access policy
   // We need to merge with the api access policy for full access
   req.accessPolicy = req.session
-    ? mergeAccessPolicies(req.accessPolicy, apiAccessPolicy)
+    ? mergeAccessPolicies(req.session.accessPolicy, apiAccessPolicy)
     : apiAccessPolicy;
 
   next();
