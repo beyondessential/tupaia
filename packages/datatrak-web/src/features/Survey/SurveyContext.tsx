@@ -46,16 +46,11 @@ export enum ACTION_TYPES {
   TOGGLE_SIDE_MENU = 'TOGGLE_SIDE_MENU',
   RESET_FORM_DATA = 'RESET_FORM_DATA',
   SET_SURVEY_START_TIME = 'SET_SURVEY_START_TIME',
-  SET_ANSWER = 'SET_ANSWER',
 }
 
-type SingleAnswerPayload = {
-  questionId: string;
-  answer: any;
-};
 interface SurveyFormAction {
   type: ACTION_TYPES;
-  payload?: Record<string, any> | string | null | SingleAnswerPayload;
+  payload?: Record<string, any> | string | null;
 }
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
@@ -71,15 +66,6 @@ export const surveyReducer = (
         formData: {
           ...state.formData,
           ...(action.payload as Record<string, any>),
-        },
-      };
-    case ACTION_TYPES.SET_ANSWER:
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          [(action.payload as SingleAnswerPayload)
-            ?.questionId]: (action.payload as SingleAnswerPayload)?.answer,
         },
       };
     case ACTION_TYPES.TOGGLE_SIDE_MENU:
@@ -246,10 +232,6 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.RESET_FORM_DATA });
   };
 
-  const setSingleAnswer = (questionId: string, answer: any) => {
-    dispatch({ type: ACTION_TYPES.SET_ANSWER, payload: { questionId, answer } });
-  };
-
   const getAnswerByQuestionId = (questionId: string) => {
     return surveyFormContext.formData[questionId];
   };
@@ -260,6 +242,5 @@ export const useSurveyForm = () => {
     setFormData,
     resetForm,
     getAnswerByQuestionId,
-    setSingleAnswer,
   };
 };
