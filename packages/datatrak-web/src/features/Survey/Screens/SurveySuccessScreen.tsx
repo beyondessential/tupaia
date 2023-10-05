@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2rem 1rem;
+  padding: 2rem 1.2rem;
   flex: 1;
 `;
 
@@ -30,10 +30,14 @@ const StyledImg = styled.img`
 const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
-  font-size: 1.9rem;
+  font-size: 1.375rem;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 1.19rem;
+  margin-bottom: 1rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    font-size: 1.9rem;
+    margin-bottom: 1.19rem;
+  }
 `;
 
 const Text = styled(Typography)`

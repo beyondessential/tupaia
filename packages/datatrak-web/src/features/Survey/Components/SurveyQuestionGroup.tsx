@@ -22,6 +22,10 @@ const QuestionWrapper = styled.div<{
 const QuestionNumber = styled(Typography)`
   width: 3.5rem;
   text-transform: lowercase;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+  }
 `;
 
 /**

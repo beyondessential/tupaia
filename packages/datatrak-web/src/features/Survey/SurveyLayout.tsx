@@ -13,23 +13,34 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
-import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import {
+  HEADER_HEIGHT,
+  MOBILE_HEADER_HEIGHT,
+  ROUTES,
+  SURVEY_TOOLBAR_HEIGHT,
+} from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
+import { useIsMobile } from '../../utils';
 
 const ScrollableLayout = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
+  height: calc(100vh - ${MOBILE_HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
   display: flex;
   flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
+  }
 `;
 const Wrapper = styled.div`
   display: flex;
-  margin-left: -1rem;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
   overflow: hidden;
   flex: 1;
   align-items: flex-start;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-left: -1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
 `;
 
 const Container = styled.div<{
@@ -40,9 +51,11 @@ const Container = styled.div<{
   height: 100%;
   flex: 1;
   position: relative;
-  padding: 0 1rem;
-  margin-left: ${({ $sideMenuClosed }) => ($sideMenuClosed ? `-${SIDE_MENU_WIDTH}` : 0)};
-  transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 0 1rem;
+    margin-left: ${({ $sideMenuClosed }) => ($sideMenuClosed ? `-${SIDE_MENU_WIDTH}` : 0)};
+    transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
+  }
 `;
 
 const Paper = styled(MuiPaper).attrs({
@@ -50,12 +63,16 @@ const Paper = styled(MuiPaper).attrs({
   elevation: 0,
 })`
   flex: 1;
-  margin-left: 1rem;
   max-width: 63rem;
   padding: 0;
   position: relative;
   display: flex;
   flex-direction: column;
+  border-radius: 0;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-left: 1rem;
+    border-radius: 4px;
+  }
 `;
 
 const Form = styled.form`
@@ -70,11 +87,13 @@ const FormActions = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
   border-top: 1px solid ${props => props.theme.palette.divider};
-
   button:last-child {
     margin-left: auto;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1rem;
   }
 `;
 
@@ -84,6 +103,19 @@ const ButtonGroup = styled.div`
   a {
     &:last-child {
       margin-left: 1rem;
+    }
+  }
+`;
+
+const BackButton = styled(Button).attrs({
+  startIcon: <ArrowBackIosIcon />,
+  variant: 'text',
+  color: 'default',
+})`
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    padding-left: 0.8rem;
+    .MuiButton-startIcon {
+      margin-right: 0.25rem;
     }
   }
 `;
@@ -116,6 +148,7 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit' });
   const { handleSubmit, getValues } = formContext;
+  const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
@@ -198,7 +231,9 @@ export const SurveyLayout = () => {
 
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
-    if (isLast) return 'Review and submit';
+    if (isLast) {
+      return isMobile ? 'Review' : 'Review and submit';
+    }
     return 'Next';
   };
 
@@ -219,15 +254,9 @@ export const SurveyLayout = () => {
                   </LoadingContainer>
                 )}
                 <FormActions>
-                  <Button
-                    onClick={onStepPrevious}
-                    startIcon={<ArrowBackIosIcon />}
-                    variant="text"
-                    color="default"
-                    disabled={isSubmittingSurvey}
-                  >
+                  <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
                     Back
-                  </Button>
+                  </BackButton>
                   <ButtonGroup>
                     <Button
                       onClick={openCancelModal}
