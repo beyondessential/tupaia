@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams, SurveyScreenComponent } from '../../types';
 import { useSurveyScreenComponents } from '../../api/queries';
-import { formatSurveyScreenQuestions } from './utils';
+import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
 
 type SurveyFormContextType = {
   startTime: string;
@@ -21,7 +21,8 @@ type SurveyFormContextType = {
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
-  surveyScreenComponents?: Record<number, SurveyScreenComponent[]>;
+  surveyScreenComponents?: SurveyScreenComponent[][];
+  visibleScreens?: SurveyScreenComponent[][];
   surveyStartTime?: string;
 };
 
@@ -45,11 +46,16 @@ export enum ACTION_TYPES {
   TOGGLE_SIDE_MENU = 'TOGGLE_SIDE_MENU',
   RESET_FORM_DATA = 'RESET_FORM_DATA',
   SET_SURVEY_START_TIME = 'SET_SURVEY_START_TIME',
+  SET_ANSWER = 'SET_ANSWER',
 }
 
+type SingleAnswerPayload = {
+  questionId: string;
+  answer: any;
+};
 interface SurveyFormAction {
   type: ACTION_TYPES;
-  payload?: Record<string, any> | string | null;
+  payload?: Record<string, any> | string | null | SingleAnswerPayload;
 }
 
 export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction> | null>(null);
@@ -65,6 +71,15 @@ export const surveyReducer = (
         formData: {
           ...state.formData,
           ...(action.payload as Record<string, any>),
+        },
+      };
+    case ACTION_TYPES.SET_ANSWER:
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          [(action.payload as SingleAnswerPayload)
+            ?.questionId]: (action.payload as SingleAnswerPayload)?.answer,
         },
       };
     case ACTION_TYPES.TOGGLE_SIDE_MENU:
@@ -87,44 +102,76 @@ export const surveyReducer = (
   }
 };
 
+const getIsQuestionVisible = (question: SurveyScreenComponent, formData: Record<string, any>) => {
+  if (!question.visibilityCriteria || !Object.keys(question.visibilityCriteria).length) return true;
+  const { visibilityCriteria } = question;
+  const { _conjunction = 'or', ...dependantQuestions } = visibilityCriteria;
+
+  const operator = _conjunction === 'or' ? 'some' : 'every';
+
+  return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
+    const answer = formData[questionId];
+    if (answer === undefined) return false;
+    return Array.isArray(validAnswers) ? validAnswers?.includes(answer) : validAnswers === answer;
+  });
+};
+
 export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
-
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
 
-  const activeScreen = surveyScreenComponents[screenNumber!] ?? [];
-  const numberOfScreens = Object.keys(surveyScreenComponents).length;
+  const { formData } = state;
+
+  // filter out screens that have no visible questions
+  const visibleScreens = surveyScreenComponents
+    ? surveyScreenComponents.filter(screen =>
+        screen.some(question => getIsQuestionVisible(question, formData)),
+      )
+    : [];
+
+  const numberOfScreens = visibleScreens.length;
   const isLast = screenNumber === numberOfScreens;
-
-  // for the purposes of displaying the screen number, we don't want to count screens that only have instructions
-  const screensWithQuestions = Object.values(surveyScreenComponents).filter(screen => {
-    const nonInstructionQuestions = screen.filter(
-      question => question.questionType !== 'Instruction',
-    );
-    return nonInstructionQuestions.length > 0;
-  });
-
-  const screenNumberToDisplay = activeScreen?.length
-    ? screensWithQuestions.findIndex(
-        screen => screen[0].questionId === activeScreen[0].questionId,
-      ) + 1
-    : -1;
-  // If the first question is an instruction, don't render it since we always just
-  // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = formatSurveyScreenQuestions(
-    activeScreen.length && activeScreen[0].questionType === 'Instruction'
-      ? activeScreen.slice(1)
-      : activeScreen,
-    screenNumberToDisplay,
-  );
-
   const isReviewScreen = !screenNumber;
-  let screenHeader = '';
-  if (activeScreen.length && activeScreen[0].questionText) {
-    screenHeader = activeScreen[0].questionText;
-  }
+  const activeScreen = visibleScreens?.[screenNumber! - 1] || [];
+
+  const getDisplayQuestions = () => {
+    const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
+    // If the first question is an instruction, don't render it since we always just
+    // show the text of first questions as the heading. Format the questions with a question number to display
+    const visibleQuestions = (activeScreen?.length && activeScreen[0].questionType === 'Instruction'
+      ? activeScreen.slice(1)
+      : activeScreen
+    )
+      .filter(question => getIsQuestionVisible(question, formData))
+      .map(question => {
+        const { questionId } = question;
+        if (
+          flattenedScreenComponents.some(component => {
+            return (
+              component?.visibilityCriteria &&
+              Object.keys(component?.visibilityCriteria).includes(questionId)
+            );
+          })
+        ) {
+          // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
+          return {
+            ...question,
+            updateFormDataOnChange: true,
+          };
+        }
+        return question;
+      });
+    return formatSurveyScreenQuestions(visibleQuestions, screenNumber!);
+  };
+
+  const getScreenHeader = () => {
+    if (activeScreen.length && activeScreen[0].questionText) {
+      return activeScreen[0].questionText;
+    }
+    return '';
+  };
 
   useEffect(() => {
     const updateStartTime = () => {
@@ -136,6 +183,9 @@ export const SurveyContext = ({ children }) => {
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
     updateStartTime();
   }, [surveyCode]);
+
+  const displayQuestions = getDisplayQuestions();
+  const screenHeader = getScreenHeader();
 
   return (
     <SurveyFormContext.Provider
@@ -149,6 +199,7 @@ export const SurveyContext = ({ children }) => {
         displayQuestions,
         surveyScreenComponents,
         screenHeader,
+        visibleScreens,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
@@ -166,12 +217,37 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
 
+  // reset the value of any questions that are no longer visible, so that they don't get submitted with the form and skew the results
+  const resetInvisibleQuestions = (newFormData: Record<string, any>) => {
+    const { surveyScreenComponents, formData } = surveyFormContext;
+    const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
+    const updatedFormData = { ...formData, ...newFormData };
+
+    flattenedScreenComponents.forEach(component => {
+      const { questionId, visibilityCriteria } = component;
+      if (
+        visibilityCriteria &&
+        !getIsQuestionVisible(component, updatedFormData) &&
+        updatedFormData.hasOwnProperty(questionId)
+      ) {
+        delete updatedFormData[questionId];
+      }
+    });
+
+    return updatedFormData;
+  };
+
   const setFormData = (formData: Record<string, any>) => {
-    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: formData });
+    const updatedFormData = resetInvisibleQuestions(formData);
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: updatedFormData });
   };
 
   const resetForm = () => {
     dispatch({ type: ACTION_TYPES.RESET_FORM_DATA });
+  };
+
+  const setSingleAnswer = (questionId: string, answer: any) => {
+    dispatch({ type: ACTION_TYPES.SET_ANSWER, payload: { questionId, answer } });
   };
 
   const getAnswerByQuestionId = (questionId: string) => {
@@ -184,5 +260,6 @@ export const useSurveyForm = () => {
     setFormData,
     resetForm,
     getAnswerByQuestionId,
+    setSingleAnswer,
   };
 };

@@ -41,6 +41,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           detailLabel,
           questionOptionSetId,
           questionNumber,
+          updateFormDataOnChange,
         }) => {
           if (validationCriteria?.mandatory === true) {
             console.log('mandatory question', questionCode);
@@ -63,6 +64,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
                 config={config}
                 label={questionLabel || questionText}
                 optionSetId={questionOptionSetId}
+                updateFormDataOnChange={updateFormDataOnChange}
               />
             </QuestionWrapper>
           );

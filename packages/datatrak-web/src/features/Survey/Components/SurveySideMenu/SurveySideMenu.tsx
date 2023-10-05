@@ -73,7 +73,7 @@ export const SurveySideMenu = () => {
   const {
     sideMenuOpen,
     toggleSideMenu,
-    surveyScreenComponents,
+    visibleScreens,
     screenNumber,
     setFormData,
     isReviewScreen,
@@ -87,17 +87,20 @@ export const SurveySideMenu = () => {
       <SideMenuButton />
       <Drawer open={sideMenuOpen} onClose={toggleSideMenu}>
         <SurveyMenuContent>
-          {Object.entries(surveyScreenComponents!).map(([key, screen]) => (
-            <SurveyMenuItem
-              key={screen[0].questionId}
-              to={`../${key}`}
-              $active={screenNumber === Number(key)}
-              onClick={onChangeScreen}
-            >
-              <SurveyScreenNumber>{key}:</SurveyScreenNumber>
-              <SurveyScreenTitle>{screen[0].questionText}</SurveyScreenTitle>
-            </SurveyMenuItem>
-          ))}
+          {visibleScreens?.map((screen, i) => {
+            const num = i + 1;
+            return (
+              <SurveyMenuItem
+                key={screen[0].questionId}
+                to={`../${num}`}
+                $active={screenNumber === num}
+                onClick={onChangeScreen}
+              >
+                <SurveyScreenNumber>{num}:</SurveyScreenNumber>
+                <SurveyScreenTitle>{screen[0].questionText}</SurveyScreenTitle>
+              </SurveyMenuItem>
+            );
+          })}
         </SurveyMenuContent>
       </Drawer>
     </>

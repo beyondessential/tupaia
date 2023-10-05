@@ -37747,7 +37747,7 @@ export const EntityQuestionConfigSchema = {
 	"required": [
 		"entity"
 	]
-} 
+}
 
 export const EntityUpsertSchema = {
 	"properties": {
@@ -37834,7 +37834,7 @@ export const EntityUpsertSchema = {
 		"config",
 		"questionId"
 	]
-} 
+}
 
 export const CreatedOptionSchema = {
 	"properties": {
@@ -37855,7 +37855,17 @@ export const CreatedOptionSchema = {
 		"option_set_id",
 		"value"
 	]
-} 
+}
+
+export const VisibilityCriteriaSchema = {
+	"properties": {
+		"_conjunction": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object"
+}
 
 export const InitialResponseSchema = {
 	"properties": {
@@ -37895,8 +37905,13 @@ export const InitialResponseSchema = {
 			"additionalProperties": false
 		},
 		"visibility_criteria": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"_conjunction": {
+					"type": "string"
+				}
+			}
 		},
 		"question.name": {
 			"type": "string"
@@ -37969,6 +37984,11 @@ export const CamelCasedInitialResponseSchema = {
 		},
 		"visibilityCriteria": {
 			"type": "object",
+			"properties": {
+				"Conjunction": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"questionName": {
