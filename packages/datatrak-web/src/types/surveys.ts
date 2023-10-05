@@ -19,7 +19,10 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = Pick<SurveyScreenComponent, 'updateFormDataOnChange'> & {
+export type SurveyQuestionFieldProps = Pick<
+  SurveyScreenComponent,
+  'updateFormDataOnChange' | 'validationCriteria'
+> & {
   id: string;
   name: SurveyScreenComponent['questionCode'];
   label?: string;
@@ -33,5 +36,10 @@ export type SurveyQuestionFieldProps = Pick<SurveyScreenComponent, 'updateFormDa
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
-  controllerProps: ControllerRenderProps;
+  controllerProps: ControllerRenderProps & {
+    invalid?: boolean;
+  };
+  required?: boolean;
+  min?: number;
+  max?: number;
 };
