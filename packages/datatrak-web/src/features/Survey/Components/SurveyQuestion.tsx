@@ -20,7 +20,7 @@ import {
   EntityQuestion,
   AutocompleteQuestion,
 } from '../../Questions';
-import { SurveyQuestionFieldProps } from '../../../types';
+import { SurveyQuestionFieldProps, SurveyScreenComponent } from '../../../types';
 import { useSurveyForm } from '..';
 
 const QuestionPlaceholder = styled.div`
@@ -71,6 +71,38 @@ const getNameForController = (name, type) => {
   return type === 'PrimaryEntity' ? 'entityId' : name;
 };
 
+const getRules = (
+  type: SurveyScreenComponent['questionType'],
+  validationCriteria: SurveyScreenComponent['validationCriteria'] = {},
+) => {
+  const { required, min, max } = validationCriteria;
+  // If the question is an instruction, we don't need to validate it, it will never need to be answered
+  if (type === 'Instruction') {
+    return {};
+  }
+  // If the question is a geolocate question, we need to validate it differently, as it is a compound question. The coordinates need to be validated separately.
+  if (type === 'Geolocate') {
+    return {
+      validate: {
+        required: value => (value?.latitude && value?.longitude) || 'Required',
+        coordinatesAreValid: value => {
+          return value?.latitude < -90 ||
+            value?.latitude > 90 ||
+            value?.longitude < -180 ||
+            value?.longitude > 180
+            ? 'Invalid coordinates'
+            : true;
+        },
+      },
+    };
+  }
+  return {
+    required: required ? 'Required' : false,
+    min: min ? { value: min, message: `Minimum value is ${min}` } : undefined,
+    max: max ? { value: max, message: `Maximum value is ${max}` } : undefined,
+  };
+};
+
 /**
  * This is the component that renders a single question in a survey.
  */
@@ -102,41 +134,13 @@ export const SurveyQuestion = ({
 
   const { mandatory: required, min, max } = validationCriteria;
 
-  const getRules = () => {
-    // If the question is an instruction, we don't need to validate it, it will never need to be answered
-    if (type === 'Instruction') {
-      return {};
-    }
-    // If the question is a geolocate question, we need to validate it differently, as it is a compound question. The coordinates need to be validated separately.
-    if (type === 'Geolocate') {
-      return {
-        validate: {
-          required: value => (value?.latitude && value?.longitude) || 'Required',
-          coordinatesAreValid: value => {
-            return value?.latitude < -90 ||
-              value?.latitude > 90 ||
-              value?.longitude < -180 ||
-              value?.longitude > 180
-              ? 'Invalid coordinates'
-              : true;
-          },
-        },
-      };
-    }
-    return {
-      required: required ? 'Required' : false,
-      min: min ? { value: min, message: `Minimum value is ${min}` } : undefined,
-      max: max ? { value: max, message: `Maximum value is ${max}` } : undefined,
-    };
-  };
-
   const getDefaultValue = () => {
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
     if (type?.includes('Date')) return new Date();
     return formData?.[controllerName] || '';
   };
 
-  const rules = getRules();
+  const rules = getRules(ttype, validationCriteria);
 
   const defaultValue = getDefaultValue();
 
