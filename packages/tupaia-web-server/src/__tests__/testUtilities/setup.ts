@@ -5,7 +5,7 @@
 
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { createBasicHeader } from '@tupaia/utils';
-import { TestableServer } from '@tupaia/server-boilerplate';
+import { TestableServer, emptyMiddleware } from '@tupaia/server-boilerplate';
 
 import {
   findOrCreateDummyRecord,
@@ -23,7 +23,9 @@ import { createApp } from '../../app';
 jest.mock('http-proxy-middleware');
 
 // Skip the accessPolicy attach since we don't have tests for that yet
-jest.mock('../../app/middleware/attachAccessPolicy');
+jest.mock('../../app/middleware/attachAccessPolicy', () => ({
+  attachAccessPolicy: emptyMiddleware,
+}));
 
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
