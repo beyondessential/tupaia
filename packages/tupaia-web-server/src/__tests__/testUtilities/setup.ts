@@ -22,6 +22,9 @@ import { createApp } from '../../app';
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');
 
+// Skip the accessPolicy attach since we don't have tests for that yet
+jest.mock('../../app/middleware/attachAccessPolicy');
+
 const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
 hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
