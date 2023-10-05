@@ -78,11 +78,10 @@ export const SurveyQuestion = ({
   type,
   name,
   updateFormDataOnChange,
-  validationCriteria = {},
   ...props
 }: SurveyQuestionFieldProps) => {
-  const { control, errors } = useFormContext();
-  const { setSingleAnswer, formData } = useSurveyForm();
+  const { control } = useFormContext();
+  const { setSingleAnswer } = useSurveyForm();
   const FieldComponent = QUESTION_TYPES[type];
 
   if (!FieldComponent) {
