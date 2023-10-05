@@ -5,14 +5,14 @@
 import { MeditrakSurveyResponseRequest } from '../central-server/MeditrakSurveyResponseRequest';
 
 export type EntityQuestionConfig = {
-  entity: {
-    createNew: boolean;
-    fields: Record<string, string | { questionId: string }>;
-    filter: {
-      type: string[];
-      grandparentId: { questionId: string };
-      parentId: { questionId: string };
-      attributes: Record<string, { questionId: string }>;
+  entity?: {
+    createNew?: boolean;
+    fields?: Record<string, string | { questionId: string }>;
+    filter?: {
+      type?: string[];
+      grandparentId?: { questionId: string };
+      parentId?: { questionId: string };
+      attributes?: Record<string, { questionId: string }>;
     };
   };
 };

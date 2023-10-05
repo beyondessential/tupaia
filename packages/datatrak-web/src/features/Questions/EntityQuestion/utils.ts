@@ -19,7 +19,10 @@ export const useEntityBaseFilters = (config: RequestT.EntityQuestionConfig) => {
   }
 
   const { parentId, grandparentId, type } = filter;
-  filters.type = type;
+
+  if (type) {
+    filters.type = type;
+  }
 
   if (parentId && parentId.questionId) {
     filters['parentId'] = getAnswerByQuestionId(parentId.questionId);
