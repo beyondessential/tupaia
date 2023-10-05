@@ -36,6 +36,16 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
     right: 0.9rem;
   }
+  .MuiInputBase-root.Mui-error {
+    background-color: transparent;
+    border-color: ${props => props.theme.palette.error.main};
+    &.Mui-focused {
+      border-color: ${props => props.theme.palette.error.main};
+    }
+  }
+  .MuiFormControl-root {
+    margin-bottom: 0;
+  }
 `;
 
 export interface BaseAutocompleteProps {
