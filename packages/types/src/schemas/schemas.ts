@@ -37867,6 +37867,37 @@ export const VisibilityCriteriaSchema = {
 	"type": "object"
 } 
 
+export const ConditionSchema = {
+	"properties": {
+		"formula": {
+			"type": "string"
+		},
+		"defaultValues": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"formula"
+	]
+} 
+
+export const ConditionConfigSchema = {
+	"properties": {
+		"conditions": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"conditions"
+	]
+} 
+
 export const InitialResponseSchema = {
 	"properties": {
 		"id": {
@@ -37897,8 +37928,23 @@ export const InitialResponseSchema = {
 			"type": "string"
 		},
 		"config": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"condition": {
+					"type": "object",
+					"properties": {
+						"conditions": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"conditions"
+					]
+				}
+			}
 		},
 		"validation_criteria": {
 			"type": "object",
@@ -37997,6 +38043,21 @@ export const CamelCasedInitialResponseSchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"condition": {
+					"type": "object",
+					"properties": {
+						"conditions": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"conditions"
+					]
+				}
+			},
 			"additionalProperties": false
 		},
 		"validationCriteria": {
