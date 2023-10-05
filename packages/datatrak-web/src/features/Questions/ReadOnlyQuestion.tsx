@@ -8,6 +8,7 @@ import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
+import { useSurveyForm } from '..';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -42,11 +43,9 @@ const Value = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
 `;
 
-export const ReadOnlyQuestion = ({
-  label,
-  controllerProps: { value },
-  detailLabel,
-}: SurveyQuestionInputProps) => {
+export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInputProps) => {
+  const { formData } = useSurveyForm();
+  const value = formData[name];
   return (
     <Wrapper>
       <Tooltip title="Complete questions above to calculate">

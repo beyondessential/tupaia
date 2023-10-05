@@ -126,28 +126,19 @@ export const SurveyContext = ({ children }) => {
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
 
   const getIsDependentQuestion = (questionId: SurveyScreenComponent['questionId']) => {
-    // if the question controls the visibility of another question, return true
-    if (
-      flattenedScreenComponents.some(component => {
-        return (
-          component?.visibilityCriteria &&
-          Object.keys(component?.visibilityCriteria).includes(questionId)
-        );
-      })
-    )
-      return true;
-
-    // if the question answer controls the result of a condition question, return true
-    if (
-      flattenedScreenComponents.some(component => {
-        return (
-          component?.config?.condition &&
-          component?.config?.condition?.conditions &&
-          Object.keys(component?.config?.condition?.conditions).includes(questionId)
-        );
-      })
-    )
-      return true;
+    return flattenedScreenComponents.some(question => {
+      const { visibilityCriteria, config } = question;
+      // if the question controls the visibility of another question, return true
+      if (visibilityCriteria && Object.keys(visibilityCriteria).includes(questionId)) return true;
+      if (!config?.condition) return false;
+      const { conditions } = config?.condition;
+      // if the question is used in the formula of any other question, return true
+      return Object.keys(conditions).some(answer => {
+        // formula always has the questionId + $ in front of it, so we can just check if the formula includes the questionId
+        const { formula } = conditions[answer];
+        return formula.includes(questionId);
+      });
+    });
   };
 
   const getDisplayQuestions = () => {
