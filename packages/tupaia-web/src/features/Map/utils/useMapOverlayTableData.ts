@@ -65,7 +65,7 @@ export const useMapOverlayTableData = ({
     selectedOverlay?.measureLevel,
   );
 
-  const { data, isLoading, isFetched, isFetching } = useMapOverlayReport(
+  const { data, isLoading, isFetched, isFetching, isIdle } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -86,7 +86,7 @@ export const useMapOverlayTableData = ({
 
   return {
     ...data,
-    isLoading: isLoading || isFetching || !isFetched,
+    isLoading: isLoading || isFetching || (!isFetched && !isIdle),
     isFetched,
     serieses: data?.serieses,
     measureData,
