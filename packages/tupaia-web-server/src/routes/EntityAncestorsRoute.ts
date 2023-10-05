@@ -38,9 +38,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       projectCode,
       rootEntityCode,
       {
-        filter: {
-          ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-        },
+        filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
         fields: DEFAULT_FIELDS,
         ...restOfQuery,
       },

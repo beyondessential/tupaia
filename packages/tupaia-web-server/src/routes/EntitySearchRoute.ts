@@ -34,9 +34,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
     const { typesExcludedFromWebFrontend } = models.entity;
 
     const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
-      filter: {
-        ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
-      },
+      filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
       ...query,
       page,
       pageSize,
