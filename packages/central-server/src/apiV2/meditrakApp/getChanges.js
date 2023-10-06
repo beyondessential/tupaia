@@ -21,7 +21,7 @@ const MAX_CHANGES_RETURNED = 100;
 /**
  * Gets the record ready to sync down to a sync client, transforming any properties as required
  */
-function getRecordForSync(models, record, recordType) {
+function getRecordForSync(models, record, recordType, appVersion) {
   const recordWithoutNulls = {};
   // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
   // which simply had no key for undefined properties, whereas postgres uses null
@@ -33,8 +33,8 @@ function getRecordForSync(models, record, recordType) {
 
   // Translate values in columns based on meditrak app version
   const selectedModel = models[camel(recordType)];
-  const translatedRecord = selectedModel?.meditrakConfig.translateForSync
-    ? selectedModel.meditrakConfig.translateForSync(recordWithoutNulls)
+  const translatedRecord = selectedModel?.meditrakConfig.translateRecordForSync
+    ? selectedModel.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
     : recordWithoutNulls;
   return translatedRecord;
 }
@@ -104,7 +104,7 @@ export async function getChanges(req, res) {
           const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
           changeObject.error = { error: errorMessage };
         } else {
-          changeObject.record = getRecordForSync(models, record, recordType);
+          changeObject.record = getRecordForSync(models, record, recordType, appVersion);
         }
       }
       return changeObject;
