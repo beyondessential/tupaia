@@ -8,8 +8,8 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { BooleanExpressionParser } from '@tupaia/expression-parser';
 import { DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
-import { SurveyParams, SurveyScreenComponent } from '../../types';
-import { useSurveyScreenComponents } from '../../api/queries';
+import { SurveyParams, SurveyScreenComponent, SurveyScreen } from '../../types';
+import { useSurvey } from '../../api/queries';
 import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
 
 type ConditionConfig = DatatrakWebSurveyScreenComponentsRequest.ConditionConfig;
@@ -25,8 +25,8 @@ type SurveyFormContextType = {
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
-  surveyScreenComponents?: SurveyScreenComponent[][];
-  visibleScreens?: SurveyScreenComponent[][];
+  surveyScreens?: SurveyScreen[];
+  visibleScreens?: SurveyScreen[];
   surveyStartTime?: string;
 };
 
@@ -40,7 +40,6 @@ const defaultContext = {
   screenHeader: '',
   displayQuestions: [],
   sideMenuOpen: false,
-  surveyScreenComponents: [],
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext as SurveyFormContextType);
@@ -110,23 +109,29 @@ export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
-  const { data: surveyScreenComponents } = useSurveyScreenComponents(surveyCode);
+  const { data: survey } = useSurvey(surveyCode);
 
   const { formData } = state;
 
-  // filter out screens that have no visible questions
-  const visibleScreens = surveyScreenComponents
-    ? surveyScreenComponents.filter(screen =>
-        screen.some(question => getIsQuestionVisible(question, formData)),
-      )
-    : [];
+  const surveyScreens = survey?.screens || [];
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+
+  // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
+  const visibleScreens = surveyScreens
+    .map(screen => {
+      return {
+        ...screen,
+        surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
+          getIsQuestionVisible(question, formData),
+        ),
+      };
+    })
+    .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const numberOfScreens = visibleScreens.length;
   const isLast = screenNumber === numberOfScreens;
   const isReviewScreen = !screenNumber;
-  const activeScreen = visibleScreens?.[screenNumber! - 1] || [];
-
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
+  const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   const getIsDependentQuestion = (questionId: SurveyScreenComponent['questionId']) => {
     return flattenedScreenComponents.some(question => {
@@ -147,30 +152,21 @@ export const SurveyContext = ({ children }) => {
   const getDisplayQuestions = () => {
     // If the first question is an instruction, don't render it since we always just
     // show the text of first questions as the heading. Format the questions with a question number to display
-    const visibleQuestions = (activeScreen?.length && activeScreen[0].questionType === 'Instruction'
+    const displayQuestions = (activeScreen?.length && activeScreen[0].type === 'Instruction'
       ? activeScreen.slice(1)
       : activeScreen
-    )
-      .filter(question => getIsQuestionVisible(question, formData))
-      .map(question => {
-        const { questionId } = question;
-        if (getIsDependentQuestion(questionId)) {
-          // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
-          return {
-            ...question,
-            updateFormDataOnChange: true,
-          };
-        }
-        return question;
-      });
-    return formatSurveyScreenQuestions(visibleQuestions, screenNumber!);
-  };
-
-  const getScreenHeader = () => {
-    if (activeScreen.length && activeScreen[0].questionText) {
-      return activeScreen[0].questionText;
-    }
-    return '';
+    ).map(question => {
+      const { questionId } = question;
+      if (getIsDependentQuestion(questionId)) {
+        // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
+        return {
+          ...question,
+          updateFormDataOnChange: true,
+        };
+      }
+      return question;
+    });
+    return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
   };
 
   useEffect(() => {
@@ -185,7 +181,7 @@ export const SurveyContext = ({ children }) => {
   }, [surveyCode]);
 
   const displayQuestions = getDisplayQuestions();
-  const screenHeader = getScreenHeader();
+  const screenHeader = activeScreen?.[0]?.text;
 
   return (
     <SurveyFormContext.Provider
@@ -197,7 +193,7 @@ export const SurveyContext = ({ children }) => {
         screenNumber,
         isReviewScreen,
         displayQuestions,
-        surveyScreenComponents,
+        surveyScreens,
         screenHeader,
         visibleScreens,
       }}
@@ -211,8 +207,8 @@ export const SurveyContext = ({ children }) => {
 
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
-  const { surveyScreenComponents, formData } = surveyFormContext;
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreenComponents);
+  const { surveyScreens, formData } = surveyFormContext;
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
   const toggleSideMenu = () => {

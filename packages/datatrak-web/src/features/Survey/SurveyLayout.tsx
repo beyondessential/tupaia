@@ -144,9 +144,10 @@ export const SurveyLayout = () => {
     sideMenuOpen,
     numberOfScreens,
     isReviewScreen,
+    visibleScreens,
   } = useSurveyForm();
-  const formContext = useForm({ defaultValues: formData });
-  const { handleSubmit } = formContext;
+  const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit' });
+  const { handleSubmit, getValues } = formContext;
   const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
@@ -155,7 +156,8 @@ export const SurveyLayout = () => {
     navigate(path);
   };
 
-  const onStepPrevious = handleSubmit(data => {
+  const onStepPrevious = () => {
+    const data = getValues();
     let path = ROUTES.SURVEY_SELECT;
     const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
     if (prevScreenNumber) {
@@ -166,7 +168,7 @@ export const SurveyLayout = () => {
     }
 
     handleStep(path, data);
-  });
+  };
 
   const navigateNext = data => {
     const path = isLast
@@ -178,10 +180,50 @@ export const SurveyLayout = () => {
     handleStep(path, data);
   };
 
-  const handleSubmitScreen = handleSubmit(data => {
+  const onError = errors => {
+    // If we're not on the review screen, we don't need to do anything, because the errors get focussed and handled by react-hook-form
+    if (!isReviewScreen) return;
+
+    // Group the errors by screen number, so that we can easily navigate to the first screen with errors
+    const errorFieldsByPage = Object.entries(errors).reduce((acc, [questionId, error]) => {
+      const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
+        surveyScreenComponents.find(question => question.questionId === questionId),
+      );
+
+      if (!screenIndex || screenIndex === -1) return acc;
+      const screenNum = screenIndex + 1;
+      return {
+        ...acc,
+        [screenNum]: {
+          ...acc[screenNum],
+          [questionId]: error,
+        },
+      };
+    }, {});
+    // Find the first screen with errors
+    const [surveyScreenToSnapTo, screenErrors] = Object.entries(errorFieldsByPage)[0];
+    if (!surveyScreenToSnapTo) return;
+    // we have to serialize the errors for the location state as per https://github.com/remix-run/react-router/issues/8792. We can't just set the errors manually in the form because when we navigate to the screen, the form errors will reset
+    const stringifiedErrors = JSON.stringify(screenErrors);
+    navigate(
+      generatePath(ROUTES.SURVEY_SCREEN, {
+        ...params,
+        screenNumber: surveyScreenToSnapTo,
+      }),
+      {
+        state: {
+          errors: stringifiedErrors,
+        },
+      },
+    );
+  };
+
+  const onSubmit = data => {
     if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
-  });
+  };
+
+  const handleClickSubmit = handleSubmit(onSubmit, onError);
 
   const openCancelModal = () => {
     setCancelModalOpen(true);
@@ -204,7 +246,7 @@ export const SurveyLayout = () => {
           <SurveySideMenu />
           <Container $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
             <Paper>
-              <Form onSubmit={handleSubmitScreen} noValidate>
+              <Form onSubmit={handleClickSubmit} noValidate>
                 <Outlet />
                 {isSubmittingSurvey && (
                   <LoadingContainer>
@@ -223,11 +265,7 @@ export const SurveyLayout = () => {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      type="submit"
-                      onClick={handleSubmitScreen}
-                      disabled={isSubmittingSurvey}
-                    >
+                    <Button type="submit" disabled={isSubmittingSurvey}>
                       {nextButtonText}
                     </Button>
                   </ButtonGroup>

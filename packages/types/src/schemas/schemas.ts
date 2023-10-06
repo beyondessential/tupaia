@@ -37867,108 +37867,52 @@ export const VisibilityCriteriaSchema = {
 	"type": "object"
 } 
 
-export const ConditionSchema = {
+export const ValidationCriteriaSchema = {
 	"properties": {
-		"formula": {
+		"required": {
+			"type": "boolean"
+		},
+		"min": {
+			"type": "number"
+		},
+		"max": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCasedQuestionSchema = {
+	"properties": {
+		"text": {
 			"type": "string"
 		},
-		"defaultValues": {
-			"type": "object",
-			"additionalProperties": false
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"formula"
-	]
-} 
-
-export const ConditionConfigSchema = {
-	"properties": {
-		"conditions": {
-			"type": "object",
-			"additionalProperties": false
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"conditions"
-	]
-} 
-
-export const InitialResponseSchema = {
-	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
 		"id": {
 			"type": "string"
 		},
-		"answers_enabling_follow_up": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"component_number": {
-			"type": "number"
-		},
-		"detail_label": {
+		"dataElementId": {
 			"type": "string"
 		},
-		"is_follow_up": {
-			"type": "boolean"
-		},
-		"question_id": {
+		"detail": {
 			"type": "string"
 		},
-		"question_label": {
+		"hook": {
 			"type": "string"
 		},
-		"screen_id": {
+		"mRow$": {
 			"type": "string"
 		},
-		"config": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"condition": {
-					"type": "object",
-					"properties": {
-						"conditions": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"conditions"
-					]
-				}
-			}
-		},
-		"validation_criteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"visibility_criteria": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"_conjunction": {
-					"type": "string"
-				}
-			}
-		},
-		"question.name": {
+		"optionSetId": {
 			"type": "string"
 		},
-		"question.code": {
-			"type": "string"
-		},
-		"question.text": {
-			"type": "string"
-		},
-		"question.type": {
+		"type": {
 			"enum": [
 				"Arithmetic",
 				"Autocomplete",
@@ -37991,32 +37935,19 @@ export const InitialResponseSchema = {
 				"SubmissionDate"
 			],
 			"type": "string"
-		},
-		"question.options": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"question.option_set_id": {
-			"type": "string"
 		}
 	},
-	"additionalProperties": false,
 	"type": "object",
+	"additionalProperties": false,
 	"required": [
-		"component_number",
 		"id",
-		"question_id",
-		"screen_id"
+		"text",
+		"type"
 	]
 } 
 
-export const CamelCasedInitialResponseSchema = {
+export const CamelCasedComponentSchema = {
 	"properties": {
-		"id": {
-			"type": "string"
-		},
 		"answersEnablingFollowUp": {
 			"type": "array",
 			"items": {
@@ -38034,95 +37965,84 @@ export const CamelCasedInitialResponseSchema = {
 		},
 		"questionId": {
 			"type": "string"
-		},
-		"questionLabel": {
-			"type": "string"
-		},
-		"screenId": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"condition": {
-					"type": "object",
-					"properties": {
-						"conditions": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"conditions"
-					]
-				}
-			},
-			"additionalProperties": false
-		},
-		"validationCriteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"visibilityCriteria": {
-			"type": "object",
-			"properties": {
-				"Conjunction": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"questionName": {
-			"type": "string"
-		},
-		"questionCode": {
-			"type": "string"
-		},
-		"questionText": {
-			"type": "string"
-		},
-		"questionType": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate"
-			],
-			"type": "string"
-		},
-		"questionOptions": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"questionOptionSetId": {
-			"type": "string"
 		}
 	},
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
+		"questionId"
+	]
+} 
+
+export const CodeGeneratorConfigSchema = {
+	"properties": {
+		"type": {
+			"enum": [
+				"mongoid",
+				"shortid"
+			],
+			"type": "string"
+		},
+		"prefix": {
+			"type": "string"
+		},
+		"length": {
+			"type": "number"
+		},
+		"chunkLength": {
+			"type": "number"
+		},
+		"alphabet": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const AutocompleteConfigSchema = {
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"questionId": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"questionId"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCasedSurveyScreenSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"screenNumber": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
 		"id",
-		"questionId",
-		"screenId"
+		"screenNumber"
 	]
 } 
 

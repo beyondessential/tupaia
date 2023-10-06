@@ -28,13 +28,14 @@ const Wrapper = styled.fieldset`
 
 const SeparatorText = styled(Typography)`
   font-size: 1rem;
-  margin: 0.8rem 1.5rem;
+  margin: 0.8rem 1.5rem 0.3rem;
 `;
 
 const ModalButton = styled(Button).attrs({
   variant: 'text',
 })`
   padding-left: 0.1rem;
+  padding-bottom: 0;
 `;
 
 const ButtonText = styled.span`
@@ -46,7 +47,8 @@ const ButtonText = styled.span`
 
 export const GeolocateQuestion = ({
   text,
-  controllerProps: { value, onChange, name },
+  required,
+  controllerProps: { value, onChange, name, invalid },
 }: SurveyQuestionInputProps) => {
   const [mapModalOpen, setMapModalOpen] = useState(false);
 
@@ -57,7 +59,13 @@ export const GeolocateQuestion = ({
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
       <Container>
-        <LatLongFields geolocation={value} setGeolocation={onChange} name={name} />
+        <LatLongFields
+          geolocation={value}
+          setGeolocation={onChange}
+          name={name}
+          invalid={invalid}
+          required={required}
+        />
         <SeparatorText>or</SeparatorText>
         <ModalButton onClick={toggleMapModal}>
           <MapIcon />

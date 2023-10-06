@@ -8,5 +8,6 @@ export type {
   SurveyQuestionFieldProps,
   SurveyQuestionInputProps,
   SurveyScreenComponent,
+  SurveyScreen,
 } from './surveys';
 export * from './entity';

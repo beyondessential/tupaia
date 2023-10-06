@@ -27,7 +27,10 @@ interface TextInputProps
   extends Pick<FormControlLabelProps, 'label' | 'name' | 'onChange' | 'value'> {
   id?: string;
   ref?: React.Ref<HTMLInputElement>;
-  textInputProps?: TextFieldProps;
+  textInputProps?: TextFieldProps & {
+    min?: number;
+    max?: number;
+  };
 }
 export const TextInput = ({
   value,

@@ -39,9 +39,19 @@ const DateTimePicker = styled(BaseDateTimePicker).attrs({
 export const DateTimeQuestion = ({
   label,
   id,
-  controllerProps: { value, onChange, name, ref },
+  required,
+  controllerProps: { value, onChange, name, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
-    <DateTimePicker value={value} onChange={onChange} label={label} id={id} name={name} inputRef={ref} />
+    <DateTimePicker
+      value={value}
+      onChange={onChange}
+      label={label}
+      id={id}
+      name={name}
+      inputRef={ref}
+      error={invalid}
+      required={required}
+    />
   );
 };

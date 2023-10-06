@@ -84,10 +84,10 @@ export const AutocompleteQuestion = ({
   name,
   optionSetId,
   config = {},
-  controllerProps: { value: selectedValue = null, onChange, ref },
+  controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
   const [inputValue, setInputValue] = useState('');
-  const { autocomplete = {} } = config;
+  const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
     optionSetId,
@@ -146,7 +146,7 @@ export const AutocompleteQuestion = ({
   return (
     <Autocomplete
       id={id}
-      label={label}
+      label={label!}
       name={name!}
       value={selectedValue?.value || null}
       onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
@@ -159,7 +159,7 @@ export const AutocompleteQuestion = ({
       }
       getOptionSelected={getOptionSelected}
       loading={isLoading || !isFetched}
-      error={isError}
+      error={isError || invalid}
       helperText={error ? (error as Error).message : ''}
       placeholder="Search..."
       muiProps={{

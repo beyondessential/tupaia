@@ -12,6 +12,7 @@ const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  margin-top: 0.9rem;
 `;
 
 const ResultItem = ({ name, parentName }) => {

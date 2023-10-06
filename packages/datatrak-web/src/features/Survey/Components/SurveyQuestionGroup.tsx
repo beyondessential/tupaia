@@ -2,7 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyQuestion } from './SurveyQuestion';
@@ -30,29 +32,52 @@ const QuestionNumber = styled(Typography)`
  * This is the component that renders questions in a survey.
  */
 export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComponent[] }) => {
+  const { setError, errors } = useFormContext();
+  const location = useLocation() as { state: { errors?: string } };
+
+  // Set errors from location state, if any. This is so that we can show errors from the review screen
+  useEffect(() => {
+    if (location?.state?.errors) {
+      const parsedErrors = JSON.parse(location.state.errors);
+      Object.entries(parsedErrors).forEach(([questionId, error]) => {
+        setError(questionId, error);
+      });
+    }
+  }, [location?.state?.errors]);
+
+  // focus the first error. This is mainly for when the user is directed from the review screen, because we have to manually set them
+  useEffect(() => {
+    if (errors && Object.keys(errors).length > 0) {
+      const firstError = Object.values(errors)[0] as {
+        ref: {
+          focus: () => void;
+        };
+      };
+      if (firstError && firstError?.ref) {
+        firstError?.ref?.focus();
+      }
+    }
+  }, [JSON.stringify(errors)]);
   return (
     <>
       {questions?.map(
         ({
           questionId,
-          questionCode,
-          questionText,
-          questionType,
-          questionOptions,
+          code,
+          text,
+          type,
+          options,
           config,
-          questionLabel,
+          label,
           validationCriteria,
           detailLabel,
-          questionOptionSetId,
+          optionSetId,
           questionNumber,
           updateFormDataOnChange,
         }) => {
-          if (validationCriteria?.mandatory === true) {
-            console.log('mandatory question', questionCode);
-          }
           return (
-            <QuestionWrapper key={questionId} $isInstruction={questionType === 'Instruction'}>
-              {questionType !== 'Instruction' && (
+            <QuestionWrapper key={questionId} $isInstruction={type === 'Instruction'}>
+              {type !== 'Instruction' && (
                 <QuestionNumber id={`question_number_${questionId}`}>
                   {questionNumber}
                 </QuestionNumber>
@@ -60,15 +85,16 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
               <SurveyQuestion
                 detailLabel={detailLabel}
                 id={questionId}
-                code={questionCode}
+                code={code}
                 name={questionId}
-                type={questionType}
-                text={detailLabel || questionText}
-                options={questionOptions}
+                type={type}
+                text={detailLabel || text}
+                options={options}
                 config={config}
-                label={questionLabel || questionText}
-                optionSetId={questionOptionSetId}
+                label={label || text}
+                optionSetId={optionSetId}
                 updateFormDataOnChange={updateFormDataOnChange}
+                validationCriteria={validationCriteria}
               />
             </QuestionWrapper>
           );

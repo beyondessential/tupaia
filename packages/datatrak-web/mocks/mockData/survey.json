@@ -3,16 +3,394 @@
   "name": "Demo Land Sections 1-3",
   "code": "DLS13",
   "permissionGroupId": "5d4a1db1f013d6320f2db52e",
-  "countryIds": [
-    "59085f69fc6a0715dae508f6"
-  ],
+  "countryIds": ["59085f69fc6a0715dae508f6"],
   "canRepeat": false,
   "surveyGroupId": "6412504dec4eba308501792d",
   "integrationMetadata": {},
   "periodGranularity": null,
   "requiresApproval": false,
   "dataGroupId": "6412504dec4eba308501792e",
-  "countryNames": [
-    "Kiribati"
+  "countryNames": ["Kiribati"],
+  "screens": [
+    {
+      "id": "1",
+      "screenNumber": 1,
+      "surveyScreenComponents": [
+        {
+          "id": "1",
+          "questionId": "1",
+          "componentId": "1",
+          "componentNumber": 1,
+          "config": {
+            "entity": {
+              "type": ["district"],
+              "createNew": false
+            }
+          },
+          "name": "Select Kiribati Archipelago",
+          "code": "SELECT_KI_Archipelago",
+          "text": "Select Kiribati Archipelago",
+          "type": "Entity"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "screenNumber": 2,
+      "surveyScreenComponents": [
+        {
+          "id": "2",
+          "questionId": "2",
+          "componentId": "2",
+          "componentNumber": 1,
+          "config": {
+            "entity": {
+              "type": ["sub_district"],
+              "createNew": false,
+              "parentId": {
+                "questionId": "603597d461f76a42af02a366"
+              }
+            }
+          },
+          "name": "Select Kiribati Council",
+          "code": "SELECT_KI_Council",
+          "text": "Select Kiribati Council",
+          "type": "Entity"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "screenNumber": 3,
+      "surveyScreenComponents": [
+        {
+          "id": "3",
+          "componentId": "3",
+          "questionId": "603597d461f76a42af02a36f",
+          "screenId": "3",
+          "componentNumber": 1,
+          "config": {
+            "entity": {
+              "type": ["facility"],
+              "createNew": false,
+              "parentId": {
+                "questionId": ""
+              },
+              "grandparentId": {
+                "questionId": "603597d461f76a42af02a366"
+              }
+            }
+          },
+          "name": "Select Kiribati Facility",
+          "code": "SELECT_KI_Facility",
+          "text": "Select Kiribati Facility",
+          "type": "PrimaryEntity"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "screenNumber": 4,
+      "surveyScreenComponents": [
+        {
+          "id": "4",
+          "questionId": "4",
+          "screenId": "6412504dec4eba3085017947",
+          "componentNumber": 1,
+          "componentId": "4",
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {},
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Kiribati HIS: Name of nurse / MA",
+          "code": "MCSR7",
+          "text": "Name of nurse / MA",
+          "type": "FreeText",
+          "options": [],
+          "optionSetId": null
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "screenNumber": 5,
+      "surveyScreenComponents": [
+        {
+          "id": "5",
+          "questionId": "5",
+          "componentId": "5",
+          "screenId": "6412504dec4eba3085017947",
+          "componentNumber": 2,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Month",
+          "code": "MCSR8",
+          "text": "Month",
+          "type": "Radio",
+          "options": [
+            {
+              "label": "January",
+              "value": "January"
+            },
+            {
+              "label": "February",
+              "value": "February"
+            },
+            {
+              "label": "March",
+              "value": "March"
+            },
+            {
+              "label": "April",
+              "value": "April"
+            },
+            {
+              "label": "May",
+              "value": "May"
+            },
+            {
+              "label": "June",
+              "value": "June"
+            },
+            {
+              "label": "July",
+              "value": "July"
+            },
+            {
+              "label": "August",
+              "value": "August"
+            },
+            {
+              "label": "September",
+              "value": "September"
+            },
+            {
+              "label": "October",
+              "value": "October"
+            },
+            {
+              "label": "November",
+              "value": "November"
+            },
+            {
+              "label": "December",
+              "value": "December"
+            }
+          ],
+          "optionSetId": null
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "screenNumber": 6,
+      "surveyScreenComponents": [
+        {
+          "id": "6",
+          "questionId": "6",
+          "screenId": "6412504dec4eba3085017947",
+          "componentId": "6",
+          "componentNumber": 3,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Year",
+          "code": "MCSR9",
+          "text": "Year",
+          "type": "Number",
+          "options": [],
+          "optionSetId": null
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "screenNumber": 7,
+      "surveyScreenComponents": [
+        {
+          "id": "7",
+          "questionId": "7",
+          "componentId": "7",
+          "screenId": "6412504dec4eba3085017948",
+          "componentNumber": 1,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Is the facility open?",
+          "code": "MCSR9",
+          "text": "Is the facility open?",
+          "type": "Radio",
+          "options": [
+            {
+              "label": "Open",
+              "value": "open"
+            },
+            {
+              "label": "Permanently closed",
+              "value": "permanently closed"
+            },
+            {
+              "label": "Temporarily closed",
+              "value": "temporarily closed"
+            }
+          ],
+          "optionSetId": null
+        },
+        {
+          "id": "8",
+          "questionId": "8",
+          "componentId": "8",
+          "screenId": "6412504dec4eba3085017948",
+          "componentNumber": 2,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {
+            "7": ["permanently closed", "temporarily closed"]
+          },
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Why is the facility closed?",
+          "code": "MCSR10",
+          "text": "Why is the facility closed?",
+          "type": "Radio",
+          "options": [
+            {
+              "label": "Hazards",
+              "value": "hazards"
+            },
+            {
+              "label": "Lack of staff",
+              "value": "lack of staff"
+            },
+            {
+              "label": "Lack of supplies",
+              "value": "lack of supplies"
+            },
+            {
+              "label": "Other",
+              "value": "other"
+            }
+          ],
+          "optionSetId": null
+        },
+        {
+          "id": "9",
+          "questionId": "9",
+          "componentId": "9",
+          "screenId": "6412504dec4eba3085017948",
+          "componentNumber": 3,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {
+            "7": ["temporarily closed"],
+            "8": ["lack of staff"],
+            "_conjunction": "and"
+          },
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "How many staff do you have?",
+          "code": "MCSR10a",
+          "text": "How many staff do you have?",
+          "type": "Number",
+          "options": [],
+          "optionSetId": null
+        },
+        {
+          "id": "10",
+          "questionId": "10",
+          "componentId": "10",
+          "screenId": "6412504dec4eba3085017948",
+          "componentNumber": 4,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {
+            "7": ["temporarily closed"],
+            "8": "lack of staff",
+            "_conjunction": "and"
+          },
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "How many staff do you need?",
+          "code": "MCSR10b",
+          "text": "How many staff do you need?",
+          "type": "Number",
+          "options": [],
+          "optionSetId": null
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "screenNumber": 8,
+      "surveyScreenComponents": [
+        {
+          "id": "11",
+          "questionId": "11",
+          "componentId": "11",
+          "screenId": "6412504dec4eba3085017949",
+          "componentNumber": 1,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {
+            "7": ["open"]
+          },
+          "validationCriteria": {
+            "mandatory": true
+          },
+          "label": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Does the facility have staff housing?",
+          "code": "MCSR10",
+          "text": "Does the facility have staff housing?",
+          "type": "Binary",
+          "options": [
+            {
+              "label": "Yes",
+              "value": "yes"
+            },
+            {
+              "label": "No",
+              "value": "no"
+            }
+          ],
+          "optionSetId": null
+        }
+      ]
+    }
   ]
 }

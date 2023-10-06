@@ -4,12 +4,12 @@
  */
 
 import { useQuery } from 'react-query';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { get } from '../api';
-import { DatatrakWebSurveysRequest } from '@tupaia/types';
 
 export const useSurvey = (surveyCode?: string) => {
   return useQuery(
     ['survey', surveyCode],
-    (): Promise<DatatrakWebSurveysRequest.ResBody[number]> => get(`surveys/${surveyCode}`),
+    (): Promise<DatatrakWebSurveyRequest.ResBody> => get(`surveys/${surveyCode}`),
   );
 };

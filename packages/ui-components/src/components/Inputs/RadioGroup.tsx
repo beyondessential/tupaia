@@ -86,6 +86,7 @@ interface RadioGroupProps {
   id?: string;
   inputRef?: React.Ref<HTMLInputElement>;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
+  required?: boolean;
 }
 
 export const RadioGroup = ({
@@ -103,12 +104,13 @@ export const RadioGroup = ({
   id,
   inputRef,
   inputProps,
+  required,
 }: RadioGroupProps) => (
   <FormControl component="fieldset" className={className} color="primary" id={id}>
     <InputLabel as={Legend} label={label} tooltip={tooltip} />
     {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
     <StyledRadioGroup name={name} value={value} onChange={onChange}>
-      {options.map(option => (
+      {options.map((option, i) => (
         <FormControlLabel
           control={
             <Radio
@@ -116,6 +118,7 @@ export const RadioGroup = ({
               inputProps={{
                 'aria-describedby': helperText ? `${name}-helperText` : undefined,
                 ...(inputProps || {}),
+                required: required && i === 0, // only the first radio button is required for a radio group if it is required
               }}
             />
           }
