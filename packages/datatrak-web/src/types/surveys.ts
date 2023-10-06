@@ -3,13 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { ControllerRenderProps } from 'react-hook-form';
-import { DatatrakWebSurveysRequest, DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
-export type Survey = DatatrakWebSurveysRequest.ResBody[number];
+export type Survey = DatatrakWebSurveyRequest.ResBody;
+export type SurveyScreen = Survey['screens'][number];
 
-export type SurveyScreenComponent = DatatrakWebSurveyScreenComponentsRequest.ResBody[number] & {
-  questionNumber?: string;
+export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][0] & {
   updateFormDataOnChange?: boolean;
+  questionNumber?: string;
 };
 
 export type SurveyParams = {
@@ -19,27 +20,21 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = Pick<
+export type SurveyQuestionFieldProps = Omit<
   SurveyScreenComponent,
-  'updateFormDataOnChange' | 'validationCriteria'
+  'componentNumber' | 'questionId'
 > & {
-  id: string;
-  name: SurveyScreenComponent['questionCode'];
-  label?: string;
-  code?: SurveyScreenComponent['questionCode'];
-  text?: string;
-  config?: any;
-  type?: string;
-  detailLabel?: string | null;
-  options?: SurveyScreenComponent['questionOptions'];
-  optionSetId?: SurveyScreenComponent['questionOptionSetId'];
+  name: SurveyScreenComponent['code'];
+  id: SurveyScreenComponent['questionId'];
 };
 
-export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
+export type SurveyQuestionInputProps = Omit<SurveyQuestionFieldProps, 'type' | 'text'> & {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };
   required?: boolean;
   min?: number;
   max?: number;
+  type?: SurveyQuestionFieldProps['type'];
+  text?: SurveyQuestionFieldProps['text'];
 };
