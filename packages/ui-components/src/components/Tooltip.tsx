@@ -13,17 +13,19 @@ const TOOLTIP_COLOR = '#002d47';
 // https://github.com/mui-org/material-ui/issues/11467
 
 // For placement options @see https://material-ui.com/api/tooltip
-export const Tooltip = styled((props: TooltipProps) => (
-  <MuiTooltip
-    {...props}
-    classes={{ popper: props.className }}
-    placement={props.placement || 'top'}
-    enterDelay={props.enterDelay || 1000}
-    enterNextDelay={props.enterDelay || 1000}
-    enterTouchDelay={props.enterDelay || 1000}
-    arrow
-  />
-))`
+export const Tooltip = styled(
+  ({ className, placement = 'top', enterDelay = 1000, ...props }: TooltipProps) => (
+    <MuiTooltip
+      {...props}
+      classes={{ popper: className }}
+      placement={placement}
+      enterDelay={enterDelay}
+      enterNextDelay={enterDelay}
+      enterTouchDelay={enterDelay}
+      arrow
+    />
+  ),
+)`
   & .MuiTooltip-tooltip {
     background-color: ${TOOLTIP_COLOR};
     color: white;
