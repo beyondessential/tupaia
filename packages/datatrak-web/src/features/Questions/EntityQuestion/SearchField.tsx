@@ -42,21 +42,16 @@ const ClearButton = styled(IconButton)`
   padding: 0.5rem;
   font-size: 0.9rem;
 `;
+
 type SearchFieldProps = TextFieldProps & {
   searchValue: string;
   onChangeSearch: (value: string) => void;
   isDirty: boolean;
+  invalid: boolean;
 };
 
-export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>(props, ref) => {
-  const {
-    name,
-    label,
-    id,
-    searchValue,
-    onChangeSearch,
-    isDirty,
-    invalid, } = props;
+export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
+  const { name, label, id, searchValue, onChangeSearch, isDirty, invalid } = props;
 
   const displayValue = isDirty ? searchValue : '';
 

@@ -91,7 +91,7 @@ export const EntityQuestion = ({
         searchValue={searchValue}
         invalid={invalid}
       />
-      {errors[name] && <FormHelperText error>*{errors[name].message}</FormHelperText>}
+      {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
       {!isFetched || isLoading ? (
         <SpinningLoader />
       ) : (

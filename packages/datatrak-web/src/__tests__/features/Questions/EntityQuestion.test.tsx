@@ -16,6 +16,14 @@ jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
   }),
 }));
 
+jest.mock('react-hook-form', () => {
+  const actual = jest.requireActual('react-hook-form');
+  return {
+    ...actual,
+    useFormContext: jest.fn().mockReturnValue({ errors: {} }),
+  };
+});
+
 const entitiesData = [
   {
     id: '5d3f8844bf6b4031bfff591b',
