@@ -13,6 +13,13 @@ import { successToast } from '../../../utils';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
 
+jest.mock('../../../api/queries', () => {
+  return {
+    useUser: jest.fn().mockReturnValue({}),
+    useSurvey: jest.fn().mockReturnValue({}),
+  };
+});
+
 // Mock out the useSurveyResponseData hook so that we don't need tp mock out everything that that hook uses
 jest.mock('../../../api/mutations', () => {
   const actual = jest.requireActual('../../../api/mutations');
