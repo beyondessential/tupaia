@@ -11,7 +11,7 @@ export {
   DatatrakWebProjectsRequest,
   DatatrakWebUserRequest,
   DatatrakWebSurveysRequest,
-  DatatrakWebSurveyScreenComponentsRequest,
+  DatatrakWebSurveyRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebCountryAccessListRequest,

@@ -63,20 +63,20 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
       {questions?.map(
         ({
           questionId,
-          questionCode,
-          questionText,
-          questionType,
-          questionOptions,
+          code,
+          text,
+          type,
+          options,
           config,
-          questionLabel,
+          label,
           validationCriteria,
           detailLabel,
-          questionOptionSetId,
+          optionSetId,
           questionNumber,
           updateFormDataOnChange,
         }) => {
           return (
-            <QuestionWrapper key={questionId} $isInstruction={questionType === 'Instruction'}>
+            <QuestionWrapper key={questionId} $isInstruction={type === 'Instruction'}>
               {questionNumber && (
                 <QuestionNumber id={`question_number_${questionId}`}>
                   {questionNumber}
@@ -85,14 +85,14 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
               <SurveyQuestion
                 detailLabel={detailLabel}
                 id={questionId}
-                code={questionCode}
+                code={code}
                 name={questionId}
-                type={questionType}
-                text={detailLabel || questionText}
-                options={questionOptions}
+                type={type}
+                text={detailLabel || text}
+                options={options}
                 config={config}
-                label={questionLabel || questionText}
-                optionSetId={questionOptionSetId}
+                label={label || text}
+                optionSetId={optionSetId}
                 updateFormDataOnChange={updateFormDataOnChange}
                 validationCriteria={validationCriteria}
               />

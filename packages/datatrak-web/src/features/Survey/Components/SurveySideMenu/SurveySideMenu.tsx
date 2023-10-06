@@ -116,13 +116,13 @@ export const SurveySideMenu = () => {
             const num = i + 1;
             return (
               <SurveyMenuItem
-                key={screen[0].questionId}
+                key={screen.id}
                 to={`../${num}`}
                 $active={screenNumber === num}
                 onClick={onChangeScreen}
               >
                 <SurveyScreenNumber>{num}:</SurveyScreenNumber>
-                <SurveyScreenTitle>{screen[0].questionText}</SurveyScreenTitle>
+                <SurveyScreenTitle>{screen.surveyScreenComponents[0].text}</SurveyScreenTitle>
               </SurveyMenuItem>
             );
           })}

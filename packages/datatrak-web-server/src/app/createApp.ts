@@ -20,8 +20,6 @@ import {
   SurveysRequest,
   ProjectsRoute,
   ProjectsRequest,
-  SurveyScreenComponentsRoute,
-  SurveyScreenComponentsRequest,
   SurveyRequest,
   SurveyRoute,
   EntitiesRequest,
@@ -45,10 +43,6 @@ export function createApp() {
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
-    .get<SurveyScreenComponentsRequest>(
-      'surveys/:surveyCode/surveyScreenComponents',
-      handleWith(SurveyScreenComponentsRoute),
-    )
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .build();

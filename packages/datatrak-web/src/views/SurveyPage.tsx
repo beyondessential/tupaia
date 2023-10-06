@@ -6,7 +6,7 @@ import React from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { useSurveyScreenComponents } from '../api/queries';
+import { useSurvey } from '../api/queries';
 import { SurveyContext, SurveyToolbar } from '../features';
 import { SurveyParams } from '../types';
 
@@ -19,7 +19,7 @@ const PageWrapper = styled.div`
 
 export const SurveyPage = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
-  const { isLoading } = useSurveyScreenComponents(surveyCode);
+  const { isLoading } = useSurvey(surveyCode);
 
   if (isLoading) {
     return <FullPageLoader />;
