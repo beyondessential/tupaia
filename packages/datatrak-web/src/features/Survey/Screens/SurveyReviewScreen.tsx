@@ -74,15 +74,15 @@ export const SurveyReviewScreen = () => {
   if (!visibleScreens || !visibleScreens.length) return null;
 
   // split the questions into sections by screen so it's easier to read the long form
-  const questionSections = visibleScreens.map((screenComponents, i) => {
+  const questionSections = visibleScreens.map(({ surveyScreenComponents }, i) => {
     const screenNumber = i + 1;
-    const heading = screenComponents[0].text;
-    const firstQuestionIsInstruction = screenComponents[0].type === 'Instruction';
+    const heading = surveyScreenComponents[0].text;
+    const firstQuestionIsInstruction = surveyScreenComponents[0].type === 'Instruction';
 
     // if the first question is an instruction, don't display it, because it will be displayed as the heading
     const questionsToDisplay = firstQuestionIsInstruction
-      ? screenComponents.slice(1)
-      : screenComponents;
+      ? surveyScreenComponents.slice(1)
+      : surveyScreenComponents;
     return {
       heading,
       questions: formatSurveyScreenQuestions(questionsToDisplay, screenNumber),

@@ -47,7 +47,7 @@ export const TextQuestion = ({
         value={value}
         textInputProps={{
           ['aria-describedby']: `question_number_${id}`,
-          type: FIELD_TYPES[type as FIELD_TYPES],
+          type: FIELD_TYPES[(type as unknown) as FIELD_TYPES],
           placeholder: 'Enter your answer here',
           error: invalid,
           required,

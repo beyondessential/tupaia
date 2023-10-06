@@ -186,8 +186,8 @@ export const SurveyLayout = () => {
 
     // Group the errors by screen number, so that we can easily navigate to the first screen with errors
     const errorFieldsByPage = Object.entries(errors).reduce((acc, [questionId, error]) => {
-      const screenIndex = visibleScreens?.findIndex(screen =>
-        screen.find(question => question.questionId === questionId),
+      const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
+        surveyScreenComponents.find(question => question.questionId === questionId),
       );
 
       if (!screenIndex || screenIndex === -1) return acc;

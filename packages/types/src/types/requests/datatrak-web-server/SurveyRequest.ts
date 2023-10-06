@@ -23,25 +23,56 @@ type ValidationCriteria = {
   max?: number;
 };
 
-type SurveyScreenComponent = Omit<
-  BaseSurveyScreenComponent,
-  'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'screen_id'
-> &
-  Question & {
+// Separating these out because sometimes the camel casing of Record<string, unknown> is not then identitied as still being a Record<string, unknown>
+
+type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options'>>;
+
+type CamelCasedComponent = KeysToCamelCase<
+  Omit<
+    BaseSurveyScreenComponent,
+    'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'screen_id'
+  >
+>;
+
+export type CodeGeneratorConfig = {
+  type: 'shortid' | 'mongoid';
+  prefix?: string;
+  length?: number;
+  chunkLength?: number;
+  alphabet?: string;
+};
+
+export type AutocompleteConfig = {
+  createNew?: boolean;
+  attributes?: {
+    [key: string]: { questionId: Question['id'] };
+  };
+};
+
+type Config = {
+  codeGenerator?: CodeGeneratorConfig;
+  autocomplete?: AutocompleteConfig;
+};
+
+type SurveyScreenComponent = CamelCasedComponent &
+  CamelCasedQuestion & {
     visibilityCriteria?: VisibilityCriteria;
     validationCriteria?: ValidationCriteria;
-    config?: Record<string, unknown> | null;
+    config?: Config | null;
     componentId?: BaseSurveyScreenComponent['id'];
     label?: BaseSurveyScreenComponent['question_label'];
+    options?: Record<string, unknown>[] | null;
   };
 
-type SurveyScreen = Pick<BaseSurveyScreen, 'id' | 'screen_number'> & {
+type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;
+
+type SurveyScreen = CamelCasedSurveyScreen & {
   surveyScreenComponents: SurveyScreenComponent[];
 };
 
 type SurveyResponse = KeysToCamelCase<Survey> & {
   surveyGroupName?: string | null;
-  screens: KeysToCamelCase<SurveyScreen>[];
+  screens: SurveyScreen[];
   countryNames?: string[];
 };
 

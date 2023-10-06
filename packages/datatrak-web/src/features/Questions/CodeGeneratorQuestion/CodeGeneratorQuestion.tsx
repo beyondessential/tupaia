@@ -41,10 +41,11 @@ export const CodeGeneratorQuestion = ({
   controllerProps: { onChange, value, ref },
   ...props
 }: SurveyQuestionInputProps) => {
+  const { codeGenerator } = config || {};
   useEffect(() => {
     if (!value) {
       const newCode =
-        config.codeGenerator.type === SHORT_ID ? generateShortId(config) : generateMongoId();
+        codeGenerator?.type === SHORT_ID ? generateShortId(codeGenerator) : generateMongoId();
       onChange(newCode);
     }
   }, []);

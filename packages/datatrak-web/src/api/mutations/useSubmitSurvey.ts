@@ -77,7 +77,7 @@ export const processSurveyResponse = ({
 
   for (const question of questions) {
     const { questionId, type, componentId } = question;
-    const answer = answers[id];
+    const answer = answers[questionId];
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }

@@ -6,9 +6,9 @@ import { ControllerRenderProps } from 'react-hook-form';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
 export type Survey = DatatrakWebSurveyRequest.ResBody;
-export type SurveyScreen = DatatrakWebSurveyRequest.ResBody['screens'][number];
+export type SurveyScreen = Survey['screens'][number];
 
-export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][number] & {
+export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][0] & {
   updateFormDataOnChange?: boolean;
   questionNumber?: string;
 };
@@ -28,11 +28,13 @@ export type SurveyQuestionFieldProps = Omit<
   id: SurveyScreenComponent['questionId'];
 };
 
-export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
+export type SurveyQuestionInputProps = Omit<SurveyQuestionFieldProps, 'type' | 'text'> & {
   controllerProps: ControllerRenderProps & {
     invalid?: boolean;
   };
   required?: boolean;
   min?: number;
   max?: number;
+  type?: SurveyQuestionFieldProps['type'];
+  text?: SurveyQuestionFieldProps['text'];
 };
