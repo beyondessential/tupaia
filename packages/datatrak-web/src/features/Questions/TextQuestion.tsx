@@ -7,11 +7,18 @@ import React from 'react';
 import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 import { TextInput } from '../../components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 3.5rem);
   .MuiFormControlLabel-root {
-    width: calc(100% - 3.5rem);
+    width: 100%;
+  }
+  .MuiFormControlLabel-label {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    @media (min-width: ${MOBILE_BREAKPOINT}) {
+      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    }
   }
 `;
 
@@ -25,7 +32,10 @@ export const TextQuestion = ({
   label,
   name,
   type,
-  controllerProps: { onChange, value = '', ref },
+  required,
+  min,
+  max,
+  controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
     <Wrapper>
@@ -39,6 +49,10 @@ export const TextQuestion = ({
           ['aria-describedby']: `question_number_${id}`,
           type: FIELD_TYPES[type as FIELD_TYPES],
           placeholder: 'Enter your answer here',
+          error: invalid,
+          required,
+          min,
+          max,
         }}
       />
     </Wrapper>

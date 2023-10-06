@@ -16,11 +16,11 @@ const DatePicker = styled(BaseDatePicker).attrs({
   fullWidth: false,
   TextFieldComponent: TextField,
 })`
+  width: 100%;
+  max-width: 25rem;
   .MuiFormLabel-root {
     transform: none;
-    color: ${props => props.theme.palette.text.primary};
     position: static;
-    line-height: 1.5;
   }
   label + .MuiInput-formControl {
     margin-top: 0.3rem;
@@ -39,7 +39,8 @@ const DatePicker = styled(BaseDatePicker).attrs({
 export const DateQuestion = ({
   label,
   id,
-  controllerProps: { onChange, value, name, ref },
+  required,
+  controllerProps: { onChange, value, name, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
     <DatePicker
@@ -49,6 +50,8 @@ export const DateQuestion = ({
       id={id}
       name={name}
       inputRef={ref}
+      error={invalid}
+      required={required}
     />
   );
 };

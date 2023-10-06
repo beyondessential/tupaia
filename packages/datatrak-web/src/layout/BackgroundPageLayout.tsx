@@ -7,7 +7,7 @@ import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { PageContainer } from '../components';
-import { HEADER_HEIGHT } from '../constants';
+import { HEADER_HEIGHT, MOBILE_HEADER_HEIGHT } from '../constants';
 
 export const Background = styled.div<{
   $backgroundImage?: string;
@@ -17,8 +17,11 @@ export const Background = styled.div<{
   background-image: ${({ $backgroundImage }) => `url(${$backgroundImage})`};
   background-position: top center;
   background-size: cover;
-  min-height: calc(100vh - ${HEADER_HEIGHT});
+  min-height: calc(100vh - ${MOBILE_HEADER_HEIGHT});
   display: flex;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    min-height: calc(100vh - ${HEADER_HEIGHT});
+  }
 `;
 
 export const BackgroundPageLayout = ({ backgroundImage }: { backgroundImage?: string }) => {

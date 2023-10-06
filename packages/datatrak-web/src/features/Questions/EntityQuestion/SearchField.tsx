@@ -10,10 +10,14 @@ import { Search, Clear } from '@material-ui/icons';
 import { InputAdornment, IconButton, TextFieldProps } from '@material-ui/core';
 
 const StyledField = styled(TextField)<TextFieldProps>`
-  margin-bottom: 0.9rem;
+  margin-bottom: 0;
 
   .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.divider};
+  }
+
+  .MuiInputBase-root.Mui-error {
+    background: initial;
   }
 
   .MuiInputBase-input {
@@ -38,15 +42,22 @@ const ClearButton = styled(IconButton)`
   padding: 0.5rem;
   font-size: 0.9rem;
 `;
-
 type SearchFieldProps = TextFieldProps & {
   searchValue: string;
   onChangeSearch: (value: string) => void;
   isDirty: boolean;
 };
 
-export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
-  const { name, label, id, searchValue, onChangeSearch, isDirty } = props;
+export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>(props, ref) => {
+  const {
+    name,
+    label,
+    id,
+    searchValue,
+    onChangeSearch,
+    isDirty,
+    invalid, } = props;
+
   const displayValue = isDirty ? searchValue : '';
 
   const handleClear = () => {
@@ -65,6 +76,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
       inputRef={ref}
       onChange={handleChange}
       value={displayValue}
+      error={invalid}
       placeholder="Search..."
       // disable browser autofill
       autoComplete="one-time-code"

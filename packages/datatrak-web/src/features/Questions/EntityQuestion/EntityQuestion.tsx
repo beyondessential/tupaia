@@ -5,6 +5,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useFormContext } from 'react-hook-form';
+import { FormHelperText } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
 import { useEntities, useEntity, useUser } from '../../../api/queries';
@@ -41,9 +43,10 @@ export const EntityQuestion = ({
   id,
   label,
   name,
-  controllerProps: { onChange, value, ref },
+  controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
+  const { errors } = useFormContext();
   const [isDirty, setIsDirty] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -86,7 +89,9 @@ export const EntityQuestion = ({
         ref={ref}
         onChangeSearch={onChangeSearch}
         searchValue={searchValue}
+        invalid={invalid}
       />
+      {errors[name] && <FormHelperText error>*{errors[name].message}</FormHelperText>}
       {!isFetched || isLoading ? (
         <SpinningLoader />
       ) : (

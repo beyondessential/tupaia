@@ -24,11 +24,16 @@ const LoadingContainer = styled.div`
   flex: 1;
 `;
 
-const ListWrapper = styled.div`
-  max-height: 35rem;
+const ListWrapper = styled.div<{
+  $variant?: 'modal' | 'page';
+}>`
+  max-height: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   display: flex;
   flex-direction: column;
   overflow: auto;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    max-height: 35rem;
+  }
 `;
 
 interface ProjectSelectFormProps {
@@ -111,7 +116,7 @@ export const ProjectSelectForm = ({
           <SpinningLoader />
         </LoadingContainer>
       ) : (
-        <ListWrapper>
+        <ListWrapper $variant={variant}>
           <SelectList
             items={projectOptions}
             label="Select a project from the list below. You can change the project at any time"
