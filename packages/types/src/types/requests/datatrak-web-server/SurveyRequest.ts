@@ -23,20 +23,25 @@ type ValidationCriteria = {
   max?: number;
 };
 
-type SurveyScreenComponent = BaseSurveyScreenComponent &
-  KeysToCamelCase<Question> & {
+type SurveyScreenComponent = Omit<
+  BaseSurveyScreenComponent,
+  'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'screen_id'
+> &
+  Question & {
     visibilityCriteria?: VisibilityCriteria;
     validationCriteria?: ValidationCriteria;
     config?: Record<string, unknown> | null;
     componentId?: BaseSurveyScreenComponent['id'];
+    label?: BaseSurveyScreenComponent['question_label'];
   };
+
 type SurveyScreen = Pick<BaseSurveyScreen, 'id' | 'screen_number'> & {
   surveyScreenComponents: SurveyScreenComponent[];
 };
 
 type SurveyResponse = KeysToCamelCase<Survey> & {
   surveyGroupName?: string | null;
-  screens: SurveyScreen[];
+  screens: KeysToCamelCase<SurveyScreen>[];
   countryNames?: string[];
 };
 

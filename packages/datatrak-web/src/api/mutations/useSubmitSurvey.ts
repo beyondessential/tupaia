@@ -76,7 +76,7 @@ export const processSurveyResponse = ({
   const answersToSubmit = [] as Record<string, unknown>[];
 
   for (const question of questions) {
-    const { id, type, componentId } = question;
+    const { questionId, type, componentId } = question;
     const answer = answers[id];
     if (answer === undefined || answer === null || answer === '') {
       continue;
@@ -85,7 +85,7 @@ export const processSurveyResponse = ({
     // base answer object to be added to the answers array
     const answerObject = {
       id: componentId,
-      question_id: id,
+      question_id: questionId,
       type,
       body: answer,
     };

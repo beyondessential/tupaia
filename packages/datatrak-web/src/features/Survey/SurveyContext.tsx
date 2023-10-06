@@ -110,11 +110,19 @@ export const SurveyContext = ({ children }) => {
   const { formData } = state;
 
   const surveyScreens = survey?.screens || [];
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
 
-  // filter out screens that have no visible questions
-  const visibleScreens = surveyScreens.filter(screen =>
-    screen.surveyScreenComponents.some(question => getIsQuestionVisible(question, formData)),
-  );
+  // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
+  const visibleScreens = surveyScreens
+    .map(screen => {
+      return {
+        ...screen,
+        surveyScreenComponents: screen.surveyScreenComponents.filter(question =>
+          getIsQuestionVisible(question, formData),
+        ),
+      };
+    })
+    .filter(screen => screen.surveyScreenComponents.length > 0);
 
   const numberOfScreens = visibleScreens.length;
   const isLast = screenNumber === numberOfScreens;
@@ -122,40 +130,30 @@ export const SurveyContext = ({ children }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   const getDisplayQuestions = () => {
-    const flattenedScreenComponents = getAllSurveyComponents(survey?.screens);
     // If the first question is an instruction, don't render it since we always just
     // show the text of first questions as the heading. Format the questions with a question number to display
-    const visibleQuestions = (activeScreen?.length && activeScreen[0].type === 'Instruction'
+    const displayQuestions = (activeScreen?.length && activeScreen[0].type === 'Instruction'
       ? activeScreen.slice(1)
       : activeScreen
-    )
-      .filter(question => getIsQuestionVisible(question, formData))
-      .map(question => {
-        const { id } = question;
-        if (
-          flattenedScreenComponents?.some(component => {
-            return (
-              component?.visibilityCriteria &&
-              Object.keys(component?.visibilityCriteria).includes(id)
-            );
-          })
-        ) {
-          // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
-          return {
-            ...question,
-            updateFormDataOnChange: true,
-          };
-        }
-        return question;
-      });
-    return formatSurveyScreenQuestions(visibleQuestions, screenNumber!);
-  };
-
-  const getScreenHeader = () => {
-    if (activeScreen.length && activeScreen[0].text) {
-      return activeScreen[0].text;
-    }
-    return '';
+    ).map(question => {
+      const { questionId } = question;
+      if (
+        flattenedScreenComponents?.some(component => {
+          return (
+            component?.visibilityCriteria &&
+            Object.keys(component?.visibilityCriteria).includes(questionId)
+          );
+        })
+      ) {
+        // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
+        return {
+          ...question,
+          updateFormDataOnChange: true,
+        };
+      }
+      return question;
+    });
+    return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
   };
 
   useEffect(() => {
@@ -170,7 +168,7 @@ export const SurveyContext = ({ children }) => {
   }, [surveyCode]);
 
   const displayQuestions = getDisplayQuestions();
-  const screenHeader = getScreenHeader();
+  const screenHeader = activeScreen?.[0]?.text;
 
   return (
     <SurveyFormContext.Provider
@@ -209,13 +207,13 @@ export const useSurveyForm = () => {
     const updatedFormData = { ...formData, ...newFormData };
 
     flattenedScreenComponents?.forEach(component => {
-      const { id, visibilityCriteria } = component;
+      const { questionId, visibilityCriteria } = component;
       if (
         visibilityCriteria &&
         !getIsQuestionVisible(component, updatedFormData) &&
-        updatedFormData.hasOwnProperty(id)
+        updatedFormData.hasOwnProperty(questionId)
       ) {
-        delete updatedFormData[id];
+        delete updatedFormData[questionId];
       }
     });
 

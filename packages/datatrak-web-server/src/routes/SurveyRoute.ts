@@ -50,6 +50,7 @@ const formatComponent = (component: any) => {
     ...restOfComponent,
     // include the component and the question fields all in one object
     ...question,
+    questionId: question.id,
     validationCriteria: validationCriteria ? JSON.parse(validationCriteria) : null,
     visibilityCriteria: visibilityCriteria ? JSON.parse(visibilityCriteria) : null,
     config: config ? JSON.parse(config) : null,

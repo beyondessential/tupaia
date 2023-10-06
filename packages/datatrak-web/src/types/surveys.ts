@@ -10,6 +10,7 @@ export type SurveyScreen = DatatrakWebSurveyRequest.ResBody['screens'][number];
 
 export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][number] & {
   updateFormDataOnChange?: boolean;
+  questionNumber?: string;
 };
 
 export type SurveyParams = {
@@ -19,9 +20,12 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = SurveyScreenComponent & {
+export type SurveyQuestionFieldProps = Omit<
+  SurveyScreenComponent,
+  'componentNumber' | 'questionId'
+> & {
   name: SurveyScreenComponent['code'];
-  label?: string;
+  id: SurveyScreenComponent['questionId'];
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {

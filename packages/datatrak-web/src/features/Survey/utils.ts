@@ -19,7 +19,7 @@ export const formatSurveyScreenQuestions = (
 
   return questions.map(question => {
     const questionNumber = nonInstructionQuestions.findIndex(
-      nonInstructionQuestion => question.id === nonInstructionQuestion.id,
+      nonInstructionQuestion => question.questionId === nonInstructionQuestion.questionId,
     );
     if (questionNumber === -1) return question;
     return {
