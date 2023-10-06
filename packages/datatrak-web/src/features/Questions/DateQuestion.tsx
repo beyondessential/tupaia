@@ -39,7 +39,8 @@ const DatePicker = styled(BaseDatePicker).attrs({
 export const DateQuestion = ({
   label,
   id,
-  controllerProps: { onChange, value, name, ref },
+  required,
+  controllerProps: { onChange, value, name, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
     <DatePicker
@@ -49,6 +50,8 @@ export const DateQuestion = ({
       id={id}
       name={name}
       inputRef={ref}
+      error={invalid}
+      required={required}
     />
   );
 };

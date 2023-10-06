@@ -32,7 +32,10 @@ export const TextQuestion = ({
   label,
   name,
   type,
-  controllerProps: { onChange, value = '', ref },
+  required,
+  min,
+  max,
+  controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
     <Wrapper>
@@ -46,6 +49,10 @@ export const TextQuestion = ({
           ['aria-describedby']: `question_number_${id}`,
           type: FIELD_TYPES[type as FIELD_TYPES],
           placeholder: 'Enter your answer here',
+          error: invalid,
+          required,
+          min,
+          max,
         }}
       />
     </Wrapper>

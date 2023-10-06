@@ -25,5 +25,10 @@ export type SurveyQuestionFieldProps = SurveyScreenComponent & {
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {
-  controllerProps: ControllerRenderProps;
+  controllerProps: ControllerRenderProps & {
+    invalid?: boolean;
+  };
+  required?: boolean;
+  min?: number;
+  max?: number;
 };
