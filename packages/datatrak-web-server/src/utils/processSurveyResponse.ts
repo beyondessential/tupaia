@@ -2,59 +2,54 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
-import { DatatrakWebSubmitSurveyRequest as RequestT, UserAccount } from '@tupaia/types';
-import { isUpsertEntityQuestion } from './utils';
-import { Entity, Survey, SurveyScreenComponent } from '../../../types';
+import {
+  DatatrakWebSubmitSurveyRequest as RequestT,
+  MeditrakSurveyResponseRequest,
+} from '@tupaia/types';
+import { buildUpsertEntity } from './buildUpsertEntity';
 
-type AutocompleteAnswer = {
-  isNew?: boolean;
-  optionSetId: string;
-  value: string;
-  label: string;
-};
-
-type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
-
-export type AnswersT = Record<string, Answer>;
-
-type SurveyResponseData = {
-  userId?: UserAccount['id'];
-  surveyId?: Survey['id'];
-  countryId?: Entity['id'];
-  questions?: SurveyScreenComponent[];
-  answers?: AnswersT;
-  surveyStartTime?: string;
+export const isUpsertEntityQuestion = (config?: RequestT.EntityQuestionConfig) => {
+  if (!config?.entity) {
+    return false;
+  }
+  if (config.entity.createNew) {
+    return true;
+  }
+  return config.entity.fields && Object.keys(config.entity.fields).length > 0;
 };
 
 // Process the survey response data into the format expected by the endpoint
-export const processSurveyResponse = ({
-  userId,
-  surveyId,
-  countryId,
-  questions = [],
-  answers = {},
-  surveyStartTime,
-}: SurveyResponseData) => {
+export const processSurveyResponse = async (
+  surveyResponseData: RequestT.ReqBody,
+  getEntity: Function,
+) => {
+  const {
+    userId,
+    surveyId,
+    countryId,
+    questions = [],
+    answers = {},
+    startTime,
+  } = surveyResponseData;
   const timezone = getBrowserTimeZone();
   const timestamp = moment().toISOString();
   // Fields to be used in the survey response
   const surveyResponse = {
     user_id: userId,
     survey_id: surveyId,
-    start_time: surveyStartTime,
+    start_time: startTime,
     entity_id: countryId,
     country_id: countryId,
     end_time: timestamp,
     data_time: timestamp,
     timestamp,
     timezone,
-    options_created: [],
     entities_upserted: [],
+    options_created: [],
     answers: [],
-  } as RequestT.ReqBody;
+  } as MeditrakSurveyResponseRequest;
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -87,20 +82,25 @@ export const processSurveyResponse = ({
         break;
       }
       case 'Entity': {
-        if (isUpsertEntityQuestion(question.config)) {
-          surveyResponse.entities_upserted.push({
+        const config = question?.config as RequestT.EntityQuestionConfig;
+        if (isUpsertEntityQuestion(config)) {
+          const entityObj = await buildUpsertEntity(
+            config,
             questionId,
-            config: question.config as RequestT.EntityQuestionConfig,
-          });
+            answers,
+            countryId,
+            getEntity,
+          );
+          surveyResponse.entities_upserted.push(entityObj);
         }
         answersToSubmit.push(answerObject);
         break;
       }
       case 'Autocomplete': {
         // if the answer is a new option, add it to the options_created array to be added to the DB
-        const { isNew, value, label, optionSetId } = answer as AutocompleteAnswer;
+        const { isNew, value, label, optionSetId } = answer as RequestT.AutocompleteAnswer;
         if (isNew) {
-          surveyResponse.options_created.push({
+          surveyResponse.options_created!.push({
             option_set_id: optionSetId,
             value,
             label,
@@ -118,5 +118,8 @@ export const processSurveyResponse = ({
     }
   }
 
-  return { ...surveyResponse, answers: answersToSubmit };
+  return {
+    ...surveyResponse,
+    answers: answersToSubmit as MeditrakSurveyResponseRequest['answers'],
+  };
 };

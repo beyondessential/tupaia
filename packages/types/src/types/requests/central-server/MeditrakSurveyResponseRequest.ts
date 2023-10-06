@@ -31,13 +31,14 @@ type EntityCreated = {
 };
 
 type OptionCreated = {
-  id: Id;
-  value: number;
+  id?: Id;
+  value: number | string;
+  label?: string;
   /**
    * @checkIdExists { "table": "optionSet" }
    */
   option_set_id: string;
-  sort_order: number;
+  sort_order?: number;
 };
 
 export interface MeditrakSurveyResponseRequest {

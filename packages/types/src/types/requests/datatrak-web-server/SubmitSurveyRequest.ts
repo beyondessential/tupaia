@@ -2,7 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { MeditrakSurveyResponseRequest } from '../central-server/MeditrakSurveyResponseRequest';
+import { UserAccount, Survey, Entity } from '../../models';
+import { KeysToCamelCase } from '../../../utils';
 
 export type EntityQuestionConfig = {
   entity?: {
@@ -17,21 +18,42 @@ export type EntityQuestionConfig = {
   };
 };
 
-export type EntityUpsert = {
-  questionId: string;
-  config: EntityQuestionConfig;
-};
-
-export type CreatedOption = {
-  option_set_id: string;
+export type AutocompleteAnswer = {
+  isNew?: boolean;
+  optionSetId: string;
   value: string;
   label: string;
 };
 
-type SurveyResponse = MeditrakSurveyResponseRequest & {
-  options_created: CreatedOption[];
-  entities_upserted: EntityUpsert[];
-};
+type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+
+export type Answers = Record<string, Answer>;
+
+// Todo: User survey endpoint question type
+interface Question {
+  config?: EntityQuestionConfig | Record<string, any>;
+  questionType?: string;
+  questionText?: string;
+  answersEnablingFollowUp?: string[] | null;
+  componentNumber: number;
+  detailLabel?: string | null;
+  id: string;
+  isFollowUp?: boolean | null;
+  questionId: string;
+  questionLabel?: string | null;
+  screenId: string;
+  validationCriteria?: string | null;
+  visibilityCriteria?: string | null;
+}
+
+interface SurveyResponse {
+  userId: UserAccount['id'];
+  surveyId: Survey['id'];
+  countryId: Entity['id'];
+  questions: KeysToCamelCase<Question>[];
+  answers: Answers;
+  startTime: string;
+}
 
 export type Params = Record<string, never>;
 export type ResBody = void;
