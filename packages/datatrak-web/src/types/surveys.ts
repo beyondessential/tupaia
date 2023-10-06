@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { ControllerRenderProps } from 'react-hook-form';
-import { DatatrakWebSurveysRequest, DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
-export type Survey = DatatrakWebSurveysRequest.ResBody[number];
+export type Survey = DatatrakWebSurveyRequest.ResBody;
+export type SurveyScreen = DatatrakWebSurveyRequest.ResBody['screens'][number];
 
-export type SurveyScreenComponent = DatatrakWebSurveyScreenComponentsRequest.ResBody[number] & {
-  questionNumber?: string;
+export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][number] & {
   updateFormDataOnChange?: boolean;
 };
 
@@ -19,17 +19,9 @@ export type SurveyParams = {
   screenNumber: string;
 };
 
-export type SurveyQuestionFieldProps = Pick<SurveyScreenComponent, 'updateFormDataOnChange'> & {
-  id: string;
-  name: SurveyScreenComponent['questionCode'];
+export type SurveyQuestionFieldProps = SurveyScreenComponent & {
+  name: SurveyScreenComponent['code'];
   label?: string;
-  code?: SurveyScreenComponent['questionCode'];
-  text?: string;
-  config?: any;
-  type?: string;
-  detailLabel?: string | null;
-  options?: SurveyScreenComponent['questionOptions'];
-  optionSetId?: SurveyScreenComponent['questionOptionSetId'];
 };
 
 export type SurveyQuestionInputProps = SurveyQuestionFieldProps & {

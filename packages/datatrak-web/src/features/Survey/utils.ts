@@ -1,4 +1,4 @@
-import { SurveyScreenComponent } from '../../types';
+import { SurveyScreenComponent, SurveyScreen } from '../../types';
 
 export const convertNumberToLetter = (number: number) => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -15,13 +15,11 @@ export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],
   screenNumber: number | string,
 ) => {
-  const nonInstructionQuestions = questions.filter(
-    question => question.questionType !== 'Instruction',
-  );
+  const nonInstructionQuestions = questions.filter(question => question.type !== 'Instruction');
 
   return questions.map(question => {
     const questionNumber = nonInstructionQuestions.findIndex(
-      nonInstructionQuestion => question.questionId === nonInstructionQuestion.questionId,
+      nonInstructionQuestion => question.id === nonInstructionQuestion.id,
     );
     if (questionNumber === -1) return question;
     return {
@@ -31,6 +29,8 @@ export const formatSurveyScreenQuestions = (
   });
 };
 
-export const getAllSurveyComponents = (surveyScreens?: SurveyScreenComponent[][]) => {
-  return surveyScreens?.flat() ?? [];
+export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
+  return surveyScreens?.reduce((components, screen) => {
+    return [...components, ...screen.surveyScreenComponents];
+  }, [] as SurveyScreenComponent[]);
 };

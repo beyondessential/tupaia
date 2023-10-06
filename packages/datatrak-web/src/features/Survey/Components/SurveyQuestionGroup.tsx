@@ -34,40 +34,38 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
     <>
       {questions?.map(
         ({
-          questionId,
-          questionCode,
-          questionText,
-          questionType,
-          questionOptions,
+          id,
+          code,
+          text,
+          type,
+          options,
           config,
-          questionLabel,
+          label,
           validationCriteria,
           detailLabel,
-          questionOptionSetId,
+          optionSetId,
           questionNumber,
           updateFormDataOnChange,
         }) => {
           if (validationCriteria?.mandatory === true) {
-            console.log('mandatory question', questionCode);
+            console.log('mandatory question', code);
           }
           return (
-            <QuestionWrapper key={questionId} $isInstruction={questionType === 'Instruction'}>
+            <QuestionWrapper key={id} $isInstruction={type === 'Instruction'}>
               {questionNumber && (
-                <QuestionNumber id={`question_number_${questionId}`}>
-                  {questionNumber}
-                </QuestionNumber>
+                <QuestionNumber id={`question_number_${id}`}>{questionNumber}</QuestionNumber>
               )}
               <SurveyQuestion
                 detailLabel={detailLabel}
-                id={questionId}
-                code={questionCode}
-                name={questionId}
-                type={questionType}
-                text={detailLabel || questionText}
-                options={questionOptions}
+                id={id}
+                code={code}
+                name={id}
+                type={type}
+                text={detailLabel || text}
+                options={options}
                 config={config}
-                label={questionLabel || questionText}
-                optionSetId={questionOptionSetId}
+                label={label || text}
+                optionSetId={optionSetId}
                 updateFormDataOnChange={updateFormDataOnChange}
               />
             </QuestionWrapper>

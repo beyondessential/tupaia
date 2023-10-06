@@ -76,23 +76,23 @@ export const processSurveyResponse = ({
   const answersToSubmit = [] as Record<string, unknown>[];
 
   for (const question of questions) {
-    const { questionId, questionType, id } = question;
-    const answer = answers[questionId];
+    const { id, type, componentId } = question;
+    const answer = answers[id];
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }
 
     // base answer object to be added to the answers array
     const answerObject = {
-      id,
-      question_id: questionId,
-      type: questionType,
+      id: componentId,
+      question_id: id,
+      type,
       body: answer,
     };
 
     // Handle special question types
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
-    switch (questionType) {
+    switch (type) {
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':
@@ -132,12 +132,12 @@ export const processSurveyResponse = ({
 export const useSurveyResponseData = () => {
   const { data: user } = useUser();
   const { surveyCode } = useParams();
-  const { surveyStartTime, surveyScreenComponents } = useSurveyForm();
+  const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   return {
     surveyStartTime,
     surveyId: survey?.id,
-    questions: getAllSurveyComponents(surveyScreenComponents), // flattened array of survey questions
+    questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: user?.country?.id,
   };
 };

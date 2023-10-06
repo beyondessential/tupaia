@@ -38021,7 +38021,7 @@ export const CamelCasedInitialResponseSchema = {
 		"questionText": {
 			"type": "string"
 		},
-		"questionType": {
+		"type": {
 			"enum": [
 				"Arithmetic",
 				"Autocomplete",
