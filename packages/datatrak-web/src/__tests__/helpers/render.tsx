@@ -11,6 +11,11 @@ import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
 import { SurveyPageRoutes } from '../../Routes';
 
+// Fix this error in Jest "Jest did not exit one second after the test run has completed"
+afterAll(done => {
+  done();
+});
+
 export function renderComponent(children) {
   const queryClient = new QueryClient();
   return render(<AppProviders queryClient={queryClient}>{children}</AppProviders>);
