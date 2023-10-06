@@ -18,6 +18,8 @@ export const Tooltip = styled((props: TooltipProps) => (
     {...props}
     classes={{ popper: props.className }}
     placement={props.placement || 'top'}
+    enterDelay={props.enterDelay || 1000}
+    enterNextDelay={props.enterDelay || 1000}
     arrow
   />
 ))`
