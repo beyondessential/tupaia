@@ -20,6 +20,7 @@ export const Tooltip = styled((props: TooltipProps) => (
     placement={props.placement || 'top'}
     enterDelay={props.enterDelay || 1000}
     enterNextDelay={props.enterDelay || 1000}
+    enterTouchDelay={props.enterDelay || 1000}
     arrow
   />
 ))`
