@@ -17,6 +17,10 @@ const Select = styled(BaseSelect)`
   .MuiSvgIcon-root {
     right: 0.5rem;
   }
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.grey['400']};
+    box-shadow: none;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100%;
   }
