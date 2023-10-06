@@ -37335,7 +37335,13 @@ export const OptionCreatedSchema = {
 			"type": "string"
 		},
 		"value": {
-			"type": "number"
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"label": {
+			"type": "string"
 		},
 		"option_set_id": {
 			"$async": true,
@@ -37351,9 +37357,7 @@ export const OptionCreatedSchema = {
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
-		"id",
 		"option_set_id",
-		"sort_order",
 		"value"
 	],
 	"$async": true
@@ -37509,7 +37513,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"value": {
-						"type": "number"
+						"type": [
+							"string",
+							"number"
+						]
+					},
+					"label": {
+						"type": "string"
 					},
 					"option_set_id": {
 						"checkIdExists": {
@@ -37523,9 +37533,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"id",
 					"option_set_id",
-					"sort_order",
 					"value"
 				]
 			}
@@ -37906,120 +37914,22 @@ export const EntityQuestionConfigSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"attributes",
-						"grandparentId",
-						"parentId",
-						"type"
-					]
+					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"createNew",
-				"fields",
-				"filter"
-			]
+			"additionalProperties": false
 		}
 	},
 	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"entity"
-	]
+	"additionalProperties": false
 } 
 
-export const EntityUpsertSchema = {
+export const AutocompleteAnswerSchema = {
 	"properties": {
-		"questionId": {
-			"type": "string"
+		"isNew": {
+			"type": "boolean"
 		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"entity": {
-					"type": "object",
-					"properties": {
-						"createNew": {
-							"type": "boolean"
-						},
-						"fields": {
-							"type": "object",
-							"additionalProperties": false
-						},
-						"filter": {
-							"type": "object",
-							"properties": {
-								"type": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									}
-								},
-								"grandparentId": {
-									"type": "object",
-									"properties": {
-										"questionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"questionId"
-									]
-								},
-								"parentId": {
-									"type": "object",
-									"properties": {
-										"questionId": {
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"questionId"
-									]
-								},
-								"attributes": {
-									"type": "object",
-									"additionalProperties": false
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes",
-								"grandparentId",
-								"parentId",
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"createNew",
-						"fields",
-						"filter"
-					]
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"entity"
-			]
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"config",
-		"questionId"
-	]
-} 
-
-export const CreatedOptionSchema = {
-	"properties": {
-		"option_set_id": {
+		"optionSetId": {
 			"type": "string"
 		},
 		"value": {
@@ -38033,9 +37943,14 @@ export const CreatedOptionSchema = {
 	"additionalProperties": false,
 	"required": [
 		"label",
-		"option_set_id",
+		"optionSetId",
 		"value"
 	]
+} 
+
+export const AnswersSchema = {
+	"type": "object",
+	"additionalProperties": false
 } 
 
 export const VisibilityCriteriaSchema = {

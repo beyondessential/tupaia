@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { UserAccount, Survey, Entity } from '../../models';
-import { KeysToCamelCase } from '../../../utils';
 
 export type EntityQuestionConfig = {
   entity?: {
@@ -50,7 +49,7 @@ interface SurveyResponse {
   userId: UserAccount['id'];
   surveyId: Survey['id'];
   countryId: Entity['id'];
-  questions: KeysToCamelCase<Question>[];
+  questions: Question[];
   answers: Answers;
   startTime: string;
 }

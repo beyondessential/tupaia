@@ -14,18 +14,11 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
     const surveyResponseData = this.req.body;
     const { central: centralApi } = this.req.ctx.services;
+
+    // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
     const getEntity = entityId => this.req.ctx.models.entity.findById(entityId);
 
-    console.log(
-      'surveyResponseData',
-      surveyResponseData.questions.map(q => q.config),
-    );
-
     const processedResponse = await processSurveyResponse(surveyResponseData, getEntity);
-
-    console.log('processedResponse', processedResponse);
-
-    // return true;
 
     return centralApi.createSurveyResponses([processedResponse]);
   }

@@ -34,8 +34,6 @@ export const buildUpsertEntity = async (
     }
   }
 
-  console.log('build', entity);
-
   const isUpdate = await getEntity(entityId);
 
   if (isUpdate) {
