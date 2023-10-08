@@ -49,16 +49,32 @@ export type AutocompleteConfig = {
   };
 };
 
-type Config = {
-  codeGenerator?: CodeGeneratorConfig;
-  autocomplete?: AutocompleteConfig;
+type EntityQuestionConfig = {
+  createNew?: boolean;
+  fields?: Record<string, string | { questionId: Question['id'] }>;
+  filter?: {
+    type?: string[] | string;
+    grandparentId?: { questionId: Question['id'] };
+    parentId?: { questionId: Question['id'] };
+    attributes?: {
+      [key: string]: { questionId: Question['id'] };
+    };
+  };
+  // This is needed to support the old format of the entity question config
+  [key: string]: any;
 };
 
-type SurveyScreenComponent = CamelCasedComponent &
+export type SurveyScreenComponentConfig = {
+  codeGenerator?: CodeGeneratorConfig;
+  autocomplete?: AutocompleteConfig;
+  entity?: EntityQuestionConfig;
+};
+
+export type SurveyScreenComponent = CamelCasedComponent &
   CamelCasedQuestion & {
     visibilityCriteria?: VisibilityCriteria;
     validationCriteria?: ValidationCriteria;
-    config?: Config | null;
+    config?: SurveyScreenComponentConfig | null;
     componentId?: BaseSurveyScreenComponent['id'];
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Record<string, unknown>[] | null;

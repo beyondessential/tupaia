@@ -3,19 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { UserAccount, Survey, Entity } from '../../models';
-
-export type EntityQuestionConfig = {
-  entity?: {
-    createNew?: boolean;
-    fields?: Record<string, string | { questionId: string }>;
-    filter?: {
-      type?: string[];
-      grandparentId?: { questionId: string };
-      parentId?: { questionId: string };
-      attributes?: Record<string, { questionId: string }>;
-    };
-  };
-};
+import { SurveyScreenComponent } from './SurveyRequest';
 
 export type AutocompleteAnswer = {
   isNew?: boolean;
@@ -28,22 +16,7 @@ type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
 
 export type Answers = Record<string, Answer>;
 
-// Todo: User survey endpoint question type
-interface Question {
-  config?: EntityQuestionConfig | Record<string, any>;
-  questionType?: string;
-  questionText?: string;
-  answersEnablingFollowUp?: string[] | null;
-  componentNumber: number;
-  detailLabel?: string | null;
-  id: string;
-  isFollowUp?: boolean | null;
-  questionId: string;
-  questionLabel?: string | null;
-  screenId: string;
-  validationCriteria?: string | null;
-  visibilityCriteria?: string | null;
-}
+type Question = SurveyScreenComponent;
 
 interface SurveyResponse {
   userId: UserAccount['id'];
