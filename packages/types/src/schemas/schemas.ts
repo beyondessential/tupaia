@@ -37864,95 +37864,6 @@ export const ProjectResponseSchema = {
 	]
 } 
 
-export const EntityQuestionConfigSchema = {
-	"properties": {
-		"entity": {
-			"type": "object",
-			"properties": {
-				"createNew": {
-					"type": "boolean"
-				},
-				"fields": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"filter": {
-					"type": "object",
-					"properties": {
-						"type": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						},
-						"grandparentId": {
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						"parentId": {
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						"attributes": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false
-		}
-	},
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const AutocompleteAnswerSchema = {
-	"properties": {
-		"isNew": {
-			"type": "boolean"
-		},
-		"optionSetId": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"label": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"label",
-		"optionSetId",
-		"value"
-	]
-} 
-
-export const AnswersSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
 export const VisibilityCriteriaSchema = {
 	"properties": {
 		"_conjunction": {
@@ -38125,6 +38036,208 @@ export const AutocompleteConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const EntityQuestionConfigSchema = {
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"fields": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"filter": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"grandparentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"parentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": {}
+} 
+
+export const SurveyScreenComponentConfigSchema = {
+	"properties": {
+		"codeGenerator": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"enum": [
+						"mongoid",
+						"shortid"
+					],
+					"type": "string"
+				},
+				"prefix": {
+					"type": "string"
+				},
+				"length": {
+					"type": "number"
+				},
+				"chunkLength": {
+					"type": "number"
+				},
+				"alphabet": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		"autocomplete": {
+			"type": "object",
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entity": {
+			"type": "object",
+			"additionalProperties": {},
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"filter": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"anyOf": [
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"grandparentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"parentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"attributes": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"questionId": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"questionId"
+								]
+							}
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CamelCasedSurveyScreenSchema = {
 	"properties": {
 		"id": {
@@ -38140,6 +38253,35 @@ export const CamelCasedSurveyScreenSchema = {
 		"id",
 		"screenNumber"
 	]
+} 
+
+export const AutocompleteAnswerSchema = {
+	"properties": {
+		"isNew": {
+			"type": "boolean"
+		},
+		"optionSetId": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"optionSetId",
+		"value"
+	]
+} 
+
+export const AnswersSchema = {
+	"type": "object",
+	"additionalProperties": false
 } 
 
 export const CountryAccessSchema = {
