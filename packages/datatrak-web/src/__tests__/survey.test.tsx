@@ -70,7 +70,7 @@ describe('Survey', () => {
   });
 
   it('Updates the condition question answer when the associated question is updated', async () => {
-    renderSurveyPage('/survey/test/6');
+    renderSurveyPage('/survey/test/8');
     fireEvent.change(screen.getByLabelText('Enter a number'), { target: { value: '4' } });
     expect(screen.queryByText('Result for > 3')).toBeInTheDocument();
 
