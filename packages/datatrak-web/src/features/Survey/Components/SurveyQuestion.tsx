@@ -75,9 +75,9 @@ const getNameForController = (name, type) => {
 
 const getRules = (
   type: SurveyScreenComponent['type'],
-  validationCriteria: SurveyScreenComponent['validationCriteria'] = {},
+  validationCriteria: SurveyScreenComponent['validationCriteria'],
 ) => {
-  const { required, min, max } = validationCriteria;
+  const { required, min, max } = validationCriteria || {};
   // If the question is an instruction, we don't need to validate it, it will never need to be answered
   if (type === 'Instruction') {
     return {};
@@ -138,7 +138,7 @@ export const SurveyQuestion = ({
     }
   };
 
-  const { mandatory: required, min, max } = validationCriteria;
+  const { mandatory: required, min, max } = validationCriteria || {};
 
   const getDefaultValue = () => {
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating

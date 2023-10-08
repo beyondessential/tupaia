@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useUser } from '../../../api/queries';
-import { useSurveyForm } from '../../Survey/SurveyContext';
+import { useSurveyForm } from '../../Survey';
 
 export const useEntityBaseFilters = config => {
   const { getAnswerByQuestionId } = useSurveyForm();

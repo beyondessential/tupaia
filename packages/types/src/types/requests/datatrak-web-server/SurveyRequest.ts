@@ -58,10 +58,22 @@ export type ConditionConfig = {
   };
 };
 
+export type ArithmeticConfig = {
+  formula: string;
+  defaultValues?: Record<Question['id'], any>;
+  valueTranslation?: Record<
+    Question['id'],
+    {
+      [key: string]: string | number;
+    }
+  >;
+};
+
 type Config = {
   codeGenerator?: CodeGeneratorConfig;
   autocomplete?: AutocompleteConfig;
   condition?: ConditionConfig;
+  arithmetic?: ArithmeticConfig;
 };
 
 type SurveyScreenComponent = CamelCasedComponent &
