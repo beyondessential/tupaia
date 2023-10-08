@@ -36,7 +36,7 @@ describe('Survey', () => {
   });
 
   it('renders only visible questions when visibility criteria is applicable', async () => {
-    renderSurveyPage('/survey/test/5');
+    renderSurveyPage('/survey/test/7');
     // has 1 question to start with
     const radioGroup = await screen.findAllByRole('radiogroup');
     expect(radioGroup.length).toBe(1);
@@ -63,7 +63,7 @@ describe('Survey', () => {
   });
 
   it('updates the sidebar page list based on visible questions on a screen', async () => {
-    renderSurveyPage('/survey/test/5');
+    renderSurveyPage('/survey/test/7');
 
     // this current page starts off as the last page, so the next page should not be in the list of survey screens, and the submit button should be the 'review and submit' button
     expect(await screen.findByText('Review and submit')).toBeInTheDocument();

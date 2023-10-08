@@ -52,7 +52,7 @@ describe('Autocomplete Question', () => {
     label: "What's your favourite colour?",
     name: 'color',
     optionSetId: 'theOptionSetId',
-    config: {},
+    config: {}, 
     controllerProps: {
       value: null,
       onChange,

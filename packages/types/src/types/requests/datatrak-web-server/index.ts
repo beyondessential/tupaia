@@ -7,5 +7,5 @@ export * as DatatrakWebEntitiesRequest from './EntitiesRequest';
 export * as DatatrakWebUserRequest from './UserRequest';
 export * as DatatrakWebSurveysRequest from './SurveysRequest';
 export * as DatatrakWebProjectsRequest from './ProjectsRequest';
+export * as DatatrakWebSurveyRequest from './SurveyRequest';
 export * as DatatrakWebSubmitSurveyRequest from './SubmitSurveyRequest';
-export * as DatatrakWebSurveyScreenComponentsRequest from './SurveyScreenComponentsRequest';

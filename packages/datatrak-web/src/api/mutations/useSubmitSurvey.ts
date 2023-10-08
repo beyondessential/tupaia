@@ -8,7 +8,7 @@ import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
 import { post } from '../../api';
 import { ROUTES } from '../../constants';
-import { useSurveyForm } from '../../features';
+import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey, useUser } from '../queries';
 import { successToast } from '../../utils';
 
@@ -27,12 +27,12 @@ export type AnswersT = Record<string, Answer>;
 export const useSurveyResponseData = () => {
   const { data: user } = useUser();
   const { surveyCode } = useParams();
-  const { surveyStartTime, surveyScreenComponents } = useSurveyForm();
+  const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
-    questions: Object.values(surveyScreenComponents!).reduce((acc, val) => acc.concat(val), []), // flattened array of survey questions
+    questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: user?.country?.id,
     userId: user?.id,
   };
