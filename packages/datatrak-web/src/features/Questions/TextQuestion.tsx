@@ -9,10 +9,15 @@ import styled from 'styled-components';
 import { TextInput } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{
+  $type?: string;
+}>`
   width: calc(100% - 3.5rem);
   .MuiFormControlLabel-root {
     width: 100%;
+  }
+  .MuiFormControl-root {
+    max-width: ${({ $type }) => ($type === 'Number' ? '25rem' : 'none')};
   }
   .MuiFormControlLabel-label {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
@@ -38,7 +43,7 @@ export const TextQuestion = ({
   controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
-    <Wrapper>
+    <Wrapper $type={type}>
       <TextInput
         label={label}
         name={name!}
