@@ -14,7 +14,7 @@ import { Survey } from '../../types';
 import { useSurveys } from '../../api/queries';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
 import { useUserCountries } from './useUserCountries';
-import { MOBILE_HEADER_HEIGHT } from '../../constants';
+import { HEADER_HEIGHT } from '../../constants';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',
@@ -39,7 +39,7 @@ const Container = styled(Paper).attrs({
     div:has(&) {
       padding: 0;
       align-items: flex-start;
-      height: calc(100vh - ${MOBILE_HEADER_HEIGHT});
+      height: calc(100vh - ${HEADER_HEIGHT});
     }
   }
 `;
