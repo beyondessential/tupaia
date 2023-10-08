@@ -13,16 +13,6 @@ import {
 import { Check, KeyboardArrowRight } from '@material-ui/icons';
 import { Tooltip } from '@tupaia/ui-components';
 
-const IconWrapper = styled.div`
-  padding-right: 0.5rem;
-  display: flex;
-  align-items: center;
-  width: 1.5rem;
-  svg {
-    color: ${({ theme }) => theme.palette.primary.main};
-  }
-`;
-
 // explicity set the types so that the overrides are applied, for the `button` prop
 export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   display: flex;
@@ -71,6 +61,18 @@ const ButtonContainer = styled.div<{
   display: flex;
   align-items: center;
   width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+`;
+
+const IconWrapper = styled.div`
+  padding-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  width: 1.5rem;
+  svg {
+    color: ${({ theme }) => theme.palette.primary.main};
+    width: auto;
+    height: auto;
+  }
 `;
 
 export type ListItemType = Record<string, unknown> & {

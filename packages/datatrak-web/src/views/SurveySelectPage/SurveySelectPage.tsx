@@ -6,10 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
-import { Description, FolderOpenTwoTone } from '@material-ui/icons';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useEditUser } from '../../api/mutations';
-import { SelectList, ListItemType, Button } from '../../components';
+import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../../components';
 import { Survey } from '../../types';
 import { useSurveys } from '../../api/queries';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
@@ -121,7 +120,7 @@ export const SurveySelectPage = () => {
         content: name,
         value: code,
         selected: selectedSurvey?.value === code,
-        icon: <Description />,
+        icon: <SurveyIcon />,
       };
       // if there is no surveyGroupName, add the survey to the list as a top level item
       if (!surveyGroupName) {
@@ -134,7 +133,7 @@ export const SurveySelectPage = () => {
           ...acc,
           {
             content: surveyGroupName,
-            icon: <FolderOpenTwoTone />,
+            icon: <SurveyFolderIcon />,
             value: surveyGroupName,
             children: [formattedSurvey],
           },

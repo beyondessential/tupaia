@@ -4,3 +4,5 @@
  */
 export { Coconut } from './Coconut';
 export { Pig } from './Pig';
+export { SurveyIcon } from './SurveyIcon';
+export { SurveyFolderIcon } from './SurveyFolderIcon';

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { Description } from '@material-ui/icons';
-import { TopProgressBar } from '../../../components';
+import { SurveyIcon, TopProgressBar } from '../../../components';
 import { useSurvey, useUser } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
@@ -36,7 +36,7 @@ const SurveyTitleWrapper = styled.div`
   }
 `;
 
-const SurveyIcon = styled(Description).attrs({
+const Icon = styled(SurveyIcon).attrs({
   color: 'primary',
 })`
   margin-right: 0.5rem;
@@ -69,7 +69,7 @@ export const SurveyToolbar = () => {
   return (
     <Toolbar>
       <SurveyTitleWrapper>
-        <SurveyIcon />
+        <Icon />
         {survey?.name && (
           <Typography variant="h1">
             {surveyName}
