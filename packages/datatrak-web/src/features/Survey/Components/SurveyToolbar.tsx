@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
-import { Description } from '@material-ui/icons';
 import { SurveyIcon, TopProgressBar } from '../../../components';
 import { useSurvey, useUser } from '../../../api/queries';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
