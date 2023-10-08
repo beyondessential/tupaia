@@ -8,6 +8,7 @@ import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 import { TextInput } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
+import { useSurveyForm } from '..';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -42,6 +43,8 @@ export const TextQuestion = ({
   max,
   controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
+  const { isReviewScreen } = useSurveyForm();
+  const placeholder = isReviewScreen ? '' : 'Enter your answer here';
   return (
     <Wrapper $type={type}>
       <TextInput
@@ -53,7 +56,7 @@ export const TextQuestion = ({
         textInputProps={{
           ['aria-describedby']: `question_number_${id}`,
           type: FIELD_TYPES[(type as unknown) as FIELD_TYPES],
-          placeholder: 'Enter your answer here',
+          placeholder,
           error: invalid,
           required,
           min,
