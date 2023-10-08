@@ -30,7 +30,13 @@ type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options'>>;
 type CamelCasedComponent = KeysToCamelCase<
   Omit<
     BaseSurveyScreenComponent,
-    'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'screen_id'
+    | 'validation_criteria'
+    | 'visibility_criteria'
+    | 'config'
+    | 'id'
+    | 'question_label'
+    | 'type'
+    | 'screen_id'
   >
 >;
 

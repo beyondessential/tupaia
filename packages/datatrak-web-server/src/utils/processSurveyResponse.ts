@@ -5,12 +5,17 @@
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
 import {
-  DatatrakWebSubmitSurveyRequest as RequestT,
+  DatatrakWebSubmitSurveyRequest,
+  DatatrakWebSurveyRequest,
   MeditrakSurveyResponseRequest,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
-export const isUpsertEntityQuestion = (config?: RequestT.EntityQuestionConfig) => {
+type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
+type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
+
+export const isUpsertEntityQuestion = (config?: ConfigT) => {
   if (!config?.entity) {
     return false;
   }
@@ -22,7 +27,7 @@ export const isUpsertEntityQuestion = (config?: RequestT.EntityQuestionConfig) =
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
-  surveyResponseData: RequestT.ReqBody,
+  surveyResponseData: SurveyRequestT,
   getEntity: Function,
 ) => {
   const {
@@ -82,7 +87,7 @@ export const processSurveyResponse = async (
         break;
       }
       case 'Entity': {
-        const config = question?.config as RequestT.EntityQuestionConfig;
+        const config = question?.config as ConfigT;
         if (isUpsertEntityQuestion(config)) {
           const entityObj = await buildUpsertEntity(
             config,
@@ -98,7 +103,7 @@ export const processSurveyResponse = async (
       }
       case 'Autocomplete': {
         // if the answer is a new option, add it to the options_created array to be added to the DB
-        const { isNew, value, label, optionSetId } = answer as RequestT.AutocompleteAnswer;
+        const { isNew, value, label, optionSetId } = answer as AutocompleteAnswerT;
         if (isNew) {
           surveyResponse.options_created!.push({
             option_set_id: optionSetId,

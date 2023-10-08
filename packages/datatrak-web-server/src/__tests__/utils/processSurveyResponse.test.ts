@@ -46,17 +46,17 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.FreeText,
+            type: QuestionType.FreeText,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
           {
             questionId: 'question2',
-            questionType: QuestionType.Number,
+            type: QuestionType.Number,
             id: '2',
-            questionText: 'question2',
+            text: 'question2',
             screenId: 'screen2',
             componentNumber: 2,
           },
@@ -95,10 +95,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.PrimaryEntity,
+            type: QuestionType.PrimaryEntity,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -123,10 +123,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.DateOfData,
+            type: QuestionType.DateOfData,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -151,10 +151,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.SubmissionDate,
+            type: QuestionType.SubmissionDate,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -179,10 +179,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.Autocomplete,
+            type: QuestionType.Autocomplete,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -225,10 +225,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.Autocomplete,
+            type: QuestionType.Autocomplete,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -263,10 +263,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.Entity,
+            type: QuestionType.Entity,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
           },
         ],
@@ -297,10 +297,10 @@ describe('processSurveyResponse', () => {
         questions: [
           {
             questionId: 'question1',
-            questionType: QuestionType.Entity,
+            type: QuestionType.Entity,
             id: '1',
             componentNumber: 1,
-            questionText: 'question1',
+            text: 'question1',
             screenId: 'screen1',
             config: {
               entity: {
