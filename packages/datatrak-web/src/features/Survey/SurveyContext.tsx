@@ -8,7 +8,11 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams, SurveyScreenComponent, SurveyScreen } from '../../types';
 import { useSurvey } from '../../api/queries';
-import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
+import {
+  formatSurveyScreenQuestions,
+  getAllSurveyComponents,
+  getSurveyScreenNumber,
+} from './utils';
 
 type SurveyFormContextType = {
   startTime: string;
@@ -129,6 +133,11 @@ export const SurveyContext = ({ children }) => {
   const isReviewScreen = !screenNumber;
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
+  const displayScreenNumber = getSurveyScreenNumber(
+    visibleScreens,
+    visibleScreens?.[screenNumber! - 1],
+  );
+
   const getDisplayQuestions = () => {
     // If the first question is an instruction, don't render it since we always just
     // show the text of first questions as the heading. Format the questions with a question number to display
@@ -153,7 +162,7 @@ export const SurveyContext = ({ children }) => {
       }
       return question;
     });
-    return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
+    return formatSurveyScreenQuestions(displayQuestions, displayScreenNumber!);
   };
 
   useEffect(() => {

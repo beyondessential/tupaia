@@ -1,3 +1,4 @@
+import { QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent, SurveyScreen } from '../../types';
 
 export const convertNumberToLetter = (number: number) => {
@@ -11,11 +12,32 @@ export const convertNumberToLetter = (number: number) => {
   return alphabet[number];
 };
 
+export const getSurveyScreenNumber = (screens, screen) => {
+  if (!screen) return null;
+  const { surveyScreenComponents, id } = screen;
+  const { type } = surveyScreenComponents[0];
+  const nonInstructionScreens =
+    screens?.filter(
+      screen =>
+        screen.surveyScreenComponents.length > 1 ||
+        screen.surveyScreenComponents[0].type !== QuestionType.Instruction,
+    ) ?? [];
+
+  const screenNumber =
+    surveyScreenComponents?.length > 1 || type !== QuestionType.Instruction
+      ? nonInstructionScreens.findIndex(nonInstructionScreen => nonInstructionScreen.id === id) + 1
+      : null;
+
+  return screenNumber;
+};
+
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],
   screenNumber: number | string,
 ) => {
-  const nonInstructionQuestions = questions.filter(question => question.type !== 'Instruction');
+  const nonInstructionQuestions = questions.filter(
+    question => question.type !== QuestionType.Instruction,
+  );
 
   return questions.map(question => {
     const questionNumber = nonInstructionQuestions.findIndex(
