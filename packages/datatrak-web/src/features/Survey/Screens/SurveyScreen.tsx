@@ -9,13 +9,20 @@ import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
 
-const ScreenHeading = styled(Typography)`
+const ScreenHeading = styled(Typography)<{
+  $centered?: boolean;
+}>`
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 1rem;
   padding: 0.5rem 0;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.25rem;
+  }
+  text-align: ${({ $centered }) => ($centered ? 'center' : 'left')};
+  // This is to ensure that the text is centered when there are no questions to display, by targeting the div that wraps the text
+  div:has(> &) {
+    justify-content: ${({ $centered }) => ($centered ? 'center' : 'flex-start')};
   }
 `;
 
@@ -27,7 +34,9 @@ export const SurveyScreen = () => {
 
   return (
     <ScrollableBody $hasSidebar>
-      <ScreenHeading variant="h2">{screenHeader}</ScreenHeading>
+      <ScreenHeading variant="h2" $centered={displayQuestions.length === 0}>
+        {screenHeader}
+      </ScreenHeading>
       <SurveyQuestionGroup questions={displayQuestions} />
     </ScrollableBody>
   );
