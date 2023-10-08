@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { To } from 'react-router';
 import { useFormContext } from 'react-hook-form';
-import { QuestionType } from '@tupaia/types';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
 import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';

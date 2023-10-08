@@ -55,6 +55,7 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
+      {/** @ts-ignore */}
       <Select
         options={
           countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []
