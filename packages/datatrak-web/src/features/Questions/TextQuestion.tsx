@@ -58,6 +58,7 @@ export const TextQuestion = ({
           required,
           min,
           max,
+          multiline: type === 'FreeText',
         }}
       />
     </Wrapper>
