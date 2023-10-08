@@ -19,7 +19,6 @@ const ScreenHeading = styled(Typography)<{
   ${({ theme }) => theme.breakpoints.up('sm')} {
     font-size: 1.25rem;
   }
-  text-align: ${({ $centered }) => ($centered ? 'center' : 'left')};
   // This is to ensure that the text is centered when there are no questions to display, by targeting the div that wraps the text
   div:has(> &) {
     justify-content: ${({ $centered }) => ($centered ? 'center' : 'flex-start')};
