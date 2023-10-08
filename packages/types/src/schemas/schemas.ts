@@ -38029,6 +38029,35 @@ export const AutocompleteConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const ConditionConfigSchema = {
+	"properties": {
+		"conditions": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"formula": {
+						"type": "string"
+					},
+					"defaultValues": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"formula"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"conditions"
+	]
+} 
+
 export const CamelCasedSurveyScreenSchema = {
 	"properties": {
 		"id": {

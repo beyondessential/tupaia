@@ -7,12 +7,12 @@ import React, { Dispatch, createContext, useContext, useEffect, useReducer } fro
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { BooleanExpressionParser } from '@tupaia/expression-parser';
-import { DatatrakWebSurveyScreenComponentsRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { SurveyParams, SurveyScreenComponent, SurveyScreen } from '../../types';
 import { useSurvey } from '../../api/queries';
 import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
 
-type ConditionConfig = DatatrakWebSurveyScreenComponentsRequest.ConditionConfig;
+type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
 
 type SurveyFormContextType = {
   startTime: string;
@@ -134,7 +134,7 @@ export const SurveyContext = ({ children }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   const getIsDependentQuestion = (questionId: SurveyScreenComponent['questionId']) => {
-    return flattenedScreenComponents.some(question => {
+    return flattenedScreenComponents?.some(question => {
       const { visibilityCriteria, config } = question;
       // if the question controls the visibility of another question, return true
       if (visibilityCriteria && Object.keys(visibilityCriteria).includes(questionId)) return true;
@@ -216,9 +216,8 @@ export const useSurveyForm = () => {
   };
 
   const updateConditionalQuestions = (updatedFormData: Record<string, any>) => {
-    const conditionalQuestions = flattenedScreenComponents.filter(
-      question => question.questionType === 'Condition',
-    );
+    const conditionalQuestions =
+      flattenedScreenComponents?.filter(question => question.type === 'Condition') ?? [];
     if (!conditionalQuestions.length) return updatedFormData;
     const formDataCopy = { ...updatedFormData };
     const expressionParser = new BooleanExpressionParser();
@@ -257,7 +256,7 @@ export const useSurveyForm = () => {
   // reset the value of any questions that are no longer visible, so that they don't get submitted with the form and skew the results
   const resetInvisibleQuestions = (newFormData: Record<string, any>) => {
     const updatedFormData = { ...formData, ...newFormData };
-    flattenedScreenComponents.forEach(component => {
+    flattenedScreenComponents?.forEach(component => {
       const { questionId, visibilityCriteria } = component;
       if (
         visibilityCriteria &&

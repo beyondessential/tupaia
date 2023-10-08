@@ -74,7 +74,7 @@ const getNameForController = (name, type) => {
 };
 
 const getRules = (
-  type: SurveyScreenComponent['questionType'],
+  type: SurveyScreenComponent['type'],
   validationCriteria: SurveyScreenComponent['validationCriteria'] = {},
 ) => {
   const { required, min, max } = validationCriteria;

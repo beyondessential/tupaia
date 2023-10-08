@@ -49,9 +49,19 @@ export type AutocompleteConfig = {
   };
 };
 
+export type ConditionConfig = {
+  conditions: {
+    [key: string]: {
+      formula: string;
+      defaultValues?: Record<Question['id'], any>;
+    };
+  };
+};
+
 type Config = {
   codeGenerator?: CodeGeneratorConfig;
   autocomplete?: AutocompleteConfig;
+  condition?: ConditionConfig;
 };
 
 type SurveyScreenComponent = CamelCasedComponent &

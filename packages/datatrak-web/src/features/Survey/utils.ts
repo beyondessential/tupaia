@@ -18,7 +18,7 @@ export const formatSurveyScreenQuestions = (
   screenNumber: number | string,
 ) => {
   const nonReadOnlyQuestions = questions.filter(
-    question => !READ_ONLY_QUESTION_TYPES.includes(question?.questionType!),
+    question => !READ_ONLY_QUESTION_TYPES.includes(question?.type!),
   );
 
   return questions.map(question => {
