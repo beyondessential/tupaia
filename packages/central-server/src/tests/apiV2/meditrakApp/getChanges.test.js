@@ -219,7 +219,8 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.12.124`);
-      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal({
+
+      expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).to.deep.equal({
         entity: {
           createNew: true,
           name: {
@@ -248,7 +249,7 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.13.129`);
-      expect(JSON.parse(responseForLegacyVersion.body[3].record.config)).to.deep.equal(
+      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal(
         nonLegacyConfig,
       );
     });
