@@ -10,7 +10,7 @@ import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
 import { renderComponent } from '../../helpers/render';
 import { EntityQuestion } from '../../../features/Questions';
 
-jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
+jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
   }),

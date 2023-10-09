@@ -432,13 +432,13 @@
                 "Result for > 3": {
                   "formula": "$12 >= 3",
                   "defaultValues": {
-                    "MCSR11": "1"
+                    "12": "1"
                   }
                 },
                 "Result for < 3": {
                   "formula": "$12 < 3",
                   "defaultValues": {
-                    "MCSR11": "1"
+                    "12": "1"
                   }
                 }
               }
@@ -448,6 +448,33 @@
           "code": "MCSR12",
           "text": "This is the result of the question above",
           "type": "Condition",
+          "options": [],
+          "optionSetId": null
+        },
+        {
+          "id": "14",
+          "questionId": "14",
+          "screenId": "6412504dec4eba30850179413",
+          "componentNumber": 3,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {},
+          "questionLabel": null,
+          "detailLabel": null,
+          "config": {
+            "arithmetic": {
+              "formula": "$12 + $13",
+              "defaultValues": { "12": "0", "13": "1" },
+              "valueTranslation": {
+                "13": { "Result for < 3": "1", "Result for > 3": "2" }
+              }
+            }
+          },
+          "name": "This is the result of the other questions",
+          "code": "MCSR14",
+          "text": "This is the result of the other questions",
+          "type": "Arithmetic",
           "options": [],
           "optionSetId": null
         }

@@ -85,6 +85,7 @@ const getConditionIsMet = (expressionParser, formData, { formula, defaultValues 
     const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
     const answer = formData[questionId];
     const defaultValue = defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
+
     const value = answer !== undefined ? answer : defaultValue;
     values[questionIdVariable] = value;
   });
@@ -97,8 +98,9 @@ const getArithmeticDependantAnswer = (questionId, answer, valueTranslation, defa
   if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
     return valueTranslation[questionId][answer]; // return translated answer if there's any
   }
-  if (answer !== undefined) {
-    return answer; // return raw answer
+  // return raw answer if it's a number, else 0 (e.g. if no valueTranslation provided for the question and this specific answer when answer is non-numeric)
+  if (answer !== undefined && answer !== null && answer !== '') {
+    return isNaN(answer) ? 0 : answer; // return raw answer
   }
 
   return defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // No answer found, return the default answer

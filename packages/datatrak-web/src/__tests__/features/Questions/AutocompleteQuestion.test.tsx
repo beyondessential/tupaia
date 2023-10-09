@@ -10,7 +10,7 @@ import { setupServer } from 'msw/node';
 import { renderComponent } from '../../helpers/render';
 import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
 
-jest.mock('../../../features/Survey/SurveyContext.tsx', () => ({
+jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'theParentQuestionAnswer',
   }),
@@ -52,7 +52,7 @@ describe('Autocomplete Question', () => {
     label: "What's your favourite colour?",
     name: 'color',
     optionSetId: 'theOptionSetId',
-    config: {}, 
+    config: {},
     controllerProps: {
       value: null,
       onChange,
