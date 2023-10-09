@@ -55,12 +55,13 @@ const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
 
+  const PROJECT_SELECT_URLS = [ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS];
   // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
-  if (data?.projectId && location.pathname === ROUTES.PROJECT_SELECT)
+  if (data?.projectId && PROJECT_SELECT_URLS.includes(location.pathname))
     return <Navigate to={ROUTES.HOME} replace={true} />;
 
   // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
-  if (!data?.projectId && location.pathname !== ROUTES.PROJECT_SELECT)
+  if (!data?.projectId && !PROJECT_SELECT_URLS.includes(location.pathname))
     return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
   return children ? children : <Outlet />;
 };

@@ -11,6 +11,7 @@ import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
 import { ButtonLink } from '../../../../components';
 import { useIsMobile } from '../../../../utils';
+import { getSurveyScreenNumber } from '../../utils';
 
 export const SIDE_MENU_WIDTH = '20rem';
 
@@ -49,11 +50,13 @@ const SurveyMenuItem = styled(ListItem).attrs({
   ButtonProps & {
     to: To;
     $active?: boolean;
+    $isInstructionOnly?: boolean;
   }
 >`
   padding: 0.5rem;
   align-items: flex-start;
   justify-content: flex-start;
+  overflow: hidden;
   background-color: ${({ theme, $active }) =>
     $active ? `${theme.palette.primary.main}55` : 'transparent'};
   & ~ & {
@@ -61,6 +64,15 @@ const SurveyMenuItem = styled(ListItem).attrs({
   }
   &:hover {
     background-color: ${({ theme }) => `${theme.palette.grey[400]}4d`};
+  }
+  .MuiButton-label {
+    > span:not(.MuiTouchRipple-root) {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
+      -webkit-line-clamp: ${({ $isInstructionOnly }) => ($isInstructionOnly ? 1 : 2)};
+      overflow: hidden;
+    }
   }
 `;
 
@@ -100,6 +112,16 @@ export const SurveySideMenu = () => {
   const onChangeScreen = () => {
     setFormData(getValues());
   };
+  const getFormattedScreens = () => {
+    const screens = visibleScreens?.map(screen => {
+      const { surveyScreenComponents, id } = screen;
+      const { text } = surveyScreenComponents[0];
+      const screenNumber = getSurveyScreenNumber(visibleScreens, screen);
+      return { id, text, screenNumber };
+    });
+    return screens;
+  };
+  const screenMenuItems = getFormattedScreens();
   return (
     <>
       <SideMenuButton />
@@ -112,7 +134,7 @@ export const SurveySideMenu = () => {
           <SideMenuButton />
         </Header>
         <SurveyMenuContent>
-          {visibleScreens?.map((screen, i) => {
+          {screenMenuItems?.map((screen, i) => {
             const num = i + 1;
             return (
               <SurveyMenuItem
@@ -120,9 +142,12 @@ export const SurveySideMenu = () => {
                 to={`../${num}`}
                 $active={screenNumber === num}
                 onClick={onChangeScreen}
+                $isInstructionOnly={!screen.screenNumber}
               >
-                <SurveyScreenNumber>{num}:</SurveyScreenNumber>
-                <SurveyScreenTitle>{screen.surveyScreenComponents[0].text}</SurveyScreenTitle>
+                {screen.screenNumber && (
+                  <SurveyScreenNumber>{screen.screenNumber}:</SurveyScreenNumber>
+                )}
+                <SurveyScreenTitle>{screen.text}</SurveyScreenTitle>
               </SurveyMenuItem>
             );
           })}

@@ -17,6 +17,10 @@ const Select = styled(BaseSelect)`
   .MuiSvgIcon-root {
     right: 0.5rem;
   }
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.grey['400']};
+    box-shadow: none;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     width: 100%;
   }
@@ -51,6 +55,7 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
+      {/** @ts-ignore - TS is complaining about the type of the options, because we are creating them from Entities */}
       <Select
         options={
           countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []

@@ -28,7 +28,7 @@ const ButtonWrapper = ({
 }) => {
   if (!tooltip) return children;
   return (
-    <Tooltip title={tooltip} arrow>
+    <Tooltip title={tooltip} arrow enterDelay={1000}>
       {children}
     </Tooltip>
   );

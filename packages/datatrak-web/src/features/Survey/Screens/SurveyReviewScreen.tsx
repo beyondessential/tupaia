@@ -5,10 +5,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { formatSurveyScreenQuestions } from '../utils';
+import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
+import { QuestionType } from '@tupaia/types';
 
 const Header = styled.div`
   padding: 1rem;
@@ -74,10 +75,11 @@ export const SurveyReviewScreen = () => {
   if (!visibleScreens || !visibleScreens.length) return null;
 
   // split the questions into sections by screen so it's easier to read the long form
-  const questionSections = visibleScreens.map(({ surveyScreenComponents }, i) => {
-    const screenNumber = i + 1;
+  const questionSections = visibleScreens.map(screen => {
+    const { surveyScreenComponents } = screen;
+    const screenNumber = getSurveyScreenNumber(visibleScreens, screen);
     const heading = surveyScreenComponents[0].text;
-    const firstQuestionIsInstruction = surveyScreenComponents[0].type === 'Instruction';
+    const firstQuestionIsInstruction = surveyScreenComponents[0].type === QuestionType.Instruction;
 
     // if the first question is an instruction, don't display it, because it will be displayed as the heading
     const questionsToDisplay = firstQuestionIsInstruction

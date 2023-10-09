@@ -18,6 +18,24 @@ export const READ_ONLY_QUESTION_TYPES = [
   QuestionType.Instruction,
   QuestionType.CodeGenerator,
 ];
+export const getSurveyScreenNumber = (screens, screen) => {
+  if (!screen) return null;
+  const { surveyScreenComponents, id } = screen;
+  const { type } = surveyScreenComponents[0];
+  const nonInstructionScreens =
+    screens?.filter(
+      screen =>
+        screen.surveyScreenComponents.length > 1 ||
+        screen.surveyScreenComponents[0].type !== QuestionType.Instruction,
+    ) ?? [];
+
+  const screenNumber =
+    surveyScreenComponents?.length > 1 || type !== QuestionType.Instruction
+      ? nonInstructionScreens.findIndex(nonInstructionScreen => nonInstructionScreen.id === id) + 1
+      : null;
+
+  return screenNumber;
+};
 
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],

@@ -11,7 +11,7 @@ import { SurveyQuestionInputProps } from '../../types';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
-  max-width: 25rem;
+
   margin-bottom: 0;
   legend {
     color: ${({ theme }) => theme.palette.text.primary};
@@ -28,6 +28,7 @@ const StyledRadioGroup = styled(RadioGroup)`
     display: flex;
     flex-direction: column;
     border: none;
+    max-width: 25rem;
   }
   .MuiRadio-root {
     color: ${({ theme }) => theme.palette.text.primary};

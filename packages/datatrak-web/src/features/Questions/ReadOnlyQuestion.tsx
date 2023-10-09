@@ -45,12 +45,10 @@ const Value = styled(Typography)`
 
 export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInputProps) => {
   const { formData } = useSurveyForm();
-
   const value = formData[name!];
-
   return (
     <Wrapper>
-      <Tooltip title="Complete questions above to calculate">
+      <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
         <Label>{label}</Label>
       </Tooltip>
       {detailLabel && <HelperText>{detailLabel}</HelperText>}

@@ -5,13 +5,13 @@
 import React from 'react';
 import { Outlet } from 'react-router';
 import styled from 'styled-components';
-import { HEADER_HEIGHT, MOBILE_HEADER_HEIGHT } from '../constants';
+import { HEADER_HEIGHT } from '../constants';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - ${MOBILE_HEADER_HEIGHT});
+  height: calc(100vh - ${HEADER_HEIGHT});
   padding: 1rem 1.2rem;
   form p,
   form a,
@@ -28,9 +28,6 @@ const Wrapper = styled.div`
     .MuiPaper-root {
       padding: 2rem 3rem;
     }
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    height: calc(100vh - ${HEADER_HEIGHT});
   }
 `;
 
