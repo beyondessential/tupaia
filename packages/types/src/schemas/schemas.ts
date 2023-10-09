@@ -38133,6 +38133,27 @@ export const EntityQuestionConfigSchema = {
 	"additionalProperties": {}
 } 
 
+export const ArithmeticConfigSchema = {
+	"properties": {
+		"formula": {
+			"type": "string"
+		},
+		"defaultValues": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"valueTranslation": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"formula"
+	]
+} 
+
 export const SurveyScreenComponentConfigSchema = {
 	"properties": {
 		"codeGenerator": {
@@ -38284,6 +38305,26 @@ export const SurveyScreenComponentConfigSchema = {
 			"additionalProperties": false,
 			"required": [
 				"conditions"
+			]
+		},
+		"arithmetic": {
+			"type": "object",
+			"properties": {
+				"formula": {
+					"type": "string"
+				},
+				"defaultValues": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"valueTranslation": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"formula"
 			]
 		}
 	},
