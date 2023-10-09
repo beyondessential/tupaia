@@ -49,6 +49,7 @@ const DataCellContent = styled.div`
   align-items: center;
   text-align: center;
   justify-content: center;
+  white-space: pre-line;
 `;
 
 const ExpandButton = styled(Button)`
@@ -81,6 +82,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   const colIndex = allColumns.findIndex(({ key }) => key === colKey);
 
   const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
+
   const isDots =
     getIsUsingDots(presentationOptionsForCell) &&
     checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
