@@ -77,6 +77,13 @@ export const theme = createMuiTheme({
         padding: '1.5rem 0 0 0',
       },
     },
+    MuiListItem: {
+      button: {
+        '&:hover': {
+          backgroundColor: '#328DE515',
+        },
+      }, 
+    },
     MuiButton: {
       root: {
         textTransform: 'none',
@@ -110,6 +117,11 @@ export const theme = createMuiTheme({
           fontSize: '1rem',
           fontWeight: 400,
         },
+      },
+    },
+    MuiPopover: {
+      paper: {
+        boxShadow: '4px 4px 25px 4px rgba(0, 0, 0, 0.10)',
       },
     },
   },

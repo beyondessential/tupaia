@@ -112,7 +112,7 @@ export const SurveyQuestion = ({
   type,
   name,
   updateFormDataOnChange,
-  validationCriteria = {},
+  validationCriteria,
   ...props
 }: SurveyQuestionFieldProps) => {
   const { control, formData, errors } = useFormContext();
