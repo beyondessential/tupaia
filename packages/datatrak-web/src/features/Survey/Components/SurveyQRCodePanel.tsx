@@ -13,13 +13,19 @@ const QrCodeContainer = styled.div`
 `;
 
 export const SurveyQRCodePanel = () => {
-  const { surveyScreens } = useSurveyForm();
+  const { surveyScreens, formData } = useSurveyForm();
   const allSurveyScreenComponents = getAllSurveyComponents(surveyScreens);
 
-  const qrCodeQuestions = allSurveyScreenComponents?.filter(
-    component => component.config?.entity?.generateQrCode && component.config?.entity?.createNew,
-  );
+  // Only generate QR Codes for new entities
+  const qrCodeQuestions = allSurveyScreenComponents
+    ?.filter(
+      component => component.config?.entity?.generateQrCode && component.config?.entity?.createNew,
+    )
+    .map(component => {
+      const { config, questionId } = component;
+      return { config, questionId };
+    });
   if (!qrCodeQuestions?.length) return null;
-  console.log(qrCodeQuestions);
+
   return <QrCodeContainer></QrCodeContainer>;
 };
