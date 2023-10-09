@@ -109,6 +109,7 @@ export const useSurveyForm = () => {
 
   const setFormData = (newFormData: Record<string, any>) => {
     const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents!);
+
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: updatedFormData });
   };
 

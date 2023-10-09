@@ -93,30 +93,6 @@ const getConditionIsMet = (expressionParser, formData, { formula, defaultValues 
   return expressionParser.evaluate(formula);
 };
 
-export const updateConditionalQuestions = (
-  updatedFormData: Record<string, any>,
-  screenComponents?: SurveyScreenComponent[],
-) => {
-  const conditionalQuestions =
-    screenComponents?.filter(question => question.type === 'Condition') ?? [];
-  if (!conditionalQuestions.length) return updatedFormData;
-  const formDataCopy = { ...updatedFormData };
-  const expressionParser = new BooleanExpressionParser();
-
-  // loop through all conditional questions and update the formData with the result of the condition
-  conditionalQuestions.forEach(question => {
-    const { conditions } = question.config?.condition as ConditionConfig;
-    const result = Object.keys(conditions).find(resultValue =>
-      getConditionIsMet(expressionParser, formDataCopy, conditions[resultValue]),
-    );
-    if (result) {
-      const { questionId } = question;
-      formDataCopy[questionId] = result;
-    }
-  });
-  return formDataCopy;
-};
-
 const getArithmeticDependantAnswer = (questionId, answer, valueTranslation, defaultValues) => {
   if (valueTranslation[questionId] && valueTranslation[questionId][answer] !== undefined) {
     return valueTranslation[questionId][answer]; // return translated answer if there's any
@@ -131,7 +107,7 @@ const getArithmeticDependantAnswer = (questionId, answer, valueTranslation, defa
 const getArithmeticResult = (
   expressionParser,
   formData,
-  { formula, defaultValues = {}, valueTranslation = {}, answerDisplayText = '' },
+  { formula, defaultValues = {}, valueTranslation = {} },
 ) => {
   const values = {};
 
@@ -154,74 +130,69 @@ const getArithmeticResult = (
     ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
 
-  // Replace variables with actual values in answerDisplayText
-  let translatedAnswerDisplayText = answerDisplayText;
-  questionIds.forEach(questionId => {
-    const answer = values[`$${questionId}`];
-    translatedAnswerDisplayText = translatedAnswerDisplayText.replace(questionId, answer);
-  });
-  translatedAnswerDisplayText = translatedAnswerDisplayText.replace('$result', String(result));
-
   return result;
 };
 
-export const updateArithmeticQuestions = (
-  updatedFormData: Record<string, any>,
-  screenComponents: SurveyScreenComponent[],
-) => {
-  const arithmeticQuestions =
-    screenComponents?.filter(question => question.type === QuestionType.Arithmetic) ?? [];
-  if (!arithmeticQuestions.length) return updatedFormData;
-  const formDataCopy = { ...updatedFormData };
-  const expressionParser = new ExpressionParser();
-
-  arithmeticQuestions.forEach(question => {
-    const result = getArithmeticResult(
-      expressionParser,
-      formDataCopy,
-      question.config?.arithmetic as ArithmeticConfig,
-    );
-    if (result) {
-      const { questionId } = question;
-      formDataCopy[questionId] = result;
-    }
-  });
-  return formDataCopy;
-};
-
-export const resetInvisibleQuestions = (
+const resetInvisibleQuestions = (
   oldFormData: Record<string, any>,
   updates: Record<string, any>,
   screenComponents: SurveyScreenComponent[],
 ) => {
   const updatedFormData = { ...oldFormData, ...updates };
   screenComponents?.forEach(component => {
-    const { questionId, visibilityCriteria } = component;
+    const { id, visibilityCriteria } = component;
     if (
       visibilityCriteria &&
       !getIsQuestionVisible(component, updatedFormData) &&
-      updatedFormData.hasOwnProperty(questionId)
+      updatedFormData.hasOwnProperty(id)
     ) {
-      delete updatedFormData[questionId];
+      delete updatedFormData[id];
     }
   });
 
   return updatedFormData;
 };
 
-export const getUpdatedFormData = (
+const updateDependentQuestions = (
   formData: Record<string, any>,
+  screenComponents?: SurveyScreenComponent[],
+) => {
+  const formDataCopy = { ...formData };
+  const expressionParser = new ExpressionParser();
+  const booleanExpressionParser = new BooleanExpressionParser();
+
+  screenComponents?.forEach(question => {
+    const { config, type, id } = question;
+    if (type === QuestionType.Condition) {
+      const { conditions } = config?.condition as ConditionConfig;
+      const result = Object.keys(conditions).find(resultValue =>
+        getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
+      );
+      if (result) {
+        formDataCopy[id] = result;
+      }
+    }
+    if (type === QuestionType.Arithmetic) {
+      const result = getArithmeticResult(
+        expressionParser,
+        formDataCopy,
+        config?.arithmetic as ArithmeticConfig,
+      );
+      if (result) {
+        formDataCopy[id] = result;
+      }
+    }
+  });
+
+  return formDataCopy;
+};
+
+export const getUpdatedFormData = (
   updates: Record<string, any>,
+  formData: Record<string, any>,
   screenComponents: SurveyScreenComponent[],
 ) => {
+  // reset the values of invisible questions first, in case the value of the invisible question is used in the formula of another question
   const resetInvisibleQuestionData = resetInvisibleQuestions(formData, updates, screenComponents);
-  const updatedConditionalQuestions = updateConditionalQuestions(
-    resetInvisibleQuestionData,
-    screenComponents,
-  );
-  const updatedArithmeticQuestions = updateArithmeticQuestions(
-    updatedConditionalQuestions,
-    screenComponents,
-  );
-  return updatedArithmeticQuestions;
+  return updateDependentQuestions(resetInvisibleQuestionData, screenComponents);
 };

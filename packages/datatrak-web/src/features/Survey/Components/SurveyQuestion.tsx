@@ -65,7 +65,7 @@ export enum QUESTION_TYPES {
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
   CodeGenerator = CodeGeneratorQuestion,
-  Arithmetic = Placeholder,
+  Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
 }
 
@@ -125,7 +125,7 @@ export const SurveyQuestion = ({
 
   // Because the readOnly questions are not actually inputs, they won't get re-rendered on each associated question update, because they're not really controlled by react-hook-form. So instead of using a controller, we can just render the component and the component can take care of grabbing the value and displaying it.
   if (READ_ONLY_QUESTION_TYPES.includes(type)) {
-    return <FieldComponent {...props} name={name} />;
+    return <FieldComponent {...props} name={name} type={type} />;
   }
   const controllerName = getNameForController(name, type);
 
