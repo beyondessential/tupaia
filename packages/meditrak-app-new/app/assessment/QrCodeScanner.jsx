@@ -1,47 +1,50 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
-import Scanner from 'react-native-qrcode-scanner';
+// import Scanner from 'react-native-qrcode-scanner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { RNCamera } from 'react-native-camera';
-import { Button, STATUS_MESSAGE_ERROR, StatusMessage } from '../widgets';
-import { THEME_COLOR_ONE, THEME_COLOR_TWO } from '../globalStyles';
+// import { RNCamera } from 'react-native-camera';
+import {Button, STATUS_MESSAGE_ERROR, StatusMessage, Text} from '../widgets';
+import {THEME_COLOR_ONE, THEME_COLOR_TWO} from '../globalStyles';
 
-export const QrCodeScanner = ({ onRead, onStartScan, onFinishScan }) => {
+// eslint-disable-next-line no-unused-vars
+export const QrCodeScanner = ({onRead, onStartScan, onFinishScan}) => {
   const [isScanningQrCode, setIsScanningQrCode] = useState(false);
   const [error, setError] = useState(null);
 
-  const CancelScanButton = (
-    <Button
-      style={localStyles.cancelQrCodeScannerButton}
-      onPress={() => {
-        onFinishScan();
-        setIsScanningQrCode(false);
-      }}
-      title={null}
-      Icon={<Icon name="close" color={THEME_COLOR_ONE} size={24} />}
-    />
-  );
+  // const CancelScanButton = (
+  //   <Button
+  //     style={localStyles.cancelQrCodeScannerButton}
+  //     onPress={() => {
+  //       onFinishScan();
+  //       setIsScanningQrCode(false);
+  //     }}
+  //     title={null}
+  //     Icon={<Icon name="close" color={THEME_COLOR_ONE} size={24} />}
+  //   />
+  // );
 
   if (isScanningQrCode) {
     return (
-      <Scanner
-        style={localStyles.qrCodeScanner}
-        onRead={({ data }) => {
-          try {
-            onRead(data);
-          } catch (e) {
-            setError(e.message);
-          }
-
-          onFinishScan();
-          setIsScanningQrCode(false);
-        }}
-        flashMode={RNCamera.Constants.FlashMode.auto}
-        topContent={CancelScanButton}
-      />
+      <Text>TODO</Text>
+      // <Scanner
+      //   style={localStyles.qrCodeScanner}
+      //   onRead={({ data }) => {
+      //     try {
+      //       onRead(data);
+      //     } catch (e) {
+      //       setError(e.message);
+      //     }
+      //
+      //     onFinishScan();
+      //     setIsScanningQrCode(false);
+      //   }}
+      //   flashMode={RNCamera.Constants.FlashMode.auto}
+      //   topContent={CancelScanButton}
+      // />
     );
   }
 
