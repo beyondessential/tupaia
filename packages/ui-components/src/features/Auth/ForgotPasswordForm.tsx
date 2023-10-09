@@ -5,7 +5,6 @@
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LinkProps } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { FORM_FIELD_VALIDATION } from '../../constants';
@@ -13,6 +12,8 @@ import { RouterLink } from '../RouterLink';
 import { Form, FormInput } from '../Form';
 import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthFormTextField } from './AuthFormTextField';
+import { AuthErrorMessage } from './AuthErrorMessage';
+import { AuthLink } from './AuthLink';
 
 const Wrapper = styled(AuthViewWrapper)<{
   $isSuccess?: boolean;
@@ -31,18 +32,6 @@ const StyledForm = styled(Form)`
   margin-top: 2.5rem;
   width: 22rem;
   max-width: 100%;
-`;
-
-const SubmitButton = styled(AuthSubmitButton)`
-  margin-top: 2.3rem;
-`;
-
-const LinkText = styled(Typography)`
-  font-size: 0.8125rem;
-
-  a {
-    color: ${props => props.theme.palette.text.primary};
-  }
 `;
 
 interface ForgotPasswordFormProps {
@@ -75,7 +64,7 @@ export const ForgotPasswordForm = ({
   }
   return (
     <Wrapper title={HEADING_TEXT.title} subtitle={HEADING_TEXT.subtitle} $isSuccess={isSuccess}>
-      {error && <Typography color="error">{error.message}</Typography>}
+      {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
       {!isSuccess && (
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
@@ -87,15 +76,15 @@ export const ForgotPasswordForm = ({
             options={FORM_FIELD_VALIDATION.EMAIL}
             disabled={isLoading}
           />
-          <SubmitButton type="submit" isLoading={isLoading}>
+          <AuthSubmitButton type="submit" isLoading={isLoading}>
             Reset password
-          </SubmitButton>
+          </AuthSubmitButton>
           <AuthSubmitButton to={loginLink} variant="outlined" component={RouterLink}>
             Back to log in
           </AuthSubmitButton>
-          <LinkText align="center">
+          <AuthLink align="center">
             Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
-          </LinkText>
+          </AuthLink>
         </StyledForm>
       )}
     </Wrapper>

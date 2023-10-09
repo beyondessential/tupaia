@@ -6,13 +6,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Typography } from '@material-ui/core';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Form, FormInput } from '../Form';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { RouterLink } from '../RouterLink';
 import { AuthFormTextField } from './AuthFormTextField';
 import { AuthViewWrapper } from './AuthViewWrapper';
+import { AuthErrorMessage } from './AuthErrorMessage';
 
 const Wrapper = styled(AuthViewWrapper)<{
   $isSuccess?: boolean;
@@ -31,11 +31,6 @@ const StyledForm = styled(Form)`
   margin-top: 1rem;
   width: 22rem;
   max-width: 100%;
-`;
-
-const ErrorMessage = styled(Typography)`
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
 `;
 
 interface ResetPasswordFormProps {
@@ -92,7 +87,7 @@ export const ResetPasswordForm = ({
         !isSuccess ? 'Enter your new password below' : 'Your password has successfully been reset'
       }
     >
-      {error && <ErrorMessage color="error">{error.message}</ErrorMessage>}
+      {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         {!isSuccess && (
           <>
@@ -114,12 +109,7 @@ export const ResetPasswordForm = ({
             </AuthSubmitButton>
           </>
         )}
-        <AuthSubmitButton
-          variant="outlined"
-          isLoading={isLoading}
-          component={RouterLink}
-          to={loginLink}
-        >
+        <AuthSubmitButton variant="outlined" component={RouterLink} to={loginLink}>
           Back to login
         </AuthSubmitButton>
       </StyledForm>
