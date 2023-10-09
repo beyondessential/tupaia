@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { screen, waitForElementToBeRemoved, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderSurveyPage } from './helpers/render';
@@ -22,20 +22,24 @@ afterAll(() => server.close());
 describe('Survey', () => {
   it('displays a survey screen', async () => {
     renderSurveyPage('/survey/test/1');
-    await waitForElementToBeRemoved(() => screen.queryByRole(/progressbar*/i));
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Demo Land Sections 1-3');
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(
+      'Demo Land Sections 1-3',
+    );
+    expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(
       'Select Kiribati Archipelago',
     );
     fireEvent.click(screen.getByRole('button', { name: /next*/i }));
     await screen.findByText('Select Kiribati Council');
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Select Kiribati Council');
+    expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(
+      'Select Kiribati Council',
+    );
   });
 
   it('renders only visible questions when visibility criteria is applicable', async () => {
     renderSurveyPage('/survey/test/7');
     // has 1 question to start with
-    expect(screen.getAllByRole('radiogroup').length).toBe(1);
+    const radioGroup = await screen.findAllByRole('radiogroup');
+    expect(radioGroup.length).toBe(1);
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Is the facility open?');
 
     // after selecting 'permanently closed' option, the next question, 'why is the facility closed?' should appear
@@ -62,9 +66,9 @@ describe('Survey', () => {
     renderSurveyPage('/survey/test/7');
 
     // this current page starts off as the last page, so the next page should not be in the list of survey screens, and the submit button should be the 'review and submit' button
+    expect(await screen.findByText('Review and submit')).toBeInTheDocument();
     expect(screen.queryByText('Does the facility have staff housing?')).not.toBeInTheDocument();
     expect(screen.queryByText('Next')).not.toBeInTheDocument();
-    expect(screen.queryByText('Review and submit')).toBeInTheDocument();
 
     // after selecting the 'open' option, the next page, 'does the facility have staff housing?' should appear in the menu and the submit button should be the 'next' button
     fireEvent.click(screen.getByRole('radio', { name: /open*/i }));
