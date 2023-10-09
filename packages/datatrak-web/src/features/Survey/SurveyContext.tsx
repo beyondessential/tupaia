@@ -6,6 +6,8 @@
 import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
+import { BooleanExpressionParser } from '@tupaia/expression-parser';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { SurveyParams, SurveyScreenComponent, SurveyScreen } from '../../types';
 import { useSurvey } from '../../api/queries';
 import {
@@ -13,6 +15,8 @@ import {
   getAllSurveyComponents,
   getSurveyScreenNumber,
 } from './utils';
+
+type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
 
 type SurveyFormContextType = {
   startTime: string;
@@ -137,6 +141,21 @@ export const SurveyContext = ({ children }) => {
     visibleScreens,
     visibleScreens?.[screenNumber! - 1],
   );
+  const getIsDependentQuestion = (questionId: SurveyScreenComponent['questionId']) => {
+    return flattenedScreenComponents?.some(question => {
+      const { visibilityCriteria, config } = question;
+      // if the question controls the visibility of another question, return true
+      if (visibilityCriteria && Object.keys(visibilityCriteria).includes(questionId)) return true;
+      if (!config?.condition) return false;
+      const { conditions } = config?.condition;
+      // if the question is used in the formula of any other question, return true
+      return Object.keys(conditions).some(answer => {
+        // formula always has the questionId + $ in front of it, so we can just check if the formula includes the questionId
+        const { formula } = conditions[answer];
+        return formula.includes(questionId);
+      });
+    });
+  };
 
   const getDisplayQuestions = () => {
     // If the first question is an instruction, don't render it since we always just
@@ -146,14 +165,7 @@ export const SurveyContext = ({ children }) => {
       : activeScreen
     ).map(question => {
       const { questionId } = question;
-      if (
-        flattenedScreenComponents?.some(component => {
-          return (
-            component?.visibilityCriteria &&
-            Object.keys(component?.visibilityCriteria).includes(questionId)
-          );
-        })
-      ) {
+      if (getIsDependentQuestion(questionId)) {
         // if the question dictates the visibility of any other questions, we need to update the formData when the value changes so the visibility of other questions can be updated in real time
         return {
           ...question,
@@ -203,18 +215,55 @@ export const SurveyContext = ({ children }) => {
 
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
+  const { surveyScreens, formData } = surveyFormContext;
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
 
+  const updateConditionalQuestions = (updatedFormData: Record<string, any>) => {
+    const conditionalQuestions =
+      flattenedScreenComponents?.filter(question => question.type === 'Condition') ?? [];
+    if (!conditionalQuestions.length) return updatedFormData;
+    const formDataCopy = { ...updatedFormData };
+    const expressionParser = new BooleanExpressionParser();
+
+    const getConditionIsMet = ({ formula, defaultValues = {} }) => {
+      const values = {};
+      const variables = expressionParser.getVariables(formula);
+
+      variables.forEach(questionIdVariable => {
+        const questionId = questionIdVariable.replace(/^\$/, ''); // Remove the first $ prefix
+        const answer = formDataCopy[questionId];
+        const defaultValue =
+          defaultValues[questionId] !== undefined ? defaultValues[questionId] : 0; // 0 is the last resort
+        const value = answer !== undefined ? answer : defaultValue;
+        values[questionIdVariable] = value;
+      });
+
+      expressionParser.setAll(values);
+      return expressionParser.evaluate(formula);
+    };
+
+    // loop through all conditional questions and update the formData with the result of the condition
+    conditionalQuestions.forEach(question => {
+      const { conditions } = question.config?.condition as ConditionConfig;
+      const result = Object.keys(conditions).find(resultValue =>
+        getConditionIsMet(conditions[resultValue]),
+      );
+      if (result) {
+        const { questionId } = question;
+        formDataCopy[questionId] = result;
+      }
+    });
+    return formDataCopy;
+  };
+
   // reset the value of any questions that are no longer visible, so that they don't get submitted with the form and skew the results
   const resetInvisibleQuestions = (newFormData: Record<string, any>) => {
-    const { surveyScreens, formData } = surveyFormContext;
-    const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
     const updatedFormData = { ...formData, ...newFormData };
-
     flattenedScreenComponents?.forEach(component => {
       const { questionId, visibilityCriteria } = component;
       if (
@@ -229,8 +278,14 @@ export const useSurveyForm = () => {
     return updatedFormData;
   };
 
-  const setFormData = (formData: Record<string, any>) => {
-    const updatedFormData = resetInvisibleQuestions(formData);
+  const getUpdatedFormData = (newFormData: Record<string, any>) => {
+    const resetInvisibleQuestionData = resetInvisibleQuestions(newFormData);
+    const updatedConditionalQuestions = updateConditionalQuestions(resetInvisibleQuestionData);
+    return updatedConditionalQuestions;
+  };
+
+  const setFormData = (newFormData: Record<string, any>) => {
+    const updatedFormData = getUpdatedFormData(newFormData);
     dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: updatedFormData });
   };
 

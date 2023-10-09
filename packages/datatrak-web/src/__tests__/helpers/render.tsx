@@ -3,21 +3,23 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { UseMutationResult, QueryClient } from 'react-query';
 import { MemoryRouter, Routes } from 'react-router-dom';
 import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
 import { SurveyPageRoutes } from '../../Routes';
-import { UseMutationResult } from 'react-query';
 
 export function renderComponent(children) {
-  return render(children, { wrapper: AppProviders });
+  const queryClient = new QueryClient();
+  return render(<AppProviders queryClient={queryClient}>{children}</AppProviders>);
 }
 
 export function renderPage(activeUrl) {
+  const queryClient = new QueryClient();
   return render(
-    <AppProviders>
+    <AppProviders queryClient={queryClient}>
       <MemoryRouter initialEntries={[activeUrl]}>
         <Routes>{SurveyPageRoutes}</Routes>
       </MemoryRouter>

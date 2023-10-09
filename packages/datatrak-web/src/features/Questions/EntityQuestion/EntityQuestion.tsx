@@ -70,7 +70,7 @@ export const EntityQuestion = ({
     onChange(entity.value);
   };
 
-  const { data: searchResults, isLoading } = useSearchResults(searchValue, config);
+  const { data: searchResults, isLoading, isFetched } = useSearchResults(searchValue, config);
 
   const displayResults = searchResults?.filter(({ name: entityName }) => {
     if (isDirty || !value) {
@@ -91,8 +91,8 @@ export const EntityQuestion = ({
         searchValue={searchValue}
         invalid={invalid}
       />
-      {errors[name] && <FormHelperText error>*{errors[name].message}</FormHelperText>}
-      {isLoading ? (
+      {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
+      {!isFetched || isLoading ? (
         <SpinningLoader />
       ) : (
         <ResultsList value={value} onSelect={onSelect} searchResults={displayResults} />

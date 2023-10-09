@@ -391,6 +391,67 @@
           "optionSetId": null
         }
       ]
+    },
+    {
+      "id": "9",
+      "screenNumber": 9,
+      "surveyScreenComponents": [
+        {
+          "id": "12",
+          "questionId": "12",
+          "screenId": "6412504dec4eba30850179410",
+          "componentNumber": 1,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {},
+          "questionLabel": null,
+          "detailLabel": null,
+          "config": {},
+          "name": "Enter a number",
+          "code": "MCSR11",
+          "text": "Enter a number",
+          "type": "Number",
+          "options": [],
+          "optionsetId": null
+        },
+        {
+          "id": "13",
+          "questionId": "13",
+          "screenId": "6412504dec4eba30850179411",
+          "componentNumber": 2,
+          "answersEnablingFollowUp": [],
+          "isFollowUp": false,
+          "visibilityCriteria": {},
+          "validationCriteria": {},
+          "questionLabel": null,
+          "detailLabel": null,
+          "config": {
+            "condition": {
+              "conditions": {
+                "Result for > 3": {
+                  "formula": "$12 >= 3",
+                  "defaultValues": {
+                    "MCSR11": "1"
+                  }
+                },
+                "Result for < 3": {
+                  "formula": "$12 < 3",
+                  "defaultValues": {
+                    "MCSR11": "1"
+                  }
+                }
+              }
+            }
+          },
+          "name": "This is the result of the question above",
+          "code": "MCSR12",
+          "text": "This is the result of the question above",
+          "type": "Condition",
+          "options": [],
+          "optionSetId": null
+        }
+      ]
     }
   ]
 }
