@@ -8,3 +8,4 @@ export { SurveyQuestionGroup } from './SurveyQuestionGroup';
 export { SurveyToolbar } from './SurveyToolbar';
 export * from './SurveySideMenu';
 export { CancelSurveyModal } from './CancelSurveyModal';
+export { SurveyQRCodePanel } from './SurveyQRCodePanel';

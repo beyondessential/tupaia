@@ -1,3 +1,4 @@
+import { QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent, SurveyScreen } from '../../types';
 
 export const convertNumberToLetter = (number: number) => {
@@ -11,7 +12,12 @@ export const convertNumberToLetter = (number: number) => {
   return alphabet[number];
 };
 
-export const READ_ONLY_QUESTION_TYPES = ['Instruction', 'Condition', 'Arithmetic'];
+export const READ_ONLY_QUESTION_TYPES = [
+  QuestionType.Condition,
+  QuestionType.Arithmetic,
+  QuestionType.Instruction,
+  QuestionType.CodeGenerator,
+];
 
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],

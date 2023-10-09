@@ -7,6 +7,7 @@ import { BooleanExpressionParser, ExpressionParser } from '@tupaia/expression-pa
 import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
 import { formatSurveyScreenQuestions } from '../utils';
+import { generateMongoId, generateShortId } from './generateId';
 
 type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
 type ArithmeticConfig = DatatrakWebSurveyRequest.ArithmeticConfig;
@@ -17,8 +18,9 @@ export const getIsQuestionVisible = (
 ) => {
   if (!question.visibilityCriteria || !Object.keys(question.visibilityCriteria).length) return true;
   const { visibilityCriteria } = question;
-  const { _conjunction = 'or', ...dependantQuestions } = visibilityCriteria;
+  const { _conjunction = 'or', hidden, ...dependantQuestions } = visibilityCriteria;
 
+  if (hidden) return false;
   const operator = _conjunction === 'or' ? 'some' : 'every';
 
   return Object.entries(dependantQuestions)[operator](([questionId, validAnswers]) => {
@@ -183,6 +185,14 @@ const updateDependentQuestions = (
       if (result) {
         formDataCopy[questionId] = result;
       }
+    }
+    if (type === QuestionType.CodeGenerator) {
+      const {
+        type: codeType,
+      } = config?.codeGenerator as DatatrakWebSurveyRequest.CodeGeneratorConfig;
+      const code =
+        codeType === 'shortid' ? generateShortId(config?.codeGenerator) : generateMongoId();
+      formDataCopy[questionId] = code;
     }
   });
 

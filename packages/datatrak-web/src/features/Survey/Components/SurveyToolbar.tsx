@@ -13,10 +13,14 @@ import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useIsMobile } from '../../../utils';
 
-const Toolbar = styled.div`
+const Toolbar = styled.div<{
+  $toolbarIsTransparent?: boolean;
+}>`
   height: ${SURVEY_TOOLBAR_HEIGHT};
-  background: ${({ theme }) => theme.palette.background.paper};
+  background: ${({ theme, $toolbarIsTransparent }) =>
+    $toolbarIsTransparent ? 'transparent' : theme.palette.background.paper};
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  margin-top: -1px; // make sure this is always visible, even with qr code panel open
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -48,7 +52,7 @@ const CountryName = styled.span`
 `;
 
 export const SurveyToolbar = () => {
-  const { surveyCode } = useParams();
+  const { surveyCode, screenNumber: screenNumberParam } = useParams();
   const { screenNumber, numberOfScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   const { data: user } = useUser();
@@ -67,7 +71,7 @@ export const SurveyToolbar = () => {
   const surveyName = getDisplaySurveyName();
 
   return (
-    <Toolbar>
+    <Toolbar $toolbarIsTransparent={!screenNumberParam}>
       <SurveyTitleWrapper>
         <SurveyIcon />
         {survey?.name && (
@@ -77,7 +81,7 @@ export const SurveyToolbar = () => {
           </Typography>
         )}
       </SurveyTitleWrapper>
-      {screenNumber && (
+      {screenNumberParam && (
         <TopProgressBar
           currentSurveyQuestion={screenNumber}
           totalNumberOfSurveyQuestions={numberOfScreens}

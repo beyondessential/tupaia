@@ -7,10 +7,11 @@ import React from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button as BaseButton } from '../../../components/index';
+import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
-import { ROUTES } from '../../../constants/index';
+import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
+import { SurveyQRCodePanel } from '../Components';
 
 const Wrapper = styled.div`
   display: flex;
@@ -98,6 +99,7 @@ export const SurveySuccessScreen = () => {
           Close
         </Button>
       </ButtonGroup>
+      <SurveyQRCodePanel />
     </Wrapper>
   );
 };

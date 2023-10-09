@@ -71,6 +71,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
           label,
           validationCriteria,
           detailLabel,
+          detail,
           optionSetId,
           questionNumber,
           updateFormDataOnChange,
@@ -83,7 +84,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
                 </QuestionNumber>
               )}
               <SurveyQuestion
-                detailLabel={detailLabel}
+                detailLabel={detailLabel || detail}
                 id={questionId}
                 code={code}
                 name={questionId}
