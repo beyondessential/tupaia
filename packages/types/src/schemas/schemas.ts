@@ -38032,6 +38032,35 @@ export const AutocompleteConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const ConditionConfigSchema = {
+	"properties": {
+		"conditions": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"formula": {
+						"type": "string"
+					},
+					"defaultValues": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"formula"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"conditions"
+	]
+} 
+
 export const EntityQuestionConfigSchema = {
 	"properties": {
 		"createNew": {
@@ -38228,6 +38257,34 @@ export const SurveyScreenComponentConfigSchema = {
 					"additionalProperties": false
 				}
 			}
+		},
+		"condition": {
+			"type": "object",
+			"properties": {
+				"conditions": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"formula": {
+								"type": "string"
+							},
+							"defaultValues": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"formula"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"conditions"
+			]
 		}
 	},
 	"type": "object",
@@ -38246,25 +38303,8 @@ export const CamelCasedSurveyScreenSchema = {
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
-	"properties": {
-			"type": "boolean"
-		},
-		"optionSetId": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"label": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"label",
-		"optionSetId",
-		"value"
+		"id",
+		"screenNumber"
 	]
 } 
 

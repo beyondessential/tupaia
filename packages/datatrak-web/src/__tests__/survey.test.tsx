@@ -64,22 +64,21 @@ describe('Survey', () => {
 
   it('updates the sidebar page list based on visible questions on a screen', async () => {
     renderSurveyPage('/survey/test/7');
-
-    // this current page starts off as the last page, so the next page should not be in the list of survey screens, and the submit button should be the 'review and submit' button
-    expect(await screen.findByText('Review and submit')).toBeInTheDocument();
-    expect(screen.queryByText('Does the facility have staff housing?')).not.toBeInTheDocument();
-
     // after selecting the 'open' option, the next page, 'does the facility have staff housing?' should appear in the menu and the submit button should be the 'next' button
-    fireEvent.click(screen.getByRole('radio', { name: /open*/i }));
+    fireEvent.click(await screen.findByRole('radio', { name: /open*/i }));
     expect(screen.queryByText('Does the facility have staff housing?')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByRole('radio', { name: /temporarily*/i }));
+    expect(screen.queryByText('Does the facility have staff housing?')).not.toBeInTheDocument();
   });
 
   it('Updates the condition question answer when the associated question is updated', async () => {
     renderSurveyPage('/survey/test/8');
-    fireEvent.change(screen.getByLabelText('Enter a number'), { target: { value: '4' } });
+    const input = await screen.findByLabelText('Enter a number');
+    fireEvent.change(input, { target: { value: '4' } });
     expect(screen.queryByText('Result for > 3')).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText('Enter a number'), { target: { value: '2' } });
+    fireEvent.change(input, { target: { value: '2' } });
     expect(screen.queryByText('Result for < 3')).toBeInTheDocument();
   });
 });
