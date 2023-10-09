@@ -13,7 +13,9 @@ const Wrapper = styled(Paper)`
   align-items: center;
   max-width: 100%;
   box-shadow: none;
-  padding: 3rem 1rem;
+  &.MuiPaper-rounded.MuiPaper-root {
+    padding: 2.5rem 1rem 4.2rem 1rem;
+  }
   form a {
     &:hover,
     &:focus {
@@ -58,6 +60,7 @@ const Subtitle = styled(Typography)`
   font-size: 0.875rem;
   line-height: 1.3;
   margin-top: 0.32rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
 `;
 
 interface AuthViewWrapperProps {

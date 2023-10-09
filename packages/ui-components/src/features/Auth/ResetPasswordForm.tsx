@@ -7,11 +7,25 @@ import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
-import { TextField } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { Form, FormInput } from '../Form';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { RouterLink } from '../RouterLink';
+import { AuthFormTextField } from './AuthFormTextField';
+import { AuthViewWrapper } from './AuthViewWrapper';
+
+const Wrapper = styled(AuthViewWrapper)<{
+  $isSuccess?: boolean;
+}>`
+  width: 36rem;
+  &.MuiPaper-root&.MuiPaper-rounded {
+    padding-top: 2.5rem;
+    padding-bottom: 4.2rem;
+    max-height: ${({ $isSuccess }) => ($isSuccess ? '100%' : 'auto')};
+    height: ${({ $isSuccess }) => ($isSuccess ? '27rem' : 'auto')};
+    justify-content: ${({ $isSuccess }) => ($isSuccess ? 'space-between' : 'flex-start')};
+  }
+`;
 
 const StyledForm = styled(Form)`
   margin-top: 1rem;
@@ -19,9 +33,9 @@ const StyledForm = styled(Form)`
   max-width: 100%;
 `;
 
-const SuccessMessage = styled.p`
-  text-align: center;
-  padding: 0 0.9375rem;
+const ErrorMessage = styled(Typography)`
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
 `;
 
 interface ResetPasswordFormProps {
@@ -43,59 +57,72 @@ export const ResetPasswordForm = ({
   formContext,
   loginLink,
 }: ResetPasswordFormProps) => {
+  const baseFormInputs = [
+    {
+      name: 'newPassword',
+      label: 'New password',
+      options: FORM_FIELD_VALIDATION.PASSWORD,
+    },
+    {
+      name: 'passwordConfirm',
+      label: 'Confirm password',
+      options: {
+        validate: (value: string) =>
+          value === formContext.getValues('newPassword') || 'Passwords do not match.',
+      },
+    },
+  ];
+
+  // Only display the 'current password' input if there is no reset token in the url, because that means the user is already logged in
+  const formInputs = passwordResetToken
+    ? baseFormInputs
+    : [
+        {
+          name: 'oldPassword',
+          label: 'Current password',
+          options: FORM_FIELD_VALIDATION.PASSWORD,
+        },
+        ...baseFormInputs,
+      ];
   return (
-    <>
-      {error && <Typography color="error">{error.message}</Typography>}
-      {isSuccess ? (
-        <SuccessMessage>Your password has been updated</SuccessMessage>
-      ) : (
-        <StyledForm onSubmit={onSubmit} formContext={formContext}>
-          {/** Only display the 'current password' input if there is no reset token in the url */}
-          {!passwordResetToken && (
-            <FormInput
-              name="oldPassword"
-              label="Current password"
-              type="password"
-              required
-              Input={TextField}
-              options={FORM_FIELD_VALIDATION.PASSWORD}
-              disabled={isLoading}
-            />
-          )}
-          <FormInput
-            name="newPassword"
-            label="New password"
-            type="password"
-            required
-            options={FORM_FIELD_VALIDATION.PASSWORD}
-            disabled={isLoading}
-            Input={TextField}
-          />
-          <FormInput
-            name="passwordConfirm"
-            label="Confirm password"
-            type="password"
-            required
-            options={{
-              validate: (value: string) =>
-                value === formContext.getValues('newPassword') || 'Passwords do not match.',
-            }}
-            disabled={isLoading}
-            Input={TextField}
-          />
-          <AuthSubmitButton
-            variant="outlined"
-            isLoading={isLoading}
-            component={RouterLink}
-            to={loginLink}
-          >
-            Back to login
-          </AuthSubmitButton>
-          <AuthSubmitButton type="submit" isLoading={isLoading}>
-            Change password
-          </AuthSubmitButton>
-        </StyledForm>
-      )}
-    </>
+    <Wrapper
+      $isSuccess={isSuccess}
+      title="Reset password"
+      subtitle={
+        !isSuccess ? 'Enter your new password below' : 'Your password has successfully been reset'
+      }
+    >
+      {error && <ErrorMessage color="error">{error.message}</ErrorMessage>}
+      <StyledForm onSubmit={onSubmit} formContext={formContext}>
+        {!isSuccess && (
+          <>
+            {/** Only display the 'current password' input if there is no reset token in the url */}
+            {formInputs.map(({ name, label, options }) => (
+              <FormInput
+                key={name}
+                name={name}
+                label={label}
+                type="password"
+                required
+                options={options}
+                disabled={isLoading}
+                Input={AuthFormTextField}
+              />
+            ))}
+            <AuthSubmitButton type="submit" isLoading={isLoading}>
+              Change password
+            </AuthSubmitButton>
+          </>
+        )}
+        <AuthSubmitButton
+          variant="outlined"
+          isLoading={isLoading}
+          component={RouterLink}
+          to={loginLink}
+        >
+          Back to login
+        </AuthSubmitButton>
+      </StyledForm>
+    </Wrapper>
   );
 };

@@ -19,5 +19,10 @@ export const useRequestResetPassword = () => {
         },
       });
     },
+    {
+      meta: {
+        applyCustomErrorHandling: true,
+      },
+    },
   );
 };

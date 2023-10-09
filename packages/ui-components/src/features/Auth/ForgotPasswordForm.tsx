@@ -33,21 +33,8 @@ const StyledForm = styled(Form)`
   max-width: 100%;
 `;
 
-export const CancelButton = styled(AuthSubmitButton).attrs({
-  variant: 'outlined',
-  component: RouterLink,
-})`
-  margin: 1rem 0 1.25rem 0;
-`;
-
 const SubmitButton = styled(AuthSubmitButton)`
   margin-top: 2.3rem;
-`;
-
-const Description = styled(Typography)`
-  font-size: 0.875rem;
-  margin-top: 0.32rem;
-  text-align: center;
 `;
 
 const LinkText = styled(Typography)`
@@ -79,17 +66,16 @@ export const ForgotPasswordForm = ({
 }: ForgotPasswordFormProps) => {
   const HEADING_TEXT = {
     title: 'Forgot password',
-    description: 'Enter your email below to reset your password',
+    subtitle: 'Enter your email below to reset your password',
   };
   if (isSuccess) {
     HEADING_TEXT.title = 'Forgot password email sent';
-    HEADING_TEXT.description =
+    HEADING_TEXT.subtitle =
       'Please check your email for further information on how to reset your password';
   }
   return (
-    <Wrapper title={HEADING_TEXT.title} $isSuccess={isSuccess}>
+    <Wrapper title={HEADING_TEXT.title} subtitle={HEADING_TEXT.subtitle} $isSuccess={isSuccess}>
       {error && <Typography color="error">{error.message}</Typography>}
-      <Description>{HEADING_TEXT.description}</Description>
       {!isSuccess && (
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
@@ -104,7 +90,9 @@ export const ForgotPasswordForm = ({
           <SubmitButton type="submit" isLoading={isLoading}>
             Reset password
           </SubmitButton>
-          <CancelButton to={loginLink}>Back to log in</CancelButton>
+          <AuthSubmitButton to={loginLink} variant="outlined" component={RouterLink}>
+            Back to log in
+          </AuthSubmitButton>
           <LinkText align="center">
             Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
           </LinkText>

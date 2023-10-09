@@ -11,3 +11,4 @@ export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurvey } from './useSubmitSurvey';
 export { useRequestResetPassword } from './useRequestResetPassword';
+export { useResetPassword } from './useResetPassword';

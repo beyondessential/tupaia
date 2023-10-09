@@ -29,6 +29,7 @@ import {
   ProjectSelectPage,
   RequestProjectAccessPage,
   ForgotPasswordPage,
+  ResetPasswordPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -126,6 +127,7 @@ export const Routes = () => {
               }
             />
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+            <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
