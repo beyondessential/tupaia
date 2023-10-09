@@ -39,7 +39,7 @@ interface ResetPasswordFormProps {
   error?: Error | null;
   formContext: ReturnType<typeof useForm>;
   onSubmit: SubmitHandler<any>;
-  passwordResetToken?: string;
+  passwordResetToken?: string | null;
   loginLink: LinkProps['to'];
 }
 
