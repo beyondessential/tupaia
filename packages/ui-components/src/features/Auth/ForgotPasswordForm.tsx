@@ -19,7 +19,7 @@ const Wrapper = styled(AuthViewWrapper)<{
   $isSuccess?: boolean;
 }>`
   width: 36rem;
-  &.MuiPaper-root {
+  &.MuiPaper-root.MuiPaper-rounded {
     padding-top: 2.5rem;
     padding-bottom: 4.2rem;
     max-height: ${({ $isSuccess }) => ($isSuccess ? '100%' : 'auto')};
