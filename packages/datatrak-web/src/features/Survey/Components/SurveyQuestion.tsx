@@ -19,9 +19,11 @@ import {
   CodeGeneratorQuestion,
   EntityQuestion,
   AutocompleteQuestion,
+  ReadOnlyQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps, SurveyScreenComponent } from '../../../types';
 import { useSurveyForm } from '..';
+import { READ_ONLY_QUESTION_TYPES } from '../utils';
 
 const QuestionPlaceholder = styled.div`
   margin-bottom: 0.625rem;
@@ -64,7 +66,7 @@ export enum QUESTION_TYPES {
   PrimaryEntity = EntityQuestion,
   CodeGenerator = CodeGeneratorQuestion,
   Arithmetic = Placeholder,
-  Condition = Placeholder,
+  Condition = ReadOnlyQuestion,
 }
 
 const getNameForController = (name, type) => {
@@ -72,7 +74,7 @@ const getNameForController = (name, type) => {
 };
 
 const getRules = (
-  type: SurveyScreenComponent['questionType'],
+  type: SurveyScreenComponent['type'],
   validationCriteria: SurveyScreenComponent['validationCriteria'] = {},
 ) => {
   const { required, min, max } = validationCriteria;
@@ -121,13 +123,17 @@ export const SurveyQuestion = ({
     return <QuestionPlaceholder>{name}</QuestionPlaceholder>;
   }
 
+  // Because the readOnly questions are not actually inputs, they won't get re-rendered on each associated question update, because they're not really controlled by react-hook-form. So instead of using a controller, we can just render the component and the component can take care of grabbing the value and displaying it.
+  if (READ_ONLY_QUESTION_TYPES.includes(type)) {
+    return <FieldComponent {...props} name={name} />;
+  }
   const controllerName = getNameForController(name, type);
 
   // If the question dictates the visibility of any other questions, we need to update the formData when the value changes, so the visibility of other questions can be updated in real time. This doesn't happen that often, so it shouldn't have too much of a performance impact, and we are only updating the formData for the question that is changing, not the entire formData object.
   const handleOnChange = e => {
     if (updateFormDataOnChange) {
       setFormData({
-        [name]: e.target ? e.target.value : e.value, // autocomplete event returns an object with value, others return an event with a target
+        [name]: e.target.value,
       });
     }
   };

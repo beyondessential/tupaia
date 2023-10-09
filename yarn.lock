@@ -9964,6 +9964,7 @@ __metadata:
     "@mui/types": ^7.2.4
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
+    "@tupaia/expression-parser": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0

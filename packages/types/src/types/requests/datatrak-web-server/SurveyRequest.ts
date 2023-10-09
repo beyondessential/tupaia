@@ -55,6 +55,15 @@ export type AutocompleteConfig = {
   };
 };
 
+export type ConditionConfig = {
+  conditions: {
+    [key: string]: {
+      formula: string;
+      defaultValues?: Record<Question['id'], any>;
+    };
+  };
+};
+
 type EntityQuestionConfig = {
   createNew?: boolean;
   fields?: Record<string, string | { questionId: Question['id'] }>;
@@ -74,6 +83,7 @@ export type SurveyScreenComponentConfig = {
   codeGenerator?: CodeGeneratorConfig;
   autocomplete?: AutocompleteConfig;
   entity?: EntityQuestionConfig;
+  condition?: ConditionConfig;
 };
 
 export type SurveyScreenComponent = CamelCasedComponent &
