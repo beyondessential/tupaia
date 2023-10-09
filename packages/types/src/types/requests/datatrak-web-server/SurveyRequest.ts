@@ -25,18 +25,12 @@ type ValidationCriteria = {
 
 // Separating these out because sometimes the camel casing of Record<string, unknown> is not then identitied as still being a Record<string, unknown>
 
-type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options'>>;
+type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options' | 'id'>>;
 
 type CamelCasedComponent = KeysToCamelCase<
   Omit<
     BaseSurveyScreenComponent,
-    | 'validation_criteria'
-    | 'visibility_criteria'
-    | 'config'
-    | 'id'
-    | 'question_label'
-    | 'type'
-    | 'screen_id'
+    'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'type'
   >
 >;
 

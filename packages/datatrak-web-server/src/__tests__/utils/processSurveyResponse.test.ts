@@ -47,7 +47,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.FreeText,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -55,7 +54,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question2',
             type: QuestionType.Number,
-            id: '2',
             text: 'question2',
             screenId: 'screen2',
             componentNumber: 2,
@@ -73,13 +71,11 @@ describe('processSurveyResponse', () => {
       ...processedResponseData,
       answers: [
         {
-          id: '1',
           question_id: 'question1',
           type: QuestionType.FreeText,
           body: 'answer1',
         },
         {
-          id: '2',
           question_id: 'question2',
           type: QuestionType.Number,
           body: 'answer2',
@@ -96,7 +92,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.PrimaryEntity,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -124,7 +119,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.DateOfData,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -152,7 +146,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.SubmissionDate,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -180,7 +173,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.Autocomplete,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -209,7 +201,6 @@ describe('processSurveyResponse', () => {
       ],
       answers: [
         {
-          id: '1',
           question_id: 'question1',
           type: QuestionType.Autocomplete,
           body: 'answer1',
@@ -226,7 +217,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.Autocomplete,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -247,7 +237,6 @@ describe('processSurveyResponse', () => {
       ...processedResponseData,
       answers: [
         {
-          id: '1',
           question_id: 'question1',
           type: QuestionType.Autocomplete,
           body: 'answer1',
@@ -264,7 +253,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.Entity,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -281,7 +269,6 @@ describe('processSurveyResponse', () => {
       ...processedResponseData,
       answers: [
         {
-          id: '1',
           question_id: 'question1',
           type: QuestionType.Entity,
           body: 'answer1',
@@ -298,7 +285,6 @@ describe('processSurveyResponse', () => {
           {
             questionId: 'question1',
             type: QuestionType.Entity,
-            id: '1',
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
@@ -326,7 +312,6 @@ describe('processSurveyResponse', () => {
       ...processedResponseData,
       answers: [
         {
-          id: '1',
           question_id: 'question1',
           type: QuestionType.Entity,
           body: 'answer1',

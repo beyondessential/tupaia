@@ -16,13 +16,11 @@ type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
 
 export type Answers = Record<string, Answer>;
 
-type Question = SurveyScreenComponent;
-
 interface SurveyResponse {
   userId: UserAccount['id'];
   surveyId: Survey['id'];
   countryId: Entity['id'];
-  questions: Question[];
+  questions: SurveyScreenComponent[];
   answers: Answers;
   startTime: string;
 }

@@ -59,7 +59,7 @@ export const processSurveyResponse = async (
   const answersToSubmit = [] as Record<string, unknown>[];
 
   for (const question of questions) {
-    const { questionId, questionType, id } = question;
+    const { questionId, type } = question;
     const answer = answers[questionId];
     if (answer === undefined || answer === null || answer === '') {
       continue;
@@ -67,15 +67,14 @@ export const processSurveyResponse = async (
 
     // base answer object to be added to the answers array
     const answerObject = {
-      id,
       question_id: questionId,
-      type: questionType,
+      type: type,
       body: answer,
     };
 
     // Handle special question types
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
-    switch (questionType) {
+    switch (type) {
       // format dates to be ISO strings
       case 'SubmissionDate':
       case 'DateOfData':

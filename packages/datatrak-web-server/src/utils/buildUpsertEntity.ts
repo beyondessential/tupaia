@@ -3,12 +3,18 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { DatatrakWebSubmitSurveyRequest as RequestT, Entity, Country } from '@tupaia/types';
+import {
+  DatatrakWebSubmitSurveyRequest,
+  DatatrakWebSurveyRequest,
+  Entity,
+  Country,
+} from '@tupaia/types';
 
-type Answers = RequestT.ReqBody['answers'];
+type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
+type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
 
 export const buildUpsertEntity = async (
-  config: RequestT.EntityQuestionConfig,
+  config: ConfigT,
   questionId: string,
   answers: Answers,
   countryId: Country['id'],
