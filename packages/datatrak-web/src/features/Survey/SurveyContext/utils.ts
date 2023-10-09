@@ -4,9 +4,9 @@
  */
 
 import { BooleanExpressionParser, ExpressionParser } from '@tupaia/expression-parser';
+import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
 import { formatSurveyScreenQuestions } from '../utils';
-import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
 
 type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
 type ArithmeticConfig = DatatrakWebSurveyRequest.ArithmeticConfig;
@@ -140,13 +140,13 @@ const resetInvisibleQuestions = (
 ) => {
   const updatedFormData = { ...oldFormData, ...updates };
   screenComponents?.forEach(component => {
-    const { id, visibilityCriteria } = component;
+    const { questionId, visibilityCriteria } = component;
     if (
       visibilityCriteria &&
       !getIsQuestionVisible(component, updatedFormData) &&
-      updatedFormData.hasOwnProperty(id)
+      updatedFormData.hasOwnProperty(questionId)
     ) {
-      delete updatedFormData[id];
+      delete updatedFormData[questionId];
     }
   });
 
@@ -162,14 +162,14 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
-    const { config, type, id } = question;
+    const { config, type, questionId } = question;
     if (type === QuestionType.Condition) {
       const { conditions } = config?.condition as ConditionConfig;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
       if (result) {
-        formDataCopy[id] = result;
+        formDataCopy[questionId] = result;
       }
     }
     if (type === QuestionType.Arithmetic) {
@@ -179,7 +179,7 @@ const updateDependentQuestions = (
         config?.arithmetic as ArithmeticConfig,
       );
       if (result) {
-        formDataCopy[id] = result;
+        formDataCopy[questionId] = result;
       }
     }
   });

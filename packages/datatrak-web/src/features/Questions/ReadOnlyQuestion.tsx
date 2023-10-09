@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
 import { useSurveyForm } from '..';
-import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
 
 const Wrapper = styled.div`
   width: 100%;
