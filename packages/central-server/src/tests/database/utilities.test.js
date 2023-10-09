@@ -66,6 +66,32 @@ const OLD_FORMAT_CONFIG_EXAMPLE_3 = {
   }),
 };
 
+const NEW_FORMAT_CONFIG_EXAMPLE_4 = {
+  config: JSON.stringify({
+    entity: {
+      createNew: true,
+      fields: {
+        parentId: {
+          questionId: 'TEST_QUESTION_ID',
+        },
+        type: 'case',
+      },
+    },
+  }),
+};
+
+const OLD_FORMAT_CONFIG_EXAMPLE_4 = {
+  config: JSON.stringify({
+    entity: {
+      createNew: true,
+      parentId: {
+        questionId: 'TEST_QUESTION_ID',
+      },
+      type: ['case'],
+    },
+  }),
+};
+
 const modelsStub = sinon.createStubInstance(ModelRegistry, {
   getMinAppVersionByType: {
     answer: '0.0.1',
@@ -97,6 +123,12 @@ describe('database utilities', () => {
     it('should return only filter if it not createNew but there are fields properties (and will render this question disfunctional for older app versions)', () => {
       expect(translateEntityConfig(NEW_FORMAT_CONFIG_EXAMPLE_3)).to.deep.equal(
         OLD_FORMAT_CONFIG_EXAMPLE_3,
+      );
+    });
+
+    it('should ensure type property is an array', () => {
+      expect(translateEntityConfig(NEW_FORMAT_CONFIG_EXAMPLE_4)).to.deep.equal(
+        OLD_FORMAT_CONFIG_EXAMPLE_4,
       );
     });
   });

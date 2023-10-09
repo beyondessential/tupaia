@@ -31,7 +31,8 @@ const extractFields = newFormatConfig => {
   const extractedFields = {};
   const fieldName = newFormatConfig.createNew ? 'fields' : 'filter';
   Object.entries(newFormatConfig[fieldName]).forEach(([field, value]) => {
-    extractedFields[field] = value;
+    // For fields.type value convert value to array, otherwise assign value
+    extractedFields[field] = fieldName === 'fields' && field === 'type' ? [value] : value;
   });
   return extractedFields;
 };
