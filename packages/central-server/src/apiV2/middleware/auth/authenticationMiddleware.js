@@ -3,6 +3,10 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { getAPIClientUser } from './clientAuth';
 
+/**
+ *  DEPRECATED - Use server-boilerplate instead
+ */
+
 async function authenticateUser(req) {
   const authHeader = req.headers.authorization || req.headers.Authorization;
 

@@ -5,6 +5,8 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 import {
   Accordion,
   AccordionDetails,
@@ -14,9 +16,8 @@ import {
   RadioGroup,
 } from '@material-ui/core';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
-import { useSearchParams } from 'react-router-dom';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import styled from 'styled-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
@@ -30,14 +31,19 @@ const AccordionWrapper = styled(Accordion)`
     margin: 0;
   }
 `;
+
 const AccordionHeader = styled(AccordionSummary)`
+  border-radius: 3px;
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
   &.MuiAccordionSummary-root {
     min-height: unset;
     padding: 0;
     flex-direction: row-reverse;
   }
   .MuiAccordionSummary-expandIcon {
-    padding: 0rem;
+    padding: 0;
     &.Mui-expanded {
       transform: rotate(90deg);
     }
@@ -70,36 +76,57 @@ const AccordionContent = styled(AccordionDetails)`
   }
 `;
 
+const FormLabel = styled(FormControlLabel)`
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
+`;
+
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
-const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup }) => {
+const MapOverlayAccordion = ({
+  mapOverlayGroup,
+}: {
+  mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+}) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
 
   return (
-    <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-      <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
-      <AccordionContent>
-        {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
-        {mapOverlayGroup.children.map(mapOverlay =>
-          'children' in mapOverlay ? (
-            <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
-          ) : (
-            <FormControlLabel
-              value={mapOverlay.code}
-              control={<Radio />}
-              label={mapOverlay.name}
-              key={mapOverlay.code}
-            />
-          ),
-        )}
-      </AccordionContent>
-    </AccordionWrapper>
+    <ErrorBoundary>
+      <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
+        <AccordionHeader expandIcon={<KeyboardArrowRight />}>
+          {mapOverlayGroup.name}
+        </AccordionHeader>
+        <AccordionContent>
+          {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
+          {mapOverlayGroup.children.map(mapOverlay =>
+            'children' in mapOverlay ? (
+              <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
+            ) : (
+              <FormLabel
+                value={mapOverlay.code}
+                control={<Radio />}
+                label={mapOverlay.name}
+                key={mapOverlay.code}
+              />
+            ),
+          )}
+        </AccordionContent>
+      </AccordionWrapper>
+    </ErrorBoundary>
   );
 };
+
+const RadioGroupContainer = styled(RadioGroup)`
+  // Use display block to prevent the menu buttons moving around when opening the accordion
+  display: block;
+`;
 
 /**
  * This is the parent list of all the map overlays available to pick from
@@ -107,7 +134,10 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMa
 export const MapOverlayList = () => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { mapOverlayGroups = [], selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+  const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
+    projectCode,
+    entityCode,
+  );
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
@@ -115,19 +145,22 @@ export const MapOverlayList = () => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
     setUrlParams(urlSearchParams);
   };
+  if (isLoadingMapOverlays) return null;
 
   return (
-    <RadioGroup
-      aria-label="Map overlays"
-      name="map-overlays"
-      value={selectedOverlayCode}
-      onChange={onChangeMapOverlay}
-    >
-      {mapOverlayGroups
-        .filter(item => item.name)
-        .map(group => (
-          <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
-        ))}
-    </RadioGroup>
+    <ErrorBoundary>
+      <RadioGroupContainer
+        aria-label="Map overlays"
+        name="map-overlays"
+        value={selectedOverlayCode}
+        onChange={onChangeMapOverlay}
+      >
+        {mapOverlayGroups
+          .filter(item => item.name)
+          .map(group => (
+            <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
+          ))}
+      </RadioGroupContainer>
+    </ErrorBoundary>
   );
 };

@@ -9,12 +9,11 @@ import {
   EntityModel,
   OptionSetModel,
   QuestionModel,
-  SurveyModel,
   UserModel,
   OptionModel,
   FacilityModel,
 } from '@tupaia/database';
-import { FeedItemModel, MeditrakSyncQueueModel, SurveyResponseModel } from './models';
+import { FeedItemModel, MeditrakSyncQueueModel, SurveyModel, SurveyResponseModel } from './models';
 
 export type RequestContext = {
   services: TupaiaApiClient;

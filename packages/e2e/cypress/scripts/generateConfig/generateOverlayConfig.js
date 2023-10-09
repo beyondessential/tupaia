@@ -5,10 +5,9 @@
 
 import { groupBy } from 'lodash';
 
-import { getUniqueEntries, mapKeys, stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
+import { stringifyQuery, toArray, yup, yupUtils } from '@tupaia/utils';
 import config from '../../config.json';
 import { buildUrlSchema, buildUrlsUsingConfig, buildVizPeriod, sortUrls } from './helpers';
-import { MapOverlayFilter } from './VisualisationFilter';
 
 const { oneOrArrayOf } = yupUtils;
 
@@ -67,76 +66,15 @@ const parseUrl = url => {
   };
 };
 
-const generateUrls = async (db, options) => {
-  if (Object.keys(options).length === 0) {
-    return [];
-  }
-
-  const tableOverlayCountry = 'temp_overlay_country';
-  const tableOverlayProject = 'temp_overlay_project';
-
-  const generationToQueryField = {
-    id: 'id',
-    orgUnit: `${tableOverlayCountry}.orgUnit`,
-    project: `${tableOverlayProject}.project`,
-  };
-  const where = mapKeys(options, generationToQueryField);
-
-  await db.executeSql(`
-    DROP TABLE IF EXISTS ${tableOverlayCountry};
-    CREATE TEMP TABLE ${tableOverlayCountry} AS
-    SELECT id AS overlay_id, unnest("country_codes") AS "orgUnit"
-    FROM "map_overlay";
-
-    DROP TABLE IF EXISTS ${tableOverlayProject};
-    CREATE TEMP TABLE ${tableOverlayProject} AS
-    SELECT id AS overlay_id, unnest("project_codes") AS project
-    FROM "map_overlay";
-  `);
-
-  const queryOptions = {
-    multiJoin: [
-      {
-        joinWith: tableOverlayCountry,
-        joinCondition: [`${tableOverlayCountry}.overlay_id`, 'map_overlay.id'],
-      },
-      {
-        joinWith: tableOverlayProject,
-        joinCondition: [`${tableOverlayProject}.overlay_id`, 'map_overlay.id'],
-      },
-    ],
-  };
-
-  const overlays = await db.find('map_overlay', where, queryOptions);
-  const linkedOverlays = await db.find('map_overlay', {
-    id: getUniqueEntries(overlays.map(o => o.linked_measures).flat()),
-  });
-  const linkedOverlayIds = linkedOverlays.map(({ id }) => id);
-
-  return overlays
-    .filter(o => !linkedOverlayIds.includes(o.id))
-    .map(overlay => {
-      const { id, project, orgUnit, linked_measures: linkedMeasures } = overlay;
-
-      return {
-        id: linkedMeasures ? [id, ...linkedMeasures] : id,
-        project,
-        orgUnit,
-      };
-    });
-};
-
 export const generateOverlayConfig = async db => {
   const { mapOverlays: overlayConfig } = config;
-  const { filter = {} } = overlayConfig;
 
-  const urls = await buildUrlsUsingConfig(db, overlayConfig, generateUrls);
+  const urls = await buildUrlsUsingConfig(overlayConfig);
   const objectUrls = removeRedundantObjectUrls(urls.map(parseUrl));
-  const filteredObjectUrls = await new MapOverlayFilter(db, filter).apply(objectUrls);
 
   return {
     allowEmptyResponse: overlayConfig.allowEmptyResponse,
     snapshotTypes: overlayConfig.snapshotTypes,
-    urls: sortUrls(filteredObjectUrls.map(stringifyUrl)),
+    urls: sortUrls(objectUrls.map(stringifyUrl)),
   };
 };

@@ -55,11 +55,8 @@ const validateEntitiesAndBuildContext = async (
   if (!entities || entities.length === 0) {
     throwNoAccessError(entityCodes);
   }
-  const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
-    .map(child => child.country_code)
-    .filter(notNull)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
-    .filter(countryCode => req.accessPolicy.allows(countryCode));
+
+  const { allowedCountries, filter } = await getFilterInfo(req, rootEntity);
 
   if (allowedCountries.length < 1) {
     throwNoAccessError(entityCodes);
@@ -72,9 +69,23 @@ const validateEntitiesAndBuildContext = async (
     throwNoAccessError(entityCodes);
   }
 
+  return { entities: allowedEntities, allowedCountries, filter };
+};
+
+const getFilterInfo = async (
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
+  rootEntity: EntityType,
+) => {
+  const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
+    .map(child => child.country_code)
+    .filter(notNull)
+    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
+    .filter(countryCode => req.accessPolicy.allows(countryCode));
+
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
-  return { entities: allowedEntities, allowedCountries, filter };
+
+  return { allowedCountries, filter };
 };
 
 export const attachSingleEntityContext = async (
@@ -120,4 +131,26 @@ export const attachMultiEntityContext = async (
   } catch (error) {
     next(error);
   }
+};
+
+// Allows attaching the filter context without being directly under an entity context
+// Currently this scenario is only used for EntitySearch
+export const attachEntityFilterContext = async (
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string }> & {
+    ctx: { allowedCountries: string[]; filter: EntityFilter };
+  },
+  res: Response,
+  next: NextFunction,
+) => {
+  const rootEntity = await req.models.entity.findOne({
+    type: 'project',
+    code: req.params.hierarchyName,
+  });
+
+  const context = await getFilterInfo(req, rootEntity);
+
+  req.ctx.allowedCountries = context.allowedCountries;
+  req.ctx.filter = context.filter;
+
+  next();
 };

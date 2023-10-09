@@ -150,6 +150,7 @@ export {
   MapOverlayGroupRelationModel,
   MapOverlayGroupRelationType,
 } from './MapOverlayGroupRelation';
+export { MapOverlayGroupModel, MapOverlayGroupType } from './MapOverlayGroup';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
@@ -158,7 +159,7 @@ export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
-export { SurveyModel } from './Survey';
+export { SurveyModel, SurveyType } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
@@ -166,3 +167,4 @@ export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
+export { DashboardItemType, DashboardItemModel } from './DashboardItem';

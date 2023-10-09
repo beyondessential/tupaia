@@ -9,7 +9,7 @@ import { Context } from '../../context';
 import { FieldValue, Row } from '../../types';
 import { TransformParser } from '../parser';
 import { buildWhere } from './where';
-import { mapStringToStringValidator } from './transformValidators';
+import { mapStringToStringValidator } from './utils';
 import { TransformTable } from '../table';
 
 type InsertColumnsParams = {

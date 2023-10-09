@@ -1,4 +1,9 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ */
 import { toDataURL } from 'qrcode';
+import { wrapText } from './wrapText';
 
 const CANVAS_WIDTH = 1400;
 const QR_CODE_HEIGHT = 500;
@@ -23,14 +28,29 @@ export const generateQrCodeCanvas = async (
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, width, QR_CODE_HEIGHT);
 
-  // Add header text
-  const textY = TEXT_BOX_HEIGHT / 2;
-  const textX = TEXT_BOX_WIDTH / 2;
+  // Add text
   ctx.fillStyle = 'black';
   ctx.font = `105px monospace`;
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(humanReadableId as string, textX, textY);
+  const wrappedTextLines = wrapText(humanReadableId as string);
+  if (wrappedTextLines.length === 1) {
+    ctx.textAlign = 'center';
+    const textY = TEXT_BOX_HEIGHT / 2;
+    const textX = TEXT_BOX_WIDTH / 2;
+    const [text] = wrappedTextLines;
+    ctx.fillText(text, textX, textY);
+  } else {
+    ctx.textAlign = 'left';
+    for (let i = 0; i < wrappedTextLines.length; i++) {
+      const lineHeight = 115;
+      const allLinesHeight = lineHeight * wrappedTextLines.length;
+      const linesStartY = (TEXT_BOX_HEIGHT - allLinesHeight) / 2;
+      const textY = linesStartY + lineHeight * i + lineHeight / 2;
+      const textX = 60;
+      ctx.fillText(wrappedTextLines[i], textX, textY);
+    }
+    console.log(wrappedTextLines);
+  }
 
   // Add qr code
 

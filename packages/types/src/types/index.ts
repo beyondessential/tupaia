@@ -40,6 +40,12 @@ export {
   MeasureType,
   ScaleType,
   MeasureColorScheme,
+  BaseReport,
+  ViewDataItem,
+  ViewReport,
+  MatrixReportRow,
+  MatrixReportColumn,
+  MatrixReport,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -23,6 +23,13 @@ const ENTITY_CREATION_FIELD_TRANSLATION = {
   grandparent: 'grandparentId',
 };
 
+const fieldMappers = {
+  type: value => splitStringOnComma(value),
+  createNew: value => isYes(value),
+  generateQrCode: value => isYes(value),
+  allowScanQrCode: value => isYes(value),
+};
+
 const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
 const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
 
@@ -36,18 +43,21 @@ export const processEntityConfig = async (models, config) => {
     ENTITY_CREATION_JSON_FIELD_LIST,
   );
 
-  const processedConfig = {
-    allowScanQrCode: isYes(config.allowScanQrCode),
-    type: splitStringOnComma(config.type),
-    createNew: isYes(config.createNew),
-    generateQrCode: isYes(config.generateQrCode),
+  const processedConfig = Object.fromEntries(
+    Object.entries(config)
+      .filter(([field]) => fieldMappers[field])
+      .map(([field, value]) => [field, fieldMappers[field](value)]),
+  );
+
+  const fullConfig = {
+    ...processedConfig,
     ...entityCreationNonJsonFields,
     ...entityCreationJsonFields,
   };
 
   let resultConfig = await replaceQuestionCodesWithIds(
     models,
-    processedConfig,
+    fullConfig,
     ENTITY_CREATION_FIELD_LIST,
   );
   resultConfig = await replaceNestedQuestionCodesWithIds(

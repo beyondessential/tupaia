@@ -1,0 +1,210 @@
+name: CI
+on:
+  push:
+    branches-ignore:
+      - '**-e2e'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: '--max-old-space-size=6144'
+  NODE_ENV: test
+
+jobs:
+  validate_branch_name:
+    name: Validate branch name
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate branch name
+        run: packages/devops/scripts/ci/validateBranchName.sh
+
+  validate_migration:
+    name: Validate new migrations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate new migration
+        run: packages/devops/scripts/ci/validateNewMigrations.sh
+
+  validate_tests:
+    name: Validate tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js uses utils package
+      - name: Validate unit tests
+        run: packages/devops/scripts/ci/validateTests.sh
+
+  validate_types:
+    name: Validate types
+    runs-on: ubuntu-latest
+    env:
+      DB_NAME: tupaia_test
+      DB_PASSWORD: opensesame1
+      DB_URL: localhost
+      DB_USER: tupaia
+      DB_PG_USER: postgres
+      DB_PG_PASSWORD: opensesame2
+      DB_MV_USER: mvrefresh
+      DB_MV_PASSWORD: opensesame3
+    services:
+      postgres:
+        image: postgis/postgis:13-3.2-alpine
+        env:
+          POSTGRES_PASSWORD: opensesame2
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn build:internal-dependencies
+      - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
+
+  run_tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    env:
+      # common
+      DB_NAME: tupaia_test
+      DB_PASSWORD: opensesame1
+      DB_URL: localhost
+      DB_USER: tupaia
+      AGGREGATION_URL_PREFIX: dev-
+
+      # test database
+      DB_PG_USER: postgres
+      DB_PG_PASSWORD: opensesame2
+      DB_MV_USER: mvrefresh
+      DB_MV_PASSWORD: opensesame3
+
+      # test data-lake-api
+      DATA_LAKE_DB_NAME: data_lake_test
+      DATA_LAKE_DB_PASSWORD: opensesame4
+      DATA_LAKE_DB_URL: localhost
+      DATA_LAKE_DB_USER: tupaia
+
+      # central-server
+      API_CLIENT_SALT: abc132
+      CLIENT_SECRET: abc132
+      CLIENT_USERNAME: meditrak_client_test
+      JWT_SECRET: abc132
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - admin-panel
+          - admin-panel-server
+          - aggregator
+          - api-client
+          - auth
+          - central-server
+          - data-api
+          - data-broker
+          - data-lake-api
+          - data-table-server
+          - database
+          - datatrak-web
+          - datatrak-web-server
+          - dhis-api
+          - entity-server
+          - expression-parser
+          - indicators
+          - kobo-api
+          - lesmis
+          - lesmis-server
+          - meditrak-app-server
+          - psss
+          - psss-server
+          - report-server
+          - server-boilerplate
+          - superset-api
+          - tsutils
+          - tupaia-web
+          - tupaia-web-server
+          - ui-chart-components
+          - ui-components
+          - ui-map-components
+          - utils
+          - weather-api
+          - web-config-server
+
+    services:
+      postgres:
+        image: postgis/postgis:13-3.2-alpine
+        env:
+          POSTGRES_PASSWORD: opensesame2
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
+      - run: yarn build:internal-dependencies
+      - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
+      - run: yarn workspace @tupaia/${{ matrix.package }} test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      CI: false # react-scripts build treats warnings as errors if this is true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14.19.3
+          cache: yarn
+      - run: yarn set version 3.2.1
+      - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+      - run: yarn build
+
+  allgreen:
+    name: All Green
+    if: always()
+    needs:
+      - validate_branch_name
+      - validate_migration
+      - validate_tests
+      - validate_types
+      - run_tests
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Green if all jobs are green
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
