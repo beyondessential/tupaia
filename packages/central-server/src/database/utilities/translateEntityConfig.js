@@ -37,7 +37,7 @@ const extractFields = newFormatConfig => {
 };
 
 export const translateEntityConfig = record => {
-  const { entity: newFormatConfig, ...restOfConfig } = record.config;
+  const { entity: newFormatConfig, ...restOfConfig } = JSON.parse(record.config);
   if (!newFormatConfig) {
     return record;
   }
@@ -46,5 +46,5 @@ export const translateEntityConfig = record => {
   delete oldFormatConfig.fields;
   delete oldFormatConfig.filter;
 
-  return { ...record, config: { ...restOfConfig, entity: oldFormatConfig } };
+  return { ...record, config: JSON.stringify({ ...restOfConfig, entity: oldFormatConfig }) };
 };

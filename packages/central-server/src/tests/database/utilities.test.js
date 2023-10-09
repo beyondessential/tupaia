@@ -6,7 +6,7 @@ import { getUniversalTypes } from '../../database/utilities/getUniversalTypes';
 import { translateEntityConfig } from '../../database/utilities/translateEntityConfig';
 
 const NEW_FORMAT_CONFIG_EXAMPLE_1 = {
-  config: {
+  config: JSON.stringify({
     entity: {
       createNew: true,
       fields: {
@@ -15,34 +15,34 @@ const NEW_FORMAT_CONFIG_EXAMPLE_1 = {
         },
       },
     },
-  },
+  }),
 };
 
 const OLD_FORMAT_CONFIG_EXAMPLE_1 = {
-  config: {
+  config: JSON.stringify({
     entity: {
       createNew: true,
       parentId: {
         questionId: 'TEST_QUESTION_ID',
       },
     },
-  },
+  }),
 };
 
 const NEW_FORMAT_CONFIG_EXAMPLE_2 = {
-  config: {
+  config: JSON.stringify({
     entity: undefined,
-  },
+  }),
 };
 
 const OLD_FORMAT_CONFIG_EXAMPLE_2 = {
-  config: {
+  config: JSON.stringify({
     entity: undefined,
-  },
+  }),
 };
 
 const NEW_FORMAT_CONFIG_EXAMPLE_3 = {
-  config: {
+  config: JSON.stringify({
     entity: {
       createNew: false,
       filter: {
@@ -54,16 +54,16 @@ const NEW_FORMAT_CONFIG_EXAMPLE_3 = {
         },
       },
     },
-  },
+  }),
 };
 
 const OLD_FORMAT_CONFIG_EXAMPLE_3 = {
-  config: {
+  config: JSON.stringify({
     entity: {
       createNew: false,
       type: ['facility'],
     },
-  },
+  }),
 };
 
 const modelsStub = sinon.createStubInstance(ModelRegistry, {
