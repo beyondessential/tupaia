@@ -37901,9 +37901,6 @@ export const CamelCasedQuestionSchema = {
 		"name": {
 			"type": "string"
 		},
-		"id": {
-			"type": "string"
-		},
 		"dataElementId": {
 			"type": "string"
 		},
@@ -37947,7 +37944,6 @@ export const CamelCasedQuestionSchema = {
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
-		"id",
 		"text",
 		"type"
 	]
@@ -37972,13 +37968,17 @@ export const CamelCasedComponentSchema = {
 		},
 		"questionId": {
 			"type": "string"
+		},
+		"screenId": {
+			"type": "string"
 		}
 	},
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
-		"questionId"
+		"questionId",
+		"screenId"
 	]
 } 
 
