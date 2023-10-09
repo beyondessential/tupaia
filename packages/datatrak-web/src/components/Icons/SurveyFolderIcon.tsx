@@ -26,8 +26,8 @@ export const SurveyFolderIcon = (props: SvgIconProps) => {
         x2="8.9616"
         y2="7.57843"
         stroke="#328DE5"
-        stroke-width="0.999878"
-        stroke-linecap="round"
+        strokeWidth="0.999878"
+        strokeLinecap="round"
       />
     </SvgIcon>
   );

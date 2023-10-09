@@ -55,7 +55,7 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
-      {/** @ts-ignore */}
+      {/** @ts-ignore - TS is complaining about the type of the options, because we are creating them from Entities */}
       <Select
         options={
           countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []

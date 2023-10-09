@@ -100,7 +100,11 @@ const Wrapper = ({
   tooltip: ListItemType['tooltip'];
 }) => {
   if (tooltip) {
-    return <Tooltip title={tooltip}>{children}</Tooltip>;
+    return (
+      <Tooltip title={tooltip} enterDelay={1000}>
+        {children}
+      </Tooltip>
+    );
   }
   return <>{children}</>;
 };
