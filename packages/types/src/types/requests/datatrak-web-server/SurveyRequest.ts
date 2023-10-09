@@ -25,12 +25,18 @@ type ValidationCriteria = {
 
 // Separating these out because sometimes the camel casing of Record<string, unknown> is not then identitied as still being a Record<string, unknown>
 
-type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options'>>;
+type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options' | 'id'>>;
 
 type CamelCasedComponent = KeysToCamelCase<
   Omit<
     BaseSurveyScreenComponent,
-    'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'screen_id'
+    | 'validation_criteria'
+    | 'visibility_criteria'
+    | 'config'
+    | 'id'
+    | 'question_label'
+    | 'screen_id'
+    | 'type'
   >
 >;
 
@@ -58,6 +64,21 @@ export type ConditionConfig = {
   };
 };
 
+type EntityQuestionConfig = {
+  createNew?: boolean;
+  fields?: Record<string, string | { questionId: Question['id'] }>;
+  filter?: {
+    type?: string[] | string;
+    grandparentId?: { questionId: Question['id'] };
+    parentId?: { questionId: Question['id'] };
+    attributes?: {
+      [key: string]: { questionId: Question['id'] };
+    };
+  };
+  // This is needed to support the old format of the entity question config
+  [key: string]: any;
+};
+
 export type ArithmeticConfig = {
   formula: string;
   defaultValues?: Record<Question['id'], any>;
@@ -69,21 +90,23 @@ export type ArithmeticConfig = {
   >;
 };
 
-type Config = {
+export type SurveyScreenComponentConfig = {
   codeGenerator?: CodeGeneratorConfig;
   autocomplete?: AutocompleteConfig;
+  entity?: EntityQuestionConfig;
   condition?: ConditionConfig;
   arithmetic?: ArithmeticConfig;
 };
 
-type SurveyScreenComponent = CamelCasedComponent &
+export type SurveyScreenComponent = CamelCasedComponent &
   CamelCasedQuestion & {
     visibilityCriteria?: VisibilityCriteria;
     validationCriteria?: ValidationCriteria;
-    config?: Config | null;
+    config?: SurveyScreenComponentConfig | null;
     componentId?: BaseSurveyScreenComponent['id'];
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Record<string, unknown>[] | null;
+    screenId?: string;
   };
 
 type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;

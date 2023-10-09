@@ -32,22 +32,17 @@ interface TextInputProps
     max?: number;
   };
 }
-export const TextInput = ({
-  value,
-  label,
-  name,
-  onChange,
-  id,
-  ref,
-  textInputProps,
-}: TextInputProps) => (
-  <Label
-    label={label}
-    name={name}
-    inputRef={ref}
-    labelPlacement={'top'}
-    onChange={onChange}
-    value={value}
-    control={<TextField id={id} {...textInputProps} fullWidth />}
-  />
-);
+export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props, ref) => {
+  const { value, label, name, onChange, id, textInputProps } = props;
+  return (
+    <Label
+      label={label}
+      name={name}
+      inputRef={ref}
+      labelPlacement={'top'}
+      onChange={onChange}
+      value={value}
+      control={<TextField id={id} {...textInputProps} fullWidth />}
+    />
+  );
+});

@@ -2,16 +2,29 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { useUser } from '../../../api/queries';
 import { useSurveyForm } from '../../Survey';
 
-export const useEntityBaseFilters = config => {
+export const useEntityBaseFilters = (
+  config: DatatrakWebSurveyRequest.SurveyScreenComponentConfig,
+) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const { data: userData } = useUser();
   const countryCode = userData?.country?.code;
-  const { parentId, grandparentId, type } = config.entity;
 
-  const filters = { countryCode, type };
+  const filters = { countryCode } as Record<string, string | string[]>;
+
+  const filter = config?.entity?.filter;
+  if (!filter) {
+    return filters;
+  }
+
+  const { parentId, grandparentId, type } = filter;
+
+  if (type) {
+    filters.type = type;
+  }
 
   if (parentId && parentId.questionId) {
     filters['parentId'] = getAnswerByQuestionId(parentId.questionId);
@@ -22,22 +35,22 @@ export const useEntityBaseFilters = config => {
   return filters;
 };
 
-type AttributesConfigType = { entity: { attributes: Record<string, { questionId: string }> } };
-
 /*
  * Returns a function that filters entities based on configured attribute values and questions
  */
-export const useAttributeFilter = (questionConfig: AttributesConfigType) => {
+export const useAttributeFilter = (
+  questionConfig: DatatrakWebSurveyRequest.SurveyScreenComponentConfig,
+) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  const { attributes: questionAttributes } = questionConfig.entity;
-  if (!questionAttributes) {
+  const attributes = questionConfig.entity?.filter?.attributes;
+  if (!attributes) {
     return null;
   }
 
-  const filterValues = Object.entries(questionAttributes).reduce((acc, [key, config]) => {
+  const filterValues = Object.entries(attributes).reduce((acc, [key, config]) => {
     // Get the answer from the configured question
     const filterValue = getAnswerByQuestionId(config.questionId);
-    return filterValue ? acc : { ...acc, [key]: filterValue };
+    return filterValue ? { ...acc, [key]: filterValue } : acc;
   }, {});
 
   // No answer was selected for the question to filter, return all
@@ -47,7 +60,7 @@ export const useAttributeFilter = (questionConfig: AttributesConfigType) => {
 
   return entity =>
     Object.entries(filterValues).every(([key, value]) => {
-      const { attributes: entityAttributes } = entity.toJson();
-      return entityAttributes[key] === value;
+      const { attributes } = entity;
+      return attributes[key] === value;
     });
 };

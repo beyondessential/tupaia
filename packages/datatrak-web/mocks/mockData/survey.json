@@ -449,7 +449,7 @@
           "text": "This is the result of the question above",
           "type": "Condition",
           "options": [],
-          "optionsetId": null
+          "optionSetId": null
         }
       ]
     }

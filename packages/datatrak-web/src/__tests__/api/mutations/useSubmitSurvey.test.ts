@@ -4,20 +4,25 @@
  */
 import { act } from 'react-dom/test-utils';
 import { generatePath } from 'react-router';
-import moment from 'moment';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { QuestionType } from '@tupaia/types';
-import { getBrowserTimeZone } from '@tupaia/utils';
-import { processSurveyResponse, useSubmitSurvey } from '../../../api/mutations/useSubmitSurvey';
+import { useSubmitSurvey } from '../../../api/mutations';
 import { renderMutation } from '../../helpers/render';
 import { successToast } from '../../../utils';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
 
+jest.mock('../../../api/queries', () => {
+  return {
+    useUser: jest.fn().mockReturnValue({}),
+    useSurvey: jest.fn().mockReturnValue({}),
+  };
+});
+
 // Mock out the useSurveyResponseData hook so that we don't need tp mock out everything that that hook uses
-jest.mock('../../../api/mutations/useSubmitSurvey', () => {
-  const actual = jest.requireActual('../../../api/mutations/useSubmitSurvey');
+jest.mock('../../../api/mutations', () => {
+  const actual = jest.requireActual('../../../api/mutations');
   return {
     ...actual,
     useSurveyResponseData: jest.fn().mockReturnValue({
@@ -67,239 +72,14 @@ jest.mock('../../../utils/toast', () => {
   };
 });
 
-// Mock out moment so that that toISOString returns a consistent value for our tests
-jest.mock('moment', () => {
-  const mMoment = {
-    toISOString: jest.fn(() => 'theISOString'),
-  };
-  return jest.fn(() => mMoment);
-});
-
 const server = setupServer(
-  rest.post('*/v1/surveyResponse', (_, res, ctx) => {
+  rest.post('*/v1/submitSurvey', (_, res, ctx) => {
     return res(ctx.status(200));
   }),
 );
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
-
-describe('processSurveyResponse', () => {
-  const responseData = {
-    surveyId: 'theSurveyId',
-    countryId: 'theCountryId',
-    surveyStartTime: 'theStartTime',
-  };
-
-  const processedResponseData = {
-    survey_id: 'theSurveyId',
-    start_time: 'theStartTime',
-    data_time: moment().toISOString(),
-    entity_id: 'theCountryId',
-    end_time: moment().toISOString(),
-    timestamp: moment().toISOString(),
-    timezone: getBrowserTimeZone(),
-    options_created: [],
-  };
-  it('should process the survey response with standard question types', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.FreeText,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-        {
-          questionId: 'question2',
-          type: QuestionType.Number,
-          id: '2',
-          componentId: '2',
-          text: 'question2',
-          componentNumber: 2,
-        },
-      ],
-      answers: {
-        question1: 'answer1',
-        question2: 'answer2',
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      answers: [
-        {
-          id: '1',
-          question_id: 'question1',
-          type: QuestionType.FreeText,
-          body: 'answer1',
-        },
-        {
-          id: '2',
-          question_id: 'question2',
-          type: QuestionType.Number,
-          body: 'answer2',
-        },
-      ],
-    });
-  });
-
-  it('should set the entity_id as the answer when question type is "PrimaryEntity"', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.PrimaryEntity,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-      ],
-      answers: {
-        question1: 'answer1',
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      entity_id: 'answer1',
-      answers: [],
-    });
-  });
-
-  it('should set the data_time as the answer when question type is "DateOfData"', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.DateOfData,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-      ],
-      answers: {
-        question1: 'answer1',
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      data_time: moment('answer1').toISOString(),
-      answers: [],
-    });
-  });
-
-  it('should set the data_time as the answer when question type is "SubmissionDate"', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.SubmissionDate,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-      ],
-      answers: {
-        question1: 'answer1',
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      data_time: moment('answer1').toISOString(),
-      answers: [],
-    });
-  });
-
-  it('should add new options to options_created when type is "Autocomplete" and answer is marked as "isNew"', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.Autocomplete,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-      ],
-      answers: {
-        question1: {
-          isNew: true,
-          value: 'answer1',
-          label: 'answer1',
-          optionSetId: 'optionSetId',
-        },
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      options_created: [
-        {
-          option_set_id: 'optionSetId',
-          value: 'answer1',
-          label: 'answer1',
-        },
-      ],
-      answers: [
-        {
-          id: '1',
-          question_id: 'question1',
-          type: QuestionType.Autocomplete,
-          body: 'answer1',
-        },
-      ],
-    });
-  });
-
-  it('should not add new options to options_created when type is "Autocomplete" and answer is not marked as "isNew"', () => {
-    const result = processSurveyResponse({
-      ...responseData,
-      questions: [
-        {
-          questionId: 'question1',
-          type: QuestionType.Autocomplete,
-          id: '1',
-          componentId: '1',
-          componentNumber: 1,
-          text: 'question1',
-        },
-      ],
-      answers: {
-        question1: {
-          value: 'answer1',
-          label: 'answer1',
-          optionSetId: 'optionSetId',
-        },
-      },
-    });
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      answers: [
-        {
-          id: '1',
-          question_id: 'question1',
-          type: QuestionType.Autocomplete,
-          body: 'answer1',
-        },
-      ],
-    });
-  });
-});
 
 describe('useSubmitSurvey', () => {
   it('should call successToast and navigate to the success screen on successful submission of survey', async () => {
