@@ -30,7 +30,13 @@ type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options' | 'id'>>;
 type CamelCasedComponent = KeysToCamelCase<
   Omit<
     BaseSurveyScreenComponent,
-    'validation_criteria' | 'visibility_criteria' | 'config' | 'id' | 'question_label' | 'type'
+    | 'validation_criteria'
+    | 'visibility_criteria'
+    | 'config'
+    | 'id'
+    | 'question_label'
+    | 'screen_id'
+    | 'type'
   >
 >;
 
@@ -78,6 +84,7 @@ export type SurveyScreenComponent = CamelCasedComponent &
     componentId?: BaseSurveyScreenComponent['id'];
     label?: BaseSurveyScreenComponent['question_label'];
     options?: Record<string, unknown>[] | null;
+    screenId?: string;
   };
 
 type CamelCasedSurveyScreen = KeysToCamelCase<Pick<BaseSurveyScreen, 'id' | 'screen_number'>>;

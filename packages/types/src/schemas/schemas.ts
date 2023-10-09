@@ -37968,17 +37968,13 @@ export const CamelCasedComponentSchema = {
 		},
 		"questionId": {
 			"type": "string"
-		},
-		"screenId": {
-			"type": "string"
 		}
 	},
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
-		"questionId",
-		"screenId"
+		"questionId"
 	]
 } 
 
