@@ -129,6 +129,7 @@ export const AutocompleteQuestion = ({
   const options = getOptions();
 
   const handleSelectOption = (option: Option) => {
+    if (!option) return onChange(null);
     const { value } = option;
     // if the option is not in the list of options, it is a new option
     if (!data?.find(o => o.value === value)) {

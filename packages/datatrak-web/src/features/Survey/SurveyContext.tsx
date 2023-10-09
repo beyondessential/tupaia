@@ -10,7 +10,11 @@ import { BooleanExpressionParser } from '@tupaia/expression-parser';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { SurveyParams, SurveyScreenComponent, SurveyScreen } from '../../types';
 import { useSurvey } from '../../api/queries';
-import { formatSurveyScreenQuestions, getAllSurveyComponents } from './utils';
+import {
+  formatSurveyScreenQuestions,
+  getAllSurveyComponents,
+  getSurveyScreenNumber,
+} from './utils';
 
 type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
 
@@ -133,6 +137,10 @@ export const SurveyContext = ({ children }) => {
   const isReviewScreen = !screenNumber;
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
+  const displayScreenNumber = getSurveyScreenNumber(
+    visibleScreens,
+    visibleScreens?.[screenNumber! - 1],
+  );
   const getIsDependentQuestion = (questionId: SurveyScreenComponent['questionId']) => {
     return flattenedScreenComponents?.some(question => {
       const { visibilityCriteria, config } = question;
@@ -166,7 +174,7 @@ export const SurveyContext = ({ children }) => {
       }
       return question;
     });
-    return formatSurveyScreenQuestions(displayQuestions, screenNumber!);
+    return formatSurveyScreenQuestions(displayQuestions, displayScreenNumber!);
   };
 
   useEffect(() => {

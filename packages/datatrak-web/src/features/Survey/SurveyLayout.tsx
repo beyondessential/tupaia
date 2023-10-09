@@ -13,23 +13,15 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
-import {
-  HEADER_HEIGHT,
-  MOBILE_HEADER_HEIGHT,
-  ROUTES,
-  SURVEY_TOOLBAR_HEIGHT,
-} from '../../constants';
+import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
 import { useIsMobile } from '../../utils';
 
 const ScrollableLayout = styled.div`
-  height: calc(100vh - ${MOBILE_HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
+  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
   display: flex;
   flex-direction: column;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-  }
 `;
 const Wrapper = styled.div`
   display: flex;
