@@ -177,7 +177,6 @@ export const SurveyQuestion = ({
             max={max}
             name={controllerName}
             type={type}
-            ref={ref}
           />
         )}
       />

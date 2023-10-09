@@ -9,3 +9,4 @@ export { SurveyRequest, SurveyRoute } from './SurveyRoute';
 export { ProjectsRequest, ProjectsRoute } from './ProjectsRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
+export { SubmitSurveyRequest, SubmitSurveyRoute } from './SubmitSurveyRoute';

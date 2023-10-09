@@ -12,7 +12,7 @@ import { theme } from './theme';
 import { Toast } from './components';
 import { errorToast } from './utils';
 
-const queryClient = new QueryClient({
+const defaultQueryClient = new QueryClient({
   mutationCache: new MutationCache({
     // use the errorToast function to display errors by default. If you want to override this, apply an meta.applyCustomErrorHandling to the mutation
     onError: (error: any, _variables: any, _context: any, mutation: any) => {
@@ -35,7 +35,12 @@ const queryClient = new QueryClient({
   },
 });
 
-export const AppProviders = ({ children }: { children: ReactNode }) => (
+interface AppProvidersProps {
+  children: ReactNode;
+  queryClient?: QueryClient;
+}
+
+export const AppProviders = ({ children, queryClient = defaultQueryClient }: AppProvidersProps) => (
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
