@@ -73,7 +73,7 @@ interface AuthViewWrapperProps {
 export const AuthViewWrapper = ({ children, title, subtitle, className }: AuthViewWrapperProps) => {
   return (
     <Wrapper className={className}>
-      <Title variant="h2">{title}</Title>
+      {title && <Title variant="h2">{title}</Title>}
       {subtitle && <Subtitle variant="h3">{subtitle}</Subtitle>}
       {children}
     </Wrapper>
