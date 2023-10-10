@@ -18,8 +18,7 @@ const StyledButton = styled(Button)<{
   display: block;
   pointer-events: auto;
   box-shadow: none;
-  background: ${({ theme }) =>
-    theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(43, 45, 56, 0.9)'};
+  background: #34353f;
   color: ${({ theme }) => (theme.palette.type === 'light' ? theme.palette.text.primary : 'white')};
   margin-top: 0.6rem;
   margin-bottom: 1rem;
@@ -46,7 +45,7 @@ const StyledButton = styled(Button)<{
   &:hover {
     box-shadow: none;
     background: ${({ theme }) =>
-      theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.8)'};
+      theme.palette.type === 'light' ? 'white' : 'rgba(43, 45, 56, 0.7)'};
     color: ${({ theme }) =>
       theme.palette.type === 'light' ? theme.palette.text.primary : 'white'};
 

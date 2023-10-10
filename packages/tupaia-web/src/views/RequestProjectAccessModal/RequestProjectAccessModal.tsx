@@ -13,7 +13,6 @@ import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
 import { ProjectAccessForm } from './ProjectAccessForm';
 import { RequestedCountries } from './RequestedCountries';
-import { Typography } from '@material-ui/core';
 import { CountryAccessListItem } from '../../types';
 
 const ModalBody = styled.div`
@@ -88,7 +87,6 @@ export const RequestProjectAccessModal = () => {
       <ModalHeader />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
-      {project?.hasAccess && <Typography>You already have access to this project</Typography>}
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}

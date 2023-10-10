@@ -4,19 +4,43 @@
  */
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
+import { TOP_BAR_HEIGHT } from '../../constants';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: ${({ theme }) => theme.panel.secondaryBackground};
+  justify-content: space-between;
+  background-color: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.4;
+
+  .MuiSvgIcon-root {
+    margin-left: 0.5rem;
+  }
+`;
+
+const ItemButton = styled(Menu)`
+  margin: 0 auto 0 2rem;
+
+  .MuiPaper-root {
+    background: ${({ theme }) => theme.palette.background.default};
+  }
+  .MuiMenu-paper {
+    max-height: calc(100vh - ${TOP_BAR_HEIGHT});
+  }
+
+  .MuiListItem-root {
+    &:hover {
+      background: #606368;
+    }
+  }
 `;
 
 interface DashboardMenuItemProps {
@@ -26,12 +50,21 @@ interface DashboardMenuItemProps {
 
 const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) => {
   const location = useLocation();
-  const { projectCode, entityCode } = useParams();
+  const { projectCode, entityCode, dashboardName: selectedDashboardName } = useParams();
 
-  const link = { ...location, pathname: `/${projectCode}/${entityCode}/${dashboardName}` };
+  const encodedDashboardName = encodeURIComponent(dashboardName);
+  const link = {
+    ...location,
+    pathname: `/${projectCode}/${entityCode}/${encodedDashboardName}`,
+  };
 
   return (
-    <MenuItem to={link} onClick={onClose} component={Link}>
+    <MenuItem
+      to={link}
+      onClick={onClose}
+      component={Link}
+      selected={dashboardName === selectedDashboardName}
+    >
       {dashboardName}
     </MenuItem>
   );
@@ -61,21 +94,22 @@ export const DashboardMenu = ({
       {activeDashboard && (
         <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
           {activeDashboard?.name}
-          {hasMultipleDashboards && <ArrowDropDownIcon />}
+          {hasMultipleDashboards && <KeyboardArrowDownIcon />}
         </MenuButton>
       )}
 
-      <Menu
+      <ItemButton
         id="dashboards-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         variant="menu"
+        disablePortal
       >
         {dashboards.map(({ name, code }) => (
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
-      </Menu>
+      </ItemButton>
     </>
   );
 };
