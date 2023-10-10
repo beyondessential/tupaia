@@ -87,6 +87,7 @@ const findNestedGroupedMapOverlays = async (
  *
  * @param children an array of variable `mapOverlayItem`
  */
+// Todo: copy this to the tupaia-web-server
 const integrateMapOverlayItemsReference = ({ id, groupName, children }) => {
   const mapOverlayGroupResult = {
     id,

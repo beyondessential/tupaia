@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import { ErrorBoundary } from '@tupaia/ui-components';
+import { ErrorBoundary, ReferenceTooltip } from '@tupaia/ui-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
@@ -33,6 +33,13 @@ const AccordionWrapper = styled(Accordion)`
 `;
 
 const AccordionHeader = styled(AccordionSummary)`
+  display: flex;
+  align-items: center;
+
+  .MuiAccordionSummary-content .MuiSvgIcon-root {
+    margin: 0 0 0 0.2rem;
+  }
+
   border-radius: 3px;
   &:hover {
     background: rgba(153, 153, 153, 0.2);
@@ -84,6 +91,19 @@ const FormLabel = styled(FormControlLabel)`
   }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+// Todo: get this from the server
+const info = {
+  reference: {
+    text:
+      'The raw numbers displayed can have decimal places because postcodes do not all fit within single LGAs in Australia and we use ratio tables to convert postcode data to LGAs.',
+  },
+};
+
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
@@ -102,6 +122,9 @@ const MapOverlayAccordion = ({
       <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
         <AccordionHeader expandIcon={<KeyboardArrowRight />}>
           {mapOverlayGroup.name}
+          {info && info.reference && (
+            <ReferenceTooltip reference={info.reference} iconStyleOption="mayOverlay" />
+          )}
         </AccordionHeader>
         <AccordionContent>
           {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
@@ -109,12 +132,17 @@ const MapOverlayAccordion = ({
             'children' in mapOverlay ? (
               <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
             ) : (
-              <FormLabel
-                value={mapOverlay.code}
-                control={<Radio />}
-                label={mapOverlay.name}
-                key={mapOverlay.code}
-              />
+              <Wrapper>
+                <FormLabel
+                  value={mapOverlay.code}
+                  control={<Radio />}
+                  label={mapOverlay.name}
+                  key={mapOverlay.code}
+                />
+                {info && info.reference && (
+                  <ReferenceTooltip reference={info.reference} iconStyleOption="mayOverlay" />
+                )}
+              </Wrapper>
             ),
           )}
         </AccordionContent>
