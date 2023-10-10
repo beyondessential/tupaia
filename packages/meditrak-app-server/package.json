@@ -24,7 +24,7 @@
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
     "test": "yarn package:test:withdb",
-    "create-meditrak-sync-view": "node dist/sync/createMeditrakSyncView.js"
+    "create-meditrak-sync-view": "scripts/buildPermissionsBasedMeditrakSyncQueue.sh"
   },
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
