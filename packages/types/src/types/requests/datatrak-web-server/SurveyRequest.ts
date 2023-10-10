@@ -82,6 +82,7 @@ type EntityQuestionConfig = {
 export type ArithmeticConfig = {
   formula: string;
   defaultValues?: Record<Question['id'], any>;
+  answerDisplayText?: string;
   valueTranslation?: Record<
     Question['id'],
     {

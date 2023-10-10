@@ -38142,6 +38142,9 @@ export const ArithmeticConfigSchema = {
 			"type": "object",
 			"additionalProperties": false
 		},
+		"answerDisplayText": {
+			"type": "string"
+		},
 		"valueTranslation": {
 			"type": "object",
 			"additionalProperties": false
@@ -38316,6 +38319,9 @@ export const SurveyScreenComponentConfigSchema = {
 				"defaultValues": {
 					"type": "object",
 					"additionalProperties": false
+				},
+				"answerDisplayText": {
+					"type": "string"
 				},
 				"valueTranslation": {
 					"type": "object",

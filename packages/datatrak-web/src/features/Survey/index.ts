@@ -4,7 +4,7 @@
  */
 
 export * from './Screens';
-export { SurveyContext, useSurveyForm } from './SurveyContext';
+export { SurveyContext, useSurveyForm, getArithmeticDisplayAnswer } from './SurveyContext';
 export { SurveyLayout } from './SurveyLayout';
 export { SurveyToolbar } from './Components';
 export { getAllSurveyComponents } from './utils';
