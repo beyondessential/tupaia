@@ -47,3 +47,6 @@ rm ./src/migrations/*modifies-data.js
 DB_NAME=$DB_NAME yarn migrate
 cp -r ./src/migrations-backup/* ./src/migrations/
 rm -rf ./src/migrations-backup
+
+echo "Installing permissions based meditrak sync view"
+DB_NAME=$DB_NAME yarn workspace @tupaia/meditrak-app-server create-meditrak-sync-view

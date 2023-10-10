@@ -17,7 +17,6 @@ import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
 import {
   SyncableChangeEnqueuer,
-  createPermissionsBasedMeditrakSyncQueue,
   getSupportedModels,
   getUnsupportedModelFields,
 } from '../../../../sync';
@@ -112,7 +111,6 @@ describe('changes (GET)', () => {
   syncableChangeEnqueuer.setDebounceTime(50);
 
   beforeAll(async () => {
-    await createPermissionsBasedMeditrakSyncQueue(models.database);
     syncableChangeEnqueuer.listenForChanges();
     app = await setupTestApp();
 
