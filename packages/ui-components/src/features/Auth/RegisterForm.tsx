@@ -5,7 +5,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import Typography from '@material-ui/core/Typography';
 import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { Form, FormInput } from '../Form';
@@ -14,26 +13,19 @@ import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
 import { SignUpComplete } from './SignUpComplete';
 import { AuthFormTextField } from './AuthFormTextField';
+import { AuthLink } from './AuthLink';
+import { AuthErrorMessage } from './AuthErrorMessage';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 49rem;
 `;
 
-const LinkText = styled(Typography)`
-  font-weight: 400;
-  font-size: 0.6875rem;
-  line-height: 1.4;
-
-  ${AuthSubmitButton} + & {
-    margin-top: 1.3rem;
-  }
-`;
-
 const TermsText = styled.span`
   color: ${props => props.theme.palette.text.primary};
 
-  a {
+  .MuiTypography-root.MuiFormControlLabel-label & a {
     color: ${props => props.theme.palette.text.primary};
+    font-size: inherit; // override any font-size set elsewhere
   }
 `;
 
@@ -94,7 +86,7 @@ export const RegisterForm = ({
         <SignUpComplete successMessage={successMessage} verifyResendLink={verifyResendLink} />
       ) : (
         <>
-          {error && <Typography color="error">{error.message}</Typography>}
+          {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
             <FormInput name="firstName" label="First name" required Input={AuthFormTextField} />
             <FormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
@@ -157,9 +149,9 @@ export const RegisterForm = ({
               <AuthSubmitButton type="submit" isLoading={isLoading}>
                 Register account
               </AuthSubmitButton>
-              <LinkText align="center">
+              <AuthLink>
                 Already have an account? <RouterLink to={loginLink}>Log in here</RouterLink>
-              </LinkText>
+              </AuthLink>
             </ButtonColumn>
           </StyledForm>
         </>

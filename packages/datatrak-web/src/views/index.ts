@@ -14,3 +14,5 @@ export { NotFoundPage } from './NotFoundPage';
 export { ProjectSelectPage } from './ProjectSelectPage';
 export { SurveySuccessScreen, SurveyReviewScreen, SurveyScreen } from '../features';
 export { RequestProjectAccessPage } from './RequestProjectAccessPage';
+export { ForgotPasswordPage } from './ForgotPasswordPage';
+export { ResetPasswordPage } from './ResetPasswordPage';

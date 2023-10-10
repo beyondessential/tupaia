@@ -11,6 +11,7 @@ export const ROUTES = {
   REGISTER: '/register',
   REQUEST_ACCESS: '/request-access',
   FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   SURVEY_SELECT: '/survey',
   PROJECT_SELECT: '/project',
   SURVEY: SURVEY_URL,
@@ -22,3 +23,5 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
 };
+
+export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

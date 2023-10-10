@@ -14,6 +14,7 @@ import { RouterLink } from '../RouterLink';
 import { FormInput, Form } from '../Form';
 import { EmailVerificationDisplay, Message } from './EmailVerificationDisplay';
 import { AuthSubmitButton } from './AuthSubmitButton';
+import { AuthLink } from './AuthLink';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 38rem;
@@ -28,29 +29,11 @@ const StyledForm = styled(Form)`
   }
 `;
 
-const LinkText = styled(Typography)`
-  font-weight: 400;
-  font-size: 0.6875rem;
-  line-height: 1.4;
-  color: ${({ theme }) => theme.palette.text.primary};
-
-  a {
-    color: ${({ theme }) => theme.palette.text.primary};
-  }
-
-  ${AuthSubmitButton} + & {
-    margin-top: 1.3rem;
-  }
-`;
-
-const ForgotPasswordText = styled(LinkText)`
+const ForgotPasswordText = styled(AuthLink)`
   margin-top: 0.5rem;
   float: right;
-
-  // to prevent issues with specificity overriding this, we use a parent selector
-  form & {
-    font-size: 0.75rem;
-  }
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 type To = LinkProps['to'];
@@ -106,9 +89,9 @@ export const LoginForm = ({
         <AuthSubmitButton type="submit" isLoading={isLoading}>
           Log in
         </AuthSubmitButton>
-        <LinkText align="center">
+        <AuthLink>
           Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
-        </LinkText>
+        </AuthLink>
       </StyledForm>
     </Wrapper>
   );
