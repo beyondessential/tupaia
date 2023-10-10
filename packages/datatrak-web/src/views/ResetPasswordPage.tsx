@@ -4,10 +4,10 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
 import { ResetPasswordForm } from '@tupaia/ui-components';
 import { PASSWORD_RESET_TOKEN_PARAM, ROUTES } from '../constants';
 import { useResetPassword } from '../api/mutations';
-import { useSearchParams } from 'react-router-dom';
 
 export const ResetPasswordPage = () => {
   const [urlSearchParams] = useSearchParams();
