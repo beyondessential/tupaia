@@ -2744,6 +2744,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-proposal-export-default-from@npm:^7.22.17":
+  version: 7.22.17
+  resolution: "@babel/plugin-proposal-export-default-from@npm:7.22.17"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/plugin-syntax-export-default-from": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: f8b9f22c56abc6192e4311d9dc1dab7490ca16a39b5fd6c53b4f05bb899a807039a384a920f2c3df272dd4dab91595b73a56457bba442890a0f5f22e0c984ce6
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-proposal-export-namespace-from@npm:^7.12.1, @babel/plugin-proposal-export-namespace-from@npm:^7.14.5":
   version: 7.14.5
   resolution: "@babel/plugin-proposal-export-namespace-from@npm:7.14.5"
@@ -3081,6 +3093,17 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: c480fad64ac4fd1d7c6f54250999adb7600263491d15be28998bc7d2aea4cae12966e905d80d69f9d98b170ee28d164a7529025f250e2a285d97dff9d421fe48
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-syntax-export-default-from@npm:^7.22.5":
+  version: 7.22.5
+  resolution: "@babel/plugin-syntax-export-default-from@npm:7.22.5"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 5b66dea77f9e8e6307b01827a229a49bd98f0928e21bffadf538201fd2705838e621bc80d712fbe48f9f6b1348b78aa95c1e5d5ab75773521ccc399d26152de7
   languageName: node
   linkType: hard
 
@@ -44763,6 +44786,7 @@ __metadata:
   dependencies:
     "@babel/cli": ^7.11.6
     "@babel/node": ^7.10.5
+    "@babel/plugin-proposal-export-default-from": ^7.22.17
     "@babel/plugin-transform-runtime": ^7.18.10
     "@beyondessential/eslint-config-jest": ^1.0.0
     "@beyondessential/eslint-config-js": ^1.1.1
