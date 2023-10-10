@@ -3,49 +3,28 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { get } from 'lodash';
-import semverCompare from 'semver-compare';
+import { Request } from 'express';
 
 import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
-import { fetchRequestingMeditrakDevice } from '../utilities';
+import { MeditrakSyncQueryModifiers } from './types';
+import { getSupportedDatabaseTypes } from '../../../sync';
 
-// TODO: Tidy this up as part of RN-502
-
-const isAppVersionGreaterThanMin = (version, minVersion) => semverCompare(version, minVersion) >= 0;
-
-const getSupportedTypes = async (models, appVersion) => {
-  const minAppVersionByType = models.getMinAppVersionByType();
-  return Object.keys(minAppVersionByType).filter(type =>
-    isAppVersionGreaterThanMin(appVersion, minAppVersionByType[type]),
-  );
-};
-
-export const recordTypeFilter = async req => {
-  const { models } = req;
+export const recordTypeFilter = (req: Request) => {
   const { appVersion, recordTypes = null } = req.query;
 
-  if (recordTypes) {
+  if (typeof recordTypes === 'string') {
     const recordTypesArray = recordTypes.split(',');
     return {
       query: `record_type IN ${SqlQuery.record(recordTypesArray)}`,
       params: recordTypesArray,
     };
   }
-  if (appVersion) {
-    const supportedTypes = await getSupportedTypes(models, appVersion);
+  if (typeof appVersion === 'string') {
+    const supportedTypes = getSupportedDatabaseTypes(req.models, appVersion);
     return {
       query: `record_type IN ${SqlQuery.record(supportedTypes)}`,
       params: supportedTypes,
-    };
-  }
-
-  const meditrakDevice = await fetchRequestingMeditrakDevice(req);
-  const unsupportedTypes = get(meditrakDevice, 'config.unsupportedTypes', []);
-  if (unsupportedTypes.length > 0) {
-    return {
-      query: `record_type NOT IN ${SqlQuery.record(unsupportedTypes)}`,
-      params: unsupportedTypes,
     };
   }
 
@@ -56,7 +35,7 @@ export const recordTypeFilter = async req => {
 // the client could have already synchronised, and ignore any 'delete' type sync actions for
 // records with higher ids: if the client doesn't know about them there is no point in telling
 // them to delete them
-export const deletesSinceLastSync = since => {
+export const deletesSinceLastSync = (since: number) => {
   let query = '';
   const params = [];
 
@@ -70,20 +49,25 @@ export const deletesSinceLastSync = since => {
   return { query, params };
 };
 
-export const selectFromClause = select => `
+export const selectFromClause = (select: string) => `
   SELECT ${select} FROM permissions_based_meditrak_sync_queue
 `;
 
-export const extractSinceValue = req => {
+export const extractSinceValue = (req: Request) => {
   const { since = 0 } = req.query;
-  if (isNaN(since)) {
+
+  if (typeof since === 'number') return since;
+
+  const parsedSince = parseFloat(since as string);
+
+  if (isNaN(parsedSince)) {
     throw new ValidationError("The 'since' parameter must be a number.");
   }
 
-  return parseFloat(since);
+  return parsedSince;
 };
 
-export const getModifiers = (sort, limit, offset) => {
+export const getModifiers = ({ sort, limit, offset }: MeditrakSyncQueryModifiers) => {
   let query = '';
   const params = [];
 
@@ -110,10 +94,14 @@ export const getModifiers = (sort, limit, offset) => {
   return { query, params };
 };
 
-export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset }) => {
+export const buildMeditrakSyncQuery = async <Results>(
+  req: Request,
+  select: string,
+  { sort, limit, offset }: MeditrakSyncQueryModifiers = {},
+) => {
   const since = extractSinceValue(req);
 
-  const query = new SqlQuery();
+  const query = new SqlQuery<Results>();
   query.append(selectFromClause(select));
   query.append(`WHERE
   (`);
@@ -123,14 +111,14 @@ export const buildMeditrakSyncQuery = async (req, { select, sort, limit, offset 
   query.append(deletesSinceLastSync(since));
   query.append(`
   ))`);
-  const filter = await recordTypeFilter(req);
+  const filter = recordTypeFilter(req);
   if (filter) {
     query.append(`
       AND `);
     query.append(filter);
   }
 
-  query.append(getModifiers(sort, limit, offset));
+  query.append(getModifiers({ sort, limit, offset }));
 
   return { query };
 };

@@ -3,11 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-// TODO: Tidy this up as part of RN-502
-
 import semverCompare from 'semver-compare';
 
 export const PERMISSIONS_BASED_SYNC_MIN_APP_VERSION = '1.12.124';
 
-export const supportsPermissionsBasedSync = version =>
+export const supportsPermissionsBasedSync = (version: string) =>
   semverCompare(version, PERMISSIONS_BASED_SYNC_MIN_APP_VERSION) >= 0;

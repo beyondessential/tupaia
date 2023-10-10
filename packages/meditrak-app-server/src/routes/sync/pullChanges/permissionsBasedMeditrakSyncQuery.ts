@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { Request } from 'express';
 import { SqlQuery } from '@tupaia/database';
 import { getCountriesAndPermissionsToSync } from './getCountriesAndPermissionsToSync';
 import {
@@ -16,16 +17,15 @@ import {
   PERMISSIONS_BASED_SYNC_MIN_APP_VERSION,
   supportsPermissionsBasedSync,
 } from './supportsPermissionsBasedSync';
+import { MeditrakSyncQueryModifiers } from './types';
 
 const recordTypesToAlwaysSync = ['country', 'permission_group'];
 const entityTypesToAlwaysSync = ['world', 'country'];
 
-// TODO: Tidy this up as part of RN-502
-
 /**
  * Since all countries, permission_groups, and country entities regardless of permissions
  */
-export const permissionsFreeChanges = since => {
+export const permissionsFreeChanges = (since: number) => {
   return {
     query: `change_time > ? AND (record_type IN ${SqlQuery.record(
       recordTypesToAlwaysSync,
@@ -34,7 +34,11 @@ export const permissionsFreeChanges = since => {
   };
 };
 
-export const changesWithPermissions = (countryIds, permissionGroups, since) => {
+export const changesWithPermissions = (
+  countryIds: string[],
+  permissionGroups: string[] | null,
+  since: number,
+) => {
   let query = `change_time > ? AND "type" = ? and record_type NOT IN ${SqlQuery.record(
     recordTypesToAlwaysSync,
   )}`;
@@ -75,12 +79,13 @@ export const changesWithPermissions = (countryIds, permissionGroups, since) => {
  * Once the sync is complete, the app then updates the list of synced countries and permission groups
  *
  */
-export const buildPermissionsBasedMeditrakSyncQuery = async (
-  req,
-  { select, sort, limit, offset },
+export const buildPermissionsBasedMeditrakSyncQuery = async <Results>(
+  req: Request,
+  select: string,
+  { sort, limit, offset }: MeditrakSyncQueryModifiers = {},
 ) => {
   const { appVersion } = req.query;
-  if (!appVersion) {
+  if (typeof appVersion !== 'string') {
     throw new Error("Must provide 'appVersion' url parameter");
   }
 
@@ -93,7 +98,7 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
   const since = extractSinceValue(req);
   const permissionBasedFilter = await getCountriesAndPermissionsToSync(req);
 
-  const query = new SqlQuery();
+  const query = new SqlQuery<Results>();
   const { unsynced, synced } = permissionBasedFilter;
 
   query.append(selectFromClause(select));
@@ -104,26 +109,26 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
   query.append(permissionsFreeChanges(since));
   query.append(')');
 
-  const addPermissionsOrClause = clause => {
+  const addPermissionsOrClause = (clause: { query: string; params: unknown[] }) => {
     query.append(` 
      OR (`);
     query.append(clause);
     query.append(')');
   };
 
-  if (unsynced.countries) {
+  if (unsynced.countryIds) {
     // Never before synced countries due to new country permissions
     addPermissionsOrClause(changesWithPermissions(unsynced.countryIds, null, 0));
   }
 
-  if (unsynced.countries && unsynced.permissionGroups) {
+  if (unsynced.countryIds && unsynced.permissionGroups) {
     // Never before synced surveys due to new permission groups and country permissions
     addPermissionsOrClause(
       changesWithPermissions(unsynced.countryIds, unsynced.permissionGroups, 0),
     );
   }
 
-  if (unsynced.countries && synced.permissionGroups) {
+  if (unsynced.countryIds && synced.permissionGroups) {
     // Never before synced surveys due to new country permissions
     addPermissionsOrClause(changesWithPermissions(unsynced.countryIds, synced.permissionGroups, 0));
   }
@@ -158,7 +163,7 @@ export const buildPermissionsBasedMeditrakSyncQuery = async (
     query.append(filter);
   }
 
-  query.append(getModifiers(sort, limit, offset));
+  query.append(getModifiers({ sort, limit, offset }));
 
   const countriesInSync = [...(unsynced.countries || []), ...(synced.countries || [])];
   const permissionGroupsInSync = [

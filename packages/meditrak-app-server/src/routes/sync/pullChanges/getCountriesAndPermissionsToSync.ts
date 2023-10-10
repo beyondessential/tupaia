@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-// TODO: Tidy this up as part of RN-502
+import { Request } from 'express';
 
 /**
  * This function determines which countries and permissions should be synced to a given meditrak app
@@ -18,18 +18,18 @@
  * synced countries/permissions should only have new updates/deletes (ie. later than 'since' timestamp) included in the changes
  * unsynced countries/permissions should all updates/deletes synced to the device.
  */
-export const getCountriesAndPermissionsToSync = async req => {
-  const { accessPolicy } = req;
-  const {
-    countriesSynced: countriesSyncedString,
-    permissionGroupsSynced: permissionGroupsSyncedString,
-  } = req.query;
+export const getCountriesAndPermissionsToSync = async (req: Request) => {
+  const usersCountries = req.accessPolicy ? req.accessPolicy.getEntitiesAllowed() : [];
+  const usersPermissionGroups = req.accessPolicy ? req.accessPolicy.getPermissionGroups() : [];
 
-  const usersCountries = accessPolicy.getEntitiesAllowed();
-  const usersPermissionGroups = accessPolicy.getPermissionGroups();
+  const { countriesSynced, permissionGroupsSynced } = req.query;
+
+  const syncedCountries = typeof countriesSynced === 'string' ? countriesSynced.split(',') : [];
+  const syncedPermissionGroups =
+    typeof permissionGroupsSynced === 'string' ? permissionGroupsSynced.split(',') : [];
 
   // First time sync, just return new countries and permission groups
-  if (!countriesSyncedString || !permissionGroupsSyncedString) {
+  if (syncedCountries.length === 0 || syncedPermissionGroups.length === 0) {
     const userCountryIds = (await req.models.country.find({ code: usersCountries })).map(
       country => country.id,
     );
@@ -43,8 +43,6 @@ export const getCountriesAndPermissionsToSync = async req => {
     };
   }
 
-  const syncedCountries = countriesSyncedString.split(',');
-  const syncedPermissionGroups = permissionGroupsSyncedString.split(',');
   const syncedCountryIds = (await req.models.country.find({ code: syncedCountries })).map(
     country => country.id,
   );
