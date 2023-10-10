@@ -4,7 +4,7 @@
  */
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { useUser } from '../../../api/queries';
-import { useSurveyForm } from '../../Survey/SurveyContext';
+import { useSurveyForm } from '../../Survey';
 
 export const useEntityBaseFilters = (
   config: DatatrakWebSurveyRequest.SurveyScreenComponentConfig,

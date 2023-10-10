@@ -79,11 +79,24 @@ type EntityQuestionConfig = {
   [key: string]: any;
 };
 
+export type ArithmeticConfig = {
+  formula: string;
+  defaultValues?: Record<Question['id'], any>;
+  answerDisplayText?: string;
+  valueTranslation?: Record<
+    Question['id'],
+    {
+      [key: string]: string | number;
+    }
+  >;
+};
+
 export type SurveyScreenComponentConfig = {
   codeGenerator?: CodeGeneratorConfig;
   autocomplete?: AutocompleteConfig;
   entity?: EntityQuestionConfig;
   condition?: ConditionConfig;
+  arithmetic?: ArithmeticConfig;
 };
 
 export type SurveyScreenComponent = CamelCasedComponent &
