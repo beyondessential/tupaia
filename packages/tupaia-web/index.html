@@ -86,6 +86,14 @@
       });
     </script>
     <% } %>
+
+    <!-- Start of bes-support Zendesk Widget script -->
+    <script
+      id="ze-snippet"
+      src="https://static.zdassets.com/ekr/snippet.js?key=4719227f-a493-431d-a920-41ebcafbcccb"
+    ></script>
+    <!-- End of bes-support Zendesk Widget script -->
+
     <!--
       Record the load time at this point instead of in the javascript as cached resources would make
       load time inconsistent between page loads.
@@ -113,33 +121,33 @@
       color: white;
     }
     @keyframes spinner {
-       to {
-           transform: rotate(360deg);
-       }
-     }
+      to {
+        transform: rotate(360deg);
+      }
+    }
     #tupaia-spinner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 100vw;
-        z-index: 9999;
-        background: #262834;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      z-index: 9999;
+      background: #262834;
     }
     #tupaia-spinner:before {
-        content: '';
-        box-sizing: border-box;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 60px;
-        height: 60px;
-        margin-top: -30px;
-        margin-left: -30px;
-        border-radius: 50%;
-        border: 5px solid rgba(255, 255, 255, 0.3);
-        border-top-color: white;
-        animation: spinner 0.6s linear infinite;
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      margin-top: -30px;
+      margin-left: -30px;
+      border-radius: 50%;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      animation: spinner 0.6s linear infinite;
     }
   </style>
   <body>
