@@ -83,7 +83,7 @@ export const SurveyQuestionGroup = ({ questions }: { questions: SurveyScreenComp
                 </QuestionNumber>
               )}
               <SurveyQuestion
-                detailLabel={'test'}
+                detailLabel={detailLabel}
                 id={questionId}
                 code={code}
                 name={questionId}
