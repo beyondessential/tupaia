@@ -54,7 +54,7 @@ const ScrollBody = styled.div`
   height: 100%;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     // Need to be permanently set to scroll to fix issue where scroll bar appears and dis-appears repeatedly and flickers
-    overflow-y: scroll;
+    overflow: auto;
   }
 `;
 
@@ -82,7 +82,9 @@ const TitleBar = styled.div`
   background-color: ${({ theme }) => theme.palette.background.default};
 
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
+    overflow: auto;
+    // Fix issue where scroll bar appears and dis-appears repeatedly and flickers
+    margin-right: 5px;
   }
 `;
 

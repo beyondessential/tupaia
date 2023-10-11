@@ -22,6 +22,7 @@ import { useNavigateToEntity } from '../utils';
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
 interface PolygonProps {
+  $active?: string;
   $shade?: string;
 }
 
@@ -38,7 +39,10 @@ const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
   stroke: ${({ $shade }) => $shade};
   fill-opacity: 0.5;
   &:hover {
-    fill-opacity: 0.8;
+    fill-opacity: ${({ $active }) =>
+      $active
+        ? 0.5
+        : 0.8}; // don't add hover effect when it is the active polygon because it isn't clickable
   }
 `;
 
@@ -142,6 +146,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
           <PolygonComponent
             positions={region}
             $shade={shade}
+            $active={code === activeEntityCode}
             eventHandlers={{
               click: onClick,
             }}
