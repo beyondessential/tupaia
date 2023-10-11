@@ -8,6 +8,7 @@ import {
   Survey,
   SurveyScreen as BaseSurveyScreen,
   SurveyScreenComponent as BaseSurveyScreenComponent,
+  Option as BaseOption,
 } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
@@ -99,6 +100,10 @@ export type SurveyScreenComponentConfig = {
   arithmetic?: ArithmeticConfig;
 };
 
+export type Option = Pick<BaseOption, 'value' | 'label'> & {
+  color?: string;
+};
+
 export type SurveyScreenComponent = CamelCasedComponent &
   CamelCasedQuestion & {
     visibilityCriteria?: VisibilityCriteria;
@@ -106,7 +111,7 @@ export type SurveyScreenComponent = CamelCasedComponent &
     config?: SurveyScreenComponentConfig | null;
     componentId?: BaseSurveyScreenComponent['id'];
     label?: BaseSurveyScreenComponent['question_label'];
-    options?: Record<string, unknown>[] | null;
+    options?: Option[] | null;
     screenId?: string;
   };
 

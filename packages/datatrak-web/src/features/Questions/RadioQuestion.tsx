@@ -5,14 +5,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { lighten } from '@material-ui/core';
-import { RadioGroup } from '@tupaia/ui-components';
+import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
+import { RadioIcon } from '../../components';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
-
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
   legend {
     color: ${({ theme }) => theme.palette.text.primary};
     margin-bottom: 1rem;
@@ -24,44 +25,49 @@ const StyledRadioGroup = styled(RadioGroup)`
       font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
     }
   }
-  .MuiFormGroup-root {
-    display: flex;
-    flex-direction: column;
-    border: none;
-    max-width: 25rem;
-  }
-  .MuiRadio-root {
-    color: ${({ theme }) => theme.palette.text.primary};
-    &.Mui-checked {
-      color: ${({ theme }) => theme.palette.primary.main};
-    }
-  }
-  .MuiFormControlLabel-root {
-    border: 1px solid ${({ theme }) => theme.palette.text.primary};
-    border-radius: 4px;
+`;
 
-    &:has(.Mui-checked) {
-      border-color: ${({ theme }) => theme.palette.primary.main};
-      background-color: ${({ theme }) => lighten(theme.palette.primary.main, 0.9)};
-    }
-    &:not(:last-child) {
-      margin-bottom: 0.5rem;
-    }
-    &:last-child {
-      border-right: 1px solid ${({ theme }) => theme.palette.text.primary}; // overwrite styles that remove this
-    }
-    .MuiFormControlLabel-label {
-      font-size: 0.875rem;
-    }
-    &:has([aria-invalid='true']) {
-      border-color: ${({ theme }) => theme.palette.error.main};
-      .MuiSvgIcon-root {
-        color: ${({ theme }) => theme.palette.error.main};
-      }
-    }
+const RadioItem = styled(FormControlLabel)<{
+  $color?: string;
+}>`
+  border: 1px solid ${({ theme }) => theme.palette.text.primary};
+  border-radius: 4px;
+  background-color: ${({ $color }) => ($color ? `${$color}33` : 'transparent')};
+  max-width: 25rem;
+  margin-left: 0;
+  padding: 0.3rem 0.69rem;
+  .MuiFormControlLabel-label {
+    font-size: 0.875rem;
   }
+  &:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+  &:has(.Mui-checked) {
+    border-color: ${({ theme, $color }) => $color || theme.palette.primary.main};
+    background-color: ${({ theme, $color }) =>
+      $color ? `${$color}33` : lighten(theme.palette.primary.main, 0.9)};
+  }
+  [aria-invalid='true'] & {
+    border-color: ${({ theme }) => theme.palette.error.main};
+  }
+`;
+
+const RadioButton = styled(Radio)<{
+  $color?: string;
+}>`
+  color: ${({ theme }) => theme.palette.text.primary};
+
   .MuiSvgIcon-root {
     font-size: 1.25rem;
+    fill: ${({ $color }) => ($color ? 'white' : 'transparent')};
+  }
+  &.Mui-checked {
+    color: ${({ theme }) => theme.palette.primary.main};
+  }
+  [aria-invalid='true'] & {
+    .MuiSvgIcon-root {
+      color: ${({ theme }) => theme.palette.error.main};
+    }
   }
 `;
 
@@ -76,18 +82,31 @@ export const RadioQuestion = ({
   // This is a controlled component because value and onChange are required props
   return (
     <StyledRadioGroup
+      aria-describedby={`question_number_${id}`}
+      name={name!}
       onChange={onChange}
       id={id}
-      label={label?.replace(/\xA0/g, ' ')} // replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping
-      name={name!}
-      inputRef={ref}
-      options={options || []}
+      aria-invalid={invalid}
+      ref={ref}
       value={value || ''}
-      required={required}
-      inputProps={{
-        ['aria-describedby']: `question_number_${id}`,
-        ['aria-invalid']: invalid,
-      }}
-    />
+    >
+      {/**replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping **/}
+      <FormLabel component="legend">{label?.replace(/\xA0/g, ' ')}</FormLabel>
+      {options?.map(({ label, value, color }, i) => (
+        <RadioItem
+          $color={color}
+          value={value}
+          control={
+            <RadioButton
+              $color={color}
+              required={required && i === 0}
+              icon={<RadioIcon />}
+              checkedIcon={<RadioIcon checked optionColor={color} />}
+            />
+          } // only the first radio button is required, as this is enough to make the whole group required
+          label={label}
+        />
+      ))}
+    </StyledRadioGroup>
   );
 };
