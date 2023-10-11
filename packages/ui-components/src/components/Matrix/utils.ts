@@ -72,14 +72,14 @@ const getPresentationOptionFromCondition = (
             CONDITION_CHECK_METHOD[operator as keyof typeof CONDITION_CHECK_METHOD];
 
           return checkConditionMethod
-            ? checkConditionMethod(parseInt(value) as number, conditionalValue as number)
+            ? checkConditionMethod(parseFloat(value) as number, conditionalValue as number)
             : false;
         });
       }
 
       // If condition is not an object, assume its the value we want to check (with '=' operator)
       const checkConditionMethod = CONDITION_CHECK_METHOD['='];
-      return checkConditionMethod(value, condition);
+      return checkConditionMethod(parseFloat(value), condition);
     },
   );
 
