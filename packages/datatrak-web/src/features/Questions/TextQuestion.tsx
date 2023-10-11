@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { TextInput } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -19,6 +20,8 @@ const Wrapper = styled.div<{
   }
   .MuiFormControl-root {
     max-width: ${({ $type }) => ($type === 'Number' ? '25rem' : 'none')};
+    display: flex;
+    flex-direction: column-reverse; // make the helper text appear above the input
   }
   .MuiFormControlLabel-label {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
@@ -40,6 +43,7 @@ export const TextQuestion = ({
   type,
   required,
   min,
+  detailLabel,
   max,
   controllerProps: { onChange, value = '', ref, invalid },
 }: SurveyQuestionInputProps) => {
@@ -62,6 +66,10 @@ export const TextQuestion = ({
           min,
           max,
           multiline: type === 'FreeText',
+          helperText: detailLabel,
+          FormHelperTextProps: {
+            component: QuestionHelperText,
+          },
         }}
       />
     </Wrapper>

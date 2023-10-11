@@ -42,6 +42,7 @@ const useSearchResults = (searchValue, config) => {
 export const EntityQuestion = ({
   id,
   label,
+  detailLabel,
   name,
   controllerProps: { onChange, value, ref, invalid },
   config,
@@ -85,6 +86,7 @@ export const EntityQuestion = ({
         id={id}
         isDirty={isDirty}
         label={label}
+        detailLabel={detailLabel}
         name={name!}
         ref={ref}
         onChangeSearch={onChangeSearch}

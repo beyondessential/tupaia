@@ -8,16 +8,27 @@ import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { Search, Clear } from '@material-ui/icons';
 import { InputAdornment, IconButton, TextFieldProps } from '@material-ui/core';
+import { QuestionHelperText } from '../QuestionHelperText';
 
 const StyledField = styled(TextField)<TextFieldProps>`
   margin-bottom: 0;
+  display: flex;
 
+  .MuiFormLabel-root {
+    color: ${({ theme }) => theme.palette.text.primary};
+  }
+  .MuiFormHelperText-root {
+    margin-bottom: 0.6rem;
+  }
   .MuiOutlinedInput-notchedOutline {
     border-color: ${({ theme }) => theme.palette.divider};
   }
 
   .MuiInputBase-root.Mui-error {
     background: initial;
+  }
+  .MuiInputBase-root {
+    order: 2;
   }
 
   .MuiInputBase-input {
@@ -48,10 +59,11 @@ type SearchFieldProps = TextFieldProps & {
   onChangeSearch: (value: string) => void;
   isDirty: boolean;
   invalid: boolean;
+  detailLabel?: string;
 };
 
 export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((props, ref) => {
-  const { name, label, id, searchValue, onChangeSearch, isDirty, invalid } = props;
+  const { name, label, id, searchValue, onChangeSearch, isDirty, invalid, detailLabel } = props;
 
   const displayValue = isDirty ? searchValue : '';
 
@@ -72,6 +84,10 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
       onChange={handleChange}
       value={displayValue}
       error={invalid}
+      helperText={detailLabel}
+      FormHelperTextProps={{
+        component: QuestionHelperText,
+      }}
       placeholder="Search..."
       // disable browser autofill
       autoComplete="one-time-code"

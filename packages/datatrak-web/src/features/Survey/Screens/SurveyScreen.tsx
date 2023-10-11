@@ -8,6 +8,7 @@ import { Typography } from '@material-ui/core';
 import { useSurveyForm } from '../SurveyContext';
 import { SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
+import { QuestionType } from '@tupaia/types';
 
 const ScreenHeading = styled(Typography)<{
   $centered?: boolean;
@@ -29,11 +30,14 @@ const ScreenHeading = styled(Typography)<{
  * This is the component that renders survey questions.
  */
 export const SurveyScreen = () => {
-  const { displayQuestions, screenHeader } = useSurveyForm();
+  const { displayQuestions, screenHeader, activeScreen } = useSurveyForm();
 
   return (
     <ScrollableBody $hasSidebar>
-      <ScreenHeading variant="h2" $centered={displayQuestions.length === 0}>
+      <ScreenHeading
+        variant="h2"
+        $centered={activeScreen.every(question => question.type === QuestionType.Instruction)}
+      >
         {screenHeader}
       </ScreenHeading>
       <SurveyQuestionGroup questions={displayQuestions} />

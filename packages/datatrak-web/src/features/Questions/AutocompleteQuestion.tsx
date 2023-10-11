@@ -11,6 +11,7 @@ import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../constants';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: calc(100% - 3.5rem);
@@ -40,6 +41,7 @@ const Autocomplete = styled(BaseAutocomplete)`
   .MuiInputBase-root {
     border-bottom: 1px solid ${({ theme }) => theme.palette.text.primary};
     border-radius: 0;
+    order: 2; // make the helper text appear above the input
     &.Mui-focused {
       border-bottom-color: ${({ theme }) => theme.palette.primary.main};
     }
@@ -83,6 +85,7 @@ export const AutocompleteQuestion = ({
   label,
   name,
   optionSetId,
+  detailLabel,
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
@@ -145,29 +148,37 @@ export const AutocompleteQuestion = ({
   };
 
   return (
-    <Autocomplete
-      id={id}
-      label={label!}
-      name={name!}
-      value={selectedValue?.value || null}
-      onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-      onInputChange={(_e, value) => setInputValue(value)}
-      inputValue={inputValue}
-      inputRef={ref}
-      options={options}
-      getOptionLabel={option =>
-        typeof option === 'string' ? option : option.label || option.value
-      }
-      getOptionSelected={getOptionSelected}
-      loading={isLoading || !isFetched}
-      error={isError || invalid}
-      helperText={error ? (error as Error).message : ''}
-      placeholder="Search..."
-      muiProps={{
-        PaperComponent: StyledPaper,
-        freeSolo: !!createNew,
-        getOptionDisabled: option => getOptionSelected(option, selectedValue),
-      }}
-    />
+    <>
+      <Autocomplete
+        id={id}
+        label={label!}
+        name={name!}
+        value={selectedValue?.value || null}
+        onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
+        onInputChange={(_e, value) => setInputValue(value)}
+        inputValue={inputValue}
+        inputRef={ref}
+        options={options}
+        getOptionLabel={option =>
+          typeof option === 'string' ? option : option.label || option.value
+        }
+        getOptionSelected={getOptionSelected}
+        loading={isLoading || !isFetched}
+        error={isError || invalid}
+        helperText={detailLabel as string}
+        textFieldProps={{
+          FormHelperTextProps: {
+            component: QuestionHelperText,
+          },
+        }}
+        placeholder="Search..."
+        muiProps={{
+          PaperComponent: StyledPaper,
+          freeSolo: !!createNew,
+          getOptionDisabled: option => getOptionSelected(option, selectedValue),
+        }}
+      />
+      {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
+    </>
   );
 };

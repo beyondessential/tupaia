@@ -11,6 +11,7 @@ import { Tooltip } from '@tupaia/ui-components';
 import { QuestionType } from '@tupaia/types';
 import { useSurveyForm } from '..';
 import { getArithmeticDisplayAnswer } from '../Survey';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -29,12 +30,6 @@ const Label = styled(Typography).attrs({
 })`
   font-size: 1rem;
   cursor: pointer;
-`;
-
-const HelperText = styled(Typography)`
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 const ValueWrapper = styled.div`
@@ -61,7 +56,7 @@ export const ReadOnlyQuestion = ({
       <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
         <Label>{label}</Label>
       </Tooltip>
-      {detailLabel && <HelperText>{detailLabel}</HelperText>}
+      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
       <ValueWrapper>
         <Value>{displayValue}</Value>
       </ValueWrapper>

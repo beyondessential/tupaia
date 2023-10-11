@@ -41,9 +41,11 @@ const formatComponent = (component: any) => {
     validationCriteria,
     visibilityCriteria,
     config,
+    detailLabel,
+    questionText,
     ...restOfComponent
   } = component;
-  const { options } = question;
+  const { options, detail, text } = question;
 
   // parse stringified fields
   const formattedComponent = {
@@ -51,6 +53,8 @@ const formatComponent = (component: any) => {
     // include the component and the question fields all in one object
     ...question,
     questionId: question.id,
+    text: questionText || text, // on some occasions, the screen component overrides the question text with the field question_text
+    detailLabel: detailLabel || detail, // on some occasions, the screen component overrides the question detail with the field detail_label
     validationCriteria: validationCriteria ? JSON.parse(validationCriteria) : null,
     visibilityCriteria: visibilityCriteria ? JSON.parse(visibilityCriteria) : null,
     config: config ? JSON.parse(config) : null,

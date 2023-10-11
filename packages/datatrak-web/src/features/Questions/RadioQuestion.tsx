@@ -8,23 +8,13 @@ import styled from 'styled-components';
 import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
 import { RadioIcon } from '../../components';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
-  legend {
-    color: ${({ theme }) => theme.palette.text.primary};
-    margin-bottom: 1rem;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    font-size: 0.875rem;
-    line-height: 1.2;
-    ${({ theme }) => theme.breakpoints.up('md')} {
-      font-size: 1rem;
-      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-    }
-  }
 `;
 
 const RadioItem = styled(FormControlLabel)<{
@@ -71,12 +61,27 @@ const RadioButton = styled(Radio)<{
   }
 `;
 
+const LegendWrapper = styled.div`
+  margin-bottom: 1rem;
+  legend {
+    color: ${({ theme }) => theme.palette.text.primary};
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    font-size: 0.875rem;
+    line-height: 1.2;
+    ${({ theme }) => theme.breakpoints.up('md')} {
+      font-size: 1rem;
+      font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    }
+  }
+`;
+
 export const RadioQuestion = ({
   id,
   label,
   name,
   options,
   required,
+  detailLabel,
   controllerProps: { onChange, value, ref, invalid },
 }: SurveyQuestionInputProps) => {
   // This is a controlled component because value and onChange are required props
@@ -91,7 +96,10 @@ export const RadioQuestion = ({
       value={value || ''}
     >
       {/**replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping **/}
-      <FormLabel component="legend">{label?.replace(/\xA0/g, ' ')}</FormLabel>
+      <LegendWrapper>
+        <FormLabel component="legend">{label?.replace(/\xA0/g, ' ')}</FormLabel>
+        {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+      </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (
         <RadioItem
           $color={color}
