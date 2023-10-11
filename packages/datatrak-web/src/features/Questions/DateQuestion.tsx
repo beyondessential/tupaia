@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const DatePicker = styled(BaseDatePicker).attrs({
   InputAdornmentProps: {
@@ -34,12 +35,16 @@ const DatePicker = styled(BaseDatePicker).attrs({
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
   }
+  .MuiInputBase-root {
+    order: 2; // make the helper text appear above the input
+  }
 `;
 
 export const DateQuestion = ({
   label,
   id,
   required,
+  detailLabel,
   controllerProps: { onChange, value, name, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
@@ -52,6 +57,8 @@ export const DateQuestion = ({
       inputRef={ref}
       error={invalid}
       required={required}
+      helperText={detailLabel}
+      FormHelperTextProps={{ component: QuestionHelperText }}
     />
   );
 };

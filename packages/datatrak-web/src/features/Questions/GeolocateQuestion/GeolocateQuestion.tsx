@@ -10,6 +10,7 @@ import { MapModal } from './MapModal';
 import { LatLongFields } from './LatLongFields';
 import { SurveyQuestionInputProps } from '../../../types';
 import { Button } from '../../../components';
+import { QuestionHelperText } from '../QuestionHelperText';
 
 const Container = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ const ButtonText = styled.span`
 export const GeolocateQuestion = ({
   text,
   required,
+  detailLabel,
   controllerProps: { value, onChange, name, invalid },
 }: SurveyQuestionInputProps) => {
   const [mapModalOpen, setMapModalOpen] = useState(false);
@@ -58,6 +60,7 @@ export const GeolocateQuestion = ({
   return (
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
+      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
       <Container>
         <LatLongFields
           geolocation={value}
