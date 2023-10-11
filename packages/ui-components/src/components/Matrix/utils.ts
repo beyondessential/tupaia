@@ -72,7 +72,7 @@ const getPresentationOptionFromCondition = (
             CONDITION_CHECK_METHOD[operator as keyof typeof CONDITION_CHECK_METHOD];
 
           return checkConditionMethod
-            ? checkConditionMethod(parseInt(value) as number, conditionalValue as number)
+            ? checkConditionMethod(parseFloat(value) as number, conditionalValue as number)
             : false;
         });
       }
