@@ -79,7 +79,7 @@ const getPresentationOptionFromCondition = (
 
       // If condition is not an object, assume its the value we want to check (with '=' operator)
       const checkConditionMethod = CONDITION_CHECK_METHOD['='];
-      return checkConditionMethod(value, condition);
+      return checkConditionMethod(parseFloat(value), condition);
     },
   );
 

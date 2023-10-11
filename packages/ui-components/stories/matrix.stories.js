@@ -37,8 +37,10 @@ const groupedRows = [
     children: [
       {
         title: 'Sub item 1',
+        Col1: 0,
+        Col2: '0',
+        Col3: 43.4,
         Col4: 59.5,
-        Col2: 43.4,
       },
       {
         title: 'Sub item 2',
