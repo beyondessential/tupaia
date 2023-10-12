@@ -39,8 +39,9 @@ export const checkAnswerPreconditionsAreMet = (answers, visibilityCriteria) => {
 export const doesScreenHaveValidationErrors = screen =>
   screen && screen.components.some(({ validationErrorMessage }) => !!validationErrorMessage);
 
-export const getRecentEntitiesSettingKey = (userId, entityTypes, countryId) =>
-  `RECENT_ENTITIES_${userId}_${countryId}_${entityTypes.join('_')}`;
+export const getRecentEntitiesSettingKey = (userId, entityTypes, countryId) => {
+  return `RECENT_ENTITIES_${userId}_${countryId}_${entityTypes.join('_')}`;
+};
 
 export const getRecentEntityIds = (database, userId, entityTypes, countryId) =>
   JSON.parse(
@@ -61,6 +62,33 @@ export const addRecentEntityId = (database, userId, entityTypes, countryId, enti
 
 export const getEntityCreationQuestions = questions =>
   questions.filter(({ config }) => config.entity && config.entity.createNew);
+
+export const getUpsertEntityQuestions = questions =>
+  questions.filter(({ config }) => {
+    if (config.entity) {
+      if (config.entity.createNew) {
+        return true;
+      }
+      const hasFieldsConfig = config.entity.fields
+        ? Object.keys(config.entity.fields).length > 0
+        : false;
+      return hasFieldsConfig;
+    }
+    return false;
+  });
+
+export const getEntityUpdateQuestions = questions => {
+  const relevantQuestions = questions.filter(({ config }) => {
+    if (config.entity && !config.entity.createNew) {
+      const hasFieldsConfig = config.entity.fields
+        ? Object.keys(config.entity.fields).length > 0
+        : false;
+      return hasFieldsConfig;
+    }
+    return false;
+  });
+  return relevantQuestions;
+};
 
 export const getQrCodeGenerationQuestions = questions =>
   getEntityCreationQuestions(questions).filter(({ config }) => config.entity?.generateQrCode);

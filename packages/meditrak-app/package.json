@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app",
-  "version": "1.13.127",
+  "version": "1.13.129",
   "private": true,
   "description": "Android and iOS app for surveying medical facilities",
   "repository": {
@@ -60,7 +60,7 @@
     "react-native-file-access": "^1.7.1",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.7.0",
-    "react-native-image-picker": "^2.3.4",
+    "react-native-image-picker": "https://github.com/beyondessential/react-native-image-picker.git#fix-v2-android-13",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-localize": "^2.0.1",
     "react-native-markdown-renderer": "^3.2.8",
