@@ -10149,7 +10149,7 @@ __metadata:
     react-native-file-access: ^1.7.1
     react-native-fs: ^2.16.6
     react-native-gesture-handler: ~1.7.0
-    react-native-image-picker: ^2.3.4
+    react-native-image-picker: "https://github.com/beyondessential/react-native-image-picker.git#fix-v2-android-13"
     react-native-linear-gradient: ^2.5.6
     react-native-localize: ^2.0.1
     react-native-markdown-renderer: ^3.2.8
@@ -36925,10 +36925,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-image-picker@npm:^2.3.4":
+"react-native-image-picker@https://github.com/beyondessential/react-native-image-picker.git#fix-v2-android-13":
   version: 2.3.4
-  resolution: "react-native-image-picker@npm:2.3.4"
-  checksum: 6a9a8827a710177aeb1d7a190e0973107bc6b8a976f076c6da20d71b3f78df9d1636aa1280ba870050cfe6f12e246f1cf9d505a45cd10cdf358630db9ecd2863
+  resolution: "react-native-image-picker@https://github.com/beyondessential/react-native-image-picker.git#commit=f789975563e09443d03ec6c50fb67bf0fd2522bd"
+  checksum: 46b3252d638dab3deb2aca0841404432252743909bf7b4f84e3845291ab0737357039ef7cb8cf8f054bb9d5709d95d3cc0f67af487926e55ea9d0ac28ea0b93f
   languageName: node
   linkType: hard
 
