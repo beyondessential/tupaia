@@ -43,7 +43,13 @@ const PRESENTATION_TYPES = {
 };
 
 const CONDITION_CHECK_METHOD = {
-  '=': (value: any, filterValue: ConditionValue) => value === filterValue,
+  '=': (value: any, filterValue: ConditionValue) => {
+    // Make sure we are comparing the same types
+    if (typeof filterValue === 'number') {
+      return parseFloat(value) === filterValue;
+    }
+    return value === filterValue;
+  },
   '>': (value: number, filterValue: number) => value > filterValue,
   '<': (value: number, filterValue: number) => value < filterValue,
   '>=': (value: number, filterValue: number) => value >= filterValue,
@@ -71,15 +77,22 @@ const getPresentationOptionFromCondition = (
           const checkConditionMethod =
             CONDITION_CHECK_METHOD[operator as keyof typeof CONDITION_CHECK_METHOD];
 
+          let parsedValue = value;
+
+          if (operator !== '=') {
+            // If operator is not '=' then we need to parse the value to a number
+            parsedValue = parseFloat(parsedValue);
+          }
+
           return checkConditionMethod
-            ? checkConditionMethod(parseFloat(value) as number, conditionalValue as number)
+            ? checkConditionMethod(parsedValue, conditionalValue as number)
             : false;
         });
       }
 
       // If condition is not an object, assume its the value we want to check (with '=' operator)
       const checkConditionMethod = CONDITION_CHECK_METHOD['='];
-      return checkConditionMethod(parseFloat(value), condition);
+      return checkConditionMethod(value, condition);
     },
   );
 
