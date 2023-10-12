@@ -34,6 +34,7 @@
     "@tupaia/utils": "1.0.0",
     "@tupaia/weather-api": "1.0.0",
     "case": "^1.5.5",
+    "date-fns": "^2.30.0",
     "lodash.flatten": "^4.4.0",
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
