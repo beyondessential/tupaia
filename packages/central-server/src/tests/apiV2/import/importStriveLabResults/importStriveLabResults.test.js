@@ -76,7 +76,7 @@ const LAB_RESULTS = {
   count: EXPECTED_ANSWERS_PER_LAB_RESULT.length,
 };
 
-const createEntities = async models =>
+const upsertEntities = async models =>
   Promise.all(
     CASE_CODES.map(caseCode =>
       upsertEntity({
@@ -117,7 +117,7 @@ describe('POST /import/striveLabResults', async () => {
 
     await app.grantAccess(DEFAULT_POLICY);
     await buildAndInsertSurveys(models, [survey]);
-    await createEntities(models);
+    await upsertEntities(models);
 
     response = await importLabResults(app);
   });
