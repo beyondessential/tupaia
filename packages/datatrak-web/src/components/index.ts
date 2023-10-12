@@ -10,3 +10,5 @@ export { TopProgressBar } from './TopProgressBar';
 export { Button } from './Button';
 export * from './SelectList';
 export { TextInput } from './TextInput';
+export { Toast } from './Toast';
+export * from './Icons';

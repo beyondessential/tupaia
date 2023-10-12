@@ -5,14 +5,15 @@
 
 import React from 'react';
 import { List as MuiList } from '@material-ui/core';
-import { ListItem, ListItemType } from './ListItem';
+import { ListItem as Item, ListItemType } from './ListItem';
 
 interface SelectListProps {
   items?: ListItemType[];
-  onSelect?: (item: ListItemType) => void;
+  onSelect: (item: ListItemType) => void;
+  ListItem?: React.ElementType;
 }
 
-export const List = ({ items, onSelect }: SelectListProps) => {
+export const List = ({ items, onSelect, ListItem = Item }: SelectListProps) => {
   return (
     <MuiList disablePadding>
       {items?.map(item => (

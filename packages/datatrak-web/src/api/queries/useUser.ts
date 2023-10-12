@@ -4,14 +4,15 @@
  */
 
 import { useQuery } from 'react-query';
-import { TupaiaWebUserRequest } from '@tupaia/types';
+import { DatatrakWebUserRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useUser = () => {
   const userResponse = useQuery(
     'getUser',
-    (): Promise<TupaiaWebUserRequest.ResBody> => get('getUser'),
+    (): Promise<DatatrakWebUserRequest.ResBody> => get('getUser'),
   );
+
   const { data: user } = userResponse;
 
   return {
