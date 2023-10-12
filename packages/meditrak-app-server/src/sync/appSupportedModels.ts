@@ -4,6 +4,7 @@
  */
 
 import semverCompare from 'semver-compare';
+import { MeditrakAppServerModelRegistry } from '../types';
 
 const appSupportedModels = {
   country: { minVersion: '0.0.1' },
@@ -26,14 +27,22 @@ const appSupportedModels = {
  */
 export const getSupportedModels = (appVersion?: string) => {
   if (!appVersion) {
-    return Object.keys(appSupportedModels);
+    return Object.keys(appSupportedModels) as (keyof typeof appSupportedModels)[];
   }
 
   return Object.entries(appSupportedModels)
     .filter(
       ([, { minVersion: modelMinVersion }]) => semverCompare(appVersion, modelMinVersion) >= 0,
     )
-    .map(([modelName]) => modelName);
+    .map(([modelName]) => modelName) as (keyof typeof appSupportedModels)[];
+};
+
+export const getSupportedDatabaseTypes = (
+  models: MeditrakAppServerModelRegistry,
+  appVersion?: string,
+) => {
+  const supportedModels = getSupportedModels(appVersion);
+  return supportedModels.map(modelName => models[modelName].databaseType as string);
 };
 
 const isSupportedModel = (modelName: string): modelName is keyof typeof appSupportedModels =>

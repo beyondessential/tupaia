@@ -36,6 +36,8 @@ const ACTIONS = {
   AddSurveyFile: 'AddSurveyFile',
 };
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * Responds to POST requests to the /changes endpoint, integrating the data posted in the request
  * body according to the action types causing the changes
