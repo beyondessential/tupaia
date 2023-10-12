@@ -7,6 +7,7 @@ import { ModelRegistry } from '@tupaia/database';
 import {
   MapOverlayGroupRelationModel,
   MapOverlayGroupModel,
+  DashboardModel,
   DashboardItemModel,
   DashboardRelationModel,
   EntityModel,
