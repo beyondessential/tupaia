@@ -6,7 +6,7 @@
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 
 export class VisibilityCriteriaCellBuilder extends KeyValueCellBuilder {
-  async processKey(criterionKey) {
+  async processField(criterionKey) {
     // criterionKey is usually a questionId, but is sometimes "_conjunction" etc.
     const question = await this.models.question.findById(criterionKey);
     return question ? question.code : criterionKey;

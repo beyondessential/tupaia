@@ -203,7 +203,7 @@ export class Synchroniser {
       setComplete(new Date().getTime());
       refreshFeed(); // Pull latest feed items whilst the device has an Internet connection.
 
-      setProgressMessage('Sync completed successfuly');
+      setProgressMessage('Sync completed successfully');
 
       return true; // Successful
     } catch (error) {

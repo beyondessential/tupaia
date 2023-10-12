@@ -14,13 +14,18 @@ export const getEntityBaseFilters = (state, database, questionId) => {
   const filters = { countryCode };
 
   const question = getQuestion(state, questionId);
-  const { parentId, grandparentId, type } = question.config.entity;
-  filters.type = type;
-  if (parentId && parentId.questionId) {
-    filters['parent.id'] = getAnswerForQuestion(state, parentId.questionId);
+
+  const { filter } = question.config.entity;
+
+  if (!filter) {
+    return filters;
   }
-  if (grandparentId && grandparentId.questionId) {
-    filters['parent.parent.id'] = getAnswerForQuestion(state, grandparentId.questionId);
+  filters.type = filter.type;
+  if (filter.parentId && filter.parentId.questionId) {
+    filters['parent.id'] = getAnswerForQuestion(state, filter.parentId.questionId);
+  }
+  if (filter.grandparentId && filter.grandparentId.questionId) {
+    filters['parent.parent.id'] = getAnswerForQuestion(state, filter.grandparentId.questionId);
   }
 
   return filters;
@@ -28,13 +33,14 @@ export const getEntityBaseFilters = (state, database, questionId) => {
 
 export const getEntityAttributeChecker = (state, questionId) => {
   const question = getQuestion(state, questionId);
-  const { attributes } = question.config.entity;
-  if (!attributes) {
+
+  const { filter } = question.config.entity;
+  if (!filter?.attributes) {
     return null;
   }
 
   return entity =>
-    Object.entries(attributes).every(([key, config]) => {
+    Object.entries(filter.attributes).every(([key, config]) => {
       const attributeValue = getAnswerForQuestion(state, config.questionId);
 
       // No answer was selected for the question to filter, return all
@@ -57,7 +63,8 @@ const filterOnAttributes = (entities, checkEntityAttributes) => {
 
 export const getRecentEntities = (database, state, baseFilters) => {
   const { questions, primaryEntityQuestionId, assessorId } = state.assessment;
-  const entityTypes = questions[primaryEntityQuestionId].config.entity.type;
+  const entityTypes = questions[primaryEntityQuestionId].config.entity.filter?.type || [];
+
   const recentEntityIds = getRecentEntityIds(
     database,
     assessorId,
@@ -67,7 +74,6 @@ export const getRecentEntities = (database, state, baseFilters) => {
   if (recentEntityIds.length === 0) {
     return [];
   }
-
   const recentEntities = database.getEntities({ ...baseFilters, id: recentEntityIds });
 
   // sort database results to match our saved array of recent entity ids
