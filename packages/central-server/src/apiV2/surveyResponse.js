@@ -146,7 +146,6 @@ export async function surveyResponse(req, res) {
 }
 
 const constructAnswerValidators = models => ({
-  id: [hasContent, takesIdForm],
   type: [hasContent],
   question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
   body: [hasContent],
