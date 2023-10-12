@@ -10,6 +10,7 @@ export const updateListOfStrings = (database, currentRealmStrings, newStrings, a
     // HTTP result, so we need to return them to a string
     string: typeof newString === 'object' ? JSON.stringify(newString) : newString,
   }));
+
   const getRealmStringIdentifier = realmString => realmString.string;
   const toDelete = complement(currentRealmStrings, newRealmStrings, getRealmStringIdentifier);
   if (toDelete && toDelete.length > 0) database.delete('RealmString', toDelete);

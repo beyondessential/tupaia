@@ -25,7 +25,7 @@ export const Icon = ({ library, size, color, ...restOfProps }) => {
 };
 
 Icon.propTypes = {
-  library: PropTypes.oneOf('Material', 'FontAwesome', 'Ionic'),
+  library: PropTypes.oneOf(['Material', 'FontAwesome', 'Ionic']),
   size: PropTypes.number,
   color: PropTypes.string,
 };

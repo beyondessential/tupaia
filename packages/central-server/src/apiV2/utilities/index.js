@@ -22,13 +22,7 @@ export { mergeFilter } from './mergeFilter';
 export { mergeMultiJoin } from './mergeMultiJoin';
 export { SurveyResponseImporter } from './SurveyResponseImporter';
 export { SurveyResponseVariablesExtractor } from './SurveyResponseVariablesExtractor';
-export {
-  translateQuestionDependentFields,
-  translateQuestionDependentNestedFields,
-  replaceQuestionCodesWithIds,
-  replaceNestedQuestionCodesWithIds,
-  translateQuestionCodeToId,
-} from './translateQuestionDependentFields';
+export { nestConfig, translateQuestionCodeToId } from './nestConfig';
 export { replaceQuestionIdsWithCodes } from './replaceQuestionIdsWithCodes';
 export { translateExpression } from './translateExpression';
 export { getDollarPrefixedExpressionVariables } from './getDollarPrefixedExpressionVariables';
