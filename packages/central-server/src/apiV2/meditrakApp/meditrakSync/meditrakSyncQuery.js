@@ -10,6 +10,8 @@ import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
 import { fetchRequestingMeditrakDevice } from '../utilities';
 
+// TODO: Tidy this up as part of RN-502
+
 const isAppVersionGreaterThanMin = (version, minVersion) => semverCompare(version, minVersion) >= 0;
 
 const getSupportedTypes = async (models, appVersion) => {

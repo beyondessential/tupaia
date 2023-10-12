@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getJwtToken } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { NextFunction, Request, Response } from 'express';
@@ -19,8 +20,9 @@ export const buildAuthMiddleware = (database: TupaiaDatabase) => {
       }
 
       const accessToken = getJwtToken(authHeader);
-      const { user } = await authenticator.authenticateAccessToken(accessToken);
+      const { user, accessPolicy } = await authenticator.authenticateAccessToken(accessToken);
       req.user = user;
+      req.accessPolicy = new AccessPolicy(accessPolicy);
       next();
     } catch (err) {
       next(err);

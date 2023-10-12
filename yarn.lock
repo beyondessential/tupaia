@@ -4685,7 +4685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.3, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.0, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.2, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.0, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.15.4
   resolution: "@babel/runtime@npm:7.15.4"
   dependencies:
@@ -4709,6 +4709,15 @@ __metadata:
   dependencies:
     regenerator-runtime: ^0.13.11
   checksum: e585338287c4514a713babf4fdb8fc2a67adcebab3e7723a739fc62c79cfda875b314c90fd25f827afb150d781af97bc16c85bfdbfa2889f06053879a1ddb597
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.22.6":
+  version: 7.22.15
+  resolution: "@babel/runtime@npm:7.22.15"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 793296df1e41599a935a3d77ec01eb6088410d3fd4dbe4e92f06c6b7bb2f8355024e6d78621a3a35f44e0e23b0b59107f23d585384df4f3123256a1e1492040e
   languageName: node
   linkType: hard
 
@@ -9992,7 +10001,7 @@ __metadata:
   dependencies:
     date-fns: ^2.16.1
     lodash.startcase: ^4.4.0
-    mathjs: ^9.4.0
+    mathjs: ^11.11.0
     npm-run-all: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -10079,6 +10088,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/meditrak-app-server@workspace:packages/meditrak-app-server"
   dependencies:
+    "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
@@ -10091,6 +10101,8 @@ __metadata:
     dotenv: ^8.2.0
     express: ^4.16.2
     lodash.clonedeep: ^4.5.0
+    lodash.groupby: ^4.6.0
+    lodash.keyby: ^4.6.0
     moment: ^2.24.0
     moment-timezone: ^0.5.27
     semver-compare: ^1.0.0
@@ -10183,6 +10195,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
@@ -10265,7 +10278,7 @@ __metadata:
     lodash.isplainobject: ^4.0.6
     lodash.keyby: ^4.6.0
     lodash.pick: ^4.4.0
-    mathjs: ^9.4.0
+    mathjs: ^11.11.0
     mockdate: ^3.0.5
     moment: ^2.24.0
     winston: ^3.3.3
@@ -17166,10 +17179,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"complex.js@npm:^2.0.15":
-  version: 2.0.15
-  resolution: "complex.js@npm:2.0.15"
-  checksum: f39b4ee8f8c507f896e0a0ff440fa52074c15fc4476644c5db730f5da8e6e81a010ef90ea9eda907758737062c944ac6abd4783ff14978a8976aa41e56572e12
+"complex.js@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "complex.js@npm:2.1.1"
+  checksum: a0802cc3f0eb7703088edfc3fe209ae7be5ce93c0e710a0f288be2e29ee31b3530a8c0d3330d7c2a668410dfe4293a4038554d66c7f1f1165997941bdc1092aa
   languageName: node
   linkType: hard
 
@@ -18774,10 +18787,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decimal.js@npm:^10.2.1, decimal.js@npm:^10.3.1":
+"decimal.js@npm:^10.2.1":
   version: 10.3.1
   resolution: "decimal.js@npm:10.3.1"
   checksum: 0351ac9f05fe050f23227aa6a4573bee2d58fa7378fcf28d969a8c789525032effb488a90320fd3fe86a66e17b4bc507d811b15eada5b7f0e7ec5d2af4c24a59
+  languageName: node
+  linkType: hard
+
+"decimal.js@npm:^10.4.3":
+  version: 10.4.3
+  resolution: "decimal.js@npm:10.4.3"
+  checksum: 796404dcfa9d1dbfdc48870229d57f788b48c21c603c3f6554a1c17c10195fc1024de338b0cf9e1efe0c7c167eeb18f04548979bcc5fdfabebb7cc0ae3287bae
   languageName: node
   linkType: hard
 
@@ -22743,10 +22763,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fraction.js@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "fraction.js@npm:4.1.1"
-  checksum: e5a1f81d73e32aabf4fbd6581a7b3dfabd9a449ceb97c7e71ed2931dd0607095622341100d7819741eb9b435eb4e0d4a040a69e411dc943fa9b3a3872f3a2e0f
+"fraction.js@npm:4.3.4":
+  version: 4.3.4
+  resolution: "fraction.js@npm:4.3.4"
+  checksum: 26fdecf114e3b693c760d3b2d5447f8ba9e815991ca7c7cdb930156780793b87f10936979a890b389676d960d7cd026273da9a44a6e20c12e3c4fd282a026ed3
   languageName: node
   linkType: hard
 
@@ -30246,22 +30266,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mathjs@npm:^9.4.0":
-  version: 9.4.4
-  resolution: "mathjs@npm:9.4.4"
+"mathjs@npm:^11.11.0":
+  version: 11.11.0
+  resolution: "mathjs@npm:11.11.0"
   dependencies:
-    "@babel/runtime": ^7.14.6
-    complex.js: ^2.0.15
-    decimal.js: ^10.3.1
+    "@babel/runtime": ^7.22.6
+    complex.js: ^2.1.1
+    decimal.js: ^10.4.3
     escape-latex: ^1.2.0
-    fraction.js: ^4.1.1
+    fraction.js: 4.3.4
     javascript-natural-sort: ^0.7.1
     seedrandom: ^3.0.5
     tiny-emitter: ^2.1.0
-    typed-function: ^2.0.0
+    typed-function: ^4.1.0
   bin:
     mathjs: bin/cli.js
-  checksum: 3fdaca4d0e8b73c1e75c87023101d8d047ccec395743c80f24031b7523fc8f2209f8bc572c603d8a8ba4e8b977f240e987f72902e48cce6ff261b3f904fefd5b
+  checksum: d2c3123b85b3ff63d861b203c9112c3f5e151a1880c837f54b29c164359c9a31acb7a4ad1412c207ec546b415fc9042ea485251bd3b5cee5a47885b2c61e265d
   languageName: node
   linkType: hard
 
@@ -38360,6 +38380,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "regenerator-runtime@npm:0.14.0"
+  checksum: 1c977ad82a82a4412e4f639d65d22be376d3ebdd30da2c003eeafdaaacd03fc00c2320f18120007ee700900979284fc78a9f00da7fb593f6e6eeebc673fba9a3
+  languageName: node
+  linkType: hard
+
 "regenerator-transform@npm:^0.14.2":
   version: 0.14.4
   resolution: "regenerator-transform@npm:0.14.4"
@@ -42738,10 +42765,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typed-function@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "typed-function@npm:2.0.0"
-  checksum: 8abb39dff088706f454cd3fa3e884ed98b61f28fcae6ea8b0f3b83225ca130d0ee5ab20acc91f820b41773532f0fd4308e25b5b346c9ab6a626bd8b4e83c59dc
+"typed-function@npm:^4.1.0":
+  version: 4.1.1
+  resolution: "typed-function@npm:4.1.1"
+  checksum: ac9619d96c70f5023fee9fa393560ebc91080b0bbdd1e4ec5d924a56db77cee49b78d9e897c17935ed58000eee104bc9b59f29c1a5c86bcc2a3e58ff8449aff5
   languageName: node
   linkType: hard
 

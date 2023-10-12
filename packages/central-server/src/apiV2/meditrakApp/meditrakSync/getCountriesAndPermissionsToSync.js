@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * This function determines which countries and permissions should be synced to a given meditrak app
  * based on what previously been synced to it, and what data the user has access to
