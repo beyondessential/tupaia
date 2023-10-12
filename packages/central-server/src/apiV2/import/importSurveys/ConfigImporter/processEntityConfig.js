@@ -3,68 +3,58 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  splitStringOnComma,
-  translateQuestionDependentFields,
-  translateQuestionDependentNestedFields,
-  replaceQuestionCodesWithIds,
-  replaceNestedQuestionCodesWithIds,
-} from '../../../utilities';
+import { nestConfig, translateQuestionCodeToId, splitStringOnComma } from '../../../utilities';
+
 import { isYes } from '../utilities';
 
-/**
- * Dictionary of entity creation fields used in the input
- * to the keys that will be used in the output
- */
-const ENTITY_CREATION_FIELD_TRANSLATION = {
-  name: 'name',
-  code: 'code',
-  parent: 'parentId',
-  grandparent: 'grandparentId',
-};
-
-const fieldMappers = {
-  type: value => splitStringOnComma(value),
+const valueTranslators = {
   createNew: value => isYes(value),
   generateQrCode: value => isYes(value),
   allowScanQrCode: value => isYes(value),
+  'filter.parent': async (value, models) => translateQuestionCodeToId(models.question, value),
+  'filter.grandparent': async (value, models) => translateQuestionCodeToId(models.question, value),
+  'fields.parent': async (value, models) => translateQuestionCodeToId(models.question, value),
+  'filter.type': value => splitStringOnComma(value),
+  'filter.attributes.type': async (value, models) =>
+    translateQuestionCodeToId(models.question, value),
+  'fields.attributes.type': async (value, models) =>
+    translateQuestionCodeToId(models.question, value),
+  'fields.code': async (value, models) => translateQuestionCodeToId(models.question, value),
+  'fields.name': async (value, models) => translateQuestionCodeToId(models.question, value),
 };
 
-const ENTITY_CREATION_FIELD_LIST = Object.values(ENTITY_CREATION_FIELD_TRANSLATION);
-const ENTITY_CREATION_JSON_FIELD_LIST = ['attributes'];
+const fieldTranslators = {
+  'filter.parent': 'filter.parentId',
+  'filter.grandparent': 'filter.grandparentId',
+  'fields.parent': 'fields.parentId',
+};
+
+const translateFields = config => {
+  return Object.fromEntries(
+    Object.entries(config).map(([field, value]) => {
+      const translatedField = fieldTranslators[field] || field;
+      return [translatedField, value];
+    }),
+  );
+};
+
+const translateValues = async (config, models) => {
+  const translatedValuesWithFields = await Promise.all(
+    Object.entries(config).map(async ([field, value]) => {
+      if (valueTranslators[field]) {
+        const translatedValue = await valueTranslators[field](value, models);
+        return [field, translatedValue];
+      }
+      return [field, value];
+    }),
+  );
+  return Object.fromEntries(translatedValuesWithFields);
+};
 
 export const processEntityConfig = async (models, config) => {
-  const entityCreationNonJsonFields = translateQuestionDependentFields(
-    config,
-    ENTITY_CREATION_FIELD_TRANSLATION,
-  );
-  const entityCreationJsonFields = translateQuestionDependentNestedFields(
-    config,
-    ENTITY_CREATION_JSON_FIELD_LIST,
-  );
+  const configWithTranslatedValues = await translateValues(config, models);
+  const configWithTranslatedValuesAndFields = translateFields(configWithTranslatedValues);
+  const configWithNestedFields = nestConfig(configWithTranslatedValuesAndFields);
 
-  const processedConfig = Object.fromEntries(
-    Object.entries(config)
-      .filter(([field]) => fieldMappers[field])
-      .map(([field, value]) => [field, fieldMappers[field](value)]),
-  );
-
-  const fullConfig = {
-    ...processedConfig,
-    ...entityCreationNonJsonFields,
-    ...entityCreationJsonFields,
-  };
-
-  let resultConfig = await replaceQuestionCodesWithIds(
-    models,
-    fullConfig,
-    ENTITY_CREATION_FIELD_LIST,
-  );
-  resultConfig = await replaceNestedQuestionCodesWithIds(
-    models,
-    resultConfig,
-    ENTITY_CREATION_JSON_FIELD_LIST,
-  );
-
-  return resultConfig;
+  return configWithNestedFields;
 };

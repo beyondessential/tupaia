@@ -42,6 +42,10 @@ const migrations = {
   8: async (synchroniser, setProgressMessage) => {
     await resyncRecordTypes(synchroniser, setProgressMessage, ['entity', 'option']);
   },
+  // Resync all survey screen components so they will have correct config structure
+  9: async (synchroniser, setProgressMessage) => {
+    await resyncRecordTypes(synchroniser, setProgressMessage, ['survey_screen_component']);
+  },
 };
 
 export const getSyncMigrations = async database => {

@@ -229,6 +229,7 @@ const constructSurveyResponseTranslators = models => ({
   user_email: userEmail => translateUserEmailToIdAndAssessorName(models.user, userEmail),
   entity_code: entityCode => translateEntityCodeToId(models.entity, entityCode),
   survey_code: surveyCode => translateSurveyCodeToId(models.survey, surveyCode),
+  entities_created: entitiesCreated => ({ entities_upserted: entitiesCreated }),
   answers: answers => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
 });
 
@@ -236,7 +237,7 @@ const constructAnswerTranslators = models => ({
   question_code: questionCode => translateQuestionCodeToId(models.question, questionCode),
 });
 
-const constructEntitiesCreatedValidators = models => ({
+const constructEntitiesUpsertedValidators = models => ({
   id: [hasContent, takesIdForm],
   code: [hasContent],
   parent_id: [takesIdForm],
@@ -246,7 +247,7 @@ const constructEntitiesCreatedValidators = models => ({
 });
 
 const constructIsValidEntity = models => async value =>
-  new ObjectValidator(constructEntitiesCreatedValidators(models)).validate(value);
+  new ObjectValidator(constructEntitiesUpsertedValidators(models)).validate(value);
 
 const constructOptionsCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
@@ -268,7 +269,7 @@ const constructSurveyResponseValidators = models => ({
   survey_id: [hasContent, takesIdForm],
   user_id: [hasContent, takesIdForm],
   answers: [isPresent],
-  entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
+  entities_upserted: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
   options_created: [constructIsEmptyOr(constructEveryItem(constructIsValidOption(models)))],
 });
 
