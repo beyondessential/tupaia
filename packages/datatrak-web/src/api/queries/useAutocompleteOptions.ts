@@ -29,7 +29,8 @@ export const useAutocompleteOptions = (
           // return only the options that match all attribute filters
           return Object.entries(attributeFilters).every(([attribute, config]) => {
             const attributeValue = getAnswerByQuestionId(config.questionId);
-            return option.attributes[attribute] === attributeValue;
+            if (attributeValue === undefined) return false;
+            return option.attributes[attribute] === attributeValue?.value;
           });
         });
       },
