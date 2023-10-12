@@ -77,10 +77,12 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const dashboards = await ctx.services.central.fetchResources('dashboards', {
-      filter: { root_entity_code: entities.map((e: Entity) => e.code) },
-      sort: ['sort_order', 'name'],
-    });
+    const dashboards = await this.req.models.dashboard.find(
+      {
+        root_entity_code: entities.map((e: Entity) => e.code),
+      },
+      { sort: ['sort_order ASC', 'name ASC'] },
+    );
 
     if (!dashboards.length) {
       return this.getNoDataDashboard(rootEntity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);

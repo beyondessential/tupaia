@@ -18,6 +18,7 @@ export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly mapOverlayGroup: MapOverlayGroupModel;
   readonly dashboardItem: DashboardItemModel;
   readonly dashboardRelation: DashboardRelationModel;
+  readonly dashboard: DashboardModel;
   readonly entity: EntityModel;
   readonly user: UserModel;
 }
