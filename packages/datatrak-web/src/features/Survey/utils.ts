@@ -58,25 +58,27 @@ export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
 
 export const getErrorsByScreen = (
   errors: Record<string, Record<string, string>>,
-  visibleScreens: SurveyScreen[],
+  visibleScreens?: SurveyScreen[],
 ) => {
-  return Object.entries(errors).reduce((acc, [questionName, error]) => {
-    const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
-      surveyScreenComponents.find(question => {
-        // handle the fact that we rename the questionId to entityId in the form if it's a primary entity question
-        if (questionName === 'entityId') return question.type === QuestionType.PrimaryEntity;
-        return question.questionId === questionName;
-      }),
-    );
+  return (
+    Object.entries(errors).reduce((acc, [questionName, error]) => {
+      const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
+        surveyScreenComponents.find(question => {
+          // handle the fact that we rename the questionId to entityId in the form if it's a primary entity question
+          if (questionName === 'entityId') return question.type === QuestionType.PrimaryEntity;
+          return question.questionId === questionName;
+        }),
+      );
 
-    if (screenIndex === undefined || screenIndex === -1) return acc;
-    const screenNum = screenIndex + 1;
-    return {
-      ...acc,
-      [screenNum]: {
-        ...acc[screenNum],
-        [questionName]: error,
-      },
-    };
-  }, {});
+      if (screenIndex === undefined || screenIndex === -1) return acc;
+      const screenNum = screenIndex + 1;
+      return {
+        ...acc,
+        [screenNum]: {
+          ...acc[screenNum],
+          [questionName]: error,
+        },
+      };
+    }, {}) ?? {}
+  );
 };

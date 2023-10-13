@@ -18,7 +18,6 @@ import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
 import { useIsMobile } from '../../utils';
 import { useValidationResolver } from './useValidationResolver';
-import { QuestionType } from '@tupaia/types';
 import { getErrorsByScreen } from './utils';
 
 const ScrollableLayout = styled.div`
