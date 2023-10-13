@@ -19,7 +19,7 @@ type VisibilityCriteria = Record<Question['id'], any> & {
 };
 
 type ValidationCriteria = {
-  required?: boolean;
+  mandatory?: boolean;
   min?: number;
   max?: number;
 };
