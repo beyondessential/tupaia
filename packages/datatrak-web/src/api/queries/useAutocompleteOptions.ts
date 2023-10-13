@@ -30,7 +30,10 @@ export const useAutocompleteOptions = (
           return Object.entries(attributeFilters).every(([attribute, config]) => {
             const attributeValue = getAnswerByQuestionId(config.questionId);
             if (attributeValue === undefined) return false;
-            return option.attributes[attribute] === attributeValue?.value;
+            // if it is another autocomplete question, these are shaped differently
+            if (attributeValue.hasOwnProperty('value'))
+              return option.attributes[attribute] === attributeValue?.value;
+            return option.attributes[attribute] === attributeValue;
           });
         });
       },
