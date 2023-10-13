@@ -41,7 +41,13 @@ export const MenuButton = styled(Button).attrs({
 /**
  * This is the menu list that appears in both the drawer and popover menus. It shows different options depending on whether the user is logged in or not.
  */
-export const MenuList = ({ children }: { children?: ReactNode }) => {
+export const MenuList = ({
+  children,
+  onCloseMenu,
+}: {
+  children?: ReactNode;
+  onCloseMenu: () => void;
+}) => {
   const { isLoggedIn } = useUser();
   const { mutate: logout } = useLogout();
 
@@ -51,6 +57,10 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
     href: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
     isExternal: true,
     component: Link,
+  };
+  const onClickLogout = () => {
+    logout();
+    onCloseMenu();
   };
 
   const menuItems = isLoggedIn
@@ -62,7 +72,7 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
         helpCentre,
         {
           label: 'Logout',
-          onClick: logout,
+          onClick: onClickLogout,
           component: 'button',
         },
       ]
@@ -92,7 +102,7 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
               component={component || RouterLink}
               underline="none"
               target={isExternal ? '_blank' : null}
-              onClick={onClick}
+              onClick={onClick || onCloseMenu}
               to={to}
               href={href}
             >

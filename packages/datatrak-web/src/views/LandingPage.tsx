@@ -18,6 +18,8 @@ const PageContainer = styled(BasePageContainer)`
 
 const Wrapper = styled.div`
   padding: 1.5rem 0;
+  max-width: 85rem;
+  margin: 0 auto;
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 4rem 0;
   }
@@ -59,6 +61,13 @@ const ButtonWrapper = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 11rem;
   }
+  .MuiButton-root {
+    line-height: 1.1;
+    padding: 0.75rem;
+    &:last-child {
+      margin-top: 0.625rem;
+    }
+  }
 `;
 
 const TextWrapper = styled.div`
@@ -79,7 +88,8 @@ const TextWrapper = styled.div`
 
 const Text = styled(Typography)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1.375rem;
+    font-size: 1.0625rem;
+    line-height: 1.5;
   }
 `;
 
