@@ -59,7 +59,6 @@ const CloseButton = styled(IconButton)`
   top: 0;
   right: 0;
   color: ${props => props.theme.palette.text.primary};
-  padding: 0.5rem;
 `;
 
 interface DialogHeaderProps {
@@ -102,7 +101,4 @@ export const DialogFooter = styled.div`
   padding: 1.1rem 1.875rem;
   background-color: ${({ theme }) =>
     theme.palette.type === 'light' ? LIGHT_BACKGROUND : DARK_BACKGROUND};
-  border-bottom: 1px solid
-    ${({ theme }) =>
-      theme.palette.type === 'light' ? theme.palette.grey['400'] : DARK_THEME_BORDER};
 `;

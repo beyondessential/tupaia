@@ -37,7 +37,9 @@ const DEFAULT_PRIMARY_ENTITY_QUESTION = {
   type: 'PrimaryEntity',
   config: {
     entity: {
-      type: ['facility'],
+      filter: {
+        type: ['facility'],
+      },
     },
   },
 };

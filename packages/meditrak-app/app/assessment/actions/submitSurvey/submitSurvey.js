@@ -12,7 +12,7 @@ import { getScreens, getSurveyName, getValidQuestions } from '../../selectors';
 import { selectSurvey, validateScreen } from '../actions';
 import { doesScreenHaveValidationErrors } from '../../helpers';
 import { goToQrCodesPage } from '../../../navigation/actions';
-import { createNewEntities } from './createNewEntities';
+import { createUpsertEntityObjects } from './createUpsertEntityObjects';
 import { generateQrCodes } from './generateQrCodes';
 import { createNewOptions } from './createNewOptions';
 import { processSurveyResponse } from './processSurveyResponse';
@@ -40,7 +40,6 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
   // Skip duplicate survey responses.
   const existingSurveyResponses = database.findSurveyResponses({ surveyId, startTime });
 
-  let newEntities = [];
   let qrCodes = [];
 
   const surveyName = getSurveyName(getState());
@@ -48,8 +47,13 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
   // Only save the survey if it isn't a duplicate.
   if (existingSurveyResponses.length === 0) {
     const validQuestions = getValidQuestions(getState(), questions, validatedScreens);
-    newEntities = await createNewEntities(dispatch, getState, database, validQuestions);
-    qrCodes = generateQrCodes(getState, validQuestions, newEntities);
+    const upsertEntityObjects = await createUpsertEntityObjects(
+      dispatch,
+      getState,
+      database,
+      validQuestions,
+    );
+    qrCodes = generateQrCodes(getState, validQuestions, upsertEntityObjects);
     const newOptions = createNewOptions(getState, database, validQuestions);
     const { responseFields, answersToSubmit } = await processSurveyResponse(
       getState,
@@ -71,7 +75,7 @@ export const submitSurvey = (surveyId, userId, startTime, questions, shouldRepea
     };
 
     database.saveSurveyResponse(response, answersToSubmit, {
-      entityObjects: newEntities,
+      entityObjects: upsertEntityObjects,
       optionObjects: newOptions,
     });
     analytics.trackEvent('Submit Survey', response);

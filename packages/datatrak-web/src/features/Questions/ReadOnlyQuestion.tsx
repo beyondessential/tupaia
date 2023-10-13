@@ -8,7 +8,10 @@ import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
+import { QuestionType } from '@tupaia/types';
 import { useSurveyForm } from '..';
+import { getArithmeticDisplayAnswer } from '../Survey';
+import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -29,12 +32,6 @@ const Label = styled(Typography).attrs({
   cursor: pointer;
 `;
 
-const HelperText = styled(Typography)`
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  color: ${({ theme }) => theme.palette.text.secondary};
-`;
-
 const ValueWrapper = styled.div`
   margin-top: 1rem;
   min-height: 2rem; // so that the space is reserved even when there is no value
@@ -43,17 +40,25 @@ const Value = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
 `;
 
-export const ReadOnlyQuestion = ({ label, name, detailLabel }: SurveyQuestionInputProps) => {
+export const ReadOnlyQuestion = ({
+  label,
+  name,
+  detailLabel,
+  config,
+  type,
+}: SurveyQuestionInputProps) => {
   const { formData } = useSurveyForm();
   const value = formData[name!];
+  const displayValue =
+    type === QuestionType.Arithmetic ? getArithmeticDisplayAnswer(config, value, formData) : value;
   return (
     <Wrapper>
       <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
         <Label>{label}</Label>
       </Tooltip>
-      {detailLabel && <HelperText>{detailLabel}</HelperText>}
+      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
       <ValueWrapper>
-        <Value>{value}</Value>
+        <Value>{displayValue}</Value>
       </ValueWrapper>
     </Wrapper>
   );

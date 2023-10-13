@@ -17,11 +17,17 @@ const Checkbox = styled(BaseCheckbox)`
   .MuiButtonBase-root:has([aria-invalid='true']) {
     color: ${props => props.theme.palette.error.main};
   }
+  .MuiFormHelperText-root {
+    margin-left: -0.5rem;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+  }
 `;
 export const CheckboxQuestion = ({
   id,
   label,
   name,
+  detailLabel,
   required,
   controllerProps: { value, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
@@ -35,6 +41,7 @@ export const CheckboxQuestion = ({
       checked={value === 'Yes'}
       onChange={e => onChange(e.target.checked ? 'Yes' : 'No')}
       inputRef={ref}
+      helperText={detailLabel as string}
       inputProps={{
         ['aria-invalid']: invalid,
       }}

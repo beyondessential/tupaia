@@ -208,3 +208,30 @@ export const getUpdatedFormData = (
   const resetInvisibleQuestionData = resetInvisibleQuestions(formData, updates, screenComponents);
   return updateDependentQuestions(resetInvisibleQuestionData, screenComponents);
 };
+
+export const getArithmeticDisplayAnswer = (config, answer, formData) => {
+  const expressionParser = new ExpressionParser();
+  const {
+    formula,
+    valueTranslation = {},
+    defaultValues = {},
+    answerDisplayText = '',
+  } = config?.arithmetic as ArithmeticConfig;
+  if (!answerDisplayText) return answer;
+  const variables = expressionParser.getVariables(formula);
+
+  // Setting up scope values.
+  const questionIds = variables.map(v => v.replace(/^\$/, ''));
+  let translatedDisplayAnswer = answerDisplayText;
+  questionIds.forEach(questionId => {
+    const answerValue = getArithmeticDependantAnswer(
+      questionId,
+      formData[questionId],
+      valueTranslation,
+      defaultValues,
+    );
+    translatedDisplayAnswer = translatedDisplayAnswer.replace(`$${questionId}`, answerValue);
+  });
+  translatedDisplayAnswer = translatedDisplayAnswer.replace('$result', answer);
+  return translatedDisplayAnswer;
+};

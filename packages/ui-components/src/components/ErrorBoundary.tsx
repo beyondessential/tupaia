@@ -32,9 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (hasError) {
       return (
         <FlexCenter p={5}>
-          <SmallAlert severity="error" variant="standard">
-            Something went wrong.
-          </SmallAlert>
+          <SmallAlert severity="error">Something went wrong</SmallAlert>
         </FlexCenter>
       );
     }

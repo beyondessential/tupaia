@@ -86,9 +86,9 @@ describe('Survey', () => {
     renderSurveyPage('/survey/test/8');
     const input = await screen.findByLabelText('Enter a number');
     fireEvent.change(input, { target: { value: '4' } });
-    expect(screen.queryByText('6')).toBeInTheDocument();
+    expect(screen.queryByText('This is an answer, from (4 + 2): 6')).toBeInTheDocument();
 
     fireEvent.change(input, { target: { value: '' } });
-    expect(screen.queryByText('1')).toBeInTheDocument();
+    expect(screen.queryByText('This is an answer, from (0 + 1): 1')).toBeInTheDocument();
   });
 });

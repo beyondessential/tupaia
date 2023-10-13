@@ -24,13 +24,15 @@ const CUSTOM_DUMMY_VALUES = {
   },
 };
 
-const processDefaultValue = defaultValue => {
+const processDefaultValue = (defaultValue, columnType) => {
   const [preColonValue, type] = defaultValue.split('::');
   const value = preColonValue.replace(/^'/, '').replace(/'$/, '');
+  const dataType = type || columnType;
 
   // handle exceptional types
-  switch (type) {
+  switch (dataType) {
     case 'jsonb':
+    case 'boolean':
       return JSON.parse(value);
     case 'text[]':
       return value === '{}' ? [] : value.substring(1, value.length - 1).split(','); // '{a,b}' -> [ 'a', 'b' ]
@@ -59,7 +61,8 @@ const generateDummyRecord = async (model, overrides = {}) => {
       )
         return CUSTOM_DUMMY_VALUES[databaseType][fieldName];
       // - the default value from the database schema
-      if (columnInfo.defaultValue !== null) return processDefaultValue(columnInfo.defaultValue);
+      if (columnInfo.defaultValue !== null)
+        return processDefaultValue(columnInfo.defaultValue, columnInfo.type);
       // - a test id if the field name indicates that's what it should get
       if (fieldName === 'id') return generateTestId();
       // - null if this is a foreign key and has not been explicitly defined by the user

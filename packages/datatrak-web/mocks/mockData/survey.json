@@ -466,6 +466,7 @@
             "arithmetic": {
               "formula": "$12 + $13",
               "defaultValues": { "12": "0", "13": "1" },
+              "answerDisplayText": "This is an answer, from ($12 + $13): $result",
               "valueTranslation": {
                 "13": { "Result for < 3": "1", "Result for > 3": "2" }
               }
