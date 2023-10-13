@@ -90,6 +90,7 @@ export const MenuList = ({ children }: { children?: ReactNode }) => {
           <MenuListItem key={label} button>
             <MenuButton
               component={component || RouterLink}
+              underline="none"
               target={isExternal ? '_blank' : null}
               onClick={onClick}
               to={to}
