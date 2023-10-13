@@ -8,6 +8,7 @@ import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
   MeditrakSurveyResponseRequest,
+  Entity,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
@@ -54,7 +55,9 @@ export const processSurveyResponse = async (
     entities_upserted: [],
     options_created: [],
     answers: [],
-  } as MeditrakSurveyResponseRequest;
+  } as MeditrakSurveyResponseRequest & {
+    entities_upserted: Entity[];
+  };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -95,7 +98,7 @@ export const processSurveyResponse = async (
             countryId,
             getEntity,
           );
-          surveyResponse.entities_upserted.push(entityObj);
+          if (entityObj) surveyResponse.entities_upserted.push(entityObj);
         }
         answersToSubmit.push(answerObject);
         break;

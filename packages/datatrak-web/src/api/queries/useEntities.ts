@@ -9,10 +9,8 @@ import { get } from '../api';
 export const useEntities = (projectCode?: string, params?: DatatrakWebEntitiesRequest.ReqBody) => {
   return useQuery(
     ['entities', projectCode, params],
-    (): Promise<DatatrakWebEntitiesRequest.ResBody> => {
-      return [];
-      //return get('entities', { params: { filter: { ...params, projectCode } } })
-    },
+    (): Promise<DatatrakWebEntitiesRequest.ResBody> =>
+      get('entities', { params: { filter: { ...params, projectCode } } }),
     { enabled: !!projectCode },
   );
 };

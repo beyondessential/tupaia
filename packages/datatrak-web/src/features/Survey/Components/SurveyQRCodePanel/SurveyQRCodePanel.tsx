@@ -46,6 +46,7 @@ export const SurveyQRCodePanel = () => {
     component => component.config?.entity?.generateQrCode,
   );
   if (!qrCodeComponents?.length) return null;
+  console.log(qrCodeComponents);
   // TODO: get this from survey success response
   const createdEntities = [
     {
