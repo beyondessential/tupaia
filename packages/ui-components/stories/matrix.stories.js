@@ -488,6 +488,61 @@ Simple.args = {
   columns: basicColumns,
 };
 
+export const Dots = Template.bind({});
+Dots.args = {
+  rows: [
+    {
+      title: 'Data item 1',
+      Col1: 0,
+      Col2: '0',
+      Col3: 6,
+      Col4: 6.1,
+    },
+    {
+      title: 'Data item 2',
+      Col1: 6.76,
+      Col2: 'isBlue',
+      Col4: 74.2,
+      Col3: 44.998,
+    },
+  ],
+  presentationOptions: {
+    type: 'condition',
+    conditions: [
+      {
+        key: 'red',
+        color: '#b71c1c',
+        label: 'Secondary header',
+        condition: 0,
+      },
+      {
+        key: 'orange',
+        color: '#EE9A30',
+        label: '',
+        condition: {
+          '<=': 6,
+          '>': 0,
+        },
+      },
+      {
+        key: 'green',
+        color: '#33691e',
+        label: '',
+        condition: {
+          '>': 6,
+        },
+      },
+      {
+        key: 'blue',
+        color: '#3498db',
+        label: '',
+        condition: 'isBlue',
+      },
+    ],
+  },
+  columns: basicColumns,
+};
+
 export const GroupedRowsWithDots = Template.bind({});
 GroupedRowsWithDots.args = {
   rows: groupedRows,

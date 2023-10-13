@@ -34,7 +34,7 @@ export const DownloadFiles = ({
 }: DownloadFilesVisualProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
-  const { mutate: download, error, reset, isLoading } = useDownloadFiles();
+  const { mutateAsync: download, error, reset, isLoading } = useDownloadFiles();
 
   const onClose = () => {
     reset();
