@@ -14,7 +14,7 @@ import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
-import { getReportPreviewColumns, getReportPreviewRows } from '../../utilities';
+import { getColumns, getRows } from '../../utilities';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -146,12 +146,8 @@ export const PreviewSection = () => {
     setPresentationError(null);
   };
 
-  const columns = useMemo(() => (tab === 0 ? getReportPreviewColumns(reportData) : []), [
-    reportData,
-  ]);
-  const rows = useMemo(() => (tab === 0 ? getReportPreviewRows(reportData.rows) || [] : []), [
-    reportData,
-  ]);
+  const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
+  const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
   // only update Chart Preview when play button is clicked

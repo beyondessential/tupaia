@@ -5,22 +5,6 @@
 
 export const getColumns = ({ columns: columnKeys = [] }) => {
   const indexColumn = {
-    Header: '#',
-    id: 'index',
-    accessor: (_row, i) => i + 1,
-  };
-  const columns = columnKeys.map(columnKey => {
-    return {
-      Header: columnKey,
-      accessor: row => row[columnKey],
-    };
-  });
-
-  return [indexColumn, ...columns];
-};
-
-export const getReportPreviewColumns = ({ columns: columnKeys = [] }) => {
-  const indexColumn = {
     field: 'id',
     headerName: '#',
     width: 100,
@@ -37,7 +21,7 @@ export const getReportPreviewColumns = ({ columns: columnKeys = [] }) => {
   return [indexColumn, ...columns];
 };
 
-export const getReportPreviewRows = rows => {
+export const getRows = ({ rows = [] }) => {
   const rowsWithIndexColumn = rows.map((row, index) => {
     return {
       // id starts at 1, in line with report server convention
