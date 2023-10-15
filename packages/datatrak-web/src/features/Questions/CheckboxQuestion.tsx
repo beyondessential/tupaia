@@ -13,6 +13,9 @@ const Checkbox = styled(BaseCheckbox)`
   .MuiCheckbox-root {
     padding: 0;
     margin-right: 0.5rem;
+    &:not(.Mui-checked) {
+      color: ${props => props.theme.palette.text.primary};
+    }
   }
   .MuiButtonBase-root:has([aria-invalid='true']) {
     color: ${props => props.theme.palette.error.main};
@@ -37,6 +40,7 @@ export const CheckboxQuestion = ({
       label={label}
       id={id}
       name={name!}
+      color="primary"
       required={required}
       checked={value === 'Yes'}
       onChange={e => onChange(e.target.checked ? 'Yes' : 'No')}

@@ -18,13 +18,15 @@ const PageContainer = styled(BasePageContainer)`
 
 const Wrapper = styled.div`
   padding: 1.5rem 0;
+  max-width: 85rem;
+  margin: 0 auto;
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 4rem 0;
   }
 `;
 const SurveyAlert = styled.div`
   background-color: ${({ theme }) => theme.palette.background.paper};
-  border-radius: 3px;
+  border-radius: 0.625rem;
   margin: 0 1.25rem;
   padding: 1rem;
   display: flex;
@@ -32,7 +34,7 @@ const SurveyAlert = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 2.5rem;
+    padding: 1rem 2.3rem;
     margin: 0 2rem;
   }
 `;
@@ -59,6 +61,13 @@ const ButtonWrapper = styled.div`
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 11rem;
   }
+  .MuiButton-root {
+    line-height: 1.1;
+    padding: 0.75rem;
+    &:last-child {
+      margin-top: 0.625rem;
+    }
+  }
 `;
 
 const TextWrapper = styled.div`
@@ -66,20 +75,22 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 0 6.5rem 0 2rem;
-    max-width: 80%;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding-left: 2rem;
+    padding-right: 4rem;
+    max-width: 75%;
   }
+
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-right: 8rem;
-    width: calc(100% - 10rem);
-    max-width: 100%;
+    padding-right: 1rem;
+    max-width: 80%;
   }
 `;
 
 const Text = styled(Typography)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    font-size: 1.375rem;
+    font-size: 1.0625rem;
+    line-height: 1.5;
   }
 `;
 
@@ -97,10 +108,10 @@ const SurveysImage = styled.img`
   align-items: center;
   right: 0rem;
   top: -1.5rem;
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    top: -2.3rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    top: -3rem;
     right: 2rem;
-    height: calc(100% + 4.6rem);
+    height: calc(100% + 6rem);
   }
 `;
 
@@ -133,8 +144,9 @@ export const LandingPage = () => {
                 Tupaia DataTrak makes data collection easy!{' '}
                 <DesktopText>
                   You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share
-                  news, stories and information with the Tupaia community. To collect data offline
-                  download our app meditrak from Google Play or Apple App Store.
+                  news, stories and information with the Tupaia community. To collect data offline,
+                  please download our mobile app, Tupaia MediTrak from Google Play or the Apple App
+                  Store.
                 </DesktopText>
               </Text>
             </TextWrapper>

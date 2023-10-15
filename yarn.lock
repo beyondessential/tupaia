@@ -5490,6 +5490,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:1.3.8":
+  version: 1.3.8
+  resolution: "@hookform/resolvers@npm:1.3.8"
+  peerDependencies:
+    react-hook-form: ">=6.6.0"
+  checksum: bf200a923273af954b4652c426c976a4b0a9b2b1d6976791a8c7fdcfa0784df3fbf5e6253bcf9f86f4ac17afe2e523df499f7d03e319dcae6bf2e136c6580a08
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.5.0":
   version: 0.5.0
   resolution: "@humanwhocodes/config-array@npm:0.5.0"
@@ -9969,6 +9978,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
+    "@hookform/resolvers": 1.3.8
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
@@ -10001,6 +10011,7 @@ __metadata:
     styled-components: ^5.1.0
     typescript: ^5.0.2
     vite: ^4.3.2
+    yup: ^1.3.2
   languageName: unknown
   linkType: soft
 
@@ -36144,6 +36155,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"property-expr@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "property-expr@npm:2.0.5"
+  checksum: 4ebe82ce45aaf1527e96e2ab84d75d25217167ec3ff6378cf83a84fb4abc746e7c65768a79d275881602ae82f168f9a6dfaa7f5e331d0fcc83d692770bcce5f1
+  languageName: node
+  linkType: hard
+
 "property-information@npm:^5.0.0, property-information@npm:^5.3.0":
   version: 5.5.0
   resolution: "property-information@npm:5.5.0"
@@ -42365,6 +42383,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-case@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "tiny-case@npm:1.0.3"
+  checksum: 3f7a30c39d5b0e1bc097b0b271bec14eb5b836093db034f35a0de26c14422380b50dc12bfd37498cf35b192f5df06f28a710712c87ead68872a9e37ad6f6049d
+  languageName: node
+  linkType: hard
+
 "tiny-emitter@npm:^2.1.0":
   version: 2.1.0
   resolution: "tiny-emitter@npm:2.1.0"
@@ -45863,6 +45888,18 @@ __metadata:
     property-expr: ^2.0.4
     toposort: ^2.0.2
   checksum: 43a16786b47cc910fed4891cebdd89df6d6e31702e9462e8f969c73eac88551ce750732608012201ea6b93802c8847cb0aa27b5d57370640f4ecf30f9f97d4b0
+  languageName: node
+  linkType: hard
+
+"yup@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "yup@npm:1.3.2"
+  dependencies:
+    property-expr: ^2.0.5
+    tiny-case: ^1.0.3
+    toposort: ^2.0.2
+    type-fest: ^2.19.0
+  checksum: 08150c6e05b944b128dd27d423757d21a2b5dd3d000abd431c7f22349101d373b2ed5e5f66b5b308fe0579cd67ee788ed6935f810842d8c0fa46b0f7a1be0023
   languageName: node
   linkType: hard
 

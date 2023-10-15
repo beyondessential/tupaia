@@ -50,7 +50,7 @@ export const PopoverMenu = ({ menuOpen, onCloseMenu }: PopoverMenuProps) => {
         horizontal: 'right',
       }}
     >
-      <MenuList />
+      <MenuList onCloseMenu={onCloseMenu} />
     </Popover>
   );
 };
