@@ -8,11 +8,11 @@ import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
-type Surveys = DatatrakWebSurveyRequest.ResBody[];
+type Survey = DatatrakWebSurveyRequest.ResBody;
 
 export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.Params,
-  Surveys,
+  Survey[],
   DatatrakWebSurveyRequest.ReqBody,
   DatatrakWebSurveyRequest.ReqQuery
 >;
@@ -24,6 +24,8 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const surveys = await ctx.services.central.fetchResources('surveys', {
       columns: fields,
     });
-    return camelcaseKeys(surveys, { deep: true });
+    return camelcaseKeys(surveys, { deep: true }).sort((a: Survey, b: Survey) =>
+      a.name.localeCompare(b.name),
+    );
   }
 }
