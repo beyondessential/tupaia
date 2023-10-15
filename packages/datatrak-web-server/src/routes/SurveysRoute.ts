@@ -5,14 +5,15 @@
 
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import sortBy from 'lodash.sortby';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
 
-type Surveys = DatatrakWebSurveyRequest.ResBody[];
+type Survey = DatatrakWebSurveyRequest.ResBody;
 
 export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.Params,
-  Surveys,
+  Survey[],
   DatatrakWebSurveyRequest.ReqBody,
   DatatrakWebSurveyRequest.ReqQuery
 >;
@@ -24,6 +25,11 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const surveys = await ctx.services.central.fetchResources('surveys', {
       columns: fields,
     });
-    return camelcaseKeys(surveys, { deep: true });
+    return sortBy(
+      camelcaseKeys(surveys, {
+        deep: true,
+      }),
+      ['name', 'surveyGroupName'],
+    );
   }
 }

@@ -82,7 +82,7 @@ export const theme = createMuiTheme({
         '&:hover': {
           backgroundColor: '#328DE515',
         },
-      }, 
+      },
     },
     MuiButton: {
       root: {
@@ -90,6 +90,11 @@ export const theme = createMuiTheme({
       },
       label: {
         fontSize: '0.875rem',
+      },
+      containedPrimary: {
+        ['&:hover']: {
+          backgroundColor: '#2A78C3',
+        },
       },
     },
     MuiMenuItem: {

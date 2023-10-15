@@ -17,6 +17,8 @@ import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
 import { useIsMobile } from '../../utils';
+import { useValidationResolver } from './useValidationResolver';
+import { getErrorsByScreen } from './utils';
 
 const ScrollableLayout = styled.div`
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
@@ -138,7 +140,8 @@ export const SurveyLayout = () => {
     isReviewScreen,
     visibleScreens,
   } = useSurveyForm();
-  const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit' });
+  const resolver = useValidationResolver();
+  const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
   const { handleSubmit, getValues } = formContext;
   const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
@@ -173,27 +176,15 @@ export const SurveyLayout = () => {
   };
 
   const onError = errors => {
-    // If we're not on the review screen, we don't need to do anything, because the errors get focussed and handled by react-hook-form
-    if (!isReviewScreen) return;
-
+    // If we're not on the last screen, we don't need to do anything, because the errors get focussed and handled by react-hook-form
+    if (!isLast) return;
     // Group the errors by screen number, so that we can easily navigate to the first screen with errors
-    const errorFieldsByPage = Object.entries(errors).reduce((acc, [questionId, error]) => {
-      const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
-        surveyScreenComponents.find(question => question.questionId === questionId),
-      );
+    const errorsByScreen = getErrorsByScreen(errors, visibleScreens);
+    // // if any errors on this page, return and let react-hook-form handle them, instead of snapping to the first screen with errors, which would be confusing
+    if (errorsByScreen[screenNumber!]) return;
 
-      if (!screenIndex || screenIndex === -1) return acc;
-      const screenNum = screenIndex + 1;
-      return {
-        ...acc,
-        [screenNum]: {
-          ...acc[screenNum],
-          [questionId]: error,
-        },
-      };
-    }, {});
     // Find the first screen with errors
-    const [surveyScreenToSnapTo, screenErrors] = Object.entries(errorFieldsByPage)[0];
+    const [surveyScreenToSnapTo, screenErrors] = Object.entries(errorsByScreen)[0];
     if (!surveyScreenToSnapTo) return;
     // we have to serialize the errors for the location state as per https://github.com/remix-run/react-router/issues/8792. We can't just set the errors manually in the form because when we navigate to the screen, the form errors will reset
     const stringifiedErrors = JSON.stringify(screenErrors);

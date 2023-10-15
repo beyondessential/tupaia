@@ -44,7 +44,7 @@ const ProjectButton = styled(Button).attrs({
     padding-left: 0.5rem;
     font-size: 1rem;
     line-height: 1.4;
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   }
   color: ${props => props.theme.palette.text.secondary};
   &:hover {
