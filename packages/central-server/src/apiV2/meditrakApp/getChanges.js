@@ -7,6 +7,7 @@ import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
+import { camel } from 'case';
 import { getColumnsForMeditrakApp } from './utilities';
 import {
   supportsPermissionsBasedSync,
@@ -17,10 +18,12 @@ import { allowNoPermissions } from '../../permissions';
 
 const MAX_CHANGES_RETURNED = 100;
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * Gets the record ready to sync down to a sync client, transforming any properties as required
  */
-function getRecordForSync(record) {
+function getRecordForSync(models, record, recordType, appVersion) {
   const recordWithoutNulls = {};
   // Remove null entries to a) save bandwidth and b) remain consistent with previous mongo based db
   // which simply had no key for undefined properties, whereas postgres uses null
@@ -29,7 +32,13 @@ function getRecordForSync(record) {
       recordWithoutNulls[key] = value;
     }
   });
-  return recordWithoutNulls;
+
+  // Translate values in columns based on meditrak app version
+  const selectedModel = models[camel(recordType)];
+  const translatedRecord = selectedModel?.meditrakConfig.translateRecordForSync
+    ? selectedModel.meditrakConfig.translateRecordForSync(recordWithoutNulls, appVersion)
+    : recordWithoutNulls;
+  return translatedRecord;
 }
 
 /**
@@ -97,7 +106,7 @@ export async function getChanges(req, res) {
           const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
           changeObject.error = { error: errorMessage };
         } else {
-          changeObject.record = getRecordForSync(record);
+          changeObject.record = getRecordForSync(models, record, recordType, appVersion);
         }
       }
       return changeObject;

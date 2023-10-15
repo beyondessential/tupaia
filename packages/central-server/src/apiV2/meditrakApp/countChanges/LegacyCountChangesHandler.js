@@ -8,6 +8,8 @@ import { getUniversalTypes } from '../../../database/utilities';
 import { buildMeditrakSyncQuery } from '../meditrakSync';
 import { fetchRequestingMeditrakDevice } from '../utilities';
 
+// TODO: Tidy this up as part of RN-502
+
 const MAX_FAILS_BEFORE_LOG_OUT = 2;
 const MAX_FAILS_BEFORE_TYPE_EXCLUSION = 5;
 

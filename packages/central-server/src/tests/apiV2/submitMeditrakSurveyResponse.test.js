@@ -34,7 +34,7 @@ const generateDummySurveyResponse = (extraFields = {}) => {
     entity_id: entityId,
     survey_id: surveyId,
     user_id: userId,
-    entities_created: [],
+    entities_upserted: [],
     timezone: defaultTimezone,
     approval_status: 'not_required',
     answers: [],
@@ -172,8 +172,8 @@ describe('POST /surveyResponse', async () => {
         );
         expect(firstSurveyResponse).to.exist;
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
-          // Other than 'answers' and 'entities_created', all values in the original object should match the database
-          if (!['answers', 'entities_created', 'timestamp'].includes(key)) {
+          // Other than 'answers' and 'entities_upserted', all values in the original object should match the database
+          if (!['answers', 'entities_upserted', 'timestamp'].includes(key)) {
             expectEqualStrings(firstSurveyResponse[key], value, key);
           }
         });
@@ -353,23 +353,23 @@ describe('POST /surveyResponse', async () => {
 
     describe('Survey responses creating entities', () => {
       it('adds created entities to the database', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
         const surveyResponseObject = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
         });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
 
-        const entities = await models.entity.find({ id: entitiesCreated.map(e => e.id) });
-        expect(entities.length).to.equal(entitiesCreated.length);
+        const entities = await models.entity.find({ id: entitiesUpserted.map(e => e.id) });
+        expect(entities.length).to.equal(entitiesUpserted.length);
       });
 
       it('can use a created entity as the primary entity of the same response', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
-        const primaryEntityId = entitiesCreated[0].id;
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesUpserted[0].id;
         const surveyResponseObject = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
           entity_id: primaryEntityId,
         });
 
@@ -381,10 +381,10 @@ describe('POST /surveyResponse', async () => {
       });
 
       it('can use a created entity as the primary entity of a different response in the same batch', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
-        const primaryEntityId = entitiesCreated[0].id;
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesUpserted[0].id;
         const surveyResponseObjectOne = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
         });
         const surveyResponseObjectTwo = generateDummySurveyResponse({
           entity_id: primaryEntityId,

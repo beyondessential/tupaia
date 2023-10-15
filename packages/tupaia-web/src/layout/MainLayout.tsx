@@ -23,9 +23,6 @@ const Container = styled.div`
   align-content: stretch;
   overflow-y: auto; // allows scroll at mobile size
   height: 100%;
-  svg.recharts-surface {
-    overflow: visible;
-  }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     overflow-y: hidden;
   }

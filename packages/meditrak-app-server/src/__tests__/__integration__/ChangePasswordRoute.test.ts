@@ -7,7 +7,7 @@ import { constructAccessToken } from '@tupaia/auth';
 import { clearTestData, getTestDatabase } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
-import { setupTestApp, setupTestUser } from '../utilities';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../utilities';
 import { CAT_USER, CAT_USER_SESSION } from './fixtures';
 
 const mockResponseMsg = 'Successfully changed password';
@@ -41,9 +41,11 @@ describe('me/changePassword', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(user.id);
   });
 
   afterAll(async () => {
+    revokeAccess();
     await clearTestData(getTestDatabase());
   });
 

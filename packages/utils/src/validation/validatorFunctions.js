@@ -355,3 +355,15 @@ export const constructIsValidEntityType = entityModel => async type => {
   const isOneOfEntityTypesValidator = constructIsOneOf(await entityModel.getEntityTypes());
   return isOneOfEntityTypesValidator(type);
 };
+
+export const constructIsValidEntityTypes = entityModel => async rawTypes => {
+  const types = rawTypes.split(',');
+  const isOneOfEntityTypesValidator = constructIsOneOf(await entityModel.getEntityTypes());
+  for (let i = 0; i < types.length; i++) {
+    const isValidType = isOneOfEntityTypesValidator(types[i]);
+    if (!isValidType) {
+      return false;
+    }
+  }
+  return true;
+};

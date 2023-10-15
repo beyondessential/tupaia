@@ -20,7 +20,7 @@ const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
 
 export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
+    const { params, query, ctx, models } = this.req;
     const { rootEntityCode, projectCode } = params;
     const { includeRootEntity = false, ...restOfQuery } = query;
 
@@ -32,10 +32,16 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
     )[0];
     const { config } = project;
 
+    const { typesExcludedFromWebFrontend } = models.entity;
+
     const entities = await ctx.services.entity.getAncestorsOfEntity(
       projectCode,
       rootEntityCode,
-      { filter: generateFrontendExcludedFilter(config), fields: DEFAULT_FIELDS, ...restOfQuery },
+      {
+        filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
+        fields: DEFAULT_FIELDS,
+        ...restOfQuery,
+      },
       includeRootEntity,
     );
 

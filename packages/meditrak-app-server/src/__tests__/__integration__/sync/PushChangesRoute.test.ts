@@ -18,7 +18,14 @@ import {
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader, stripTimezoneFromDate } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
-import { setupDummySyncQueue, setupTestApp, setupTestUser, CentralApiMock } from '../../utilities';
+import {
+  setupDummySyncQueue,
+  setupTestApp,
+  setupTestUser,
+  CentralApiMock,
+  grantUserAccess,
+  revokeAccess,
+} from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
 import { TEST_IMAGE_DATA } from './testImageData';
 import {
@@ -125,9 +132,11 @@ describe('changes (POST)', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(userId);
   });
 
   afterAll(async () => {
+    revokeAccess();
     await clearTestData(getTestDatabase());
   });
 

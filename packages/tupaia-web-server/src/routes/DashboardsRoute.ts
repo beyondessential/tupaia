@@ -27,8 +27,43 @@ export type DashboardsRequest = Request<
 >;
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE = 'no_data_at_level';
+const NO_ACCESS_DASHBOARD_ITEM_CODE = 'no_access';
+const DEFAULT_PAGE_SIZE = 'ALL';
 
 export class DashboardsRoute extends Route<DashboardsRequest> {
+  private getNoDataDashboard = async (
+    rootEntityCode: Entity['code'],
+    staticDashboardItemCode: string,
+  ) => {
+    const { models } = this.req;
+    const noDataItem = await models.dashboardItem.findOne({
+      code: staticDashboardItemCode,
+    });
+
+    const { code, legacy, report_code: reportCode, id, config } = noDataItem;
+    return camelcaseKeys(
+      [
+        {
+          name: 'General', // just a dummy dashboard
+          id: 'General',
+          code: 'General',
+          rootEntityCode,
+          items: [
+            {
+              code,
+              legacy,
+              reportCode,
+              id,
+              config,
+            },
+          ],
+        },
+      ],
+      {
+        deep: true,
+      },
+    );
+  };
   public async buildResponse() {
     const { params, ctx } = this.req;
     const { projectCode, entityCode } = params;
@@ -46,6 +81,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       filter: { root_entity_code: entities.map((e: Entity) => e.code) },
       sort: ['sort_order', 'name'],
     });
+
+    if (!dashboards.length) {
+      return this.getNoDataDashboard(rootEntity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
+    }
 
     // Fetch all dashboard relations
     const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
@@ -66,6 +105,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparisonValue: [projectCode],
         },
       },
+      // Override the default limit of 100 records
+      pageSize: DEFAULT_PAGE_SIZE,
     });
 
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -75,6 +116,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparisonValue: dashboardRelations.map((dr: DashboardRelation) => dr.child_id),
         },
       },
+      // Override the default limit of 100 records
+      pageSize: DEFAULT_PAGE_SIZE,
     });
 
     // Merged and sorted to make mapping easier
@@ -84,6 +127,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
       })),
       [
+        ({ relation }: { relation: DashboardRelation }) => (relation.sort_order === null ? 1 : 0), // Puts null values last
         ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
         ({ item }: { item: DashboardItem }) => item.code,
       ],
@@ -109,19 +153,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     );
 
     if (!response.length) {
-      // Returns in an array already
-      const noDataItem = await ctx.services.central.fetchResources('dashboardItems', {
-        filter: { code: NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE },
-      });
-      response.push({
-        name: 'General', // just a dummy dashboard
-        id: 'General',
-        code: 'General',
-        rootEntityCode: rootEntity.code,
-        items: noDataItem,
-      });
+      const dashboardCode = dashboardRelations.length
+        ? NO_ACCESS_DASHBOARD_ITEM_CODE
+        : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+      return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
-    return camelcaseKeys(response, { deep: true, stopPaths: ['items.config.presentationOptions'] });
+    return camelcaseKeys(response, {
+      deep: true,
+      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+    });
   }
 }

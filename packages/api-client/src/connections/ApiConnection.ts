@@ -76,7 +76,12 @@ export class ApiConnection {
 
     const response = await this.fetchWithTimeout(queryUrl, fetchConfig);
     await this.verifyResponse(response);
-    return response.json();
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.indexOf('application/json') !== -1) {
+      return response.json();
+    }
+    // If the content isn't json we expect the receiving code to parse it
+    return response;
   }
 
   private async fetchWithTimeout(
@@ -90,28 +95,15 @@ export class ApiConnection {
   private async verifyResponse(response: Response): Promise<void> {
     if (!response.ok) {
       const responseJson = await response.json();
-      if (
-        response.status &&
-        (response.status < 200 || response.status >= 300) &&
-        !responseJson.error
-      ) {
-        throw new CustomError(
-          {
-            responseText: `API error ${response.status}: ${responseJson.message}`,
-            responseStatus: response.status,
-          },
-          {},
-        );
-      }
-      if (responseJson.error) {
-        throw new CustomError(
-          {
-            responseText: `API error ${response.status}: ${responseJson.error}`,
-            responseStatus: response.status,
-          },
-          {},
-        );
-      }
+      throw new CustomError(
+        {
+          responseText: `API error ${response.status}: ${
+            responseJson.error || responseJson.message
+          }`,
+          responseStatus: response.status,
+        },
+        {},
+      );
     }
   }
 

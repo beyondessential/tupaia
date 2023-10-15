@@ -14,6 +14,7 @@ import {
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
+import { BaseReport } from '@tupaia/types';
 import { A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
@@ -127,6 +128,7 @@ export const PDFExportDashboardItem = ({
   const title = getTitle();
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
+  const { data } = report as BaseReport;
   return (
     <A4Page key={dashboardItem?.code}>
       <PDFExportHeader>{entityName}</PDFExportHeader>
@@ -139,7 +141,7 @@ export const PDFExportDashboardItem = ({
           <Title>{title}</Title>
           {reference && <ReferenceTooltip reference={reference} />}
           {period && <ExportPeriod>{period}</ExportPeriod>}
-          <ExportContent $hasData={report?.data && report?.data?.length > 0}>
+          <ExportContent $hasData={data && data?.length > 0}>
             <DashboardItemContext.Provider
               value={{
                 config,

@@ -1,6 +1,11 @@
-import moment from 'moment';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+import { addDays, format, subDays, subYears } from 'date-fns';
+
+const DATE_FORMAT = 'yyyy-MM-dd';
 
 export class DateSanitiser {
   /**
@@ -18,27 +23,16 @@ export class DateSanitiser {
       latestEndDate: defaultEndDate,
     } = this.getHistoricLimits();
 
-    let sanitisedStartDate = startDate;
-    let sanitisedEndDate = endDate;
-
-    if (!startDate) {
-      sanitisedStartDate = defaultStartDate;
-    }
-    if (!endDate) {
-      sanitisedEndDate = defaultEndDate;
-    }
-
     /*
      * Inclusive/exclusive date conversion:
      *
      * WeatherBit dates are exclusive on the tail end. Requesting Tuesday - Thursday will request
      * Tuesday 00:01am to Thursday 00:01am, so we need to push out the end date by 1 day.
      */
-    sanitisedEndDate = moment(sanitisedEndDate as string)
-      .add(1, 'day')
-      .format(DATE_FORMAT);
+    const sanitisedEndDate = format(addDays(new Date(endDate || defaultEndDate), 1), DATE_FORMAT);
+    const sanitisedStartDate = format(new Date(startDate || defaultStartDate), DATE_FORMAT);
 
-    return this.restrictHistoricDatesWithinLimits(sanitisedStartDate as string, sanitisedEndDate);
+    return this.restrictHistoricDatesWithinLimits(sanitisedStartDate, sanitisedEndDate);
   }
 
   /**
@@ -85,21 +79,18 @@ export class DateSanitiser {
   }
 
   private getHistoricLimits() {
-    const earliestStartDate = moment()
-      .subtract(1, 'year') // max historical is 1 year
-      .format(DATE_FORMAT);
+    // max historical is 1 year
+    const earliestStartDate = subYears(new Date(), 1);
+    const earliestEndDate = addDays(earliestStartDate, 1);
 
-    const earliestEndDate = moment(earliestStartDate).add(1, 'day').format(DATE_FORMAT);
-
-    const latestEndDate = moment().format(DATE_FORMAT);
-
-    const latestStartDate = moment(latestEndDate).subtract(1, 'day').format(DATE_FORMAT);
+    const latestEndDate = new Date();
+    const latestStartDate = subDays(latestEndDate, 1);
 
     return {
-      earliestStartDate,
-      earliestEndDate,
-      latestStartDate,
-      latestEndDate,
+      earliestStartDate: format(earliestStartDate, DATE_FORMAT),
+      earliestEndDate: format(earliestEndDate, DATE_FORMAT),
+      latestStartDate: format(latestStartDate, DATE_FORMAT),
+      latestEndDate: format(latestEndDate, DATE_FORMAT),
     };
   }
 }
