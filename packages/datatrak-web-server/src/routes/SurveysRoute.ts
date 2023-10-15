@@ -7,6 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import sortBy from 'lodash.sortby';
 
 type Survey = DatatrakWebSurveyRequest.ResBody;
 
@@ -24,8 +25,6 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const surveys = await ctx.services.central.fetchResources('surveys', {
       columns: fields,
     });
-    return camelcaseKeys(surveys, { deep: true }).sort((a: Survey, b: Survey) =>
-      a.name.localeCompare(b.name),
-    );
+    return sortBy(camelcaseKeys(surveys), ['name', 'surveyGroupName']);
   }
 }
