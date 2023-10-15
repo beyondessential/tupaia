@@ -93,6 +93,12 @@ const Subheader = styled(Typography).attrs({
   }
 `;
 
+const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
+  return (a.content as string)?.localeCompare(b.content as string, 'en', {
+    numeric: true,
+  });
+};
+
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
@@ -146,17 +152,13 @@ export const SurveySelectPage = () => {
             return {
               ...item,
               // sort the folder items alphanumerically
-              children: [...(item.children || []), formattedSurvey].sort((a, b) =>
-                (a?.content as string)?.localeCompare(b.content as string, 'en', {
-                  numeric: true,
-                }),
-              ),
+              children: [...(item.children || []), formattedSurvey].sort(sortAlphanumerically),
             };
           }
           return item;
         });
       }, [])
-      ?.sort((a, b) => (a.content as string)?.localeCompare(b.content as string)) ?? [];
+      ?.sort(sortAlphanumerically) ?? [];
 
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
