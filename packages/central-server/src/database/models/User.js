@@ -5,6 +5,10 @@
 
 import { UserType as CommonUserType, UserModel as CommonUserModel } from '@tupaia/database';
 
+// Currently our pattern is that session tables don't have models
+// in the generic database package, this is a quick and dirty way to get
+// context for them into central-server
+// TODO: Move sessions into database and clean this up
 const SERVICES = {
   // admin_panel: 'admin_panel_session',
   // datatrak_web: 'datatrak_web_session',

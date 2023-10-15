@@ -64,7 +64,7 @@ async function onUpsertSendPermissionGrantEmail(
 }
 
 /**
- * This sets the expiry on the users session information to cause a logout. We do this to
+ * This sets the expiry on the users session information to cause a permission refresh. We do this to
  * ensure we don't use a cached version of the accessPolicy after changing a users access
  */
 async function expireAccess({ new_record: newRecord, old_record: oldRecord }, models) {
