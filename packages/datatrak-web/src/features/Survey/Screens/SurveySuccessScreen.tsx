@@ -11,7 +11,7 @@ import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
-import { SurveyQRCode } from '../Components';
+import { SurveyQRCode } from '../SurveyQRCode';
 
 const Wrapper = styled.div`
   display: flex;

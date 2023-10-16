@@ -319,10 +319,7 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Entity,
-          body: {
-            code: 'answer2',
-            id: 'answer1',
-          },
+          body: 'answer1',
         },
       ],
       entities_upserted: [

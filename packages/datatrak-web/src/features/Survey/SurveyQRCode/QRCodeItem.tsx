@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QrCodeImage, useDownloadQrCodes } from '@tupaia/ui-components';
-import { DownloadIcon as BaseDownloadIcon, Button } from '../../../../components';
+import { DownloadIcon as BaseDownloadIcon, Button } from '../../../components';
 
 const Wrapper = styled.li<{
   $listVariant?: 'panel' | 'modal';

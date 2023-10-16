@@ -69,10 +69,13 @@ export const processSurveyResponse = async (
     const config = question?.config as ConfigT;
 
     // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
-    if (['PrimaryEntity', 'Entity'].includes(type) && isUpsertEntityQuestion(config)) {
+    if (
+      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
+      isUpsertEntityQuestion(config)
+    ) {
       const entityObj = await buildUpsertEntity(config, questionId, answers, countryId, getEntity);
       if (entityObj) surveyResponse.entities_upserted.push(entityObj);
-      answer = entityObj;
+      answer = entityObj?.id;
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
@@ -98,7 +101,7 @@ export const processSurveyResponse = async (
 
       // add the entity id to the response if the question is a primary entity question
       case QuestionType.PrimaryEntity: {
-        const entityId = answer?.hasOwnProperty('id') ? (answer as Entity).id : (answer as string);
+        const entityId = answer as string;
         surveyResponse.entity_id = entityId;
         break;
       }

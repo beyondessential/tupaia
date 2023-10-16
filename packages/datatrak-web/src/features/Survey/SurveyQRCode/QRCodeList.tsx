@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { QRCodeItem } from './QRCodeItem';
-import { Entity } from '../../../../types';
+import { Entity } from '../../../types';
 
 const Title = styled(Typography).attrs({
   variant: 'h2',

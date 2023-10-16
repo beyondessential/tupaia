@@ -5,7 +5,7 @@
 
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import { Button, Modal } from '../../../../components';
+import { Button, Modal } from '../../../components';
 import { KeyboardArrowRight } from '@material-ui/icons';
 
 const Wrapper = styled.div`

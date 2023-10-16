@@ -34,9 +34,7 @@ export const buildUpsertEntity = async (
     const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
 
     if (fieldName === 'parentId') {
-      console.log('fieldValue', fieldValue);
       const entityRecord = await getEntity(fieldValue);
-      console.log('entityRecord', entityRecord);
       entity.parent_id = entityRecord.id;
     } else {
       entity[fieldName as keyof Entity] = fieldValue;
