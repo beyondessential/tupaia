@@ -74,7 +74,12 @@ jest.mock('../../../utils/toast', () => {
 
 const server = setupServer(
   rest.post('*/v1/submitSurvey', (_, res, ctx) => {
-    return res(ctx.status(200));
+    return res(
+      ctx.status(200),
+      ctx.json({
+        createdEntities: [],
+      }),
+    );
   }),
 );
 beforeAll(() => server.listen());
@@ -95,6 +100,12 @@ describe('useSubmitSurvey', () => {
     });
     expect(result.current.isSuccess).toBe(true);
     expect(successToast).toHaveBeenCalledWith("Congratulations! You've earned a coconut", Coconut);
-    expect(mockedUseNavigate).toHaveBeenCalledWith(generatePath(ROUTES.SURVEY_SUCCESS, {}));
+    expect(mockedUseNavigate).toHaveBeenCalledWith(generatePath(ROUTES.SURVEY_SUCCESS, {}), {
+      state: {
+        surveyResponse: JSON.stringify({
+          createdEntities: [],
+        }),
+      },
+    });
   });
 });
