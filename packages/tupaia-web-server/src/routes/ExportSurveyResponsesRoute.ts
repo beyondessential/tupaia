@@ -14,6 +14,8 @@ export type ExportSurveyResponsesRequest = Request<
   TupaiaWebExportSurveyResponsesRequest.ReqQuery
 >;
 
+const EMAIL_TIMEOUT = 30 * 1000; // 30 seconds
+
 export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesRequest> {
   protected readonly type = 'download';
 
@@ -43,6 +45,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       reportName: string;
       countryCode?: string;
       entityCode?: string;
+      respondWithEmailTimeout: number;
     } = {
       latest,
       surveyCodes,
@@ -51,6 +54,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       timeZone,
       reportName: dashboardItem.config?.name,
       easyReadingMode,
+      respondWithEmailTimeout: EMAIL_TIMEOUT,
     };
 
     if (organisationUnitCode?.length === 2) {
@@ -64,6 +68,12 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       'export/surveyResponses',
       centralQuery,
     );
+
+    if (response.emailTimeoutHit) {
+      throw new Error(
+        'This export is taking a long time! The data will be emailed to you when finished.',
+      );
+    }
 
     // Extract the filename from the content-disposition header
     const contentDispositionHeader = response.headers.get('content-disposition');
