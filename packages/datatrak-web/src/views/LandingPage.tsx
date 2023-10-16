@@ -12,7 +12,6 @@ import {
   Tile,
 } from '../components';
 import { ROUTES } from '../constants';
-import { useCurrentUserSurveyResponses } from '../api/queries';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -276,8 +275,6 @@ const recentSurveys = [
 ];
 
 export const LandingPage = () => {
-  const { data, isLoading } = useCurrentUserSurveyResponses();
-  console.log(data);
   return (
     <PageContainer>
       <Wrapper>
