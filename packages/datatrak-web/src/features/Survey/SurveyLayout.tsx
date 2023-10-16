@@ -5,46 +5,28 @@
 
 import React from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
-import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import { SIDE_MENU_WIDTH } from './Components';
+import { ROUTES } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
 import { useIsMobile } from '../../utils';
-import { useValidationResolver } from './useValidationResolver';
 import { getErrorsByScreen } from './utils';
 
-const ScrollableLayout = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-  display: flex;
-  flex-direction: column;
-`;
-const Wrapper = styled.div`
-  display: flex;
-  overflow: hidden;
-  flex: 1;
-  align-items: flex-start;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: -1rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
-`;
-
-const Container = styled.div<{
+const ScrollableLayout = styled.div<{
   $sideMenuClosed?: boolean;
 }>`
+  overflow-y: hidden;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
-  height: 100%;
-  flex: 1;
-  position: relative;
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 0 1rem;
     margin-left: ${({ $sideMenuClosed }) => ($sideMenuClosed ? `-${SIDE_MENU_WIDTH}` : 0)};
@@ -59,6 +41,7 @@ const Paper = styled(MuiPaper).attrs({
   flex: 1;
   max-width: 63rem;
   padding: 0;
+  overflow: auto;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -140,9 +123,7 @@ export const SurveyLayout = () => {
     visibleScreens,
     openCancelConfirmation,
   } = useSurveyForm();
-  const resolver = useValidationResolver();
-  const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
-  const { handleSubmit, getValues } = formContext;
+  const { handleSubmit, getValues } = useFormContext();
   const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
@@ -219,41 +200,34 @@ export const SurveyLayout = () => {
   const nextButtonText = getNextButtonText();
 
   return (
-    <ScrollableLayout>
-      <FormProvider {...formContext}>
-        <Wrapper>
-          <SurveySideMenu />
-          <Container $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
-            <Paper>
-              <Form onSubmit={handleClickSubmit} noValidate>
-                <Outlet />
-                {isSubmittingSurvey && (
-                  <LoadingContainer>
-                    <SpinningLoader />
-                  </LoadingContainer>
-                )}
-                <FormActions>
-                  <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
-                    Back
-                  </BackButton>
-                  <ButtonGroup>
-                    <Button
-                      onClick={openCancelConfirmation}
-                      variant="outlined"
-                      disabled={isSubmittingSurvey}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isSubmittingSurvey}>
-                      {nextButtonText}
-                    </Button>
-                  </ButtonGroup>
-                </FormActions>
-              </Form>
-            </Paper>
-          </Container>
-        </Wrapper>
-      </FormProvider>
+    <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
+      <Paper>
+        <Form onSubmit={handleClickSubmit} noValidate>
+          <Outlet />
+          {isSubmittingSurvey && (
+            <LoadingContainer>
+              <SpinningLoader />
+            </LoadingContainer>
+          )}
+          <FormActions>
+            <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
+              Back
+            </BackButton>
+            <ButtonGroup>
+              <Button
+                onClick={openCancelConfirmation}
+                variant="outlined"
+                disabled={isSubmittingSurvey}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmittingSurvey}>
+                {nextButtonText}
+              </Button>
+            </ButtonGroup>
+          </FormActions>
+        </Form>
+      </Paper>
     </ScrollableLayout>
   );
 };

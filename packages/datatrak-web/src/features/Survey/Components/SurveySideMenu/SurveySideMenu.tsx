@@ -107,8 +107,9 @@ export const SurveySideMenu = () => {
     screenNumber,
     setFormData,
     isReviewScreen,
+    isSuccessScreen,
   } = useSurveyForm();
-  if (isReviewScreen) return null;
+  if (isReviewScreen || isSuccessScreen) return null;
   const onChangeScreen = () => {
     setFormData(getValues());
   };
@@ -122,6 +123,7 @@ export const SurveySideMenu = () => {
     return screens;
   };
   const screenMenuItems = getFormattedScreens();
+
   return (
     <>
       <SideMenuButton />
@@ -139,7 +141,7 @@ export const SurveySideMenu = () => {
             return (
               <SurveyMenuItem
                 key={screen.id}
-                to={`../${num}`}
+                to={`./${num}`}
                 $active={screenNumber === num}
                 onClick={onChangeScreen}
                 $isInstructionOnly={!screen.screenNumber}
