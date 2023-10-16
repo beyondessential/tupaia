@@ -62,6 +62,11 @@ function buildResponseRecord(user, entitiesByCode, body) {
     timezone,
   } = body;
 
+  /**
+   * We use timestamp as a fallback for all the time related fields (start_time, end_time, data_time, timezone)
+   * If all of those fields are present, we don't need a value for timestamp
+   * But if any of them are missing, and we don't have a value for timestamp, we throw an error
+   */
   if (!timezone && !timestamp) {
     throw new ValidationError(`Must provide timezone or timestamp`);
   }
