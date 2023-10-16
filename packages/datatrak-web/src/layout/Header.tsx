@@ -4,8 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps, Link as RouterLink, useParams } from 'react-router-dom';
-import { Link as MuiLink } from '@material-ui/core';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Button, PageContainer } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 import { UserMenu } from './UserMenu';
