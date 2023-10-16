@@ -112,6 +112,7 @@ export const SurveySideMenu = () => {
   if (isReviewScreen || isSuccessScreen) return null;
   const onChangeScreen = () => {
     setFormData(getValues());
+    if (isMobile) toggleSideMenu();
   };
   const getFormattedScreens = () => {
     const screens = visibleScreens?.map(screen => {
