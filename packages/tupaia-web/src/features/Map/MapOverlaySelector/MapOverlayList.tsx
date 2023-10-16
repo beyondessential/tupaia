@@ -7,6 +7,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import {
   Accordion,
   AccordionDetails,
@@ -32,7 +33,13 @@ const AccordionWrapper = styled(Accordion)`
 `;
 
 const AccordionHeader = styled(AccordionSummary)`
+  display: flex;
+  align-items: center;
   border-radius: 3px;
+
+  .MuiAccordionSummary-content .MuiSvgIcon-root {
+    margin: 0 0 0 0.2rem;
+  }
   &:hover {
     background: rgba(153, 153, 153, 0.2);
   }
@@ -52,6 +59,11 @@ const AccordionHeader = styled(AccordionSummary)`
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     font-size: 1rem;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const AccordionContent = styled(AccordionDetails)`
@@ -98,19 +110,35 @@ const MapOverlayAccordion = ({
 
   return (
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-      <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
+      <AccordionHeader expandIcon={<KeyboardArrowRight />}>
+        {mapOverlayGroup.name}
+        {mapOverlayGroup.info && mapOverlayGroup.info.reference && (
+          <ReferenceTooltip
+            reference={mapOverlayGroup.info.reference}
+            iconStyleOption="mayOverlay"
+          />
+        )}
+      </AccordionHeader>
       <AccordionContent>
         {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
         {mapOverlayGroup.children.map(mapOverlay =>
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
-            <FormLabel
-              value={mapOverlay.code}
-              control={<Radio />}
-              label={mapOverlay.name}
-              key={mapOverlay.code}
-            />
+            <Wrapper>
+              <FormLabel
+                value={mapOverlay.code}
+                control={<Radio />}
+                label={mapOverlay.name}
+                key={mapOverlay.code}
+              />
+              {mapOverlay.info && mapOverlay.info.reference && (
+                <ReferenceTooltip
+                  reference={mapOverlay.info.reference}
+                  iconStyleOption="mayOverlay"
+                />
+              )}
+            </Wrapper>
           ),
         )}
       </AccordionContent>

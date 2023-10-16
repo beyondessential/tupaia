@@ -14,6 +14,7 @@ import {
 import { orderBy } from '@tupaia/utils';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
+import isEqual from 'lodash.isequal';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -30,6 +31,49 @@ const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
 const DEFAULT_PAGE_SIZE = 'ALL';
+
+/**
+ * We will only display reference info on topper level map overlay group, if all `mapOverlayItem` have same reference.
+ *
+ * In this function, variable `mapOverlayItem` is an abstract item that can be either map overlay or map overlay group
+ *
+ * @param children an array of variable `mapOverlayItem`
+ */
+
+const getReference = (mapOverlayItem: any) => {
+  if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
+  return null;
+};
+
+const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
+  const firstReference = Array.isArray(children) && children[0] && getReference(children[0]);
+
+  if (!firstReference) {
+    return {
+      children,
+    };
+  }
+
+  const referencesAreTheSame = children.every(
+    mapOverlayItem =>
+      getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
+  );
+
+  // All map overlays have same reference
+  if (referencesAreTheSame) {
+    // Delete all the same references
+    const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+      const { info, ...restValues } = mapOverlayItem;
+      // @ts-ignore
+      delete info['reference'];
+      return { ...restValues, info };
+    });
+    return {
+      children: noReferenceMapOverlayItems,
+      info: { reference: firstReference },
+    };
+  }
+};
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -111,10 +155,15 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           };
         },
       );
+
       // Translate Map Overlay Group
+      // @ts-ignore
+      const { children, info } = integrateMapOverlayItemsReference(nestedChildren);
+
       return {
         name: parentEntry.name,
-        children: orderBy(nestedChildren, [
+        info,
+        children: orderBy(children, [
           (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
           'sortOrder',
           'name',
