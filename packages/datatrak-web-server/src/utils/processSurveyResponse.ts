@@ -3,14 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { getBrowserTimeZone } from '@tupaia/utils';
-import moment from 'moment';
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
   MeditrakSurveyResponseRequest,
   Entity,
   QuestionType,
-  SurveyScreenComponent,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
@@ -43,7 +41,8 @@ export const processSurveyResponse = async (
     startTime,
   } = surveyResponseData;
   const timezone = getBrowserTimeZone();
-  const timestamp = moment().toISOString();
+  const today = new Date();
+  const timestamp = today.toISOString();
   // Fields to be used in the survey response
   const surveyResponse = {
     user_id: userId,
@@ -91,9 +90,12 @@ export const processSurveyResponse = async (
     switch (type) {
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:
-      case QuestionType.DateOfData:
-        surveyResponse.data_time = moment(answer as string).toISOString();
+      case QuestionType.DateOfData: {
+        const date = new Date(answer as string);
+        surveyResponse.data_time = date.toISOString();
         break;
+      }
+
       // add the entity id to the response if the question is a primary entity question
       case QuestionType.PrimaryEntity: {
         const entityId = answer?.hasOwnProperty('id') ? (answer as Entity).id : (answer as string);

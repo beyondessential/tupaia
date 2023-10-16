@@ -2,22 +2,27 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import moment from 'moment';
 import { QuestionType } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../../utils';
-
-// Mock out moment so that that toISOString returns a consistent value for our tests
-jest.mock('moment', () => {
-  const mMoment = {
-    toISOString: jest.fn(() => 'theISOString'),
-  };
-  return jest.fn(() => mMoment);
-});
 
 const mockGetEntity = jest.fn(() => 'theEntityId');
 
+jest.mock('@tupaia/database', () => ({
+  generateId: jest.fn(() => 'theEntityId'),
+}));
+
 describe('processSurveyResponse', () => {
+  beforeAll(() => {
+    jest.useFakeTimers().setSystemTime(new Date(2020, 3, 1));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+  const date = new Date(2020, 3, 1);
+  const timestamp = date.toISOString();
   const responseData = {
     userId: 'theUserId',
     surveyId: 'theSurveyId',
@@ -30,10 +35,10 @@ describe('processSurveyResponse', () => {
     survey_id: 'theSurveyId',
     user_id: 'theUserId',
     start_time: 'theStartTime',
-    data_time: moment().toISOString(),
+    data_time: timestamp,
     entity_id: 'theCountryId',
-    end_time: moment().toISOString(),
-    timestamp: moment().toISOString(),
+    end_time: timestamp,
+    timestamp: timestamp,
     timezone: getBrowserTimeZone(),
     options_created: [],
     entities_upserted: [],
@@ -125,7 +130,7 @@ describe('processSurveyResponse', () => {
           },
         ],
         answers: {
-          question1: 'answer1',
+          question1: '2022-01-01',
         },
       },
       mockGetEntity,
@@ -133,7 +138,7 @@ describe('processSurveyResponse', () => {
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: moment('answer1').toISOString(),
+      data_time: new Date('2022-01-01').toISOString(),
       answers: [],
     });
   });
@@ -152,7 +157,7 @@ describe('processSurveyResponse', () => {
           },
         ],
         answers: {
-          question1: 'answer1',
+          question1: '2022-01-01',
         },
       },
       mockGetEntity,
@@ -160,7 +165,7 @@ describe('processSurveyResponse', () => {
 
     expect(result).toEqual({
       ...processedResponseData,
-      data_time: moment('answer1').toISOString(),
+      data_time: new Date('2022-01-01').toISOString(),
       answers: [],
     });
   });
@@ -314,13 +319,59 @@ describe('processSurveyResponse', () => {
         {
           question_id: 'question1',
           type: QuestionType.Entity,
-          body: 'answer1',
+          body: {
+            code: 'answer2',
+            id: 'answer1',
+          },
         },
       ],
       entities_upserted: [
         {
           code: 'answer2',
           id: 'answer1',
+        },
+      ],
+    });
+  });
+
+  it('should add to entities_upserted when type is "PrimaryEntity" and a create config is set', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.PrimaryEntity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {
+              entity: {
+                createNew: true,
+                fields: {
+                  code: {
+                    questionId: 'question2',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        answers: {
+          question2: 'answer2',
+        },
+      },
+      mockGetEntity,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      entity_id: generateId(),
+      answers: [],
+      entities_upserted: [
+        {
+          code: 'answer2',
+          id: generateId(),
         },
       ],
     });
