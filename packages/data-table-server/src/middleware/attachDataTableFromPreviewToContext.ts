@@ -11,13 +11,6 @@ import type { DataTablePreviewRequest } from '@tupaia/types';
 import { getDataTableService } from '../dataTableService';
 import { validatePermissions } from './helpers';
 
-const validateDataTableFields = (dataTableFields: unknown) => {
-  const { properties: schemaProperties } = DataTablePreviewRequestSchema;
-  const { id, ...propertiesWithoutId } = schemaProperties;
-  const schemaWithoutId = { ...DataTablePreviewRequestSchema, properties: propertiesWithoutId };
-  return ajvValidate<Omit<DataTablePreviewRequest, 'id'>>(schemaWithoutId, dataTableFields);
-};
-
 /**
  * Finds the requested dataTable and attaches it to the context
  * Checks for permissions
@@ -29,7 +22,10 @@ export const attachDataTableFromPreviewToContext = async (
 ) => {
   try {
     const { models, body } = req;
-    const dataTableFields = validateDataTableFields(body);
+    const dataTableFields = ajvValidate<DataTablePreviewRequest>(
+      DataTablePreviewRequestSchema,
+      body,
+    );
     const dataTable = await models.dataTable.generateInstance(dataTableFields);
 
     validatePermissions(dataTable, req);

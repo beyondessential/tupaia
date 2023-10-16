@@ -37832,9 +37832,6 @@ export const DataTablePreviewRequestSchema = {
 		"description": {
 			"type": "string"
 		},
-		"id": {
-			"type": "string"
-		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -37858,7 +37855,6 @@ export const DataTablePreviewRequestSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id",
 		"permission_groups",
 		"type"
 	]
@@ -38163,21 +38159,6 @@ export const CamelCasedQuestionSchema = {
 		"name": {
 			"type": "string"
 		},
-		"dataElementId": {
-			"type": "string"
-		},
-		"detail": {
-			"type": "string"
-		},
-		"hook": {
-			"type": "string"
-		},
-		"mRow$": {
-			"type": "string"
-		},
-		"optionSetId": {
-			"type": "string"
-		},
 		"type": {
 			"enum": [
 				"Arithmetic",
@@ -38200,6 +38181,21 @@ export const CamelCasedQuestionSchema = {
 				"Radio",
 				"SubmissionDate"
 			],
+			"type": "string"
+		},
+		"dataElementId": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"mRow$": {
+			"type": "string"
+		},
+		"optionSetId": {
 			"type": "string"
 		}
 	},
