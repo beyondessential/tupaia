@@ -41,6 +41,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@tupaia/auth": "1.0.0",
     "@tupaia/types": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@types/lodash.groupby": "^4.6.0",

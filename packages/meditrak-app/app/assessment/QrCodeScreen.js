@@ -15,6 +15,7 @@ import { addMessage } from '../messages';
 import { Heading, TupaiaBackground, Button, Divider, QrCode } from '../widgets';
 import { THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
 import { formatPlural } from '../utilities';
+import { requestWritePermission } from '../utilities/writePermission/permission';
 
 const shareQrCode = (qrCodeRef, filename) => {
   qrCodeRef.toDataURL(dataURL => {
@@ -27,7 +28,12 @@ const shareQrCode = (qrCodeRef, filename) => {
   });
 };
 
-const downloadQrCode = (qrCodeRef, filename, onSuccess, onFail) => {
+const downloadQrCode = async (qrCodeRef, filename, onSuccess, onFail) => {
+  const granted = await requestWritePermission();
+  if (!granted) {
+    onFail('Permission not granted');
+    return;
+  }
   qrCodeRef.toDataURL(async dataURL => {
     try {
       const fullFilename = `${filename}.png`;

@@ -3,23 +3,23 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import { Collapse, ListItem as MuiListItem } from '@material-ui/core';
-import { Check, Description, FolderOpenTwoTone, KeyboardArrowRight } from '@material-ui/icons';
+import {
+  Collapse,
+  ListItem as MuiListItem,
+  ListItemProps as MuiListItemProps,
+} from '@material-ui/core';
+import { Check, KeyboardArrowRight } from '@material-ui/icons';
+import { Tooltip } from '@tupaia/ui-components';
 
-const IconWrapper = styled.div`
-  padding-right: 0.5rem;
-  display: flex;
-  align-items: center;
-`;
-
-const Item = styled(MuiListItem)`
+// explicity set the types so that the overrides are applied, for the `button` prop
+export const BaseListItem = styled(MuiListItem)<MuiListItemProps>`
   display: flex;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 3px;
-  padding: 0.3rem 1rem 0.3rem 0;
+  padding: 0.3rem 1rem 0.3rem 0.5rem;
   &.Mui-selected {
     border-color: ${({ theme }) => theme.palette.primary.main};
     background-color: transparent;
@@ -27,14 +27,24 @@ const Item = styled(MuiListItem)`
   .MuiCollapse-container & {
     padding-left: 1rem;
   }
-  &:hover,
-  &.Mui-selected:hover,
-  &:focus,
-  &.Mui-selected:focus {
-    background-color: ${({ theme }) => theme.palette.primary.main}33;
+  &.MuiButtonBase-root {
+    &:hover,
+    &.Mui-selected:hover,
+    &:focus,
+    &.Mui-selected:focus {
+      background-color: ${({ theme }) => theme.palette.primary.main}33;
+    }
   }
   .MuiSvgIcon-root {
     font-size: 1rem;
+  }
+  &.Mui-disabled {
+    opacity: 1; // still have the icon as the full opacity
+    color: ${({ theme }) => theme.palette.text.disabled};
+  }
+  .text-secondary {
+    color: ${({ theme }) => theme.palette.text.secondary};
+    margin-left: 0.4em;
   }
 `;
 
@@ -45,33 +55,64 @@ const Arrow = styled(KeyboardArrowRight)<{
   transition: transform 0.1s ease-in-out;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<{
+  $fullWidth?: boolean;
+}>`
   display: flex;
   align-items: center;
-  width: 100%;
+  width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
+`;
+
+const IconWrapper = styled.div`
+  padding-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  width: 1.5rem;
+  svg {
+    color: ${({ theme }) => theme.palette.primary.main};
+    width: auto;
+    height: auto;
+  }
 `;
 
 export type ListItemType = Record<string, unknown> & {
   children?: ListItemType[];
-  name: string;
+  content: string | ReactNode;
   value: string;
   selected?: boolean;
+  icon?: ReactNode;
+  tooltip?: string;
+  button?: boolean;
+  disabled?: boolean;
 };
 
 interface ListItemProps {
   item: ListItemType;
-  children?: React.ReactNode;
-  onSelect?: (item: ListItemType) => void;
+  children?: ReactNode;
+  onSelect: (item: ListItemType) => void;
 }
+
+const Wrapper = ({
+  children,
+  tooltip,
+}: {
+  children: ReactElement;
+  tooltip: ListItemType['tooltip'];
+}) => {
+  if (tooltip) {
+    return (
+      <Tooltip title={tooltip} enterDelay={1000}>
+        {children}
+      </Tooltip>
+    );
+  }
+  return <>{children}</>;
+};
 
 export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   const [open, setOpen] = useState(false);
+  const { content, selected, icon, tooltip, button = true, disabled } = item;
   const isNested = !!item.children;
-
-  const getIcon = () => {
-    if (isNested) return FolderOpenTwoTone;
-    return Description;
-  };
 
   const toggleOpen = () => {
     setOpen(!open);
@@ -81,23 +122,26 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
     if (isNested) {
       return toggleOpen();
     }
-    return onSelect ? onSelect(item) : null;
+    return onSelect(item);
   };
-
-  const Icon = getIcon();
 
   return (
     <>
-      <Item button onClick={onClick} selected={item.selected}>
-        <ButtonContainer>
-          <IconWrapper>
-            <Icon color="primary" />
-          </IconWrapper>
-          {item.name}
-          {isNested && <Arrow $open={open} />}
-        </ButtonContainer>
-        {item.selected && <Check color="primary" />}
-      </Item>
+      <BaseListItem
+        button={button}
+        onClick={button ? onClick : null}
+        selected={selected}
+        disabled={disabled}
+      >
+        <Wrapper tooltip={tooltip}>
+          <ButtonContainer $fullWidth={button}>
+            <IconWrapper>{icon}</IconWrapper>
+            {content}
+            {isNested && <Arrow $open={open} />}
+          </ButtonContainer>
+        </Wrapper>
+        {selected && <Check color="primary" />}
+      </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
     </>
   );

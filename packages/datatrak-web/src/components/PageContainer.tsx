@@ -5,7 +5,6 @@
 
 import { Container } from '@material-ui/core';
 import styled from 'styled-components';
-import { MOBILE_BREAKPOINT } from '../constants';
 
 export const PageContainer = styled(Container).attrs({
   maxWidth: false,
@@ -13,7 +12,7 @@ export const PageContainer = styled(Container).attrs({
   position: relative;
   flex: 1;
   padding: 0;
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding: 0 1rem;
   }
 `;

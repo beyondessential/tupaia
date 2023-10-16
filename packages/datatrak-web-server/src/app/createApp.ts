@@ -18,10 +18,16 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
-  SurveyScreenComponentsRoute,
-  SurveyScreenComponentsRequest,
+  ProjectsRoute,
+  ProjectsRequest,
   SurveyRequest,
   SurveyRoute,
+  EntitiesRequest,
+  EntitiesRoute,
+  ProjectRequest,
+  ProjectRoute,
+  SubmitSurveyRoute,
+  SubmitSurveyRequest,
 } from '../routes';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -33,13 +39,13 @@ export function createApp() {
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
-    .get<SurveyScreenComponentsRequest>(
-      'surveys/:surveyCode/surveyScreenComponents',
-      handleWith(SurveyScreenComponentsRoute),
-    )
+    .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
+    .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .build();

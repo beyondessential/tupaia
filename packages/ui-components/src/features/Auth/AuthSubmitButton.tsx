@@ -13,4 +13,7 @@ export const AuthSubmitButton = styled(Button)`
   max-width: 100%;
   margin-left: 0 !important;
   margin-top: 2rem;
+  & + & {
+    margin-top: 1rem;
+  }
 `;

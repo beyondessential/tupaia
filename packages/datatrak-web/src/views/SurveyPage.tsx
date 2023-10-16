@@ -5,11 +5,10 @@
 import React from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { FullPageLoader, Alert } from '@tupaia/ui-components';
-import { useSurveyScreenComponents } from '../api/queries';
-import { SurveyContext } from '../features';
+import { FullPageLoader } from '@tupaia/ui-components';
+import { useSurvey } from '../api/queries';
+import { SurveyContext, SurveyToolbar } from '../features';
 import { SurveyParams } from '../types';
-import { SurveyToolbar } from '../features/Survey/SurveyToolbar';
 
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
@@ -20,16 +19,11 @@ const PageWrapper = styled.div`
 
 export const SurveyPage = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
-  const { isSuccess, isLoading, isError, error } = useSurveyScreenComponents(surveyCode);
+  const { isLoading } = useSurvey(surveyCode);
 
   if (isLoading) {
     return <FullPageLoader />;
   }
-
-  if (!isSuccess || (isError && error)) {
-    return <Alert severity="error">`There was an error ${error}`</Alert>;
-  }
-
   return (
     <SurveyContext>
       <PageWrapper>

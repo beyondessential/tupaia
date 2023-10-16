@@ -7,7 +7,7 @@ import * as DataTypes from './types';
 
 export const schema = {
   schema: Object.values(DataTypes),
-  schemaVersion: 24,
+  schemaVersion: 25,
   migration: (oldRealm, newRealm) => {
     // For anyone upgrading from below version 3, change permission level to permission group
     if (oldRealm.schemaVersion < 3) {
@@ -189,6 +189,15 @@ export const schema = {
 
       oldResponses.forEach((oldResponse, index) => {
         newResponses[index].dataTime = oldResponse.submissionTime || oldResponse.endTime;
+      });
+    }
+
+    if (oldRealm.schemaVersion < 25) {
+      const oldResponses = oldRealm.objects('Response');
+      const newResponses = newRealm.objects('Response');
+
+      oldResponses.forEach((oldResponse, index) => {
+        newResponses[index].entitiesUpserted = oldResponse.entitiesCreated;
       });
     }
   },

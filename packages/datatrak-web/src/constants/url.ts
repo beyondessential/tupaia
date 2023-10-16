@@ -6,10 +6,14 @@
 const SURVEY_URL = '/survey/:surveyCode';
 
 export const ROUTES = {
+  HOME: '/',
   LOGIN: '/login',
   REGISTER: '/register',
+  REQUEST_ACCESS: '/request-access',
   FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   SURVEY_SELECT: '/survey',
+  PROJECT_SELECT: '/project',
   SURVEY: SURVEY_URL,
   SURVEY_SCREEN: `${SURVEY_URL}/:screenNumber`,
   SURVEY_SUCCESS: `${SURVEY_URL}/success`,
@@ -19,3 +23,5 @@ export const ROUTES = {
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
 };
+
+export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';

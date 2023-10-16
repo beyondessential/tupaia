@@ -14,12 +14,22 @@ const Checkbox = styled(BaseCheckbox)`
     padding: 0;
     margin-right: 0.5rem;
   }
+  .MuiButtonBase-root:has([aria-invalid='true']) {
+    color: ${props => props.theme.palette.error.main};
+  }
+  .MuiFormHelperText-root {
+    margin-left: -0.5rem;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+  }
 `;
 export const CheckboxQuestion = ({
   id,
   label,
   name,
-  controllerProps: { value, onChange, ref },
+  detailLabel,
+  required,
+  controllerProps: { value, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
     <Checkbox
@@ -27,9 +37,14 @@ export const CheckboxQuestion = ({
       label={label}
       id={id}
       name={name!}
+      required={required}
       checked={value === 'Yes'}
       onChange={e => onChange(e.target.checked ? 'Yes' : 'No')}
       inputRef={ref}
+      helperText={detailLabel as string}
+      inputProps={{
+        ['aria-invalid']: invalid,
+      }}
     />
   );
 };

@@ -36,7 +36,7 @@ const ActivePolygon = styled(Polygon)<PolygonProps>`
 
 const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
   fill: ${({ $shade }) => $shade};
-  stroke: ${({ $shade, $active }) => ($active ? POLYGON_HIGHLIGHT : $shade)};
+  stroke: ${({ $shade }) => $shade};
   fill-opacity: 0.5;
   &:hover {
     fill-opacity: ${({ $active }) =>
@@ -128,11 +128,19 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
         const displayType = getDisplayType(measure);
         const PolygonComponent = POLYGON_COMPONENTS[displayType];
-        const key =
-          displayType === DISPLAY_TYPES.active ? `currentEntityPolygon${Math.random()}` : code;
         const showDataOnTooltip = displayType === DISPLAY_TYPES.shaded;
         const onClick =
           displayType === DISPLAY_TYPES.active ? undefined : () => navigateToEntity(code);
+
+        function getDisplayKey() {
+          // Use a random key to ensure that the active polygon is re-rendered to be on top
+          if (displayType === DISPLAY_TYPES.active) {
+            return `currentEntityPolygon${Math.random()}`;
+          }
+          const { code: entityCode } = measure;
+          // Ensure that the polygon is re-rendered when the display variables change
+          return `${entityCode}-${shade}`;
+        }
 
         return (
           <PolygonComponent
@@ -142,7 +150,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
             eventHandlers={{
               click: onClick,
             }}
-            key={key}
+            key={getDisplayKey()}
             {...measure}
           >
             <AreaTooltip

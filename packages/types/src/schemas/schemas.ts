@@ -35420,6 +35420,7 @@ export const EntitySchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -36582,6 +36583,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37232,6 +37234,7 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
+		"preferences": {},
 		"primary_platform": {
 			"enum": [
 				"lesmis",
@@ -37435,6 +37438,7 @@ export const EntityTypeSchema = {
 		"nursing_zone",
 		"postcode",
 		"project",
+		"repair_request",
 		"school",
 		"sub_catchment",
 		"sub_district",
@@ -37576,6 +37580,7 @@ export const EntityCreatedSchema = {
 				"nursing_zone",
 				"postcode",
 				"project",
+				"repair_request",
 				"school",
 				"sub_catchment",
 				"sub_district",
@@ -37610,7 +37615,13 @@ export const OptionCreatedSchema = {
 			"type": "string"
 		},
 		"value": {
-			"type": "number"
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"label": {
+			"type": "string"
 		},
 		"option_set_id": {
 			"$async": true,
@@ -37626,9 +37637,7 @@ export const OptionCreatedSchema = {
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
-		"id",
 		"option_set_id",
-		"sort_order",
 		"value"
 	],
 	"$async": true
@@ -37746,6 +37755,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"nursing_zone",
 							"postcode",
 							"project",
+							"repair_request",
 							"school",
 							"sub_catchment",
 							"sub_district",
@@ -37783,7 +37793,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"value": {
-						"type": "number"
+						"type": [
+							"string",
+							"number"
+						]
+					},
+					"label": {
+						"type": "string"
 					},
 					"option_set_id": {
 						"checkIdExists": {
@@ -37797,9 +37813,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"id",
 					"option_set_id",
-					"sort_order",
 					"value"
 				]
 			}
@@ -37816,7 +37830,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 	"additionalProperties": {},
 	"required": [
 		"answers",
-		"id",
 		"survey_id",
 		"timestamp",
 		"user_id"
@@ -37870,29 +37883,6 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
-export const ResBodySchema = {
-	"properties": {
-		"userName": {
-			"type": "string"
-		},
-		"email": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
 export const CamelCaseSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
 	"type": "array",
@@ -37918,57 +37908,295 @@ export const KeysToCamelCaseSchema = {
 	"additionalProperties": false
 } 
 
-export const InitialResponseSchema = {
-	"properties": {
-		"answers_enabling_follow_up": {
-			"type": "array",
-			"items": {
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"attributes": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"bounds": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"code": {
+				"type": "string"
+			},
+			"countryCode": {
+				"type": "string"
+			},
+			"id": {
+				"type": "string"
+			},
+			"imageUrl": {
+				"type": "string"
+			},
+			"mRow$": {
+				"type": "string"
+			},
+			"metadata": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"name": {
+				"type": "string"
+			},
+			"parentId": {
+				"type": "string"
+			},
+			"point": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"region": {
+				"anyOf": [
+					{
+						"type": "array",
+						"items": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					{
+						"type": "object",
+						"additionalProperties": false
+					}
+				]
+			},
+			"type": {
+				"enum": [
+					"asset",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
 				"type": "string"
 			}
 		},
-		"component_number": {
-			"type": "number"
+		"additionalProperties": false,
+		"required": [
+			"code",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ProjectResponseSchema = {
+	"properties": {
+		"code": {
+			"type": "string"
 		},
-		"detail_label": {
+		"config": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
 			"type": "string"
 		},
 		"id": {
 			"type": "string"
 		},
-		"is_follow_up": {
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
 			"type": "boolean"
 		},
-		"question_id": {
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object",
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const VisibilityCriteriaSchema = {
+	"properties": {
+		"_conjunction": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"type": "object"
+} 
+
+export const ValidationCriteriaSchema = {
+	"properties": {
+		"required": {
+			"type": "boolean"
+		},
+		"min": {
+			"type": "number"
+		},
+		"max": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCasedQuestionSchema = {
+	"properties": {
+		"text": {
 			"type": "string"
 		},
-		"question_label": {
+		"code": {
 			"type": "string"
 		},
-		"screen_id": {
+		"name": {
 			"type": "string"
 		},
-		"config": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"validation_criteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"visibility_criteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"question.name": {
+		"dataElementId": {
 			"type": "string"
 		},
-		"question.code": {
+		"detail": {
 			"type": "string"
 		},
-		"question.text": {
+		"hook": {
 			"type": "string"
 		},
-		"question.type": {
+		"mRow$": {
+			"type": "string"
+		},
+		"optionSetId": {
+			"type": "string"
+		},
+		"type": {
 			"enum": [
 				"Arithmetic",
 				"Autocomplete",
@@ -37991,28 +38219,17 @@ export const InitialResponseSchema = {
 				"SubmissionDate"
 			],
 			"type": "string"
-		},
-		"question.options": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"question.option_set_id": {
-			"type": "string"
 		}
 	},
-	"additionalProperties": false,
 	"type": "object",
+	"additionalProperties": false,
 	"required": [
-		"component_number",
-		"id",
-		"question_id",
-		"screen_id"
+		"text",
+		"type"
 	]
 } 
 
-export const CamelCasedInitialResponseSchema = {
+export const CamelCasedComponentSchema = {
 	"properties": {
 		"answersEnablingFollowUp": {
 			"type": "array",
@@ -38026,73 +38243,10 @@ export const CamelCasedInitialResponseSchema = {
 		"detailLabel": {
 			"type": "string"
 		},
-		"id": {
-			"type": "string"
-		},
 		"isFollowUp": {
 			"type": "boolean"
 		},
 		"questionId": {
-			"type": "string"
-		},
-		"questionLabel": {
-			"type": "string"
-		},
-		"screenId": {
-			"type": "string"
-		},
-		"config": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"validationCriteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"visibilityCriteria": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"questionName": {
-			"type": "string"
-		},
-		"questionCode": {
-			"type": "string"
-		},
-		"questionText": {
-			"type": "string"
-		},
-		"questionType": {
-			"enum": [
-				"Arithmetic",
-				"Autocomplete",
-				"Binary",
-				"Checkbox",
-				"CodeGenerator",
-				"Condition",
-				"Date",
-				"DateOfData",
-				"DateTime",
-				"Entity",
-				"File",
-				"FreeText",
-				"Geolocate",
-				"Instruction",
-				"Number",
-				"Photo",
-				"PrimaryEntity",
-				"Radio",
-				"SubmissionDate"
-			],
-			"type": "string"
-		},
-		"questionOptions": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"questionOptionSetId": {
 			"type": "string"
 		}
 	},
@@ -38100,10 +38254,414 @@ export const CamelCasedInitialResponseSchema = {
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
-		"id",
-		"questionId",
-		"screenId"
+		"questionId"
 	]
+} 
+
+export const CodeGeneratorConfigSchema = {
+	"properties": {
+		"type": {
+			"enum": [
+				"mongoid",
+				"shortid"
+			],
+			"type": "string"
+		},
+		"prefix": {
+			"type": "string"
+		},
+		"length": {
+			"type": "number"
+		},
+		"chunkLength": {
+			"type": "number"
+		},
+		"alphabet": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const AutocompleteConfigSchema = {
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"questionId": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"questionId"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ConditionConfigSchema = {
+	"properties": {
+		"conditions": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"formula": {
+						"type": "string"
+					},
+					"defaultValues": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"formula"
+				]
+			}
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"conditions"
+	]
+} 
+
+export const EntityQuestionConfigSchema = {
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"fields": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"filter": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"grandparentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"parentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": {}
+} 
+
+export const ArithmeticConfigSchema = {
+	"properties": {
+		"formula": {
+			"type": "string"
+		},
+		"defaultValues": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"answerDisplayText": {
+			"type": "string"
+		},
+		"valueTranslation": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"formula"
+	]
+} 
+
+export const SurveyScreenComponentConfigSchema = {
+	"properties": {
+		"codeGenerator": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"enum": [
+						"mongoid",
+						"shortid"
+					],
+					"type": "string"
+				},
+				"prefix": {
+					"type": "string"
+				},
+				"length": {
+					"type": "number"
+				},
+				"chunkLength": {
+					"type": "number"
+				},
+				"alphabet": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		"autocomplete": {
+			"type": "object",
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entity": {
+			"type": "object",
+			"additionalProperties": {},
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"filter": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"anyOf": [
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"grandparentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"parentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"attributes": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"questionId": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"questionId"
+								]
+							}
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
+		"condition": {
+			"type": "object",
+			"properties": {
+				"conditions": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"formula": {
+								"type": "string"
+							},
+							"defaultValues": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"formula"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"conditions"
+			]
+		},
+		"arithmetic": {
+			"type": "object",
+			"properties": {
+				"formula": {
+					"type": "string"
+				},
+				"defaultValues": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"answerDisplayText": {
+					"type": "string"
+				},
+				"valueTranslation": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"formula"
+			]
+		}
+	},
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const CamelCasedSurveyScreenSchema = {
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"screenNumber": {
+			"type": "number"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"screenNumber"
+	]
+} 
+
+export const AutocompleteAnswerSchema = {
+	"properties": {
+		"isNew": {
+			"type": "boolean"
+		},
+		"optionSetId": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		}
+	},
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"optionSetId",
+		"value"
+	]
+} 
+
+export const AnswersSchema = {
+	"type": "object",
+	"additionalProperties": false
 } 
 
 export const CountryAccessSchema = {

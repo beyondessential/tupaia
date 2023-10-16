@@ -141,7 +141,7 @@ const parseRows = (
         onClick: drillDown ? () => onDrillDown(row) : undefined,
         ...Object.entries(rest).reduce((acc, [key, item]) => {
           // some items are objects, and we need to parse them to get the value
-          if (typeof item === 'object') {
+          if (typeof item === 'object' && item !== null) {
             const { value, metadata } = item as { value: any; metadata?: any };
             return {
               ...acc,

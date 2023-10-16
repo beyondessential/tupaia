@@ -44,7 +44,6 @@ export class ProcessAlertActionRoute extends Route<ProcessAlertActionRequest> {
 
     return this.centralConnection.updateSurveyResponseByObject(alertSurveyResponse, [
       {
-        type: 'Binary',
         code: 'PSSS_Alert_Archived',
         value: ACTION_TO_ANSWER[action],
       },

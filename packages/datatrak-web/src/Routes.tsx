@@ -11,12 +11,13 @@ import {
   Outlet,
   generatePath,
   useParams,
+  useLocation,
 } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
   SurveyPage,
-  SurveySelectPage, 
+  SurveySelectPage,
   LoginPage,
   VerifyEmailPage,
   NotFoundPage,
@@ -25,26 +26,45 @@ import {
   SurveyReviewScreen,
   SurveySuccessScreen,
   SurveyScreen,
+  ProjectSelectPage,
+  RequestProjectAccessPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout, ScrollableLayout } from './layout';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
+import { SurveyLayout, useSurveyForm } from './features';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
  */
 const LoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
-  if (isLoading || !isFetched) return <FullPageLoader />;
-  if (isLoggedIn) return <Navigate to="/" replace={true} />;
-  return children;
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  if (isLoading || !isFetched) {
+    return <FullPageLoader />;
+  }
+  if (!isLoggedIn) {
+    return children;
+  }
+  return <Navigate to={data?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
 };
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, isLoading, isFetched } = useUser();
+  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  const location = useLocation();
   if (isLoading || !isFetched) return <FullPageLoader />;
   if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
+
+  const PROJECT_SELECT_URLS = [ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS];
+  // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
+  if (data?.projectId && PROJECT_SELECT_URLS.includes(location.pathname))
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+
+  // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
+  if (!data?.projectId && !PROJECT_SELECT_URLS.includes(location.pathname))
+    return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
   return children ? children : <Outlet />;
 };
 
@@ -59,6 +79,34 @@ const SurveyStartRedirect = () => {
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
  *
  * **/
+
+// This is to redirect the user to the start of the survey if they try to access a screen that is not visible on the survey
+const SurveyPageRedirect = ({ children }) => {
+  const { screenNumber } = useParams();
+  const { visibleScreens } = useSurveyForm();
+  if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
+    return <SurveyStartRedirect />;
+  }
+  return children;
+};
+
+export const SurveyPageRoutes = (
+  <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
+    <Route index element={<SurveyStartRedirect />} />
+    <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
+    <Route element={<SurveyLayout />}>
+      <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
+      <Route
+        path={ROUTES.SURVEY_SCREEN}
+        element={
+          <SurveyPageRedirect>
+            <SurveyScreen />
+          </SurveyPageRedirect>
+        }
+      />
+    </Route>
+  </Route>
+);
 
 export const Routes = () => {
   return (
@@ -79,10 +127,15 @@ export const Routes = () => {
                 </LoggedInRedirect>
               }
             />
+            <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+            <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-            <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
+              <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
+            </Route>
           </Route>
         </Route>
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
@@ -92,14 +145,7 @@ export const Routes = () => {
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
-            <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
-              <Route index element={<SurveyStartRedirect />} />
-              <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
-              <Route element={<ScrollableLayout />}>
-                <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
-                <Route path={ROUTES.SURVEY_SCREEN} element={<SurveyScreen />} />
-              </Route>
-            </Route>
+            {SurveyPageRoutes}
           </Route>
         </Route>
         <Route path="*" element={<NotFoundPage />} />
