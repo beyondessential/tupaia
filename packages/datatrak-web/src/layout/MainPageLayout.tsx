@@ -22,6 +22,7 @@ const PageWrapper = styled.div`
 
 export const MainPageLayout = () => {
   return (
+    // Survey context needs to wrap the main page layout, so that we can trigger the cancel survey modal from anywhere in the page
     <SurveyContext>
       <PageWrapper>
         <Header />
