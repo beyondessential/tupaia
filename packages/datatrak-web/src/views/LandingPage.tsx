@@ -276,7 +276,7 @@ const recentSurveys = [
 ];
 
 export const LandingPage = () => {
-  const { data, isLoading } = useCurrentUserSurveyResponses();
+  const { data } = useCurrentUserSurveyResponses();
   console.log(data);
   return (
     <PageContainer>
