@@ -4,10 +4,10 @@
  */
 
 import { Request } from 'express';
-import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
+import { camelcaseKeys } from '@tupaia/tsutils';
 
 import { DashboardRelationType } from '../models/DashboardRelation';
 

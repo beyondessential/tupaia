@@ -5,8 +5,8 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import camelCaseKeys from 'camelcase-keys';
 import { TupaiaWebEntityRequest } from '@tupaia/types';
+import { camelcaseKeys } from '@tupaia/tsutils';
 
 export type EntityRequest = Request<
   TupaiaWebEntityRequest.Params,
@@ -27,6 +27,6 @@ export class EntityRoute extends Route<EntityRequest> {
       ...query,
     });
 
-    return camelCaseKeys(entity);
+    return camelcaseKeys(entity);
   }
 }
