@@ -4,6 +4,7 @@ import moment from 'moment';
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
+  expectError,
   expectErrors,
   expectSuccess,
   setupDummySyncQueue,
@@ -34,7 +35,8 @@ const ENTITY_NON_CLINIC_ID = generateTestId();
 
 const questionCode = key => `TEST-${key}`;
 
-const expectError = (response, expectedError) => expectErrors(response, expectedError, 400);
+const expectValidationError = (response, expectedError) =>
+  expectErrors(response, expectedError, 400);
 
 let surveyId;
 
@@ -236,7 +238,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /survey_id/);
+    expectValidationError(response, /survey_id/);
   });
 
   it('Should throw if a submission has a missing entity code', async () => {
@@ -250,8 +252,8 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /entity_id/);
-    expectError(response, /Must provide one of/);
+    expectValidationError(response, /entity_id/);
+    expectValidationError(response, /Must provide one of/);
   });
 
   it('Should throw if a submission has an invalid entity id', async () => {
@@ -266,7 +268,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /No entity with id/);
+    expectValidationError(response, /No entity with id/);
   });
 
   it('Should throw if a submission has an invalid entity code', async () => {
@@ -281,7 +283,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /No entity with code/);
+    expectValidationError(response, /No entity with code/);
   });
 
   it('Should throw if a submission has an invalid question code', async () => {
@@ -296,7 +298,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /Could not find question/);
+    expectValidationError(response, /Could not find question/);
   });
 
   it('Should throw if a question is not present on the selected survey', async () => {
@@ -311,7 +313,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /Could not find question/);
+    expectValidationError(response, /Could not find question/);
   });
 
   it('Should allow a survey response with no answers', async () => {
@@ -344,7 +346,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /is missing value/);
+    expectValidationError(response, /is missing value/);
   });
 
   it('Should throw if a survey is missing a timestamp', async () => {
@@ -358,8 +360,7 @@ describe('surveyResponse endpoint', () => {
       },
     });
 
-    expectError(response, /timestamp/);
-    expectError(response, /Should not be empty/);
+    expectError(response, /Must provide .* or timestamp/, 400);
   });
 
   it('Should handle timezones correctly', async () => {
@@ -544,37 +545,37 @@ describe('surveyResponse endpoint', () => {
 
     it('Should reject an invalid Binary answer', async () => {
       const response = await postTypeCheck('Binary', 'Maybe');
-      expectError(response, /Maybe is not an accepted value/);
+      expectValidationError(response, /Maybe is not an accepted value/);
     });
 
     it('Should reject an invalid Instruction answer', async () => {
       const response = await postTypeCheck('Instruction', 'Any text');
-      expectError(response, /Should be empty/);
+      expectValidationError(response, /Should be empty/);
     });
 
     it('Should reject an invalid Number answer', async () => {
       const response = await postTypeCheck('Number', 'Three');
-      expectError(response, /Should contain a number/);
+      expectValidationError(response, /Should contain a number/);
     });
 
     it('Should reject an invalid Radio answer', async () => {
       const response = await postTypeCheck('Radio', 'RadioX');
-      expectError(response, /RadioX is not an accepted value/);
+      expectValidationError(response, /RadioX is not an accepted value/);
     });
 
     it('Should reject an invalid Date answer', async () => {
       const response = await postTypeCheck('Date', '1/1/2019');
-      expectError(response, /Dates should be in ISO 8601 format/);
+      expectValidationError(response, /Dates should be in ISO 8601 format/);
     });
 
     it('Should reject an invalid SubmissionDate answer', async () => {
       const response = await postTypeCheck('SubmissionDate', '1/1/2019');
-      expectError(response, /Dates should be in ISO 8601 format/);
+      expectValidationError(response, /Dates should be in ISO 8601 format/);
     });
 
     it('Should reject an invalid DateOfData answer', async () => {
       const response = await postTypeCheck('DateOfData', '1/1/2019');
-      expectError(response, /Dates should be in ISO 8601 format/);
+      expectValidationError(response, /Dates should be in ISO 8601 format/);
     });
   });
 });
