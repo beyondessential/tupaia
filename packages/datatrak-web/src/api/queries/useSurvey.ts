@@ -11,5 +11,8 @@ export const useSurvey = (surveyCode?: string) => {
   return useQuery(
     ['survey', surveyCode],
     (): Promise<DatatrakWebSurveyRequest.ResBody> => get(`surveys/${surveyCode}`),
+    {
+      enabled: !!surveyCode,
+    },
   );
 };

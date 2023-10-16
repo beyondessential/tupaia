@@ -10,6 +10,9 @@ import styled from 'styled-components';
 const StyledButton = styled(UIButton)`
   &.Mui-disabled {
     pointer-events: auto; // this is to allow the hover effect of a tooltip to work
+    &.MuiButton-containedPrimary {
+      opacity: 0.3; // overrides styles explicitly set in ui-components
+    }
   }
 `;
 
