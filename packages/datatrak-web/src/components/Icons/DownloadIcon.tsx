@@ -11,8 +11,7 @@ export const DownloadIcon = (props: SvgIconProps) => {
       {...props}
       width="20"
       height="18"
-      viewBox="0 0 20 18"
-      fill="none"
+      viewBox="0 0 20 18" 
       fill="#2E2F33"
       xmlns="http://www.w3.org/2000/svg"
     >
