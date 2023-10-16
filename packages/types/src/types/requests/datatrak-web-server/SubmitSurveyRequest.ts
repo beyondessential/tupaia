@@ -12,7 +12,7 @@ export type AutocompleteAnswer = {
   label: string;
 };
 
-type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+export type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
 
 export type Answers = Record<string, Answer>;
 

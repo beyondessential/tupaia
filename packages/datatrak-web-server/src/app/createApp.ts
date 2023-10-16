@@ -35,7 +35,9 @@ const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
+    attachModels: true,
+  })
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)

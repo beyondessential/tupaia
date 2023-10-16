@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { generateId } from '@tupaia/database';
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
@@ -20,7 +21,7 @@ export const buildUpsertEntity = async (
   countryId: Country['id'],
   getEntity: Function,
 ) => {
-  const entityId = answers[questionId] as Entity['id'];
+  const entityId = (answers[questionId] || generateId()) as Entity['id'];
   const entity = { id: entityId } as Entity;
   const fields = config?.entity?.fields || {};
 
@@ -33,7 +34,9 @@ export const buildUpsertEntity = async (
     const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
 
     if (fieldName === 'parentId') {
+      console.log('fieldValue', fieldValue);
       const entityRecord = await getEntity(fieldValue);
+      console.log('entityRecord', entityRecord);
       entity.parent_id = entityRecord.id;
     } else {
       entity[fieldName as keyof Entity] = fieldValue;

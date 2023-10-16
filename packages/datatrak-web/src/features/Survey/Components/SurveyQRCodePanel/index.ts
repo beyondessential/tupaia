@@ -1,1 +1,0 @@
-export { SurveyQRCodePanel } from './SurveyQRCodePanel';

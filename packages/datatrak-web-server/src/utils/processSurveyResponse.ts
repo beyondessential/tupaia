@@ -9,11 +9,14 @@ import {
   DatatrakWebSurveyRequest,
   MeditrakSurveyResponseRequest,
   Entity,
+  QuestionType,
+  SurveyScreenComponent,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
 type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 
 export const isUpsertEntityQuestion = (config?: ConfigT) => {
@@ -63,7 +66,15 @@ export const processSurveyResponse = async (
 
   for (const question of questions) {
     const { questionId, type } = question;
-    const answer = answers[questionId];
+    let answer = answers[questionId] as AnswerT | Entity;
+    const config = question?.config as ConfigT;
+
+    // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
+    if (['PrimaryEntity', 'Entity'].includes(type) && isUpsertEntityQuestion(config)) {
+      const entityObj = await buildUpsertEntity(config, questionId, answers, countryId, getEntity);
+      if (entityObj) surveyResponse.entities_upserted.push(entityObj);
+      answer = entityObj;
+    }
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }
@@ -79,31 +90,17 @@ export const processSurveyResponse = async (
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
     switch (type) {
       // format dates to be ISO strings
-      case 'SubmissionDate':
-      case 'DateOfData':
+      case QuestionType.SubmissionDate:
+      case QuestionType.DateOfData:
         surveyResponse.data_time = moment(answer as string).toISOString();
         break;
       // add the entity id to the response if the question is a primary entity question
-      case 'PrimaryEntity': {
-        surveyResponse.entity_id = answer as string;
+      case QuestionType.PrimaryEntity: {
+        const entityId = answer?.hasOwnProperty('id') ? (answer as Entity).id : (answer as string);
+        surveyResponse.entity_id = entityId;
         break;
       }
-      case 'Entity': {
-        const config = question?.config as ConfigT;
-        if (isUpsertEntityQuestion(config)) {
-          const entityObj = await buildUpsertEntity(
-            config,
-            questionId,
-            answers,
-            countryId,
-            getEntity,
-          );
-          if (entityObj) surveyResponse.entities_upserted.push(entityObj);
-        }
-        answersToSubmit.push(answerObject);
-        break;
-      }
-      case 'Autocomplete': {
+      case QuestionType.Autocomplete: {
         // if the answer is a new option, add it to the options_created array to be added to the DB
         const { isNew, value, label, optionSetId } = answer as AutocompleteAnswerT;
         if (isNew) {
