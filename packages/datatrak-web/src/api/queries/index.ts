@@ -6,7 +6,6 @@
 export { useUser } from './useUser';
 export { useProjects } from './useProjects';
 export { useSurveys } from './useSurveys';
-export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
 export { useSurvey } from './useSurvey';
 export { useEntities } from './useEntities';
 export { useEntity } from './useEntity';
