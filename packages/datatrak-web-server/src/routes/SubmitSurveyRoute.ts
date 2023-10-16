@@ -19,6 +19,9 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
 
     const processedResponse = await processSurveyResponse(surveyResponseData, getEntity);
 
-    return centralApi.createSurveyResponses([processedResponse]);
+    await centralApi.createSurveyResponses([processedResponse]);
+    return {
+      createdEntities: processedResponse.entities_upserted,
+    };
   }
 }

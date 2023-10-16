@@ -3,16 +3,18 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { getBrowserTimeZone } from '@tupaia/utils';
-import moment from 'moment';
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
   MeditrakSurveyResponseRequest,
+  Entity,
+  QuestionType,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
 type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 
 export const isUpsertEntityQuestion = (config?: ConfigT) => {
@@ -39,7 +41,8 @@ export const processSurveyResponse = async (
     startTime,
   } = surveyResponseData;
   const timezone = getBrowserTimeZone();
-  const timestamp = moment().toISOString();
+  const today = new Date();
+  const timestamp = today.toISOString();
   // Fields to be used in the survey response
   const surveyResponse = {
     user_id: userId,
@@ -54,13 +57,26 @@ export const processSurveyResponse = async (
     entities_upserted: [],
     options_created: [],
     answers: [],
-  } as MeditrakSurveyResponseRequest;
+  } as MeditrakSurveyResponseRequest & {
+    entities_upserted: Entity[];
+  };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
   for (const question of questions) {
     const { questionId, type } = question;
-    const answer = answers[questionId];
+    let answer = answers[questionId] as AnswerT | Entity;
+    const config = question?.config as ConfigT;
+
+    // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
+    if (
+      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
+      isUpsertEntityQuestion(config)
+    ) {
+      const entityObj = await buildUpsertEntity(config, questionId, answers, countryId, getEntity);
+      if (entityObj) surveyResponse.entities_upserted.push(entityObj);
+      answer = entityObj?.id;
+    }
     if (answer === undefined || answer === null || answer === '') {
       continue;
     }
@@ -76,31 +92,20 @@ export const processSurveyResponse = async (
     // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
     switch (type) {
       // format dates to be ISO strings
-      case 'SubmissionDate':
-      case 'DateOfData':
-        surveyResponse.data_time = moment(answer as string).toISOString();
+      case QuestionType.SubmissionDate:
+      case QuestionType.DateOfData: {
+        const date = new Date(answer as string);
+        surveyResponse.data_time = date.toISOString();
         break;
+      }
+
       // add the entity id to the response if the question is a primary entity question
-      case 'PrimaryEntity': {
-        surveyResponse.entity_id = answer as string;
+      case QuestionType.PrimaryEntity: {
+        const entityId = answer as string;
+        surveyResponse.entity_id = entityId;
         break;
       }
-      case 'Entity': {
-        const config = question?.config as ConfigT;
-        if (isUpsertEntityQuestion(config)) {
-          const entityObj = await buildUpsertEntity(
-            config,
-            questionId,
-            answers,
-            countryId,
-            getEntity,
-          );
-          surveyResponse.entities_upserted.push(entityObj);
-        }
-        answersToSubmit.push(answerObject);
-        break;
-      }
-      case 'Autocomplete': {
+      case QuestionType.Autocomplete: {
         // if the answer is a new option, add it to the options_created array to be added to the DB
         const { isNew, value, label, optionSetId } = answer as AutocompleteAnswerT;
         if (isNew) {

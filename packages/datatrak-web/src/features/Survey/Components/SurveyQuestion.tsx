@@ -16,7 +16,6 @@ import {
   CheckboxQuestion,
   DateTimeQuestion,
   GeolocateQuestion,
-  CodeGeneratorQuestion,
   EntityQuestion,
   AutocompleteQuestion,
   ReadOnlyQuestion,
@@ -64,7 +63,7 @@ export enum QUESTION_TYPES {
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
-  CodeGenerator = CodeGeneratorQuestion,
+  CodeGenerator = ReadOnlyQuestion,
   Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
 }

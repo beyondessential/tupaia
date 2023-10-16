@@ -50,14 +50,19 @@ export const useSubmitSurvey = () => {
         return;
       }
 
-      await post('submitSurvey', {
+      return await post('submitSurvey', {
         data: { ...surveyResponseData, answers },
       });
     },
     {
-      onSuccess: () => {
+      onSuccess: data => {
         successToast("Congratulations! You've earned a coconut", Coconut);
-        navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
+        // include the survey response data in the location state, so that we can use it to generate QR codes
+        navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
+          state: {
+            surveyResponse: JSON.stringify(data),
+          },
+        });
       },
     },
   );
