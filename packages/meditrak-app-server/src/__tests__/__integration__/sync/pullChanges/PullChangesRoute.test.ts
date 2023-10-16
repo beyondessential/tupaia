@@ -12,13 +12,13 @@ import {
   getTestDatabase,
   getTestModels,
   upsertDummyRecord,
+  buildAndInsertSurvey,
 } from '@tupaia/database';
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { oneSecondSleep, randomIntBetween, createBearerHeader } from '@tupaia/utils';
 import {
   SyncableChangeEnqueuer,
   createPermissionsBasedMeditrakSyncQueue,
-  getSupportedModels,
   getUnsupportedModelFields,
 } from '../../../../sync';
 import { MeditrakAppServerModelRegistry } from '../../../../types';
@@ -29,6 +29,8 @@ import { upsertDummyQuestion } from '../upsertDummyQuestion';
 import {
   findRecordsWithPermissions,
   insertPermissionsBasedSyncTestData,
+  LEGACY_SSC_CONFIGS,
+  LEGACY_SSC_SURVEY,
   PERM_SYNC_COUNTRY_1,
   PERM_SYNC_COUNTRY_2,
   PERM_SYNC_PG_ADMIN,
@@ -42,43 +44,6 @@ type ChangeRecord = {
   record: Record<string, unknown>;
   action: string;
   timestamp: number;
-};
-
-const recordToChange = async (recordType: string, record: any, changeType: 'update' | 'delete') => {
-  if (changeType === 'delete') {
-    return {
-      action: 'delete',
-      recordType,
-      record: {
-        id: record.id,
-      },
-    };
-  }
-
-  const modelName = getSupportedModels().find(
-    name => record.otherModels[name].databaseType === recordType,
-  );
-
-  if (!modelName) {
-    throw new Error(`Cannot find model for record type: ${recordType}`);
-  }
-
-  const fields = await (record.model as DatabaseModel).fetchFieldNames();
-  const unsupportedFields = getUnsupportedModelFields(modelName);
-
-  // Supported fields with non-null values
-  const cleanedRecordForSync = Object.fromEntries(
-    Object.entries(record).filter(
-      ([field, value]) =>
-        fields.includes(field) && !unsupportedFields.includes(field) && value !== null,
-    ),
-  );
-
-  return {
-    recordType,
-    action: 'update',
-    record: cleanedRecordForSync,
-  };
 };
 
 const sortByRecordId = (r1: any, r2: any) => (r1.record.id > r2.record.id ? -1 : 1);
@@ -110,6 +75,45 @@ describe('changes (GET)', () => {
     getTestModels() as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
+
+  const recordToChange = async (
+    recordType: string,
+    record: any,
+    changeType: 'update' | 'delete',
+  ) => {
+    if (changeType === 'delete') {
+      return {
+        action: 'delete',
+        recordType,
+        record: {
+          id: record.id,
+        },
+      };
+    }
+
+    const modelName = models.getModelNameForDatabaseType(recordType);
+
+    if (!modelName) {
+      throw new Error(`Cannot find model for record type: ${recordType}`);
+    }
+
+    const fields = await (record.model as DatabaseModel).fetchFieldNames();
+    const unsupportedFields = getUnsupportedModelFields(modelName);
+
+    // Supported fields with non-null values
+    const cleanedRecordForSync = Object.fromEntries(
+      Object.entries(record).filter(
+        ([field, value]) =>
+          fields.includes(field) && !unsupportedFields.includes(field) && value !== null,
+      ),
+    );
+
+    return {
+      recordType,
+      action: 'update',
+      record: cleanedRecordForSync,
+    };
+  };
 
   beforeAll(async () => {
     await createPermissionsBasedMeditrakSyncQueue(models.database);
@@ -542,6 +546,48 @@ describe('changes (GET)', () => {
 
         expectMatchingChangeRecords(response.body, expectedChanges);
       });
+    });
+  });
+
+  describe('legacy support', () => {
+    it('should translate survey_screen_component records to pre entity upsert schema', async () => {
+      await oneSecondSleep();
+      const testStartTime = Date.now();
+
+      const {
+        survey,
+        questions,
+        surveyScreen,
+        surveyScreenComponents,
+      } = await buildAndInsertSurvey(models, LEGACY_SSC_SURVEY as any);
+      await models.database.waitForAllChangeHandlers();
+
+      const response = await app.get('changes', {
+        headers: {
+          Authorization: authHeader,
+        },
+        query: {
+          appVersion: '1.11.123',
+          since: testStartTime,
+        },
+      });
+
+      const legacySSCs = surveyScreenComponents.map(ssc => {
+        const question = questions.find(({ id }) => id === ssc.question_id);
+        const legacyConfig = LEGACY_SSC_CONFIGS[question.code as keyof typeof LEGACY_SSC_CONFIGS];
+        return { ...ssc, config: legacyConfig };
+      });
+
+      const expectedChanges = [
+        await recordToChange('survey', survey, 'update'),
+        await recordToChange('survey_screen', surveyScreen, 'update'),
+        ...(await Promise.all(questions.map(q => recordToChange('question', q, 'update')))),
+        ...(await Promise.all(
+          legacySSCs.map(ssc => recordToChange('survey_screen_component', ssc, 'update')),
+        )),
+      ];
+
+      expectMatchingChangeRecords(response.body, expectedChanges);
     });
   });
 });

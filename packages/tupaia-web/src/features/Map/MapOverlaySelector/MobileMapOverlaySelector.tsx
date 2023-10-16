@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
-import { ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../../constants';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
@@ -98,41 +97,36 @@ export const MobileMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
   return (
-    <ErrorBoundary>
-      <Wrapper>
-        {!overlayLibraryOpen && (
-          <ButtonWrapper>
-            <MapOverlayDatePicker />
-            <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
-              <span>
-                <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
-                <MapOverlaySelectorTitle />
-              </span>
-              <ArrowWrapper>
-                <ArrowForwardIos />
-              </ArrowWrapper>
-            </ExpandButton>
-          </ButtonWrapper>
-        )}
-        <OverlayMenu
-          $expanded={overlayLibraryOpen}
-          aria-expanded={overlayLibraryOpen}
-          id="overlay-selector"
-        >
-          <OverlayLibraryHeaderButton
-            onClick={toggleOverlayLibrary}
-            aria-controls="overlay-selector"
-          >
+    <Wrapper>
+      {!overlayLibraryOpen && (
+        <ButtonWrapper>
+          <MapOverlayDatePicker />
+          <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
+            <span>
+              <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
+              <MapOverlaySelectorTitle />
+            </span>
             <ArrowWrapper>
-              <ArrowBack />
+              <ArrowForwardIos />
             </ArrowWrapper>
-            <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
-          </OverlayLibraryHeaderButton>
-          <OverlayListWrapper>
-            <MapOverlayList />
-          </OverlayListWrapper>
-        </OverlayMenu>
-      </Wrapper>
-    </ErrorBoundary>
+          </ExpandButton>
+        </ButtonWrapper>
+      )}
+      <OverlayMenu
+        $expanded={overlayLibraryOpen}
+        aria-expanded={overlayLibraryOpen}
+        id="overlay-selector"
+      >
+        <OverlayLibraryHeaderButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
+          <ArrowWrapper>
+            <ArrowBack />
+          </ArrowWrapper>
+          <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
+        </OverlayLibraryHeaderButton>
+        <OverlayListWrapper>
+          <MapOverlayList />
+        </OverlayListWrapper>
+      </OverlayMenu>
+    </Wrapper>
   );
 };

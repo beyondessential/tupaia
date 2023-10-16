@@ -7,43 +7,11 @@ import config from './config/schemas/config.json';
 
 const failOnChanges = process.argv[2] === '--failOnChanges';
 
-const customAsyncValidationKeys = ['checkIdExists'];
-
 const settings: TJS.PartialArgs = {
   ref: false,
   required: true,
   ignoreErrors: true,
-  validationKeywords: customAsyncValidationKeys,
   noExtraProps: true,
-};
-
-interface SchemaWithProperties {
-  $async?: boolean;
-  properties: { $async?: boolean; [key: string]: any };
-}
-
-const addAsyncKey = (schema: TJS.Definition) => {
-  const { properties } = schema;
-
-  if (properties) {
-    const schemaWithAsyncKey: SchemaWithProperties = { properties: {}, ...schema };
-
-    for (const [propertyKey, value] of Object.entries(properties)) {
-      if (typeof value === 'object') {
-        for (const asyncKey of customAsyncValidationKeys) {
-          if (JSON.stringify(value).includes(asyncKey)) {
-            // https://ajv.js.org/guide/async-validation.html
-            schemaWithAsyncKey.properties[propertyKey] = { $async: true, ...value };
-            schemaWithAsyncKey.$async = true;
-            break;
-          }
-        }
-      }
-    }
-    return schemaWithAsyncKey;
-  }
-
-  return schema;
 };
 
 const HEADER = `/*
@@ -69,7 +37,7 @@ if (schemas?.definitions) {
   Object.entries(schemas.definitions || {}).forEach(([typeName, schema]) => {
     if (typeof schema !== 'boolean') {
       const finalisedSchema = `export const ${typeName}Schema = ${JSON.stringify(
-        addAsyncKey(schema),
+        schema,
         null,
         '\t',
       )} \n\n`;
@@ -80,8 +48,8 @@ if (schemas?.definitions) {
   if (failOnChanges) {
     const currentFileContents = fs.readFileSync(filename, { encoding: 'utf8' });
     if (currentFileContents !== fileContents) {
-      console.log("❌ There are changes in the types which are not reflected in the json schema.")
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix")
+      console.log('❌ There are changes in the types which are not reflected in the json schema.');
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }

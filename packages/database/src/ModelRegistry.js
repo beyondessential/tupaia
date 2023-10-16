@@ -63,6 +63,21 @@ export class ModelRegistry {
     return Object.values(this).find(model => model.databaseType === databaseType);
   }
 
+  /**
+   * @param {string} databaseType
+   * @returns {string | undefined} modelName
+   */
+  getModelNameForDatabaseType(databaseType) {
+    const modelEntry = Object.entries(this).find(
+      ([, model]) => model.databaseType === databaseType,
+    );
+    if (!modelEntry) {
+      return undefined;
+    }
+
+    return modelEntry[0];
+  }
+
   addChangeHandlerForCollection(...args) {
     return this.database.addChangeHandlerForCollection(...args);
   }
