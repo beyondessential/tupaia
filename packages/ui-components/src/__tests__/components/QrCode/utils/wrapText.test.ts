@@ -9,11 +9,11 @@ describe('wrapText', () => {
   const TEST_CASES: [string, string[]][] = [
     ['Short', ['Short']],
     ['The quick brown fox jumps over the lazy dog', ['The quick', 'brown fox', 'jumps over']],
-    ['Short Looooooooooonnnnggg', ['Short', 'Looooooooooo', 'nnnnggg']],
-    ['Looooooooooonnnnggg Short', ['Looooooooooo', 'nnnnggg', 'Short']],
+    ['Short Looooooooooonnnnggg', ['Short', 'Looooooooooon', 'nnnggg']],
+    ['Looooooooooonnnnggg Short', ['Looooooooooon', 'nnnggg Short']],
     [
       'VeryLooooooooooonnnngggGGGaaaGGGGHHHhhhhhhhhhhh',
-      ['VeryLooooooo', 'oooonnnngggG', 'GGaaaGGGGHHH'],
+      ['VeryLoooooooo', 'ooonnnngggGGG', 'aaaGGGGHHHhhh'],
     ],
   ];
 
