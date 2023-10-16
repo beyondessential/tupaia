@@ -5,10 +5,14 @@
 
 import semverCompare from 'semver-compare';
 import { MeditrakAppServerModelRegistry } from '../types';
+import { translateSurveyScreenComponentForSync } from './syncRecordTranslators';
 
 const appSupportedModels = {
   country: { minVersion: '0.0.1' },
-  entity: { minVersion: '1.7.102', unsupportedFields: ['region', 'bounds'] },
+  entity: {
+    minVersion: '1.7.102',
+    unsupportedFields: ['region', 'bounds'],
+  },
   facility: { minVersion: '0.0.1' },
   geographicalArea: { minVersion: '0.0.23' },
   option: { minVersion: '1.7.92' },
@@ -18,7 +22,10 @@ const appSupportedModels = {
   survey: { minVersion: '0.0.1' },
   surveyGroup: { minVersion: '1.6.69' },
   surveyScreen: { minVersion: '0.0.1' },
-  surveyScreenComponent: { minVersion: '0.0.1' },
+  surveyScreenComponent: {
+    minVersion: '0.0.1',
+    translateRecordForSync: translateSurveyScreenComponentForSync,
+  },
 };
 
 /**
@@ -59,4 +66,17 @@ export const getUnsupportedModelFields = (modelName: string) => {
   }
 
   return [];
+};
+
+export const getSyncRecordTranslator = (modelName: string) => {
+  if (!isSupportedModel(modelName)) {
+    throw new Error(`Model ${modelName} is not supported by meditrak`);
+  }
+
+  const modelConfig = appSupportedModels[modelName];
+  if ('translateRecordForSync' in modelConfig) {
+    return modelConfig.translateRecordForSync;
+  }
+
+  return undefined;
 };
