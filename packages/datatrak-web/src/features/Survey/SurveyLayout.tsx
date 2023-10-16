@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH, SurveySideMenu, CancelSurveyModal } from './Components';
+import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
@@ -127,7 +127,6 @@ const LoadingContainer = styled.div`
  * This layout is used for the survey screens as well as the review screen.
  */
 export const SurveyLayout = () => {
-  const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
@@ -139,6 +138,7 @@ export const SurveyLayout = () => {
     numberOfScreens,
     isReviewScreen,
     visibleScreens,
+    openCancelConfirmation,
   } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
@@ -208,10 +208,6 @@ export const SurveyLayout = () => {
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
-  const openCancelModal = () => {
-    setCancelModalOpen(true);
-  };
-
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
     if (isLast) {
@@ -242,7 +238,7 @@ export const SurveyLayout = () => {
                   </BackButton>
                   <ButtonGroup>
                     <Button
-                      onClick={openCancelModal}
+                      onClick={openCancelConfirmation}
                       variant="outlined"
                       disabled={isSubmittingSurvey}
                     >
@@ -256,7 +252,6 @@ export const SurveyLayout = () => {
               </Form>
             </Paper>
           </Container>
-          <CancelSurveyModal open={cancelModalOpen} onClose={() => setCancelModalOpen(false)} />
         </Wrapper>
       </FormProvider>
     </ScrollableLayout>

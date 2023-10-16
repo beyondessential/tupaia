@@ -6,5 +6,5 @@
 export * from './Screens';
 export { SurveyContext, useSurveyForm, getArithmeticDisplayAnswer } from './SurveyContext';
 export { SurveyLayout } from './SurveyLayout';
-export { SurveyToolbar } from './Components';
+export { SurveyToolbar, CancelSurveyModal } from './Components';
 export { getAllSurveyComponents } from './utils';

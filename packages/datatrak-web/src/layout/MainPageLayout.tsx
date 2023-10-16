@@ -8,7 +8,7 @@ import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../constants';
 import { Header } from '.';
-import { MobileAppPrompt } from '../features';
+import { MobileAppPrompt, SurveyContext } from '../features';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -22,10 +22,12 @@ const PageWrapper = styled.div`
 
 export const MainPageLayout = () => {
   return (
-    <PageWrapper>
-      <Header />
-      <Outlet />
-      <MobileAppPrompt />
-    </PageWrapper>
+    <SurveyContext>
+      <PageWrapper>
+        <Header />
+        <Outlet />
+        <MobileAppPrompt />
+      </PageWrapper>
+    </SurveyContext>
   );
 };

@@ -13,6 +13,7 @@ export {
   SurveyToolbar,
   useSurveyForm,
   getAllSurveyComponents,
+  CancelSurveyModal,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
 export { MobileAppPrompt } from './MobileAppPrompt';

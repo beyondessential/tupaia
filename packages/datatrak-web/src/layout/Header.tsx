@@ -4,11 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps, Link as RouterLink } from 'react-router-dom';
+import { LinkProps, Link as RouterLink, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@material-ui/core';
-import { PageContainer } from '../components';
+import { Button, PageContainer } from '../components';
 import { HEADER_HEIGHT } from '../constants';
 import { UserMenu } from './UserMenu';
+import { useSurveyForm } from '../features';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
@@ -25,22 +26,45 @@ const Container = styled(PageContainer).attrs({
   align-items: center;
   justify-content: space-between;
 `;
-const LogoLink = styled(MuiLink).attrs({
-  color: 'inherit',
-  component: RouterLink,
-})<LinkProps>`
+const LogoButton = styled(Button)`
   height: ${HEADER_HEIGHT};
-  padding: 1rem 0.5rem;
-  display: flex;
+  padding: 0;
+  background: transparent;
+  &:hover {
+    background: transparent;
+  }
+  .MuiButton-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0.8rem 0.5rem;
+    img {
+      max-height: 100%;
+    }
+  }
 `;
 
 export const Header = () => {
+  const { surveyCode } = useParams();
+  const { openCancelConfirmation, isSuccessScreen } = useSurveyForm();
+  const isActiveSurvey = !!surveyCode && !isSuccessScreen;
+  const onClickLogo = () => {
+    if (surveyCode && !isSuccessScreen) {
+      openCancelConfirmation();
+    }
+  };
   return (
     <Wrapper>
       <Container>
-        <LogoLink to="/">
+        <LogoButton
+          component={isActiveSurvey ? undefined : RouterLink}
+          onClick={onClickLogo}
+          to={isActiveSurvey ? undefined : '/'}
+          title="Home"
+        >
           <img src="/datatrak-logo-black.svg" alt="tupaia-logo" />
-        </LogoLink>
+        </LogoButton>
         <UserMenu />
       </Container>
     </Wrapper>
