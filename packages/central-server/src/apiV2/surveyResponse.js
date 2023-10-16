@@ -29,7 +29,6 @@ const createSurveyResponseValidator = models =>
     survey_id: [hasContent, constructRecordExistsWithId(models.survey)],
     start_time: [constructIsEmptyOr(takesDateForm)],
     end_time: [constructIsEmptyOr(takesDateForm)],
-    timestamp: [constructIsEmptyOr(takesDateForm)],
   });
 
 async function validateResponse(models, body) {
