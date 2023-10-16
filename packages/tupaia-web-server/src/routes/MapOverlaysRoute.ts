@@ -32,47 +32,40 @@ const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
 const DEFAULT_PAGE_SIZE = 'ALL';
 
-/**
- * We will only display reference info on topper level map overlay group, if all `mapOverlayItem` have same reference.
- *
- * In this function, variable `mapOverlayItem` is an abstract item that can be either map overlay or map overlay group
- *
- * @param children an array of variable `mapOverlayItem`
- */
-
-const getReference = (mapOverlayItem: any) => {
-  if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
-  return null;
-};
-
+// This function checks if all the map overlay items have the same reference and if they do, it
+// removes the reference from the children and adds it to the info object of the parent
 const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
-  const firstReference = Array.isArray(children) && children[0] && getReference(children[0]);
+  const getReference = (mapOverlayItem: OverlayChild) => {
+    if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
+    return undefined;
+  };
 
-  if (!firstReference) {
+  const firstReference = children[0] && getReference(children[0]);
+
+  const referencesAreTheSame =
+    firstReference &&
+    children.every(
+      mapOverlayItem =>
+        getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
+    );
+
+  if (!referencesAreTheSame) {
     return {
       children,
     };
   }
 
-  const referencesAreTheSame = children.every(
-    mapOverlayItem =>
-      getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
-  );
+  // Delete all the same references
+  const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+    const { info, ...restValues } = mapOverlayItem;
+    delete info!['reference'];
+    return { ...restValues, info };
+  });
 
-  // All map overlays have same reference
-  if (referencesAreTheSame) {
-    // Delete all the same references
-    const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
-      const { info, ...restValues } = mapOverlayItem;
-      // @ts-ignore
-      delete info['reference'];
-      return { ...restValues, info };
-    });
-    return {
-      children: noReferenceMapOverlayItems,
-      info: { reference: firstReference },
-    };
-  }
+  return {
+    children: noReferenceMapOverlayItems,
+    info: { reference: firstReference },
+  };
 };
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
@@ -157,7 +150,6 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       );
 
       // Translate Map Overlay Group
-      // @ts-ignore
       const { children, info } = integrateMapOverlayItemsReference(nestedChildren);
 
       return {
