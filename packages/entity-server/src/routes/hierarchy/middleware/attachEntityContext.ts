@@ -7,7 +7,7 @@ import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate } from '@tupaia/tsutils';
 import { EntityType, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
-import { MultiEntityRequestBodySchema } from '../types';
+import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
 
@@ -129,8 +129,11 @@ export const attachMultiEntityContext = async (
   next: NextFunction,
 ) => {
   try {
-    await ajvValidate(MultiEntityRequestBodySchema, req.body);
-    const { entities: entityCodes } = req.body;
+    const validatedBody = ajvValidate<MultiEntityRequestBody>(
+      MultiEntityRequestBodySchema,
+      req.body,
+    );
+    const { entities: entityCodes } = validatedBody;
 
     const context = await validateEntitiesAndBuildContext(req, entityCodes);
 

@@ -50,10 +50,7 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
       switch (action) {
         case ACTIONS.SubmitSurveyResponse: {
           const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
-          const validatedSurveyResponse = await validateSurveyResponseObject(
-            this.req.models,
-            translatedPayload,
-          );
+          const validatedSurveyResponse = validateSurveyResponseObject(translatedPayload);
           const surveyResponseWithPopulatedData = await populateData(
             this.req.models,
             validatedSurveyResponse,
