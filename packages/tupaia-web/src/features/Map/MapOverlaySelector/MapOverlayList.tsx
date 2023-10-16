@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import { ErrorBoundary } from '@tupaia/ui-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
@@ -98,28 +97,24 @@ const MapOverlayAccordion = ({
   };
 
   return (
-    <ErrorBoundary>
-      <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-        <AccordionHeader expandIcon={<KeyboardArrowRight />}>
-          {mapOverlayGroup.name}
-        </AccordionHeader>
-        <AccordionContent>
-          {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
-          {mapOverlayGroup.children.map(mapOverlay =>
-            'children' in mapOverlay ? (
-              <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
-            ) : (
-              <FormLabel
-                value={mapOverlay.code}
-                control={<Radio />}
-                label={mapOverlay.name}
-                key={mapOverlay.code}
-              />
-            ),
-          )}
-        </AccordionContent>
-      </AccordionWrapper>
-    </ErrorBoundary>
+    <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
+      <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
+      <AccordionContent>
+        {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
+        {mapOverlayGroup.children.map(mapOverlay =>
+          'children' in mapOverlay ? (
+            <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
+          ) : (
+            <FormLabel
+              value={mapOverlay.code}
+              control={<Radio />}
+              label={mapOverlay.name}
+              key={mapOverlay.code}
+            />
+          ),
+        )}
+      </AccordionContent>
+    </AccordionWrapper>
   );
 };
 
@@ -148,19 +143,17 @@ export const MapOverlayList = () => {
   if (isLoadingMapOverlays) return null;
 
   return (
-    <ErrorBoundary>
-      <RadioGroupContainer
-        aria-label="Map overlays"
-        name="map-overlays"
-        value={selectedOverlayCode}
-        onChange={onChangeMapOverlay}
-      >
-        {mapOverlayGroups
-          .filter(item => item.name)
-          .map(group => (
-            <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
-          ))}
-      </RadioGroupContainer>
-    </ErrorBoundary>
+    <RadioGroupContainer
+      aria-label="Map overlays"
+      name="map-overlays"
+      value={selectedOverlayCode}
+      onChange={onChangeMapOverlay}
+    >
+      {mapOverlayGroups
+        .filter(item => item.name)
+        .map(group => (
+          <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
+        ))}
+    </RadioGroupContainer>
   );
 };
