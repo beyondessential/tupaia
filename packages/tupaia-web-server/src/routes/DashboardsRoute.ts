@@ -4,12 +4,10 @@
  */
 
 import { Request } from 'express';
-import { Route } from '@tupaia/server-boilerplate';
+import { Route, DashboardRelationType } from '@tupaia/server-boilerplate';
 import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
 import { camelcaseKeys } from '@tupaia/tsutils';
-
-import { DashboardRelationType } from '../models/DashboardRelation';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -77,7 +75,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const dashboards: Dashboard[] = await this.req.models.dashboard.find(
+    const dashboards = await this.req.models.dashboard.find(
       {
         root_entity_code: entities.map((e: Entity) => e.code),
       },
@@ -89,22 +87,20 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
-      {
-        // Attached to the given dashboards
-        dashboard_id: dashboards.map((d: Dashboard) => d.id),
-        // For the root entity type
-        entity_types: {
-          comparator: '@>',
-          comparisonValue: [rootEntity.type],
-        },
-        // Within the selected project
-        project_codes: {
-          comparator: '@>',
-          comparisonValue: [projectCode],
-        },
+    const dashboardRelations = await this.req.models.dashboardRelation.find({
+      // Attached to the given dashboards
+      dashboard_id: dashboards.map((d: Dashboard) => d.id),
+      // For the root entity type
+      entity_types: {
+        comparator: '@>',
+        comparisonValue: [rootEntity.type],
       },
-    );
+      // Within the selected project
+      project_codes: {
+        comparator: '@>',
+        comparisonValue: [projectCode],
+      },
+    });
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {

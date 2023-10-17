@@ -12,7 +12,7 @@ import {
   DashboardRelationModel,
   EntityModel,
   UserModel,
-} from './models';
+} from '@tupaia/server-boilerplate';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
