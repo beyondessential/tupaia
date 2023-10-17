@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
-import { NumericKeys, ObjectLikeKeys, Flatten } from '@tupaia/types';
+import { QueryConjunctions, EntityFilterFields, EntityFilter } from '@tupaia/server-boilerplate';
+import { NumericKeys, ObjectLikeKeys, Flatten, Entity } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
 import { Writable } from '../../../types';
-import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
@@ -15,14 +14,14 @@ const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
 type NestedFilterQueryFields = Flatten<
-  Pick<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>>,
+  Pick<Required<Entity>, ObjectLikeKeys<Required<Entity>>>,
   typeof NESTED_FIELD_DELIMITER
 >;
 
-type NumericFilterQueryFields = Pick<EntityQueryFields, NumericKeys<EntityQueryFields>>;
+type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<Required<EntityFilterFields>>>;
 
 type EntityFilterQuery = Partial<
-  Omit<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>> & NestedFilterQueryFields
+  Omit<EntityFilterFields, ObjectLikeKeys<Required<EntityFilterFields>>> & NestedFilterQueryFields
 >;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {

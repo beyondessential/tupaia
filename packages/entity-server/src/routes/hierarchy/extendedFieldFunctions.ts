@@ -4,7 +4,8 @@
  */
 
 import { calculateOuterBounds } from '@tupaia/utils';
-import { EntityType } from '../../models';
+import { EntityType } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
 
 const getParentCode = async (
   entity: EntityType,
@@ -61,7 +62,7 @@ const getBounds = async (
     const { hierarchyId, allowedCountries } = context;
     const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
     if (children.length > 0) {
-      return calculateOuterBounds(children.map(child => child.bounds));
+      return calculateOuterBounds(children.map(child => child.bounds).filter(isNotNullish));
     }
   }
 

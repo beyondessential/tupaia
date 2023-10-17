@@ -4,8 +4,8 @@
  */
 
 import { Request } from 'express';
-import { Resolved } from '@tupaia/types';
-import { EntityFields, EntityType, EntityFilter } from '../../models';
+import { Entity, Resolved } from '@tupaia/types';
+import { EntityType, EntityFilter } from '@tupaia/server-boilerplate';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 import { Flattable, Flattened } from '../../types';
 
@@ -51,11 +51,11 @@ export type ExtendedFieldFunctions = Readonly<
   }
 >;
 
-export type FlattableEntityFieldName = keyof Flattable<EntityFields>;
+export type FlattableEntityFieldName = keyof Flattable<Required<Entity>>;
 
 type ExcludeCommonFields<T, U> = Omit<T, Extract<keyof T, keyof U>>;
 
-export type ExtendedEntityFields = ExcludeCommonFields<EntityFields, ExtendedFieldFunctions> &
+export type ExtendedEntityFields = ExcludeCommonFields<Entity, ExtendedFieldFunctions> &
   ExtendedFieldFunctions;
 export type ExtendedEntityFieldName = keyof ExtendedEntityFields;
 
@@ -63,7 +63,7 @@ export type EntityResponseObject = {
   [field in ExtendedEntityFieldName]?: ExtendedEntityFields[field];
 };
 
-export type FlattenedEntity = Flattened<EntityFields>;
+export type FlattenedEntity = Flattened<Required<Entity>>;
 
 export type EntityResponse = EntityResponseObject | FlattenedEntity;
 

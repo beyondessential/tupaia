@@ -159,7 +159,11 @@ describe('relationships', () => {
 
     it('can fetch relationships of no entities', async () => {
       const { body: entities } = await app.post('hierarchy/redblue/relationships', {
-        query: { fields: 'code,name,type', descendant_filter: 'type==facility' },
+        query: {
+          fields: 'code,name,type',
+          ancestor_filter: 'type==country',
+          descendant_filter: 'type==facility',
+        },
         body: { entities: [] },
       });
 

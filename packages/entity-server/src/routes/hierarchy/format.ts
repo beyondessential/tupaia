@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { EntityType } from '../../models';
+import { EntityType } from '@tupaia/server-boilerplate';
 import { EntityServerModelRegistry } from '../../types';
 import { ResponseObjectBuilder } from '../utils';
 import {

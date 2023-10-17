@@ -9,7 +9,7 @@ import {
   EntityModel,
   EntityHierarchyModel,
   ProjectModel,
-} from './models';
+} from '@tupaia/server-boilerplate';
 
 export interface EntityServerModelRegistry extends ModelRegistry {
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;

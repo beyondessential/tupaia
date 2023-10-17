@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { EntityFields } from '../../../models';
+import { Entity } from '@tupaia/types';
 import { ExtendedEntityFieldName, FlattableEntityFieldName } from '../types';
 import { extendedFieldFunctions } from '../extendedFieldFunctions';
 import { extractFieldFromQuery, extractFieldsFromQuery } from '../../utils/fields';
@@ -13,7 +13,7 @@ const flattableFields: FlattableEntityFieldName[] = ['id', 'code', 'name'];
 export const extractEntityFieldFromQuery = (queryField?: string) =>
   extractFieldFromQuery(queryField, flattableFields);
 
-const validFields: (keyof EntityFields)[] = [
+const validFields: (keyof Entity)[] = [
   'id',
   'code',
   'country_code',
