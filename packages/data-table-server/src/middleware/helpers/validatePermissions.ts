@@ -4,7 +4,7 @@
  */
 
 import { Request } from 'express';
-import { DataTableType } from '../../models';
+import { DataTableType } from '@tupaia/server-boilerplate';
 
 export const validatePermissions = (dataTable: DataTableType, req: Request<any, any, any, any>) => {
   const { code: dataTableCode, permission_groups: permissionGroups } = dataTable;

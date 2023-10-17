@@ -4,8 +4,8 @@
  */
 
 import { Request } from 'express';
+import { DataTableType } from '@tupaia/server-boilerplate';
 import { DataTableServiceBuilder, getDataTableServiceType } from './DataTableServiceBuilder';
-import { DataTableType } from '../models';
 
 export const getDataTableService = (dataTable: DataTableType, req: Request<any, any, any, any>) => {
   const { accessPolicy, models, ctx } = req;

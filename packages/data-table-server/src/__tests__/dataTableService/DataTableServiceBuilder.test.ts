@@ -6,9 +6,9 @@
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataTableType as DataTableTypeClass } from '@tupaia/database';
+import { DataTableType } from '@tupaia/server-boilerplate';
 import { DataTableServiceBuilder, getDataTableServiceType } from '../../dataTableService';
 import { AnalyticsDataTableService } from '../../dataTableService/services/AnalyticsDataTableService';
-import { DataTableType } from '../../models';
 
 describe('DataTableServiceBuilder', () => {
   describe('getDataTableServiceType', () => {
