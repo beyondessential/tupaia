@@ -89,7 +89,7 @@ export const processSurveyResponse = async (
     };
 
     // Handle special question types
-    // TODO: add in photo and file upload handling, as well as adding new entities when these question types are implemented
+    // TODO: file upload handling
     switch (type) {
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:
