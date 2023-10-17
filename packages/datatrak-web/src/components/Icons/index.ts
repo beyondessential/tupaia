@@ -6,4 +6,5 @@ export { Coconut } from './Coconut';
 export { Pig } from './Pig';
 export { SurveyIcon } from './SurveyIcon';
 export { SurveyFolderIcon } from './SurveyFolderIcon';
+export { SurveyTickIcon } from './SurveyTickIcon';
 export { RadioIcon } from './RadioIcon';

@@ -6,7 +6,7 @@ import React from 'react';
 import { ButtonBase } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { SurveyFolderIcon } from './Icons';
+import { SurveyTickIcon } from './Icons';
 
 const Container = styled(ButtonBase)`
   display: flex;
@@ -15,9 +15,8 @@ const Container = styled(ButtonBase)`
   background: white;
   margin-bottom: 1rem;
   padding: 1rem;
-  border-radius: 10px;
-
-  font-size: 12px;
+  border-radius: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: ${({ theme }) => theme.palette.text.secondary};
 
@@ -28,10 +27,10 @@ const Container = styled(ButtonBase)`
   &:hover {
     background: #328de515;
   }
-`;
+` as typeof ButtonBase;
 
 const Heading = styled.div`
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: ${({ theme }) => theme.palette.text.primary};
 `;
@@ -50,7 +49,7 @@ interface TileProps {
 export const Tile = ({ title, text, children, to }: TileProps) => {
   return (
     <Container component={RouterLink} to={to}>
-      <SurveyFolderIcon />
+      <SurveyTickIcon />
       <div>
         <Heading>{title}</Heading>
         <Text>{text}</Text>
