@@ -4,6 +4,6 @@
  */
 
 import sha256 from 'sha256';
-import { SECRET_SALT } from 'react-native-dotenv';
+import Config from 'react-native-config';
 
-export const saltAndHash = password => sha256(`${password}${SECRET_SALT}`);
+export const saltAndHash = password => sha256(`${password}${Config.SECRET_SALT}`);
