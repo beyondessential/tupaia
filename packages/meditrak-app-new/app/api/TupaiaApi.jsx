@@ -5,12 +5,12 @@
 
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CLIENT_BASIC_AUTH_HEADER } from 'react-native-dotenv';
+import Config from 'react-native-config';
 
-import { logoutWithError, receiveUpdatedAccessPolicy } from '../authentication/actions';
-import { isBeta, betaBranch, centralApiUrl, getDeviceAppVersion } from '../version';
+import {logoutWithError, receiveUpdatedAccessPolicy} from '../authentication/actions';
+import {isBeta, betaBranch, centralApiUrl, getDeviceAppVersion} from '../version';
 
-import { analytics } from '../utilities';
+import {analytics} from '../utilities';
 
 const AUTH_API_ENDPOINT = 'auth';
 const CREATE_USER_ENDPOINT = 'user';
@@ -42,13 +42,13 @@ export class TupaiaApi {
       AUTH_API_ENDPOINT,
       null,
       JSON.stringify(loginCredentials),
-      CLIENT_BASIC_AUTH_HEADER,
+      Config.CLIENT_BASIC_AUTH_HEADER,
       false,
     );
     if (response.error) return response;
-    const { accessToken, refreshToken, user } = response;
+    const {accessToken, refreshToken, user} = response;
     if (!accessToken || !refreshToken || !user) {
-      return { error: 'Invalid response from auth server' };
+      return {error: 'Invalid response from auth server'};
     }
     this.setAuthTokens(accessToken, refreshToken);
     return response;
@@ -111,7 +111,7 @@ export class TupaiaApi {
         JSON.stringify({
           refreshToken: this.refreshToken,
         }),
-        CLIENT_BASIC_AUTH_HEADER,
+        Config.CLIENT_BASIC_AUTH_HEADER,
         false,
       );
     } catch (error) {
@@ -130,7 +130,7 @@ export class TupaiaApi {
       CREATE_USER_ENDPOINT,
       null,
       JSON.stringify(userFields),
-      CLIENT_BASIC_AUTH_HEADER,
+      Config.CLIENT_BASIC_AUTH_HEADER,
       false,
     );
 
@@ -141,7 +141,7 @@ export class TupaiaApi {
     const response = await this.post(
       CHANGE_USER_PASSWORD_ENDPOINT,
       null,
-      JSON.stringify({ oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm }),
+      JSON.stringify({oldPassword, password: newPassword, passwordConfirm: newPasswordConfirm}),
     );
 
     return response;
@@ -182,12 +182,12 @@ export class TupaiaApi {
     return this.request('POST', ...params);
   }
 
-  handleConnectivityChange = ({ isInternetReachable }) => {
+  handleConnectivityChange = ({isInternetReachable}) => {
     this.connectionStatus = isInternetReachable;
   };
 
   getQueryUrl = (endpoint, queryParamsIn) => {
-    const queryParams = { appVersion: getDeviceAppVersion(), ...queryParamsIn };
+    const queryParams = {appVersion: getDeviceAppVersion(), ...queryParamsIn};
     const queryParamsString = Object.entries(queryParams)
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
@@ -280,10 +280,10 @@ const createTimeoutPromise = () => {
       resolve();
     };
   });
-  return { promise, cleanup };
+  return {promise, cleanup};
 };
 export const fetchWithTimeout = async (url, config) => {
-  const { cleanup, promise: timeoutPromise } = createTimeoutPromise();
+  const {cleanup, promise: timeoutPromise} = createTimeoutPromise();
   try {
     const response = await Promise.race([fetch(url, config), timeoutPromise]);
     return response;
