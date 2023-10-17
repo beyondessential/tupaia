@@ -3,11 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { Object as RealmObject } from 'realm';
+import {Object as RealmObject} from 'realm';
 import RNFS from 'react-native-fs';
 
-import { arrayWithIdsToObject } from '../../utilities/arrayWithIdsToObject';
-import { doesIdExist, doesValueExist, updateListOfStrings } from './utilities';
+import {arrayWithIdsToObject} from '../../utilities/arrayWithIdsToObject';
+import {doesIdExist, doesValueExist, updateListOfStrings} from './utilities';
 
 export class Survey extends RealmObject {
   addScreenIfUnique(screen) {
@@ -42,7 +42,7 @@ export class Survey extends RealmObject {
   }
 
   getReduxStoreData() {
-    const { name, imageName, canRepeat, group } = this;
+    const {name, imageName, canRepeat, group} = this;
     return {
       name,
       imageName,
@@ -57,14 +57,14 @@ Survey.schema = {
   primaryKey: 'id',
   properties: {
     id: 'string',
-    name: { type: 'string', default: 'Survey not properly synchronised' },
-    description: { type: 'string', optional: true },
-    imageName: { type: 'string', optional: true },
-    permissionGroup: { type: 'PermissionGroup', optional: true },
-    canRepeat: { type: 'bool', default: false },
-    screens: { type: 'list', objectType: 'SurveyScreen' },
-    countryIds: { type: 'list', objectType: 'RealmString' },
-    group: { type: 'SurveyGroup', optional: true },
+    name: {type: 'string', default: 'Survey not properly synchronised'},
+    description: {type: 'string', optional: true},
+    imageName: {type: 'string', optional: true},
+    permissionGroup: {type: 'object', objectType: 'PermissionGroup', optional: true},
+    canRepeat: {type: 'bool', default: false},
+    screens: {type: 'list', objectType: 'SurveyScreen'},
+    countryIds: {type: 'list', objectType: 'RealmString'},
+    group: {type: 'object', objectType: 'SurveyGroup', optional: true},
   },
 };
 
@@ -78,7 +78,7 @@ Survey.storeImageData = (surveyId, imageData) => {
 };
 
 Survey.construct = (database, data) => {
-  const { countryIds, imageData, surveyGroupId, permissionGroupId, ...restOfData } = data;
+  const {countryIds, imageData, surveyGroupId, permissionGroupId, ...restOfData} = data;
   if (imageData) {
     restOfData.imageName = Survey.storeImageData(data.id, imageData);
   }
