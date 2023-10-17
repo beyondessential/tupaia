@@ -26,6 +26,7 @@ const FIELD_TRANSLATION = {
 const VALUE_TRANSLATION = {
   createNew: value => (value ? 'Yes' : 'No'),
   allowScanQrCode: value => (value ? 'Yes' : 'No'),
+  hideParentName: value => (value ? 'Yes' : 'No'),
   generateQrCode: value => (value ? 'Yes' : 'No'),
   'filter.parent': fetchQuestionCode,
   'filter.grandparent': fetchQuestionCode,

@@ -92,6 +92,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
     return {
       allowScanQrCode: [constructIsNotPresentOr(validateIsYesOrNo)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
+      hideParentName: [constructIsNotPresentOr(validateIsYesOrNo)],
       generateQrCode: [isNotPresentIfNotCreateNew, constructIsNotPresentOr(validateIsYesOrNo)],
       'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
       'fields.code': [

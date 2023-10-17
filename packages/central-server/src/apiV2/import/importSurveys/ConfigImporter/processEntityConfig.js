@@ -9,6 +9,7 @@ import { isYes } from '../utilities';
 
 const valueTranslators = {
   createNew: value => isYes(value),
+  hideParentName: value => isYes(value),
   generateQrCode: value => isYes(value),
   allowScanQrCode: value => isYes(value),
   'filter.parent': async (value, models) => translateQuestionCodeToId(models.question, value),

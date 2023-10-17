@@ -334,6 +334,11 @@ const QUESTION_COLUMNS = [
                     type: 'boolean',
                   },
                   {
+                    label: 'Hide Parent Entity Name',
+                    fieldName: 'hideParentName',
+                    type: 'boolean',
+                  },
+                  {
                     label: 'Filter',
                     fieldName: 'filter',
                     type: 'json',
