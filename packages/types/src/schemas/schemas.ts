@@ -37533,106 +37533,6 @@ export const AnswerTypeSchema = {
 	]
 } 
 
-export const EntityCreatedSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"code": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"asset",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"facility",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"local_government",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
-			"type": "string"
-		},
-		"country_code": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"country_code",
-		"id",
-		"name",
-		"parent_id",
-		"type"
-	]
-} 
-
-export const OptionCreatedSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"value": {
-			"type": [
-				"string",
-				"number"
-			]
-		},
-		"label": {
-			"type": "string"
-		},
-		"option_set_id": {
-			"type": "string"
-		},
-		"sort_order": {
-			"type": "number"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"option_set_id",
-		"value"
-	]
-} 
-
 export const MeditrakSurveyResponseRequestSchema = {
 	"type": "object",
 	"additionalProperties": {},
@@ -37698,23 +37598,37 @@ export const MeditrakSurveyResponseRequestSchema = {
 		"approval_status": {
 			"type": "string"
 		},
-		"entities_created": {
+		"entities_upserted": {
 			"type": "array",
 			"items": {
 				"type": "object",
 				"properties": {
+					"attributes": {},
+					"bounds": {},
+					"code": {
+						"type": "string"
+					},
+					"country_code": {
+						"type": "string"
+					},
 					"id": {
 						"type": "string"
 					},
-					"code": {
+					"image_url": {
+						"type": "string"
+					},
+					"m_row$": {
+						"type": "string"
+					},
+					"metadata": {},
+					"name": {
 						"type": "string"
 					},
 					"parent_id": {
 						"type": "string"
 					},
-					"name": {
-						"type": "string"
-					},
+					"point": {},
+					"region": {},
 					"type": {
 						"enum": [
 							"asset",
@@ -37755,19 +37669,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"world"
 						],
 						"type": "string"
-					},
-					"country_code": {
-						"type": "string"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"code",
-					"country_code",
 					"id",
-					"name",
-					"parent_id",
-					"type"
+					"name"
 				]
 			}
 		},
@@ -37776,19 +37684,14 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"items": {
 				"type": "object",
 				"properties": {
-					"id": {
-						"type": "string"
-					},
-					"value": {
-						"type": [
-							"string",
-							"number"
-						]
-					},
 					"label": {
 						"type": "string"
 					},
+					"attributes": {},
 					"option_set_id": {
+						"type": "string"
+					},
+					"value": {
 						"type": "string"
 					},
 					"sort_order": {
