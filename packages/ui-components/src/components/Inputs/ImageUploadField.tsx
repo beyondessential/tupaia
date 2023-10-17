@@ -218,7 +218,7 @@ export const ImageUploadField = React.memo(
             as={TextLabel}
           />
           {secondaryLabel && (
-            <FormHelperText component={FormHelperTextComponent} id={`${name}-description`}>
+            <FormHelperText component={FormHelperTextComponent || 'p'} id={`${name}-description`}>
               {secondaryLabel}
             </FormHelperText>
           )}
