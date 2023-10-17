@@ -3,11 +3,15 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { ButtonBase } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { SurveyIcon } from './Icons';
+import { SurveyFolderIcon } from './Icons';
 
-const Container = styled.div`
+const Container = styled(ButtonBase)`
   display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   background: white;
   margin-bottom: 1rem;
   padding: 1rem;
@@ -20,6 +24,10 @@ const Container = styled.div`
   svg {
     margin-right: 0.5rem;
   }
+
+  &:hover {
+    background: #328de515;
+  }
 `;
 
 const Heading = styled.div`
@@ -29,24 +37,20 @@ const Heading = styled.div`
 `;
 
 const Text = styled.div`
-  background: white;
-  border-radius: 10px;
-
   color: ${({ theme }) => theme.palette.text.secondary};
 `;
 
 interface TileProps {
   title: string;
   text: string;
-  link: string;
+  to: string;
   children: React.ReactNode;
 }
 
-export const Tile = ({ title, text, children, link }: TileProps) => {
-  console.log('link', link);
+export const Tile = ({ title, text, children, to }: TileProps) => {
   return (
-    <Container>
-      <SurveyIcon />
+    <Container component={RouterLink} to={to}>
+      <SurveyFolderIcon />
       <div>
         <Heading>{title}</Heading>
         <Text>{text}</Text>

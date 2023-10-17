@@ -8,11 +8,10 @@ import { useUser } from './useUser';
 import { get } from '../api';
 
 export const useSurveyResponses = (userId?: string) => {
-  const filter = JSON.stringify({ user_id: userId });
   return useQuery(
     ['surveyResponses', userId],
     (): Promise<DatatrakWebEntitiesRequest.ResBody> =>
-      get('surveyResponses', { params: { filter } }),
+      get('surveyResponses', { params: { userId } }),
     { enabled: !!userId },
   );
 };

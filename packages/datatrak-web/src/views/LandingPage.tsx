@@ -230,54 +230,8 @@ const Heading = styled.div`
   margin-bottom: 0.75rem;
 `;
 
-const recentSurveys = [
-  {
-    id: '1',
-    surveyName: 'Survey 1',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-  {
-    id: '2',
-    surveyName: 'Health supply chain',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-  {
-    id: '3',
-    surveyName: 'Local supply chain',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-  {
-    id: '4',
-    surveyName: 'Local supply chain',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-  {
-    id: '5',
-    surveyName: 'Local supply chain',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-  {
-    id: '6',
-    surveyName: 'Local supply chain',
-    date: '2021-01-01',
-    entityName: 'Ba Health Centre',
-    countryName: 'Fiji',
-  },
-];
-
 export const LandingPage = () => {
-  const { data } = useCurrentUserSurveyResponses();
-  console.log(data);
+  const { data, isSuccess } = useCurrentUserSurveyResponses();
   return (
     <PageContainer>
       <Wrapper>
@@ -293,13 +247,13 @@ export const LandingPage = () => {
           </RecentSurveys>
           <RecentResponses>
             <Heading>Recent Responses</Heading>
-            {recentSurveys.map(({ id, surveyName, date, entityName, countryName }) => (
-              <>
-                <Tile key={id} title={surveyName} text={entityName} link="test">
-                  {countryName}, {date}
+            {isSuccess &&
+              data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
+                // Todo: update link to survey response route in waitp-1452
+                <Tile key={id} title={surveyName} text={entityName} to={`/#surveyResponse/${id}`}>
+                  {countryName}, {new Date(dataTime).toDateString()}
                 </Tile>
-              </>
-            ))}
+              ))}
           </RecentResponses>
           <ActivityFeed>
             <Heading>Activity Feed</Heading>

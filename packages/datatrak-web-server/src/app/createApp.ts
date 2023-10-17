@@ -18,6 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
   ProjectsRoute,
   ProjectsRequest,
   SurveyRequest,
@@ -43,6 +45,7 @@ export function createApp() {
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
+    .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
