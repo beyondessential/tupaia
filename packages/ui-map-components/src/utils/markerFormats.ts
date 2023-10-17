@@ -5,17 +5,9 @@
  */
 
 import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
-import {
-  ScaleType
-} from '@tupaia/types';
+import { ScaleType } from '@tupaia/types';
 import { resolveSpectrumColour } from './markerColors';
-import {
-  YES_COLOR,
-  NO_COLOR,
-  BREWER_AUTO,
-  UNKNOWN_COLOR,
-  MAP_COLORS,
-} from '../constants';
+import { YES_COLOR, NO_COLOR, BREWER_AUTO, UNKNOWN_COLOR, MAP_COLORS } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
   SeriesValue,
@@ -293,7 +285,7 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
   if (displayedValueKey && (markerData[displayedValueKey] || markerData[displayedValueKey] === 0)) {
     return {
       formattedValue: formatDataValueByType(
-        { value: markerData[displayedValueKey], metadata: markerData.metadata },
+        { value: markerData[displayedValueKey], metadata: markerData.metadata || undefined },
         valueType,
       ),
       valueInfo,

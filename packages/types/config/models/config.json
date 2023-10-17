@@ -16,18 +16,24 @@
   ],
   "schemas": ["public"],
   "enumNameCasing": "pascal",
+  "typeMap": {
+    "{}": ["jsonb"],
+    "string": ["geography"],
+    "EntityType[]": ["_entity_type"]
+  },
   "typeOverrides": {
     "public.report.config": "ReportConfig",
     "public.dashboard_item.config": "DashboardItemConfig",
-    "public.map_overlay.config": "MapOverlayConfig"
+    "public.map_overlay.config": "MapOverlayConfig",
+    "public.entity.attributes": "EntityAttributes"
   },
   "template": "config/models/template.handlebars",
   "custom": {
     "imports": {
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra",
-      "MapOverlayConfig": "./models-extra"
+      "MapOverlayConfig": "./models-extra",
+      "EntityAttributes": "./models-extra"
     }
   }
 }
-
