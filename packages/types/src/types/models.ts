@@ -24,6 +24,18 @@ export interface AccessRequest {
   'project_id'?: string | null;
   'user_id'?: string | null;
 }
+export interface AccessRequestWithoutId {
+  'approved'?: boolean | null;
+  'created_time'?: Date;
+  'entity_id'?: string | null;
+  'message'?: string | null;
+  'note'?: string | null;
+  'permission_group_id'?: string | null;
+  'processed_by'?: string | null;
+  'processed_date'?: Date | null;
+  'project_id'?: string | null;
+  'user_id'?: string | null;
+}
 export interface AdminPanelSession {
   'access_policy': any;
   'access_token': string;
@@ -32,7 +44,35 @@ export interface AdminPanelSession {
   'id': string;
   'refresh_token': string;
 }
+export interface AdminPanelSessionWithoutId {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'refresh_token': string;
+}
 export interface Analytics {
+  'answer_entity_m_row$'?: string | null;
+  'answer_m_row$'?: string | null;
+  'data_element_code'?: string | null;
+  'data_element_m_row$'?: string | null;
+  'data_group_code'?: string | null;
+  'date'?: Date | null;
+  'day_period'?: string | null;
+  'entity_code'?: string | null;
+  'entity_m_row$'?: string | null;
+  'entity_name'?: string | null;
+  'event_id'?: string | null;
+  'month_period'?: string | null;
+  'question_m_row$'?: string | null;
+  'survey_m_row$'?: string | null;
+  'survey_response_m_row$'?: string | null;
+  'type'?: string | null;
+  'value'?: string | null;
+  'week_period'?: string | null;
+  'year_period'?: string | null;
+}
+export interface AnalyticsWithoutId {
   'answer_entity_m_row$'?: string | null;
   'answer_m_row$'?: string | null;
   'data_element_code'?: string | null;
@@ -60,8 +100,21 @@ export interface AncestorDescendantRelation {
   'generational_distance': number;
   'id': string;
 }
+export interface AncestorDescendantRelationWithoutId {
+  'ancestor_id': string;
+  'descendant_id': string;
+  'entity_hierarchy_id': string;
+  'generational_distance': number;
+}
 export interface Answer {
   'id': string;
+  'm_row$'?: string;
+  'question_id': string;
+  'survey_response_id': string;
+  'text'?: string | null;
+  'type': string;
+}
+export interface AnswerWithoutId {
   'm_row$'?: string;
   'question_id': string;
   'survey_response_id': string;
@@ -74,10 +127,26 @@ export interface ApiClient {
   'user_account_id'?: string | null;
   'username': string;
 }
+export interface ApiClientWithoutId {
+  'secret_key_hash': string;
+  'user_account_id'?: string | null;
+  'username': string;
+}
 export interface ApiRequestLog {
   'api': string;
   'endpoint': string;
   'id': string;
+  'metadata'?: any | null;
+  'method'?: string | null;
+  'query'?: any | null;
+  'refresh_token'?: string | null;
+  'request_time'?: Date | null;
+  'user_id'?: string | null;
+  'version': number;
+}
+export interface ApiRequestLogWithoutId {
+  'api': string;
+  'endpoint': string;
   'metadata'?: any | null;
   'method'?: string | null;
   'query'?: any | null;
@@ -96,6 +165,15 @@ export interface Clinic {
   'type'?: string | null;
   'type_name'?: string | null;
 }
+export interface ClinicWithoutId {
+  'category_code'?: string | null;
+  'code': string;
+  'country_id': string;
+  'geographical_area_id': string;
+  'name': string;
+  'type'?: string | null;
+  'type_name'?: string | null;
+}
 export interface Comment {
   'created_time'?: Date;
   'id': string;
@@ -103,9 +181,19 @@ export interface Comment {
   'text': string;
   'user_id'?: string | null;
 }
+export interface CommentWithoutId {
+  'created_time'?: Date;
+  'last_modified_time'?: Date;
+  'text': string;
+  'user_id'?: string | null;
+}
 export interface Country {
   'code': string;
   'id': string;
+  'name': string;
+}
+export interface CountryWithoutId {
+  'code': string;
   'name': string;
 }
 export interface Dashboard {
@@ -123,6 +211,13 @@ export interface DashboardItem {
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
+export interface DashboardItemWithoutId {
+  'code': string;
+  'config'?: DashboardItemConfig;
+  'legacy'?: boolean;
+  'permission_group_ids'?: string[] | null;
+  'report_code'?: string | null;
+}
 export interface DashboardRelation {
   'child_id': string;
   'dashboard_id': string;
@@ -130,6 +225,20 @@ export interface DashboardRelation {
   'id': string;
   'permission_groups': string[];
   'project_codes': string[];
+  'sort_order'?: number | null;
+}
+export interface DashboardRelationWithoutId {
+  'child_id': string;
+  'dashboard_id': string;
+  'entity_types': any;
+  'permission_groups': string[];
+  'project_codes': string[];
+  'sort_order'?: number | null;
+}
+export interface DashboardWithoutId {
+  'code': string;
+  'name': string;
+  'root_entity_code': string;
   'sort_order'?: number | null;
 }
 export interface DataElement {
@@ -145,11 +254,28 @@ export interface DataElementDataGroup {
   'data_group_id': string;
   'id': string;
 }
+export interface DataElementDataGroupWithoutId {
+  'data_element_id': string;
+  'data_group_id': string;
+}
 export interface DataElementDataService {
   'country_code': string;
   'data_element_code': string;
   'id': string;
   'service_config'?: any;
+  'service_type': ServiceType;
+}
+export interface DataElementDataServiceWithoutId {
+  'country_code': string;
+  'data_element_code': string;
+  'service_config'?: any;
+  'service_type': ServiceType;
+}
+export interface DataElementWithoutId {
+  'code': string;
+  'config'?: any;
+  'm_row$'?: string;
+  'permission_groups'?: string[];
   'service_type': ServiceType;
 }
 export interface DataGroup {
@@ -158,16 +284,33 @@ export interface DataGroup {
   'id': string;
   'service_type': ServiceType;
 }
+export interface DataGroupWithoutId {
+  'code': string;
+  'config'?: any;
+  'service_type': ServiceType;
+}
 export interface DataServiceEntity {
   'config': any;
   'entity_code': string;
   'id': string;
+}
+export interface DataServiceEntityWithoutId {
+  'config': any;
+  'entity_code': string;
 }
 export interface DataServiceSyncGroup {
   'code': string;
   'config': any;
   'data_group_code': string;
   'id': string;
+  'service_type': ServiceType;
+  'sync_cursor'?: string | null;
+  'sync_status'?: SyncGroupSyncStatus | null;
+}
+export interface DataServiceSyncGroupWithoutId {
+  'code': string;
+  'config': any;
+  'data_group_code': string;
   'service_type': ServiceType;
   'sync_cursor'?: string | null;
   'sync_status'?: SyncGroupSyncStatus | null;
@@ -180,6 +323,13 @@ export interface DataTable {
   'permission_groups': string[];
   'type': DataTableType;
 }
+export interface DataTableWithoutId {
+  'code': string;
+  'config'?: any;
+  'description'?: string | null;
+  'permission_groups': string[];
+  'type': DataTableType;
+}
 export interface DatatrakSession {
   'access_policy': any;
   'access_token': string;
@@ -188,10 +338,22 @@ export interface DatatrakSession {
   'id': string;
   'refresh_token': string;
 }
+export interface DatatrakSessionWithoutId {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
+  'refresh_token': string;
+}
 export interface DhisInstance {
   'code': string;
   'config': any;
   'id': string;
+  'readonly': boolean;
+}
+export interface DhisInstanceWithoutId {
+  'code': string;
+  'config': any;
   'readonly': boolean;
 }
 export interface DhisSyncLog {
@@ -200,6 +362,17 @@ export interface DhisSyncLog {
   'dhis_reference'?: string | null;
   'error_list'?: string | null;
   'id': string;
+  'ignored'?: number | null;
+  'imported'?: number | null;
+  'record_id': string;
+  'record_type': string;
+  'updated'?: number | null;
+}
+export interface DhisSyncLogWithoutId {
+  'data'?: string | null;
+  'deleted'?: number | null;
+  'dhis_reference'?: string | null;
+  'error_list'?: string | null;
   'ignored'?: number | null;
   'imported'?: number | null;
   'record_id': string;
@@ -218,6 +391,17 @@ export interface DhisSyncQueue {
   'record_type': string;
   'type': string;
 }
+export interface DhisSyncQueueWithoutId {
+  'bad_request_count'?: number | null;
+  'change_time'?: number | null;
+  'details'?: string | null;
+  'is_dead_letter'?: boolean | null;
+  'is_deleted'?: boolean | null;
+  'priority'?: number | null;
+  'record_id': string;
+  'record_type': string;
+  'type': string;
+}
 export interface Disaster {
   'countryCode': string;
   'description'?: string | null;
@@ -225,10 +409,22 @@ export interface Disaster {
   'name': string;
   'type': DisasterType;
 }
+export interface DisasterWithoutId {
+  'countryCode': string;
+  'description'?: string | null;
+  'name': string;
+  'type': DisasterType;
+}
 export interface DisasterEvent {
   'date': Date;
   'disasterId': string;
   'id': string;
+  'organisationUnitCode': string;
+  'type': DisasterEventType;
+}
+export interface DisasterEventWithoutId {
+  'date': Date;
+  'disasterId': string;
   'organisationUnitCode': string;
   'type': DisasterEventType;
 }
@@ -252,16 +448,45 @@ export interface EntityHierarchy {
   'id': string;
   'name': string;
 }
+export interface EntityHierarchyWithoutId {
+  'canonical_types'?: string[] | null;
+  'name': string;
+}
 export interface EntityRelation {
   'child_id': string;
   'entity_hierarchy_id': string;
   'id': string;
   'parent_id': string;
 }
+export interface EntityRelationWithoutId {
+  'child_id': string;
+  'entity_hierarchy_id': string;
+  'parent_id': string;
+}
+export interface EntityWithoutId {
+  'attributes'?: any | null;
+  'bounds'?: any | null;
+  'code': string;
+  'country_code'?: string | null;
+  'image_url'?: string | null;
+  'm_row$'?: string;
+  'metadata'?: any | null;
+  'name': string;
+  'parent_id'?: string | null;
+  'point'?: any | null;
+  'region'?: any | null;
+  'type'?: EntityType | null;
+}
 export interface ErrorLog {
   'api_request_log_id'?: string | null;
   'error_time'?: Date | null;
   'id': string;
+  'message'?: string | null;
+  'type'?: string | null;
+}
+export interface ErrorLogWithoutId {
+  'api_request_log_id'?: string | null;
+  'error_time'?: Date | null;
   'message'?: string | null;
   'type'?: string | null;
 }
@@ -272,11 +497,27 @@ export interface ExternalDatabaseConnection {
   'name': string;
   'permission_groups'?: string[];
 }
+export interface ExternalDatabaseConnectionWithoutId {
+  'code': string;
+  'description'?: string | null;
+  'name': string;
+  'permission_groups'?: string[];
+}
 export interface FeedItem {
   'country_id'?: string | null;
   'creation_date'?: Date | null;
   'geographical_area_id'?: string | null;
   'id': string;
+  'permission_group_id'?: string | null;
+  'record_id'?: string | null;
+  'template_variables'?: Object | null;
+  'type'?: string | null;
+  'user_id'?: string | null;
+}
+export interface FeedItemWithoutId {
+  'country_id'?: string | null;
+  'creation_date'?: Date | null;
+  'geographical_area_id'?: string | null;
   'permission_group_id'?: string | null;
   'record_id'?: string | null;
   'template_variables'?: Object | null;
@@ -292,17 +533,46 @@ export interface GeographicalArea {
   'name': string;
   'parent_id'?: string | null;
 }
+export interface GeographicalAreaWithoutId {
+  'code'?: string | null;
+  'country_id': string;
+  'level_code': string;
+  'level_name': string;
+  'name': string;
+  'parent_id'?: string | null;
+}
 export interface Indicator {
   'builder': string;
   'code': string;
   'config'?: any;
   'id': string;
 }
+export interface IndicatorWithoutId {
+  'builder': string;
+  'code': string;
+  'config'?: any;
+}
 export interface LandingPage {
   'contact_us'?: string | null;
   'extended_title'?: string | null;
   'external_link'?: string | null;
   'id': string;
+  'image_url'?: string | null;
+  'include_name_in_header'?: boolean | null;
+  'logo_url'?: string | null;
+  'long_bio'?: string | null;
+  'name': string;
+  'phone_number'?: string | null;
+  'primary_hexcode'?: string | null;
+  'project_codes'?: string[] | null;
+  'secondary_hexcode'?: string | null;
+  'url_segment': string;
+  'website_url'?: string | null;
+}
+export interface LandingPageWithoutId {
+  'contact_us'?: string | null;
+  'extended_title'?: string | null;
+  'external_link'?: string | null;
   'image_url'?: string | null;
   'include_name_in_header'?: boolean | null;
   'logo_url'?: string | null;
@@ -322,12 +592,25 @@ export interface LegacyReport {
   'data_services'?: any | null;
   'id': string;
 }
+export interface LegacyReportWithoutId {
+  'code': string;
+  'data_builder'?: string | null;
+  'data_builder_config'?: any | null;
+  'data_services'?: any | null;
+}
 export interface LesmisSession {
   'access_policy': any;
   'access_token': string;
   'access_token_expiry': string;
   'email': string;
   'id': string;
+  'refresh_token': string;
+}
+export interface LesmisSessionWithoutId {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
   'refresh_token': string;
 }
 export interface MapOverlay {
@@ -355,10 +638,39 @@ export interface MapOverlayGroupRelation {
   'map_overlay_group_id': string;
   'sort_order'?: number | null;
 }
+export interface MapOverlayGroupRelationWithoutId {
+  'child_id': string;
+  'child_type': string;
+  'map_overlay_group_id': string;
+  'sort_order'?: number | null;
+}
+export interface MapOverlayGroupWithoutId {
+  'code': string;
+  'name': string;
+}
+export interface MapOverlayWithoutId {
+  'code': string;
+  'config'?: MapOverlayConfig;
+  'country_codes'?: string[] | null;
+  'data_services'?: any | null;
+  'legacy'?: boolean;
+  'linked_measures'?: string[] | null;
+  'name': string;
+  'permission_group': string;
+  'project_codes'?: string[] | null;
+  'report_code'?: string | null;
+}
 export interface MeditrakDevice {
   'app_version'?: string | null;
   'config'?: any | null;
   'id': string;
+  'install_id': string;
+  'platform'?: string | null;
+  'user_id': string;
+}
+export interface MeditrakDeviceWithoutId {
+  'app_version'?: string | null;
+  'config'?: any | null;
   'install_id': string;
   'platform'?: string | null;
   'user_id': string;
@@ -370,12 +682,26 @@ export interface MeditrakSyncQueue {
   'record_type': string;
   'type': string;
 }
+export interface MeditrakSyncQueueWithoutId {
+  'change_time'?: number | null;
+  'record_id': string;
+  'record_type': string;
+  'type': string;
+}
 export interface Ms1SyncLog {
   'count'?: number | null;
   'data'?: string | null;
   'endpoint'?: string | null;
   'error_list'?: string | null;
   'id': string;
+  'record_id': string;
+  'record_type': string;
+}
+export interface Ms1SyncLogWithoutId {
+  'count'?: number | null;
+  'data'?: string | null;
+  'endpoint'?: string | null;
+  'error_list'?: string | null;
   'record_id': string;
   'record_type': string;
 }
@@ -391,9 +717,26 @@ export interface Ms1SyncQueue {
   'record_type': string;
   'type': string;
 }
+export interface Ms1SyncQueueWithoutId {
+  'bad_request_count'?: number | null;
+  'change_time'?: number | null;
+  'details'?: string | null;
+  'is_dead_letter'?: boolean | null;
+  'is_deleted'?: boolean | null;
+  'priority'?: number | null;
+  'record_id': string;
+  'record_type': string;
+  'type': string;
+}
 export interface OneTimeLogin {
   'creation_date'?: Date | null;
   'id': string;
+  'token': string;
+  'use_date'?: Date | null;
+  'user_id': string;
+}
+export interface OneTimeLoginWithoutId {
+  'creation_date'?: Date | null;
   'token': string;
   'use_date'?: Date | null;
   'user_id': string;
@@ -410,8 +753,22 @@ export interface OptionSet {
   'id': string;
   'name': string;
 }
+export interface OptionSetWithoutId {
+  'name': string;
+}
+export interface OptionWithoutId {
+  'attributes'?: any | null;
+  'label'?: string | null;
+  'option_set_id': string;
+  'sort_order'?: number | null;
+  'value': string;
+}
 export interface PermissionGroup {
   'id': string;
+  'name': string;
+  'parent_id'?: string | null;
+}
+export interface PermissionGroupWithoutId {
   'name': string;
   'parent_id'?: string | null;
 }
@@ -420,6 +777,15 @@ export interface PermissionsBasedMeditrakSyncQueue {
   'country_ids'?: string[] | null;
   'entity_type'?: EntityType | null;
   'id'?: string | null;
+  'permission_groups'?: string[] | null;
+  'record_id'?: string | null;
+  'record_type'?: string | null;
+  'type'?: string | null;
+}
+export interface PermissionsBasedMeditrakSyncQueueWithoutId {
+  'change_time'?: number | null;
+  'country_ids'?: string[] | null;
+  'entity_type'?: EntityType | null;
   'permission_groups'?: string[] | null;
   'record_id'?: string | null;
   'record_type'?: string | null;
@@ -439,12 +805,32 @@ export interface Project {
   'permission_groups'?: string[] | null;
   'sort_order'?: number | null;
 }
+export interface ProjectWithoutId {
+  'code': string;
+  'config'?: any | null;
+  'dashboard_group_name'?: string | null;
+  'default_measure'?: string | null;
+  'description'?: string | null;
+  'entity_hierarchy_id'?: string | null;
+  'entity_id'?: string | null;
+  'image_url'?: string | null;
+  'logo_url'?: string | null;
+  'permission_groups'?: string[] | null;
+  'sort_order'?: number | null;
+}
 export interface PsssSession {
   'access_policy': any;
   'access_token': string;
   'access_token_expiry': string;
   'email': string;
   'id': string;
+  'refresh_token': string;
+}
+export interface PsssSessionWithoutId {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
   'refresh_token': string;
 }
 export interface Question {
@@ -460,10 +846,29 @@ export interface Question {
   'text': string;
   'type': QuestionType;
 }
+export interface QuestionWithoutId {
+  'code'?: string | null;
+  'data_element_id'?: string | null;
+  'detail'?: string | null;
+  'hook'?: string | null;
+  'm_row$'?: string;
+  'name'?: string | null;
+  'option_set_id'?: string | null;
+  'options'?: string[] | null;
+  'text': string;
+  'type': QuestionType;
+}
 export interface RefreshToken {
   'device'?: string | null;
   'expiry'?: number | null;
   'id': string;
+  'meditrak_device_id'?: string | null;
+  'token': string;
+  'user_id': string;
+}
+export interface RefreshTokenWithoutId {
+  'device'?: string | null;
+  'expiry'?: number | null;
   'meditrak_device_id'?: string | null;
   'token': string;
   'user_id': string;
@@ -474,8 +879,17 @@ export interface Report {
   'id': string;
   'permission_group_id': string;
 }
+export interface ReportWithoutId {
+  'code': string;
+  'config': ReportConfig;
+  'permission_group_id': string;
+}
 export interface Setting {
   'id': string;
+  'key': string;
+  'value'?: string | null;
+}
+export interface SettingWithoutId {
   'key': string;
   'value'?: string | null;
 }
@@ -483,6 +897,10 @@ export interface SupersetInstance {
   'code': string;
   'config': any;
   'id': string;
+}
+export interface SupersetInstanceWithoutId {
+  'code': string;
+  'config': any;
 }
 export interface Survey {
   'can_repeat'?: boolean | null;
@@ -500,6 +918,9 @@ export interface Survey {
 }
 export interface SurveyGroup {
   'id': string;
+  'name': string;
+}
+export interface SurveyGroupWithoutId {
   'name': string;
 }
 export interface SurveyResponse {
@@ -522,6 +943,24 @@ export interface SurveyResponseComment {
   'id': string;
   'survey_response_id': string;
 }
+export interface SurveyResponseCommentWithoutId {
+  'comment_id': string;
+  'survey_response_id': string;
+}
+export interface SurveyResponseWithoutId {
+  'approval_status'?: ApprovalStatus | null;
+  'assessor_name': string;
+  'data_time'?: Date | null;
+  'end_time': Date;
+  'entity_id': string;
+  'm_row$'?: string;
+  'metadata'?: string | null;
+  'outdated'?: boolean | null;
+  'start_time': Date;
+  'survey_id': string;
+  'timezone'?: string | null;
+  'user_id': string;
+}
 export interface SurveyScreen {
   'id': string;
   'screen_number': number;
@@ -540,8 +979,43 @@ export interface SurveyScreenComponent {
   'validation_criteria'?: string | null;
   'visibility_criteria'?: string | null;
 }
+export interface SurveyScreenComponentWithoutId {
+  'answers_enabling_follow_up'?: string[] | null;
+  'component_number': number;
+  'config'?: string | null;
+  'detail_label'?: string | null;
+  'is_follow_up'?: boolean | null;
+  'question_id': string;
+  'question_label'?: string | null;
+  'screen_id': string;
+  'validation_criteria'?: string | null;
+  'visibility_criteria'?: string | null;
+}
+export interface SurveyScreenWithoutId {
+  'screen_number': number;
+  'survey_id': string;
+}
+export interface SurveyWithoutId {
+  'can_repeat'?: boolean | null;
+  'code': string;
+  'country_ids'?: string[] | null;
+  'data_group_id'?: string | null;
+  'integration_metadata'?: any | null;
+  'm_row$'?: string;
+  'name': string;
+  'period_granularity'?: PeriodGranularity | null;
+  'permission_group_id'?: string | null;
+  'requires_approval'?: boolean | null;
+  'survey_group_id'?: string | null;
+}
 export interface SyncGroupLog {
   'id': string;
+  'log_message': string;
+  'service_type': ServiceType;
+  'sync_group_code': string;
+  'timestamp'?: Date | null;
+}
+export interface SyncGroupLogWithoutId {
   'log_message': string;
   'service_type': ServiceType;
   'sync_group_code': string;
@@ -553,6 +1027,13 @@ export interface TupaiaWebSession {
   'access_token_expiry': string;
   'email': string;
   'id': string;
+  'refresh_token': string;
+}
+export interface TupaiaWebSessionWithoutId {
+  'access_policy': any;
+  'access_token': string;
+  'access_token_expiry': string;
+  'email': string;
   'refresh_token': string;
 }
 export interface UserAccount {
@@ -572,9 +1053,30 @@ export interface UserAccount {
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
 }
+export interface UserAccountWithoutId {
+  'creation_date'?: Date | null;
+  'email': string;
+  'employer'?: string | null;
+  'first_name'?: string | null;
+  'gender'?: string | null;
+  'last_name'?: string | null;
+  'mobile_number'?: string | null;
+  'password_hash': string;
+  'password_salt': string;
+  'position'?: string | null;
+  'preferences'?: any;
+  'primary_platform'?: PrimaryPlatform | null;
+  'profile_image'?: string | null;
+  'verified_email'?: VerifiedEmail | null;
+}
 export interface UserEntityPermission {
   'entity_id'?: string | null;
   'id': string;
+  'permission_group_id'?: string | null;
+  'user_id'?: string | null;
+}
+export interface UserEntityPermissionWithoutId {
+  'entity_id'?: string | null;
   'permission_group_id'?: string | null;
   'user_id'?: string | null;
 }
@@ -583,11 +1085,22 @@ export interface UserFavouriteDashboardItem {
   'id': string;
   'user_id': string;
 }
+export interface UserFavouriteDashboardItemWithoutId {
+  'dashboard_item_id': string;
+  'user_id': string;
+}
 export interface UserSession {
   'access_token_expiry'?: string;
   'accessPolicy'?: any | null;
   'accessToken'?: string | null;
   'id': string;
+  'refreshToken': string;
+  'userName': string;
+}
+export interface UserSessionWithoutId {
+  'access_token_expiry'?: string;
+  'accessPolicy'?: any | null;
+  'accessToken'?: string | null;
   'refreshToken': string;
   'userName': string;
 }

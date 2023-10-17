@@ -30,13 +30,29 @@ const run = async () => {
   const failOnChanges = process.argv[2] === '--failOnChanges';
 
   // @ts-ignore
-  const tsString = await sqlts.toTypeScript(config, db);
+  const definitions = await sqlts.toObject(config, db);
+  const { tables } = definitions;
+  const tablesWithNoIdTables = tables
+    .map(table => [
+      table,
+      {
+        ...table,
+        name: `${table.name}_without_id`,
+        interfaceName: `${table.interfaceName}WithoutId`,
+        columns: table.columns.filter(col => col.name !== 'id'),
+      },
+    ])
+    .flat();
+
+  const tsString = sqlts.fromObject({ ...definitions, tables: tablesWithNoIdTables }, config);
 
   if (failOnChanges) {
     const currentTsString = fs.readFileSync(config.filename, { encoding: 'utf8' });
     if (currentTsString !== tsString) {
-      console.log("❌ There are changes in the db schema which are not reflected in @tupaia/types.")
-      console.log("Run 'yarn workspace @tupaia/types generate' to fix")
+      console.log(
+        '❌ There are changes in the db schema which are not reflected in @tupaia/types.',
+      );
+      console.log("Run 'yarn workspace @tupaia/types generate' to fix");
       process.exit(1);
     }
   }
