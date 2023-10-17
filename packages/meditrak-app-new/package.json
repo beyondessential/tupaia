@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/meditrak-app-new",
-  "version": "0.0.1",
+  "version": "1.14.130",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
