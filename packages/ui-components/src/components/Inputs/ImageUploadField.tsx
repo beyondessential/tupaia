@@ -22,7 +22,7 @@ const HiddenFileInput = styled.input`
   z-index: -1;
 `;
 
-const Label = styled(FlexStart)`
+const Wrapper = styled(FlexStart)`
   margin-bottom: 1.6rem;
   align-items: flex-start;
 `;
@@ -70,7 +70,7 @@ const ErrorMessage = styled(FormHelperText)`
   }
 `;
 
-const LabelWrapper = styled(Box)`
+const Label = styled.label`
   display: flex;
   flex-direction: column;
 `;
@@ -85,7 +85,7 @@ interface ImageUploadFieldProps {
   onDelete?: () => void;
   label: string;
   buttonLabel?: string;
-  deleteModal?: Omit<ConfirmDeleteModalProps, 'isOpen' | 'onConfirm' | 'onCancel'>;
+  deleteModal?: Omit<ConfirmDeleteModalProps, 'isOpen' | 'onConfirm' | 'onCancel'> | null;
   avatarVariant?: AvatarProps['variant'];
   maxHeight?: number;
   maxWidth?: number;
@@ -93,6 +93,9 @@ interface ImageUploadFieldProps {
   minWidth?: number;
   secondaryLabel?: string;
   tooltip?: string;
+  required?: boolean;
+  FormHelperTextComponent?: React.ElementType;
+  invalid?: boolean;
 }
 
 const createBase64Image = (fileObject: File): Promise<Base64> => {
@@ -129,6 +132,9 @@ export const ImageUploadField = React.memo(
     minWidth,
     secondaryLabel,
     tooltip,
+    required,
+    FormHelperTextComponent,
+    invalid,
   }: ImageUploadFieldProps) => {
     const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -179,17 +185,16 @@ export const ImageUploadField = React.memo(
       }
     };
 
+    const onClickDelete = () => {
+      if (deleteModal) {
+        setConfirmModalIsOpen(true);
+      } else {
+        handleDelete();
+      }
+    };
+
     return (
-      <Label as="label" htmlFor={name}>
-        <HiddenFileInput
-          ref={inputEl}
-          id={name}
-          name={name}
-          type="file"
-          onChange={handleFileUpload}
-          aria-describedby={secondaryLabel ? `${name}-description` : ''}
-          aria-invalid={!errorMessage}
-        />
+      <Wrapper className="upload_wrapper">
         <Box position="relative">
           <StyledAvatar
             initial={avatarInitial}
@@ -200,12 +205,12 @@ export const ImageUploadField = React.memo(
             {avatarInitial}
           </StyledAvatar>
           {imageSrc && (
-            <DeleteButton onClick={() => setConfirmModalIsOpen(true)}>
+            <DeleteButton onClick={onClickDelete}>
               <DeleteIcon />
             </DeleteButton>
           )}
         </Box>
-        <LabelWrapper>
+        <Label htmlFor={name}>
           <InputLabel
             className="file_upload_label"
             label={label}
@@ -213,11 +218,23 @@ export const ImageUploadField = React.memo(
             as={TextLabel}
           />
           {secondaryLabel && (
-            <FormHelperText id={`${name}-description`}>{secondaryLabel}</FormHelperText>
+            <FormHelperText component={FormHelperTextComponent} id={`${name}-description`}>
+              {secondaryLabel}
+            </FormHelperText>
           )}
+          <HiddenFileInput
+            ref={inputEl}
+            id={name}
+            name={name}
+            type="file"
+            onChange={handleFileUpload}
+            aria-describedby={secondaryLabel ? `${name}-description` : ''}
+            aria-invalid={!!errorMessage || invalid}
+            required={required}
+          />
           <GreyOutlinedButton component="span">{buttonLabel}</GreyOutlinedButton>
           {errorMessage && <ErrorMessage id={`${name}-error-message`}>{errorMessage}</ErrorMessage>}
-        </LabelWrapper>
+        </Label>
 
         {deleteModal && (
           <ConfirmDeleteModal
@@ -227,7 +244,7 @@ export const ImageUploadField = React.memo(
             {...deleteModal}
           />
         )}
-      </Label>
+      </Wrapper>
     );
   },
 );

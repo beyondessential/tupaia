@@ -1,8 +1,10 @@
 import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import { stripTimezoneFromDate } from '@tupaia/utils';
+import { QuestionType } from '@tupaia/types';
 import keyBy from 'lodash.keyby';
 import { upsertAnswers } from '../../dataAccessors';
+import { uploadImage } from '../utilities';
 
 async function getRecordsByCode(model, codes) {
   const records = await model.find({ code: Array.from(codes) });
@@ -21,29 +23,45 @@ async function getQuestionsByCode(models, answers) {
   return getRecordsByCode(models.question, questionCodes);
 }
 
+// upload any encoded images to s3 and return the url as the answer value
+async function getFormattedAnswer(type, id, answer, surveyResponseId) {
+  let answerValue = answer;
+  if (type === QuestionType.Photo && answerValue?.includes('data:image')) {
+    answerValue = await uploadImage(answer, surveyResponseId, id, true);
+  }
+  return {
+    type,
+    question_id: id,
+    body: answerValue,
+  };
+}
+
 /** Convert answers from { [questionCode]: [answerValue], [questionCode]: [answerValue] }
  * to [ { type, question_id, body} ]
  */
-async function buildAnswerRecords(models, rawAnswerRecords) {
+async function buildAnswerRecords(models, rawAnswerRecords, surveyResponseId) {
   if (Array.isArray(rawAnswerRecords)) {
-    return rawAnswerRecords;
+    return Promise.all(
+      rawAnswerRecords.map(a =>
+        getFormattedAnswer(a.type, a.question_id, a.body, surveyResponseId),
+      ),
+    );
   }
 
   const questionsByCode = await getQuestionsByCode(models, rawAnswerRecords);
-  const answerRecords = Object.entries(rawAnswerRecords).map(([code, value]) => {
-    const question = questionsByCode[code];
-    return {
-      type: question.type,
-      question_id: question.id,
-      body: value,
-    };
-  });
+  const answerRecords = await Promise.all(
+    Object.entries(rawAnswerRecords).map(([code, value]) => {
+      const question = questionsByCode[code];
+      const { type, id } = question;
+      return getFormattedAnswer(type, id, value, surveyResponseId);
+    }),
+  );
 
   return answerRecords;
 }
 
 async function saveAnswerRecords(models, rawAnswerRecords, surveyResponseId) {
-  const answerRecords = await buildAnswerRecords(models, rawAnswerRecords);
+  const answerRecords = await buildAnswerRecords(models, rawAnswerRecords, surveyResponseId);
   return upsertAnswers(models, answerRecords, surveyResponseId);
 }
 
