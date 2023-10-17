@@ -19,7 +19,12 @@ import {
   SurveyScreenModel,
   SurveyScreenComponentModel,
 } from '@tupaia/database';
-import { FeedItemModel, MeditrakSyncQueueModel, SurveyModel, SurveyResponseModel } from './models';
+import {
+  FeedItemModel,
+  MeditrakSyncQueueModel,
+  SurveyModel,
+  SurveyResponseModel,
+} from '@tupaia/server-boilerplate';
 
 export type RequestContext = {
   services: TupaiaApiClient;

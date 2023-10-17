@@ -6,12 +6,13 @@
 import { Request } from 'express';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
-import { NullableKeysToOptional } from '@tupaia/types';
-import { FeedItemFields } from '../models';
+import { FeedItem, NullableKeysToOptional } from '@tupaia/types';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
-type ResponseFeedItem = NullableKeysToOptional<FeedItemFields>;
+type ResponseFeedItem = NullableKeysToOptional<Omit<FeedItem, 'creation_date'>> & {
+  creation_date?: string;
+};
 
 type SocialFeedResponse = {
   pageNumber: number;
@@ -108,9 +109,14 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
     });
 
     const hasMorePages = feedItems.length > numberPerPage;
-    const items = (
-      await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()))
-    ).map(item => ({ ...item, creation_date: new Date(item.creation_date).toJSON() }));
+    const items = (await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()))).map(
+      item => ({
+        ...item,
+        creation_date: item.creation_date
+          ? new Date(item.creation_date).toJSON()
+          : new Date().toJSON(),
+      }),
+    );
 
     await this.intersperseDynamicFeedItems(items, pageNumber);
 
