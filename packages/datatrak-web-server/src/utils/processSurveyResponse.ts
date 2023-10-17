@@ -89,7 +89,6 @@ export const processSurveyResponse = async (
     };
 
     // Handle special question types
-    // TODO: file upload handling
     switch (type) {
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:

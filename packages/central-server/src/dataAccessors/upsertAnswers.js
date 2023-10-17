@@ -2,7 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
+import fs from 'fs';
+import { QuestionType } from '@tupaia/types';
 import {
   DatabaseError,
   getS3ImageFilePath,
@@ -11,6 +12,13 @@ import {
   S3_BUCKET_PATH,
   UploadError,
 } from '@tupaia/utils';
+
+const convertFileToBase64 = file => {
+  // read binary data from file
+  const bitmap = fs.readFileSync(file);
+  // convert the binary data to base64 encoded string
+  return bitmap.toString('base64');
+};
 
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
@@ -22,8 +30,8 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       question_id: answer.question_id,
       survey_response_id: surveyResponseId,
     };
-
-    if (answer.type === 'Photo') {
+    const s3Client = new S3Client(new S3());
+    if (answer.type === QuestionType.Photo) {
       const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
       if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
@@ -31,12 +39,21 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       } else {
         // included for backwards compatibility passing base64 strings for images, and for datatrak-web to upload images in answers
         try {
-          const s3Client = new S3Client(new S3());
           answerDocument.text = await s3Client.uploadImage(answer.body);
         } catch (error) {
           throw new UploadError(error);
         }
       }
+      // if the answer is a file object, upload it to s3 and save the url as the answer. If it's not a file object that means it is just a url to a file, which will be handled by default
+    } else if (
+      answer.type === QuestionType.File &&
+      answer.body?.hasOwnProperty('name') &&
+      answer.body?.hasOwnProperty('value')
+    ) {
+      answerDocument.text = await s3Client.uploadFile(
+        `${surveyResponseId}_${answer.question_id}_${answer?.body?.name}`,
+        answer.body.value,
+      );
     } else {
       answerDocument.text = answer.body;
     }

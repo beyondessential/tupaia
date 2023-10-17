@@ -45,7 +45,7 @@ export const useSubmitSurvey = () => {
   const surveyResponseData = useSurveyResponseData();
 
   return useMutation<any, Error, AnswersT, unknown>(
-    async (answers: AnswersT) => {
+    async (answers: AnswersT) => { 
       if (!answers) {
         return;
       }

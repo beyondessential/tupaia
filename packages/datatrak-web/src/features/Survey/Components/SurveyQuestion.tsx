@@ -20,6 +20,7 @@ import {
   AutocompleteQuestion,
   ReadOnlyQuestion,
   PhotoQuestion,
+  FileQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -67,6 +68,7 @@ export enum QUESTION_TYPES {
   CodeGenerator = ReadOnlyQuestion,
   Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
+  File = FileQuestion,
 }
 
 const getNameForController = (name, type) => {
