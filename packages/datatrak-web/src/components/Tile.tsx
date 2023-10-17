@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ButtonBase } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from './Button';
 import { SurveyTickIcon } from './Icons';
 
-const Container = styled(ButtonBase)`
+const ButtonWrapper = styled(Button)`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -27,7 +27,7 @@ const Container = styled(ButtonBase)`
   &:hover {
     background: #328de515;
   }
-` as typeof ButtonBase;
+` as typeof Button;
 
 const Heading = styled.div`
   font-size: 0.875rem;
@@ -43,18 +43,19 @@ interface TileProps {
   title: string;
   text: string;
   to: string;
+  tooltip?: string;
   children: React.ReactNode;
 }
 
-export const Tile = ({ title, text, children, to }: TileProps) => {
+export const Tile = ({ title, text, children, to, tooltip }: TileProps) => {
   return (
-    <Container component={RouterLink} to={to}>
+    <ButtonWrapper component={RouterLink} to={to} tooltip={tooltip}>
       <SurveyTickIcon />
       <div>
         <Heading>{title}</Heading>
         <Text>{text}</Text>
         {children}
       </div>
-    </Container>
+    </ButtonWrapper>
   );
 };

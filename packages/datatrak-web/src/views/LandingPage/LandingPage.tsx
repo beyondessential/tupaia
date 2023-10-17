@@ -4,10 +4,12 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer, Tile } from '../../components';
 import { useCurrentUserSurveyResponses } from '../../api/queries';
 import { SurveySelectSection } from './SurveySelectSection';
+import { shortDate } from '../../utils';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -124,8 +126,14 @@ const RecentResponsesSection = () => {
       <SectionHeading>Recent Responses</SectionHeading>
       {isSuccess &&
         data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-          <Tile key={id} title={surveyName} text={entityName} to={`/#surveyResponse/${id}`}>
-            {countryName}, {new Date(dataTime).toDateString()}
+          <Tile
+            key={id}
+            title={surveyName}
+            text={entityName}
+            to={`/#surveyResponse/${id}`}
+            tooltip={surveyName}
+          >
+            {countryName}, {shortDate(dataTime)}
           </Tile>
         ))}
     </RecentResponses>

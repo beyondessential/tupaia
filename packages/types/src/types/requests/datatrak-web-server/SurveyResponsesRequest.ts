@@ -10,7 +10,7 @@ export type Params = Record<string, never>;
 type SurveyResponse = {
   assessorName: SurveyResponseT['assessor_name'];
   countryName: Country['name'];
-  dataTime: SurveyResponseT['data_time'];
+  dataTime: Date;
   entityName: Entity['name'];
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
