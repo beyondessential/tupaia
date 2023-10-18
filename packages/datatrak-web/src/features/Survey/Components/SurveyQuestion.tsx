@@ -19,6 +19,7 @@ import {
   EntityQuestion,
   AutocompleteQuestion,
   ReadOnlyQuestion,
+  PhotoQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -58,7 +59,7 @@ export enum QUESTION_TYPES {
   Autocomplete = AutocompleteQuestion,
   Instruction = InstructionQuestion,
   Number = TextQuestion,
-  Photo = Placeholder,
+  Photo = PhotoQuestion,
   Radio = RadioQuestion,
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
