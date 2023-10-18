@@ -15,7 +15,11 @@ jest.mock('moment', () => {
   return jest.fn(() => mMoment);
 });
 
-const mockGetEntity = jest.fn(() => 'theEntityId');
+const mockFindEntityById = async (id: string) => ({
+  id: 'theEntityId',
+  code: 'theEntityCode',
+  name: 'The Entity Name',
+});
 
 describe('processSurveyResponse', () => {
   const responseData = {
@@ -64,7 +68,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -101,7 +105,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -128,7 +132,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -155,7 +159,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -187,7 +191,7 @@ describe('processSurveyResponse', () => {
           },
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -230,7 +234,7 @@ describe('processSurveyResponse', () => {
           },
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -262,7 +266,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -305,7 +309,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
