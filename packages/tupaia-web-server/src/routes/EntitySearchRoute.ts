@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebEntitySearchRequest } from '@tupaia/types';
+import { TupaiaWebEntitySearchRequest, Entity } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 import { generateFrontendExcludedFilter } from '../utils';
 
@@ -39,7 +39,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
       page,
       pageSize,
       fields,
-    });
+    }) as Entity[];
 
     return camelcaseKeys(entitySearch, { deep: true });
   }

@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebEntityRequest } from '@tupaia/types';
+import { TupaiaWebEntityRequest, Entity } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 
 export type EntityRequest = Request<
@@ -25,7 +25,7 @@ export class EntityRoute extends Route<EntityRequest> {
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode, {
       fields: DEFAULT_FIELDS,
       ...query,
-    });
+    }) as Entity;
 
     return camelcaseKeys(entity);
   }

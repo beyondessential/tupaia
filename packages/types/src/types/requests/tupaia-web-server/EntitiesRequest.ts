@@ -11,7 +11,7 @@ export interface Params {
   rootEntityCode: string;
   projectCode: string;
 }
-export type ResBody = KeysToCamelCase<Entity[]>;
+export type ResBody = KeysToCamelCase<Entity>[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
