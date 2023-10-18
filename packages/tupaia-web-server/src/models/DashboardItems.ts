@@ -7,17 +7,9 @@ import {
   DashboardItemType as BaseDashboardItemType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
+import { DashboardItem } from '@tupaia/types';
 
-type DashboardItemFields = Readonly<{
-  id: string;
-  name: string;
-  code: string;
-  report_code: string;
-  legacy: boolean;
-  config: Record<string, unknown>;
-}>;
-
-interface DashboardItemType extends DashboardItemFields, Omit<BaseDashboardItemType, 'id'> {}
+interface DashboardItemType extends DashboardItem, Omit<BaseDashboardItemType, 'id'> {}
 
 export interface DashboardItemModel
-  extends Model<BaseDashboardItemModel, DashboardItemFields, DashboardItemType> {}
+  extends Model<BaseDashboardItemModel, DashboardItem, DashboardItemType> {}
