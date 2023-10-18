@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import fs from 'fs';
 import { QuestionType } from '@tupaia/types';
 import {
   DatabaseError,
@@ -12,13 +11,6 @@ import {
   S3_BUCKET_PATH,
   UploadError,
 } from '@tupaia/utils';
-
-const convertFileToBase64 = file => {
-  // read binary data from file
-  const bitmap = fs.readFileSync(file);
-  // convert the binary data to base64 encoded string
-  return bitmap.toString('base64');
-};
 
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
