@@ -9,6 +9,8 @@
  * Rerun generate:schemas to regenerate this file.
  */
 export const BaseConfigSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -359,8 +361,6 @@ export const BaseConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"name"
@@ -553,6 +553,7 @@ export const DefaultTimePeriodSchema = {
 } 
 
 export const DefaultTimePeriodShortSchema = {
+	"type": "object",
 	"properties": {
 		"offset": {
 			"type": "number"
@@ -568,7 +569,6 @@ export const DefaultTimePeriodShortSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"offset",
@@ -577,6 +577,7 @@ export const DefaultTimePeriodShortSchema = {
 } 
 
 export const DefaultTimePeriodLongSchema = {
+	"type": "object",
 	"properties": {
 		"start": {
 			"type": "object",
@@ -659,7 +660,6 @@ export const DefaultTimePeriodLongSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"end",
@@ -668,13 +668,13 @@ export const DefaultTimePeriodLongSchema = {
 } 
 
 export const DefaultTimePeriodWithAbsoluteDateSchema = {
+	"type": "object",
 	"properties": {
 		"start": {
 			"description": "ISO Date Time",
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"start"
@@ -682,6 +682,7 @@ export const DefaultTimePeriodWithAbsoluteDateSchema = {
 } 
 
 export const DateOffsetSpecSchema = {
+	"type": "object",
 	"properties": {
 		"unit": {
 			"enum": [
@@ -714,7 +715,6 @@ export const DateOffsetSpecSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"offset",
@@ -765,6 +765,7 @@ export const DisplayOnEntityConditionsSchema = {
 } 
 
 export const DisplayOnEntityAttributeConditionsSchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {
 			"type": "object",
@@ -777,7 +778,6 @@ export const DisplayOnEntityAttributeConditionsSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"attributes"
@@ -796,6 +796,7 @@ export const DisplayOnEntityOtherConditionsSchema = {
 } 
 
 export const ExportPresentationOptionsSchema = {
+	"type": "object",
 	"properties": {
 		"exportWithLabels": {
 			"type": "boolean"
@@ -807,7 +808,6 @@ export const ExportPresentationOptionsSchema = {
 			"type": "boolean"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
@@ -816,6 +816,9 @@ export const CssColorSchema = {
 } 
 
 export const MatrixConfigSchema = {
+	"description": "Matrix viz type",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -1520,9 +1523,6 @@ export const MatrixConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "Matrix viz type",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type"
@@ -1530,6 +1530,7 @@ export const MatrixConfigSchema = {
 } 
 
 export const ConditionalPresentationOptionsSchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"type": "string",
@@ -1647,11 +1648,12 @@ export const ConditionalPresentationOptionsSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const RangePresentationOptionsSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"type": {
 			"type": "string",
@@ -1663,8 +1665,6 @@ export const RangePresentationOptionsSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"type"
 	]
@@ -1833,6 +1833,7 @@ export const PresentationOptionsSchema = {
 } 
 
 export const BasePresentationOptionSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1847,11 +1848,12 @@ export const BasePresentationOptionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const PresentationOptionConditionSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1926,8 +1928,6 @@ export const PresentationOptionConditionSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"condition",
 		"key"
@@ -1935,6 +1935,8 @@ export const PresentationOptionConditionSchema = {
 } 
 
 export const PresentationOptionRangeSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1954,9 +1956,7 @@ export const PresentationOptionRangeSchema = {
 		"max": {
 			"type": "number"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ConditionValueSchema = {
@@ -1988,6 +1988,9 @@ export const VizComponentNameSchema = {
 } 
 
 export const ComponentConfigSchema = {
+	"description": "A Component viz type simply renders a React component as the viz",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -2353,9 +2356,6 @@ export const ComponentConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "A Component viz type simply renders a React component as the viz",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"componentName",
 		"name",
@@ -2364,6 +2364,8 @@ export const ComponentConfigSchema = {
 } 
 
 export const BaseChartConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -2761,14 +2763,15 @@ export const BaseChartConfigSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name"
 	]
 } 
 
 export const GaugeChartConfigSchema = {
+	"description": "Gauge Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -3178,9 +3181,6 @@ export const GaugeChartConfigSchema = {
 			]
 		}
 	},
-	"description": "Gauge Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -3189,6 +3189,9 @@ export const GaugeChartConfigSchema = {
 } 
 
 export const ComposedChartConfigSchema = {
+	"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -3715,9 +3718,6 @@ export const ComposedChartConfigSchema = {
 			}
 		}
 	},
-	"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -3726,6 +3726,9 @@ export const ComposedChartConfigSchema = {
 } 
 
 export const BarChartConfigSchema = {
+	"description": "Bar Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -4252,9 +4255,6 @@ export const BarChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Bar Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -4263,6 +4263,9 @@ export const BarChartConfigSchema = {
 } 
 
 export const PieChartConfigSchema = {
+	"description": "Pie Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -4687,9 +4690,6 @@ export const PieChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Pie Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -4698,6 +4698,9 @@ export const PieChartConfigSchema = {
 } 
 
 export const LineChartConfigSchema = {
+	"description": "Line Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -5224,9 +5227,6 @@ export const LineChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Line Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -5273,6 +5273,8 @@ export const CommonChartChartConfigSchema = {
 } 
 
 export const CartesianChartConfigSchema = {
+	"description": "A Cartesian chart has an area with axes e.g. bar, line.",
+	"type": "object",
 	"properties": {
 		"xName": {
 			"description": "The label on the x-axis",
@@ -5355,12 +5357,11 @@ export const CartesianChartConfigSchema = {
 		},
 		"presentationOptions": {}
 	},
-	"description": "A Cartesian chart has an area with axes e.g. bar, line.",
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const YAxisDomainSchema = {
+	"type": "object",
 	"properties": {
 		"max": {
 			"type": "object",
@@ -5423,7 +5424,6 @@ export const YAxisDomainSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"max",
@@ -5432,6 +5432,7 @@ export const YAxisDomainSchema = {
 } 
 
 export const YAxisDomainEntrySchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"enum": [
@@ -5455,7 +5456,6 @@ export const YAxisDomainEntrySchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"type"
@@ -7929,6 +7929,8 @@ export const ChartConfigSchema = {
 } 
 
 export const BaseViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -8304,8 +8306,6 @@ export const BaseViewConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type"
@@ -8313,12 +8313,12 @@ export const BaseViewConfigSchema = {
 } 
 
 export const ColorOptionSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"color"
@@ -8326,6 +8326,8 @@ export const ColorOptionSchema = {
 } 
 
 export const ListViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -8743,8 +8745,6 @@ export const ListViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"listConfig",
 		"name",
@@ -8754,6 +8754,8 @@ export const ListViewConfigSchema = {
 } 
 
 export const SingleValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9138,8 +9140,6 @@ export const SingleValueViewConfigSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"dataColor",
 		"name",
@@ -9149,6 +9149,8 @@ export const SingleValueViewConfigSchema = {
 } 
 
 export const MultiPhotographViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9530,8 +9532,6 @@ export const MultiPhotographViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -9540,6 +9540,8 @@ export const MultiPhotographViewConfigSchema = {
 } 
 
 export const MultiSingleValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9921,8 +9923,6 @@ export const MultiSingleValueViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -9931,6 +9931,8 @@ export const MultiSingleValueViewConfigSchema = {
 } 
 
 export const SingleDownloadLinkViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -10312,8 +10314,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -10322,6 +10322,8 @@ export const SingleDownloadLinkViewConfigSchema = {
 } 
 
 export const MultiValueRowOptionSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
@@ -10330,8 +10332,6 @@ export const MultiValueRowOptionSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"color",
 		"header"
@@ -10339,6 +10339,8 @@ export const MultiValueRowOptionSchema = {
 } 
 
 export const MultiValueRowViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -10805,8 +10807,6 @@ export const MultiValueRowViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -10815,6 +10815,8 @@ export const MultiValueRowViewConfigSchema = {
 } 
 
 export const ColorListViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11196,8 +11198,6 @@ export const ColorListViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11206,6 +11206,8 @@ export const ColorListViewConfigSchema = {
 } 
 
 export const DataDownloadViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11587,8 +11589,6 @@ export const DataDownloadViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11597,6 +11597,8 @@ export const DataDownloadViewConfigSchema = {
 } 
 
 export const SingleDateViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11978,8 +11980,6 @@ export const SingleDateViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11988,6 +11988,8 @@ export const SingleDateViewConfigSchema = {
 } 
 
 export const DownloadFilesViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -12369,8 +12371,6 @@ export const DownloadFilesViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -12379,6 +12379,8 @@ export const DownloadFilesViewConfigSchema = {
 } 
 
 export const MultiValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -12772,8 +12774,6 @@ export const MultiValueViewConfigSchema = {
 			}
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -12782,6 +12782,8 @@ export const MultiValueViewConfigSchema = {
 } 
 
 export const QRCodeViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -13163,8 +13165,6 @@ export const QRCodeViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -25601,6 +25601,7 @@ export const TransformSchema = {
 } 
 
 export const StandardReportConfigSchema = {
+	"type": "object",
 	"properties": {
 		"transform": {
 			"type": "array",
@@ -25621,7 +25622,6 @@ export const StandardReportConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"transform"
@@ -25629,12 +25629,12 @@ export const StandardReportConfigSchema = {
 } 
 
 export const CustomReportConfigSchema = {
+	"type": "object",
 	"properties": {
 		"customReport": {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"customReport"
@@ -25686,6 +25686,8 @@ export const ReportConfigSchema = {
 } 
 
 export const MatrixReportRowSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"dataElement": {
 			"type": "string"
@@ -25711,9 +25713,7 @@ export const MatrixReportRowSchema = {
 			],
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const MatrixReportColumnSchema = {
@@ -25721,6 +25721,7 @@ export const MatrixReportColumnSchema = {
 } 
 
 export const BaseReportSchema = {
+	"type": "object",
 	"properties": {
 		"data": {
 			"type": "array",
@@ -25751,7 +25752,6 @@ export const BaseReportSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"endDate",
@@ -25760,6 +25760,8 @@ export const BaseReportSchema = {
 } 
 
 export const ViewDataItemSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"value": {},
 		"total": {
@@ -25781,12 +25783,12 @@ export const ViewDataItemSchema = {
 			],
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ViewReportSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"startDate": {
 			"type": "string"
@@ -25842,8 +25844,6 @@ export const ViewReportSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"endDate",
 		"startDate"
@@ -25851,6 +25851,8 @@ export const ViewReportSchema = {
 } 
 
 export const MatrixReportSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"startDate": {
 			"type": "string"
@@ -25913,8 +25915,6 @@ export const MatrixReportSchema = {
 			}
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"endDate",
 		"startDate"
@@ -25922,6 +25922,7 @@ export const MatrixReportSchema = {
 } 
 
 export const MapOverlayConfigSchema = {
+	"type": "object",
 	"properties": {
 		"customColors": {
 			"type": "string"
@@ -26371,7 +26372,6 @@ export const MapOverlayConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"displayType"
@@ -26379,6 +26379,7 @@ export const MapOverlayConfigSchema = {
 } 
 
 export const InlineValueSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
@@ -26423,7 +26424,6 @@ export const InlineValueSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"icon",
@@ -26518,6 +26518,7 @@ export const MeasureColorSchemeSchema = {
 } 
 
 export const AccessRequestSchema = {
+	"type": "object",
 	"properties": {
 		"approved": {
 			"type": "boolean"
@@ -26555,7 +26556,6 @@ export const AccessRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
@@ -26563,6 +26563,7 @@ export const AccessRequestSchema = {
 } 
 
 export const AdminPanelSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -26581,7 +26582,6 @@ export const AdminPanelSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -26594,6 +26594,7 @@ export const AdminPanelSessionSchema = {
 } 
 
 export const AnalyticsSchema = {
+	"type": "object",
 	"properties": {
 		"answer_entity_m_row$": {
 			"type": "string"
@@ -26654,11 +26655,11 @@ export const AnalyticsSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const AncestorDescendantRelationSchema = {
+	"type": "object",
 	"properties": {
 		"ancestor_id": {
 			"type": "string"
@@ -26676,7 +26677,6 @@ export const AncestorDescendantRelationSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"ancestor_id",
@@ -26688,6 +26688,7 @@ export const AncestorDescendantRelationSchema = {
 } 
 
 export const AnswerSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -26708,7 +26709,6 @@ export const AnswerSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -26719,6 +26719,7 @@ export const AnswerSchema = {
 } 
 
 export const ApiClientSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -26733,7 +26734,6 @@ export const ApiClientSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -26743,6 +26743,7 @@ export const ApiClientSchema = {
 } 
 
 export const ApiRequestLogSchema = {
+	"type": "object",
 	"properties": {
 		"api": {
 			"type": "string"
@@ -26772,7 +26773,6 @@ export const ApiRequestLogSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"api",
@@ -26783,6 +26783,7 @@ export const ApiRequestLogSchema = {
 } 
 
 export const ClinicSchema = {
+	"type": "object",
 	"properties": {
 		"category_code": {
 			"type": "string"
@@ -26809,7 +26810,6 @@ export const ClinicSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26821,6 +26821,7 @@ export const ClinicSchema = {
 } 
 
 export const CountrySchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26832,7 +26833,6 @@ export const CountrySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26842,6 +26842,7 @@ export const CountrySchema = {
 } 
 
 export const DashboardSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26859,7 +26860,6 @@ export const DashboardSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26870,6 +26870,7 @@ export const DashboardSchema = {
 } 
 
 export const DashboardItemSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -34872,7 +34873,6 @@ export const DashboardItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -34881,6 +34881,7 @@ export const DashboardItemSchema = {
 } 
 
 export const DashboardRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -34908,7 +34909,6 @@ export const DashboardRelationSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -34921,6 +34921,7 @@ export const DashboardRelationSchema = {
 } 
 
 export const DataElementSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -34951,7 +34952,6 @@ export const DataElementSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -34961,6 +34961,7 @@ export const DataElementSchema = {
 } 
 
 export const DataElementDataGroupSchema = {
+	"type": "object",
 	"properties": {
 		"data_element_id": {
 			"type": "string"
@@ -34972,7 +34973,6 @@ export const DataElementDataGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"data_element_id",
@@ -34982,6 +34982,7 @@ export const DataElementDataGroupSchema = {
 } 
 
 export const DataElementDataServiceSchema = {
+	"type": "object",
 	"properties": {
 		"country_code": {
 			"type": "string"
@@ -35006,7 +35007,6 @@ export const DataElementDataServiceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"country_code",
@@ -35017,6 +35017,7 @@ export const DataElementDataServiceSchema = {
 } 
 
 export const DataGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35038,7 +35039,6 @@ export const DataGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35048,6 +35048,7 @@ export const DataGroupSchema = {
 } 
 
 export const DataServiceEntitySchema = {
+	"type": "object",
 	"properties": {
 		"config": {},
 		"entity_code": {
@@ -35057,7 +35058,6 @@ export const DataServiceEntitySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"config",
@@ -35067,6 +35067,7 @@ export const DataServiceEntitySchema = {
 } 
 
 export const DataServiceSyncGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35102,7 +35103,6 @@ export const DataServiceSyncGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35114,6 +35114,7 @@ export const DataServiceSyncGroupSchema = {
 } 
 
 export const DataTableSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35145,7 +35146,6 @@ export const DataTableSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35156,6 +35156,7 @@ export const DataTableSchema = {
 } 
 
 export const DatatrakSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -35174,7 +35175,6 @@ export const DatatrakSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -35187,6 +35187,7 @@ export const DatatrakSessionSchema = {
 } 
 
 export const DhisInstanceSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35199,7 +35200,6 @@ export const DhisInstanceSchema = {
 			"type": "boolean"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35210,6 +35210,7 @@ export const DhisInstanceSchema = {
 } 
 
 export const DhisSyncLogSchema = {
+	"type": "object",
 	"properties": {
 		"data": {
 			"type": "string"
@@ -35242,7 +35243,6 @@ export const DhisSyncLogSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35252,6 +35252,7 @@ export const DhisSyncLogSchema = {
 } 
 
 export const DhisSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"bad_request_count": {
 			"type": "number"
@@ -35284,7 +35285,6 @@ export const DhisSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35295,6 +35295,7 @@ export const DhisSyncQueueSchema = {
 } 
 
 export const DisasterSchema = {
+	"type": "object",
 	"properties": {
 		"countryCode": {
 			"type": "string"
@@ -35319,7 +35320,6 @@ export const DisasterSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"countryCode",
@@ -35330,6 +35330,7 @@ export const DisasterSchema = {
 } 
 
 export const DisasterEventSchema = {
+	"type": "object",
 	"properties": {
 		"date": {
 			"type": "string",
@@ -35353,7 +35354,6 @@ export const DisasterEventSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"date",
@@ -35365,6 +35365,7 @@ export const DisasterEventSchema = {
 } 
 
 export const EntitySchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {},
 		"bounds": {},
@@ -35434,7 +35435,6 @@ export const EntitySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35444,6 +35444,7 @@ export const EntitySchema = {
 } 
 
 export const EntityHierarchySchema = {
+	"type": "object",
 	"properties": {
 		"canonical_types": {
 			"type": "array",
@@ -35458,7 +35459,6 @@ export const EntityHierarchySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35467,6 +35467,7 @@ export const EntityHierarchySchema = {
 } 
 
 export const EntityRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -35481,7 +35482,6 @@ export const EntityRelationSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -35492,6 +35492,7 @@ export const EntityRelationSchema = {
 } 
 
 export const ErrorLogSchema = {
+	"type": "object",
 	"properties": {
 		"api_request_log_id": {
 			"type": "string"
@@ -35510,7 +35511,6 @@ export const ErrorLogSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
@@ -35518,6 +35518,7 @@ export const ErrorLogSchema = {
 } 
 
 export const ExternalDatabaseConnectionSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35538,7 +35539,6 @@ export const ExternalDatabaseConnectionSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35548,6 +35548,7 @@ export const ExternalDatabaseConnectionSchema = {
 } 
 
 export const FeedItemSchema = {
+	"type": "object",
 	"properties": {
 		"country_id": {
 			"type": "string"
@@ -35587,7 +35588,6 @@ export const FeedItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
@@ -35595,6 +35595,7 @@ export const FeedItemSchema = {
 } 
 
 export const GeographicalAreaSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35618,7 +35619,6 @@ export const GeographicalAreaSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"country_id",
@@ -35630,6 +35630,7 @@ export const GeographicalAreaSchema = {
 } 
 
 export const IndicatorSchema = {
+	"type": "object",
 	"properties": {
 		"builder": {
 			"type": "string"
@@ -35642,7 +35643,6 @@ export const IndicatorSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"builder",
@@ -35652,6 +35652,7 @@ export const IndicatorSchema = {
 } 
 
 export const LandingPageSchema = {
+	"type": "object",
 	"properties": {
 		"contact_us": {
 			"type": "string"
@@ -35702,7 +35703,6 @@ export const LandingPageSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35712,6 +35712,7 @@ export const LandingPageSchema = {
 } 
 
 export const LegacyReportSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35725,7 +35726,6 @@ export const LegacyReportSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35734,6 +35734,7 @@ export const LegacyReportSchema = {
 } 
 
 export const LesmisSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -35752,7 +35753,6 @@ export const LesmisSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -35765,6 +35765,7 @@ export const LesmisSessionSchema = {
 } 
 
 export const MapOverlaySchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36260,7 +36261,6 @@ export const MapOverlaySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36270,6 +36270,7 @@ export const MapOverlaySchema = {
 } 
 
 export const MapOverlayGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36281,7 +36282,6 @@ export const MapOverlayGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36291,6 +36291,7 @@ export const MapOverlayGroupSchema = {
 } 
 
 export const MapOverlayGroupRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -36308,7 +36309,6 @@ export const MapOverlayGroupRelationSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -36319,6 +36319,7 @@ export const MapOverlayGroupRelationSchema = {
 } 
 
 export const MeditrakDeviceSchema = {
+	"type": "object",
 	"properties": {
 		"app_version": {
 			"type": "string"
@@ -36337,7 +36338,6 @@ export const MeditrakDeviceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36347,6 +36347,7 @@ export const MeditrakDeviceSchema = {
 } 
 
 export const MeditrakSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"change_time": {
 			"type": "number"
@@ -36364,7 +36365,6 @@ export const MeditrakSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36375,6 +36375,7 @@ export const MeditrakSyncQueueSchema = {
 } 
 
 export const Ms1SyncLogSchema = {
+	"type": "object",
 	"properties": {
 		"count": {
 			"type": "number"
@@ -36398,7 +36399,6 @@ export const Ms1SyncLogSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36408,6 +36408,7 @@ export const Ms1SyncLogSchema = {
 } 
 
 export const Ms1SyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"bad_request_count": {
 			"type": "number"
@@ -36440,7 +36441,6 @@ export const Ms1SyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36451,6 +36451,7 @@ export const Ms1SyncQueueSchema = {
 } 
 
 export const OneTimeLoginSchema = {
+	"type": "object",
 	"properties": {
 		"creation_date": {
 			"type": "string",
@@ -36470,7 +36471,6 @@ export const OneTimeLoginSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36480,6 +36480,7 @@ export const OneTimeLoginSchema = {
 } 
 
 export const OptionSchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {},
 		"id": {
@@ -36498,7 +36499,6 @@ export const OptionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36508,6 +36508,7 @@ export const OptionSchema = {
 } 
 
 export const OptionSetSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36516,7 +36517,6 @@ export const OptionSetSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36525,6 +36525,7 @@ export const OptionSetSchema = {
 } 
 
 export const PermissionGroupSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36536,7 +36537,6 @@ export const PermissionGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36545,6 +36545,7 @@ export const PermissionGroupSchema = {
 } 
 
 export const PermissionsBasedMeditrakSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"change_time": {
 			"type": "number"
@@ -36615,11 +36616,11 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const ProjectSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36659,7 +36660,6 @@ export const ProjectSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36668,6 +36668,7 @@ export const ProjectSchema = {
 } 
 
 export const PsssSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -36686,7 +36687,6 @@ export const PsssSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -36699,6 +36699,7 @@ export const PsssSessionSchema = {
 } 
 
 export const QuestionSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36758,7 +36759,6 @@ export const QuestionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36768,6 +36768,7 @@ export const QuestionSchema = {
 } 
 
 export const RefreshTokenSchema = {
+	"type": "object",
 	"properties": {
 		"device": {
 			"type": "string"
@@ -36788,7 +36789,6 @@ export const RefreshTokenSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36798,6 +36798,7 @@ export const RefreshTokenSchema = {
 } 
 
 export const ReportSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36852,7 +36853,6 @@ export const ReportSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36863,6 +36863,7 @@ export const ReportSchema = {
 } 
 
 export const SettingSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36874,7 +36875,6 @@ export const SettingSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36883,6 +36883,7 @@ export const SettingSchema = {
 } 
 
 export const SupersetInstanceSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36892,7 +36893,6 @@ export const SupersetInstanceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36902,6 +36902,7 @@ export const SupersetInstanceSchema = {
 } 
 
 export const SurveySchema = {
+	"type": "object",
 	"properties": {
 		"can_repeat": {
 			"type": "boolean"
@@ -36948,7 +36949,6 @@ export const SurveySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36958,6 +36958,7 @@ export const SurveySchema = {
 } 
 
 export const SurveyGroupSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36966,7 +36967,6 @@ export const SurveyGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36975,6 +36975,7 @@ export const SurveyGroupSchema = {
 } 
 
 export const SurveyResponseSchema = {
+	"type": "object",
 	"properties": {
 		"approval_status": {
 			"enum": [
@@ -37025,7 +37026,6 @@ export const SurveyResponseSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"assessor_name",
@@ -37039,6 +37039,7 @@ export const SurveyResponseSchema = {
 } 
 
 export const SurveyResponseCommentSchema = {
+	"type": "object",
 	"properties": {
 		"comment_id": {
 			"type": "string"
@@ -37050,7 +37051,6 @@ export const SurveyResponseCommentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"comment_id",
@@ -37060,6 +37060,7 @@ export const SurveyResponseCommentSchema = {
 } 
 
 export const SurveyScreenSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37071,7 +37072,6 @@ export const SurveyScreenSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -37081,6 +37081,7 @@ export const SurveyScreenSchema = {
 } 
 
 export const SurveyScreenComponentSchema = {
+	"type": "object",
 	"properties": {
 		"answers_enabling_follow_up": {
 			"type": "array",
@@ -37119,7 +37120,6 @@ export const SurveyScreenComponentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"component_number",
@@ -37130,6 +37130,7 @@ export const SurveyScreenComponentSchema = {
 } 
 
 export const SyncGroupLogSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37157,7 +37158,6 @@ export const SyncGroupLogSchema = {
 			"format": "date-time"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -37168,6 +37168,7 @@ export const SyncGroupLogSchema = {
 } 
 
 export const TupaiaWebSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -37186,7 +37187,6 @@ export const TupaiaWebSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -37199,6 +37199,7 @@ export const TupaiaWebSessionSchema = {
 } 
 
 export const UserAccountSchema = {
+	"type": "object",
 	"properties": {
 		"creation_date": {
 			"type": "string",
@@ -37254,7 +37255,6 @@ export const UserAccountSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"email",
@@ -37265,6 +37265,7 @@ export const UserAccountSchema = {
 } 
 
 export const UserEntityPermissionSchema = {
+	"type": "object",
 	"properties": {
 		"entity_id": {
 			"type": "string"
@@ -37279,7 +37280,6 @@ export const UserEntityPermissionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
@@ -37287,6 +37287,7 @@ export const UserEntityPermissionSchema = {
 } 
 
 export const UserFavouriteDashboardItemSchema = {
+	"type": "object",
 	"properties": {
 		"dashboard_item_id": {
 			"type": "string"
@@ -37298,7 +37299,6 @@ export const UserFavouriteDashboardItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"dashboard_item_id",
@@ -37308,6 +37308,7 @@ export const UserFavouriteDashboardItemSchema = {
 } 
 
 export const UserSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_token_expiry": {
 			"type": "string"
@@ -37326,7 +37327,6 @@ export const UserSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -37509,6 +37509,7 @@ export const IdSchema = {
 } 
 
 export const AnswerTypeSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37520,25 +37521,20 @@ export const AnswerTypeSchema = {
 			"type": "string"
 		},
 		"question_id": {
-			"$async": true,
-			"checkIdExists": {
-				"table": "question"
-			},
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"body",
 		"id",
 		"question_id",
 		"type"
-	],
-	"$async": true
+	]
 } 
 
 export const EntityCreatedSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37597,7 +37593,6 @@ export const EntityCreatedSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -37610,6 +37605,7 @@ export const EntityCreatedSchema = {
 } 
 
 export const OptionCreatedSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37624,32 +37620,24 @@ export const OptionCreatedSchema = {
 			"type": "string"
 		},
 		"option_set_id": {
-			"$async": true,
-			"checkIdExists": {
-				"table": "optionSet"
-			},
 			"type": "string"
 		},
 		"sort_order": {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"option_set_id",
 		"value"
-	],
-	"$async": true
+	]
 } 
 
 export const MeditrakSurveyResponseRequestSchema = {
+	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"id": {
-			"type": "string"
-		},
-		"timestamp": {
-			"format": "iso-date-time",
 			"type": "string"
 		},
 		"survey_id": {
@@ -37659,7 +37647,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		},
 		"answers": {
-			"$async": true,
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -37674,9 +37661,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"question_id": {
-						"checkIdExists": {
-							"table": "question"
-						},
 						"type": "string"
 					}
 				},
@@ -37704,6 +37688,10 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		},
 		"data_time": {
+			"format": "iso-date-time",
+			"type": "string"
+		},
+		"timestamp": {
 			"format": "iso-date-time",
 			"type": "string"
 		},
@@ -37784,7 +37772,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 			}
 		},
 		"options_created": {
-			"$async": true,
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -37802,9 +37789,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"option_set_id": {
-						"checkIdExists": {
-							"table": "optionSet"
-						},
 						"type": "string"
 					},
 					"sort_order": {
@@ -37826,18 +37810,15 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
-	"additionalProperties": {},
 	"required": [
 		"answers",
 		"survey_id",
-		"timestamp",
 		"user_id"
-	],
-	"$async": true
+	]
 } 
 
 export const DataTablePreviewRequestSchema = {
+	"type": "object",
 	"properties": {
 		"runtimeParams": {
 			"additionalProperties": true,
@@ -37848,9 +37829,6 @@ export const DataTablePreviewRequestSchema = {
 		},
 		"config": {},
 		"description": {
-			"type": "string"
-		},
-		"id": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -37873,11 +37851,9 @@ export const DataTablePreviewRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id",
 		"permission_groups",
 		"type"
 	]
@@ -38071,6 +38047,8 @@ export const ReqQuerySchema = {
 } 
 
 export const ProjectResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -38133,8 +38111,6 @@ export const ProjectResponseSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"code",
 		"hasAccess",
@@ -38145,16 +38121,17 @@ export const ProjectResponseSchema = {
 } 
 
 export const VisibilityCriteriaSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"_conjunction": {
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ValidationCriteriaSchema = {
+	"type": "object",
 	"properties": {
 		"required": {
 			"type": "boolean"
@@ -38166,11 +38143,11 @@ export const ValidationCriteriaSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const CamelCasedQuestionSchema = {
+	"type": "object",
 	"properties": {
 		"text": {
 			"type": "string"
@@ -38179,21 +38156,6 @@ export const CamelCasedQuestionSchema = {
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
-		},
-		"dataElementId": {
-			"type": "string"
-		},
-		"detail": {
-			"type": "string"
-		},
-		"hook": {
-			"type": "string"
-		},
-		"mRow$": {
-			"type": "string"
-		},
-		"optionSetId": {
 			"type": "string"
 		},
 		"type": {
@@ -38219,9 +38181,23 @@ export const CamelCasedQuestionSchema = {
 				"SubmissionDate"
 			],
 			"type": "string"
+		},
+		"dataElementId": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"mRow$": {
+			"type": "string"
+		},
+		"optionSetId": {
+			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"text",
@@ -38230,6 +38206,7 @@ export const CamelCasedQuestionSchema = {
 } 
 
 export const CamelCasedComponentSchema = {
+	"type": "object",
 	"properties": {
 		"answersEnablingFollowUp": {
 			"type": "array",
@@ -38250,7 +38227,6 @@ export const CamelCasedComponentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
@@ -38259,6 +38235,7 @@ export const CamelCasedComponentSchema = {
 } 
 
 export const CodeGeneratorConfigSchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"enum": [
@@ -38280,7 +38257,6 @@ export const CodeGeneratorConfigSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"type"
@@ -38288,6 +38264,7 @@ export const CodeGeneratorConfigSchema = {
 } 
 
 export const AutocompleteConfigSchema = {
+	"type": "object",
 	"properties": {
 		"createNew": {
 			"type": "boolean"
@@ -38308,11 +38285,11 @@ export const AutocompleteConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const ConditionConfigSchema = {
+	"type": "object",
 	"properties": {
 		"conditions": {
 			"type": "object",
@@ -38334,7 +38311,6 @@ export const ConditionConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"conditions"
@@ -38342,6 +38318,8 @@ export const ConditionConfigSchema = {
 } 
 
 export const EntityQuestionConfigSchema = {
+	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"createNew": {
 			"type": "boolean"
@@ -38408,12 +38386,11 @@ export const EntityQuestionConfigSchema = {
 			},
 			"additionalProperties": false
 		}
-	},
-	"type": "object",
-	"additionalProperties": {}
+	}
 } 
 
 export const ArithmeticConfigSchema = {
+	"type": "object",
 	"properties": {
 		"formula": {
 			"type": "string"
@@ -38430,7 +38407,6 @@ export const ArithmeticConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"formula"
@@ -38438,6 +38414,7 @@ export const ArithmeticConfigSchema = {
 } 
 
 export const SurveyScreenComponentConfigSchema = {
+	"type": "object",
 	"properties": {
 		"codeGenerator": {
 			"type": "object",
@@ -38614,11 +38591,11 @@ export const SurveyScreenComponentConfigSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const CamelCasedSurveyScreenSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -38627,7 +38604,6 @@ export const CamelCasedSurveyScreenSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -38636,6 +38612,7 @@ export const CamelCasedSurveyScreenSchema = {
 } 
 
 export const AutocompleteAnswerSchema = {
+	"type": "object",
 	"properties": {
 		"isNew": {
 			"type": "boolean"
@@ -38650,7 +38627,6 @@ export const AutocompleteAnswerSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"label",
@@ -38665,6 +38641,7 @@ export const AnswersSchema = {
 } 
 
 export const CountryAccessSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -38682,7 +38659,6 @@ export const CountryAccessSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"accessRequests",
@@ -38693,6 +38669,7 @@ export const CountryAccessSchema = {
 } 
 
 export const DashboardWithItemsSchema = {
+	"type": "object",
 	"properties": {
 		"items": {
 			"type": "array",
@@ -46723,7 +46700,6 @@ export const DashboardWithItemsSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -46735,6 +46711,8 @@ export const DashboardWithItemsSchema = {
 } 
 
 export const TranslatedMapOverlaySchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -47196,8 +47174,6 @@ export const TranslatedMapOverlaySchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"code",
 		"displayType",

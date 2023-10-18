@@ -7,6 +7,7 @@ import React, { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import {
   Accordion,
   AccordionDetails,
@@ -17,7 +18,6 @@ import {
 } from '@material-ui/core';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import { ErrorBoundary } from '@tupaia/ui-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
@@ -33,7 +33,13 @@ const AccordionWrapper = styled(Accordion)`
 `;
 
 const AccordionHeader = styled(AccordionSummary)`
+  display: flex;
+  align-items: center;
   border-radius: 3px;
+
+  .MuiAccordionSummary-content .MuiSvgIcon-root {
+    margin: 0 0 0 0.2rem;
+  }
   &:hover {
     background: rgba(153, 153, 153, 0.2);
   }
@@ -53,6 +59,11 @@ const AccordionHeader = styled(AccordionSummary)`
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     font-size: 1rem;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const AccordionContent = styled(AccordionDetails)`
@@ -98,28 +109,40 @@ const MapOverlayAccordion = ({
   };
 
   return (
-    <ErrorBoundary>
-      <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-        <AccordionHeader expandIcon={<KeyboardArrowRight />}>
-          {mapOverlayGroup.name}
-        </AccordionHeader>
-        <AccordionContent>
-          {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
-          {mapOverlayGroup.children.map(mapOverlay =>
-            'children' in mapOverlay ? (
-              <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
-            ) : (
+    <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
+      <AccordionHeader expandIcon={<KeyboardArrowRight />}>
+        {mapOverlayGroup.name}
+        {mapOverlayGroup.info && mapOverlayGroup.info.reference && (
+          <ReferenceTooltip
+            reference={mapOverlayGroup.info.reference}
+            iconStyleOption="mayOverlay"
+          />
+        )}
+      </AccordionHeader>
+      <AccordionContent>
+        {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
+        {mapOverlayGroup.children.map(mapOverlay =>
+          'children' in mapOverlay ? (
+            <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
+          ) : (
+            <Wrapper>
               <FormLabel
                 value={mapOverlay.code}
                 control={<Radio />}
                 label={mapOverlay.name}
                 key={mapOverlay.code}
               />
-            ),
-          )}
-        </AccordionContent>
-      </AccordionWrapper>
-    </ErrorBoundary>
+              {mapOverlay.info && mapOverlay.info.reference && (
+                <ReferenceTooltip
+                  reference={mapOverlay.info.reference}
+                  iconStyleOption="mayOverlay"
+                />
+              )}
+            </Wrapper>
+          ),
+        )}
+      </AccordionContent>
+    </AccordionWrapper>
   );
 };
 
@@ -148,19 +171,17 @@ export const MapOverlayList = () => {
   if (isLoadingMapOverlays) return null;
 
   return (
-    <ErrorBoundary>
-      <RadioGroupContainer
-        aria-label="Map overlays"
-        name="map-overlays"
-        value={selectedOverlayCode}
-        onChange={onChangeMapOverlay}
-      >
-        {mapOverlayGroups
-          .filter(item => item.name)
-          .map(group => (
-            <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
-          ))}
-      </RadioGroupContainer>
-    </ErrorBoundary>
+    <RadioGroupContainer
+      aria-label="Map overlays"
+      name="map-overlays"
+      value={selectedOverlayCode}
+      onChange={onChangeMapOverlay}
+    >
+      {mapOverlayGroups
+        .filter(item => item.name)
+        .map(group => (
+          <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
+        ))}
+    </RadioGroupContainer>
   );
 };

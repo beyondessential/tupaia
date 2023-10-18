@@ -14,6 +14,7 @@ import {
 import { orderBy } from '@tupaia/utils';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
+import isEqual from 'lodash.isequal';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -30,6 +31,42 @@ const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
 const DEFAULT_PAGE_SIZE = 'ALL';
+
+// This function checks if all the map overlay items have the same reference and if they do, it
+// removes the reference from the children and adds it to the info object of the parent
+const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
+  const getReference = (mapOverlayItem: OverlayChild) => {
+    if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
+    return undefined;
+  };
+
+  const firstReference = children[0] && getReference(children[0]);
+
+  const referencesAreTheSame =
+    firstReference &&
+    children.every(
+      mapOverlayItem =>
+        getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
+    );
+
+  if (!referencesAreTheSame) {
+    return {
+      children,
+    };
+  }
+
+  // Delete all the same references
+  const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+    const { info, ...restValues } = mapOverlayItem;
+    delete info!['reference'];
+    return { ...restValues, info };
+  });
+
+  return {
+    children: noReferenceMapOverlayItems,
+    info: { reference: firstReference },
+  };
+};
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
@@ -111,10 +148,14 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           };
         },
       );
+
       // Translate Map Overlay Group
+      const { children, info } = integrateMapOverlayItemsReference(nestedChildren);
+
       return {
         name: parentEntry.name,
-        children: orderBy(nestedChildren, [
+        info,
+        children: orderBy(children, [
           (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
           'sortOrder',
           'name',

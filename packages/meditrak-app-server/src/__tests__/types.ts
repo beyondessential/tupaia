@@ -15,6 +15,7 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly surveyResponse: modelClasses.SurveyResponse;
   readonly answer: modelClasses.Answer;
   readonly survey: modelClasses.Survey;
+  readonly surveyScreenComponent: modelClasses.SurveyScreenComponent;
   readonly userEntityPermission: modelClasses.UserEntityPermission;
   readonly facility: modelClasses.Facility;
   readonly permissionGroup: modelClasses.PermissionGroup;
