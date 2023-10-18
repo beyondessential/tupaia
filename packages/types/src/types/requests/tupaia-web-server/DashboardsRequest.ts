@@ -13,6 +13,6 @@ export interface Params {
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
 }
-export type ResBody = KeysToCamelCase<DashboardWithItems>[];
+export type ResBody = KeysToCamelCase<DashboardWithItems[]>;
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;
