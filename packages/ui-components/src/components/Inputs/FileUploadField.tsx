@@ -39,8 +39,8 @@ interface FileUploadFieldProps {
   ) => void;
   name: string;
   fileName: string;
-  multiple: boolean;
-  textOnButton: string;
+  multiple?: boolean;
+  textOnButton?: string;
   label?: string;
   tooltip?: string;
   helperText?: string;
