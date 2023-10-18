@@ -80,7 +80,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     // The child_codes list won't have been filtered for frontendExcludedTypes
     // Since we fetch two layers at a time, we can clean up child_codes in the
     // first layer, by checking the child exists in the second
-    const formattedEntities = flatEntities.map((entity: any) => {
+    const formattedEntities: Entity[] = flatEntities.map((entity: any) => {
       // Only the first layer
       if (entity.parent_code !== rootEntityCode) {
         return entity;
@@ -92,7 +92,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
         ...entity,
         child_codes: filteredChildren?.length > 0 ? filteredChildren : undefined,
       };
-    }) as Entity[];
+    });
 
     return camelcaseKeys(formattedEntities, { deep: true });
   }

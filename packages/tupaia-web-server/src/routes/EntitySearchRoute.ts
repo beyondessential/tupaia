@@ -33,13 +33,13 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
-    const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
+    const entitySearch: Entity[] = await ctx.services.entity.entitySearch(projectCode, searchString, {
       filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
       ...query,
       page,
       pageSize,
       fields,
-    }) as Entity[];
+    });
 
     return camelcaseKeys(entitySearch, { deep: true });
   }

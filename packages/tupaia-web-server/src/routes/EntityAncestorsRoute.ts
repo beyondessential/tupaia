@@ -34,7 +34,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
-    const entities = (await ctx.services.entity.getAncestorsOfEntity(
+    const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
       projectCode,
       rootEntityCode,
       {
@@ -43,7 +43,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
         ...restOfQuery,
       },
       includeRootEntity,
-    )) as Entity[];
+    );
 
     return camelcaseKeys(entities, { deep: true });
   }
