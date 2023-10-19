@@ -36,7 +36,7 @@ const ButtonWrapper = ({
     </Tooltip>
   );
 };
-export const Button = ({ tooltip, children, to = {}, ...restOfProps }: ButtonProps) => {
+export const Button = ({ tooltip, children, to, ...restOfProps }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip}>
       <StyledButton {...restOfProps} component={to ? RouterLink : undefined} to={to}>

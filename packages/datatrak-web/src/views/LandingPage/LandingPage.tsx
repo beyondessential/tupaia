@@ -11,13 +11,11 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
+import { HEADER_HEIGHT } from '../../constants';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
-  background: url('/landing-page-background.svg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: url('/landing-page-background.svg') center/cover no-repeat;
 `;
 
 const PageBody = styled.div`
@@ -27,7 +25,10 @@ const PageBody = styled.div`
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
+  height: auto;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
+    height: calc(100vh - ${HEADER_HEIGHT});
     padding: 4rem 0 2rem;
   }
 `;
@@ -37,40 +38,37 @@ const Grid = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 2.5rem;
+  min-height: 0; // This is needed to stop the grid overflowing the flex container
 
   .MuiButtonBase-root {
     margin-left: 0; // clear spacing of adjacent buttons
   }
 
-  > div {
+  > section {
     display: flex;
     flex-direction: column;
-    min-height: 300px;
-  }
-
-  section {
-    background: white;
-    border-radius: 10px;
+    height: 25rem;
     margin-bottom: 1rem;
-    flex: 1;
+    overflow: hidden;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
-    gap: 25px 20px;
+    gap: 1.6rem 1.25rem;
     grid-template-rows: auto auto;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
       'recentSurveys leaderboard'
       'recentResponses activityFeed';
 
-    section {
+    > section {
       margin: 0;
+      height: auto;
     }
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-rows: 180px auto;
+    grid-template-rows: 11.25rem auto;
     grid-template-columns: 23% 1fr 1fr 28%;
     grid-template-areas:
       'recentSurveys recentSurveys recentSurveys leaderboard'

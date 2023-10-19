@@ -21,6 +21,7 @@ const ButtonWrapper = styled(Button)`
   font-size: 0.75rem;
   font-weight: 400;
   color: ${({ theme }) => theme.palette.text.secondary};
+  overflow: hidden;
 
   svg {
     margin-right: 0.4rem;

@@ -7,14 +7,22 @@ import React from 'react';
 import styled from 'styled-components';
 import { SectionHeading } from './SectionHeading';
 
-const Leaderboard = styled.div`
+const Leaderboard = styled.section`
   grid-area: leaderboard;
 `;
+
+const ScrollBody = styled.div`
+  overflow: auto;
+  background: white;
+  border-radius: 10px;
+  flex: 1;
+`;
+
 export const LeaderboardSection = () => {
   return (
     <Leaderboard>
       <SectionHeading>Tupaia leaderboard</SectionHeading>
-      <section></section>
+      <ScrollBody></ScrollBody>
     </Leaderboard>
   );
 };

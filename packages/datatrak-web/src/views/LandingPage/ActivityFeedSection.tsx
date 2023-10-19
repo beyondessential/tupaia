@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SectionHeading } from './SectionHeading';
 
-const ActivityFeed = styled.div`
+const ActivityFeed = styled.section`
   grid-area: activityFeed;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -15,11 +15,19 @@ const ActivityFeed = styled.div`
     margin-right: 1rem;
   }
 `;
+
+const ScrollBody = styled.div`
+  overflow: auto;
+  background: white;
+  border-radius: 10px;
+  flex: 1;
+`;
+
 export const ActivityFeedSection = () => {
   return (
     <ActivityFeed>
-      <SectionHeading>Activity Feed</SectionHeading>
-      <section></section>
+      <SectionHeading>Activity feed</SectionHeading>
+      <ScrollBody></ScrollBody>
     </ActivityFeed>
   );
 };

@@ -7,15 +7,25 @@ import React from 'react';
 import styled from 'styled-components';
 import { SectionHeading } from './SectionHeading';
 
-const RecentSurveys = styled.div`
+const RecentSurveys = styled.section`
   grid-area: recentSurveys;
+`;
+
+const ScrollBody = styled.div`
+  background: white;
+  border-radius: 10px;
+  flex: 1;
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    min-height: auto;
+  }
 `;
 
 export const RecentSurveysSection = () => {
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
-      <section></section>
+      <ScrollBody></ScrollBody>
     </RecentSurveys>
   );
 };

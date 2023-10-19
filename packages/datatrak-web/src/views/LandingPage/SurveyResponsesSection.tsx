@@ -10,34 +10,40 @@ import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.section`
   grid-area: recentResponses;
+`;
+
+const ScrollBody = styled.div`
+  overflow: auto;
 `;
 
 export const SurveyResponsesSection = () => {
   const { data, isSuccess } = useCurrentUserSurveyResponses();
   return (
     <Container>
-      <SectionHeading>Recent Responses</SectionHeading>
-      {isSuccess &&
-        data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-          <Tile
-            key={id}
-            title={surveyName}
-            text={entityName}
-            // Todo: update link to survey response route in WAITP-1452
-            to={`/#surveyResponse/${id}`}
-            tooltip={
-              <>
-                {surveyName}
-                <br />
-                {entityName}
-              </>
-            }
-          >
-            {countryName}, {shortDate(dataTime)}
-          </Tile>
-        ))}
+      <SectionHeading>My recent responses</SectionHeading>
+      <ScrollBody>
+        {isSuccess &&
+          data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
+            <Tile
+              key={id}
+              title={surveyName}
+              text={entityName}
+              // Todo: update link to survey response route in WAITP-1452
+              to={`/#surveyResponse/${id}`}
+              tooltip={
+                <>
+                  {surveyName}
+                  <br />
+                  {entityName}
+                </>
+              }
+            >
+              {countryName}, {shortDate(dataTime)}
+            </Tile>
+          ))}
+      </ScrollBody>
     </Container>
   );
 };
