@@ -21,4 +21,6 @@ export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
   userId: string;
+  pageSize?: number;
+  sort?: string[];
 }

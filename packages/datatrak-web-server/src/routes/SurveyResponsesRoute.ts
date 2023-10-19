@@ -24,15 +24,26 @@ const DEFAULT_FIELDS = [
   'survey.name',
 ];
 
+const DEFAULT_LIMIT = 16;
+
+const DEFAULT_SORT = ['data_time DESC'];
+
 export class SurveyResponsesRoute extends Route<SurveyResponsesRequest> {
   public async buildResponse() {
     const { ctx, query } = this.req;
 
-    const { fields = DEFAULT_FIELDS, userId: user_id } = query;
+    const {
+      fields = DEFAULT_FIELDS,
+      pageSize = DEFAULT_LIMIT,
+      sort = DEFAULT_SORT,
+      userId: user_id,
+    } = query;
 
     const surveyResponses = await ctx.services.central.fetchResources('surveyResponses', {
       filter: { user_id },
       columns: fields,
+      pageSize,
+      sort,
     });
 
     return camelcaseKeys(surveyResponses, { deep: true });
