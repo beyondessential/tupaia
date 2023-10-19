@@ -9,6 +9,9 @@ import { SectionHeading } from './SectionHeading';
 
 const ActivityFeed = styled.section`
   grid-area: activityFeed;
+  display: flex;
+  flex-direction: column;
+  height: 25rem;
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
     margin-left: 1rem;

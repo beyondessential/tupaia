@@ -9,6 +9,9 @@ import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
+  display: flex;
+  flex-direction: column;
+  height: 8rem;
 `;
 
 const ScrollBody = styled.div`

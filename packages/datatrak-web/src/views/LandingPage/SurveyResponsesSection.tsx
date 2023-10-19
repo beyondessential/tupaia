@@ -12,10 +12,22 @@ import styled from 'styled-components';
 
 const Container = styled.section`
   grid-area: recentResponses;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ScrollBody = styled.div`
   overflow: auto;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: flex;
+    flex-direction: row;
+
+    > a {
+      min-width: 15rem;
+      margin-right: 1rem;
+    }
+  }
 `;
 
 export const SurveyResponsesSection = () => {

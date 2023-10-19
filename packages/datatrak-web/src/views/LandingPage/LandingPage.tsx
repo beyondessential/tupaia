@@ -45,9 +45,6 @@ const Grid = styled.div`
   }
 
   > section {
-    display: flex;
-    flex-direction: column;
-    height: 25rem;
     margin-bottom: 1rem;
     overflow: hidden;
   }
