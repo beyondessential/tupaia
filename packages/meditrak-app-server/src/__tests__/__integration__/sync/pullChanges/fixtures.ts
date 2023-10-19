@@ -215,3 +215,95 @@ export const findRecordsWithPermissions = (
 
   return deduplicatedRecords;
 };
+
+export const LEGACY_SSC_SURVEY = {
+  code: 'legacy_ssc',
+  questions: [
+    {
+      code: 'legacy_ssc_q1',
+      surveyScreenComponent: {
+        config: JSON.stringify({
+          entity: {
+            createNew: true,
+            fields: {
+              parentId: {
+                questionId: 'TEST_QUESTION_ID',
+              },
+            },
+          },
+        }),
+      },
+    },
+    {
+      code: 'legacy_ssc_q2',
+      surveyScreenComponent: {
+        config: JSON.stringify({
+          entity: undefined,
+        }),
+      },
+    },
+    {
+      code: 'legacy_ssc_q3',
+      surveyScreenComponent: {
+        config: JSON.stringify({
+          entity: {
+            createNew: false,
+            filter: {
+              type: ['facility'],
+            },
+            fields: {
+              parentId: {
+                questionId: 'TEST_QUESTION_ID',
+              },
+            },
+          },
+        }),
+      },
+    },
+    {
+      code: 'legacy_ssc_q4',
+      surveyScreenComponent: {
+        config: JSON.stringify({
+          entity: {
+            createNew: true,
+            fields: {
+              parentId: {
+                questionId: 'TEST_QUESTION_ID',
+              },
+              type: 'case',
+            },
+          },
+        }),
+      },
+    },
+  ],
+};
+
+export const LEGACY_SSC_CONFIGS = {
+  legacy_ssc_q1: JSON.stringify({
+    entity: {
+      createNew: true,
+      parentId: {
+        questionId: 'TEST_QUESTION_ID',
+      },
+    },
+  }),
+  legacy_ssc_q2: JSON.stringify({
+    entity: undefined,
+  }),
+  legacy_ssc_q3: JSON.stringify({
+    entity: {
+      createNew: false,
+      type: ['facility'],
+    },
+  }),
+  legacy_ssc_q4: JSON.stringify({
+    entity: {
+      createNew: true,
+      type: ['case'],
+      parentId: {
+        questionId: 'TEST_QUESTION_ID',
+      },
+    },
+  }),
+};

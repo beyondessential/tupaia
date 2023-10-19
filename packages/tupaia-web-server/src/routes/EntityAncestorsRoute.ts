@@ -5,8 +5,8 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import camelcaseKeys from 'camelcase-keys';
-import { TupaiaWebEntitiesRequest } from '@tupaia/types';
+import { TupaiaWebEntitiesRequest, Entity } from '@tupaia/types';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { generateFrontendExcludedFilter } from '../utils';
 
 export type EntityAncestorsRequest = Request<
@@ -34,7 +34,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
-    const entities = await ctx.services.entity.getAncestorsOfEntity(
+    const entities: Entity[] = await ctx.services.entity.getAncestorsOfEntity(
       projectCode,
       rootEntityCode,
       {

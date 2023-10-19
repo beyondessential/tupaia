@@ -8,7 +8,7 @@ import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@t
 import { sendEmail } from '../../utilities';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
-  notifiers = [onUpsertSendPermissionGrantEmail];
+  notifiers = [onUpsertSendPermissionGrantEmail, expireAccess];
 }
 
 const EMAILS = {
@@ -61,4 +61,14 @@ async function onUpsertSendPermissionGrantEmail(
     null,
     signOff,
   );
+}
+
+/**
+ * This sets the expiry on the users session information to cause a permission refresh. We do this to
+ * ensure we don't use a cached version of the accessPolicy after changing a users access
+ */
+async function expireAccess({ new_record: newRecord, old_record: oldRecord }, models) {
+  const userId = newRecord?.user_id || oldRecord.user_id;
+  const user = await models.user.findById(userId);
+  await user.expireSessionToken('tupaia_web');
 }

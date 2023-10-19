@@ -4,12 +4,9 @@
  */
 
 import { Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export const CellLink = styled(Button).attrs({
-  component: Link,
-})`
+export const CellButton = styled(Button)`
   color: inherit;
   text-decoration: none;
   text-transform: none;

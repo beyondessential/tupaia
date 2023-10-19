@@ -20,7 +20,8 @@ interface MarkerLayerProps {
 
 export const MarkerLayer = ({ measureData = [], serieses = [] }: MarkerLayerProps) => {
   const navigateToEntity = useNavigateToEntity();
-  const markerMeasures = measureData.filter(m => !!m.point).filter(m => !m.isHidden);
+  const markerMeasures = measureData.filter(m => !!m.point && !m.isHidden);
+
   return (
     <LayerGroup>
       {markerMeasures.map((measure: MeasureData) => {

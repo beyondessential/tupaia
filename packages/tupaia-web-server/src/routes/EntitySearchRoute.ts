@@ -5,8 +5,8 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import camelcaseKeys from 'camelcase-keys';
-import { TupaiaWebEntitySearchRequest } from '@tupaia/types';
+import { TupaiaWebEntitySearchRequest, Entity } from '@tupaia/types';
+import { camelcaseKeys } from '@tupaia/tsutils';
 import { generateFrontendExcludedFilter } from '../utils';
 
 const DEFAULT_FIELDS = ['code', 'name', 'qualified_name'];
@@ -33,7 +33,7 @@ export class EntitySearchRoute extends Route<EntitySearchRequest> {
 
     const { typesExcludedFromWebFrontend } = models.entity;
 
-    const entitySearch = await ctx.services.entity.entitySearch(projectCode, searchString, {
+    const entitySearch: Entity[] = await ctx.services.entity.entitySearch(projectCode, searchString, {
       filter: generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
       ...query,
       page,

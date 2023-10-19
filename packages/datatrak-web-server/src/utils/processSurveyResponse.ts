@@ -6,6 +6,7 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
+  Entity,
   MeditrakSurveyResponseRequest,
   Entity,
   QuestionType,
@@ -30,7 +31,7 @@ export const isUpsertEntityQuestion = (config?: ConfigT) => {
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
-  getEntity: Function,
+  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {
     userId,
@@ -44,7 +45,7 @@ export const processSurveyResponse = async (
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
-  const surveyResponse = {
+  const surveyResponse: MeditrakSurveyResponseRequest = {
     user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
@@ -57,8 +58,6 @@ export const processSurveyResponse = async (
     entities_upserted: [],
     options_created: [],
     answers: [],
-  } as MeditrakSurveyResponseRequest & {
-    entities_upserted: Entity[];
   };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];

@@ -4,7 +4,7 @@
  */
 
 import { TestableServer } from '@tupaia/server-boilerplate';
-import { grantAccessToCountries, revokeCountryAccess, setupTestApp } from '../testUtilities';
+import { grantAccess, revokeCountryAccess, setupTestApp } from '../testUtilities';
 import { getEntitiesWithFields, getHierarchiesWithFields } from './fixtures';
 
 describe('permissions', () => {
@@ -12,7 +12,7 @@ describe('permissions', () => {
 
   beforeAll(async () => {
     app = await setupTestApp();
-    grantAccessToCountries(['JOHTO']);
+    grantAccess({ JOHTO: ['Public'], KANTO: ['Team Rocket'] });
   });
 
   afterAll(async () => {

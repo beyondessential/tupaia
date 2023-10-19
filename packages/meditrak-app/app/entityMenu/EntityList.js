@@ -163,11 +163,12 @@ export class EntityList extends PureComponent {
   };
 
   renderEntityCell = ({ item, onDeselect }) => {
-    const { selectedEntityId } = this.props;
+    const { selectedEntityId, config } = this.props;
     const isSelected = item.id === selectedEntityId;
     return (
       <EntityItem
         entity={item}
+        hideParentName={config?.entity?.hideParentName}
         onPress={this.selectRow}
         isSelected={isSelected}
         onDeselect={onDeselect}
@@ -283,10 +284,12 @@ EntityList.propTypes = {
   takeScrollControl: PropTypes.func.isRequired,
   releaseScrollControl: PropTypes.func.isRequired,
   scrollIntoFocus: PropTypes.func.isRequired,
+  config: PropTypes.object,
 };
 
 EntityList.defaultProps = {
   selectedEntityId: '',
+  config: null,
 };
 
 const localStyles = StyleSheet.create({
