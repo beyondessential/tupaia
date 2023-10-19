@@ -17,6 +17,7 @@ import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
 import { DashboardInfoHover } from '../../DashboardItem';
+import { MultiPhotograph } from './MultiPhotograph';
 
 const MultiSingleValueWrapper = styled.div`
   & + & {
@@ -38,6 +39,7 @@ const VIEWS = {
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
+  multiPhotograph: MultiPhotograph,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
