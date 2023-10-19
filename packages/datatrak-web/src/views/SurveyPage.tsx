@@ -30,9 +30,9 @@ const SurveyScreenContainer = styled.div`
   overflow: hidden;
   align-items: flex-start;
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-  overflow: hidden;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: -1rem;
+    margin-left: -1.25rem;
     padding-top: 2rem;
     padding-bottom: 2rem;
   }

@@ -4,12 +4,13 @@
  */
 
 import React from 'react';
-import moment from 'moment';
 import styled from 'styled-components';
-import { PageContainer as BasePageContainer, Tile } from '../../components';
-import { useCurrentUserSurveyResponses } from '../../api/queries';
+import { PageContainer as BasePageContainer } from '../../components';
 import { SurveySelectSection } from './SurveySelectSection';
-import { shortDate } from '../../utils';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
+import { LeaderboardSection } from './LeaderboardSection';
+import { ActivityFeedSection } from './ActivityFeedSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -22,38 +23,24 @@ const PageContainer = styled(BasePageContainer)`
 const PageBody = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem 0;
   width: 100%;
   max-width: 85rem;
   margin: 0 auto;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 4rem 1.5rem 3rem;
+    padding: 4rem 0 2rem;
   }
-`;
-
-const LeaderBoard = styled.div`
-  grid-area: leaderboard;
-`;
-
-const RecentSurveys = styled.div`
-  grid-area: recentSurveys;
-`;
-
-const RecentResponses = styled.div`
-  grid-area: recentResponses;
-`;
-
-const ActivityFeed = styled.div`
-  grid-area: activityFeed;
-  margin-left: 1rem;
-  margin-right: 1rem;
 `;
 
 const Grid = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 70px;
+  margin-top: 2.5rem;
+
+  .MuiButtonBase-root {
+    margin-left: 0; // clear spacing of adjacent buttons
+  }
 
   > div {
     display: flex;
@@ -70,8 +57,9 @@ const Grid = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
-    gap: 15px 10px;
+    gap: 25px 20px;
     grid-template-rows: auto auto;
+    grid-template-columns: 1fr 1fr;
     grid-template-areas:
       'recentSurveys leaderboard'
       'recentResponses activityFeed';
@@ -83,7 +71,7 @@ const Grid = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
     grid-template-rows: 180px auto;
-    grid-template-columns: 1fr 1fr 1fr 30%;
+    grid-template-columns: 23% 1fr 1fr 28%;
     grid-template-areas:
       'recentSurveys recentSurveys recentSurveys leaderboard'
       'recentResponses activityFeed activityFeed leaderboard';
@@ -94,70 +82,15 @@ const Grid = styled.div`
   }
 `;
 
-const SectionHeading = styled.div`
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-`;
-
-const LeaderBoardSection = () => {
-  return (
-    <LeaderBoard>
-      <SectionHeading>Leaderboard</SectionHeading>
-      <section></section>
-    </LeaderBoard>
-  );
-};
-
-const RecentSurveysSection = () => {
-  return (
-    <RecentSurveys>
-      <SectionHeading>Recent Surveys</SectionHeading>
-      <section></section>
-    </RecentSurveys>
-  );
-};
-
-// Todo: update link to survey response route in WAITP-1452
-const RecentResponsesSection = () => {
-  const { data, isSuccess } = useCurrentUserSurveyResponses();
-  return (
-    <RecentResponses>
-      <SectionHeading>Recent Responses</SectionHeading>
-      {isSuccess &&
-        data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-          <Tile
-            key={id}
-            title={surveyName}
-            text={entityName}
-            to={`/#surveyResponse/${id}`}
-            tooltip={surveyName}
-          >
-            {countryName}, {shortDate(dataTime)}
-          </Tile>
-        ))}
-    </RecentResponses>
-  );
-};
-
-const ActivityFeedSection = () => {
-  return (
-    <ActivityFeed>
-      <SectionHeading>Activity Feed</SectionHeading>
-      <section></section>
-    </ActivityFeed>
-  );
-};
-
 export const LandingPage = () => {
   return (
     <PageContainer>
       <PageBody>
         <SurveySelectSection />
         <Grid>
-          <LeaderBoardSection />
+          <LeaderboardSection />
           <RecentSurveysSection />
-          <RecentResponsesSection />
+          <SurveyResponsesSection />
           <ActivityFeedSection />
         </Grid>
       </PageBody>

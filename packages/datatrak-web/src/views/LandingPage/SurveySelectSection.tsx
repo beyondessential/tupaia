@@ -12,7 +12,6 @@ import { Typography } from '@material-ui/core';
 const SurveyAlert = styled.div`
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
-  margin: 0 1.25rem;
   padding: 1rem;
   display: flex;
   position: relative;
@@ -20,7 +19,6 @@ const SurveyAlert = styled.div`
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 2.3rem;
-    margin: 0;
   }
 `;
 
@@ -60,10 +58,10 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding-left: 2rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: 4rem;
     max-width: 75%;
+    padding-left: 2rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
