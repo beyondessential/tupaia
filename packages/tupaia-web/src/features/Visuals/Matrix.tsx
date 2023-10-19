@@ -5,7 +5,7 @@
 
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
 import { IconButton, Typography } from '@material-ui/core';
 import {
@@ -78,7 +78,7 @@ const PlaceholderWarningText = styled(Typography)`
 
 const NoResultsMessage = styled(Typography)`
   padding: 1rem;
-`
+`;
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
@@ -86,16 +86,26 @@ const parseRows = (
   categoryId?: MatrixReportRow['categoryId'],
   searchFilter?: string,
   drillDown?: MatrixConfig['drillDown'],
-  baseDrillDownLink?: string,
   valueType?: MatrixConfig['valueType'],
 ): MatrixRowType[] => {
-  const location = useLocation();
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+
+  const onDrillDown = row => {
+    if (!drillDown) return;
+    const { itemCode } = drillDown;
+    urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
+    urlSearchParams.set(
+      URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID,
+      row[drillDown?.parameterLink!] as string,
+    );
+    setUrlSearchParams(urlSearchParams);
+  };
 
   let topLevelRows = [] as MatrixReportRow[];
   // if a categoryId is not passed in, then we need to find the top level rows
   if (!categoryId) {
     // get the highest level rows, which are the ones that have a category but no categoryId
-    const highestLevel = rows.filter(row => row.category && !row.categoryId) as MatrixReportRow[];
+    const highestLevel = rows.filter(row => !row.categoryId) as MatrixReportRow[];
     // if there are no highest level rows, then the top level rows are just all of the rows
     topLevelRows = highestLevel.length ? highestLevel : rows;
   } else {
@@ -108,14 +118,7 @@ const parseRows = (
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
-      const children = parseRows(
-        rows,
-        category,
-        searchFilter,
-        drillDown,
-        baseDrillDownLink,
-        valueTypeToUse,
-      );
+      const children = parseRows(rows, category, searchFilter, drillDown, valueTypeToUse);
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
       return [
@@ -135,17 +138,10 @@ const parseRows = (
       ...result,
       {
         title: dataElement,
-        link: drillDown
-          ? {
-              ...location,
-              search: `${baseDrillDownLink}&${URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID}=${
-                row[drillDown.parameterLink!]
-              }`,
-            }
-          : null,
+        onClick: drillDown ? () => onDrillDown(row) : undefined,
         ...Object.entries(rest).reduce((acc, [key, item]) => {
           // some items are objects, and we need to parse them to get the value
-          if (typeof item === 'object') {
+          if (typeof item === 'object' && item !== null) {
             const { value, metadata } = item as { value: any; metadata?: any };
             return {
               ...acc,
@@ -201,15 +197,6 @@ const getPlaceholderImage = ({
   return '/images/matrix-placeholder-dot-only.png';
 };
 
-// This function gets the base drilldown link, which is the link that is used for all rows in the matrix, if drilldown is configured.
-const getBaseDrilldownLink = (drillDown?: MatrixConfig['drillDown']) => {
-  const [urlSearchParams] = useSearchParams();
-  if (!drillDown) return '';
-  const { itemCode } = drillDown;
-  urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
-  return urlSearchParams.toString();
-};
-
 const MatrixPreview = ({ config }: { config?: DashboardItemConfig | null }) => {
   const placeholderImage = getPlaceholderImage(config as MatrixConfig);
   return (
@@ -236,15 +223,7 @@ export const Matrix = () => {
 
   const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
 
-  const baseDrillDownLink = getBaseDrilldownLink(drillDown);
-  const parsedRows = parseRows(
-    rows,
-    undefined,
-    searchFilter,
-    drillDown,
-    baseDrillDownLink,
-    valueType,
-  );
+  const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, valueType);
   const parsedColumns = parseColumns(columns);
 
   // in the dashboard, show a placeholder image

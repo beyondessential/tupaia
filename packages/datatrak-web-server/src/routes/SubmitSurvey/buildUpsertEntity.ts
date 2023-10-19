@@ -19,7 +19,7 @@ export const buildUpsertEntity = async (
   questionId: string,
   answers: Answers,
   countryId: Country['id'],
-  getEntity: Function,
+  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const entityId = (answers[questionId] || generateId()) as Entity['id'];
   const entity = { id: entityId } as Entity;
@@ -34,20 +34,23 @@ export const buildUpsertEntity = async (
     const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
 
     if (fieldName === 'parentId') {
-      const entityRecord = await getEntity(fieldValue);
+      if (typeof fieldValue !== 'string') {
+        throw new Error(`parentId must be a string`);
+      }
+      const entityRecord = await findEntityById(fieldValue);
       entity.parent_id = entityRecord.id;
     } else {
       entity[fieldName as keyof Entity] = fieldValue;
     }
   }
 
-  const isUpdate = await getEntity(entityId);
+  const isUpdate = await findEntityById(entityId);
 
   if (isUpdate) {
     return entity;
   }
 
-  const selectedCountry = await getEntity(countryId);
+  const selectedCountry = await findEntityById(countryId);
   if (!entity.country_code) {
     entity.country_code = selectedCountry.code;
   }

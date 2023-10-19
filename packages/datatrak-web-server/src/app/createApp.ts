@@ -32,9 +32,9 @@ import {
   SubmitSurveyRequest,
 } from '../routes';
 
-const { 
+const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2'
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
 } = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);

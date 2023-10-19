@@ -9,4 +9,4 @@ import { Button } from '@tupaia/ui-components';
 interface ButtonLinkProps extends Record<string, any> {
   children?: ReactNode;
 }
-export const ButtonLink = (props: ButtonLinkProps) => <Button component={RouterLink} {...props} />;
+export const ButtonLink = (props: ButtonLinkProps) => <Button {...props} component={RouterLink} />;

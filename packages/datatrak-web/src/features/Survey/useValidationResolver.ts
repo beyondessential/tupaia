@@ -41,12 +41,12 @@ const getBaseSchema = (type: QuestionType) => {
 const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
   return (
     screenComponents?.reduce((schema, component) => {
-      const { questionId, type, validationCriteria = {} } = component;
-      const { mandatory, min, max } = validationCriteria;
-
-      const questionName = type === QuestionType.PrimaryEntity ? 'entityId' : questionId;
+      const { questionId, type, validationCriteria } = component;
+      const { mandatory, min, max } = validationCriteria || {};
 
       if (!mandatory && !min && !max) return schema;
+
+      const questionName = type === QuestionType.PrimaryEntity ? 'entityId' : questionId;
 
       let fieldSchema = getBaseSchema(type);
 

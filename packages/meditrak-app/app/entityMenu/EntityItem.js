@@ -33,7 +33,7 @@ export class EntityItem extends Component {
   };
 
   render() {
-    const { isSelected, entity, onPress, onDeselect } = this.props;
+    const { isSelected, entity, onPress, onDeselect, hideParentName } = this.props;
     const Container = onPress && !isSelected ? TouchableOpacity : View;
 
     return (
@@ -49,7 +49,9 @@ export class EntityItem extends Component {
         />
         <View style={localStyles.rowContent}>
           <Text style={localStyles.entityCellText}>{entity.name}</Text>
-          <Text style={localStyles.entityCellSubText}>{entity.parent?.name}</Text>
+          {!hideParentName && (
+            <Text style={localStyles.entityCellSubText}>{entity.parent?.name}</Text>
+          )}
         </View>
         {onDeselect && (
           <TouchableOpacity analyticsLabel="Selected Entity: Clear" onPress={onDeselect}>
@@ -66,11 +68,13 @@ EntityItem.propTypes = {
   entity: PropTypes.shape({}).isRequired,
   isSelected: PropTypes.bool,
   onDeselect: PropTypes.func,
+  hideParentName: PropTypes.bool,
 };
 
 EntityItem.defaultProps = {
   isSelected: false,
   onDeselect: null,
+  hideParentName: false,
 };
 
 const localStyles = StyleSheet.create({

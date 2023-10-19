@@ -17,6 +17,7 @@ import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
 import { DashboardInfoHover } from '../../DashboardItem';
+import { MultiPhotograph } from './MultiPhotograph';
 
 const MultiSingleValueWrapper = styled.div`
   & + & {
@@ -38,6 +39,7 @@ const VIEWS = {
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
+  multiPhotograph: MultiPhotograph,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
@@ -104,6 +106,9 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, viewConfig);
+
+  // Only show the hover effect if the view is not enlarged and there is no period granularity, because this means that the view is not expandable
+  const showHoverEffect = !isEnlarged && !config?.periodGranularity;
   return (
     <>
       <Component
@@ -115,8 +120,9 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         }
         config={viewConfig}
         isEnlarged={isEnlarged}
+        isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
       />
-      <DashboardInfoHover infoText={viewConfig.description} />
+      {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}
     </>
   );
 };

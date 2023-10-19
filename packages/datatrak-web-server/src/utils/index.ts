@@ -4,4 +4,3 @@
  */
 
 export { sortSearchResults } from './sortSearchResults';
-export { processSurveyResponse } from './processSurveyResponse';

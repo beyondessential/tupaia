@@ -11,7 +11,7 @@ import { MatrixRowType } from '../../types';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { getDisplayedColumns } from './utils';
-import { CellLink } from './CellLink';
+import { CellButton } from './CellButton';
 import { Button } from '../Button';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
@@ -79,7 +79,7 @@ type MatrixRowHeaderProps = {
   hasChildren: boolean;
   children: React.ReactNode;
   disableExpandButton: boolean;
-  link?: typeof Location | string;
+  onClick?: MatrixRowType['onClick'];
 };
 
 const ExpandableRowHeaderCell = ({
@@ -107,14 +107,14 @@ const ExpandableRowHeaderCell = ({
   );
 };
 
-const RowHeaderCellLink = ({
+const ClickableRowHeaderCell = ({
   children,
-  link,
+  onClick,
   depth,
-}: Pick<MatrixRowHeaderProps, 'children' | 'link' | 'depth'>) => {
+}: Pick<MatrixRowHeaderProps, 'children' | 'onClick' | 'depth'>) => {
   return (
     <HeaderCell>
-      <RowHeaderCellContent $depth={depth} to={link} as={CellLink}>
+      <RowHeaderCellContent $depth={depth} onClick={onClick} as={CellButton}>
         {children}
       </RowHeaderCellContent>
     </HeaderCell>
@@ -131,7 +131,7 @@ const RowHeaderCell = ({
   hasChildren,
   children,
   disableExpandButton,
-  link,
+  onClick,
 }: MatrixRowHeaderProps) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
@@ -154,11 +154,11 @@ const RowHeaderCell = ({
       </ExpandableRowHeaderCell>
     );
 
-  if (link)
+  if (onClick)
     return (
-      <RowHeaderCellLink depth={depth} link={link}>
+      <ClickableRowHeaderCell depth={depth} onClick={onClick}>
         {children}
-      </RowHeaderCellLink>
+      </ClickableRowHeaderCell>
     );
 
   return (
@@ -172,7 +172,7 @@ const RowHeaderCell = ({
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
-  const { children, title, link } = row;
+  const { children, title, onClick } = row;
   const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
     MatrixContext,
   );
@@ -195,7 +195,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           rowTitle={title}
           hasChildren={isCategory}
           disableExpandButton={disableExpand}
-          link={link}
+          onClick={onClick}
         >
           {title}
         </RowHeaderCell>

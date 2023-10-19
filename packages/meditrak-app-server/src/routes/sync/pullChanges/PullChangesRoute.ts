@@ -16,6 +16,8 @@ import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
+import { MeditrakAppServerModelRegistry } from '../../../types';
+import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
 
 type ChangeRecord = {
   action: MeditrakSyncQueue['type'];
@@ -52,6 +54,27 @@ const filterNullProperties = (record: Record<string, unknown>) => {
     }
   });
   return recordWithoutNulls;
+};
+
+const translateRecordForSync = (
+  models: MeditrakAppServerModelRegistry,
+  recordType: string,
+  appVersion: string,
+  record: Record<string, unknown>,
+) => {
+  const nullFilteredRecord = filterNullProperties(record);
+  const modelName = models.getModelNameForDatabaseType(recordType);
+  if (!modelName) {
+    throw new Error(`Cannot find model for record type: ${recordType}`);
+  }
+
+  const syncRecordTranslator = getSyncRecordTranslator(modelName);
+
+  if (!syncRecordTranslator) {
+    return nullFilteredRecord;
+  }
+
+  return syncRecordTranslator(appVersion, nullFilteredRecord);
 };
 
 export class PullChangesRoute extends Route<PullChangesRequest> {
@@ -136,7 +159,7 @@ export class PullChangesRoute extends Route<PullChangesRequest> {
             const errorMessage = `Couldn't find record type ${recordType} with id ${recordId}`;
             changeObject.error = { error: errorMessage };
           } else {
-            changeObject.record = filterNullProperties(record);
+            changeObject.record = translateRecordForSync(models, recordType, appVersion, record);
           }
         }
         return changeObject;
