@@ -77,7 +77,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ? accessPolicy.getPermissionGroups([rootEntity.country_code])
       : accessPolicy.getPermissionGroups(); // country_code is null for project level
 
-    const dashboards = await this.req.models.dashboard.find(
+    const dashboards: Dashboard[] = await this.req.models.dashboard.find(
       {
         root_entity_code: entities.map((e: Entity) => e.code),
       },
@@ -89,20 +89,22 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations = await this.req.models.dashboardRelation.find({
-      // Attached to the given dashboards
-      dashboard_id: dashboards.map((d: Dashboard) => d.id),
-      // For the root entity type
-      entity_types: {
-        comparator: '@>',
-        comparisonValue: [rootEntity.type],
+    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
+      {
+        // Attached to the given dashboards
+        dashboard_id: dashboards.map((d: Dashboard) => d.id),
+        // For the root entity type
+        entity_types: {
+          comparator: '@>',
+          comparisonValue: [rootEntity.type],
+        },
+        // Within the selected project
+        project_codes: {
+          comparator: '@>',
+          comparisonValue: [projectCode],
+        },
       },
-      // Within the selected project
-      project_codes: {
-        comparator: '@>',
-        comparisonValue: [projectCode],
-      },
-    });
+    );
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -138,7 +140,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
+    const dashboardsWithItems = dashboards.map((rawDashboard: Dashboard) => {
+      // @ts-ignore model causes a circular loop in camelcase
+      // but we can't strip it because typescript doesn't know about it
+      const { model, ...dashboard } = rawDashboard;
       return {
         ...dashboard,
         // Filter by the relations, map to the items
