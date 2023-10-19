@@ -7,4 +7,5 @@ export { Pig } from './Pig';
 export { SurveyIcon } from './SurveyIcon';
 export { SurveyFolderIcon } from './SurveyFolderIcon';
 export { SurveyTickIcon } from './SurveyTickIcon';
+export { DownloadIcon } from './DownloadIcon';
 export { RadioIcon } from './RadioIcon';

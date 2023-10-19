@@ -1,0 +1,1 @@
+export { SurveyQRCode } from './SurveyQRCode';

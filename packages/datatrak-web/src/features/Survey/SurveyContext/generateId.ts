@@ -23,7 +23,7 @@ export const MONGO_ID = 'mongoid';
 
 // e.g. '632-NFO-LEU-I1QI'
 export const generateShortId = (
-  codeGeneratorConfig: DatatrakWebSurveyRequest.CodeGeneratorConfig,
+  codeGeneratorConfig?: DatatrakWebSurveyRequest.CodeGeneratorConfig,
 ) => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
   const { alphabet, length, chunkLength, prefix } = {

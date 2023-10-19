@@ -16,10 +16,10 @@ import {
   CheckboxQuestion,
   DateTimeQuestion,
   GeolocateQuestion,
-  CodeGeneratorQuestion,
   EntityQuestion,
   AutocompleteQuestion,
   ReadOnlyQuestion,
+  PhotoQuestion,
 } from '../../Questions';
 import { SurveyQuestionFieldProps } from '../../../types';
 import { useSurveyForm } from '..';
@@ -59,12 +59,12 @@ export enum QUESTION_TYPES {
   Autocomplete = AutocompleteQuestion,
   Instruction = InstructionQuestion,
   Number = TextQuestion,
-  Photo = Placeholder,
+  Photo = PhotoQuestion,
   Radio = RadioQuestion,
   SubmissionDate = DateQuestion,
   DateOfData = DateQuestion,
   PrimaryEntity = EntityQuestion,
-  CodeGenerator = CodeGeneratorQuestion,
+  CodeGenerator = ReadOnlyQuestion,
   Arithmetic = ReadOnlyQuestion,
   Condition = ReadOnlyQuestion,
 }

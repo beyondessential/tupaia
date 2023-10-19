@@ -16,6 +16,12 @@ export const convertNumberToLetter = (number: number) => {
   return alphabet[number];
 };
 
+export const READ_ONLY_QUESTION_TYPES = [
+  QuestionType.Condition,
+  QuestionType.Arithmetic,
+  QuestionType.Instruction,
+  QuestionType.CodeGenerator,
+];
 export const getSurveyScreenNumber = (screens, screen) => {
   if (!screen) return null;
   const { surveyScreenComponents, id } = screen;
@@ -32,7 +38,6 @@ export const getSurveyScreenNumber = (screens, screen) => {
 
   return screenNumber;
 };
-export const READ_ONLY_QUESTION_TYPES = ['Instruction', 'Condition', 'Arithmetic'];
 
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],
