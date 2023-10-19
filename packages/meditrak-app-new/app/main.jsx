@@ -4,21 +4,21 @@
  */
 import 'react-native-gesture-handler';
 import React from 'react';
-import { AppRegistry, LogBox } from 'react-native';
+import {AppRegistry, LogBox} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Provider } from 'react-redux';
-import { createStore, compose } from 'redux';
-import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
-import { ErrorHandler } from 'redux-persist-error-handler';
+import {Provider} from 'react-redux';
+import {createStore, compose} from 'redux';
+import {persistStore, persistCombineReducers, createTransform} from 'redux-persist';
+import {ErrorHandler} from 'redux-persist-error-handler';
 
-import { Meditrak } from './Meditrak';
-import { api } from './api';
-import { database } from './database';
-import { reducers } from './reducers';
-import { createMiddleware } from './middleware';
-import { NavigationConnectedApp } from './navigation';
-import { analytics, CrashReporter } from './utilities';
-import { isBeta, betaBranch } from './version';
+import {Meditrak} from './Meditrak';
+import {api} from './api';
+import {database} from './database';
+import {reducers} from './reducers';
+import {createMiddleware} from './middleware';
+import {NavigationConnectedApp} from './navigation';
+import {analytics, CrashReporter} from './utilities';
+import {isBeta, betaBranch} from './version';
 
 const crashReporter = new CrashReporter(analytics);
 
@@ -73,5 +73,12 @@ const App = () => (
 
 AppRegistry.registerComponent('TupaiaMediTrak', () => App);
 
-LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-LogBox.ignoreAllLogs(); // Ignore all log notifications
+LogBox.ignoreLogs([
+  'componentWillReceiveProps',
+  'componentWillMount',
+  'ViewPropTypes',
+  'Failed prop type',
+  'Invalid arguments supplied to oneOf',
+  'Animated: `useNativeDriver` was not specified.',
+  'VirtualizedLists should never be nested inside plain ScrollViews',
+]);
