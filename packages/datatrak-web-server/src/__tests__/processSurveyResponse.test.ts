@@ -5,7 +5,7 @@
 import { QuestionType } from '@tupaia/types';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
-import { processSurveyResponse } from '../../utils';
+import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
 // Mock out moment so that that toISOString returns a consistent value for our tests
 jest.mock('moment', () => {
@@ -370,7 +370,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({

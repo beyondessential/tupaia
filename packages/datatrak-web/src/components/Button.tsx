@@ -39,7 +39,7 @@ const ButtonWrapper = ({
 export const Button = ({ tooltip, children, to, ...restOfProps }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip}>
-      <StyledButton component={to ? RouterLink : undefined} to={to} {...restOfProps}>
+      <StyledButton {...restOfProps} component={to ? RouterLink : undefined} to={to}>
         {children}
       </StyledButton>
     </ButtonWrapper>

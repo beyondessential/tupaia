@@ -8,7 +8,6 @@ import {
   DatatrakWebSurveyRequest,
   Entity,
   MeditrakSurveyResponseRequest,
-  Entity,
   QuestionType,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
@@ -72,8 +71,14 @@ export const processSurveyResponse = async (
       [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
       isUpsertEntityQuestion(config)
     ) {
-      const entityObj = await buildUpsertEntity(config, questionId, answers, countryId, getEntity);
-      if (entityObj) surveyResponse.entities_upserted.push(entityObj);
+      const entityObj = await buildUpsertEntity(
+        config,
+        questionId,
+        answers,
+        countryId,
+        findEntityById,
+      );
+      if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
       answer = entityObj?.id;
     }
     if (answer === undefined || answer === null || answer === '') {
