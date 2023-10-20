@@ -11468,6 +11468,7 @@ __metadata:
     react-native-side-menu: ^1.1.3
     react-native-svg: ^13.13.0
     react-native-vector-icons: ^10.0.0
+    react-native-vision-camera: ^3.4.1
     react-native-webview: ^13.6.0
     react-navigation: ^4.4.4
     react-navigation-redux-helpers: ^4.0.1
@@ -39212,6 +39213,20 @@ __metadata:
     fa6-upgrade: bin/fa6-upgrade.sh
     generate-icon: bin/generate-icon.js
   checksum: def1a601f9ee5fcc66d319665808ecc3c0f23c6a2d744693f842ce70efcb642f774a6f04e3dadbfc86ef02ee4596c141ac70dea53e3847c2c71efec04d3e6d2d
+  languageName: node
+  linkType: hard
+
+"react-native-vision-camera@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "react-native-vision-camera@npm:3.4.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-worklets-core: "*"
+  peerDependenciesMeta:
+    react-native-worklets-core:
+      optional: true
+  checksum: 99b25758addc1821910e704f903cdf595a2061f36d7d46c5c0399a3718b158f32e0520b48443d4d5846927fa8b5ff1fb43d5eb363dcc9c71cee668ef8c5a2dd2
   languageName: node
   linkType: hard
 
