@@ -7,6 +7,7 @@ import moment from 'moment';
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
+  Entity,
   MeditrakSurveyResponseRequest,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
@@ -28,7 +29,7 @@ export const isUpsertEntityQuestion = (config?: ConfigT) => {
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
-  getEntity: Function,
+  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {
     userId,
@@ -41,7 +42,7 @@ export const processSurveyResponse = async (
   const timezone = getBrowserTimeZone();
   const timestamp = moment().toISOString();
   // Fields to be used in the survey response
-  const surveyResponse = {
+  const surveyResponse: MeditrakSurveyResponseRequest = {
     user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
@@ -54,7 +55,7 @@ export const processSurveyResponse = async (
     entities_upserted: [],
     options_created: [],
     answers: [],
-  } as MeditrakSurveyResponseRequest;
+  };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
 
@@ -93,9 +94,9 @@ export const processSurveyResponse = async (
             questionId,
             answers,
             countryId,
-            getEntity,
+            findEntityById,
           );
-          surveyResponse.entities_upserted.push(entityObj);
+          if (entityObj) surveyResponse.entities_upserted!.push(entityObj);
         }
         answersToSubmit.push(answerObject);
         break;

@@ -7,7 +7,7 @@
 /**
  * @format id
  */
-import { EntityType } from '../../models';
+import { Entity, Option } from '../../models';
 
 type Id = string;
 
@@ -16,23 +16,6 @@ type AnswerType = {
   type: string;
   body: string;
   question_id: string;
-};
-
-type EntityCreated = {
-  id: Id;
-  code: string;
-  parent_id: Id;
-  name: string;
-  type: EntityType;
-  country_code: string;
-};
-
-type OptionCreated = {
-  id?: Id;
-  value: number | string;
-  label?: string;
-  option_set_id: string;
-  sort_order?: number;
 };
 
 export interface MeditrakSurveyResponseRequest {
@@ -59,8 +42,8 @@ export interface MeditrakSurveyResponseRequest {
    */
   timestamp?: string;
   approval_status?: string;
-  entities_created?: EntityCreated[];
-  options_created?: OptionCreated[];
+  entities_upserted?: Entity[];
+  options_created?: Omit<Option, 'id'>[];
   /**
    * @description only used in meditrak-app-server, v1.7.87 to v1.9.110 (inclusive) uses submission_time
    */

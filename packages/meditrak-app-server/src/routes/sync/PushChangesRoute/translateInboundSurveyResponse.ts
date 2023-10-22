@@ -7,6 +7,7 @@ import cloneDeep from 'lodash.clonedeep';
 import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
 import { UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
+import { Entity } from '@tupaia/types';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 import { RawSurveyResponseObject } from './types';
 
@@ -46,6 +47,7 @@ const constructSurveyResponseTranslators = (models: MeditrakAppServerModelRegist
   user_email: (userEmail: string) => translateUserEmailToId(models.user, userEmail),
   entity_code: (entityCode: string) => translateEntityCodeToId(models.entity, entityCode),
   survey_code: (surveyCode: string) => translateSurveyCodeToId(models.survey, surveyCode),
+  entities_created: async (entities_created: Entity[]) => ({ entities_upserted: entities_created }), // Map legacy key to new key
   answers: async (answers: { body: string }[]) => ({ answers: answers.filter(a => a.body !== '') }), // remove any empty answers
 });
 
