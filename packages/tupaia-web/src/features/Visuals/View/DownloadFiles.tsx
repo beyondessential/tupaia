@@ -19,6 +19,23 @@ const StyledDownloadFilesVisual = styled(DownloadFilesVisual)`
   .checkbox-icon {
     color: ${({ theme }) => darken(theme.palette.common.white, 0.1)};
   }
+  button {
+    text-transform: none;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  // override button styles from @tupaia/ui-components to match the theme of the app
+  .MuiButton-text {
+    border: 1px solid ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.primary.main};
+  }
+  .MuiButton-containedPrimary {
+    box-shadow: none;
+    border: 1px solid ${({ theme }) => theme.palette.primary.main};
+    &:hover {
+      border-color: ${({ theme }) => darken(theme.palette.primary.main, 0.3)};
+    }
+  }
 `;
 
 interface DownloadFilesVisualProps {
