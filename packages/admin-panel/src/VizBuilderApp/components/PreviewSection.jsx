@@ -7,14 +7,14 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
-import { FlexSpaceBetween, FetchLoader, DataTable } from '@tupaia/ui-components';
+import { FlexSpaceBetween, FetchLoader, DataGrid } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
 import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
-import { getColumns } from '../../utilities';
+import { getColumns, getRows } from '../../utilities';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -40,18 +40,6 @@ const PanelTabPanel = styled.div`
   background: white;
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-top: none;
-`;
-
-const StyledTable = styled(DataTable)`
-  table {
-    border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    table-layout: auto;
-
-    thead {
-      text-transform: none;
-    }
-  }
 `;
 
 const Container = styled(FlexSpaceBetween)`
@@ -159,7 +147,7 @@ export const PreviewSection = () => {
   };
 
   const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
-  const rows = useMemo(() => (tab === 0 ? reportData.rows || [] : []), [reportData]);
+  const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
   const data = useMemo(() => reportData, [reportData]);
 
   // only update Chart Preview when play button is clicked
@@ -190,7 +178,7 @@ export const PreviewSection = () => {
               isNoData={!rows.length}
               noDataMessage="No Data Found"
             >
-              <StyledTable columns={columns} data={rows} rowLimit={100} />
+              <DataGrid rows={rows} columns={columns} autoPageSize />
             </FetchLoader>
           ) : (
             <IdleMessage />
