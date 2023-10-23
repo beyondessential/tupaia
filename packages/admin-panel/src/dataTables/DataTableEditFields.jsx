@@ -8,9 +8,9 @@ import styled from 'styled-components';
 import {
   Select,
   TextField,
-  DataTable,
   FetchLoader,
   Autocomplete as ExternalDatabaseConnectionAutocomplete,
+  DataGrid,
 } from '@tupaia/ui-components';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
@@ -21,25 +21,15 @@ import { ReduxAutocomplete } from '../autocomplete';
 import { SqlDataTableConfigEditFields } from './config';
 import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
-import { getColumns } from '../utilities';
+import { getColumns, getRows } from '../utilities';
 import { PlayButton } from './PlayButton';
 
 const FieldWrapper = styled.div`
   padding: 7.5px;
 `;
 
-const StyledTable = styled(DataTable)`
-  min-height: 200px;
-
-  table {
-    border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
-    table-layout: auto;
-
-    thead {
-      text-transform: none;
-    }
-  }
+const StyledGrid = styled(Grid)`
+  height: 400px;
 `;
 
 const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
@@ -103,7 +93,7 @@ export const DataTableEditFields = React.memo(
     };
 
     const columns = useMemo(() => getColumns(reportData), [reportData]);
-    const rows = useMemo(() => reportData.rows, [reportData]);
+    const rows = useMemo(() => getRows(reportData), [reportData]);
 
     const ConfigComponent = typeFieldsMap[recordData.type] ?? null;
 
@@ -232,7 +222,7 @@ export const DataTableEditFields = React.memo(
                 />
                 <PlayButton disabled={fetchDisabled} fetchPreviewData={fetchPreviewData} />
               </div>
-              <Grid item xs={12}>
+              <StyledGrid item xs={12}>
                 <FetchLoader
                   isLoading={isLoading || isFetching}
                   isError={isError}
@@ -240,14 +230,9 @@ export const DataTableEditFields = React.memo(
                   isNoData={!rows.length}
                   noDataMessage="No Data Found"
                 >
-                  <StyledTable
-                    columns={columns}
-                    data={rows}
-                    rowLimit={reportData.limit}
-                    total={reportData.total}
-                  />
+                  <DataGrid rows={rows} columns={columns} autoPageSize />
                 </FetchLoader>
-              </Grid>
+              </StyledGrid>
             </Grid>
           </AccordionDetails>
         </Accordion>
