@@ -46,6 +46,12 @@ const removeIdColumn = (tables: Table[]) =>
     columns: columns.filter(({ name }) => name !== 'id'),
   }));
 
+const makeColumnsOptional = (tables: Table[]): Table[] =>
+  tables.map(({ columns, ...restOfTable }) => ({
+    ...restOfTable,
+    columns: columns.map(col => ({ ...col, optional: true })),
+  }));
+
 const removeUnwantedColumns = (tables: Table[]) =>
   tables.map(({ columns, ...restOfTable }) => ({
     ...restOfTable,
@@ -55,19 +61,15 @@ const removeUnwantedColumns = (tables: Table[]) =>
 const run = async () => {
   const failOnChanges = process.argv[2] === '--failOnChanges';
 
-  // Base tables have all fields present
   // @ts-ignore
-  const definitions = await sqlts.toObject({ ...config, globalOptionality: 'required' }, db);
+  const definitions = await sqlts.toObject(config, db);
 
-  // Create tables allow for optional and nullable fields to be missing
-  // @ts-ignore
-  const createDefinitions = await sqlts.toObject(config, db);
+  // ModelCreate tables don't require an id column as one will be generated at create time
+  const createTables = removeIdColumn(renameTables(definitions.tables, 'Create'));
 
-  // Update tables allow for all fields to be optional since just updating an existing table
-  // @ts-ignore
-  const upsertDefinitions = await sqlts.toObject({ ...config, globalOptionality: 'optional' }, db);
-  const createTables = removeIdColumn(renameTables(createDefinitions.tables, 'Create'));
-  const updateTables = renameTables(upsertDefinitions.tables, 'Update');
+  // ModelUpdate tables have all fields as optional since we are just updating an existing record
+  const updateTables = makeColumnsOptional(renameTables(definitions.tables, 'Update'));
+
   const allTables = removeUnwantedColumns(
     combineTables(definitions.tables, createTables, updateTables),
   );

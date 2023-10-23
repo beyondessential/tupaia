@@ -26558,17 +26558,7 @@ export const AccessRequestSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"approved",
-		"created_time",
-		"entity_id",
-		"id",
-		"message",
-		"note",
-		"permission_group_id",
-		"processed_by",
-		"processed_date",
-		"project_id",
-		"user_id"
+		"id"
 	]
 } 
 
@@ -26775,21 +26765,7 @@ export const AnalyticsSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"required": [
-		"data_element_code",
-		"data_group_code",
-		"date",
-		"day_period",
-		"entity_code",
-		"entity_name",
-		"event_id",
-		"month_period",
-		"type",
-		"value",
-		"week_period",
-		"year_period"
-	]
+	"additionalProperties": false
 } 
 
 export const AnalyticsCreateSchema = {
@@ -26980,7 +26956,6 @@ export const AnswerSchema = {
 		"id",
 		"question_id",
 		"survey_response_id",
-		"text",
 		"type"
 	]
 } 
@@ -27051,7 +27026,6 @@ export const ApiClientSchema = {
 	"required": [
 		"id",
 		"secret_key_hash",
-		"user_account_id",
 		"username"
 	]
 } 
@@ -27131,12 +27105,6 @@ export const ApiRequestLogSchema = {
 		"api",
 		"endpoint",
 		"id",
-		"metadata",
-		"method",
-		"query",
-		"refresh_token",
-		"request_time",
-		"user_id",
 		"version"
 	]
 } 
@@ -27241,14 +27209,11 @@ export const ClinicSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"category_code",
 		"code",
 		"country_id",
 		"geographical_area_id",
 		"id",
-		"name",
-		"type",
-		"type_name"
+		"name"
 	]
 } 
 
@@ -27443,8 +27408,7 @@ export const DashboardSchema = {
 		"code",
 		"id",
 		"name",
-		"root_entity_code",
-		"sort_order"
+		"root_entity_code"
 	]
 } 
 
@@ -35501,11 +35465,7 @@ export const DashboardItemSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"id",
-		"legacy",
-		"permission_group_ids",
-		"report_code"
+		"id"
 	]
 } 
 
@@ -51559,8 +51519,7 @@ export const DashboardRelationSchema = {
 		"entity_types",
 		"id",
 		"permission_groups",
-		"project_codes",
-		"sort_order"
+		"project_codes"
 	]
 } 
 
@@ -51664,9 +51623,7 @@ export const DataElementSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
 		"id",
-		"permission_groups",
 		"service_type"
 	]
 } 
@@ -51821,7 +51778,6 @@ export const DataElementDataServiceSchema = {
 		"country_code",
 		"data_element_code",
 		"id",
-		"service_config",
 		"service_type"
 	]
 } 
@@ -51912,7 +51868,6 @@ export const DataGroupSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
 		"id",
 		"service_type"
 	]
@@ -52062,9 +52017,7 @@ export const DataServiceSyncGroupSchema = {
 		"config",
 		"data_group_code",
 		"id",
-		"service_type",
-		"sync_cursor",
-		"sync_status"
+		"service_type"
 	]
 } 
 
@@ -52187,8 +52140,6 @@ export const DataTableSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"description",
 		"id",
 		"permission_groups",
 		"type"
@@ -52445,16 +52396,9 @@ export const DhisSyncLogSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"data",
-		"deleted",
-		"dhis_reference",
-		"error_list",
 		"id",
-		"ignored",
-		"imported",
 		"record_id",
-		"record_type",
-		"updated"
+		"record_type"
 	]
 } 
 
@@ -52569,13 +52513,7 @@ export const DhisSyncQueueSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"bad_request_count",
-		"change_time",
-		"details",
 		"id",
-		"is_dead_letter",
-		"is_deleted",
-		"priority",
 		"record_id",
 		"record_type",
 		"type"
@@ -52687,7 +52625,6 @@ export const DisasterSchema = {
 	"additionalProperties": false,
 	"required": [
 		"countryCode",
-		"description",
 		"id",
 		"name",
 		"type"
@@ -52918,18 +52855,9 @@ export const EntitySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"attributes",
-		"bounds",
 		"code",
-		"country_code",
 		"id",
-		"image_url",
-		"metadata",
-		"name",
-		"parent_id",
-		"point",
-		"region",
-		"type"
+		"name"
 	]
 } 
 
@@ -53094,7 +53022,6 @@ export const EntityHierarchySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"canonical_types",
 		"id",
 		"name"
 	]
@@ -53225,11 +53152,7 @@ export const ErrorLogSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"api_request_log_id",
-		"error_time",
-		"id",
-		"message",
-		"type"
+		"id"
 	]
 } 
 
@@ -53301,10 +53224,8 @@ export const ExternalDatabaseConnectionSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"description",
 		"id",
-		"name",
-		"permission_groups"
+		"name"
 	]
 } 
 
@@ -53402,15 +53323,7 @@ export const FeedItemSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"country_id",
-		"creation_date",
-		"geographical_area_id",
-		"id",
-		"permission_group_id",
-		"record_id",
-		"template_variables",
-		"type",
-		"user_id"
+		"id"
 	]
 } 
 
@@ -53526,13 +53439,11 @@ export const GeographicalAreaSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"code",
 		"country_id",
 		"id",
 		"level_code",
 		"level_name",
-		"name",
-		"parent_id"
+		"name"
 	]
 } 
 
@@ -53613,7 +53524,6 @@ export const IndicatorSchema = {
 	"required": [
 		"builder",
 		"code",
-		"config",
 		"id"
 	]
 } 
@@ -53707,21 +53617,9 @@ export const LandingPageSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"contact_us",
-		"extended_title",
-		"external_link",
 		"id",
-		"image_url",
-		"include_name_in_header",
-		"logo_url",
-		"long_bio",
 		"name",
-		"phone_number",
-		"primary_hexcode",
-		"project_codes",
-		"secondary_hexcode",
-		"url_segment",
-		"website_url"
+		"url_segment"
 	]
 } 
 
@@ -53854,9 +53752,6 @@ export const LegacyReportSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"data_builder",
-		"data_builder_config",
-		"data_services",
 		"id"
 	]
 } 
@@ -54478,16 +54373,8 @@ export const MapOverlaySchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"country_codes",
-		"data_services",
-		"id",
-		"legacy",
-		"linked_measures",
 		"name",
-		"permission_group",
-		"project_codes",
-		"report_code"
+		"permission_group"
 	]
 } 
 
@@ -55571,8 +55458,7 @@ export const MapOverlayGroupRelationSchema = {
 		"child_id",
 		"child_type",
 		"id",
-		"map_overlay_group_id",
-		"sort_order"
+		"map_overlay_group_id"
 	]
 } 
 
@@ -55644,11 +55530,8 @@ export const MeditrakDeviceSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"app_version",
-		"config",
 		"id",
 		"install_id",
-		"platform",
 		"user_id"
 	]
 } 
@@ -55721,7 +55604,6 @@ export const MeditrakSyncQueueSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"change_time",
 		"id",
 		"record_id",
 		"record_type",
@@ -55802,10 +55684,6 @@ export const Ms1SyncLogSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"count",
-		"data",
-		"endpoint",
-		"error_list",
 		"id",
 		"record_id",
 		"record_type"
@@ -55905,13 +55783,7 @@ export const Ms1SyncQueueSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"bad_request_count",
-		"change_time",
-		"details",
 		"id",
-		"is_dead_letter",
-		"is_deleted",
-		"priority",
 		"record_id",
 		"record_type",
 		"type"
@@ -56017,10 +55889,8 @@ export const OneTimeLoginSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"creation_date",
 		"id",
 		"token",
-		"use_date",
 		"user_id"
 	]
 } 
@@ -56096,11 +55966,8 @@ export const OptionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"attributes",
 		"id",
-		"label",
 		"option_set_id",
-		"sort_order",
 		"value"
 	]
 } 
@@ -56211,8 +56078,7 @@ export const PermissionGroupSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"name",
-		"parent_id"
+		"name"
 	]
 } 
 
@@ -56320,17 +56186,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"required": [
-		"change_time",
-		"country_ids",
-		"entity_type",
-		"id",
-		"permission_groups",
-		"record_id",
-		"record_type",
-		"type"
-	]
+	"additionalProperties": false
 } 
 
 export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
@@ -56524,17 +56380,7 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"dashboard_group_name",
-		"default_measure",
-		"description",
-		"entity_hierarchy_id",
-		"entity_id",
-		"id",
-		"image_url",
-		"logo_url",
-		"permission_groups",
-		"sort_order"
+		"id"
 	]
 } 
 
@@ -56767,14 +56613,7 @@ export const QuestionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"code",
-		"data_element_id",
-		"detail",
-		"hook",
 		"id",
-		"name",
-		"option_set_id",
-		"options",
 		"text",
 		"type"
 	]
@@ -56927,10 +56766,7 @@ export const RefreshTokenSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"device",
-		"expiry",
 		"id",
-		"meditrak_device_id",
 		"token",
 		"user_id"
 	]
@@ -57188,8 +57024,7 @@ export const SettingSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"key",
-		"value"
+		"key"
 	]
 } 
 
@@ -57320,17 +57155,9 @@ export const SurveySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"can_repeat",
 		"code",
-		"country_ids",
-		"data_group_id",
 		"id",
-		"integration_metadata",
-		"name",
-		"period_granularity",
-		"permission_group_id",
-		"requires_approval",
-		"survey_group_id"
+		"name"
 	]
 } 
 
@@ -57525,17 +57352,12 @@ export const SurveyResponseSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"approval_status",
 		"assessor_name",
-		"data_time",
 		"end_time",
 		"entity_id",
 		"id",
-		"metadata",
-		"outdated",
 		"start_time",
 		"survey_id",
-		"timezone",
 		"user_id"
 	]
 } 
@@ -57799,17 +57621,10 @@ export const SurveyScreenComponentSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"answers_enabling_follow_up",
 		"component_number",
-		"config",
-		"detail_label",
 		"id",
-		"is_follow_up",
 		"question_id",
-		"question_label",
-		"screen_id",
-		"validation_criteria",
-		"visibility_criteria"
+		"screen_id"
 	]
 } 
 
@@ -57935,8 +57750,7 @@ export const SyncGroupLogSchema = {
 		"id",
 		"log_message",
 		"service_type",
-		"sync_group_code",
-		"timestamp"
+		"sync_group_code"
 	]
 } 
 
@@ -58146,21 +57960,10 @@ export const UserAccountSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"creation_date",
 		"email",
-		"employer",
-		"first_name",
-		"gender",
 		"id",
-		"last_name",
-		"mobile_number",
 		"password_hash",
-		"password_salt",
-		"position",
-		"preferences",
-		"primary_platform",
-		"profile_image",
-		"verified_email"
+		"password_salt"
 	]
 } 
 
@@ -58304,10 +58107,7 @@ export const UserEntityPermissionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"entity_id",
-		"id",
-		"permission_group_id",
-		"user_id"
+		"id"
 	]
 } 
 
@@ -58422,9 +58222,6 @@ export const UserSessionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"accessPolicy",
-		"accessToken",
-		"access_token_expiry",
 		"id",
 		"refreshToken",
 		"userName"
@@ -58813,18 +58610,9 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"attributes",
-					"bounds",
 					"code",
-					"country_code",
 					"id",
-					"image_url",
-					"metadata",
-					"name",
-					"parent_id",
-					"point",
-					"region",
-					"type"
+					"name"
 				]
 			}
 		},
@@ -58849,10 +58637,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"attributes",
-					"label",
 					"option_set_id",
-					"sort_order",
 					"value"
 				]
 			}
@@ -58909,8 +58694,6 @@ export const DataTablePreviewRequestSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"config",
-		"description",
 		"permission_groups",
 		"type"
 	]
@@ -59083,18 +58866,9 @@ export const ResBodySchema = {
 		},
 		"additionalProperties": false,
 		"required": [
-			"attributes",
-			"bounds",
 			"code",
-			"countryCode",
 			"id",
-			"imageUrl",
-			"metadata",
-			"name",
-			"parentId",
-			"point",
-			"region",
-			"type"
+			"name"
 		]
 	}
 } 
@@ -59176,20 +58950,10 @@ export const ProjectResponseSchema = {
 	},
 	"required": [
 		"code",
-		"config",
-		"dashboardGroupName",
-		"defaultMeasure",
-		"description",
-		"entityHierarchyId",
-		"entityId",
 		"hasAccess",
 		"hasPendingAccess",
 		"id",
-		"imageUrl",
-		"logoUrl",
-		"name",
-		"permissionGroups",
-		"sortOrder"
+		"name"
 	]
 } 
 
@@ -59270,12 +59034,6 @@ export const CamelCasedQuestionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"code",
-		"dataElementId",
-		"detail",
-		"hook",
-		"name",
-		"optionSetId",
 		"text",
 		"type"
 	]
@@ -59305,10 +59063,7 @@ export const CamelCasedComponentSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"answersEnablingFollowUp",
 		"componentNumber",
-		"detailLabel",
-		"isFollowUp",
 		"questionId"
 	]
 } 
@@ -67759,11 +67514,7 @@ export const DashboardWithItemsSchema = {
 				"additionalProperties": false,
 				"required": [
 					"code",
-					"config",
-					"id",
-					"legacy",
-					"permission_group_ids",
-					"report_code"
+					"id"
 				]
 			}
 		},
@@ -67789,8 +67540,7 @@ export const DashboardWithItemsSchema = {
 		"id",
 		"items",
 		"name",
-		"root_entity_code",
-		"sort_order"
+		"root_entity_code"
 	]
 } 
 
@@ -68261,9 +68011,7 @@ export const TranslatedMapOverlaySchema = {
 	"required": [
 		"code",
 		"displayType",
-		"legacy",
-		"name",
-		"reportCode"
+		"name"
 	]
 } 
 
