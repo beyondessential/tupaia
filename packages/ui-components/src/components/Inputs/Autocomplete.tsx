@@ -44,9 +44,6 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
       border-color: ${props => props.theme.palette.error.main};
     }
   }
-  .MuiFormControl-root {
-    margin-bottom: 0;
-  }
 `;
 
 export interface BaseAutocompleteProps {
