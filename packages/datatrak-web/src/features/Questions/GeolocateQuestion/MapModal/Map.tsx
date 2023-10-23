@@ -14,10 +14,20 @@ import {
   ZoomControl,
 } from 'react-leaflet';
 
+// On small screens the map needs to fit in the body of the modal so that we don't create a scroll trap fo r the user
+// but the map container also needs a set height to render correctly so it's not possible to use flexbox to fill the height
+// and so we need to set the height manually using this fudge factor.
+const PAGE_PADDING = 280;
+
 const MapContainer = styled(BaseMapContainer)`
   height: 30rem;
   width: 100%;
   margin-top: 2.5rem;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 1rem;
+    height: calc(100vh - ${PAGE_PADDING}px);
+  }
 `;
 
 const Pin = new Icon({

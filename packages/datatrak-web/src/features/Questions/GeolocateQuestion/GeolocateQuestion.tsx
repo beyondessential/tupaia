@@ -16,6 +16,11 @@ const Container = styled.div`
   display: flex;
   align-items: flex-end;
   margin-top: 1.4rem;
+
+  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 `;
 
 const Wrapper = styled.fieldset`
