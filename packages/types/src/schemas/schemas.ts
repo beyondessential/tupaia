@@ -26558,6 +26558,7 @@ export const AccessRequestSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_time",
 		"id"
 	]
 } 
@@ -35465,7 +35466,9 @@ export const DashboardItemSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"config",
+		"id",
+		"legacy"
 	]
 } 
 
@@ -51623,7 +51626,9 @@ export const DataElementSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
+		"permission_groups",
 		"service_type"
 	]
 } 
@@ -51778,6 +51783,7 @@ export const DataElementDataServiceSchema = {
 		"country_code",
 		"data_element_code",
 		"id",
+		"service_config",
 		"service_type"
 	]
 } 
@@ -51868,6 +51874,7 @@ export const DataGroupSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"service_type"
 	]
@@ -52140,6 +52147,7 @@ export const DataTableSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"permission_groups",
 		"type"
@@ -53225,7 +53233,8 @@ export const ExternalDatabaseConnectionSchema = {
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"permission_groups"
 	]
 } 
 
@@ -53524,6 +53533,7 @@ export const IndicatorSchema = {
 	"required": [
 		"builder",
 		"code",
+		"config",
 		"id"
 	]
 } 
@@ -54373,6 +54383,9 @@ export const MapOverlaySchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
+		"id",
+		"legacy",
 		"name",
 		"permission_group"
 	]
@@ -57963,7 +57976,8 @@ export const UserAccountSchema = {
 		"email",
 		"id",
 		"password_hash",
-		"password_salt"
+		"password_salt",
+		"preferences"
 	]
 } 
 
@@ -58222,6 +58236,7 @@ export const UserSessionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"access_token_expiry",
 		"id",
 		"refreshToken",
 		"userName"
@@ -58694,6 +58709,7 @@ export const DataTablePreviewRequestSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"permission_groups",
 		"type"
 	]
@@ -67514,7 +67530,9 @@ export const DashboardWithItemsSchema = {
 				"additionalProperties": false,
 				"required": [
 					"code",
-					"id"
+					"config",
+					"id",
+					"legacy"
 				]
 			}
 		},
@@ -68011,6 +68029,7 @@ export const TranslatedMapOverlaySchema = {
 	"required": [
 		"code",
 		"displayType",
+		"legacy",
 		"name"
 	]
 } 

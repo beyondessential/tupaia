@@ -52,6 +52,15 @@ const makeColumnsOptional = (tables: Table[]): Table[] =>
     columns: columns.map(col => ({ ...col, optional: true })),
   }));
 
+const makeDefaultColumnsRequired = (tables: Table[]): Table[] =>
+  tables.map(({ columns, ...restOfTable }) => ({
+    ...restOfTable,
+    columns: columns.map(col => ({
+      ...col,
+      optional: !col.nullable && col.defaultValue !== undefined ? false : col.optional,
+    })),
+  }));
+
 const removeUnwantedColumns = (tables: Table[]) =>
   tables.map(({ columns, ...restOfTable }) => ({
     ...restOfTable,
@@ -64,15 +73,16 @@ const run = async () => {
   // @ts-ignore
   const definitions = await sqlts.toObject(config, db);
 
+  // Base Model tables should mark columns with defaultValues as non-optional since the default value will be present
+  const baseTables = makeDefaultColumnsRequired(definitions.tables);
+
   // ModelCreate tables don't require an id column as one will be generated at create time
   const createTables = removeIdColumn(renameTables(definitions.tables, 'Create'));
 
   // ModelUpdate tables have all fields as optional since we are just updating an existing record
   const updateTables = makeColumnsOptional(renameTables(definitions.tables, 'Update'));
 
-  const allTables = removeUnwantedColumns(
-    combineTables(definitions.tables, createTables, updateTables),
-  );
+  const allTables = removeUnwantedColumns(combineTables(baseTables, createTables, updateTables));
 
   const tsString = sqlts.fromObject({ ...definitions, tables: allTables }, config);
 
