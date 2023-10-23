@@ -275,6 +275,7 @@ export interface Dashboard {
   'name': string;
   'root_entity_code': string;
   'sort_order'?: number | null;
+  'config'?: any; 
 }
 export interface DashboardCreate {
   'code': string;
