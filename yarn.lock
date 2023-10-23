@@ -11444,7 +11444,7 @@ __metadata:
     jest: ^29.2.1
     metro-react-native-babel-preset: 0.76.8
     moment: ^2.29.4
-    nanoid: ^5.0.1
+    nanoid: ^2.0.3
     prettier: ^2.4.1
     prop-types: ^15.8.1
     react: 18.2.0
@@ -33963,15 +33963,6 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 7d0eda657002738aa5206107bd0580aead6c95c460ef1bdd0b1a87a9c7ae6277ac2e9b945306aaa5b32c6dcb7feaf462d0f552e7f8b5718abfc6ead5c94a71b3
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^5.0.1":
-  version: 5.0.2
-  resolution: "nanoid@npm:5.0.2"
-  bin:
-    nanoid: bin/nanoid.js
-  checksum: fa6908c2c6a7a9e91e02b98cb0b9b829454d390a63f83c1798f0c504d07b536d99cad3e975e5014b176534e67e234ff66bccd4610bf3ffb2cf0d6d932a73f3a8
   languageName: node
   linkType: hard
 
