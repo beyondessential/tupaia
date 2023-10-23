@@ -65,7 +65,6 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-rows: 11.25rem auto;
     grid-template-columns: 23% 1fr 1fr 28%;
     grid-template-areas:
       'recentSurveys recentSurveys recentSurveys leaderboard'

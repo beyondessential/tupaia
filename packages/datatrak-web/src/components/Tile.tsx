@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { ReactNode } from 'react';
+import React, { ComponentType, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Box } from '@material-ui/core';
@@ -59,17 +59,18 @@ interface TileProps {
   text: string;
   to: string;
   tooltip?: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
+  Icon?: ComponentType;
 }
 
-export const Tile = ({ title, text, children, to, tooltip }: TileProps) => {
+export const Tile = ({ title, text, children, to, tooltip, Icon }: TileProps) => {
   return (
     <ButtonWrapper component={RouterLink} to={to} tooltip={tooltip}>
-      <SurveyTickIcon />
+      {Icon && <Icon />}
       <Box maxWidth="100%" pr={5}>
         <Heading>{title}</Heading>
         <Text>{text}</Text>
-        <Text>{children}</Text>
+        {children && <Text>{children}</Text>}
       </Box>
     </ButtonWrapper>
   );
