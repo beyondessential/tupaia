@@ -25,15 +25,17 @@ export const useAutocompleteOptions = (
         if (!attributeFilters) return data;
         return data.filter((option: Option) => {
           // If there are no attributes on the option, return true
-          if (!option.attributes) return true;
+          const { attributes } = option;
+          if (!attributes) return true;
           // return only the options that match all attribute filters
           return Object.entries(attributeFilters).every(([attribute, config]) => {
             const attributeValue = getAnswerByQuestionId(config.questionId);
             if (attributeValue === undefined) return false;
             // if it is another autocomplete question, these are shaped differently
-            if (attributeValue.hasOwnProperty('value'))
-              return option.attributes[attribute] === attributeValue?.value;
-            return option.attributes[attribute] === attributeValue;
+            if (attributeValue.hasOwnProperty('value')) {
+              return attributes[attribute] === attributeValue?.value;
+            }
+            return attributes[attribute] === attributeValue;
           });
         });
       },

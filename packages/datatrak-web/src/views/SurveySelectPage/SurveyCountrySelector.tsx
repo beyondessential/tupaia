@@ -40,7 +40,7 @@ const CountrySelectWrapper = styled.div`
 
 interface SurveyCountrySelectorProps {
   countries: Entity[];
-  selectedCountry?: Entity | null;
+  selectedCountry?: Pick<Entity, 'code'> | null;
   onChangeCountry: (country: Entity | null) => void;
 }
 
@@ -55,10 +55,12 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
-      {/** @ts-ignore - TS is complaining about the type of the options, because we are creating them from Entities */}
       <Select
         options={
-          countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []
+          countries?.map((country: Entity) => ({
+            value: country.code,
+            label: country.name,
+          })) || []
         }
         value={selectedCountry?.code}
         onChange={updateSelectedCountry}
