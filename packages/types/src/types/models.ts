@@ -13,7 +13,7 @@ import { MapOverlayConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
-  'created_time'?: Date;
+  'created_time': Date;
   'entity_id'?: string | null;
   'id': string;
   'message'?: string | null;
@@ -236,9 +236,9 @@ export interface ClinicUpdate {
   'type_name'?: string | null;
 }
 export interface Comment {
-  'created_time'?: Date;
+  'created_time': Date;
   'id': string;
-  'last_modified_time'?: Date;
+  'last_modified_time': Date;
   'text': string;
   'user_id'?: string | null;
 }
@@ -291,9 +291,9 @@ export interface DashboardUpdate {
 }
 export interface DashboardItem {
   'code': string;
-  'config'?: DashboardItemConfig;
+  'config': DashboardItemConfig;
   'id': string;
-  'legacy'?: boolean;
+  'legacy': boolean;
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
@@ -340,9 +340,9 @@ export interface DashboardRelationUpdate {
 }
 export interface DataElement {
   'code': string;
-  'config'?: any;
+  'config': any;
   'id': string;
-  'permission_groups'?: string[];
+  'permission_groups': string[];
   'service_type': ServiceType;
 }
 export interface DataElementCreate {
@@ -376,7 +376,7 @@ export interface DataElementDataService {
   'country_code': string;
   'data_element_code': string;
   'id': string;
-  'service_config'?: any;
+  'service_config': any;
   'service_type': ServiceType;
 }
 export interface DataElementDataServiceCreate {
@@ -394,7 +394,7 @@ export interface DataElementDataServiceUpdate {
 }
 export interface DataGroup {
   'code': string;
-  'config'?: any;
+  'config': any;
   'id': string;
   'service_type': ServiceType;
 }
@@ -451,7 +451,7 @@ export interface DataServiceSyncGroupUpdate {
 }
 export interface DataTable {
   'code': string;
-  'config'?: any;
+  'config': any;
   'description'?: string | null;
   'id': string;
   'permission_groups': string[];
@@ -719,7 +719,7 @@ export interface ExternalDatabaseConnection {
   'description'?: string | null;
   'id': string;
   'name': string;
-  'permission_groups'?: string[];
+  'permission_groups': string[];
 }
 export interface ExternalDatabaseConnectionCreate {
   'code': string;
@@ -795,7 +795,7 @@ export interface GeographicalAreaUpdate {
 export interface Indicator {
   'builder': string;
   'code': string;
-  'config'?: any;
+  'config': any;
   'id': string;
 }
 export interface IndicatorCreate {
@@ -904,11 +904,11 @@ export interface LesmisSessionUpdate {
 }
 export interface MapOverlay {
   'code': string;
-  'config'?: MapOverlayConfig;
+  'config': MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
-  'id'?: string;
-  'legacy'?: boolean;
+  'id': string;
+  'legacy': boolean;
   'linked_measures'?: string[] | null;
   'name': string;
   'permission_group': string;
@@ -1553,7 +1553,7 @@ export interface UserAccount {
   'password_hash': string;
   'password_salt': string;
   'position'?: string | null;
-  'preferences'?: any;
+  'preferences': any;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
@@ -1623,7 +1623,7 @@ export interface UserFavouriteDashboardItemUpdate {
   'user_id'?: string;
 }
 export interface UserSession {
-  'access_token_expiry'?: string;
+  'access_token_expiry': string;
   'accessPolicy'?: any | null;
   'accessToken'?: string | null;
   'id': string;
