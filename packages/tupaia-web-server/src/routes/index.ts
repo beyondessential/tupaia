@@ -30,3 +30,7 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
+export {
+  DashboardMailingListRequest,
+  DashboardMailingListRoute,
+} from './DashboardMailingListRoute';

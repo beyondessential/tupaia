@@ -136,6 +136,7 @@ export const createDashboardRelationsDBFilter = (accessPolicy, criteria) => {
   const countryCodesByPermissionGroup = Object.fromEntries(
     allPermissionGroups.map(pg => [pg, accessPolicy.getEntitiesAllowed(pg)]),
   );
+  console.log('country codes by permission group', countryCodesByPermissionGroup);
 
   const dbConditions = { ...criteria };
   dbConditions[RAW] = {

@@ -72,7 +72,7 @@ export const assertDashboardEditPermissions = async (accessPolicy, models, dashb
   return true;
 };
 
-export const getDashboardsDBFilter = async (accessPolicy, models, criteria) => {
+export const getDashboardsDBFilter = async (accessPolicy, models, criteria, conditionField) => {
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
@@ -81,7 +81,11 @@ export const getDashboardsDBFilter = async (accessPolicy, models, criteria) => {
 
   // Pull the list of dashboard relations we have access to,
   // then pull the corresponding dashboards
-  const permissionRelationConditions = createDashboardRelationsDBFilter(accessPolicy, criteria);
+
+  const permissionRelationConditions =
+    conditionField !== 'dashboard_id'
+      ? createDashboardRelationsDBFilter(accessPolicy, criteria)
+      : createDashboardRelationsDBFilter(accessPolicy, {});
   const permittedDashboardsFromRelations = await models.dashboard.find(
     permissionRelationConditions,
     {
@@ -89,7 +93,16 @@ export const getDashboardsDBFilter = async (accessPolicy, models, criteria) => {
       joinCondition: ['dashboard_relation.dashboard_id', 'dashboard.id'],
     },
   );
+  console.log(
+    'permitted dashboards from relations: ',
+    permittedDashboardsFromRelations.map(p => p.id),
+  );
   const permittedDashboardIdsFromRelations = permittedDashboardsFromRelations.map(d => d.id);
+
+  if (conditionField === 'dashboard_id') {
+    dbConditions.dashboard_id = permittedDashboardIdsFromRelations;
+    return dbConditions;
+  }
 
   // Pull the list of all dashboards with country code that use has Tupaia Admin Panel access to
   const permittedCountryCodes = accessPolicy.getEntitiesAllowed(

@@ -29,6 +29,7 @@ const TABLES_TO_CLEAR = [
   'data_element_data_group',
   'data_element',
   'clinic',
+  'dashboard_mailing_list',
   'dashboard_relation',
   'dashboard',
   'dashboard_item',

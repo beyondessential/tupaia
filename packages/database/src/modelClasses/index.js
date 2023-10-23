@@ -13,6 +13,7 @@ import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
+import { DashboardMailingListModel } from './DashboardMailingList';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
@@ -72,6 +73,7 @@ export const modelClasses = {
   Country: CountryModel,
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
+  DashboardMailingList: DashboardMailingListModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataElementDataService: DataElementDataServiceModel,

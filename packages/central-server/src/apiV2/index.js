@@ -49,6 +49,7 @@ import {
   CreateDashboardRelation,
   GETDashboardRelations,
 } from './dashboardRelations';
+import { GETDashboardMailingList } from './dashboardMailingList';
 import {
   GETDashboardVisualisations,
   CreateDashboardVisualisation,
@@ -178,6 +179,7 @@ apiV2.get(
 );
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
+apiV2.get('/dashboardMailingList', useRouteHandler(GETDashboardMailingList));
 apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
 apiV2.get('/mapOverlayVisualisations/:recordId?', useRouteHandler(GETMapOverlayVisualisations));
 apiV2.get(
