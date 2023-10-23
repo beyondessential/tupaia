@@ -3,15 +3,16 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import React, {useState} from 'react';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 
-import { DEFAULT_PADDING } from '../../globalStyles';
-import { getImageSourceFromData } from '../../utilities';
-import { Button, Text } from '../../widgets';
+import {useCameraPermission} from 'react-native-vision-camera';
+import {DEFAULT_PADDING} from '../../globalStyles';
+import {getImageSourceFromData} from '../../utilities';
+import {Button, Popup, Text} from '../../widgets';
 
 const IMAGE_QUALITY = 0.2;
 
@@ -29,7 +30,7 @@ const renderImage = imageData => (
   </View>
 );
 
-const DumbPhotoQuestion = ({ onPressChoosePhoto, onPressRemovePhoto, imageData, errorMessage }) => (
+const DumbPhotoQuestion = ({onPressChoosePhoto, onPressRemovePhoto, imageData, errorMessage}) => (
   <View style={localStyles.container}>
     {imageData !== null && renderImage(imageData)}
     {imageData === null && errorMessage && <Text>{errorMessage}</Text>}
@@ -81,44 +82,83 @@ const localStyles = StyleSheet.create({
   },
 });
 
-const savePhoto = async (photoData, fileName) =>
-  RNFS.writeFile(`${RNFS.DocumentDirectoryPath}/${fileName}`, photoData, 'base64');
+const savePhoto = async (photoData, fileName) => RNFS.copyFile();
 
 const handleImagePickerResponse = async (response, onChangeAnswer, setError) => {
   if (response.didCancel) {
     return; // Do nothing if user cancelled
   }
 
-  if (response.error) {
-    setError(`Error: ${response.error}`);
+  if (response.errorMessage) {
+    setError(`Error: ${response.errorMessage}`);
     onChangeAnswer(null);
   } else {
     const time = new Date().getTime();
     const fileName = `${time}-response-photo.jpg`;
 
-    await savePhoto(response.data, fileName);
+    const {assets} = response;
+    if (!assets || assets.length < 1) {
+      return; // Do nothing if user cancelled
+    }
+    const [asset] = assets;
+
+    await RNFS.copyFile(asset.uri, `${RNFS.DocumentDirectoryPath}/${fileName}`);
     onChangeAnswer(fileName);
     setError(null);
   }
 };
 
-export const PhotoQuestion = ({ answer, onChangeAnswer }) => {
+export const PhotoQuestion = ({answer, onChangeAnswer}) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [error, setError] = useState(null);
+  const {hasPermission, requestPermission} = useCameraPermission();
+
+  const takeAPhoto = async () => {
+    setIsModalVisible(false);
+
+    const granted = await requestPermission();
+    if (!granted) {
+      setError('Camera permission was not granted');
+      return;
+    }
+
+    const response = await launchCamera({
+      mediaType: 'photo',
+      saveToPhotos: false,
+      selectionLimit: 1,
+    });
+    await handleImagePickerResponse(response, onChangeAnswer, setError);
+  };
+
+  const selectAPhoto = async () => {
+    setIsModalVisible(false);
+
+    const granted = await requestPermission();
+    if (!granted) {
+      setError('Camera permission was not granted');
+      return;
+    }
+
+    const response = await launchImageLibrary({
+      mediaType: 'photo',
+      selectionLimit: 1,
+    });
+    await handleImagePickerResponse(response, onChangeAnswer, setError);
+  };
 
   return (
-    <DumbPhotoQuestion
-      imageData={answer}
-      errorMessage={error}
-      onPressChoosePhoto={() => {
-        ImagePicker.showImagePicker(
-          {
-            quality: IMAGE_QUALITY,
-          },
-          response => handleImagePickerResponse(response, onChangeAnswer, setError),
-        );
-      }}
-      onPressRemovePhoto={() => onChangeAnswer(null)}
-    />
+    <>
+      <Popup visible={isModalVisible} onDismiss={() => setIsModalVisible(false)}>
+        <Button title="Take a photo" onPress={takeAPhoto} style={localStyles.button} />
+        <Button title="Select a photo" onPress={selectAPhoto} style={localStyles.button} />
+      </Popup>
+      <DumbPhotoQuestion
+        imageData={answer}
+        errorMessage={error}
+        onPressChoosePhoto={() => setIsModalVisible(true)}
+        onPressRemovePhoto={() => onChangeAnswer(null)}
+      />
+    </>
   );
 };
 
