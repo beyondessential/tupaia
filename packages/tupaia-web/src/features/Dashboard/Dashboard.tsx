@@ -6,8 +6,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Typography, Button } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { Typography, Snackbar } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
@@ -19,10 +19,11 @@ import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
+import { ExportDashboard } from './ExportDashboard';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
-import { ExportDashboard } from './ExportDashboard';
+
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -85,12 +86,6 @@ const TitleBar = styled.div`
   }
 `;
 
-const ExportButton = styled(Button).attrs({
-  variant: 'outlined',
-})`
-  font-size: 0.6875rem;
-`;
-
 const Title = styled(Typography)`
   color: white;
   font-weight: 400;
@@ -117,6 +112,10 @@ const DashboardImageContainer = styled.div`
   }
 `;
 
+const Alert = props => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,7 +129,23 @@ export const Dashboard = () => {
     isFetched,
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+  const [isJoined, setIsJoined] = useState<boolean>(false)
+  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+
+
+  const handleJoinClick = (isJoinedState) => {
+    setIsJoined(isJoinedState)
+    setIsSnackbarOpen(true)
+  } 
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setIsSnackbarOpen(false);
+  };
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
@@ -189,6 +204,11 @@ export const Dashboard = () => {
       <Panel $isExpanded={isExpanded}>
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
+          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isSnackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+            <Alert elevation={6} variant="filled" onClose={handleCloseSnackbar} severity="success">
+              {isJoined ? 'Succesfully joined dashboard mailing list' : 'You are now removed from this dashboard mailing list'}
+            </Alert>
+          </Snackbar>
           <Breadcrumbs />
           <DashboardImageContainer>
             {entity?.photoUrl ? (
@@ -200,13 +220,8 @@ export const Dashboard = () => {
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>
-              {activeDashboard && (
-                <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-                  Export
-                </ExportButton>
-              )}
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} isJoined={isJoined} handleJoinClick={handleJoinClick}/>
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
@@ -220,7 +235,7 @@ export const Dashboard = () => {
           isOpen={exportModalOpen}
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
-        />
+      />
       </Panel>
     </ErrorBoundary>
   );

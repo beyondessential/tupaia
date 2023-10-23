@@ -5,17 +5,19 @@
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { ButtonBase, Menu, MenuItem } from '@material-ui/core';
+import { ButtonBase, Menu, MenuItem, Box, Button } from '@material-ui/core';
+import { ActionsMenu } from '@tupaia/ui-components';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ShareIcon from '@material-ui/icons/Share';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
 import { TOP_BAR_HEIGHT } from '../../constants';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  width: 100%;
   padding: 1rem 2rem;
   font-size: 1.125rem;
   font-weight: 500;
@@ -24,6 +26,12 @@ const MenuButton = styled(ButtonBase)`
   .MuiSvgIcon-root {
     margin-left: 0.5rem;
   }
+`;
+
+const ExportButton = styled(Button).attrs({
+  variant: 'outlined',
+})`
+  font-size: 0.6875rem;
 `;
 
 const ItemButton = styled(Menu)`
@@ -75,11 +83,18 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
 export const DashboardMenu = ({
   activeDashboard,
   dashboards,
+  setExportModalOpen,
+  isJoined,
+  handleJoinClick
 }: {
   activeDashboard?: Dashboard;
   dashboards: Dashboard[];
+  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isJoined: boolean;
+  handleJoinClick: Function;
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
 
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -90,14 +105,25 @@ export const DashboardMenu = ({
   };
 
   const hasMultipleDashboards = dashboards.length > 1;
+  const joinedMenuOptions = [
+    { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: ShareIcon, toolTipTitle: 'Export dashboard' },
+    { label: 'Joined', action: () => handleJoinClick(false), ActionIcon: CheckCircleIcon, toolTipTitle: 'Remove yourself from email updates', color: 'primary' },
+  ]
 
+  const defaultMenuOptions = [
+    { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: GetAppIcon, toolTipTitle: 'Export dashboard' },
+    { label: 'Join', action: () => handleJoinClick(true), ActionIcon: AddCircleOutlineIcon, toolTipTitle: 'Join to receive dashboard email updates' },
+  ]
   return (
     <>
       {activeDashboard && (
-        <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
-          {activeDashboard?.name}
-          {hasMultipleDashboards && <KeyboardArrowDownIcon />}
-        </MenuButton>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
+          <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
+            {activeDashboard?.name}
+            {hasMultipleDashboards && <KeyboardArrowDownIcon />}
+          </MenuButton>
+          <ActionsMenu options={isJoined ? joinedMenuOptions : defaultMenuOptions} includesIcons={true} />
+        </Box>
       )}
 
       <ItemButton
@@ -112,6 +138,7 @@ export const DashboardMenu = ({
           <DashboardMenuItem key={code} dashboardName={name} onClose={handleClose} />
         ))}
       </ItemButton>
+      
     </>
   );
 };
