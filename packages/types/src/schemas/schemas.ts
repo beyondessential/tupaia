@@ -10,13 +10,13 @@
  */
 export const EntityAttributesSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"additionalProperties": false,
 	"type": "object",
 	"properties": {
 		"type": {
 			"type": "string"
 		}
-	},
-	"additionalProperties": false
+	}
 } 
 
 export const BaseConfigSchema = {
@@ -53795,13 +53795,13 @@ export const EntitySchema = {
 	"properties": {
 		"attributes": {
 			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"type": {
 					"type": "string"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -53890,13 +53890,13 @@ export const EntityCreateSchema = {
 	"properties": {
 		"attributes": {
 			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"type": {
 					"type": "string"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -53980,13 +53980,13 @@ export const EntityUpdateSchema = {
 	"properties": {
 		"attributes": {
 			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"type": {
 					"type": "string"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -59762,13 +59762,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"properties": {
 					"attributes": {
 						"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+						"additionalProperties": false,
 						"type": "object",
 						"properties": {
 							"type": {
 								"type": "string"
 							}
-						},
-						"additionalProperties": false
+						}
 					},
 					"bounds": {
 						"type": "string"
