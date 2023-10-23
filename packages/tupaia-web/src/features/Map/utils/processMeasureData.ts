@@ -10,7 +10,7 @@ import {
   Series,
   MEASURE_TYPE_RADIUS,
 } from '@tupaia/ui-map-components';
-import { Entity } from '@tupaia/types';
+import { Entity } from '../../../types';
 
 interface processMeasureDataProps {
   measureData: MeasureData[];
