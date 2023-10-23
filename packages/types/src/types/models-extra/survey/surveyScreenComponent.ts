@@ -31,7 +31,12 @@ export type ConditionQuestionConfig = {
 
 export type EntityQuestionConfig = {
   createNew?: boolean;
-  fields?: Record<string, string | { questionId: Question['id'] }>;
+  fields?: {
+    type?: string;
+    code?: { questionId: Question['id'] };
+    name?: { questionId: Question['id'] };
+    parentId?: { questionId: Question['id'] };
+  };
   filter?: {
     type?: string[] | string;
     grandparentId?: { questionId: Question['id'] };

@@ -7,18 +7,11 @@ import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/uti
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
-// Mock out moment so that that toISOString returns a consistent value for our tests
-jest.mock('moment', () => {
-  const mMoment = {
-    toISOString: jest.fn(() => 'theISOString'),
-  };
-  return jest.fn(() => mMoment);
-});
-
-const mockFindEntityById = async (id: string) => ({
+const mockFindEntityById = async () => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
+  attributes: {},
 });
 
 jest.mock('@tupaia/database', () => ({
@@ -38,6 +31,7 @@ describe('processSurveyResponse', () => {
   afterAll(() => {
     jest.useRealTimers();
   });
+
   const date = new Date(2020, 3, 1);
   const timestamp = date.toISOString();
   const responseData = {
@@ -446,6 +440,7 @@ describe('processSurveyResponse', () => {
       ],
     });
   });
+
   it('should handle when question type is File', async () => {
     const result = await processSurveyResponse(
       {

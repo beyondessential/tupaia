@@ -26632,6 +26632,47 @@ export const EntityQuestionConfigSchema = {
 		},
 		"fields": {
 			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				},
+				"code": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"name": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"parentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				}
+			},
 			"additionalProperties": false
 		},
 		"filter": {
@@ -26783,6 +26824,47 @@ export const SurveyScreenComponentConfigSchema = {
 				},
 				"fields": {
 					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string"
+						},
+						"code": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"name": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"parentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						}
+					},
 					"additionalProperties": false
 				},
 				"filter": {
@@ -59761,13 +59843,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					}
 				},
-				"additionalProperties": false,
-				"required": [
-					"attributes",
-					"code",
-					"id",
-					"name"
-				]
+				"additionalProperties": false
 			}
 		},
 		"options_created": {
