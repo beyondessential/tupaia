@@ -26737,16 +26737,7 @@ export const AdminPanelSessionUpdateSchema = {
 export const AnalyticsSchema = {
 	"type": "object",
 	"properties": {
-		"answer_entity_m_row$": {
-			"type": "string"
-		},
-		"answer_m_row$": {
-			"type": "string"
-		},
 		"data_element_code": {
-			"type": "string"
-		},
-		"data_element_m_row$": {
 			"type": "string"
 		},
 		"data_group_code": {
@@ -26762,9 +26753,6 @@ export const AnalyticsSchema = {
 		"entity_code": {
 			"type": "string"
 		},
-		"entity_m_row$": {
-			"type": "string"
-		},
 		"entity_name": {
 			"type": "string"
 		},
@@ -26772,15 +26760,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"month_period": {
-			"type": "string"
-		},
-		"question_m_row$": {
-			"type": "string"
-		},
-		"survey_m_row$": {
-			"type": "string"
-		},
-		"survey_response_m_row$": {
 			"type": "string"
 		},
 		"type": {
@@ -26798,21 +26777,14 @@ export const AnalyticsSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"answer_entity_m_row$",
-		"answer_m_row$",
 		"data_element_code",
-		"data_element_m_row$",
 		"data_group_code",
 		"date",
 		"day_period",
 		"entity_code",
-		"entity_m_row$",
 		"entity_name",
 		"event_id",
 		"month_period",
-		"question_m_row$",
-		"survey_m_row$",
-		"survey_response_m_row$",
 		"type",
 		"value",
 		"week_period",
@@ -26823,16 +26795,7 @@ export const AnalyticsSchema = {
 export const AnalyticsCreateSchema = {
 	"type": "object",
 	"properties": {
-		"answer_entity_m_row$": {
-			"type": "string"
-		},
-		"answer_m_row$": {
-			"type": "string"
-		},
 		"data_element_code": {
-			"type": "string"
-		},
-		"data_element_m_row$": {
 			"type": "string"
 		},
 		"data_group_code": {
@@ -26848,9 +26811,6 @@ export const AnalyticsCreateSchema = {
 		"entity_code": {
 			"type": "string"
 		},
-		"entity_m_row$": {
-			"type": "string"
-		},
 		"entity_name": {
 			"type": "string"
 		},
@@ -26858,15 +26818,6 @@ export const AnalyticsCreateSchema = {
 			"type": "string"
 		},
 		"month_period": {
-			"type": "string"
-		},
-		"question_m_row$": {
-			"type": "string"
-		},
-		"survey_m_row$": {
-			"type": "string"
-		},
-		"survey_response_m_row$": {
 			"type": "string"
 		},
 		"type": {
@@ -26888,16 +26839,7 @@ export const AnalyticsCreateSchema = {
 export const AnalyticsUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"answer_entity_m_row$": {
-			"type": "string"
-		},
-		"answer_m_row$": {
-			"type": "string"
-		},
 		"data_element_code": {
-			"type": "string"
-		},
-		"data_element_m_row$": {
 			"type": "string"
 		},
 		"data_group_code": {
@@ -26913,9 +26855,6 @@ export const AnalyticsUpdateSchema = {
 		"entity_code": {
 			"type": "string"
 		},
-		"entity_m_row$": {
-			"type": "string"
-		},
 		"entity_name": {
 			"type": "string"
 		},
@@ -26923,15 +26862,6 @@ export const AnalyticsUpdateSchema = {
 			"type": "string"
 		},
 		"month_period": {
-			"type": "string"
-		},
-		"question_m_row$": {
-			"type": "string"
-		},
-		"survey_m_row$": {
-			"type": "string"
-		},
-		"survey_response_m_row$": {
 			"type": "string"
 		},
 		"type": {
@@ -27032,9 +26962,6 @@ export const AnswerSchema = {
 		"id": {
 			"type": "string"
 		},
-		"m_row$": {
-			"type": "string"
-		},
 		"question_id": {
 			"type": "string"
 		},
@@ -27051,7 +26978,6 @@ export const AnswerSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"m_row$",
 		"question_id",
 		"survey_response_id",
 		"text",
@@ -27062,9 +26988,6 @@ export const AnswerSchema = {
 export const AnswerCreateSchema = {
 	"type": "object",
 	"properties": {
-		"m_row$": {
-			"type": "string"
-		},
 		"question_id": {
 			"type": "string"
 		},
@@ -27090,9 +27013,6 @@ export const AnswerUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"question_id": {
@@ -51722,9 +51642,6 @@ export const DataElementSchema = {
 		"id": {
 			"type": "string"
 		},
-		"m_row$": {
-			"type": "string"
-		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -51749,7 +51666,6 @@ export const DataElementSchema = {
 		"code",
 		"config",
 		"id",
-		"m_row$",
 		"permission_groups",
 		"service_type"
 	]
@@ -51762,9 +51678,6 @@ export const DataElementCreateSchema = {
 			"type": "string"
 		},
 		"config": {},
-		"m_row$": {
-			"type": "string"
-		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -51799,9 +51712,6 @@ export const DataElementUpdateSchema = {
 		},
 		"config": {},
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -52955,9 +52865,6 @@ export const EntitySchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"m_row$": {
-			"type": "string"
-		},
 		"metadata": {},
 		"name": {
 			"type": "string"
@@ -53017,7 +52924,6 @@ export const EntitySchema = {
 		"country_code",
 		"id",
 		"image_url",
-		"m_row$",
 		"metadata",
 		"name",
 		"parent_id",
@@ -53039,9 +52945,6 @@ export const EntityCreateSchema = {
 			"type": "string"
 		},
 		"image_url": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {},
@@ -53117,9 +53020,6 @@ export const EntityUpdateSchema = {
 			"type": "string"
 		},
 		"image_url": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {},
@@ -56825,9 +56725,6 @@ export const QuestionSchema = {
 		"id": {
 			"type": "string"
 		},
-		"m_row$": {
-			"type": "string"
-		},
 		"name": {
 			"type": "string"
 		},
@@ -56875,7 +56772,6 @@ export const QuestionSchema = {
 		"detail",
 		"hook",
 		"id",
-		"m_row$",
 		"name",
 		"option_set_id",
 		"options",
@@ -56897,9 +56793,6 @@ export const QuestionCreateSchema = {
 			"type": "string"
 		},
 		"hook": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"name": {
@@ -56965,9 +56858,6 @@ export const QuestionUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"name": {
@@ -57405,9 +57295,6 @@ export const SurveySchema = {
 			"type": "string"
 		},
 		"integration_metadata": {},
-		"m_row$": {
-			"type": "string"
-		},
 		"name": {
 			"type": "string"
 		},
@@ -57439,7 +57326,6 @@ export const SurveySchema = {
 		"data_group_id",
 		"id",
 		"integration_metadata",
-		"m_row$",
 		"name",
 		"period_granularity",
 		"permission_group_id",
@@ -57467,9 +57353,6 @@ export const SurveyCreateSchema = {
 			"type": "string"
 		},
 		"integration_metadata": {},
-		"m_row$": {
-			"type": "string"
-		},
 		"name": {
 			"type": "string"
 		},
@@ -57522,9 +57405,6 @@ export const SurveyUpdateSchema = {
 			"type": "string"
 		},
 		"integration_metadata": {},
-		"m_row$": {
-			"type": "string"
-		},
 		"name": {
 			"type": "string"
 		},
@@ -57623,9 +57503,6 @@ export const SurveyResponseSchema = {
 		"id": {
 			"type": "string"
 		},
-		"m_row$": {
-			"type": "string"
-		},
 		"metadata": {
 			"type": "string"
 		},
@@ -57654,7 +57531,6 @@ export const SurveyResponseSchema = {
 		"end_time",
 		"entity_id",
 		"id",
-		"m_row$",
 		"metadata",
 		"outdated",
 		"start_time",
@@ -57688,9 +57564,6 @@ export const SurveyResponseCreateSchema = {
 			"format": "date-time"
 		},
 		"entity_id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {
@@ -57751,9 +57624,6 @@ export const SurveyResponseUpdateSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {
@@ -58890,9 +58760,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"image_url": {
 						"type": "string"
 					},
-					"m_row$": {
-						"type": "string"
-					},
 					"metadata": {},
 					"name": {
 						"type": "string"
@@ -58952,7 +58819,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"country_code",
 					"id",
 					"image_url",
-					"m_row$",
 					"metadata",
 					"name",
 					"parent_id",
@@ -59122,9 +58988,6 @@ export const ResBodySchema = {
 			"imageUrl": {
 				"type": "string"
 			},
-			"mRow$": {
-				"type": "string"
-			},
 			"metadata": {
 				"anyOf": [
 					{
@@ -59226,7 +59089,6 @@ export const ResBodySchema = {
 			"countryCode",
 			"id",
 			"imageUrl",
-			"mRow$",
 			"metadata",
 			"name",
 			"parentId",
@@ -59402,9 +59264,6 @@ export const CamelCasedQuestionSchema = {
 		"hook": {
 			"type": "string"
 		},
-		"mRow$": {
-			"type": "string"
-		},
 		"optionSetId": {
 			"type": "string"
 		}
@@ -59415,7 +59274,6 @@ export const CamelCasedQuestionSchema = {
 		"dataElementId",
 		"detail",
 		"hook",
-		"mRow$",
 		"name",
 		"optionSetId",
 		"text",

@@ -73,63 +73,42 @@ export interface AdminPanelSessionUpdate {
   'refresh_token'?: string;
 }
 export interface Analytics {
-  'answer_entity_m_row$': string | null;
-  'answer_m_row$': string | null;
   'data_element_code': string | null;
-  'data_element_m_row$': string | null;
   'data_group_code': string | null;
   'date': Date | null;
   'day_period': string | null;
   'entity_code': string | null;
-  'entity_m_row$': string | null;
   'entity_name': string | null;
   'event_id': string | null;
   'month_period': string | null;
-  'question_m_row$': string | null;
-  'survey_m_row$': string | null;
-  'survey_response_m_row$': string | null;
   'type': string | null;
   'value': string | null;
   'week_period': string | null;
   'year_period': string | null;
 }
 export interface AnalyticsCreate {
-  'answer_entity_m_row$'?: string | null;
-  'answer_m_row$'?: string | null;
   'data_element_code'?: string | null;
-  'data_element_m_row$'?: string | null;
   'data_group_code'?: string | null;
   'date'?: Date | null;
   'day_period'?: string | null;
   'entity_code'?: string | null;
-  'entity_m_row$'?: string | null;
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'question_m_row$'?: string | null;
-  'survey_m_row$'?: string | null;
-  'survey_response_m_row$'?: string | null;
   'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
   'year_period'?: string | null;
 }
 export interface AnalyticsUpdate {
-  'answer_entity_m_row$'?: string | null;
-  'answer_m_row$'?: string | null;
   'data_element_code'?: string | null;
-  'data_element_m_row$'?: string | null;
   'data_group_code'?: string | null;
   'date'?: Date | null;
   'day_period'?: string | null;
   'entity_code'?: string | null;
-  'entity_m_row$'?: string | null;
   'entity_name'?: string | null;
   'event_id'?: string | null;
   'month_period'?: string | null;
-  'question_m_row$'?: string | null;
-  'survey_m_row$'?: string | null;
-  'survey_response_m_row$'?: string | null;
   'type'?: string | null;
   'value'?: string | null;
   'week_period'?: string | null;
@@ -157,14 +136,12 @@ export interface AncestorDescendantRelationUpdate {
 }
 export interface Answer {
   'id': string;
-  'm_row$': string;
   'question_id': string;
   'survey_response_id': string;
   'text': string | null;
   'type': string;
 }
 export interface AnswerCreate {
-  'm_row$'?: string;
   'question_id': string;
   'survey_response_id': string;
   'text'?: string | null;
@@ -172,7 +149,6 @@ export interface AnswerCreate {
 }
 export interface AnswerUpdate {
   'id'?: string;
-  'm_row$'?: string;
   'question_id'?: string;
   'survey_response_id'?: string;
   'text'?: string | null;
@@ -366,14 +342,12 @@ export interface DataElement {
   'code': string;
   'config': any;
   'id': string;
-  'm_row$': string;
   'permission_groups': string[];
   'service_type': ServiceType;
 }
 export interface DataElementCreate {
   'code': string;
   'config'?: any;
-  'm_row$'?: string;
   'permission_groups'?: string[];
   'service_type': ServiceType;
 }
@@ -381,7 +355,6 @@ export interface DataElementUpdate {
   'code'?: string;
   'config'?: any;
   'id'?: string;
-  'm_row$'?: string;
   'permission_groups'?: string[];
   'service_type'?: ServiceType;
 }
@@ -656,7 +629,6 @@ export interface Entity {
   'country_code': string | null;
   'id': string;
   'image_url': string | null;
-  'm_row$': string;
   'metadata': any | null;
   'name': string;
   'parent_id': string | null;
@@ -670,7 +642,6 @@ export interface EntityCreate {
   'code': string;
   'country_code'?: string | null;
   'image_url'?: string | null;
-  'm_row$'?: string;
   'metadata'?: any | null;
   'name': string;
   'parent_id'?: string | null;
@@ -685,7 +656,6 @@ export interface EntityUpdate {
   'country_code'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
-  'm_row$'?: string;
   'metadata'?: any | null;
   'name'?: string;
   'parent_id'?: string | null;
@@ -1275,7 +1245,6 @@ export interface Question {
   'detail': string | null;
   'hook': string | null;
   'id': string;
-  'm_row$': string;
   'name': string | null;
   'option_set_id': string | null;
   'options': string[] | null;
@@ -1287,7 +1256,6 @@ export interface QuestionCreate {
   'data_element_id'?: string | null;
   'detail'?: string | null;
   'hook'?: string | null;
-  'm_row$'?: string;
   'name'?: string | null;
   'option_set_id'?: string | null;
   'options'?: string[] | null;
@@ -1300,7 +1268,6 @@ export interface QuestionUpdate {
   'detail'?: string | null;
   'hook'?: string | null;
   'id'?: string;
-  'm_row$'?: string;
   'name'?: string | null;
   'option_set_id'?: string | null;
   'options'?: string[] | null;
@@ -1382,7 +1349,6 @@ export interface Survey {
   'data_group_id': string | null;
   'id': string;
   'integration_metadata': any | null;
-  'm_row$': string;
   'name': string;
   'period_granularity': PeriodGranularity | null;
   'permission_group_id': string | null;
@@ -1395,7 +1361,6 @@ export interface SurveyCreate {
   'country_ids'?: string[] | null;
   'data_group_id'?: string | null;
   'integration_metadata'?: any | null;
-  'm_row$'?: string;
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
@@ -1409,7 +1374,6 @@ export interface SurveyUpdate {
   'data_group_id'?: string | null;
   'id'?: string;
   'integration_metadata'?: any | null;
-  'm_row$'?: string;
   'name'?: string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
@@ -1434,7 +1398,6 @@ export interface SurveyResponse {
   'end_time': Date;
   'entity_id': string;
   'id': string;
-  'm_row$': string;
   'metadata': string | null;
   'outdated': boolean | null;
   'start_time': Date;
@@ -1448,7 +1411,6 @@ export interface SurveyResponseCreate {
   'data_time'?: Date | null;
   'end_time': Date;
   'entity_id': string;
-  'm_row$'?: string;
   'metadata'?: string | null;
   'outdated'?: boolean | null;
   'start_time': Date;
@@ -1463,7 +1425,6 @@ export interface SurveyResponseUpdate {
   'end_time'?: Date;
   'entity_id'?: string;
   'id'?: string;
-  'm_row$'?: string;
   'metadata'?: string | null;
   'outdated'?: boolean | null;
   'start_time'?: Date;

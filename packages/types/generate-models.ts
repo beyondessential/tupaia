@@ -46,6 +46,12 @@ const removeIdColumn = (tables: Table[]) =>
     columns: columns.filter(({ name }) => name !== 'id'),
   }));
 
+const removeUnwantedColumns = (tables: Table[]) =>
+  tables.map(({ columns, ...restOfTable }) => ({
+    ...restOfTable,
+    columns: columns.filter(({ name }) => !name.includes('m_row$')), // Remove mvrefresh columns
+  }));
+
 const run = async () => {
   const failOnChanges = process.argv[2] === '--failOnChanges';
 
@@ -62,7 +68,10 @@ const run = async () => {
   const upsertDefinitions = await sqlts.toObject({ ...config, globalOptionality: 'optional' }, db);
   const createTables = removeIdColumn(renameTables(createDefinitions.tables, 'Create'));
   const updateTables = renameTables(upsertDefinitions.tables, 'Update');
-  const allTables = combineTables(definitions.tables, createTables, updateTables);
+  const allTables = removeUnwantedColumns(
+    combineTables(definitions.tables, createTables, updateTables),
+  );
+
   const tsString = sqlts.fromObject({ ...definitions, tables: allTables }, config);
 
   if (failOnChanges) {
