@@ -1,4 +1,4 @@
-import generate from 'nanoid/non-secure';
+import generate from 'nanoid/non-secure/generate';
 import generateUUID from 'bson-objectid';
 
 // With this config, in order to reach a 1% probability of at least one collision:
