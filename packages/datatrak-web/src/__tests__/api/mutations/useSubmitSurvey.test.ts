@@ -20,6 +20,12 @@ jest.mock('../../../api/queries', () => {
   };
 });
 
+jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
+  useSurveyForm: () => ({
+    resetForm: () => 'doReset',
+  }),
+}));
+
 // Mock out the useSurveyResponseData hook so that we don't need tp mock out everything that that hook uses
 jest.mock('../../../api/mutations', () => {
   const actual = jest.requireActual('../../../api/mutations');
