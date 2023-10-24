@@ -29,9 +29,13 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, mea
   );
 
   // Don't show nav entities for the selected measure level
-  const filteredData = data?.filter(
-    entity => !measureLevel || measureLevel?.toLowerCase() !== entity.type.toLowerCase(),
-  );
+  const filteredData = data?.filter(entity => {
+    if (!measureLevel) return true;
+    // handle edge cases of array measure levels
+    if (Array.isArray(measureLevel))
+      return !measureLevel.map(level => level.toLowerCase()).includes(entity.type.toLowerCase());
+    return measureLevel?.toLowerCase() !== entity.type.toLowerCase();
+  });
 
   // For polygon overlays, show navigation polygons for sibling entities only
   if (isPolygonSerieses) {
@@ -72,22 +76,26 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
     isPolygonSerieses,
     selectedOverlay?.measureLevel,
   );
-
-  // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
-  const relativesMeasureData = entityRelatives?.map(entity => {
-    return {
-      ...entity,
-      organisationUnitCode: entity.code,
-      coordinates: entity.point,
-      region: entity.region,
-      permanentTooltip: !selectedOverlay,
-    };
-  });
-
   const rootEntityCode = getRootEntityCode(entity);
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
+
+  // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
+  const relativesMeasureData = entityRelatives
+    ?.filter(
+      entityRelative =>
+        !mapOverlayData?.measureData?.find(item => item.code === entityRelative.code),
+    ) // deduplicate entities so that we don't end up with a navigation entity under a measure entity
+    .map(entityRelative => {
+      return {
+        ...entityRelative,
+        organisationUnitCode: entityRelative.code,
+        coordinates: entityRelative.point,
+        region: entityRelative.region,
+        permanentTooltip: !selectedOverlay,
+      };
+    });
 
   // Combine the main visual entities and relatives for the polygon layer. The entities need to come after the
   // entityRelatives so that the active entity is rendered on top of the relatives

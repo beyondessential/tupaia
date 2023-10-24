@@ -55,15 +55,13 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   );
 
   return (
-    <>
-      <ErrorBoundary>
-        <MobileMapLegend>
-          <LegendComponent />
-        </MobileMapLegend>
-        <DesktopWrapper>
-          <LegendComponent />
-        </DesktopWrapper>
-      </ErrorBoundary>
-    </>
+    <ErrorBoundary>
+      <MobileMapLegend>
+        <LegendComponent />
+      </MobileMapLegend>
+      <DesktopWrapper>
+        <LegendComponent />
+      </DesktopWrapper>
+    </ErrorBoundary>
   );
 };

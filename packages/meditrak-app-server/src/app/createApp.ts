@@ -9,6 +9,8 @@ import {
   AuthRoute,
   ChangePasswordRequest,
   ChangePasswordRoute,
+  ChangesMetadataRequest,
+  ChangesMetadataRoute,
   CountChangesRequest,
   CountChangesRoute,
   PullChangesRequest,
@@ -43,6 +45,11 @@ export function createApp(database = new TupaiaDatabase()) {
       handleWith(ChangePasswordRoute),
     )
     .get<CountChangesRequest>('changes/count', authMiddleware, handleWith(CountChangesRoute))
+    .get<ChangesMetadataRequest>(
+      'changes/metadata',
+      authMiddleware,
+      handleWith(ChangesMetadataRoute),
+    )
     .get<PullChangesRequest>('changes', authMiddleware, handleWith(PullChangesRoute))
     .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute))
     .build();

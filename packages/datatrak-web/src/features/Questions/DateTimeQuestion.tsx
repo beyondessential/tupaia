@@ -34,14 +34,29 @@ const DateTimePicker = styled(BaseDateTimePicker).attrs({
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
   }
+  .MuiInputBase-root {
+    order: 2; // make the helper text appear above the input
+  }
 `;
 
 export const DateTimeQuestion = ({
   label,
   id,
-  controllerProps: { value, onChange, name, ref },
+  required,
+  detailLabel,
+  controllerProps: { value, onChange, name, ref, invalid },
 }: SurveyQuestionInputProps) => {
   return (
-    <DateTimePicker value={value} onChange={onChange} label={label} id={id} name={name} inputRef={ref} />
+    <DateTimePicker
+      value={value}
+      onChange={onChange}
+      label={label}
+      id={id}
+      name={name}
+      inputRef={ref}
+      error={invalid}
+      required={required}
+      helperText={detailLabel}
+    />
   );
 };

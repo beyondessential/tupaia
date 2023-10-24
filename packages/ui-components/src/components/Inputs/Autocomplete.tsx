@@ -10,6 +10,7 @@ import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import { TextField } from './TextField';
+import { TextFieldProps } from '@material-ui/core';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.tertiary};
@@ -36,6 +37,13 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
     right: 0.9rem;
   }
+  .MuiInputBase-root.Mui-error {
+    background-color: transparent;
+    border-color: ${props => props.theme.palette.error.main};
+    &.Mui-focused {
+      border-color: ${props => props.theme.palette.error.main};
+    }
+  }
 `;
 
 export interface BaseAutocompleteProps {
@@ -46,7 +54,7 @@ export interface BaseAutocompleteProps {
   error?: boolean;
   disabled?: boolean;
   helperText?: string;
-  onChange?: (event: Event, newValue: string) => void;
+  onChange?: (event: Event, newValue: any) => void;
   getOptionSelected?: (option: any, value: any) => boolean;
   getOptionLabel?: (option: any) => string;
   placeholder?: string;
@@ -63,6 +71,7 @@ interface AutocompleteProps extends BaseAutocompleteProps {
   name?: string;
   defaultValue?: any;
   tooltip?: string;
+  textFieldProps?: TextFieldProps;
 }
 
 export const Autocomplete = ({
@@ -87,6 +96,7 @@ export const Autocomplete = ({
   name,
   defaultValue,
   tooltip,
+  textFieldProps,
 }: AutocompleteProps) => (
   <StyledAutocomplete
     id={id}
@@ -107,6 +117,7 @@ export const Autocomplete = ({
     renderInput={params => (
       <TextField
         {...(params as any)}
+        {...textFieldProps}
         label={label}
         tooltip={tooltip}
         name={name}

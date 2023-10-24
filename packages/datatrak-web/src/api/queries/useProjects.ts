@@ -4,9 +4,9 @@
  */
 
 import { useQuery } from 'react-query';
+import { DatatrakWebProjectsRequest } from '@tupaia/types';
+import { get } from '../api';
 
 export const useProjects = () => {
-  return useQuery(['projects'], () => {
-    return [];
-  });
+  return useQuery('projects', (): Promise<DatatrakWebProjectsRequest.ResBody> => get('projects'));
 };

@@ -17,7 +17,7 @@ import {
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
-import { setupTestApp, setupTestUser } from '../../utilities';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../utilities';
 import {
   addLeaderboardAsThirdItem,
   filterItemFields,
@@ -84,10 +84,12 @@ describe('socialFeed', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(user.id);
   });
 
   afterAll(async () => {
     MockDate.reset();
+    revokeAccess();
     await clearTestData(getTestDatabase());
   });
 

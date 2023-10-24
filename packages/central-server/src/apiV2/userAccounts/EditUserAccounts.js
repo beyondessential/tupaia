@@ -18,6 +18,8 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * - /users/:userId
  */
 
+const USER_PREFERENCES_FIELDS = ['project_id', 'country_id'];
+
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
     await this.assertPermissions(
@@ -35,12 +37,47 @@ export class EditUserAccounts extends EditHandler {
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, userAccountChecker]));
 
     // Update Record
-    const { password, profile_image: profileImage, ...restOfUpdatedFields } = this.updatedFields;
+    const {
+      password,
+      profile_image: profileImage,
+      preferences: preferenceField,
+      ...restOfUpdatedFields
+    } = this.updatedFields;
     let updatedFields = restOfUpdatedFields;
+
     if (password) {
       updatedFields = {
         ...updatedFields,
         ...hashAndSaltPassword(password),
+      };
+    }
+
+
+    if (preferenceField) {
+      throw new Error('Preferences should be updated via the specific preferences fields');
+    }
+
+    // Check if there are any updated user preferences in the request
+    const updatedUserPreferences = Object.entries(updatedFields).filter(([key]) =>
+      USER_PREFERENCES_FIELDS.includes(key),
+    );
+    // If there are, extract them and save them with the existing user preferences
+    if (updatedUserPreferences.length > 0) {
+      // Remove user preferences fields from updatedFields so they don't get saved else where
+      updatedUserPreferences.forEach(([key]) => {
+        delete updatedFields[key];
+      });
+
+      const userRecord = await this.models.user.findById(this.recordId);
+      const { preferences } = userRecord;
+
+      const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
+        return { ...obj, [key]: value };
+      }, preferences);
+
+      updatedFields = {
+        preferences: updatedPreferenceFields,
+        ...updatedFields,
       };
     }
 

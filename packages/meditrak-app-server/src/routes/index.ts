@@ -8,6 +8,8 @@ export { ChangePasswordRequest, ChangePasswordRoute } from './ChangePasswordRout
 export { RegisterUserRequest, RegisterUserRoute } from './RegisterUserRoute';
 export { SocialFeedRequest, SocialFeedRoute } from './social';
 export {
+  ChangesMetadataRequest,
+  ChangesMetadataRoute,
   CountChangesRequest,
   CountChangesRoute,
   PullChangesRequest,

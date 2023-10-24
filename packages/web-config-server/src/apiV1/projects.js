@@ -66,6 +66,7 @@ export async function buildProjectDataForFrontend(project, req) {
     : await fetchHasPendingProjectAccess(projectId, userId, req);
 
   return {
+    id: projectId,
     name,
     code,
     permissionGroups,

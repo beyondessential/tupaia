@@ -5,13 +5,13 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebProjectRequest } from '@tupaia/types';
+import { WebServerProjectRequest } from '@tupaia/types';
 
 export type ProjectRequest = Request<
-  TupaiaWebProjectRequest.Params,
-  TupaiaWebProjectRequest.ResBody,
-  TupaiaWebProjectRequest.ReqBody,
-  TupaiaWebProjectRequest.ReqQuery
+  WebServerProjectRequest.Params,
+  WebServerProjectRequest.ResBody,
+  WebServerProjectRequest.ReqBody,
+  WebServerProjectRequest.ReqQuery
 >;
 
 export class ProjectRoute extends Route<ProjectRequest> {

@@ -12,6 +12,7 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
+import { attachAccessPolicy } from './middleware';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
 
@@ -27,6 +28,7 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    .use('*', attachAccessPolicy)
     .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
     .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',

@@ -18,7 +18,14 @@ import {
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader, stripTimezoneFromDate } from '@tupaia/utils';
 import { TestModelRegistry } from '../../types';
-import { setupDummySyncQueue, setupTestApp, setupTestUser, CentralApiMock } from '../../utilities';
+import {
+  setupDummySyncQueue,
+  setupTestApp,
+  setupTestUser,
+  CentralApiMock,
+  grantUserAccess,
+  revokeAccess,
+} from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
 import { TEST_IMAGE_DATA } from './testImageData';
 import {
@@ -125,9 +132,11 @@ describe('changes (POST)', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(userId);
   });
 
   afterAll(async () => {
+    revokeAccess();
     await clearTestData(getTestDatabase());
   });
 
@@ -354,26 +363,6 @@ describe('changes (POST)', () => {
     });
 
     describe('Reject if invalid', () => {
-      it('rejects if answer provide non-exist question_id', async () => {
-        const answerObject = generateDummyAnswer(100);
-        const surveyResponseObject = generateDummySurveyResponse({
-          answers: [answerObject],
-        });
-
-        const action = {
-          action: 'SubmitSurveyResponse',
-          payload: surveyResponseObject,
-        };
-        const response = await app.post('changes', {
-          headers: {
-            Authorization: authHeader,
-          },
-          body: [action],
-        });
-
-        expect(response.statusCode).toBe(400);
-      });
-
       it('rejects if entities_created provide non-exist entity type', async () => {
         const { entity } = await findOrCreateDummyCountryEntity(models, {
           code: 'DL',

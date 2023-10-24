@@ -85,6 +85,7 @@ import {
   EditUserAccounts,
   GETUserAccounts,
   GETUserForMe,
+  EditUserForMe,
 } from './userAccounts';
 import {
   CreateUserEntityPermissions,
@@ -97,7 +98,6 @@ import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
-import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
@@ -324,7 +324,7 @@ apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayG
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
-apiV2.put('/me', catchAsyncErrors(editUser));
+apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));

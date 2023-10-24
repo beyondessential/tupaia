@@ -53,9 +53,7 @@ const ScrollBody = styled.div`
   position: relative;
   height: 100%;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    overflow: auto;
-    // Fix issue where scroll bar appears and dis-appears repeatedly and flickers
-    margin-right: 3px;
+    overflow-y: scroll;
   }
 `;
 

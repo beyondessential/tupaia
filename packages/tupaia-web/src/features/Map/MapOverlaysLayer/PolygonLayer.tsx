@@ -22,7 +22,7 @@ import { useNavigateToEntity } from '../utils';
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
 interface PolygonProps {
-  $displayType?: string;
+  $active?: string;
   $shade?: string;
 }
 
@@ -36,9 +36,13 @@ const ActivePolygon = styled(Polygon)<PolygonProps>`
 
 const ShadedPolygon = styled(BasePolygon)<PolygonProps>`
   fill: ${({ $shade }) => $shade};
+  stroke: ${({ $shade }) => $shade};
   fill-opacity: 0.5;
   &:hover {
-    fill-opacity: 0.8;
+    fill-opacity: ${({ $active }) =>
+      $active
+        ? 0.5
+        : 0.8}; // don't add hover effect when it is the active polygon because it isn't clickable
   }
 `;
 
@@ -87,22 +91,30 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
   const polygons = measureData.filter(m => !!m.region);
 
+  const overlayLevels = Array.isArray(selectedOverlay?.measureLevel)
+    ? selectedOverlay?.measureLevel
+    : [selectedOverlay?.measureLevel].map(level => level?.toLowerCase());
+
   function getDisplayType(measure) {
+    const isActive = measure.code === activeEntityCode;
+    if (measure.isHidden) {
+      // when the measure is hidden, the entity polygon is still visible, but it doesn't have a shade applied. When it is active it should be the active polygon, otherwise it should be a basic polygon
+      return isActive ? DISPLAY_TYPES.active : DISPLAY_TYPES.basic;
+    }
     if (
       isPolygonSerieses &&
-      selectedOverlay?.measureLevel?.toLowerCase() === measure?.type?.toLowerCase()
+      overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
     ) {
       // The active entity is part of the data visual so display it as a shaded polygon rather
       // than an active polygon
       return DISPLAY_TYPES.shaded;
     }
-    if (measure?.code === activeEntityCode) {
+    if (isActive) {
       return DISPLAY_TYPES.active;
     }
-    if (measure.isHidden) {
-      return DISPLAY_TYPES.basic;
-    }
-    if (isPolygonSerieses) {
+
+    // only show shaded polygons if there is a measure value, i.e. it is not a navigation polygon (like a sibling etc)
+    if (isPolygonSerieses && measure?.value !== undefined) {
       return DISPLAY_TYPES.shaded;
     }
 
@@ -116,21 +128,29 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
         const displayType = getDisplayType(measure);
         const PolygonComponent = POLYGON_COMPONENTS[displayType];
-        const key =
-          displayType === DISPLAY_TYPES.active ? `currentEntityPolygon${Math.random()}` : code;
         const showDataOnTooltip = displayType === DISPLAY_TYPES.shaded;
         const onClick =
           displayType === DISPLAY_TYPES.active ? undefined : () => navigateToEntity(code);
 
+        function getDisplayKey() {
+          // Use a random key to ensure that the active polygon is re-rendered to be on top
+          if (displayType === DISPLAY_TYPES.active) {
+            return `currentEntityPolygon${Math.random()}`;
+          }
+          const { code: entityCode } = measure;
+          // Ensure that the polygon is re-rendered when the display variables change
+          return `${entityCode}-${shade}`;
+        }
+
         return (
           <PolygonComponent
             positions={region}
-            $displayType={displayType}
             $shade={shade}
+            $active={code === activeEntityCode}
             eventHandlers={{
               click: onClick,
             }}
-            key={key}
+            key={getDisplayKey()}
             {...measure}
           >
             <AreaTooltip
