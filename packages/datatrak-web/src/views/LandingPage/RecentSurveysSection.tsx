@@ -15,7 +15,7 @@ const RecentSurveys = styled.section`
 `;
 
 const ScrollBody = styled.div`
-  background: white;
+  background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
   flex: 1;
 

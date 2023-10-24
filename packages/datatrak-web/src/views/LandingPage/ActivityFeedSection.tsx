@@ -21,7 +21,7 @@ const ActivityFeed = styled.section`
 
 const ScrollBody = styled.div`
   overflow: auto;
-  background: white;
+  background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
   flex: 1;
 `;

@@ -4,6 +4,8 @@ import {
   TextFieldProps as MuiTextFieldProps,
 } from '@material-ui/core';
 
+import '@material-ui/core/styles';
+
 import {
   KeyboardDatePickerProps as MuiKeyboardDatePickerProps,
   KeyboardDateTimePickerProps as MuiKeyboardDateTimePickerProps,
@@ -26,4 +28,13 @@ declare module '@material-ui/pickers' {
   export type KeyboardDateTimePickerProps = MuiKeyboardDateTimePickerProps & {
     FormHelperTextProps?: FormHelperTextProps; // override this to handle the issue with 'component' prop in MuiFormHelperTextProps not being recognized in TextFieldProps
   };
+}
+
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    primaryHover: string;
+  }
+  interface PaletteOptions {
+    primaryHover: string;
+  }
 }
