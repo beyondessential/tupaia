@@ -24,8 +24,8 @@ const Toolbar = styled.div<{
   justify-content: space-between;
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: -0.9375rem;
-    margin-right: -0.9375rem;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
   }
 `;
 

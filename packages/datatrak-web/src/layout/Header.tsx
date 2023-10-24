@@ -13,6 +13,7 @@ import { useSurveyForm } from '../features';
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
   width: 100%;
+  box-shadow: inset 0 0 1px #333;
 `;
 
 const Container = styled(PageContainer).attrs({
@@ -25,6 +26,7 @@ const Container = styled(PageContainer).attrs({
   align-items: center;
   justify-content: space-between;
 `;
+
 const LogoButton = styled(Button)`
   height: ${HEADER_HEIGHT};
   padding: 0;

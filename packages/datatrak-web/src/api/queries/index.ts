@@ -7,6 +7,7 @@ export { useUser } from './useUser';
 export { useProjects } from './useProjects';
 export { useSurveys } from './useSurveys';
 export { useSurvey } from './useSurvey';
+export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
 export { useEntities } from './useEntities';
 export { useEntity } from './useEntity';
 export { useAutocompleteOptions } from './useAutocompleteOptions';

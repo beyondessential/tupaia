@@ -17,7 +17,7 @@ const StyledButton = styled(UIButton)`
 `;
 
 interface ButtonProps extends Record<string, any> {
-  tooltip?: string;
+  tooltip?: ReactNode;
   children?: ReactNode;
   to?: To;
 }
