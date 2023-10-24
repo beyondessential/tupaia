@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
 import { Typography } from '@material-ui/core';
+import { useCurrentUserRecentSurveys } from '../../api/queries';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -40,44 +41,20 @@ const ScrollBody = styled.div`
   }
 `;
 
-const TEST_SURVEYS = [
-  {
-    id: '1',
-    name: 'Survey 1',
-    code: 'SURVEY_1',
-    country: 'Vanuatu',
-  },
-  {
-    id: '2',
-    name: 'Survey 2',
-    code: 'SURVEY_2',
-    country: 'Tonga',
-  },
-  // {
-  //   id: '3',
-  //   name: 'Survey 3',
-  //   code: 'SURVEY_3',
-  //   country: 'Tonga',
-  // },
-  // { id: '4', name: 'Survey 4', code: 'SURVEY_4', country: 'Tonga' },
-  // { id: '5', name: 'Survey 5', code: 'SURVEY_5', country: 'Tonga' },
-  // { id: '6', name: 'Survey 6', code: 'SURVEY_6', country: 'Tonga' },
-];
-
 export const RecentSurveysSection = () => {
-  const surveys = TEST_SURVEYS;
+  const { data } = useCurrentUserRecentSurveys();
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
       <ScrollBody>
-        {surveys?.length ? (
-          surveys?.map(({ id, name, code, country }) => (
+        {data?.length ? (
+          data?.map(({ surveyName, surveyCode, countryName }) => (
             <Tile
-              key={id}
-              title={name}
-              text={country}
-              to={`survey/${code}`}
-              tooltip={name}
+              key={`${surveyCode}-${countryName}`}
+              title={surveyName}
+              text={countryName}
+              to={`survey/${surveyCode}/1`}
+              tooltip={surveyName}
               Icon={SurveyIcon}
             />
           ))

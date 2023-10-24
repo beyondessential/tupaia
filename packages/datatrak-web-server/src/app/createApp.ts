@@ -30,6 +30,8 @@ import {
   ProjectRoute,
   SubmitSurveyRoute,
   SubmitSurveyRequest,
+  RecentSurveysRequest,
+  RecentSurveysRoute,
 } from '../routes';
 
 const {
@@ -54,6 +56,7 @@ export function createApp() {
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
