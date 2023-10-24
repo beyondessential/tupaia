@@ -4,8 +4,6 @@ import {
   TextFieldProps as MuiTextFieldProps,
 } from '@material-ui/core';
 
-import '@material-ui/core/styles';
-
 import {
   KeyboardDatePickerProps as MuiKeyboardDatePickerProps,
   KeyboardDateTimePickerProps as MuiKeyboardDateTimePickerProps,
