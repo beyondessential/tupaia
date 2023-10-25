@@ -26,7 +26,8 @@ const ScrollBody = styled.div`
   grid-column-gap: 1rem;
   // make a horizontal scrollable container for small screens
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: flex;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
     overflow: auto;
     > .MuiButton-root {
       min-width: 15rem;
