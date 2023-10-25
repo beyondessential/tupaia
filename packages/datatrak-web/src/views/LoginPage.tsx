@@ -17,7 +17,7 @@ export const LoginPage = ({
   } | null;
 }) => {
   const formContext = useForm();
-  const { mutate: login, isLoading, error } = useLogin();
+  const { mutateAsync: login, isLoading, error } = useLogin();
   return (
     <LoginForm
       onSubmit={login as SubmitHandler<any>}

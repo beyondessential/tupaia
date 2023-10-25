@@ -51,6 +51,8 @@ const Label = styled(FormLabel).attrs({
 })`
   margin-bottom: 1rem;
   font-size: 0.875rem;
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: 400;
 `;
 interface SelectListProps {
   items?: ListItemType[];
