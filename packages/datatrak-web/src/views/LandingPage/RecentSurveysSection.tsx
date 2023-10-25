@@ -31,10 +31,6 @@ const ScrollBody = styled.div`
     overflow: auto;
     > .MuiButton-root {
       min-width: 15rem;
-      margin-right: 1rem;
-      &:last-child {
-        margin-right: 0;
-      }
     }
   }
 `;
