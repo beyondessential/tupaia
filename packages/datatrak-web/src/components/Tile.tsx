@@ -13,7 +13,7 @@ const ButtonWrapper = styled(Button)`
   position: relative;
   justify-content: flex-start;
   align-items: flex-start;
-  background: white;
+  background: ${({ theme }) => theme.palette.background.paper};
   margin-bottom: 1rem;
   padding: 0.8rem 1rem;
   border-radius: 0.625rem;
@@ -28,7 +28,7 @@ const ButtonWrapper = styled(Button)`
   }
 
   &:hover {
-    background: #ebf5ff;
+    background-color: ${({ theme }) => theme.palette.primaryHover};
   }
 ` as typeof Button;
 

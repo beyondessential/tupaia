@@ -94,7 +94,7 @@ const Subheader = styled(Typography).attrs({
 `;
 
 const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
-  return (a.content as string)?.localeCompare(b.content as string, 'en', {
+  return (a.content as string).trim()?.localeCompare((b.content as string).trim(), 'en', {
     numeric: true,
   });
 };

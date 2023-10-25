@@ -24,6 +24,7 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const { fields } = query;
     const surveys = await ctx.services.central.fetchResources('surveys', {
       columns: fields,
+      pageSize: 'ALL', // Override default page size of 100
     });
     return sortBy(
       camelcaseKeys(surveys, {

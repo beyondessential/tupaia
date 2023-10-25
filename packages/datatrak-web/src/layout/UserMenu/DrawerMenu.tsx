@@ -118,7 +118,7 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMe
       </MenuHeader>
       <MenuList onCloseMenu={onCloseMenu}>
         {additionalMenuItems.map(({ label, to }) => (
-          <MenuButton key={label} to={to} component={RouterLink}>
+          <MenuButton key={label} to={to} component={RouterLink} onClick={onCloseMenu}>
             {label}
           </MenuButton>
         ))}
