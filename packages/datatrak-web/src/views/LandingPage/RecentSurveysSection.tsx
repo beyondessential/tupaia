@@ -42,13 +42,13 @@ const ScrollBody = styled.div`
 `;
 
 export const RecentSurveysSection = () => {
-  const { data } = useCurrentUserRecentSurveys();
+  const { data: recentSurveys = [], isSuccess } = useCurrentUserRecentSurveys();
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
       <ScrollBody>
-        {data?.length ? (
-          data?.map(({ surveyName, surveyCode, countryName }) => (
+        {isSuccess && recentSurveys?.length ? (
+          recentSurveys?.map(({ surveyName, surveyCode, countryName }) => (
             <Tile
               key={`${surveyCode}-${countryName}`}
               title={surveyName}

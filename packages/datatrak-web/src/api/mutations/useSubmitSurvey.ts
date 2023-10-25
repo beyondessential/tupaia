@@ -58,6 +58,7 @@ export const useSubmitSurvey = () => {
     {
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
+        queryClient.invalidateQueries('recentSurveys');
         successToast("Congratulations! You've earned a coconut", Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes
         navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
