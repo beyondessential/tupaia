@@ -5,10 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
 import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
 import { Typography } from '@material-ui/core';
 import { useCurrentUserRecentSurveys } from '../../api/queries';
+import { useEditUser } from '../../api/mutations';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -19,43 +21,55 @@ const RecentSurveys = styled.section`
 const ScrollBody = styled.div`
   border-radius: 10px;
   flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  > a {
-    flex: 0 0 calc(33% - 1rem);
-    margin-right: 1rem;
-  }
-
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr));
+  grid-column-gap: 1rem;
+  // make a horizontal scrollable container for small screens
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex-wrap: nowrap;
+    display: flex;
     overflow: auto;
-    > a {
+    > .MuiButton-root {
       min-width: 15rem;
-
-      flex: 0 0 auto;
+      margin-right: 1rem;
+      &:last-child {
+        margin-right: 0;
+      }
     }
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    min-height: auto;
   }
 `;
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess } = useCurrentUserRecentSurveys();
+  const navigate = useNavigate();
+  const { mutateAsync: editUser } = useEditUser();
+
+  const handleSelectSurvey = async (surveyCode: string, countryId: string) => {
+    // set the selected country in the user's profile
+    await editUser({
+      countryId,
+    });
+    // then navigate to the survey
+    navigate(`survey/${surveyCode}/1`);
+  };
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
       <ScrollBody>
         {isSuccess && recentSurveys?.length ? (
-          recentSurveys?.map(({ surveyName, surveyCode, countryName }) => (
+          recentSurveys?.map(({ surveyName, surveyCode, countryName, countryId }) => (
             <Tile
               key={`${surveyCode}-${countryName}`}
               title={surveyName}
               text={countryName}
-              to={`survey/${surveyCode}/1`}
-              tooltip={surveyName}
+              tooltip={
+                <>
+                  {surveyName}
+                  <br />
+                  {countryName}
+                </>
+              }
               Icon={SurveyIcon}
+              onClick={() => handleSelectSurvey(surveyCode, countryId)}
             />
           ))
         ) : (

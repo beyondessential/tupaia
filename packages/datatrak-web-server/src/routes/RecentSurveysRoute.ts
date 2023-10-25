@@ -21,8 +21,16 @@ export class RecentSurveysRoute extends Route<RecentSurveysRequest> {
 
     const { userId } = query;
 
+    // The central server queries already built in don't support GROUP BY and this would be unnecessary to add for this one use case, so we use raw SQL in this instance
     const surveyResponses = await models.database.executeSql(
-      `SELECT survey.name as survey_name, survey.code as survey_code, country.name as country_name from survey_response INNER JOIN survey ON survey.id=survey_response.survey_id INNER JOIN entity ON entity.id=survey_response.entity_id INNER JOIN country ON country.code=entity.country_code where survey_response.user_id = '${userId}' GROUP BY survey.code,survey.name, country.name ORDER BY MAX(survey_response.data_time) desc LIMIT 6`,
+      `SELECT survey.name as survey_name, survey.code as survey_code, c.name as country_name, c.id as country_id from survey_response 
+      JOIN survey ON survey.id=survey_response.survey_id 
+      JOIN entity ON entity.id=survey_response.entity_id 
+      JOIN entity c ON c.code=entity.country_code 
+      where survey_response.user_id = '${userId}' 
+      GROUP BY survey.code,survey.name, c.name, c.id 
+      ORDER BY MAX(survey_response.data_time) 
+      desc LIMIT 6;`,
     );
 
     return camelcaseKeys(surveyResponses as DatatrakWebRecentSurveysRequest.ResBody, {

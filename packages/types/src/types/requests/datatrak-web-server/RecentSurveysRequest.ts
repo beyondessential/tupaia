@@ -11,6 +11,7 @@ export type RecentSurvey = {
   surveyCode: Survey['code'];
   surveyName: Survey['name'];
   countryName: Country['name'];
+  countryId: Country['id'];
 };
 
 export type ResBody = RecentSurvey[];

@@ -59490,6 +59490,31 @@ export const AnswersSchema = {
 	"additionalProperties": false
 } 
 
+export const RecentSurveySchema = {
+	"type": "object",
+	"properties": {
+		"surveyCode": {
+			"type": "string"
+		},
+		"surveyName": {
+			"type": "string"
+		},
+		"countryName": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"countryId",
+		"countryName",
+		"surveyCode",
+		"surveyName"
+	]
+} 
+
 export const CountryAccessSchema = {
 	"type": "object",
 	"properties": {
