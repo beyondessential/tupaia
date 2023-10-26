@@ -53,7 +53,7 @@ export const ActionsMenu = (
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
         {options.map(
-          ({ label, action, style, ActionIcon, toolTipTitle, color }: ActionMenuOptionType) => (
+          ({ label, action, style, ActionIcon, toolTipTitle, color }: ActionsMenuOptionType) => (
             <StyledMenuItem
               role="button"
               key={label}
