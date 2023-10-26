@@ -25,7 +25,7 @@ export type Data = Record<string, unknown> & {
   value?: any;
 };
 
-export type ActionMenuOptionType = {
+export type ActionsMenuOptionType = {
   label: string;
   action: () => void;
   style?: CSSProperties;

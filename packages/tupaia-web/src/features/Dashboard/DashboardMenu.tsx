@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem, Box } from '@material-ui/core';
-import { ActionsMenu as UIActionsMenu, ExportIcon, ActionMenuOptionType } from '@tupaia/ui-components';
+import { ActionsMenu as UIActionsMenu, ExportIcon, ActionsMenuOptionType } from '@tupaia/ui-components';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import styled from 'styled-components';
@@ -80,8 +80,8 @@ interface ActionsMenuProps {
 }
 
 const ActionsMenu = ({ dashboardConfig, isSubscribed, setExportModalOpen, handleSubscribeClick}: ActionsMenuProps) => {
-  const exportOption: ActionMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
-  const menuOptions: ActionMenuOptionType[] = [exportOption]
+  const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
+  const menuOptions: ActionsMenuOptionType[] = [exportOption]
   
   const { mailingListEnabled } = dashboardConfig;
   if(!mailingListEnabled) {
