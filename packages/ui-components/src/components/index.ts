@@ -31,7 +31,7 @@ export * from './FetchLoader';
 export * from './HomeButton';
 export * from './IconButton';
 export * from './NavBar';
-export * from './QrCode'
+export * from './QrCode';
 export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './ReferenceTooltip';
