@@ -5,11 +5,9 @@
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { ButtonBase, Menu, MenuItem, Box, Button } from '@material-ui/core';
-import { ActionsMenu } from '@tupaia/ui-components';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { ButtonBase, Menu, MenuItem, Box } from '@material-ui/core';
+import { ActionsMenu as UIActionsMenu, ExportIcon, ActionMenuOptionType } from '@tupaia/ui-components';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import ShareIcon from '@material-ui/icons/Share';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
@@ -26,12 +24,6 @@ const MenuButton = styled(ButtonBase)`
   .MuiSvgIcon-root {
     margin-left: 0.5rem;
   }
-`;
-
-const ExportButton = styled(Button).attrs({
-  variant: 'outlined',
-})`
-  font-size: 0.6875rem;
 `;
 
 const ItemButton = styled(Menu)`
@@ -80,18 +72,51 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   );
 };
 
+interface ActionsMenuProps {
+  dashboardConfig: Dashboard['config'];
+  isSubscribed: boolean;
+  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSubscribeClick: Function;
+}
+
+const ActionsMenu = ({ dashboardConfig, isSubscribed, setExportModalOpen, handleSubscribeClick}: ActionsMenuProps) => {
+  const exportOption: ActionMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
+  const menuOptions: ActionMenuOptionType[] = [exportOption]
+  
+  const { mailingListEnabled } = dashboardConfig;
+  if(!mailingListEnabled) {
+    return (
+      <UIActionsMenu options={menuOptions} includesIcons={true} />
+    )
+  }
+
+  const subscribeOption = {
+    label: isSubscribed ? 'Subscribed' : 'Subscribe', 
+    action: () => handleSubscribeClick(isSubscribed), 
+    ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
+    toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
+    color: isSubscribed ? 'primary' : undefined,
+  }
+
+  menuOptions.push(subscribeOption)
+
+  return (
+    <UIActionsMenu options={menuOptions} includesIcons={true} />
+  )
+}
+
 export const DashboardMenu = ({
   activeDashboard,
   dashboards,
   setExportModalOpen,
-  isJoined,
-  handleJoinClick
+  isSubscribed,
+  handleSubscribeClick
 }: {
   activeDashboard?: Dashboard;
   dashboards: Dashboard[];
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isJoined: boolean;
-  handleJoinClick: Function;
+  isSubscribed: boolean;
+  handleSubscribeClick: Function;
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -105,15 +130,7 @@ export const DashboardMenu = ({
   };
 
   const hasMultipleDashboards = dashboards.length > 1;
-  const joinedMenuOptions = [
-    { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: ShareIcon, toolTipTitle: 'Export dashboard' },
-    { label: 'Joined', action: () => handleJoinClick(false), ActionIcon: CheckCircleIcon, toolTipTitle: 'Remove yourself from email updates', color: 'primary' },
-  ]
 
-  const defaultMenuOptions = [
-    { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: GetAppIcon, toolTipTitle: 'Export dashboard' },
-    { label: 'Join', action: () => handleJoinClick(true), ActionIcon: AddCircleOutlineIcon, toolTipTitle: 'Join to receive dashboard email updates' },
-  ]
   return (
     <>
       {activeDashboard && (
@@ -122,7 +139,7 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu options={isJoined ? joinedMenuOptions : defaultMenuOptions} includesIcons={true} />
+          <ActionsMenu dashboardConfig={activeDashboard.config} isSubscribed={isSubscribed} setExportModalOpen={setExportModalOpen} handleSubscribeClick={handleSubscribeClick}/>
         </Box>
       )}
 
