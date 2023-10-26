@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import styled from 'styled-components';
-import { ActionMenuOptionType } from '../types';
+import { ActionsMenuOptionType } from '../types';
 
 const StyledMenuItem = styled(MuiMenuItem)`
   padding-top: 0.625rem;
@@ -30,7 +30,7 @@ const StyledMenuIcon = styled(MoreVertIcon)`
 `;
 
 export const ActionsMenu = (
-  { options }: { options: ActionMenuOptionType[] },
+  { options }: { options: ActionsMenuOptionType[] },
   includesIcons = false,
 ) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
