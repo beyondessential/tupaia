@@ -130,16 +130,16 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-  const [isJoined, setIsJoined] = useState<boolean>(false)
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
   const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
+  console.log('active dashboard: ',activeDashboard)
 
-
-  const handleJoinClick = (isJoinedState) => {
-    setIsJoined(isJoinedState)
+  const handleSubscribeClick = (isJoinedState) => {
+    setIsSubscribed(isJoinedState)
     setIsSnackbarOpen(true)
   } 
 
-  const handleCloseSnackbar = (event, reason) => {
+  const handleCloseSnackbar = (_event, reason: string) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -206,7 +206,7 @@ export const Dashboard = () => {
         <ScrollBody>
           <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isSnackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
             <Alert elevation={6} variant="filled" onClose={handleCloseSnackbar} severity="success">
-              {isJoined ? 'Succesfully joined dashboard mailing list' : 'You are now removed from this dashboard mailing list'}
+              {isSubscribed ? 'Succesfully joined dashboard mailing list' : 'You are now removed from this dashboard mailing list'}
             </Alert>
           </Snackbar>
           <Breadcrumbs />
@@ -221,7 +221,7 @@ export const Dashboard = () => {
             <TitleBar>
               <Title variant="h3">{title}</Title>
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} isJoined={isJoined} handleJoinClick={handleJoinClick}/>
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} isSubscribed={isSubscribed} handleSubscribeClick={handleSubscribeClick}/>
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
