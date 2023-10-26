@@ -4,13 +4,10 @@
  */
 
 import { BooleanExpressionParser, ExpressionParser } from '@tupaia/expression-parser';
-import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
+import { ArithmeticQuestionConfig, ConditionQuestionConfig, QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
 import { formatSurveyScreenQuestions } from '../utils';
 import { generateMongoId, generateShortId } from './generateId';
-
-type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
-type ArithmeticConfig = DatatrakWebSurveyRequest.ArithmeticConfig;
 
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
@@ -168,7 +165,7 @@ const updateDependentQuestions = (
   screenComponents?.forEach(question => {
     const { config, type, questionId } = question;
     if (type === QuestionType.Condition) {
-      const { conditions } = config?.condition as ConditionConfig;
+      const { conditions } = config?.condition as ConditionQuestionConfig;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
@@ -180,7 +177,7 @@ const updateDependentQuestions = (
       const result = getArithmeticResult(
         expressionParser,
         formDataCopy,
-        config?.arithmetic as ArithmeticConfig,
+        config?.arithmetic as ArithmeticQuestionConfig,
       );
       if (result) {
         formDataCopy[questionId] = result;
@@ -216,7 +213,7 @@ export const getArithmeticDisplayAnswer = (config, answer, formData) => {
     valueTranslation = {},
     defaultValues = {},
     answerDisplayText = '',
-  } = config?.arithmetic as ArithmeticConfig;
+  } = config?.arithmetic as ArithmeticQuestionConfig;
   if (!answerDisplayText) return answer;
   const variables = expressionParser.getVariables(formula);
 
