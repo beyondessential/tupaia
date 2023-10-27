@@ -27,10 +27,11 @@ export class RecentSurveysRoute extends Route<RecentSurveysRequest> {
       JOIN survey ON survey.id=survey_response.survey_id 
       JOIN entity ON entity.id=survey_response.entity_id 
       JOIN entity c ON c.code=entity.country_code 
-      where survey_response.user_id = '${userId}' 
+      where survey_response.user_id = ?
       GROUP BY survey.code,survey.name, c.name, c.id 
       ORDER BY MAX(survey_response.data_time) 
       desc LIMIT 6;`,
+      [userId],
     );
 
     return camelcaseKeys(surveyResponses as DatatrakWebRecentSurveysRequest.ResBody, {

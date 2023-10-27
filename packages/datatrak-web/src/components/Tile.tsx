@@ -3,7 +3,6 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ComponentType, ReactNode } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Box } from '@material-ui/core';
 import { Button } from './Button';
@@ -66,12 +65,7 @@ interface TileProps {
 
 export const Tile = ({ title, text, children, to, tooltip, Icon, onClick }: TileProps) => {
   return (
-    <ButtonWrapper
-      component={to ? RouterLink : undefined}
-      to={to}
-      tooltip={tooltip}
-      onClick={onClick}
-    >
+    <ButtonWrapper to={to} tooltip={tooltip} onClick={onClick}>
       {Icon && <Icon />}
       <Box maxWidth="100%" pr={5}>
         <Heading>{title}</Heading>

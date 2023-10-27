@@ -44,7 +44,6 @@ export class UserRoute extends Route<UserRequest> {
       const countryResponse = await ctx.services.central.fetchResources(`/entities/${countryId}`, {
         columns: ['id', 'name', 'code'],
       });
-      console.log(countryResponse);
       country = countryResponse || null;
     }
 
