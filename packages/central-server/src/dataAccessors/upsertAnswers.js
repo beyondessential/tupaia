@@ -39,13 +39,10 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       // if the answer is a file object, upload it to s3 and save the url as the answer. If it's not a file object that means it is just a url to a file, which will be handled by default
     } else if (
       answer.type === QuestionType.File &&
-      answer.body?.hasOwnProperty('name') &&
-      answer.body?.hasOwnProperty('value')
+      answer.body?.hasOwnProperty('uniqueFileName') &&
+      answer.body?.hasOwnProperty('data')
     ) {
-      answerDocument.text = await s3Client.uploadFile(
-        `${surveyResponseId}_${answer.question_id}_${answer?.body?.name}`,
-        answer.body.value,
-      );
+      answerDocument.text = await s3Client.uploadFile(answer.body.uniqueFileName, answer.body.data);
     } else {
       answerDocument.text = answer.body;
     }
