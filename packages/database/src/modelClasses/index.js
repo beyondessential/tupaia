@@ -13,6 +13,8 @@ import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
+import { DashboardMailingListModel } from './DashboardMailingList';
+import { DashboardMailingListEntryModel } from './DashboardMailingListEntry';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
@@ -72,6 +74,8 @@ export const modelClasses = {
   Country: CountryModel,
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
+  DashboardMailingList: DashboardMailingListModel,
+  DashboardMailingListEntry: DashboardMailingListEntryModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataElementDataService: DataElementDataServiceModel,
@@ -169,4 +173,9 @@ export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
 export { DashboardType, DashboardModel } from './Dashboard';
 export { DashboardItemType, DashboardItemModel } from './DashboardItem';
+export { DashboardMailingListType, DashboardMailingListModel } from './DashboardMailingList';
+export {
+  DashboardMailingListEntryType,
+  DashboardMailingListEntryModel,
+} from './DashboardMailingListEntry';
 export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';
