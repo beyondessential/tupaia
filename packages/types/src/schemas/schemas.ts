@@ -52139,7 +52139,8 @@ export const DataTableSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52179,7 +52180,8 @@ export const DataTableCreateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52220,7 +52222,8 @@ export const DataTableUpdateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -58436,7 +58439,8 @@ export const DataTableTypeSchema = {
 		"entity_attributes",
 		"entity_relations",
 		"events",
-		"sql"
+		"sql",
+		"survey_responses"
 	],
 	"type": "string"
 } 
@@ -58701,7 +58705,8 @@ export const DataTablePreviewRequestSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
