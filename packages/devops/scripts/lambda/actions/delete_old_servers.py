@@ -10,7 +10,7 @@ def delete_old_servers(event):
     current_date = time.strftime("%Y-%m-%d")
     filters = [
         {'Name': 'instance-state-name', 'Values': ['running', 'stopped']}, # ignore terminated instances
-        {'Name': 'tag:DeleteAfter', 'Values': [current_date + '*']} # get any due to be deleted this hour
+        {'Name': 'tag:DeleteAfter', 'Values': ['*'] }
     ]
     instances = find_instances(filters)
 

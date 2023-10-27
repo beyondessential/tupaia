@@ -33,7 +33,9 @@ const ItemButton = styled(Menu)`
     background: ${({ theme }) => theme.palette.background.default};
   }
   .MuiMenu-paper {
-    max-height: calc(100vh - ${TOP_BAR_HEIGHT});
+    max-height: calc(
+      100vh - (${TOP_BAR_HEIGHT} + ${TOP_BAR_HEIGHT})
+    ); // 2x top bar height, to make up for any possibly extra in header, e.g. the branch name banner
   }
 
   .MuiListItem-root {

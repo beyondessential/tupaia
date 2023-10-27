@@ -1,33 +1,17 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { ROUTES } from '../../constants';
 import styled from 'styled-components';
-import { ButtonLink as BaseButtonLink, PageContainer as BasePageContainer } from '../components';
-import { ROUTES } from '../constants';
+import { ButtonLink as BaseButtonLink } from '../../components';
+import { Typography } from '@material-ui/core';
 
-const PageContainer = styled(BasePageContainer)`
-  background: url('/landing-page-background.svg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-`;
-
-const Wrapper = styled.div`
-  padding: 1.5rem 0;
-  max-width: 85rem;
-  margin: 0 auto;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 4rem 0;
-  }
-`;
 const SurveyAlert = styled.div`
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
-  margin: 0 1.25rem;
   padding: 1rem;
   display: flex;
   position: relative;
@@ -35,7 +19,6 @@ const SurveyAlert = styled.div`
   justify-content: space-between;
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem 2.3rem;
-    margin: 0 2rem;
   }
 `;
 
@@ -75,10 +58,10 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding-left: 2rem;
+  ${({ theme }) => theme.breakpoints.up('md')} {
     padding-right: 4rem;
     max-width: 75%;
+    padding-left: 2rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
@@ -106,7 +89,7 @@ const SurveysImage = styled.img`
   position: absolute;
   display: flex;
   align-items: center;
-  right: 0rem;
+  right: 0;
   top: -1.5rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     top: -3rem;
@@ -127,33 +110,26 @@ const SurveyAlertContent = styled.div`
   }
 `;
 
-export const LandingPage = () => {
-  return (
-    <PageContainer>
-      <Wrapper>
-        <SurveyAlert>
-          <SurveyAlertContent>
-            <ButtonWrapper>
-              <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-              <ButtonLink to="#" variant="outlined">
-                Explore Data
-              </ButtonLink>
-            </ButtonWrapper>
-            <TextWrapper>
-              <Text>
-                Tupaia DataTrak makes data collection easy!{' '}
-                <DesktopText>
-                  You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share
-                  news, stories and information with the Tupaia community. To collect data offline,
-                  please download our mobile app, Tupaia MediTrak from Google Play or the Apple App
-                  Store.
-                </DesktopText>
-              </Text>
-            </TextWrapper>
-          </SurveyAlertContent>
-          <SurveysImage src="/surveys.svg" />
-        </SurveyAlert>
-      </Wrapper>
-    </PageContainer>
-  );
-};
+export const SurveySelectSection = () => (
+  <SurveyAlert>
+    <SurveyAlertContent>
+      <ButtonWrapper>
+        <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
+        <ButtonLink to="#" variant="outlined">
+          Explore Data
+        </ButtonLink>
+      </ButtonWrapper>
+      <TextWrapper>
+        <Text>
+          Tupaia DataTrak makes data collection easy!{' '}
+          <DesktopText>
+            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+            stories and information with the Tupaia community. To collect data offline, please
+            download our mobile app, Tupaia MediTrak from Google Play or the Apple App Store.
+          </DesktopText>
+        </Text>
+      </TextWrapper>
+    </SurveyAlertContent>
+    <SurveysImage src="/surveys.svg" />
+  </SurveyAlert>
+);

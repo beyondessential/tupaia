@@ -27,3 +27,12 @@ declare module '@material-ui/pickers' {
     FormHelperTextProps?: FormHelperTextProps; // override this to handle the issue with 'component' prop in MuiFormHelperTextProps not being recognized in TextFieldProps
   };
 }
+
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    primaryHover: string;
+  }
+  interface PaletteOptions {
+    primaryHover: string;
+  }
+}

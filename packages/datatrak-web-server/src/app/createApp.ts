@@ -18,6 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
   ProjectsRoute,
   ProjectsRequest,
   SurveyRequest,
@@ -30,9 +32,9 @@ import {
   SubmitSurveyRequest,
 } from '../routes';
 
-const { 
+const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2'
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
 } = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
@@ -48,6 +50,7 @@ export function createApp() {
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
+    .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))

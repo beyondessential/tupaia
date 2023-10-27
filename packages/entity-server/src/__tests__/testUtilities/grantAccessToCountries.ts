@@ -13,7 +13,7 @@ export const grantAccessToCountries = (countries: string[]) => {
 };
 
 let getAccessPolicyForUserMock: jest.SpyInstance;
-const grantAccess = (policy: Record<string, string[]>) => {
+export const grantAccess = (policy: Record<string, string[]>) => {
   getAccessPolicyForUserMock = jest
     .spyOn(Authenticator.prototype, 'getAccessPolicyForUser')
     .mockImplementation(async () => policy);

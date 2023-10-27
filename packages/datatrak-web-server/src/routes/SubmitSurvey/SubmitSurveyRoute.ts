@@ -5,9 +5,14 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
-import { processSurveyResponse } from '../utils';
+import { processSurveyResponse } from './processSurveyResponse';
 
-export type SubmitSurveyRequest = Request<RequestT.Params, RequestT.ResBody, RequestT.ReqBody, any>;
+export type SubmitSurveyRequest = Request<
+  RequestT.Params,
+  RequestT.ResBody,
+  RequestT.ReqBody,
+  RequestT.ReqQuery
+>;
 
 export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
@@ -21,7 +26,7 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
 
     await centralApi.createSurveyResponses([processedResponse]);
     return {
-      createdEntities: processedResponse.entities_upserted,
+      createdEntities: processedResponse.entities_upserted || [],
     };
   }
 }

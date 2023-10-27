@@ -27,7 +27,8 @@ const Header = styled.header<{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
+  // Needs to be higher than 1000 as leaflet sets z-index of map controls to 1000
+  z-index: 1100;
   position: relative;
   padding: 0 0.625em;
   border-bottom: 1px solid ${({ theme }) => theme.palette.background.paper};

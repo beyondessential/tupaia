@@ -5,9 +5,21 @@
 import { QuestionType } from '@tupaia/types';
 import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
-import { processSurveyResponse } from '../../utils';
+import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
-const mockGetEntity = jest.fn(() => 'theEntityId');
+// Mock out moment so that that toISOString returns a consistent value for our tests
+jest.mock('moment', () => {
+  const mMoment = {
+    toISOString: jest.fn(() => 'theISOString'),
+  };
+  return jest.fn(() => mMoment);
+});
+
+const mockFindEntityById = async (id: string) => ({
+  id: 'theEntityId',
+  code: 'theEntityCode',
+  name: 'The Entity Name',
+});
 
 jest.mock('@tupaia/database', () => ({
   generateId: jest.fn(() => 'theEntityId'),
@@ -74,7 +86,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -111,7 +123,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -138,7 +150,7 @@ describe('processSurveyResponse', () => {
           question1: '2022-01-01',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -165,7 +177,7 @@ describe('processSurveyResponse', () => {
           question1: '2022-01-01',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -197,7 +209,7 @@ describe('processSurveyResponse', () => {
           },
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -240,7 +252,7 @@ describe('processSurveyResponse', () => {
           },
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -272,7 +284,7 @@ describe('processSurveyResponse', () => {
           question1: 'answer1',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -315,7 +327,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
@@ -363,7 +375,7 @@ describe('processSurveyResponse', () => {
           question2: 'answer2',
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({

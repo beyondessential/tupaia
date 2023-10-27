@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-const MAX_CHARACTERS_PER_LINE = 12;
+const MAX_CHARACTERS_PER_LINE = 13;
 const MAX_LINES = 3;
 
 const splitWord = word => {

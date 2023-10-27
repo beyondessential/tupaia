@@ -6,8 +6,8 @@ import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/uti
 import {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
-  MeditrakSurveyResponseRequest,
   Entity,
+  MeditrakSurveyResponseRequest,
   QuestionType,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
@@ -31,7 +31,7 @@ export const isUpsertEntityQuestion = (config?: ConfigT) => {
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
-  getEntity: Function,
+  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {
     userId,
@@ -45,7 +45,7 @@ export const processSurveyResponse = async (
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
-  const surveyResponse = {
+  const surveyResponse: MeditrakSurveyResponseRequest = {
     user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
@@ -58,8 +58,6 @@ export const processSurveyResponse = async (
     entities_upserted: [],
     options_created: [],
     answers: [],
-  } as MeditrakSurveyResponseRequest & {
-    entities_upserted: Entity[];
   };
   // Process answers and save the response in the database
   const answersToSubmit = [] as Record<string, unknown>[];
@@ -74,8 +72,14 @@ export const processSurveyResponse = async (
       [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
       isUpsertEntityQuestion(config)
     ) {
-      const entityObj = await buildUpsertEntity(config, questionId, answers, countryId, getEntity);
-      if (entityObj) surveyResponse.entities_upserted.push(entityObj);
+      const entityObj = await buildUpsertEntity(
+        config,
+        questionId,
+        answers,
+        countryId,
+        findEntityById,
+      );
+      if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
       answer = entityObj?.id;
     }
     if (answer === undefined || answer === null || answer === '') {

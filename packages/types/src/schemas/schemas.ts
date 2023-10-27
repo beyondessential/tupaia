@@ -9,6 +9,8 @@
  * Rerun generate:schemas to regenerate this file.
  */
 export const BaseConfigSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -359,8 +361,6 @@ export const BaseConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"name"
@@ -553,6 +553,7 @@ export const DefaultTimePeriodSchema = {
 } 
 
 export const DefaultTimePeriodShortSchema = {
+	"type": "object",
 	"properties": {
 		"offset": {
 			"type": "number"
@@ -568,7 +569,6 @@ export const DefaultTimePeriodShortSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"offset",
@@ -577,6 +577,7 @@ export const DefaultTimePeriodShortSchema = {
 } 
 
 export const DefaultTimePeriodLongSchema = {
+	"type": "object",
 	"properties": {
 		"start": {
 			"type": "object",
@@ -659,7 +660,6 @@ export const DefaultTimePeriodLongSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"end",
@@ -668,13 +668,13 @@ export const DefaultTimePeriodLongSchema = {
 } 
 
 export const DefaultTimePeriodWithAbsoluteDateSchema = {
+	"type": "object",
 	"properties": {
 		"start": {
 			"description": "ISO Date Time",
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"start"
@@ -682,6 +682,7 @@ export const DefaultTimePeriodWithAbsoluteDateSchema = {
 } 
 
 export const DateOffsetSpecSchema = {
+	"type": "object",
 	"properties": {
 		"unit": {
 			"enum": [
@@ -714,7 +715,6 @@ export const DateOffsetSpecSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"offset",
@@ -765,6 +765,7 @@ export const DisplayOnEntityConditionsSchema = {
 } 
 
 export const DisplayOnEntityAttributeConditionsSchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {
 			"type": "object",
@@ -777,7 +778,6 @@ export const DisplayOnEntityAttributeConditionsSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"attributes"
@@ -796,6 +796,7 @@ export const DisplayOnEntityOtherConditionsSchema = {
 } 
 
 export const ExportPresentationOptionsSchema = {
+	"type": "object",
 	"properties": {
 		"exportWithLabels": {
 			"type": "boolean"
@@ -807,7 +808,6 @@ export const ExportPresentationOptionsSchema = {
 			"type": "boolean"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
@@ -816,6 +816,9 @@ export const CssColorSchema = {
 } 
 
 export const MatrixConfigSchema = {
+	"description": "Matrix viz type",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -1520,9 +1523,6 @@ export const MatrixConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "Matrix viz type",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type"
@@ -1530,6 +1530,7 @@ export const MatrixConfigSchema = {
 } 
 
 export const ConditionalPresentationOptionsSchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"type": "string",
@@ -1647,11 +1648,12 @@ export const ConditionalPresentationOptionsSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const RangePresentationOptionsSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"type": {
 			"type": "string",
@@ -1663,8 +1665,6 @@ export const RangePresentationOptionsSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"type"
 	]
@@ -1833,6 +1833,7 @@ export const PresentationOptionsSchema = {
 } 
 
 export const BasePresentationOptionSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1847,11 +1848,12 @@ export const BasePresentationOptionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const PresentationOptionConditionSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1926,8 +1928,6 @@ export const PresentationOptionConditionSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"condition",
 		"key"
@@ -1935,6 +1935,8 @@ export const PresentationOptionConditionSchema = {
 } 
 
 export const PresentationOptionRangeSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"description": "Specify the color of the display item",
@@ -1954,9 +1956,7 @@ export const PresentationOptionRangeSchema = {
 		"max": {
 			"type": "number"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ConditionValueSchema = {
@@ -1988,6 +1988,9 @@ export const VizComponentNameSchema = {
 } 
 
 export const ComponentConfigSchema = {
+	"description": "A Component viz type simply renders a React component as the viz",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -2353,9 +2356,6 @@ export const ComponentConfigSchema = {
 			"type": "string"
 		}
 	},
-	"description": "A Component viz type simply renders a React component as the viz",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"componentName",
 		"name",
@@ -2364,6 +2364,8 @@ export const ComponentConfigSchema = {
 } 
 
 export const BaseChartConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -2761,14 +2763,15 @@ export const BaseChartConfigSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name"
 	]
 } 
 
 export const GaugeChartConfigSchema = {
+	"description": "Gauge Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -3178,9 +3181,6 @@ export const GaugeChartConfigSchema = {
 			]
 		}
 	},
-	"description": "Gauge Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -3189,6 +3189,9 @@ export const GaugeChartConfigSchema = {
 } 
 
 export const ComposedChartConfigSchema = {
+	"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -3715,9 +3718,6 @@ export const ComposedChartConfigSchema = {
 			}
 		}
 	},
-	"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -3726,6 +3726,9 @@ export const ComposedChartConfigSchema = {
 } 
 
 export const BarChartConfigSchema = {
+	"description": "Bar Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -4252,9 +4255,6 @@ export const BarChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Bar Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -4263,6 +4263,9 @@ export const BarChartConfigSchema = {
 } 
 
 export const PieChartConfigSchema = {
+	"description": "Pie Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -4687,9 +4690,6 @@ export const PieChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Pie Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -4698,6 +4698,9 @@ export const PieChartConfigSchema = {
 } 
 
 export const LineChartConfigSchema = {
+	"description": "Line Chart",
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -5224,9 +5227,6 @@ export const LineChartConfigSchema = {
 			}
 		}
 	},
-	"description": "Line Chart",
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"chartType",
 		"name",
@@ -5273,6 +5273,8 @@ export const CommonChartChartConfigSchema = {
 } 
 
 export const CartesianChartConfigSchema = {
+	"description": "A Cartesian chart has an area with axes e.g. bar, line.",
+	"type": "object",
 	"properties": {
 		"xName": {
 			"description": "The label on the x-axis",
@@ -5355,12 +5357,11 @@ export const CartesianChartConfigSchema = {
 		},
 		"presentationOptions": {}
 	},
-	"description": "A Cartesian chart has an area with axes e.g. bar, line.",
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const YAxisDomainSchema = {
+	"type": "object",
 	"properties": {
 		"max": {
 			"type": "object",
@@ -5423,7 +5424,6 @@ export const YAxisDomainSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"max",
@@ -5432,6 +5432,7 @@ export const YAxisDomainSchema = {
 } 
 
 export const YAxisDomainEntrySchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"enum": [
@@ -5455,7 +5456,6 @@ export const YAxisDomainEntrySchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"type"
@@ -7929,6 +7929,8 @@ export const ChartConfigSchema = {
 } 
 
 export const BaseViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -8304,8 +8306,6 @@ export const BaseViewConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type"
@@ -8313,12 +8313,12 @@ export const BaseViewConfigSchema = {
 } 
 
 export const ColorOptionSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"color"
@@ -8326,6 +8326,8 @@ export const ColorOptionSchema = {
 } 
 
 export const ListViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -8743,8 +8745,6 @@ export const ListViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"listConfig",
 		"name",
@@ -8754,6 +8754,8 @@ export const ListViewConfigSchema = {
 } 
 
 export const SingleValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9138,8 +9140,6 @@ export const SingleValueViewConfigSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"dataColor",
 		"name",
@@ -9149,6 +9149,8 @@ export const SingleValueViewConfigSchema = {
 } 
 
 export const MultiPhotographViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9530,8 +9532,6 @@ export const MultiPhotographViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -9540,6 +9540,8 @@ export const MultiPhotographViewConfigSchema = {
 } 
 
 export const MultiSingleValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -9921,8 +9923,6 @@ export const MultiSingleValueViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -9931,6 +9931,8 @@ export const MultiSingleValueViewConfigSchema = {
 } 
 
 export const SingleDownloadLinkViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -10312,8 +10314,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -10322,6 +10322,8 @@ export const SingleDownloadLinkViewConfigSchema = {
 } 
 
 export const MultiValueRowOptionSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
@@ -10330,8 +10332,6 @@ export const MultiValueRowOptionSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"color",
 		"header"
@@ -10339,6 +10339,8 @@ export const MultiValueRowOptionSchema = {
 } 
 
 export const MultiValueRowViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -10805,8 +10807,6 @@ export const MultiValueRowViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -10815,6 +10815,8 @@ export const MultiValueRowViewConfigSchema = {
 } 
 
 export const ColorListViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11196,8 +11198,6 @@ export const ColorListViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11206,6 +11206,8 @@ export const ColorListViewConfigSchema = {
 } 
 
 export const DataDownloadViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11587,8 +11589,6 @@ export const DataDownloadViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11597,6 +11597,8 @@ export const DataDownloadViewConfigSchema = {
 } 
 
 export const SingleDateViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -11978,8 +11980,6 @@ export const SingleDateViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -11988,6 +11988,8 @@ export const SingleDateViewConfigSchema = {
 } 
 
 export const DownloadFilesViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -12369,8 +12371,6 @@ export const DownloadFilesViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -12379,6 +12379,8 @@ export const DownloadFilesViewConfigSchema = {
 } 
 
 export const MultiValueViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -12772,8 +12774,6 @@ export const MultiValueViewConfigSchema = {
 			}
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -12782,6 +12782,8 @@ export const MultiValueViewConfigSchema = {
 } 
 
 export const QRCodeViewConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"name": {
 			"type": "string"
@@ -13163,8 +13165,6 @@ export const QRCodeViewConfigSchema = {
 			]
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"name",
 		"type",
@@ -25601,6 +25601,7 @@ export const TransformSchema = {
 } 
 
 export const StandardReportConfigSchema = {
+	"type": "object",
 	"properties": {
 		"transform": {
 			"type": "array",
@@ -25621,7 +25622,6 @@ export const StandardReportConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"transform"
@@ -25629,12 +25629,12 @@ export const StandardReportConfigSchema = {
 } 
 
 export const CustomReportConfigSchema = {
+	"type": "object",
 	"properties": {
 		"customReport": {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"customReport"
@@ -25686,6 +25686,8 @@ export const ReportConfigSchema = {
 } 
 
 export const MatrixReportRowSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"dataElement": {
 			"type": "string"
@@ -25711,9 +25713,7 @@ export const MatrixReportRowSchema = {
 			],
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const MatrixReportColumnSchema = {
@@ -25721,6 +25721,7 @@ export const MatrixReportColumnSchema = {
 } 
 
 export const BaseReportSchema = {
+	"type": "object",
 	"properties": {
 		"data": {
 			"type": "array",
@@ -25751,7 +25752,6 @@ export const BaseReportSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"endDate",
@@ -25760,6 +25760,8 @@ export const BaseReportSchema = {
 } 
 
 export const ViewDataItemSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"value": {},
 		"total": {
@@ -25781,12 +25783,12 @@ export const ViewDataItemSchema = {
 			],
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ViewReportSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"startDate": {
 			"type": "string"
@@ -25842,8 +25844,6 @@ export const ViewReportSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"endDate",
 		"startDate"
@@ -25851,6 +25851,8 @@ export const ViewReportSchema = {
 } 
 
 export const MatrixReportSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"startDate": {
 			"type": "string"
@@ -25913,8 +25915,6 @@ export const MatrixReportSchema = {
 			}
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"endDate",
 		"startDate"
@@ -25922,6 +25922,7 @@ export const MatrixReportSchema = {
 } 
 
 export const MapOverlayConfigSchema = {
+	"type": "object",
 	"properties": {
 		"customColors": {
 			"type": "string"
@@ -26371,7 +26372,6 @@ export const MapOverlayConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"displayType"
@@ -26379,6 +26379,7 @@ export const MapOverlayConfigSchema = {
 } 
 
 export const InlineValueSchema = {
+	"type": "object",
 	"properties": {
 		"color": {
 			"type": "string"
@@ -26423,7 +26424,6 @@ export const InlineValueSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"icon",
@@ -26518,6 +26518,7 @@ export const MeasureColorSchemeSchema = {
 } 
 
 export const AccessRequestSchema = {
+	"type": "object",
 	"properties": {
 		"approved": {
 			"type": "boolean"
@@ -26555,14 +26556,96 @@ export const AccessRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
+		"created_time",
 		"id"
 	]
 } 
 
+export const AccessRequestCreateSchema = {
+	"type": "object",
+	"properties": {
+		"approved": {
+			"type": "boolean"
+		},
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"note": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"processed_by": {
+			"type": "string"
+		},
+		"processed_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const AccessRequestUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"approved": {
+			"type": "boolean"
+		},
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"note": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"processed_by": {
+			"type": "string"
+		},
+		"processed_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AdminPanelSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -26581,7 +26664,6 @@ export const AdminPanelSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -26593,18 +26675,60 @@ export const AdminPanelSessionSchema = {
 	]
 } 
 
-export const AnalyticsSchema = {
+export const AdminPanelSessionCreateSchema = {
+	"type": "object",
 	"properties": {
-		"answer_entity_m_row$": {
+		"access_policy": {},
+		"access_token": {
 			"type": "string"
 		},
-		"answer_m_row$": {
+		"access_token_expiry": {
 			"type": "string"
 		},
+		"email": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"refresh_token"
+	]
+} 
+
+export const AdminPanelSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const AnalyticsSchema = {
+	"type": "object",
+	"properties": {
 		"data_element_code": {
-			"type": "string"
-		},
-		"data_element_m_row$": {
 			"type": "string"
 		},
 		"data_group_code": {
@@ -26620,9 +26744,6 @@ export const AnalyticsSchema = {
 		"entity_code": {
 			"type": "string"
 		},
-		"entity_m_row$": {
-			"type": "string"
-		},
 		"entity_name": {
 			"type": "string"
 		},
@@ -26630,15 +26751,6 @@ export const AnalyticsSchema = {
 			"type": "string"
 		},
 		"month_period": {
-			"type": "string"
-		},
-		"question_m_row$": {
-			"type": "string"
-		},
-		"survey_m_row$": {
-			"type": "string"
-		},
-		"survey_response_m_row$": {
 			"type": "string"
 		},
 		"type": {
@@ -26654,11 +26766,99 @@ export const AnalyticsSchema = {
 			"type": "string"
 		}
 	},
+	"additionalProperties": false
+} 
+
+export const AnalyticsCreateSchema = {
 	"type": "object",
+	"properties": {
+		"data_element_code": {
+			"type": "string"
+		},
+		"data_group_code": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"day_period": {
+			"type": "string"
+		},
+		"entity_code": {
+			"type": "string"
+		},
+		"entity_name": {
+			"type": "string"
+		},
+		"event_id": {
+			"type": "string"
+		},
+		"month_period": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"week_period": {
+			"type": "string"
+		},
+		"year_period": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const AnalyticsUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_code": {
+			"type": "string"
+		},
+		"data_group_code": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"day_period": {
+			"type": "string"
+		},
+		"entity_code": {
+			"type": "string"
+		},
+		"entity_name": {
+			"type": "string"
+		},
+		"event_id": {
+			"type": "string"
+		},
+		"month_period": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		},
+		"week_period": {
+			"type": "string"
+		},
+		"year_period": {
+			"type": "string"
+		}
+	},
 	"additionalProperties": false
 } 
 
 export const AncestorDescendantRelationSchema = {
+	"type": "object",
 	"properties": {
 		"ancestor_id": {
 			"type": "string"
@@ -26676,7 +26876,6 @@ export const AncestorDescendantRelationSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"ancestor_id",
@@ -26687,12 +26886,57 @@ export const AncestorDescendantRelationSchema = {
 	]
 } 
 
-export const AnswerSchema = {
+export const AncestorDescendantRelationCreateSchema = {
+	"type": "object",
 	"properties": {
-		"id": {
+		"ancestor_id": {
 			"type": "string"
 		},
-		"m_row$": {
+		"descendant_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"generational_distance": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"ancestor_id",
+		"descendant_id",
+		"entity_hierarchy_id",
+		"generational_distance"
+	]
+} 
+
+export const AncestorDescendantRelationUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"ancestor_id": {
+			"type": "string"
+		},
+		"descendant_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"generational_distance": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const AnswerSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
 			"type": "string"
 		},
 		"question_id": {
@@ -26708,7 +26952,6 @@ export const AnswerSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -26718,7 +26961,54 @@ export const AnswerSchema = {
 	]
 } 
 
+export const AnswerCreateSchema = {
+	"type": "object",
+	"properties": {
+		"question_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"question_id",
+		"survey_response_id",
+		"type"
+	]
+} 
+
+export const AnswerUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"question_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ApiClientSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -26733,7 +27023,6 @@ export const ApiClientSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -26742,7 +27031,47 @@ export const ApiClientSchema = {
 	]
 } 
 
+export const ApiClientCreateSchema = {
+	"type": "object",
+	"properties": {
+		"secret_key_hash": {
+			"type": "string"
+		},
+		"user_account_id": {
+			"type": "string"
+		},
+		"username": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"secret_key_hash",
+		"username"
+	]
+} 
+
+export const ApiClientUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"secret_key_hash": {
+			"type": "string"
+		},
+		"user_account_id": {
+			"type": "string"
+		},
+		"username": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ApiRequestLogSchema = {
+	"type": "object",
 	"properties": {
 		"api": {
 			"type": "string"
@@ -26772,7 +27101,6 @@ export const ApiRequestLogSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"api",
@@ -26782,7 +27110,78 @@ export const ApiRequestLogSchema = {
 	]
 } 
 
+export const ApiRequestLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"api": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"metadata": {},
+		"method": {
+			"type": "string"
+		},
+		"query": {},
+		"refresh_token": {
+			"type": "string"
+		},
+		"request_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"version": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"api",
+		"endpoint",
+		"version"
+	]
+} 
+
+export const ApiRequestLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"api": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"metadata": {},
+		"method": {
+			"type": "string"
+		},
+		"query": {},
+		"refresh_token": {
+			"type": "string"
+		},
+		"request_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		},
+		"version": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ClinicSchema = {
+	"type": "object",
 	"properties": {
 		"category_code": {
 			"type": "string"
@@ -26809,7 +27208,6 @@ export const ClinicSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26820,7 +27218,121 @@ export const ClinicSchema = {
 	]
 } 
 
+export const ClinicCreateSchema = {
+	"type": "object",
+	"properties": {
+		"category_code": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_id": {
+			"type": "string"
+		},
+		"geographical_area_id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"type_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"country_id",
+		"geographical_area_id",
+		"name"
+	]
+} 
+
+export const ClinicUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"category_code": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_id": {
+			"type": "string"
+		},
+		"geographical_area_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"type_name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const CommentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"last_modified_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"text": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"text"
+	]
+} 
+
+export const CommentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"last_modified_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"text": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const CountrySchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26832,7 +27344,6 @@ export const CountrySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26841,7 +27352,41 @@ export const CountrySchema = {
 	]
 } 
 
+export const CountryCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
+	]
+} 
+
+export const CountryUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DashboardSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -26859,7 +27404,6 @@ export const DashboardSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -26869,7 +27413,54 @@ export const DashboardSchema = {
 	]
 } 
 
+export const DashboardCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"root_entity_code": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name",
+		"root_entity_code"
+	]
+} 
+
+export const DashboardUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"root_entity_code": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DashboardItemSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -34872,15 +35463,16031 @@ export const DashboardItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"config",
+		"id",
+		"legacy"
 	]
 } 
 
+export const DashboardItemCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"description": "The master list of viz types.\nPlease also keep ../../utils/vizTypes up to date when making changes",
+			"anyOf": [
+				{
+					"description": "Matrix viz type",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"matrix"
+							]
+						},
+						"dataElementColumnTitle": {
+							"description": "Matrix viz type can specify a column as the data element column.",
+							"type": "string"
+						},
+						"hideColumnTitles": {
+							"description": "Like it sounds",
+							"type": "boolean"
+						},
+						"presentationOptions": {
+							"description": "Allows for conditional styling",
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
+																]
+															},
+															{
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														]
+													},
+													"legendLabel": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"condition",
+													"key"
+												]
+											}
+										},
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
+										}
+									}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"type"
+									]
+								}
+							]
+						},
+						"categoryPresentationOptions": {
+							"description": "Category header rows can have values just like real rows, this is how you style them",
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
+																]
+															},
+															{
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														]
+													},
+													"legendLabel": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"condition",
+													"key"
+												]
+											}
+										},
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
+										}
+									}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"type"
+									]
+								}
+							]
+						},
+						"valueType": {
+							"description": "Specify the valueType for formatting of the value in the matrix",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						}
+					},
+					"required": [
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Component viz type simply renders a React component as the viz",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"component"
+							]
+						},
+						"componentName": {
+							"enum": [
+								"ActiveDisasters",
+								"NoAccessDashboard",
+								"NoDataAtLevelDashboard",
+								"ProjectDescription"
+							],
+							"type": "string"
+						}
+					},
+					"required": [
+						"componentName",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Gauge Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"gauge"
+							]
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"composed"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Bar Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"bar"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Pie Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"pie"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"line"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"list"
+							]
+						},
+						"listConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"color",
+									"label"
+								]
+							}
+						},
+						"valueTranslationOptions": {
+							"description": "If provided, performs a find and replace on list item content",
+							"type": "object",
+							"properties": {
+								"match": {
+									"type": "string"
+								},
+								"replace": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"match",
+								"replace"
+							]
+						}
+					},
+					"required": [
+						"listConfig",
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleValue"
+							]
+						},
+						"dataColor": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"dataColor",
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiPhotograph"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiSingleValue"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleDownloadLink"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiValueRow"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"header": {
+									"type": "string"
+								},
+								"dataPairNames": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"rowHeader": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color"
+									]
+								},
+								"leftColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								},
+								"rightColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								},
+								"middleColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								}
+							},
+							"required": [
+								"color",
+								"header"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"dataDownload"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleDate"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"filesDownload"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiValue"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"isTitleVisible": {
+									"type": "boolean"
+								},
+								"valueFormat": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"qrCodeVisual"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				}
+			]
+		},
+		"legacy": {
+			"type": "boolean"
+		},
+		"permission_group_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"report_code": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code"
+	]
+} 
+
+export const DashboardItemUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"description": "The master list of viz types.\nPlease also keep ../../utils/vizTypes up to date when making changes",
+			"anyOf": [
+				{
+					"description": "Matrix viz type",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"matrix"
+							]
+						},
+						"dataElementColumnTitle": {
+							"description": "Matrix viz type can specify a column as the data element column.",
+							"type": "string"
+						},
+						"hideColumnTitles": {
+							"description": "Like it sounds",
+							"type": "boolean"
+						},
+						"presentationOptions": {
+							"description": "Allows for conditional styling",
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
+																]
+															},
+															{
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														]
+													},
+													"legendLabel": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"condition",
+													"key"
+												]
+											}
+										},
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
+										}
+									}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"type"
+									]
+								}
+							]
+						},
+						"categoryPresentationOptions": {
+							"description": "Category header rows can have values just like real rows, this is how you style them",
+							"anyOf": [
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"condition"
+											]
+										},
+										"conditions": {
+											"type": "array",
+											"items": {
+												"additionalProperties": false,
+												"type": "object",
+												"properties": {
+													"color": {
+														"description": "Specify the color of the display item",
+														"type": "string"
+													},
+													"description": {
+														"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+														"type": "string"
+													},
+													"label": {
+														"description": "Specify if you want a label to appear above the enlarged",
+														"type": "string"
+													},
+													"key": {
+														"type": "string"
+													},
+													"condition": {
+														"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+														"anyOf": [
+															{
+																"type": "object",
+																"properties": {
+																	"=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	">=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	},
+																	"<=": {
+																		"type": [
+																			"string",
+																			"number"
+																		]
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"<",
+																	"<=",
+																	"=",
+																	">",
+																	">="
+																]
+															},
+															{
+																"type": [
+																	"string",
+																	"number"
+																]
+															}
+														]
+													},
+													"legendLabel": {
+														"type": "string"
+													}
+												},
+												"required": [
+													"condition",
+													"key"
+												]
+											}
+										},
+										"showRawValue": {
+											"default": false,
+											"type": "boolean"
+										},
+										"showNestedRows": {
+											"default": false,
+											"type": "boolean"
+										},
+										"applyLocation": {
+											"description": "Specify if you want to limit where to apply the conditional presentation",
+											"type": "object",
+											"properties": {
+												"columnIndexes": {
+													"type": "array",
+													"items": {
+														"type": "number"
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"columnIndexes"
+											]
+										}
+									}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"exportWithLabels": {
+											"type": "boolean"
+										},
+										"exportWithTable": {
+											"type": "boolean"
+										},
+										"exportWithTableDisabled": {
+											"type": "boolean"
+										},
+										"type": {
+											"type": "string",
+											"enum": [
+												"range"
+											]
+										},
+										"showRawValue": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"type"
+									]
+								}
+							]
+						},
+						"valueType": {
+							"description": "Specify the valueType for formatting of the value in the matrix",
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						}
+					},
+					"required": [
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Component viz type simply renders a React component as the viz",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"component"
+							]
+						},
+						"componentName": {
+							"enum": [
+								"ActiveDisasters",
+								"NoAccessDashboard",
+								"NoDataAtLevelDashboard",
+								"ProjectDescription"
+							],
+							"type": "string"
+						}
+					},
+					"required": [
+						"componentName",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Gauge Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"gauge"
+							]
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"composed"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Bar Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"bar"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Pie Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"pie"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"displayOnLevel": {},
+						"label": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"line"
+							]
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
+						"type"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"list"
+							]
+						},
+						"listConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"color",
+									"label"
+								]
+							}
+						},
+						"valueTranslationOptions": {
+							"description": "If provided, performs a find and replace on list item content",
+							"type": "object",
+							"properties": {
+								"match": {
+									"type": "string"
+								},
+								"replace": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"match",
+								"replace"
+							]
+						}
+					},
+					"required": [
+						"listConfig",
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleValue"
+							]
+						},
+						"dataColor": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"dataColor",
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiPhotograph"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiSingleValue"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleDownloadLink"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiValueRow"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"header": {
+									"type": "string"
+								},
+								"dataPairNames": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"rowHeader": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color"
+									]
+								},
+								"leftColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								},
+								"rightColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								},
+								"middleColumn": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"header": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"color",
+										"header"
+									]
+								}
+							},
+							"required": [
+								"color",
+								"header"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"dataDownload"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"singleDate"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"filesDownload"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"multiValue"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"isTitleVisible": {
+									"type": "boolean"
+								},
+								"valueFormat": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"placeholder": {
+							"description": "A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting"
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"view"
+							]
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"value_metadata": {
+							"type": "object",
+							"additionalProperties": false
+						},
+						"viewType": {
+							"type": "string",
+							"enum": [
+								"qrCodeVisual"
+							]
+						}
+					},
+					"required": [
+						"name",
+						"type",
+						"viewType"
+					]
+				}
+			]
+		},
+		"id": {
+			"type": "string"
+		},
+		"legacy": {
+			"type": "boolean"
+		},
+		"permission_group_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"report_code": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DashboardRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -34908,7 +51515,6 @@ export const DashboardRelationSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -34920,16 +51526,82 @@ export const DashboardRelationSchema = {
 	]
 } 
 
+export const DashboardRelationCreateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"dashboard_id": {
+			"type": "string"
+		},
+		"entity_types": {},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"child_id",
+		"dashboard_id",
+		"entity_types",
+		"permission_groups",
+		"project_codes"
+	]
+} 
+
+export const DashboardRelationUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"dashboard_id": {
+			"type": "string"
+		},
+		"entity_types": {},
+		"id": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataElementSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
 		},
 		"config": {},
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -34951,16 +51623,83 @@ export const DataElementSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
+		"permission_groups",
 		"service_type"
 	]
 } 
 
+export const DataElementCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"service_type"
+	]
+} 
+
+export const DataElementUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataElementDataGroupSchema = {
+	"type": "object",
 	"properties": {
 		"data_element_id": {
 			"type": "string"
@@ -34972,7 +51711,6 @@ export const DataElementDataGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"data_element_id",
@@ -34981,7 +51719,41 @@ export const DataElementDataGroupSchema = {
 	]
 } 
 
+export const DataElementDataGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_id": {
+			"type": "string"
+		},
+		"data_group_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"data_element_id",
+		"data_group_id"
+	]
+} 
+
+export const DataElementDataGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"data_element_id": {
+			"type": "string"
+		},
+		"data_group_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataElementDataServiceSchema = {
+	"type": "object",
 	"properties": {
 		"country_code": {
 			"type": "string"
@@ -35006,17 +51778,78 @@ export const DataElementDataServiceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"country_code",
 		"data_element_code",
 		"id",
+		"service_config",
 		"service_type"
 	]
 } 
 
+export const DataElementDataServiceCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"data_element_code": {
+			"type": "string"
+		},
+		"service_config": {},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_code",
+		"data_element_code",
+		"service_type"
+	]
+} 
+
+export const DataElementDataServiceUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_code": {
+			"type": "string"
+		},
+		"data_element_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"service_config": {},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35038,16 +51871,70 @@ export const DataGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"service_type"
 	]
 } 
 
+export const DataGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"service_type"
+	]
+} 
+
+export const DataGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataServiceEntitySchema = {
+	"type": "object",
 	"properties": {
 		"config": {},
 		"entity_code": {
@@ -35057,7 +51944,6 @@ export const DataServiceEntitySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"config",
@@ -35066,7 +51952,37 @@ export const DataServiceEntitySchema = {
 	]
 } 
 
+export const DataServiceEntityCreateSchema = {
+	"type": "object",
+	"properties": {
+		"config": {},
+		"entity_code": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"config",
+		"entity_code"
+	]
+} 
+
+export const DataServiceEntityUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"config": {},
+		"entity_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataServiceSyncGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35102,7 +52018,6 @@ export const DataServiceSyncGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35113,7 +52028,91 @@ export const DataServiceSyncGroupSchema = {
 	]
 } 
 
+export const DataServiceSyncGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"data_group_code": {
+			"type": "string"
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"sync_cursor": {
+			"type": "string"
+		},
+		"sync_status": {
+			"enum": [
+				"ERROR",
+				"IDLE",
+				"SYNCING"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"config",
+		"data_group_code",
+		"service_type"
+	]
+} 
+
+export const DataServiceSyncGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"data_group_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"sync_cursor": {
+			"type": "string"
+		},
+		"sync_status": {
+			"enum": [
+				"ERROR",
+				"IDLE",
+				"SYNCING"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DataTableSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35145,17 +52144,92 @@ export const DataTableSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"permission_groups",
 		"type"
 	]
 } 
 
+export const DataTableCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"description": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"type": {
+			"enum": [
+				"analytics",
+				"data_element_metadata",
+				"data_group_metadata",
+				"entities",
+				"entity_attributes",
+				"entity_relations",
+				"events",
+				"sql"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"permission_groups",
+		"type"
+	]
+} 
+
+export const DataTableUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"type": {
+			"enum": [
+				"analytics",
+				"data_element_metadata",
+				"data_group_metadata",
+				"entities",
+				"entity_attributes",
+				"entity_relations",
+				"events",
+				"sql"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DatatrakSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -35174,7 +52248,6 @@ export const DatatrakSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -35186,7 +52259,58 @@ export const DatatrakSessionSchema = {
 	]
 } 
 
+export const DatatrakSessionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"refresh_token"
+	]
+} 
+
+export const DatatrakSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DhisInstanceSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35199,7 +52323,6 @@ export const DhisInstanceSchema = {
 			"type": "boolean"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35209,7 +52332,44 @@ export const DhisInstanceSchema = {
 	]
 } 
 
+export const DhisInstanceCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"readonly": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"config",
+		"readonly"
+	]
+} 
+
+export const DhisInstanceUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"readonly": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DhisSyncLogSchema = {
+	"type": "object",
 	"properties": {
 		"data": {
 			"type": "string"
@@ -35242,7 +52402,6 @@ export const DhisSyncLogSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35251,7 +52410,83 @@ export const DhisSyncLogSchema = {
 	]
 } 
 
+export const DhisSyncLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"data": {
+			"type": "string"
+		},
+		"deleted": {
+			"type": "number"
+		},
+		"dhis_reference": {
+			"type": "string"
+		},
+		"error_list": {
+			"type": "string"
+		},
+		"ignored": {
+			"type": "number"
+		},
+		"imported": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"updated": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"record_id",
+		"record_type"
+	]
+} 
+
+export const DhisSyncLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"data": {
+			"type": "string"
+		},
+		"deleted": {
+			"type": "number"
+		},
+		"dhis_reference": {
+			"type": "string"
+		},
+		"error_list": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"ignored": {
+			"type": "number"
+		},
+		"imported": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"updated": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DhisSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"bad_request_count": {
 			"type": "number"
@@ -35284,7 +52519,6 @@ export const DhisSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35294,7 +52528,84 @@ export const DhisSyncQueueSchema = {
 	]
 } 
 
+export const DhisSyncQueueCreateSchema = {
+	"type": "object",
+	"properties": {
+		"bad_request_count": {
+			"type": "number"
+		},
+		"change_time": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"is_dead_letter": {
+			"type": "boolean"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"record_id",
+		"record_type",
+		"type"
+	]
+} 
+
+export const DhisSyncQueueUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"bad_request_count": {
+			"type": "number"
+		},
+		"change_time": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_dead_letter": {
+			"type": "boolean"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DisasterSchema = {
+	"type": "object",
 	"properties": {
 		"countryCode": {
 			"type": "string"
@@ -35319,7 +52630,6 @@ export const DisasterSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"countryCode",
@@ -35329,7 +52639,68 @@ export const DisasterSchema = {
 	]
 } 
 
+export const DisasterCreateSchema = {
+	"type": "object",
+	"properties": {
+		"countryCode": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"cyclone",
+				"earthquake",
+				"eruption",
+				"flood",
+				"tsunami"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"countryCode",
+		"name",
+		"type"
+	]
+} 
+
+export const DisasterUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"countryCode": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"cyclone",
+				"earthquake",
+				"eruption",
+				"flood",
+				"tsunami"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DisasterEventSchema = {
+	"type": "object",
 	"properties": {
 		"date": {
 			"type": "string",
@@ -35353,7 +52724,6 @@ export const DisasterEventSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"date",
@@ -35364,7 +52734,67 @@ export const DisasterEventSchema = {
 	]
 } 
 
+export const DisasterEventCreateSchema = {
+	"type": "object",
+	"properties": {
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"disasterId": {
+			"type": "string"
+		},
+		"organisationUnitCode": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"end",
+				"resolve",
+				"start"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"date",
+		"disasterId",
+		"organisationUnitCode",
+		"type"
+	]
+} 
+
+export const DisasterEventUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"disasterId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"organisationUnitCode": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"end",
+				"resolve",
+				"start"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const EntitySchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {},
 		"bounds": {},
@@ -35378,9 +52808,6 @@ export const EntitySchema = {
 			"type": "string"
 		},
 		"image_url": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"metadata": {},
@@ -35434,7 +52861,6 @@ export const EntitySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35443,7 +52869,151 @@ export const EntitySchema = {
 	]
 } 
 
+export const EntityCreateSchema = {
+	"type": "object",
+	"properties": {
+		"attributes": {},
+		"bounds": {},
+		"code": {
+			"type": "string"
+		},
+		"country_code": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"metadata": {},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"point": {},
+		"region": {},
+		"type": {
+			"enum": [
+				"asset",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
+	]
+} 
+
+export const EntityUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"attributes": {},
+		"bounds": {},
+		"code": {
+			"type": "string"
+		},
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"metadata": {},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"point": {},
+		"region": {},
+		"type": {
+			"enum": [
+				"asset",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const EntityHierarchySchema = {
+	"type": "object",
 	"properties": {
 		"canonical_types": {
 			"type": "array",
@@ -35458,7 +53028,6 @@ export const EntityHierarchySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35466,7 +53035,46 @@ export const EntityHierarchySchema = {
 	]
 } 
 
+export const EntityHierarchyCreateSchema = {
+	"type": "object",
+	"properties": {
+		"canonical_types": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name"
+	]
+} 
+
+export const EntityHierarchyUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"canonical_types": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const EntityRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -35481,7 +53089,6 @@ export const EntityRelationSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -35491,7 +53098,48 @@ export const EntityRelationSchema = {
 	]
 } 
 
+export const EntityRelationCreateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"child_id",
+		"entity_hierarchy_id",
+		"parent_id"
+	]
+} 
+
+export const EntityRelationUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ErrorLogSchema = {
+	"type": "object",
 	"properties": {
 		"api_request_log_id": {
 			"type": "string"
@@ -35510,14 +53158,57 @@ export const ErrorLogSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
 	]
 } 
 
+export const ErrorLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"api_request_log_id": {
+			"type": "string"
+		},
+		"error_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"message": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const ErrorLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"api_request_log_id": {
+			"type": "string"
+		},
+		"error_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"message": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ExternalDatabaseConnectionSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35538,16 +53229,68 @@ export const ExternalDatabaseConnectionSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
 		"id",
+		"name",
+		"permission_groups"
+	]
+} 
+
+export const ExternalDatabaseConnectionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
 		"name"
 	]
 } 
 
+export const ExternalDatabaseConnectionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const FeedItemSchema = {
+	"type": "object",
 	"properties": {
 		"country_id": {
 			"type": "string"
@@ -35587,14 +53330,99 @@ export const FeedItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
 	]
 } 
 
+export const FeedItemCreateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"geographical_area_id": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"constructor"
+			]
+		},
+		"type": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const FeedItemUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"geographical_area_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"template_variables": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"constructor"
+			]
+		},
+		"type": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const GeographicalAreaSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35618,7 +53446,6 @@ export const GeographicalAreaSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"country_id",
@@ -35629,7 +53456,67 @@ export const GeographicalAreaSchema = {
 	]
 } 
 
+export const GeographicalAreaCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"country_id": {
+			"type": "string"
+		},
+		"level_code": {
+			"type": "string"
+		},
+		"level_name": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"country_id",
+		"level_code",
+		"level_name",
+		"name"
+	]
+} 
+
+export const GeographicalAreaUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"country_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"level_code": {
+			"type": "string"
+		},
+		"level_name": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const IndicatorSchema = {
+	"type": "object",
 	"properties": {
 		"builder": {
 			"type": "string"
@@ -35642,16 +53529,52 @@ export const IndicatorSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"builder",
 		"code",
+		"config",
 		"id"
 	]
 } 
 
+export const IndicatorCreateSchema = {
+	"type": "object",
+	"properties": {
+		"builder": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"config": {}
+	},
+	"additionalProperties": false,
+	"required": [
+		"builder",
+		"code"
+	]
+} 
+
+export const IndicatorUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"builder": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const LandingPageSchema = {
+	"type": "object",
 	"properties": {
 		"contact_us": {
 			"type": "string"
@@ -35702,7 +53625,6 @@ export const LandingPageSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -35711,7 +53633,119 @@ export const LandingPageSchema = {
 	]
 } 
 
+export const LandingPageCreateSchema = {
+	"type": "object",
+	"properties": {
+		"contact_us": {
+			"type": "string"
+		},
+		"extended_title": {
+			"type": "string"
+		},
+		"external_link": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"include_name_in_header": {
+			"type": "boolean"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"long_bio": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"phone_number": {
+			"type": "string"
+		},
+		"primary_hexcode": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"secondary_hexcode": {
+			"type": "string"
+		},
+		"url_segment": {
+			"type": "string"
+		},
+		"website_url": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name",
+		"url_segment"
+	]
+} 
+
+export const LandingPageUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"contact_us": {
+			"type": "string"
+		},
+		"extended_title": {
+			"type": "string"
+		},
+		"external_link": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"include_name_in_header": {
+			"type": "boolean"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"long_bio": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"phone_number": {
+			"type": "string"
+		},
+		"primary_hexcode": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"secondary_hexcode": {
+			"type": "string"
+		},
+		"url_segment": {
+			"type": "string"
+		},
+		"website_url": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const LegacyReportSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -35725,7 +53759,6 @@ export const LegacyReportSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -35733,7 +53766,44 @@ export const LegacyReportSchema = {
 	]
 } 
 
+export const LegacyReportCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"data_builder": {
+			"type": "string"
+		},
+		"data_builder_config": {},
+		"data_services": {}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code"
+	]
+} 
+
+export const LegacyReportUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"data_builder": {
+			"type": "string"
+		},
+		"data_builder_config": {},
+		"data_services": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const LesmisSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -35752,7 +53822,6 @@ export const LesmisSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -35764,7 +53833,58 @@ export const LesmisSessionSchema = {
 	]
 } 
 
+export const LesmisSessionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"refresh_token"
+	]
+} 
+
+export const LesmisSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MapOverlaySchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36260,7 +54380,511 @@ export const MapOverlaySchema = {
 			"type": "string"
 		}
 	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"config",
+		"id",
+		"legacy",
+		"name",
+		"permission_group"
+	]
+} 
+
+export const MapOverlayCreateSchema = {
 	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"properties": {
+				"customColors": {
+					"type": "string"
+				},
+				"customLabel": {
+					"type": "string"
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"defaultTimePeriod": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"disableRenameLegend": {
+					"type": "boolean"
+				},
+				"displayLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayOnLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayType": {
+					"enum": [
+						"color",
+						"icon",
+						"popup-only",
+						"radius",
+						"shaded-spectrum",
+						"shading",
+						"spectrum"
+					],
+					"type": "string"
+				},
+				"displayedValueKey": {
+					"enum": [
+						"facilityTypeName",
+						"name",
+						"originalValue",
+						"schoolTypeName"
+					],
+					"type": "string"
+				},
+				"hideByDefault": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"hideFromLegend": {
+					"type": "boolean"
+				},
+				"hideFromMenu": {
+					"type": "boolean"
+				},
+				"hideFromPopup": {
+					"type": "boolean"
+				},
+				"icon": {
+					"enum": [
+						"checkbox",
+						"circle",
+						"downArrow",
+						"empty",
+						"fade",
+						"h",
+						"healthPin",
+						"help",
+						"hidden",
+						"pentagon",
+						"pin",
+						"radius",
+						"rightArrow",
+						"ring",
+						"square",
+						"triangle",
+						"upArrow",
+						"warning",
+						"x"
+					],
+					"type": "string"
+				},
+				"info": {
+					"type": "object",
+					"properties": {
+						"reference": {
+							"type": "object",
+							"properties": {
+								"link": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"reference"
+					]
+				},
+				"isTimePeriodEditable": {
+					"type": "boolean"
+				},
+				"measureConfig": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"measureLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"noDataColour": {
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"popupHeaderFormat": {
+					"type": "string"
+				},
+				"scaleBounds": {
+					"type": "object",
+					"properties": {
+						"left": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"right": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"scaleColorScheme": {
+					"enum": [
+						"default",
+						"default-reverse",
+						"gpi",
+						"performance",
+						"time"
+					],
+					"type": "string"
+				},
+				"scaleType": {
+					"enum": [
+						"gpi",
+						"neutral",
+						"neutralReverse",
+						"performance",
+						"performanceDesc",
+						"time"
+					],
+					"type": "string"
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"numberAndPercentage",
+						"oneDecimalPlace",
+						"percentage",
+						"text"
+					],
+					"type": "string"
+				},
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"type": "boolean"
+							},
+							"icon": {
+								"enum": [
+									"checkbox",
+									"circle",
+									"downArrow",
+									"empty",
+									"fade",
+									"h",
+									"healthPin",
+									"help",
+									"hidden",
+									"pentagon",
+									"pin",
+									"radius",
+									"rightArrow",
+									"ring",
+									"square",
+									"triangle",
+									"upArrow",
+									"warning",
+									"x"
+								],
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"value": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"icon",
+							"name",
+							"value"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"displayType"
+			]
+		},
+		"country_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"data_services": {},
+		"legacy": {
+			"type": "boolean"
+		},
+		"linked_measures": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"name": {
+			"type": "string"
+		},
+		"permission_group": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"report_code": {
+			"type": "string"
+		}
+	},
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36269,7 +54893,508 @@ export const MapOverlaySchema = {
 	]
 } 
 
+export const MapOverlayUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"type": "object",
+			"properties": {
+				"customColors": {
+					"type": "string"
+				},
+				"customLabel": {
+					"type": "string"
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"defaultTimePeriod": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"disableRenameLegend": {
+					"type": "boolean"
+				},
+				"displayLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayOnLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"displayType": {
+					"enum": [
+						"color",
+						"icon",
+						"popup-only",
+						"radius",
+						"shaded-spectrum",
+						"shading",
+						"spectrum"
+					],
+					"type": "string"
+				},
+				"displayedValueKey": {
+					"enum": [
+						"facilityTypeName",
+						"name",
+						"originalValue",
+						"schoolTypeName"
+					],
+					"type": "string"
+				},
+				"hideByDefault": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"hideFromLegend": {
+					"type": "boolean"
+				},
+				"hideFromMenu": {
+					"type": "boolean"
+				},
+				"hideFromPopup": {
+					"type": "boolean"
+				},
+				"icon": {
+					"enum": [
+						"checkbox",
+						"circle",
+						"downArrow",
+						"empty",
+						"fade",
+						"h",
+						"healthPin",
+						"help",
+						"hidden",
+						"pentagon",
+						"pin",
+						"radius",
+						"rightArrow",
+						"ring",
+						"square",
+						"triangle",
+						"upArrow",
+						"warning",
+						"x"
+					],
+					"type": "string"
+				},
+				"info": {
+					"type": "object",
+					"properties": {
+						"reference": {
+							"type": "object",
+							"properties": {
+								"link": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"reference"
+					]
+				},
+				"isTimePeriodEditable": {
+					"type": "boolean"
+				},
+				"measureConfig": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"measureLevel": {
+					"enum": [
+						"Country",
+						"Disaster",
+						"District",
+						"Facility",
+						"SubDistrict"
+					],
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"noDataColour": {
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"popupHeaderFormat": {
+					"type": "string"
+				},
+				"scaleBounds": {
+					"type": "object",
+					"properties": {
+						"left": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"right": {
+							"type": "object",
+							"properties": {
+								"min": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								},
+								"max": {
+									"anyOf": [
+										{
+											"enum": [
+												"auto"
+											],
+											"type": "string"
+										},
+										{
+											"type": "number"
+										}
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"scaleColorScheme": {
+					"enum": [
+						"default",
+						"default-reverse",
+						"gpi",
+						"performance",
+						"time"
+					],
+					"type": "string"
+				},
+				"scaleType": {
+					"enum": [
+						"gpi",
+						"neutral",
+						"neutralReverse",
+						"performance",
+						"performanceDesc",
+						"time"
+					],
+					"type": "string"
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"numberAndPercentage",
+						"oneDecimalPlace",
+						"percentage",
+						"text"
+					],
+					"type": "string"
+				},
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"type": "boolean"
+							},
+							"icon": {
+								"enum": [
+									"checkbox",
+									"circle",
+									"downArrow",
+									"empty",
+									"fade",
+									"h",
+									"healthPin",
+									"help",
+									"hidden",
+									"pentagon",
+									"pin",
+									"radius",
+									"rightArrow",
+									"ring",
+									"square",
+									"triangle",
+									"upArrow",
+									"warning",
+									"x"
+								],
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"value": {
+								"type": [
+									"string",
+									"number"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"icon",
+							"name",
+							"value"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"displayType"
+			]
+		},
+		"country_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"data_services": {},
+		"id": {
+			"type": "string"
+		},
+		"legacy": {
+			"type": "boolean"
+		},
+		"linked_measures": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"name": {
+			"type": "string"
+		},
+		"permission_group": {
+			"type": "string"
+		},
+		"project_codes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"report_code": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MapOverlayGroupSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36281,7 +55406,6 @@ export const MapOverlayGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36290,7 +55414,41 @@ export const MapOverlayGroupSchema = {
 	]
 } 
 
+export const MapOverlayGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
+	]
+} 
+
+export const MapOverlayGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MapOverlayGroupRelationSchema = {
+	"type": "object",
 	"properties": {
 		"child_id": {
 			"type": "string"
@@ -36308,7 +55466,6 @@ export const MapOverlayGroupRelationSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"child_id",
@@ -36318,7 +55475,54 @@ export const MapOverlayGroupRelationSchema = {
 	]
 } 
 
+export const MapOverlayGroupRelationCreateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"child_type": {
+			"type": "string"
+		},
+		"map_overlay_group_id": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"child_id",
+		"child_type",
+		"map_overlay_group_id"
+	]
+} 
+
+export const MapOverlayGroupRelationUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"child_id": {
+			"type": "string"
+		},
+		"child_type": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"map_overlay_group_id": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MeditrakDeviceSchema = {
+	"type": "object",
 	"properties": {
 		"app_version": {
 			"type": "string"
@@ -36337,7 +55541,6 @@ export const MeditrakDeviceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36346,7 +55549,55 @@ export const MeditrakDeviceSchema = {
 	]
 } 
 
+export const MeditrakDeviceCreateSchema = {
+	"type": "object",
+	"properties": {
+		"app_version": {
+			"type": "string"
+		},
+		"config": {},
+		"install_id": {
+			"type": "string"
+		},
+		"platform": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"install_id",
+		"user_id"
+	]
+} 
+
+export const MeditrakDeviceUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"app_version": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		},
+		"install_id": {
+			"type": "string"
+		},
+		"platform": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const MeditrakSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"change_time": {
 			"type": "number"
@@ -36364,7 +55615,6 @@ export const MeditrakSyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36374,7 +55624,54 @@ export const MeditrakSyncQueueSchema = {
 	]
 } 
 
+export const MeditrakSyncQueueCreateSchema = {
+	"type": "object",
+	"properties": {
+		"change_time": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"record_id",
+		"record_type",
+		"type"
+	]
+} 
+
+export const MeditrakSyncQueueUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"change_time": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const Ms1SyncLogSchema = {
+	"type": "object",
 	"properties": {
 		"count": {
 			"type": "number"
@@ -36398,7 +55695,6 @@ export const Ms1SyncLogSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36407,7 +55703,65 @@ export const Ms1SyncLogSchema = {
 	]
 } 
 
+export const Ms1SyncLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"count": {
+			"type": "number"
+		},
+		"data": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"error_list": {
+			"type": "string"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"record_id",
+		"record_type"
+	]
+} 
+
+export const Ms1SyncLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"count": {
+			"type": "number"
+		},
+		"data": {
+			"type": "string"
+		},
+		"endpoint": {
+			"type": "string"
+		},
+		"error_list": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const Ms1SyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"bad_request_count": {
 			"type": "number"
@@ -36440,7 +55794,6 @@ export const Ms1SyncQueueSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36450,7 +55803,84 @@ export const Ms1SyncQueueSchema = {
 	]
 } 
 
+export const Ms1SyncQueueCreateSchema = {
+	"type": "object",
+	"properties": {
+		"bad_request_count": {
+			"type": "number"
+		},
+		"change_time": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"is_dead_letter": {
+			"type": "boolean"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"record_id",
+		"record_type",
+		"type"
+	]
+} 
+
+export const Ms1SyncQueueUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"bad_request_count": {
+			"type": "number"
+		},
+		"change_time": {
+			"type": "number"
+		},
+		"details": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_dead_letter": {
+			"type": "boolean"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"priority": {
+			"type": "number"
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const OneTimeLoginSchema = {
+	"type": "object",
 	"properties": {
 		"creation_date": {
 			"type": "string",
@@ -36470,7 +55900,6 @@ export const OneTimeLoginSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36479,7 +55908,57 @@ export const OneTimeLoginSchema = {
 	]
 } 
 
+export const OneTimeLoginCreateSchema = {
+	"type": "object",
+	"properties": {
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"token": {
+			"type": "string"
+		},
+		"use_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"token",
+		"user_id"
+	]
+} 
+
+export const OneTimeLoginUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		},
+		"use_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const OptionSchema = {
+	"type": "object",
 	"properties": {
 		"attributes": {},
 		"id": {
@@ -36498,7 +55977,6 @@ export const OptionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36507,7 +55985,55 @@ export const OptionSchema = {
 	]
 } 
 
+export const OptionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"attributes": {},
+		"label": {
+			"type": "string"
+		},
+		"option_set_id": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"option_set_id",
+		"value"
+	]
+} 
+
+export const OptionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"attributes": {},
+		"id": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		},
+		"option_set_id": {
+			"type": "string"
+		},
+		"sort_order": {
+			"type": "number"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const OptionSetSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36516,7 +56042,6 @@ export const OptionSetSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36524,7 +56049,34 @@ export const OptionSetSchema = {
 	]
 } 
 
+export const OptionSetCreateSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name"
+	]
+} 
+
+export const OptionSetUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const PermissionGroupSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36536,7 +56088,6 @@ export const PermissionGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36544,7 +56095,40 @@ export const PermissionGroupSchema = {
 	]
 } 
 
+export const PermissionGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name"
+	]
+} 
+
+export const PermissionGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const PermissionsBasedMeditrakSyncQueueSchema = {
+	"type": "object",
 	"properties": {
 		"change_time": {
 			"type": "number"
@@ -36615,11 +56199,158 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 			"type": "string"
 		}
 	},
+	"additionalProperties": false
+} 
+
+export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 	"type": "object",
+	"properties": {
+		"change_time": {
+			"type": "number"
+		},
+		"country_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"entity_type": {
+			"enum": [
+				"asset",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"change_time": {
+			"type": "number"
+		},
+		"country_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"entity_type": {
+			"enum": [
+				"asset",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"record_id": {
+			"type": "string"
+		},
+		"record_type": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		}
+	},
 	"additionalProperties": false
 } 
 
 export const ProjectSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36659,7 +56390,6 @@ export const ProjectSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36667,7 +56397,96 @@ export const ProjectSchema = {
 	]
 } 
 
+export const ProjectCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"dashboard_group_name": {
+			"type": "string"
+		},
+		"default_measure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code"
+	]
+} 
+
+export const ProjectUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"dashboard_group_name": {
+			"type": "string"
+		},
+		"default_measure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entity_hierarchy_id": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"logo_url": {
+			"type": "string"
+		},
+		"permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sort_order": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const PsssSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -36686,7 +56505,6 @@ export const PsssSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -36698,7 +56516,58 @@ export const PsssSessionSchema = {
 	]
 } 
 
+export const PsssSessionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"refresh_token"
+	]
+} 
+
+export const PsssSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const QuestionSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36713,9 +56582,6 @@ export const QuestionSchema = {
 			"type": "string"
 		},
 		"id": {
-			"type": "string"
-		},
-		"m_row$": {
 			"type": "string"
 		},
 		"name": {
@@ -36758,7 +56624,6 @@ export const QuestionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36767,7 +56632,131 @@ export const QuestionSchema = {
 	]
 } 
 
+export const QuestionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"data_element_id": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"option_set_id": {
+			"type": "string"
+		},
+		"options": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"text",
+		"type"
+	]
+} 
+
+export const QuestionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"data_element_id": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"option_set_id": {
+			"type": "string"
+		},
+		"options": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"text": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"Arithmetic",
+				"Autocomplete",
+				"Binary",
+				"Checkbox",
+				"CodeGenerator",
+				"Condition",
+				"Date",
+				"DateOfData",
+				"DateTime",
+				"Entity",
+				"File",
+				"FreeText",
+				"Geolocate",
+				"Instruction",
+				"Number",
+				"Photo",
+				"PrimaryEntity",
+				"Radio",
+				"SubmissionDate"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const RefreshTokenSchema = {
+	"type": "object",
 	"properties": {
 		"device": {
 			"type": "string"
@@ -36788,7 +56777,6 @@ export const RefreshTokenSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36797,7 +56785,59 @@ export const RefreshTokenSchema = {
 	]
 } 
 
+export const RefreshTokenCreateSchema = {
+	"type": "object",
+	"properties": {
+		"device": {
+			"type": "string"
+		},
+		"expiry": {
+			"type": "number"
+		},
+		"meditrak_device_id": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"token",
+		"user_id"
+	]
+} 
+
+export const RefreshTokenUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"device": {
+			"type": "string"
+		},
+		"expiry": {
+			"type": "number"
+		},
+		"id": {
+			"type": "string"
+		},
+		"meditrak_device_id": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ReportSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36852,7 +56892,6 @@ export const ReportSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36862,7 +56901,128 @@ export const ReportSchema = {
 	]
 } 
 
+export const ReportCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"transform": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"type": "object",
+										"additionalProperties": false
+									},
+									{
+										"type": "string"
+									}
+								]
+							}
+						},
+						"output": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"transform"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"customReport": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"customReport"
+					]
+				}
+			]
+		},
+		"permission_group_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"config",
+		"permission_group_id"
+	]
+} 
+
+export const ReportUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"transform": {
+							"type": "array",
+							"items": {
+								"anyOf": [
+									{
+										"type": "object",
+										"additionalProperties": false
+									},
+									{
+										"type": "string"
+									}
+								]
+							}
+						},
+						"output": {
+							"type": "object",
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"transform"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"customReport": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"customReport"
+					]
+				}
+			]
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SettingSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36874,7 +57034,6 @@ export const SettingSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36882,7 +57041,40 @@ export const SettingSchema = {
 	]
 } 
 
+export const SettingCreateSchema = {
+	"type": "object",
+	"properties": {
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"key"
+	]
+} 
+
+export const SettingUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SupersetInstanceSchema = {
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -36892,7 +57084,6 @@ export const SupersetInstanceSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36901,7 +57092,37 @@ export const SupersetInstanceSchema = {
 	]
 } 
 
+export const SupersetInstanceCreateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"config"
+	]
+} 
+
+export const SupersetInstanceUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {},
+		"id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveySchema = {
+	"type": "object",
 	"properties": {
 		"can_repeat": {
 			"type": "boolean"
@@ -36922,9 +57143,6 @@ export const SurveySchema = {
 			"type": "string"
 		},
 		"integration_metadata": {},
-		"m_row$": {
-			"type": "string"
-		},
 		"name": {
 			"type": "string"
 		},
@@ -36948,7 +57166,6 @@ export const SurveySchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -36957,7 +57174,105 @@ export const SurveySchema = {
 	]
 } 
 
+export const SurveyCreateSchema = {
+	"type": "object",
+	"properties": {
+		"can_repeat": {
+			"type": "boolean"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"data_group_id": {
+			"type": "string"
+		},
+		"integration_metadata": {},
+		"name": {
+			"type": "string"
+		},
+		"period_granularity": {
+			"enum": [
+				"daily",
+				"monthly",
+				"quarterly",
+				"weekly",
+				"yearly"
+			],
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"requires_approval": {
+			"type": "boolean"
+		},
+		"survey_group_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"name"
+	]
+} 
+
+export const SurveyUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"can_repeat": {
+			"type": "boolean"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_ids": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"data_group_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"integration_metadata": {},
+		"name": {
+			"type": "string"
+		},
+		"period_granularity": {
+			"enum": [
+				"daily",
+				"monthly",
+				"quarterly",
+				"weekly",
+				"yearly"
+			],
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"requires_approval": {
+			"type": "boolean"
+		},
+		"survey_group_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveyGroupSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -36966,7 +57281,6 @@ export const SurveyGroupSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -36974,7 +57288,34 @@ export const SurveyGroupSchema = {
 	]
 } 
 
+export const SurveyGroupCreateSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name"
+	]
+} 
+
+export const SurveyGroupUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveyResponseSchema = {
+	"type": "object",
 	"properties": {
 		"approval_status": {
 			"enum": [
@@ -37002,7 +57343,62 @@ export const SurveyResponseSchema = {
 		"id": {
 			"type": "string"
 		},
-		"m_row$": {
+		"metadata": {
+			"type": "string"
+		},
+		"outdated": {
+			"type": "boolean"
+		},
+		"start_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"timezone": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"assessor_name",
+		"end_time",
+		"entity_id",
+		"id",
+		"start_time",
+		"survey_id",
+		"user_id"
+	]
+} 
+
+export const SurveyResponseCreateSchema = {
+	"type": "object",
+	"properties": {
+		"approval_status": {
+			"enum": [
+				"approved",
+				"not_required",
+				"pending",
+				"rejected"
+			],
+			"type": "string"
+		},
+		"assessor_name": {
+			"type": "string"
+		},
+		"data_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"end_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
 			"type": "string"
 		},
 		"metadata": {
@@ -37025,20 +57421,71 @@ export const SurveyResponseSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"assessor_name",
 		"end_time",
 		"entity_id",
-		"id",
 		"start_time",
 		"survey_id",
 		"user_id"
 	]
 } 
 
+export const SurveyResponseUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"approval_status": {
+			"enum": [
+				"approved",
+				"not_required",
+				"pending",
+				"rejected"
+			],
+			"type": "string"
+		},
+		"assessor_name": {
+			"type": "string"
+		},
+		"data_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"end_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"metadata": {
+			"type": "string"
+		},
+		"outdated": {
+			"type": "boolean"
+		},
+		"start_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"survey_id": {
+			"type": "string"
+		},
+		"timezone": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveyResponseCommentSchema = {
+	"type": "object",
 	"properties": {
 		"comment_id": {
 			"type": "string"
@@ -37050,7 +57497,6 @@ export const SurveyResponseCommentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"comment_id",
@@ -37059,7 +57505,41 @@ export const SurveyResponseCommentSchema = {
 	]
 } 
 
+export const SurveyResponseCommentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"comment_id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"comment_id",
+		"survey_response_id"
+	]
+} 
+
+export const SurveyResponseCommentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"comment_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"survey_response_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveyScreenSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37071,7 +57551,6 @@ export const SurveyScreenSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -37080,7 +57559,41 @@ export const SurveyScreenSchema = {
 	]
 } 
 
+export const SurveyScreenCreateSchema = {
+	"type": "object",
+	"properties": {
+		"screen_number": {
+			"type": "number"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"screen_number",
+		"survey_id"
+	]
+} 
+
+export const SurveyScreenUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"screen_number": {
+			"type": "number"
+		},
+		"survey_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SurveyScreenComponentSchema = {
+	"type": "object",
 	"properties": {
 		"answers_enabling_follow_up": {
 			"type": "array",
@@ -37119,7 +57632,6 @@ export const SurveyScreenComponentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"component_number",
@@ -37129,7 +57641,96 @@ export const SurveyScreenComponentSchema = {
 	]
 } 
 
+export const SurveyScreenComponentCreateSchema = {
+	"type": "object",
+	"properties": {
+		"answers_enabling_follow_up": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"component_number": {
+			"type": "number"
+		},
+		"config": {
+			"type": "string"
+		},
+		"detail_label": {
+			"type": "string"
+		},
+		"is_follow_up": {
+			"type": "boolean"
+		},
+		"question_id": {
+			"type": "string"
+		},
+		"question_label": {
+			"type": "string"
+		},
+		"screen_id": {
+			"type": "string"
+		},
+		"validation_criteria": {
+			"type": "string"
+		},
+		"visibility_criteria": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"component_number",
+		"question_id",
+		"screen_id"
+	]
+} 
+
+export const SurveyScreenComponentUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"answers_enabling_follow_up": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"component_number": {
+			"type": "number"
+		},
+		"config": {
+			"type": "string"
+		},
+		"detail_label": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"is_follow_up": {
+			"type": "boolean"
+		},
+		"question_id": {
+			"type": "string"
+		},
+		"question_label": {
+			"type": "string"
+		},
+		"screen_id": {
+			"type": "string"
+		},
+		"validation_criteria": {
+			"type": "string"
+		},
+		"visibility_criteria": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const SyncGroupLogSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37157,7 +57758,6 @@ export const SyncGroupLogSchema = {
 			"format": "date-time"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -37167,7 +57767,74 @@ export const SyncGroupLogSchema = {
 	]
 } 
 
+export const SyncGroupLogCreateSchema = {
+	"type": "object",
+	"properties": {
+		"log_message": {
+			"type": "string"
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"sync_group_code": {
+			"type": "string"
+		},
+		"timestamp": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"log_message",
+		"service_type",
+		"sync_group_code"
+	]
+} 
+
+export const SyncGroupLogUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"log_message": {
+			"type": "string"
+		},
+		"service_type": {
+			"enum": [
+				"data-lake",
+				"dhis",
+				"indicator",
+				"kobo",
+				"superset",
+				"tupaia",
+				"weather"
+			],
+			"type": "string"
+		},
+		"sync_group_code": {
+			"type": "string"
+		},
+		"timestamp": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const TupaiaWebSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_policy": {},
 		"access_token": {
@@ -37186,7 +57853,6 @@ export const TupaiaWebSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"access_policy",
@@ -37198,7 +57864,58 @@ export const TupaiaWebSessionSchema = {
 	]
 } 
 
+export const TupaiaWebSessionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"access_policy",
+		"access_token",
+		"access_token_expiry",
+		"email",
+		"refresh_token"
+	]
+} 
+
+export const TupaiaWebSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_policy": {},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refresh_token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserAccountSchema = {
+	"type": "object",
 	"properties": {
 		"creation_date": {
 			"type": "string",
@@ -37254,17 +57971,140 @@ export const UserAccountSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"email",
 		"id",
 		"password_hash",
+		"password_salt",
+		"preferences"
+	]
+} 
+
+export const UserAccountCreateSchema = {
+	"type": "object",
+	"properties": {
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"email": {
+			"type": "string"
+		},
+		"employer": {
+			"type": "string"
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		},
+		"mobile_number": {
+			"type": "string"
+		},
+		"password_hash": {
+			"type": "string"
+		},
+		"password_salt": {
+			"type": "string"
+		},
+		"position": {
+			"type": "string"
+		},
+		"preferences": {},
+		"primary_platform": {
+			"enum": [
+				"lesmis",
+				"tupaia"
+			],
+			"type": "string"
+		},
+		"profile_image": {
+			"type": "string"
+		},
+		"verified_email": {
+			"enum": [
+				"new_user",
+				"unverified",
+				"verified"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"password_hash",
 		"password_salt"
 	]
 } 
 
+export const UserAccountUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"creation_date": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"email": {
+			"type": "string"
+		},
+		"employer": {
+			"type": "string"
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		},
+		"mobile_number": {
+			"type": "string"
+		},
+		"password_hash": {
+			"type": "string"
+		},
+		"password_salt": {
+			"type": "string"
+		},
+		"position": {
+			"type": "string"
+		},
+		"preferences": {},
+		"primary_platform": {
+			"enum": [
+				"lesmis",
+				"tupaia"
+			],
+			"type": "string"
+		},
+		"profile_image": {
+			"type": "string"
+		},
+		"verified_email": {
+			"enum": [
+				"new_user",
+				"unverified",
+				"verified"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserEntityPermissionSchema = {
+	"type": "object",
 	"properties": {
 		"entity_id": {
 			"type": "string"
@@ -37279,14 +58119,49 @@ export const UserEntityPermissionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id"
 	]
 } 
 
+export const UserEntityPermissionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"entity_id": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const UserEntityPermissionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"permission_group_id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserFavouriteDashboardItemSchema = {
+	"type": "object",
 	"properties": {
 		"dashboard_item_id": {
 			"type": "string"
@@ -37298,7 +58173,6 @@ export const UserFavouriteDashboardItemSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"dashboard_item_id",
@@ -37307,7 +58181,41 @@ export const UserFavouriteDashboardItemSchema = {
 	]
 } 
 
+export const UserFavouriteDashboardItemCreateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_item_id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboard_item_id",
+		"user_id"
+	]
+} 
+
+export const UserFavouriteDashboardItemUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_item_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const UserSessionSchema = {
+	"type": "object",
 	"properties": {
 		"access_token_expiry": {
 			"type": "string"
@@ -37326,13 +58234,60 @@ export const UserSessionSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
+		"access_token_expiry",
 		"id",
 		"refreshToken",
 		"userName"
 	]
+} 
+
+export const UserSessionCreateSchema = {
+	"type": "object",
+	"properties": {
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		},
+		"userName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"refreshToken",
+		"userName"
+	]
+} 
+
+export const UserSessionUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"access_token_expiry": {
+			"type": "string"
+		},
+		"accessPolicy": {},
+		"accessToken": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"refreshToken": {
+			"type": "string"
+		},
+		"userName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const VerifiedEmailSchema = {
@@ -37509,6 +58464,7 @@ export const IdSchema = {
 } 
 
 export const AnswerTypeSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -37520,136 +58476,23 @@ export const AnswerTypeSchema = {
 			"type": "string"
 		},
 		"question_id": {
-			"$async": true,
-			"checkIdExists": {
-				"table": "question"
-			},
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"body",
 		"id",
 		"question_id",
 		"type"
-	],
-	"$async": true
-} 
-
-export const EntityCreatedSchema = {
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"code": {
-			"type": "string"
-		},
-		"parent_id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"asset",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"facility",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"local_government",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
-			"type": "string"
-		},
-		"country_code": {
-			"type": "string"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"code",
-		"country_code",
-		"id",
-		"name",
-		"parent_id",
-		"type"
 	]
 } 
 
-export const OptionCreatedSchema = {
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"value": {
-			"type": [
-				"string",
-				"number"
-			]
-		},
-		"label": {
-			"type": "string"
-		},
-		"option_set_id": {
-			"$async": true,
-			"checkIdExists": {
-				"table": "optionSet"
-			},
-			"type": "string"
-		},
-		"sort_order": {
-			"type": "number"
-		}
-	},
-	"type": "object",
-	"additionalProperties": false,
-	"required": [
-		"option_set_id",
-		"value"
-	],
-	"$async": true
-} 
-
 export const MeditrakSurveyResponseRequestSchema = {
+	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"id": {
-			"type": "string"
-		},
-		"timestamp": {
-			"format": "iso-date-time",
 			"type": "string"
 		},
 		"survey_id": {
@@ -37659,7 +58502,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		},
 		"answers": {
-			"$async": true,
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -37674,9 +58516,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"question_id": {
-						"checkIdExists": {
-							"table": "question"
-						},
 						"type": "string"
 					}
 				},
@@ -37707,26 +58546,41 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"format": "iso-date-time",
 			"type": "string"
 		},
+		"timestamp": {
+			"format": "iso-date-time",
+			"type": "string"
+		},
 		"approval_status": {
 			"type": "string"
 		},
-		"entities_created": {
+		"entities_upserted": {
 			"type": "array",
 			"items": {
 				"type": "object",
 				"properties": {
+					"attributes": {},
+					"bounds": {},
+					"code": {
+						"type": "string"
+					},
+					"country_code": {
+						"type": "string"
+					},
 					"id": {
 						"type": "string"
 					},
-					"code": {
+					"image_url": {
+						"type": "string"
+					},
+					"metadata": {},
+					"name": {
 						"type": "string"
 					},
 					"parent_id": {
 						"type": "string"
 					},
-					"name": {
-						"type": "string"
-					},
+					"point": {},
+					"region": {},
 					"type": {
 						"enum": [
 							"asset",
@@ -37767,44 +58621,29 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"world"
 						],
 						"type": "string"
-					},
-					"country_code": {
-						"type": "string"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"code",
-					"country_code",
 					"id",
-					"name",
-					"parent_id",
-					"type"
+					"name"
 				]
 			}
 		},
 		"options_created": {
-			"$async": true,
 			"type": "array",
 			"items": {
 				"type": "object",
 				"properties": {
-					"id": {
-						"type": "string"
-					},
-					"value": {
-						"type": [
-							"string",
-							"number"
-						]
-					},
 					"label": {
 						"type": "string"
 					},
+					"attributes": {},
 					"option_set_id": {
-						"checkIdExists": {
-							"table": "optionSet"
-						},
+						"type": "string"
+					},
+					"value": {
 						"type": "string"
 					},
 					"sort_order": {
@@ -37826,18 +58665,15 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
-	"additionalProperties": {},
 	"required": [
 		"answers",
 		"survey_id",
-		"timestamp",
 		"user_id"
-	],
-	"$async": true
+	]
 } 
 
 export const DataTablePreviewRequestSchema = {
+	"type": "object",
 	"properties": {
 		"runtimeParams": {
 			"additionalProperties": true,
@@ -37848,9 +58684,6 @@ export const DataTablePreviewRequestSchema = {
 		},
 		"config": {},
 		"description": {
-			"type": "string"
-		},
-		"id": {
 			"type": "string"
 		},
 		"permission_groups": {
@@ -37873,11 +58706,10 @@ export const DataTablePreviewRequestSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id",
+		"config",
 		"permission_groups",
 		"type"
 	]
@@ -37953,9 +58785,6 @@ export const ResBodySchema = {
 				"type": "string"
 			},
 			"imageUrl": {
-				"type": "string"
-			},
-			"mRow$": {
 				"type": "string"
 			},
 			"metadata": {
@@ -38071,6 +58900,8 @@ export const ReqQuerySchema = {
 } 
 
 export const ProjectResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -38133,8 +58964,6 @@ export const ProjectResponseSchema = {
 			"type": "boolean"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"code",
 		"hasAccess",
@@ -38145,16 +58974,17 @@ export const ProjectResponseSchema = {
 } 
 
 export const VisibilityCriteriaSchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"_conjunction": {
 			"type": "string"
 		}
-	},
-	"additionalProperties": false,
-	"type": "object"
+	}
 } 
 
 export const ValidationCriteriaSchema = {
+	"type": "object",
 	"properties": {
 		"mandatory": {
 			"type": "boolean"
@@ -38166,11 +58996,11 @@ export const ValidationCriteriaSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const CamelCasedQuestionSchema = {
+	"type": "object",
 	"properties": {
 		"text": {
 			"type": "string"
@@ -38179,21 +59009,6 @@ export const CamelCasedQuestionSchema = {
 			"type": "string"
 		},
 		"name": {
-			"type": "string"
-		},
-		"dataElementId": {
-			"type": "string"
-		},
-		"detail": {
-			"type": "string"
-		},
-		"hook": {
-			"type": "string"
-		},
-		"mRow$": {
-			"type": "string"
-		},
-		"optionSetId": {
 			"type": "string"
 		},
 		"type": {
@@ -38219,9 +59034,20 @@ export const CamelCasedQuestionSchema = {
 				"SubmissionDate"
 			],
 			"type": "string"
+		},
+		"dataElementId": {
+			"type": "string"
+		},
+		"detail": {
+			"type": "string"
+		},
+		"hook": {
+			"type": "string"
+		},
+		"optionSetId": {
+			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"text",
@@ -38230,6 +59056,7 @@ export const CamelCasedQuestionSchema = {
 } 
 
 export const CamelCasedComponentSchema = {
+	"type": "object",
 	"properties": {
 		"answersEnablingFollowUp": {
 			"type": "array",
@@ -38250,7 +59077,6 @@ export const CamelCasedComponentSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"componentNumber",
@@ -38259,6 +59085,7 @@ export const CamelCasedComponentSchema = {
 } 
 
 export const CodeGeneratorConfigSchema = {
+	"type": "object",
 	"properties": {
 		"type": {
 			"enum": [
@@ -38280,7 +59107,6 @@ export const CodeGeneratorConfigSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"type"
@@ -38288,6 +59114,7 @@ export const CodeGeneratorConfigSchema = {
 } 
 
 export const AutocompleteConfigSchema = {
+	"type": "object",
 	"properties": {
 		"createNew": {
 			"type": "boolean"
@@ -38308,11 +59135,11 @@ export const AutocompleteConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const ConditionConfigSchema = {
+	"type": "object",
 	"properties": {
 		"conditions": {
 			"type": "object",
@@ -38334,7 +59161,6 @@ export const ConditionConfigSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"conditions"
@@ -38342,6 +59168,8 @@ export const ConditionConfigSchema = {
 } 
 
 export const EntityQuestionConfigSchema = {
+	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"createNew": {
 			"type": "boolean"
@@ -38408,12 +59236,11 @@ export const EntityQuestionConfigSchema = {
 			},
 			"additionalProperties": false
 		}
-	},
-	"type": "object",
-	"additionalProperties": {}
+	}
 } 
 
 export const ArithmeticConfigSchema = {
+	"type": "object",
 	"properties": {
 		"formula": {
 			"type": "string"
@@ -38430,7 +59257,6 @@ export const ArithmeticConfigSchema = {
 			"additionalProperties": false
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"formula"
@@ -38438,6 +59264,7 @@ export const ArithmeticConfigSchema = {
 } 
 
 export const SurveyScreenComponentConfigSchema = {
+	"type": "object",
 	"properties": {
 		"codeGenerator": {
 			"type": "object",
@@ -38614,11 +59441,11 @@ export const SurveyScreenComponentConfigSchema = {
 			]
 		}
 	},
-	"type": "object",
 	"additionalProperties": false
 } 
 
 export const CamelCasedSurveyScreenSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -38627,7 +59454,6 @@ export const CamelCasedSurveyScreenSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"id",
@@ -38636,6 +59462,7 @@ export const CamelCasedSurveyScreenSchema = {
 } 
 
 export const AutocompleteAnswerSchema = {
+	"type": "object",
 	"properties": {
 		"isNew": {
 			"type": "boolean"
@@ -38650,7 +59477,6 @@ export const AutocompleteAnswerSchema = {
 			"type": "string"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"label",
@@ -38665,6 +59491,7 @@ export const AnswersSchema = {
 } 
 
 export const CountryAccessSchema = {
+	"type": "object",
 	"properties": {
 		"id": {
 			"type": "string"
@@ -38682,7 +59509,6 @@ export const CountryAccessSchema = {
 			}
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"accessRequests",
@@ -38693,6 +59519,7 @@ export const CountryAccessSchema = {
 } 
 
 export const DashboardWithItemsSchema = {
+	"type": "object",
 	"properties": {
 		"items": {
 			"type": "array",
@@ -46703,7 +67530,9 @@ export const DashboardWithItemsSchema = {
 				"additionalProperties": false,
 				"required": [
 					"code",
-					"id"
+					"config",
+					"id",
+					"legacy"
 				]
 			}
 		},
@@ -46723,7 +67552,6 @@ export const DashboardWithItemsSchema = {
 			"type": "number"
 		}
 	},
-	"type": "object",
 	"additionalProperties": false,
 	"required": [
 		"code",
@@ -46735,6 +67563,8 @@ export const DashboardWithItemsSchema = {
 } 
 
 export const TranslatedMapOverlaySchema = {
+	"additionalProperties": false,
+	"type": "object",
 	"properties": {
 		"code": {
 			"type": "string"
@@ -47196,11 +68026,10 @@ export const TranslatedMapOverlaySchema = {
 			"type": "number"
 		}
 	},
-	"additionalProperties": false,
-	"type": "object",
 	"required": [
 		"code",
 		"displayType",
+		"legacy",
 		"name"
 	]
 } 

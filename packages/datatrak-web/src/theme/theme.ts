@@ -40,6 +40,7 @@ export const theme = createMuiTheme({
     action: {
       hover: '#2a78c3',
     },
+    primaryHover: '#ebf5ff',
   },
   typography: {
     h1: {
