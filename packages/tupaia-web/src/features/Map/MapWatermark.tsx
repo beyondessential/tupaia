@@ -14,7 +14,7 @@ import { MOBILE_BREAKPOINT } from '../../constants';
 
 const Wrapper = styled.div`
   position: absolute;
-  padding: 0 0 0.5rem 0.5rem;
+  padding: 0 0 1rem 0.2rem;
   bottom: 0;
   display: flex;
   align-items: center;
