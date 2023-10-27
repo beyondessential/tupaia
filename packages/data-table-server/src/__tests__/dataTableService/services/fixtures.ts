@@ -44,3 +44,30 @@ export const ENTITY_RELATIONS = {
     { parent: 'FJ', child: 'FJ_Facility' },
   ],
 };
+
+export const CENTRAL_API_RESPONSES = {
+  surveyResponses: [
+    {
+      'survey_response.id': '1',
+      'survey_response.assessor_name': 'Bob',
+      'survey_response.data_time': new Date('2020-01-01'),
+      'survey_response.outdated': false,
+      'survey.id': '1',
+      'survey.name': 'Survey 1',
+      'survey.code': 'survey1',
+      'entity.name': 'Australia',
+      'country.name': 'Australia',
+    },
+    {
+      'survey_response.id': '2',
+      'survey_response.assessor_name': 'Jane',
+      'survey_response.data_time': new Date('2021-01-01'),
+      'survey_response.outdated': true,
+      'survey.id': '2',
+      'survey.name': 'Survey 2',
+      'survey.code': 'survey2',
+      'entity.name': 'Fiji',
+      'country.name': 'Fiji',
+    },
+  ],
+};
