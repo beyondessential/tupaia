@@ -410,7 +410,7 @@ describe('processSurveyResponse', () => {
           },
         },
       },
-      mockGetEntity,
+      mockFindEntityById,
     );
 
     expect(result).toEqual({
