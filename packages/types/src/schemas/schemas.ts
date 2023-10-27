@@ -58986,7 +58986,7 @@ export const VisibilityCriteriaSchema = {
 export const ValidationCriteriaSchema = {
 	"type": "object",
 	"properties": {
-		"required": {
+		"mandatory": {
 			"type": "boolean"
 		},
 		"min": {

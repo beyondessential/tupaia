@@ -8,7 +8,7 @@ import { Outlet } from 'react-router';
 import styled from 'styled-components';
 import { HEADER_HEIGHT } from '../constants';
 import { Header } from '.';
-import { MobileAppPrompt } from '../features';
+import { MobileAppPrompt, SurveyContext } from '../features';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -22,10 +22,13 @@ const PageWrapper = styled.div`
 
 export const MainPageLayout = () => {
   return (
-    <PageWrapper>
-      <Header />
-      <Outlet />
-      <MobileAppPrompt />
-    </PageWrapper>
+    // Survey context needs to wrap the main page layout, so that we can trigger the cancel survey modal from anywhere in the page
+    <SurveyContext>
+      <PageWrapper>
+        <Header />
+        <Outlet />
+        <MobileAppPrompt />
+      </PageWrapper>
+    </SurveyContext>
   );
 };

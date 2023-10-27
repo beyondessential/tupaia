@@ -18,6 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
   ProjectsRoute,
   ProjectsRequest,
   SurveyRequest,
@@ -30,12 +32,17 @@ import {
   SubmitSurveyRequest,
 } from '../routes';
 
-const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
+const {
+  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
+  CENTRAL_API_URL = 'http://localhost:8090/v2',
+} = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
+  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
+    attachModels: true,
+  })
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
@@ -43,9 +50,11 @@ export function createApp() {
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
+    .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
+    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .build();

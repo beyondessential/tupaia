@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
 import { post } from '../../api';
@@ -39,8 +39,10 @@ export const useSurveyResponseData = () => {
 };
 
 export const useSubmitSurvey = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
+  const { resetForm } = useSurveyForm();
 
   const surveyResponseData = useSurveyResponseData();
 
@@ -50,14 +52,21 @@ export const useSubmitSurvey = () => {
         return;
       }
 
-      await post('submitSurvey', {
+      return await post('submitSurvey', {
         data: { ...surveyResponseData, answers },
       });
     },
     {
-      onSuccess: () => {
+      onSuccess: data => {
+        queryClient.invalidateQueries('surveyResponses');
+        resetForm();
         successToast("Congratulations! You've earned a coconut", Coconut);
-        navigate(generatePath(ROUTES.SURVEY_SUCCESS, params));
+        // include the survey response data in the location state, so that we can use it to generate QR codes
+        navigate(generatePath(ROUTES.SURVEY_SUCCESS, params), {
+          state: {
+            surveyResponse: JSON.stringify(data),
+          },
+        });
       },
     },
   );

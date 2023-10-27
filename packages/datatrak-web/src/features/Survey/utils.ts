@@ -1,3 +1,7 @@
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
 import { QuestionType } from '@tupaia/types';
 import { SurveyScreenComponent, SurveyScreen } from '../../types';
 
@@ -12,6 +16,12 @@ export const convertNumberToLetter = (number: number) => {
   return alphabet[number];
 };
 
+export const READ_ONLY_QUESTION_TYPES = [
+  QuestionType.Condition,
+  QuestionType.Arithmetic,
+  QuestionType.Instruction,
+  QuestionType.CodeGenerator,
+];
 export const getSurveyScreenNumber = (screens, screen) => {
   if (!screen) return null;
   const { surveyScreenComponents, id } = screen;
@@ -28,7 +38,6 @@ export const getSurveyScreenNumber = (screens, screen) => {
 
   return screenNumber;
 };
-export const READ_ONLY_QUESTION_TYPES = ['Instruction', 'Condition', 'Arithmetic'];
 
 export const formatSurveyScreenQuestions = (
   questions: SurveyScreenComponent[],
@@ -54,4 +63,31 @@ export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
   return surveyScreens?.reduce((components, screen) => {
     return [...components, ...screen.surveyScreenComponents];
   }, [] as SurveyScreenComponent[]);
+};
+
+export const getErrorsByScreen = (
+  errors: Record<string, Record<string, string>>,
+  visibleScreens?: SurveyScreen[],
+) => {
+  return (
+    Object.entries(errors).reduce((acc, [questionName, error]) => {
+      const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
+        surveyScreenComponents.find(question => {
+          // handle the fact that we rename the questionId to entityId in the form if it's a primary entity question
+          if (questionName === 'entityId') return question.type === QuestionType.PrimaryEntity;
+          return question.questionId === questionName;
+        }),
+      );
+
+      if (screenIndex === undefined || screenIndex === -1) return acc;
+      const screenNum = screenIndex + 1;
+      return {
+        ...acc,
+        [screenNum]: {
+          ...acc[screenNum],
+          [questionName]: error,
+        },
+      };
+    }, {}) ?? {}
+  );
 };

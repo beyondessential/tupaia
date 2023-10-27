@@ -11,8 +11,5 @@ export const PageContainer = styled(Container).attrs({
 })`
   position: relative;
   flex: 1;
-  padding: 0;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 0 1rem;
-  }
+  padding: 0 1.25rem;
 `;

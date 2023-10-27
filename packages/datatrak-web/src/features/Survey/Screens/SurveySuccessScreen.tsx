@@ -7,10 +7,11 @@ import React from 'react';
 import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button as BaseButton } from '../../../components/index';
+import { Button as BaseButton } from '../../../components';
 import { useSurveyForm } from '../SurveyContext';
-import { ROUTES } from '../../../constants/index';
+import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
+import { SurveyQRCode } from '../SurveyQRCode';
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,6 +20,19 @@ const Wrapper = styled.div`
   align-items: center;
   padding: 2rem 1.2rem;
   flex: 1;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding-right: 10rem;
+  }
+`;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex: 1;
+  }
 `;
 
 const StyledImg = styled.img`
@@ -85,19 +99,22 @@ export const SurveySuccessScreen = () => {
 
   return (
     <Wrapper>
-      <StyledImg src="/submit-success.svg" alt="Survey submit success" />
-      <Title>Survey submitted!</Title>
-      <Text>{text}</Text>
-      <ButtonGroup>
-        {survey?.canRepeat && (
-          <Button onClick={repeatSurvey} fullWidth variant="outlined">
-            Repeat Survey
+      <Container>
+        <StyledImg src="/submit-success.svg" alt="Survey submit success" />
+        <Title>Survey submitted!</Title>
+        <Text>{text}</Text>
+        <ButtonGroup>
+          {survey?.canRepeat && (
+            <Button onClick={repeatSurvey} fullWidth variant="outlined">
+              Repeat Survey
+            </Button>
+          )}
+          <Button to="/" fullWidth>
+            Close
           </Button>
-        )}
-        <Button to="/" fullWidth>
-          Close
-        </Button>
-      </ButtonGroup>
+        </ButtonGroup>
+      </Container>
+      <SurveyQRCode />
     </Wrapper>
   );
 };

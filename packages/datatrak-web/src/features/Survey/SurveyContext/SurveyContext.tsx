@@ -4,7 +4,7 @@
  */
 
 import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api/queries';
@@ -23,6 +23,7 @@ const defaultContext = {
   screenHeader: '',
   displayQuestions: [],
   sideMenuOpen: false,
+  cancelModalOpen: false,
 } as SurveyFormContextType;
 
 const SurveyFormContext = createContext(defaultContext);
@@ -31,6 +32,7 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 
 export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
+  const { pathname } = useLocation();
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
@@ -54,11 +56,13 @@ export const SurveyContext = ({ children }) => {
 
   const numberOfScreens = visibleScreens.length;
   const isLast = screenNumber === numberOfScreens;
-  const isReviewScreen = !screenNumber;
+  const isReviewScreen = !screenNumber && pathname.includes('review');
+  const isSuccessScreen = !screenNumber && pathname.includes('success');
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   useEffect(() => {
     const updateStartTime = () => {
+      if (!surveyCode) return;
       dispatch({
         type: ACTION_TYPES.SET_SURVEY_START_TIME,
         payload: moment().toISOString(),
@@ -88,6 +92,7 @@ export const SurveyContext = ({ children }) => {
         surveyScreens,
         screenHeader,
         visibleScreens,
+        isSuccessScreen,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
@@ -121,11 +126,21 @@ export const useSurveyForm = () => {
     return surveyFormContext.formData[questionId];
   };
 
+  const openCancelConfirmation = () => {
+    dispatch({ type: ACTION_TYPES.OPEN_CANCEL_CONFIRMATION });
+  };
+
+  const closeCancelConfirmation = () => {
+    dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
+  };
+
   return {
     ...surveyFormContext,
     toggleSideMenu,
     setFormData,
     resetForm,
     getAnswerByQuestionId,
+    openCancelConfirmation,
+    closeCancelConfirmation,
   };
 };
