@@ -26,10 +26,25 @@ const HEADER = `/*
  */
 `;
 
-const { filename, typesPath } = config as any;
+const getTsFiles = (dir: string): string[] => {
+  const subDirs = fs.readdirSync(dir);
+  const files = subDirs
+    .map(subDir => {
+      const res = resolve(dir, subDir);
+      return fs.statSync(res).isDirectory() ? getTsFiles(res) : [res];
+    })
+    .flat();
 
+  return files.filter(f => f.endsWith('.ts'));
+};
+
+// We are only interested in generating schemas for the files under src/types
+const rootDir = process.cwd() + '/src/types';
+const tsFilesInDir = getTsFiles(rootDir);
+
+const { filename, typesPath } = config as any;
 const program = TJS.getProgramFromFiles([resolve(typesPath)]);
-const schemas = TJS.generateSchema(program, '*', settings);
+const schemas = TJS.generateSchema(program, '*', settings, tsFilesInDir);
 
 if (schemas?.definitions) {
   let fileContents = HEADER;
