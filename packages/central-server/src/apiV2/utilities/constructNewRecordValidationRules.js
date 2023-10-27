@@ -170,6 +170,17 @@ export const constructForSingle = (models, recordType) => {
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
       };
+    case TYPES.DASHBOARD_MAILING_LIST:
+      return {
+        dashboard_id: [hasContent],
+        project_id: [hasContent],
+        entity_id: [hasContent],
+      };
+    case TYPES.DASHBOARD_MAILING_LIST_ENTRY:
+      return {
+        dashboard_mailing_list_id: [hasContent],
+        email: [hasContent, isEmail],
+      };
     case TYPES.MAP_OVERLAY_GROUP_RELATION:
       return {
         map_overlay_group_id: [constructRecordExistsWithId(models.mapOverlayGroup)],
