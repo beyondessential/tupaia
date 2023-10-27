@@ -53,6 +53,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
               config,
             },
           ],
+          config: {
+            mailingListEnabled: false,
+          },
         },
       ],
       {

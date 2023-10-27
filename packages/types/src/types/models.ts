@@ -10,6 +10,7 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
+import { DashboardConfig } from './models-extra'
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -275,7 +276,7 @@ export interface Dashboard {
   'name': string;
   'root_entity_code': string;
   'sort_order'?: number | null;
-  'config'?: any; 
+  'config': DashboardConfig;
 }
 export interface DashboardCreate {
   'code': string;

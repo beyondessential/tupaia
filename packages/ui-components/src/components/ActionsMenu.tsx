@@ -29,10 +29,13 @@ const StyledMenuIcon = styled(MoreVertIcon)`
   }
 `;
 
-export const ActionsMenu = (
-  { options }: { options: ActionsMenuOptionType[] },
+export const ActionsMenu = ({
+  options,
   includesIcons = false,
-) => {
+}: {
+  options: ActionsMenuOptionType[];
+  includesIcons: boolean;
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>

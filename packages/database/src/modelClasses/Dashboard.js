@@ -54,6 +54,7 @@ export class DashboardModel extends DatabaseModel {
           },
 
           { projectCodes: `${TYPES.DASHBOARD_RELATION}.project_codes` },
+          { config: `${TYPES.DASHBOARD}.config` },
         ],
         joinWith: TYPES.DASHBOARD_RELATION,
         joinCondition: [`${TYPES.DASHBOARD_RELATION}.dashboard_id`, `${TYPES.DASHBOARD}.id`],
