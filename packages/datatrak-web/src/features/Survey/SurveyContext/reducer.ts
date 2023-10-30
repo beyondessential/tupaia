@@ -20,6 +20,8 @@ export type SurveyFormContextType = {
   surveyScreens?: SurveyScreen[];
   visibleScreens?: SurveyScreen[];
   surveyStartTime?: string;
+  isSuccessScreen?: boolean;
+  cancelModalOpen: boolean;
 };
 
 export const surveyReducer = (
@@ -49,6 +51,16 @@ export const surveyReducer = (
       return {
         ...state,
         surveyStartTime: action.payload as string,
+      };
+    case ACTION_TYPES.OPEN_CANCEL_CONFIRMATION:
+      return {
+        ...state,
+        cancelModalOpen: true,
+      };
+    case ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION:
+      return {
+        ...state,
+        cancelModalOpen: false,
       };
     default:
       return state;

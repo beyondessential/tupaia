@@ -16,6 +16,7 @@ const TableMoveButtonWrapper = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 1rem;
+  user-select: none; // prevents the table from being selected when quickly clicking the nav buttons
 `;
 
 const TableMoveButton = styled(Button).attrs({

@@ -29,6 +29,10 @@ const Wrapper = styled.div<{
       font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
     }
   }
+
+  @media screen and (max-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
+    width: 100%;
+  }
 `;
 
 enum FIELD_TYPES {

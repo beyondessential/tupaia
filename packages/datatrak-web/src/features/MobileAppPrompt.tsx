@@ -159,7 +159,7 @@ export const MobileAppPrompt = () => {
               text,
               button: { onClick, href, variant = 'contained', text: buttonText },
             }) => (
-              <Option>
+              <Option key={text!}>
                 <LeftColumn>
                   <OptionIcon>{icon && <img src={icon} />}</OptionIcon>
                   <OptionText>{text}</OptionText>

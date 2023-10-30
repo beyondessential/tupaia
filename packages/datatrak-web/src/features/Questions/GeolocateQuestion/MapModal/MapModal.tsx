@@ -18,6 +18,10 @@ const Heading = styled(Typography).attrs({
 `;
 
 const Container = styled.div`
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: -1rem;
+  }
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     width: 80vw;
     max-width: 75rem;

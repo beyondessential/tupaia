@@ -13,6 +13,7 @@ import {
   constructRecordExistsWithCode,
   constructIsEmptyOr,
   takesIdForm,
+  constructIsNotPresentOr,
   takesDateForm,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
@@ -145,7 +146,7 @@ export async function surveyResponse(req, res) {
 }
 
 const constructAnswerValidators = models => ({
-  id: [hasContent, takesIdForm],
+  id: [constructIsNotPresentOr(takesIdForm)],
   type: [hasContent],
   question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
   body: [hasContent],

@@ -116,7 +116,12 @@ export const Routes = () => {
           <Route index element={<LandingPage />} />
         </Route>
         {/** Any views that should have the background image should go in here */}
-        <Route path="/" element={<BackgroundPageLayout backgroundImage="/auth-background.svg" />}>
+        <Route
+          path="/"
+          element={
+            <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+          }
+        >
           {/** Any public centred views should go in here */}
           <Route path="/" element={<CentredLayout />}>
             <Route

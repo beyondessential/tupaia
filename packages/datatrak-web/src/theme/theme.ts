@@ -40,6 +40,7 @@ export const theme = createMuiTheme({
     action: {
       hover: '#2a78c3',
     },
+    primaryHover: '#ebf5ff',
   },
   typography: {
     h1: {
@@ -82,7 +83,7 @@ export const theme = createMuiTheme({
         '&:hover': {
           backgroundColor: '#328DE515',
         },
-      }, 
+      },
     },
     MuiButton: {
       root: {
@@ -90,6 +91,11 @@ export const theme = createMuiTheme({
       },
       label: {
         fontSize: '0.875rem',
+      },
+      containedPrimary: {
+        ['&:hover']: {
+          backgroundColor: '#2A78C3',
+        },
       },
     },
     MuiMenuItem: {

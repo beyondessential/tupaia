@@ -71,10 +71,10 @@ const StyledPaper = styled(Paper).attrs({
   .MuiAutocomplete-option {
     &:hover,
     &[data-focus='true'] {
-      background-color: #ebf5ff;
+      background-color: ${({ theme }) => theme.palette.primaryHover};
     }
     &[aria-selected='true'] {
-      background-color: #ebf5ff;
+      background-color: ${({ theme }) => theme.palette.primaryHover};
       opacity: 1;
     }
   }

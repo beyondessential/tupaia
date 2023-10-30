@@ -29,7 +29,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
         // if this is passed a valid id in the answer body
         answerDocument.text = `${S3_BUCKET_PATH}${getS3ImageFilePath()}${answer.body}.png`;
       } else {
-        // included for backwards compatibility passing base64 strings for images
+        // included for backwards compatibility passing base64 strings for images, and for datatrak-web to upload images in answers
         try {
           const s3Client = new S3Client(new S3());
           answerDocument.text = await s3Client.uploadImage(answer.body);

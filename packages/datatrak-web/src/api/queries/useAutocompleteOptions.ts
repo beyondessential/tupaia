@@ -29,6 +29,10 @@ export const useAutocompleteOptions = (
           // return only the options that match all attribute filters
           return Object.entries(attributeFilters).every(([attribute, config]) => {
             const attributeValue = getAnswerByQuestionId(config.questionId);
+            if (attributeValue === undefined) return false;
+            // if it is another autocomplete question, these are shaped differently
+            if (attributeValue.hasOwnProperty('value'))
+              return option.attributes[attribute] === attributeValue?.value;
             return option.attributes[attribute] === attributeValue;
           });
         });

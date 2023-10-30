@@ -11,8 +11,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - ${HEADER_HEIGHT});
-  padding: 1rem 1.2rem;
+  height: calc(100vh - 2 * ${HEADER_HEIGHT});
+  padding: 1rem 0;
   form p,
   form a,
   .MuiTypography-root.MuiFormControlLabel-label {

@@ -145,7 +145,7 @@ export const Map = () => {
           zoom={zoom as LeafletMapProps['zoom']}
           shouldSnapToPosition
         >
-          <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
+          <TileLayer tileSetUrl={activeTileSet.url} showAttribution />
           <MapOverlaysLayer hiddenValues={hiddenValues} />
           <DemoLand />
           <ZoomControl position="bottomright" />
