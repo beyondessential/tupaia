@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { respond, DatabaseError, FormValidationError } from '@tupaia/utils';
-import { sendEmail } from '../utilities';
+import { sendEmail } from '@tupaia/server-utils';
 import { allowNoPermissions } from '../permissions';
 
 export const requestPasswordReset = async (req, res) => {
@@ -43,7 +43,7 @@ ${resetUrl}
 If you believe this email was sent to you in error, please contact us immediately at
 admin@tupaia.org.`;
 
-  sendEmail(user.email, 'Password reset on Tupaia.org', emailText);
+  sendEmail(user.email, { subject: 'Password reset on Tupaia.org', text: emailText });
 
   respond(res, {
     success: true,
