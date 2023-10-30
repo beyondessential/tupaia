@@ -2,13 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { SurveyScreenComponentConfig } from '@tupaia/types';
 import { useUser } from '../../../api/queries';
 import { useSurveyForm } from '../../Survey';
 
-export const useEntityBaseFilters = (
-  config: DatatrakWebSurveyRequest.SurveyScreenComponentConfig,
-) => {
+export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const { data: userData } = useUser();
   const countryCode = userData?.country?.code;
@@ -38,9 +36,7 @@ export const useEntityBaseFilters = (
 /*
  * Returns a function that filters entities based on configured attribute values and questions
  */
-export const useAttributeFilter = (
-  questionConfig: DatatrakWebSurveyRequest.SurveyScreenComponentConfig,
-) => {
+export const useAttributeFilter = (questionConfig: SurveyScreenComponentConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   const attributes = questionConfig.entity?.filter?.attributes;
   if (!attributes) {
