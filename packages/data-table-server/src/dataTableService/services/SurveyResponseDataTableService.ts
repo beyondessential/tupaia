@@ -25,15 +25,6 @@ type SurveyResponseDataTableServiceContext = {
   apiClient: TupaiaApiClient;
 };
 
-enum BaseFilters {
-  countryCodes = 'country.code',
-  surveyCodes = 'survey.code',
-  entityCodes = 'entity.code',
-  assessorNames = 'survey_response.assessor_name',
-  ids = 'survey_response.id',
-  outdated = 'survey_response.outdated',
-}
-
 type StringParam = string | undefined;
 
 type Params = {
@@ -87,42 +78,30 @@ export class SurveyResponseDataTableService extends DataTableService<
   }
 
   protected getFilter(params: Params) {
-    // const filter = Object.entries(BaseFilters).reduce((acc, [filterKey, filterField]) => {
-    //   const filterValue = params[filterKey as keyof Omit<Params, 'startDate' | 'endDate'>];
+    const { startDate, endDate, ...restParams } = params;
+    const filter = { ...restParams } as Record<string, any>;
 
-    //   if (filterValue === undefined || filterValue === null) return acc;
-
-    //   //  if (Array.isArray(filterValue) && filterValue.length === 0) return acc;
-
-    //   return {
-    //     ...acc,
-    //     [filterField]: filterValue,
-    //   };
-    // }, {} as Record<string, any>);
-
-    const filter = { ...params } as Record<string, any>;
-
-    if (params.startDate && !params.endDate) {
+    if (startDate && !endDate) {
       filter['survey_response.data_time'] = {
         comparator: '>=',
-        comparisonValue: new Date(params.startDate),
+        comparisonValue: new Date(startDate),
       };
     }
 
-    if (!params.startDate && params.endDate) {
+    if (!startDate && endDate) {
       filter['survey_response.data_time'] = {
         comparator: '<=',
-        comparisonValue: new Date(params.endDate),
+        comparisonValue: new Date(endDate),
       };
     }
 
-    if (params.startDate && params.endDate) {
+    if (startDate && endDate) {
       // Set the start date to the beginning of the day and the end date to the end of the day
-      const startDate = new Date(params.startDate).setHours(0, 0, 0, 0);
-      const endDate = new Date(params.endDate).setHours(23, 59, 59, 999);
+      const formattedStartDate = new Date(startDate).setHours(0, 0, 0, 0);
+      const formattedEndDate = new Date(endDate).setHours(23, 59, 59, 999);
       filter['survey_response.data_time'] = {
         comparator: 'between',
-        comparisonValue: [new Date(startDate), new Date(endDate)],
+        comparisonValue: [new Date(formattedStartDate), new Date(formattedEndDate)],
       };
     }
 
