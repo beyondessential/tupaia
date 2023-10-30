@@ -6,16 +6,15 @@
 import { generateId } from '@tupaia/database';
 import {
   DatatrakWebSubmitSurveyRequest,
-  DatatrakWebSurveyRequest,
   Entity,
   Country,
+  SurveyScreenComponentConfig,
 } from '@tupaia/types';
 
 type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
-type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
 
 export const buildUpsertEntity = async (
-  config: ConfigT,
+  config: SurveyScreenComponentConfig,
   questionId: string,
   answers: Answers,
   countryId: Country['id'],

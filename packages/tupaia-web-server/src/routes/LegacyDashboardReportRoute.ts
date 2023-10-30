@@ -20,6 +20,10 @@ export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportReque
     const { query, ctx } = this.req;
     const { reportCode } = this.req.params;
 
-    return ctx.services.webConfig.fetchReport(reportCode, { legacy: 'true', ...query });
+    return ctx.services.webConfig.fetchReport(reportCode, {
+      legacy: 'true',
+      isExpanded: 'true', // Always get the data for expanded reports. The only time there is a difference is when the report is on matrix reports, and we don't show them when not expanded
+      ...query,
+    });
   }
 }
