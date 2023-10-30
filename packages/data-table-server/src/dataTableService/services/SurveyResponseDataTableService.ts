@@ -7,16 +7,15 @@ import { TupaiaApiClient } from '@tupaia/api-client';
 import { yup } from '@tupaia/utils';
 import { Country, Entity, Survey, SurveyResponse } from '@tupaia/types';
 import { DataTableService } from '../DataTableService';
-import { getDefaultEndDate, getDefaultStartDate } from './utils';
 
 const requiredParamsSchema = yup.object().shape({
-  ids: yup.array().of(yup.string()).default([]),
-  assessorNames: yup.array().of(yup.string()).default([]),
-  countryCodes: yup.array().of(yup.string()).default([]),
-  surveyCodes: yup.array().of(yup.string()).default([]),
-  entityCodes: yup.array().of(yup.string()).default([]),
-  startDate: yup.date().default(getDefaultStartDate),
-  endDate: yup.date().default(getDefaultEndDate),
+  ids: yup.array().of(yup.string()),
+  assessorNames: yup.array().of(yup.string()),
+  countryCodes: yup.array().of(yup.string()),
+  surveyCodes: yup.array().of(yup.string()),
+  entityCodes: yup.array().of(yup.string()),
+  startDate: yup.date(),
+  endDate: yup.date(),
   outdated: yup.boolean().default(false),
 });
 
@@ -35,15 +34,17 @@ enum BaseFilters {
   outdated = 'survey_response.outdated',
 }
 
+type StringParam = string | undefined;
+
 type Params = {
-  ids: string[];
+  ids?: StringParam[];
   startDate?: Date;
   endDate?: Date;
-  countryCodes: string[];
-  surveyCodes: string[];
-  entityCodes: string[];
-  assessorNames: string[];
-  outdated: boolean;
+  countryCodes?: StringParam[];
+  surveyCodes?: StringParam[];
+  entityCodes?: StringParam[];
+  assessorNames?: StringParam[];
+  outdated?: boolean;
 };
 
 enum ResponseColumns {
@@ -71,7 +72,7 @@ type SurveyResponseDataTableServiceResponse = {
 };
 
 /**
- * DataTableService for pulling data from aggregator's fetchDataGroup() endpoint
+ * DataTableService for pulling data from central-api `surveyResponses` endpoint
  */
 export class SurveyResponseDataTableService extends DataTableService<
   SurveyResponseDataTableServiceContext,
@@ -86,18 +87,34 @@ export class SurveyResponseDataTableService extends DataTableService<
   }
 
   protected getFilter(params: Params) {
-    const filter = Object.entries(BaseFilters).reduce((acc, [filterKey, filterField]) => {
-      const filterValue = params[filterKey as keyof Omit<Params, 'startDate' | 'endDate'>];
+    // const filter = Object.entries(BaseFilters).reduce((acc, [filterKey, filterField]) => {
+    //   const filterValue = params[filterKey as keyof Omit<Params, 'startDate' | 'endDate'>];
 
-      if (filterValue === undefined || filterValue === null) return acc;
+    //   if (filterValue === undefined || filterValue === null) return acc;
 
-      if (Array.isArray(filterValue) && filterValue.length === 0) return acc;
+    //   //  if (Array.isArray(filterValue) && filterValue.length === 0) return acc;
 
-      return {
-        ...acc,
-        [filterField]: filterValue,
+    //   return {
+    //     ...acc,
+    //     [filterField]: filterValue,
+    //   };
+    // }, {} as Record<string, any>);
+
+    const filter = { ...params } as Record<string, any>;
+
+    if (params.startDate && !params.endDate) {
+      filter['survey_response.data_time'] = {
+        comparator: '>=',
+        comparisonValue: new Date(params.startDate),
       };
-    }, {} as Record<string, any>);
+    }
+
+    if (!params.startDate && params.endDate) {
+      filter['survey_response.data_time'] = {
+        comparator: '<=',
+        comparisonValue: new Date(params.endDate),
+      };
+    }
 
     if (params.startDate && params.endDate) {
       // Set the start date to the beginning of the day and the end date to the end of the day
