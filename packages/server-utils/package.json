@@ -1,12 +1,12 @@
 {
-  "name": "@tupaia/tsutils",
+  "name": "@tupaia/server-utils",
   "version": "1.0.0",
   "private": true,
-  "description": "Utility functions that are helpful across multiple packages (typescript)",
+  "description": "Utility functions that are just for server packages",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",
-    "directory": "packages/tsutils"
+    "directory": "packages/server-utils"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
@@ -20,19 +20,11 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
-    "@tupaia/types": "1.0.0",
+    "@aws-sdk/client-s3": "^3.341.0",
+    "@aws-sdk/credential-providers": "^3.341.0",
+    "@aws-sdk/lib-storage": "^3.348.0",
     "@tupaia/utils": "1.0.0",
-    "ajv": "^8.12.0",
-    "ajv-formats": "v3.0.0-rc.0",
-    "better-ajv-errors": "^1.2.0",
-    "camelcase-keys": "^6.2.2",
-    "lodash.get": "^4.4.2",
-    "moment": "^2.24.0",
-    "moment-timezone": "^0.5.25",
-    "yup": "^0.32.9"
-  },
-  "devDependencies": {
-    "@types/lodash.get": "^4.4.2",
-    "@types/moment-timezone": "0.5.13"
+    "cookie": "^0.5.0",
+    "puppeteer": "^15.4.0"
   }
 }

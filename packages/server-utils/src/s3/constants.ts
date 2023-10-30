@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { getIsProductionEnvironment } from '../getIsProductionEnvironment';
+import { getIsProductionEnvironment } from '@tupaia/utils';
 
 export const S3_BUCKET_NAME = 'tupaia';
 export const S3_BUCKET_PATH = `https://s3-ap-southeast-2.amazonaws.com/${S3_BUCKET_NAME}/`;
