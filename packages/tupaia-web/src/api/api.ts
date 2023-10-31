@@ -5,6 +5,13 @@
  */
 import axios from 'axios';
 import FetchError from './fetchError';
+import { saveAs } from 'file-saver';
+import { parse } from 'content-disposition-header';
+
+const isJsonResponse = response => {
+  const contentType = response.headers?.get('content-type');
+  return contentType.startsWith('application/json');
+};
 
 export const API_URL = import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100/v1';
 
@@ -90,3 +97,39 @@ export const put = (endpoint: string, options?: RequestParameters) =>
   request(endpoint, { method: 'put', ...options });
 
 export const remove = (endpoint: string) => request(endpoint, { method: 'delete' });
+
+export const download = async (endpoint, queryParameters, fileName = '') => {
+  try {
+    const response = await axios(`${API_URL}/${endpoint}`, {
+      ...queryParameters,
+    });
+
+    // Check if this is an early response indicating it will be emailed
+    if (isJsonResponse(response)) {
+      const body = await response?.data?.json();
+      if (body.emailTimeoutHit) {
+        return { headers: response.headers, body };
+      }
+    }
+
+    let resolvedFileName = fileName;
+    if (!fileName) {
+      // Workaround for some type errors from axios
+      const contentDisposition = (response?.headers?.get as (headerName: string) => string)?.(
+        'Content-Disposition',
+      );
+      if (contentDisposition) {
+        const parsedContentDisposition = parse(contentDisposition);
+        resolvedFileName = parsedContentDisposition.parameters.filename;
+      } else {
+        resolvedFileName = 'Download';
+      }
+    }
+
+    saveAs(response?.data, resolvedFileName);
+    return {};
+  } catch (e: any) {
+    // const { response } = e;
+    console.log(e);
+  }
+};

@@ -12,7 +12,7 @@ import { ViewReport } from '@tupaia/types';
 import { CheckboxList, Form as BaseForm } from '../../../components';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 import { useMutation } from 'react-query';
-import { get } from '../../../api';
+import { download } from '../../../api';
 
 const ListItem = styled.li`
   text-align: center;
@@ -69,58 +69,25 @@ interface DataDownloadProps {
   isEnlarged?: boolean;
 }
 
-const FILE_PREFIX = 'survey_response_export';
-
-const getFileName = (report: ViewReport, selectedCodes: string[]) => {
-  const firstName = report.data?.find(({ value }) => value === selectedCodes[0])?.name;
-  const fileNumber = selectedCodes.length + 1;
-  const prettyFileNumber = selectedCodes.length === 1 ? '' : fileNumber;
-  const exportDate = Date.now();
-
-  // If exporting a single survey, use human friendly name in filename
-  const fileName =
-    selectedCodes.length === 1
-      ? `${firstName} - Survey Responses${prettyFileNumber}`
-      : `${FILE_PREFIX}_${exportDate}_${fileNumber}`;
-
-  return fileName;
-};
-
-const getFileExtension = (blob: Blob) => {
-  const fileExtension = blob.type.includes('zip') ? '.zip' : '.xlsx';
-  return fileExtension;
-};
-
-const downloadFile = (blob: Blob, report: ViewReport, selectedCodes: string[]) => {
-  const fileName = getFileName(report, selectedCodes);
-  const fileExtension = getFileExtension(blob);
-
+const downloadFile = (blob: Blob, fileName?: string) => {
   const data = window.URL.createObjectURL(blob);
 
   const link = document.createElement('a');
 
   link.href = data;
-  link.setAttribute('download', `${fileName}${fileExtension}`);
+  link.setAttribute('download', fileName!);
 
   link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-
-  document.body.removeChild(link);
 };
 
 const useFetchDownloadData = (report, selectedCodes) => {
-  return useMutation<any, Error, any, unknown>(
-    () => {
-      const url = `${report.downloadUrl}&surveyCodes=${selectedCodes.join(',')}`;
-      return get(url, {
-        responseType: 'blob',
-      });
-    },
-    {
-      onSuccess: async blob => {
-        downloadFile(blob, report, selectedCodes);
+  return useMutation<any, Error, any, unknown>(() => {
+    return download(report.downloadUrl, {
+      params: {
+        surveyCodes: selectedCodes,
       },
-    },
-  );
+    });
+  });
 };
 
 export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
@@ -130,10 +97,12 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
     mode: 'onChange',
   });
   const selectedCodes = formContext.watch(reportCode!);
-  const { mutateAsync: fetchDownloadData, isLoading, error } = useFetchDownloadData(
-    report,
-    selectedCodes,
-  );
+  const {
+    mutateAsync: fetchDownloadData,
+    isLoading,
+    error,
+    data: downloadResponse,
+  } = useFetchDownloadData(report, selectedCodes);
 
   const { data } = report;
   if (!isEnlarged)
@@ -150,35 +119,36 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
     setUrlSearchParams(urlSearchParams);
   };
-  return (
+
+  console.log(downloadResponse);
+
+  return isLoading ? (
+    <SpinningLoader />
+  ) : (
     <Form formContext={formContext}>
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
-      {isLoading ? (
-        <SpinningLoader />
-      ) : (
-        <CheckboxListWrapper>
-          <CheckboxList
-            options={
-              data
-                ? data.map(({ name, value }) => ({
-                    label: name,
-                    value: value as string,
-                  }))
-                : []
-            }
-            name={reportCode!}
-            legend="Select the data you wish to download"
-            required
-          />
-        </CheckboxListWrapper>
-      )}
+      <CheckboxListWrapper>
+        <CheckboxList
+          options={
+            data
+              ? data.map(({ name, value }) => ({
+                  label: name,
+                  value: value as string,
+                }))
+              : []
+          }
+          name={reportCode!}
+          legend="Select the data you wish to download"
+          required
+        />
+      </CheckboxListWrapper>
 
       <ButtonWrapper>
         <FormButton variant="outlined" color="default" onClick={closeModal}>
           Cancel
         </FormButton>
         <FormButton
-          disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
+          // disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
           onClick={fetchDownloadData}
         >
           Download

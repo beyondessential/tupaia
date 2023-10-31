@@ -5,9 +5,10 @@
 
 export type Params = Record<string, never>;
 export type ResBody = {
-  contents: Buffer;
+  contents?: Buffer;
   filePath?: string;
-  type: string;
+  type?: string;
+  emailTimeoutHit?: boolean;
 };
 export type ReqBody = Record<string, never>;
 export type ReqQuery = {
