@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   width: 100%;
   z-index: 1;
   pointer-events: auto;
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -66,9 +67,12 @@ const OverlayMenu = styled.div<{
   height: ${({ $expanded }) => ($expanded ? `calc(100vh - ${getMobileTopBarHeight()})` : '0')};
   transition: height 0.3s ease-in-out;
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   background-color: ${({ theme }) => theme.mobile.background};
+
+  overflow: auto;
+
   ${OverlayLibraryHeaderButton} {
     display: ${({ $expanded }) => ($expanded ? 'flex' : 'none')};
   }
@@ -97,10 +101,6 @@ export const MobileMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
-  const handleClick = () => {
-    console.log('CLICK');
-    toggleOverlayLibrary();
-  };
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
