@@ -11,6 +11,8 @@ import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { getMobileTopBarHeight } from '../../../utils/getTopBarHeight';
+import { useMapOverlays } from '../../../api/queries';
+import { useParams } from 'react-router';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -101,19 +103,27 @@ export const MobileMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
+  const { projectCode, entityCode } = useParams();
+  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
         <ButtonWrapper>
           <MapOverlayDatePicker />
-          <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
+          <ExpandButton
+            onClick={hasMapOverlays ? toggleOverlayLibrary : undefined}
+            aria-controls="overlay-selector"
+          >
             <span>
               <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
               <MapOverlaySelectorTitle />
             </span>
-            <ArrowWrapper>
-              <ArrowForwardIos />
-            </ArrowWrapper>
+            {hasMapOverlays && (
+              <ArrowWrapper>
+                <ArrowForwardIos />
+              </ArrowWrapper>
+            )}
           </ExpandButton>
         </ButtonWrapper>
       )}
