@@ -56899,6 +56899,7 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id"
 	]
 } 
@@ -59591,6 +59592,7 @@ export const ProjectResponseSchema = {
 	},
 	"required": [
 		"code",
+		"config",
 		"hasAccess",
 		"hasPendingAccess",
 		"id",
