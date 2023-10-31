@@ -23,6 +23,7 @@ export {
   TupaiaWebChangePasswordRequest,
   TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
+  TupaiaWebEmailDashboardRequest,
   TupaiaWebExportDashboardRequest,
   TupaiaWebEntitiesRequest,
   TupaiaWebEntityRequest,
