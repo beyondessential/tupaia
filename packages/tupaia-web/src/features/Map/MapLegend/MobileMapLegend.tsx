@@ -21,6 +21,7 @@ const Wrapper = styled.div`
   padding-right: 0.8rem;
   position: absolute;
   bottom: 100%;
+  z-index: 1;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -53,6 +54,7 @@ const CloseButton = styled(IconButton).attrs({
   position: absolute;
   top: 0;
   right: 0;
+  font-size: 0.8rem;
 `;
 
 export const MobileMapLegend = ({ children }: { children: ReactNode }) => {
