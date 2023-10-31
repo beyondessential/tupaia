@@ -8,16 +8,14 @@ import { QuestionType } from '@tupaia/types';
 import { getAllSurveyComponents, useSurveyForm } from '.';
 import { SurveyScreenComponent } from '../../types';
 
+const transformNumberValue = (value: string | number, originalValue: string | number) => {
+  // This is a workaround for yup not handling empty number fields (https://github.com/jquense/yup/issues/298)
+  return originalValue === '' || isNaN(originalValue as number) ? null : value;
+};
 const getBaseSchema = (type: QuestionType) => {
   switch (type) {
     case QuestionType.Number:
-      return yup
-        .number()
-        .transform((value: string, originalValue: string) => {
-          // This is a workaround for yup not handling empty number fields (https://github.com/jquense/yup/issues/298)
-          return originalValue === '' ? null : value;
-        })
-        .nullable();
+      return yup.number().transform(transformNumberValue).nullable();
     case QuestionType.Autocomplete:
       return yup
         .object()
@@ -33,6 +31,22 @@ const getBaseSchema = (type: QuestionType) => {
         .date()
         .nullable()
         .default(() => new Date());
+    case QuestionType.Geolocate:
+      return yup
+        .object({
+          latitude: yup
+            .number()
+            .max(90, 'Latitude must be between -90 and 90')
+            .min(-90, 'Latitude must be between -90 and 90')
+            .transform(transformNumberValue),
+          longitude: yup
+            .number()
+            .max(180, 'Longitude must be between -180 and 180')
+            .min(-180, 'Longitude must be between -180 and 180')
+            .transform(transformNumberValue),
+        })
+        .nullable()
+        .default(() => ({}));
     default:
       return yup.string();
   }
@@ -52,6 +66,28 @@ const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
 
       if (mandatory) {
         fieldSchema = fieldSchema.required('Required');
+        // add custom validation for geolocate only when the question is required, so that the validation doesn't happen on each subfield when the question is not required
+        if (type === QuestionType.Geolocate) {
+          // @ts-ignore - handle issue with union type on schema from yup
+          fieldSchema = fieldSchema.test(
+            'hasLatLong',
+            ({ value }) => {
+              // Show the required message when the user has not entered a location at all
+              if (
+                (!value?.latitude && !value?.longitude) ||
+                (isNaN(value.latitude) && isNaN(value.longitude))
+              )
+                return 'Required';
+              // Otherwise show the invalid location message
+              return 'Please enter a valid location';
+            },
+            value =>
+              value?.latitude &&
+              value?.longitude &&
+              !isNaN(value.latitude) &&
+              !isNaN(value.longitude),
+          );
+        }
       }
 
       if (min !== undefined) {
@@ -97,12 +133,14 @@ export const useValidationResolver = () => {
           errors: {},
         };
       } catch (errors: any) {
+        console.log(errors?.inner);
         return {
           values: {},
           errors: errors?.inner?.reduce((allErrors, currentError) => {
+            const questionName = currentError.path?.split('.')[0];
             return {
               ...allErrors,
-              [currentError.path]: {
+              [questionName]: {
                 type: currentError.type ?? 'validation',
                 message: currentError.message,
               },
