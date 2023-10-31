@@ -28,7 +28,7 @@ type RouteType = 'default' | 'download';
 
 export class Route<
   Req extends ExpressRequest<Req> = Request,
-  Res extends ExpressResponse<Req> = Response<ResBody<Req>>,
+  Res extends ExpressResponse<Req> = Response<ResBody<Req>>
 > {
   protected readonly req: Req;
   protected readonly res: Res;
@@ -55,9 +55,9 @@ export class Route<
     // swallowed.
     try {
       const response = await this.buildResponse();
-      if (this.type === 'download') {
-        // @ts-ignore
-        this.download(response);
+      // Only download when the response has a contents property. This is in case of email timeout hit responses, for example, which will be JSON objects
+      if (this.type === 'download' && (response as DownloadResBody).contents) {
+        this.download(response as DownloadResBody);
       } else {
         this.respond(response, 200);
       }

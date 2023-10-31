@@ -70,10 +70,9 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       centralQuery,
     );
 
+    // If the request timed out, return the response as is. Server-boilerplate will handle this and not attempt to download it
     if (response.emailTimeoutHit) {
-      throw new Error(
-        'This export is taking a long time! The data will be emailed to you when finished.',
-      );
+      return response;
     }
 
     // Extract the filename from the content-disposition header
