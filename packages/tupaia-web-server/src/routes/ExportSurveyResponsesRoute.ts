@@ -9,8 +9,7 @@ import { TupaiaWebExportSurveyResponsesRequest } from '@tupaia/types';
 
 export type ExportSurveyResponsesRequest = Request<
   TupaiaWebExportSurveyResponsesRequest.Params,
-  any,
-  // TupaiaWebExportSurveyResponsesRequest.ResBody,
+  TupaiaWebExportSurveyResponsesRequest.ResBody,
   TupaiaWebExportSurveyResponsesRequest.ReqBody,
   TupaiaWebExportSurveyResponsesRequest.ReqQuery
 >;
