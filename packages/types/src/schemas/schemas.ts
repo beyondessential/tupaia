@@ -26457,6 +26457,18 @@ export const IconKeySchema = {
 	"type": "string"
 } 
 
+export const ScaleTypeSchema = {
+	"enum": [
+		"gpi",
+		"neutral",
+		"neutralReverse",
+		"performance",
+		"performanceDesc",
+		"time"
+	],
+	"type": "string"
+} 
+
 export const MeasureTypeSchema = {
 	"enum": [
 		"color",
@@ -27641,6 +27653,34 @@ export const ClinicUpdateSchema = {
 		}
 	},
 	"additionalProperties": false
+} 
+
+export const CommentSchema = {
+	"type": "object",
+	"properties": {
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"last_modified_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"text": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"text"
+	]
 } 
 
 export const CommentCreateSchema = {
@@ -59075,27 +59115,8 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
-export const CamelCaseSchema = {
+export const ParamsSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const CamelCasePartSchema = {
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
 	"type": "object",
 	"additionalProperties": false
 } 
