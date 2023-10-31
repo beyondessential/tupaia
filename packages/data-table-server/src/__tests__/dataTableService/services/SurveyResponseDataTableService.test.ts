@@ -6,7 +6,6 @@
 import { MockTupaiaApiClient, MockCentralApi } from '@tupaia/api-client';
 import { DataTableType } from '@tupaia/types';
 import { DataTableServiceBuilder } from '../../../dataTableService';
-import { getDefaultEndDate, getDefaultStartDate } from '../../../dataTableService/services/utils';
 import { CENTRAL_API_RESPONSES } from './fixtures';
 
 const surveyResponseDataTableService = new DataTableServiceBuilder()
@@ -20,29 +19,29 @@ describe('SurveyResponsesDataTableService', () => {
   it('getParameters', () => {
     const parameters = surveyResponseDataTableService.getParameters();
     expect(parameters).toEqual([
-      { config: { defaultValue: [], type: 'array', innerType: { type: 'string' } }, name: 'ids' },
+      { config: { type: 'array', innerType: { type: 'string' } }, name: 'ids' },
       {
-        config: { defaultValue: [], type: 'array', innerType: { type: 'string' } },
+        config: { type: 'array', innerType: { type: 'string' } },
         name: 'assessorNames',
       },
       {
-        config: { defaultValue: [], type: 'array', innerType: { type: 'string' } },
+        config: { type: 'array', innerType: { type: 'string' } },
         name: 'countryCodes',
       },
       {
-        config: { defaultValue: [], type: 'array', innerType: { type: 'string' } },
+        config: { type: 'array', innerType: { type: 'string' } },
         name: 'surveyCodes',
       },
       {
-        config: { defaultValue: [], type: 'organisationUnitCodes', innerType: { type: 'string' } },
+        config: { type: 'organisationUnitCodes', innerType: { type: 'string' } },
         name: 'entityCodes',
       },
       {
-        config: { defaultValue: getDefaultStartDate(), type: 'date' },
+        config: { type: 'date' },
         name: 'startDate',
       },
       {
-        config: { defaultValue: getDefaultEndDate(), type: 'date' },
+        config: { type: 'date' },
         name: 'endDate',
       },
       {
