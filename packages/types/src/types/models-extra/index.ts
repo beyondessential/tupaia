@@ -58,3 +58,4 @@ export {
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
 } from './survey';
+export { ProjectConfig } from './project';

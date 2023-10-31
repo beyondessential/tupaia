@@ -19,15 +19,16 @@
   "typeOverrides": {
     "public.report.config": "ReportConfig",
     "public.dashboard_item.config": "DashboardItemConfig",
-    "public.map_overlay.config": "MapOverlayConfig"
+    "public.map_overlay.config": "MapOverlayConfig",
+    "public.project.config": "ProjectConfig"
   },
   "template": "config/models/template.handlebars",
   "custom": {
     "imports": {
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra",
-      "MapOverlayConfig": "./models-extra"
+      "MapOverlayConfig": "./models-extra",
+      "ProjectConfig": "./models-extra"
     }
   }
 }
-

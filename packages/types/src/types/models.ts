@@ -10,6 +10,7 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
+import { ProjectConfig } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -1177,7 +1178,7 @@ export interface PermissionsBasedMeditrakSyncQueueUpdate {
 }
 export interface Project {
   'code': string;
-  'config'?: any | null;
+  'config'?: ProjectConfig | null;
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
@@ -1191,7 +1192,7 @@ export interface Project {
 }
 export interface ProjectCreate {
   'code': string;
-  'config'?: any | null;
+  'config'?: ProjectConfig | null;
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
@@ -1204,7 +1205,7 @@ export interface ProjectCreate {
 }
 export interface ProjectUpdate {
   'code'?: string;
-  'config'?: any | null;
+  'config'?: ProjectConfig | null;
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;

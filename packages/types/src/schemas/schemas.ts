@@ -26889,6 +26889,59 @@ export const SurveyScreenComponentConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const ProjectConfigSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"type": "object",
+	"properties": {
+		"permanentRegionLabels": {
+			"type": "boolean"
+		},
+		"tileSets": {
+			"type": "string"
+		},
+		"includeDefaultTileSets": {
+			"type": "boolean"
+		},
+		"projectDashboardHeader": {
+			"type": "string"
+		},
+		"frontendExcluded": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"types": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"exceptions": {
+						"type": "object",
+						"properties": {
+							"permissionGroups": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"permissionGroups"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"types"
+				]
+			}
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -27678,7 +27731,9 @@ export const CommentSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"created_time",
 		"id",
+		"last_modified_time",
 		"text"
 	]
 } 
@@ -56755,7 +56810,58 @@ export const ProjectSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"type": "object",
+			"properties": {
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				},
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -56803,7 +56909,58 @@ export const ProjectCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"type": "object",
+			"properties": {
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				},
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -56847,7 +57004,58 @@ export const ProjectUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+			"type": "object",
+			"properties": {
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				},
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -59288,19 +59496,55 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"config": {
-			"anyOf": [
-				{
+			"type": "object",
+			"properties": {
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				},
+				"frontendExcluded": {
 					"type": "array",
 					"items": {
 						"type": "object",
-						"additionalProperties": false
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
 					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
 				}
-			]
+			},
+			"additionalProperties": false
 		},
 		"dashboardGroupName": {
 			"type": "string"
