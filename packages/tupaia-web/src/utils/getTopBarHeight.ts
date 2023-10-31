@@ -14,7 +14,6 @@ const envBannerIsVisible = () => {
   );
 };
 export const getMobileTopBarHeight = () => {
-  console.log(process.env.REACT_APP_DEPLOYMENT_NAME, envBannerIsVisible());
   if (envBannerIsVisible()) {
     const height = parseInt(TOP_BAR_HEIGHT_MOBILE) + ENV_BANNER_HEIGHT;
     return `${height}px`;

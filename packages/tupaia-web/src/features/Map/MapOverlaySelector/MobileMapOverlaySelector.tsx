@@ -97,6 +97,10 @@ export const MobileMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
+  const handleClick = () => {
+    console.log('CLICK');
+    toggleOverlayLibrary();
+  };
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
@@ -125,7 +129,7 @@ export const MobileMapOverlaySelector = ({
           <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
         <OverlayListWrapper>
-          <MapOverlayList />
+          <MapOverlayList toggleOverlayLibrary={toggleOverlayLibrary} />
         </OverlayListWrapper>
       </OverlayMenu>
     </Wrapper>
