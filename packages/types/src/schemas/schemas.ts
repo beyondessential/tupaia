@@ -26937,6 +26937,12 @@ export const ProjectConfigSchema = {
 					"types"
 				]
 			}
+		},
+		"allowSendToMailingListPermissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		}
 	},
 	"additionalProperties": false
@@ -56858,6 +56864,12 @@ export const ProjectSchema = {
 							"types"
 						]
 					}
+				},
+				"allowSendToMailingListPermissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
 				}
 			},
 			"additionalProperties": false
@@ -56958,6 +56970,12 @@ export const ProjectCreateSchema = {
 							"types"
 						]
 					}
+				},
+				"allowSendToMailingListPermissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
 				}
 			},
 			"additionalProperties": false
@@ -57052,6 +57070,12 @@ export const ProjectUpdateSchema = {
 						"required": [
 							"types"
 						]
+					}
+				},
+				"allowSendToMailingListPermissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
 					}
 				}
 			},
@@ -59542,6 +59566,12 @@ export const ProjectResponseSchema = {
 						"required": [
 							"types"
 						]
+					}
+				},
+				"allowSendToMailingListPermissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
 					}
 				}
 			},

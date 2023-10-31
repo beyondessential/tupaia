@@ -12,4 +12,5 @@ export interface ProjectConfig {
     types: string[];
     exceptions?: { permissionGroups: string[] };
   }[];
+  allowSendToMailingListPermissionGroups?: string[];
 }
