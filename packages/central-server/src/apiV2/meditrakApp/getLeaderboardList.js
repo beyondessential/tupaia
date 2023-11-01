@@ -12,9 +12,7 @@ export const getLeaderboardList = async (req, res) => {
 
   await req.assertPermissions(allowNoPermissions);
 
-  const items = await getLeaderboard(models, query?.rowCount);
+  const leaderboard = await getLeaderboard(models, query?.rowCount);
 
-  respond(res, {
-    items,
-  });
+  respond(res, leaderboard);
 };
