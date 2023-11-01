@@ -16,7 +16,7 @@ const EXCLUDED_USERS = [
   "'unicef.laos.edu@gmail.com'", // Laos Schools Data Collector
   "'tamanu-server@tupaia.org'", // Tamanu Server
 ];
-const INTERNAL_EMAIL = '@beyondessential.com.au';
+const INTERNAL_EMAIL = ['@beyondessential.com.au', 'bes.au'];
 
 /**
  * Gets a leaderboard of coconuts and pigs based on the number of survey responses from each user
@@ -33,19 +33,18 @@ const INTERNAL_EMAIL = '@beyondessential.com.au';
  */
 export const getLeaderboard = async (models, rowCount = 10) => {
   return models.database.executeSql(
-    `
-        SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
-        FROM (
-          SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
-          FROM survey_response
-          GROUP BY user_id
-        ) r
-        JOIN user_account on user_account.id = r.user_id
-        WHERE email NOT LIKE '%${INTERNAL_EMAIL}'
-        AND email NOT IN (${EXCLUDED_USERS.join(',')})
-        ORDER BY coconuts DESC
-        LIMIT ?;
-      `,
+    ` SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
+      FROM (
+        SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        FROM survey_response
+        GROUP BY user_id
+      ) r
+      JOIN user_account on user_account.id = r.user_id
+      WHERE ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}%'`).join(' AND ')}
+      AND email NOT IN (${EXCLUDED_USERS.join(',')})
+      ORDER BY coconuts DESC
+      LIMIT ?;
+    `,
     [rowCount],
   );
 };

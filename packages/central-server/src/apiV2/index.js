@@ -20,6 +20,7 @@ import {
   getSocialFeed,
   getUserRewards,
   postChanges,
+  getLeaderboardList,
 } from './meditrakApp';
 import { BESAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
@@ -164,6 +165,7 @@ apiV2.get('/changes/count', catchAsyncErrors(countChanges));
 apiV2.get('/changes/metadata', catchAsyncErrors(changesMetadata));
 apiV2.get('/changes', catchAsyncErrors(getChanges));
 apiV2.get('/downloadFiles', useRouteHandler(DownloadFiles));
+apiV2.get('/leaderboard', catchAsyncErrors(getLeaderboardList));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));
