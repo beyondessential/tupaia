@@ -30,6 +30,7 @@ import {
   RequestProjectAccessPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  AccountSettingsPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -153,6 +154,14 @@ export const Routes = () => {
             {SurveyPageRoutes}
           </Route>
         </Route>
+        <Route
+          path={ROUTES.ACCOUNT_SETTINGS}
+          element={
+            <PrivateRoute>
+              <AccountSettingsPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </RouterRoutes>
