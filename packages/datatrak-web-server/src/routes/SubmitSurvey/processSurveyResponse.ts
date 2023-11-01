@@ -5,20 +5,19 @@
 import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
-  DatatrakWebSurveyRequest,
   Entity,
   MeditrakSurveyResponseRequest,
   QuestionType,
+  SurveyScreenComponentConfig,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
-type ConfigT = DatatrakWebSurveyRequest.SurveyScreenComponentConfig;
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
 
-export const isUpsertEntityQuestion = (config?: ConfigT) => {
+export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
     return false;
   }
@@ -65,7 +64,7 @@ export const processSurveyResponse = async (
   for (const question of questions) {
     const { questionId, type } = question;
     let answer = answers[questionId] as AnswerT | Entity;
-    const config = question?.config as ConfigT;
+    const config = question?.config as SurveyScreenComponentConfig;
 
     // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
     if (

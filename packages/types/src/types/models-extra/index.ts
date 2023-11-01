@@ -50,3 +50,11 @@ export {
   ScaleType,
   MeasureColorScheme,
 } from './mapOverlay';
+export {
+  SurveyScreenComponentConfig,
+  CodeGeneratorQuestionConfig,
+  AutocompleteQuestionConfig,
+  EntityQuestionConfig,
+  ConditionQuestionConfig,
+  ArithmeticQuestionConfig,
+} from './survey';

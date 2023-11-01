@@ -26517,6 +26517,366 @@ export const MeasureColorSchemeSchema = {
 	"type": "string"
 } 
 
+export const CodeGeneratorQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"enum": [
+				"mongoid",
+				"shortid"
+			],
+			"type": "string"
+		},
+		"prefix": {
+			"type": "string"
+		},
+		"length": {
+			"type": "number"
+		},
+		"chunkLength": {
+			"type": "number"
+		},
+		"alphabet": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const AutocompleteQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"questionId": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"questionId"
+				]
+			}
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const ConditionQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"conditions": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"formula": {
+						"type": "string"
+					},
+					"defaultValues": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"formula"
+				]
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"conditions"
+	]
+} 
+
+export const EntityQuestionConfigSchema = {
+	"type": "object",
+	"additionalProperties": {},
+	"properties": {
+		"createNew": {
+			"type": "boolean"
+		},
+		"fields": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"filter": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"grandparentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"parentId": {
+					"type": "object",
+					"properties": {
+						"questionId": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"questionId"
+					]
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	}
+} 
+
+export const ArithmeticQuestionConfigSchema = {
+	"type": "object",
+	"properties": {
+		"formula": {
+			"type": "string"
+		},
+		"defaultValues": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"answerDisplayText": {
+			"type": "string"
+		},
+		"valueTranslation": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"formula"
+	]
+} 
+
+export const SurveyScreenComponentConfigSchema = {
+	"type": "object",
+	"properties": {
+		"codeGenerator": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"enum": [
+						"mongoid",
+						"shortid"
+					],
+					"type": "string"
+				},
+				"prefix": {
+					"type": "string"
+				},
+				"length": {
+					"type": "number"
+				},
+				"chunkLength": {
+					"type": "number"
+				},
+				"alphabet": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		},
+		"autocomplete": {
+			"type": "object",
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"attributes": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"questionId": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"questionId"
+						]
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entity": {
+			"type": "object",
+			"additionalProperties": {},
+			"properties": {
+				"createNew": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"filter": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"anyOf": [
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"grandparentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"parentId": {
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						"attributes": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"questionId": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"questionId"
+								]
+							}
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
+		"condition": {
+			"type": "object",
+			"properties": {
+				"conditions": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"formula": {
+								"type": "string"
+							},
+							"defaultValues": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"formula"
+						]
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"conditions"
+			]
+		},
+		"arithmetic": {
+			"type": "object",
+			"properties": {
+				"formula": {
+					"type": "string"
+				},
+				"defaultValues": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"answerDisplayText": {
+					"type": "string"
+				},
+				"valueTranslation": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"formula"
+			]
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -59096,366 +59456,6 @@ export const CamelCasedComponentSchema = {
 		"componentNumber",
 		"questionId"
 	]
-} 
-
-export const CodeGeneratorConfigSchema = {
-	"type": "object",
-	"properties": {
-		"type": {
-			"enum": [
-				"mongoid",
-				"shortid"
-			],
-			"type": "string"
-		},
-		"prefix": {
-			"type": "string"
-		},
-		"length": {
-			"type": "number"
-		},
-		"chunkLength": {
-			"type": "number"
-		},
-		"alphabet": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"type"
-	]
-} 
-
-export const AutocompleteConfigSchema = {
-	"type": "object",
-	"properties": {
-		"createNew": {
-			"type": "boolean"
-		},
-		"attributes": {
-			"type": "object",
-			"additionalProperties": {
-				"type": "object",
-				"properties": {
-					"questionId": {
-						"type": "string"
-					}
-				},
-				"additionalProperties": false,
-				"required": [
-					"questionId"
-				]
-			}
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const ConditionConfigSchema = {
-	"type": "object",
-	"properties": {
-		"conditions": {
-			"type": "object",
-			"additionalProperties": {
-				"type": "object",
-				"properties": {
-					"formula": {
-						"type": "string"
-					},
-					"defaultValues": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				"additionalProperties": false,
-				"required": [
-					"formula"
-				]
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"conditions"
-	]
-} 
-
-export const EntityQuestionConfigSchema = {
-	"type": "object",
-	"additionalProperties": {},
-	"properties": {
-		"createNew": {
-			"type": "boolean"
-		},
-		"fields": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"filter": {
-			"type": "object",
-			"properties": {
-				"type": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						},
-						{
-							"type": "string"
-						}
-					]
-				},
-				"grandparentId": {
-					"type": "object",
-					"properties": {
-						"questionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"questionId"
-					]
-				},
-				"parentId": {
-					"type": "object",
-					"properties": {
-						"questionId": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"questionId"
-					]
-				},
-				"attributes": {
-					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"questionId": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"questionId"
-						]
-					}
-				}
-			},
-			"additionalProperties": false
-		}
-	}
-} 
-
-export const ArithmeticConfigSchema = {
-	"type": "object",
-	"properties": {
-		"formula": {
-			"type": "string"
-		},
-		"defaultValues": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"answerDisplayText": {
-			"type": "string"
-		},
-		"valueTranslation": {
-			"type": "object",
-			"additionalProperties": false
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"formula"
-	]
-} 
-
-export const SurveyScreenComponentConfigSchema = {
-	"type": "object",
-	"properties": {
-		"codeGenerator": {
-			"type": "object",
-			"properties": {
-				"type": {
-					"enum": [
-						"mongoid",
-						"shortid"
-					],
-					"type": "string"
-				},
-				"prefix": {
-					"type": "string"
-				},
-				"length": {
-					"type": "number"
-				},
-				"chunkLength": {
-					"type": "number"
-				},
-				"alphabet": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"type"
-			]
-		},
-		"autocomplete": {
-			"type": "object",
-			"properties": {
-				"createNew": {
-					"type": "boolean"
-				},
-				"attributes": {
-					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"questionId": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"questionId"
-						]
-					}
-				}
-			},
-			"additionalProperties": false
-		},
-		"entity": {
-			"type": "object",
-			"additionalProperties": {},
-			"properties": {
-				"createNew": {
-					"type": "boolean"
-				},
-				"fields": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"filter": {
-					"type": "object",
-					"properties": {
-						"type": {
-							"anyOf": [
-								{
-									"type": "array",
-									"items": {
-										"type": "string"
-									}
-								},
-								{
-									"type": "string"
-								}
-							]
-						},
-						"grandparentId": {
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						"parentId": {
-							"type": "object",
-							"properties": {
-								"questionId": {
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"questionId"
-							]
-						},
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"questionId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"questionId"
-								]
-							}
-						}
-					},
-					"additionalProperties": false
-				}
-			}
-		},
-		"condition": {
-			"type": "object",
-			"properties": {
-				"conditions": {
-					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"formula": {
-								"type": "string"
-							},
-							"defaultValues": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"formula"
-						]
-					}
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"conditions"
-			]
-		},
-		"arithmetic": {
-			"type": "object",
-			"properties": {
-				"formula": {
-					"type": "string"
-				},
-				"defaultValues": {
-					"type": "object",
-					"additionalProperties": false
-				},
-				"answerDisplayText": {
-					"type": "string"
-				},
-				"valueTranslation": {
-					"type": "object",
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"formula"
-			]
-		}
-	},
-	"additionalProperties": false
 } 
 
 export const CamelCasedSurveyScreenSchema = {
