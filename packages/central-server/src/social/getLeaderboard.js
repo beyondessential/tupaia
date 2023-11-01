@@ -16,7 +16,7 @@ const EXCLUDED_USERS = [
   "'unicef.laos.edu@gmail.com'", // Laos Schools Data Collector
   "'tamanu-server@tupaia.org'", // Tamanu Server
 ];
-const INTERNAL_EMAIL = ['@beyondessential.com.au', 'bes.au'];
+const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
 /**
  * Gets a leaderboard of coconuts and pigs based on the number of survey responses from each user
