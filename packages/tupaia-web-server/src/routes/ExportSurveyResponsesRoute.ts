@@ -14,8 +14,6 @@ export type ExportSurveyResponsesRequest = Request<
   TupaiaWebExportSurveyResponsesRequest.ReqQuery
 >;
 
-const EMAIL_TIMEOUT = 30 * 1000; // 30 seconds
-
 export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesRequest> {
   protected readonly type = 'download';
 
@@ -45,7 +43,6 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       reportName: string;
       countryCode?: string;
       entityCode?: string;
-      respondWithEmailTimeout: number;
     } = {
       latest,
       surveyCodes,
@@ -54,7 +51,6 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       timeZone,
       reportName: dashboardItem.config?.name,
       easyReadingMode,
-      respondWithEmailTimeout: EMAIL_TIMEOUT,
     };
 
     if (organisationUnitCode?.length === 2) {
@@ -68,11 +64,6 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       'export/surveyResponses',
       centralQuery,
     );
-
-    // If the request timed out, return the response as is. Server-boilerplate will handle this and not attempt to download it
-    if (response.emailTimeoutHit) {
-      return response;
-    }
 
     // Extract the filename from the content-disposition header
     const contentDispositionHeader = response.headers.get('content-disposition');

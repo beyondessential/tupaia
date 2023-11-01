@@ -55,9 +55,9 @@ export class Route<
     // swallowed.
     try {
       const response = await this.buildResponse();
-      // Only download when the response has a contents property. This is in case of email timeout hit responses, for example, which will be JSON objects
-      if (this.type === 'download' && (response as DownloadResBody).contents) {
-        this.download(response as DownloadResBody);
+      if (this.type === 'download') {
+        // @ts-ignore
+        this.download(response);
       } else {
         this.respond(response, 200);
       }

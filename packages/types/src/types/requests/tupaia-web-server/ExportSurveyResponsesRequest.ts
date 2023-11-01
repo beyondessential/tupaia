@@ -8,7 +8,6 @@ export type ResBody = {
   contents?: Buffer;
   filePath?: string;
   type?: string;
-  emailTimeoutHit?: boolean;
 };
 export type ReqBody = Record<string, never>;
 export type ReqQuery = {
