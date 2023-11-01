@@ -40,7 +40,7 @@ export const getLeaderboard = async (models, rowCount = 10) => {
         GROUP BY user_id
       ) r
       JOIN user_account on user_account.id = r.user_id
-      WHERE ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}%'`).join(' AND ')}
+      WHERE ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}'`).join(' AND ')}
       AND email NOT IN (${EXCLUDED_USERS.join(',')})
       ORDER BY coconuts DESC
       LIMIT ?;
