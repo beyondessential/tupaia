@@ -122,16 +122,19 @@ const getArithmeticResult = (
   // Setting up scope values.
   const questionIds = variables.map(v => v.replace(/^\$/, ''));
   questionIds.forEach(questionId => {
-    values[`$${questionId}`] = getArithmeticDependantAnswer(
-      questionId,
-      formData[questionId],
-      valueTranslation,
-      defaultValues,
+    values[`$${questionId}`] = Number(
+      getArithmeticDependantAnswer(
+        questionId,
+        formData[questionId],
+        valueTranslation,
+        defaultValues,
+      ),
     ); // scope variables need $ prefix to match the variables in expressions
   });
 
   // Evaluate the expression
   expressionParser.setAll(values);
+
   const result = !isNaN(expressionParser.evaluate(formula))
     ? Math.round(expressionParser.evaluate(formula) * 1000) / 1000 // Round to 3 decimal places
     : 0;
@@ -189,14 +192,14 @@ const updateDependentQuestions = (
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
-      if (result) {
+      if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
       }
     }
     if (hasArithmeticConfig(question)) {
       const { config, questionId } = question;
       const result = getArithmeticResult(expressionParser, formDataCopy, config.arithmetic);
-      if (result) {
+      if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
       }
     }
