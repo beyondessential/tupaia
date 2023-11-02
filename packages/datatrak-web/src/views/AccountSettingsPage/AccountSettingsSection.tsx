@@ -11,10 +11,15 @@ import { Button } from '../../components';
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
 })`
-  padding: 2.5rem;
+  padding: 0.8rem;
   margin-top: 1.5rem;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2.5rem;
+  }
 `;
 
 const Title = styled(Typography).attrs({
@@ -26,14 +31,33 @@ const Title = styled(Typography).attrs({
 `;
 
 const Column = styled.div`
-  width: 30%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+  &:not(:last-child) {
+    padding-right: 2rem;
+  }
   &:first-child {
-    width: 30%;
+    margin-bottom: 1.9rem;
   }
   &:last-child {
-    justify-content: flex-end;
+    margin-bottom: 0;
+  }
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    width: 28.5%;
+    margin-bottom: 0;
+    &:first-child {
+      width: 43%;
+      margin-bottom: 0;
+      p {
+        max-width: 22rem;
+      }
+    }
+    &:last-child {
+      justify-content: flex-end;
+    }
   }
 `;
 

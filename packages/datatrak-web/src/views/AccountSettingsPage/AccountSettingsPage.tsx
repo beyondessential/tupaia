@@ -13,17 +13,26 @@ import { RequestCountryAccessSection } from './RequestCountryAccessSection';
 import { DeleteAccountSection } from './DeleteAccountSection';
 
 const Wrapper = styled.div`
-  padding: 1.2rem 2.8rem 2.3rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 89rem;
+  margin: 0 auto;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    padding: 1.2rem 2.8rem 2.3rem;
+  }
 `;
 
 const PageTitle = styled(Typography).attrs({
   variant: 'h1',
 })`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
   .MuiSvgIcon-root {
     margin-right: 0.5rem;
+  }
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    font-sizeL 1.5rem;
   }
 `;
 

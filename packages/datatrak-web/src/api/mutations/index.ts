@@ -12,3 +12,4 @@ export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurvey } from './useSubmitSurvey';
 export { useRequestResetPassword } from './useRequestResetPassword';
 export { useResetPassword } from './useResetPassword';
+export { useRequestDeleteAccount } from './useRequestDeleteAccount';
