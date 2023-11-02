@@ -34,7 +34,7 @@ describe('SurveyResponsesDataTableService', () => {
       },
       {
         config: { type: 'organisationUnitCodes', innerType: { type: 'string' } },
-        name: 'entities',
+        name: 'entityCodes',
       },
       {
         config: { type: 'date' },
