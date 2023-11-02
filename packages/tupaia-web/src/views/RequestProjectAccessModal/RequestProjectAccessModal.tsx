@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen } from '../../components';
-import { useCountryAccessList, useProject, useUser } from '../../api/queries';
+import { useCountryAccessList, useLandingPage, useProject, useUser } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
@@ -28,6 +28,8 @@ export const RequestProjectAccessModal = () => {
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const landingPageUrlSegment = location.pathname.split('/')[1];
+  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
   const { isLoggedIn, isLoading: isLoadingUser, isFetching } = useUser();
 
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
@@ -84,7 +86,7 @@ export const RequestProjectAccessModal = () => {
   return (
     <ModalBody>
       <LoadingScreen isLoading={isLoading} />
-      <ModalHeader />
+      <ModalHeader isLandingPage={isLandingPage} />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
       {showRequestedCountries && (
@@ -92,10 +94,15 @@ export const RequestProjectAccessModal = () => {
           requestedCountries={requestedCountries}
           hasAdditionalCountries={availableCountries.length > 0}
           onShowForm={() => setRequestAdditionalCountries(true)}
+          isLandingPage={isLandingPage}
         />
       )}
       {showForm && (
-        <ProjectAccessForm availableCountries={availableCountries} projectName={project?.name} />
+        <ProjectAccessForm
+          availableCountries={availableCountries}
+          projectName={project?.name}
+          isLandingPage={isLandingPage}
+        />
       )}
     </ModalBody>
   );

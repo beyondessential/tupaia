@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useLocation } from 'react-router';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Alert } from '@tupaia/ui-components';
@@ -18,6 +19,7 @@ import {
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
+import { useLandingPage } from '../../api/queries';
 
 const Note = styled.p`
   text-align: left;
@@ -46,9 +48,14 @@ const AlertText = styled(Typography)`
 interface ProjectCountryFormProps {
   availableCountries: CountryAccessListItem[];
   projectName?: SingleProject['name'];
+  isLandingPage?: boolean;
 }
 
-export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCountryFormProps) => {
+export const ProjectAccessForm = ({
+  availableCountries,
+  projectName,
+  isLandingPage,
+}: ProjectCountryFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
   });
@@ -76,13 +83,15 @@ export const ProjectAccessForm = ({ availableCountries, projectName }: ProjectCo
           Note: This can take some time to process, as requests require formal permission to be
           granted.
         </Note>
-        <AuthModalButton
-          component={RouterButton}
-          modal={MODAL_ROUTES.PROJECTS}
-          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-        >
-          Back to Projects
-        </AuthModalButton>
+        {!isLandingPage && (
+          <AuthModalButton
+            component={RouterButton}
+            modal={MODAL_ROUTES.PROJECTS}
+            searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+          >
+            Back to Projects
+          </AuthModalButton>
+        )}
       </div>
     );
 
