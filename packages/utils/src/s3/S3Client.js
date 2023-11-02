@@ -4,19 +4,25 @@
  */
 
 import { Upload } from '@aws-sdk/lib-storage';
-import { GetObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { getS3UploadFilePath, getS3ImageFilePath, S3_BUCKET_NAME } from './constants';
 import { getUniqueFileName } from './getUniqueFileName';
-import { S3 } from './S3';
 
 export class S3Client {
-  private readonly s3: S3;
-
-  public constructor(s3Instance: S3) {
+  constructor(s3Instance) {
+    /**
+     * AWS aggregated s3 client
+     * @type {import('./S3.js').S3}
+     * @private
+     */
     this.s3 = s3Instance;
   }
 
-  private async checkIfFileExists(fileName: string) {
+  /**
+   * @private
+   * @param {string} fileName
+   * @returns {Promise<boolean>} whether file exists
+   */
+  async checkIfFileExists(fileName) {
     return this.s3
       .headObject({
         Bucket: S3_BUCKET_NAME,
@@ -26,37 +32,40 @@ export class S3Client {
       .catch(() => false);
   }
 
-  private async upload(fileName: string, config?: Partial<PutObjectCommandInput>) {
+  /**
+   * @private
+   */
+  async upload(config) {
     const uploader = new Upload({
       client: this.s3,
       params: {
-        ...config,
         Bucket: S3_BUCKET_NAME,
-        Key: fileName,
+        ...config,
       },
     });
 
     const result = await uploader.done();
-
-    if ('Location' in result) {
-      return result.Location;
-    }
-
-    throw new Error(`S3 upload failed`);
+    return result.Location;
   }
 
-  private async download(filePath: string, config?: Partial<GetObjectCommandInput>) {
+  /**
+   * @private
+   */
+  async download(config) {
     const response = await this.s3.getObject({
-      ...config,
       Bucket: S3_BUCKET_NAME,
-      Key: filePath,
+      ...config,
     });
 
     return response.Body;
   }
 
-  private async uploadPublicImage(fileName: string, buffer: Buffer, fileType: string) {
-    return this.upload(fileName, {
+  /**
+   * @private
+   */
+  async uploadPublicImage(fileName, buffer, fileType) {
+    return this.upload({
+      Key: fileName,
       Body: buffer,
       ACL: 'public-read',
       ContentType: `image/${fileType}`,
@@ -64,14 +73,24 @@ export class S3Client {
     });
   }
 
-  private async uploadPrivateFile(fileName: string, readable: Buffer | string) {
-    return this.upload(fileName, {
+  /**
+   * @private
+   */
+  async uploadPrivateFile(fileName, readable) {
+    return this.upload({
+      Key: fileName,
       Body: readable,
       ACL: 'bucket-owner-full-control',
     });
   }
 
-  public async uploadFile(fileName: string, readable: Buffer | string) {
+  /**
+   * @public
+   * @param {string} fileName
+   * @param {Readable} readable
+   * @returns
+   */
+  async uploadFile(fileName, readable) {
     const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
 
     const alreadyExists = await this.checkIfFileExists(s3FilePath);
@@ -82,7 +101,7 @@ export class S3Client {
     return this.uploadPrivateFile(s3FilePath, readable);
   }
 
-  public async deleteFile(filePath: string) {
+  async deleteFile(filePath) {
     const fileName = filePath.split(getS3ImageFilePath())[1];
     if (!(await this.checkIfFileExists(fileName))) return null;
     return this.s3.deleteObject({
@@ -91,7 +110,13 @@ export class S3Client {
     });
   }
 
-  public async uploadImage(base64EncodedImage = '', fileId: string, allowOverwrite = false) {
+  /**
+   * @public
+   * @param {*} base64EncodedImage
+   * @param {*} [fileId]
+   * @param {*} [allowOverwrite]
+   */
+  async uploadImage(base64EncodedImage = '', fileId, allowOverwrite = false) {
     const imageTypes = ['png', 'jpeg', 'jpg', 'gif', 'svg+xml'];
     const encodedImageString = base64EncodedImage.replace(
       new RegExp('(data:image)(.*)(;base64,)'),
@@ -123,8 +148,12 @@ export class S3Client {
     return this.uploadPublicImage(fileName, buffer, fileType);
   }
 
-  public async downloadFile(fileName: string) {
+  /**
+   * @public
+   * @param {string} [fileName]
+   */
+  async downloadFile(fileName) {
     const s3FilePath = `${getS3UploadFilePath()}${fileName}`;
-    return this.download(s3FilePath);
+    return this.download({ Key: s3FilePath });
   }
 }

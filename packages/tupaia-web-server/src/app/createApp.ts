@@ -48,10 +48,6 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboards/:projectCode/:entityCode',
       handleWith(routes.DashboardsRoute),
     )
-    .post<routes.ExportDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/export',
-      handleWith(routes.ExportDashboardRoute),
-    )
     .get<routes.CountryAccessListRequest>(
       'countryAccessList',
       handleWith(routes.CountryAccessListRoute),

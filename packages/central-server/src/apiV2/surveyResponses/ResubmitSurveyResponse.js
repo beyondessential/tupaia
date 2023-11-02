@@ -4,7 +4,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { S3, S3Client } from '@tupaia/server-utils';
+import { S3, S3Client } from '@tupaia/utils';
 import { AnalyticsRefresher } from '@tupaia/database';
 import fs from 'fs';
 import { EditHandler } from '../EditHandler';

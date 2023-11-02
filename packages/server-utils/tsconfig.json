@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig-ts.json",
-
-  "compilerOptions": {
-    "noEmit": true
-  },
-
-  "include": ["src/**/*", "jest.config.ts"]
-}

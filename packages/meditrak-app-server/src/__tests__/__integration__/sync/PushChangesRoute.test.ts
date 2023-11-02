@@ -75,8 +75,8 @@ const S3ClientMock = {
   },
 };
 
-jest.mock('@tupaia/server-utils', () => {
-  const original = jest.requireActual('@tupaia/server-utils');
+jest.mock('@tupaia/utils', () => {
+  const original = jest.requireActual('@tupaia/utils');
   return {
     ...original,
     S3Client: jest.fn().mockImplementation(() => {

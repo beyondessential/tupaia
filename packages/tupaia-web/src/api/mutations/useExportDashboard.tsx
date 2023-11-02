@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useMutation } from 'react-query';
+import { stringifyQuery } from '@tupaia/utils';
 import { API_URL, post } from '../api';
 import { DashboardItem, DashboardName, EntityCode, ProjectCode } from '../../types';
 
@@ -17,17 +18,18 @@ type ExportDashboardBody = {
 export const useExportDashboard = ({ onSuccess }: { onSuccess?: (data: Blob) => void }) => {
   return useMutation<any, Error, ExportDashboardBody, unknown>(
     ({ projectCode, entityCode, dashboardName, selectedDashboardItems }: ExportDashboardBody) => {
-      const baseUrl = `${window.location.protocol}/${window.location.host}`;
-
+      const hostname = `${window.location.protocol}/${window.location.host}`;
+      const endpoint = `${projectCode}/${entityCode}/${dashboardName}/pdf-export`;
+      const pdfPageUrl = stringifyQuery(hostname, endpoint, {
+        selectedDashboardItems: selectedDashboardItems?.join(','),
+      });
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
       const cookieDomain = new URL(API_URL).hostname;
-
-      return post(`dashboards/${projectCode}/${entityCode}/${dashboardName}/export`, {
+      return post('pdf', {
         responseType: 'blob',
         data: {
           cookieDomain,
-          baseUrl,
-          selectedDashboardItems,
+          pdfPageUrl,
         },
       });
     },

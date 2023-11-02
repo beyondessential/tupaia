@@ -1,4 +1,5 @@
 export * from './datetime';
+export * from './downloadPageAsPDF';
 export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';
 export * from './period';

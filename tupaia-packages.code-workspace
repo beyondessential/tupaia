@@ -121,28 +121,12 @@
       "path": "packages/server-boilerplate"
     },
     {
-      "name": "server-utils",
-      "path": "packages/server-utils"
-    },
-    {
       "name": "superset-api",
       "path": "packages/superset-api"
     },
     {
-      "name": "tupaia-web",
-      "path": "packages/tupaia-web"
-    },
-    {
       "name": "tupaia-web-server",
       "path": "packages/tupaia-web-server"
-    },
-    {
-      "name": "tsutils",
-      "path": "packages/tsutils"
-    },
-    {
-      "name": "types",
-      "path": "packages/types"
     },
     {
       "name": "ui-chart-components",
@@ -159,6 +143,18 @@
     {
       "name": "utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "tupaia-web",
+      "path": "packages/tupaia-web"
+    },
+    {
+      "name": "tsutils",
+      "path": "packages/tsutils"
+    },
+    {
+      "name": "types",
+      "path": "packages/types"
     },
     {
       "name": "weather-api",

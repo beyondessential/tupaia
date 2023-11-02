@@ -4,7 +4,7 @@
  */
 
 import winston from 'winston';
-import { S3Client, S3 } from '@tupaia/server-utils';
+import { S3Client, S3 } from '@tupaia/utils';
 
 /**
  *  action object e.g.

@@ -4,7 +4,7 @@
  */
 
 import winston from 'winston';
-import { S3Client, S3 } from '@tupaia/server-utils';
+import { S3Client, S3 } from '@tupaia/utils';
 import { MeditrakAppServerModelRegistry } from '../../../types';
 
 /**
@@ -29,6 +29,6 @@ export const addSurveyFile = async (
     const s3Client = new S3Client(new S3());
     await s3Client.uploadFile(uniqueFileName, decodedFileBuffer);
   } catch (error) {
-    winston.error((error as Error).message);
+    winston.error(error.message);
   }
 };

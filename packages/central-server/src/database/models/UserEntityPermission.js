@@ -4,7 +4,8 @@
  */
 
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
-import { sendEmail } from '@tupaia/server-utils';
+
+import { sendEmail } from '../../utilities';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   notifiers = [onUpsertSendPermissionGrantEmail, expireAccess];
@@ -53,11 +54,13 @@ async function onUpsertSendPermissionGrantEmail(
 
   const { subject, body, signOff } = EMAILS[platform];
 
-  sendEmail(user.email, {
+  sendEmail(
+    user.email,
     subject,
-    text: body(user.first_name, permissionGroup.name, entity.name),
+    body(user.first_name, permissionGroup.name, entity.name),
+    null,
     signOff,
-  });
+  );
 }
 
 /**

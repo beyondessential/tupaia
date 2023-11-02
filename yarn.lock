@@ -9813,7 +9813,6 @@ __metadata:
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -9847,6 +9846,7 @@ __metadata:
     moment-timezone: ^0.5.28
     morgan: ^1.9.0
     multer: ^1.4.3
+    nodemailer: ^4.7.0
     npm-run-all: ^4.1.5
     nyc: ^15.1.0
     public-ip: ^2.5.0
@@ -10156,7 +10156,6 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     camelcase-keys: ^6.2.2
@@ -10214,7 +10213,6 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10437,21 +10435,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/server-utils@1.0.0, @tupaia/server-utils@workspace:packages/server-utils":
-  version: 0.0.0-use.local
-  resolution: "@tupaia/server-utils@workspace:packages/server-utils"
-  dependencies:
-    "@aws-sdk/client-s3": ^3.341.0
-    "@aws-sdk/credential-providers": ^3.341.0
-    "@aws-sdk/lib-storage": ^3.348.0
-    "@tupaia/utils": 1.0.0
-    "@types/nodemailer": ^6.4.13
-    cookie: ^0.5.0
-    nodemailer: ^6.9.7
-    puppeteer: ^15.4.0
-  languageName: unknown
-  linkType: soft
-
 "@tupaia/superset-api@1.0.0, @tupaia/superset-api@workspace:packages/superset-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
@@ -10476,9 +10459,11 @@ __metadata:
     ajv-formats: v3.0.0-rc.0
     better-ajv-errors: ^1.2.0
     camelcase-keys: ^6.2.2
+    cookie: ^0.5.0
     lodash.get: ^4.4.2
     moment: ^2.24.0
     moment-timezone: ^0.5.25
+    puppeteer: ^15.4.0
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -10492,7 +10477,6 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10670,6 +10654,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
+    "@aws-sdk/client-s3": ^3.341.0
+    "@aws-sdk/credential-providers": ^3.341.0
+    "@aws-sdk/lib-storage": ^3.348.0
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2
@@ -10708,7 +10695,6 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
-    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     async: ^2.6.0
@@ -11757,15 +11743,6 @@ __metadata:
   version: 16.18.11
   resolution: "@types/node@npm:16.18.11"
   checksum: 2a3b1da13063debe6e26f732defb5f03ef4ef732c3e08daba838d8850433bd00e537ce1a97ce9bcfc4b15db5218d701d1265fae94e0d6926906bec157e6b46e0
-  languageName: node
-  linkType: hard
-
-"@types/nodemailer@npm:^6.4.13":
-  version: 6.4.13
-  resolution: "@types/nodemailer@npm:6.4.13"
-  dependencies:
-    "@types/node": "*"
-  checksum: fd27d57d5801aaa7594d3bab748aedb1addc0c3a8ff9a21ea7675eec0e7e99cc477d05264b757b97691612fcfab37e52ded6c0725a700a90ad24fc7829dcc641
   languageName: node
   linkType: hard
 
@@ -32786,17 +32763,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^4.6.7":
+"nodemailer@npm:^4.6.7, nodemailer@npm:^4.7.0":
   version: 4.7.0
   resolution: "nodemailer@npm:4.7.0"
   checksum: 33f8774cd1883c693b4cafe66eb599e2351c3e0dfa29f4d37dcfcc26ad789490e9cede64784f4cd79db8ee7675381aafb9e52243859977a5c1ecd2fff6607d97
-  languageName: node
-  linkType: hard
-
-"nodemailer@npm:^6.9.7":
-  version: 6.9.7
-  resolution: "nodemailer@npm:6.9.7"
-  checksum: 0cf66d27aed3bd2cbdff9939402cec3d2119c31b2b9ff4af3bcd59f48287ea75b90c0ce2cd9eb0df838164972cd25581b4b723c91fd673e2608bcb28445ccb1b
   languageName: node
   linkType: hard
 

@@ -4,13 +4,14 @@
  */
 
 import {
+  S3,
+  S3Client,
   ValidationError,
   respondWithDownload,
   writeStreamToFile,
   getUniqueFileNameParts,
   getDeDuplicatedFileName,
 } from '@tupaia/utils';
-import { S3, S3Client } from '@tupaia/server-utils';
 import { RouteHandler } from './RouteHandler';
 import { getTempDirectory } from '../utilities';
 import { zipMultipleFiles } from './utilities';

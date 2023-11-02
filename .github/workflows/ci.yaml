@@ -139,7 +139,6 @@ jobs:
           - psss-server
           - report-server
           - server-boilerplate
-          - server-utils
           - superset-api
           - tsutils
           - tupaia-web

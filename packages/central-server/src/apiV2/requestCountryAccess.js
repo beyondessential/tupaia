@@ -3,8 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
-import { sendEmail } from '@tupaia/server-utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
+import { sendEmail } from '../utilities';
 import { getUserInfoInString } from './utilities';
 
 const checkUserPermission = (req, userId) => {
@@ -33,10 +33,7 @@ For the project ${project.code} (linked to permission groups: ${project.permissi
 }
 With the message: '${message}'
 `;
-  return sendEmail(TUPAIA_ADMIN_EMAIL_ADDRESS, {
-    subject: 'Tupaia Country Access Request',
-    text: emailText,
-  });
+  return sendEmail(TUPAIA_ADMIN_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };
 
 const createAccessRequests = async (models, userId, entities, message, project) => {
