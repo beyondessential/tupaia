@@ -20,7 +20,7 @@ const RequestPendingText = styled(Typography)`
 
 export const DeleteAccountSection = () => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const { deleteAccountRequested } = user;
   const toggleConfirmationDialog = () => {
     setConfirmationDialogOpen(!confirmationDialogOpen);

@@ -59,8 +59,8 @@ const UserRewardsItem = styled(Typography)`
   }
 `;
 
-export const UserDetails = ({ user = {} }: { user?: DatatrakWebUserRequest.ResBody }) => {
-  const { deleteAccountRequested } = user;
+export const UserDetails = ({ user }: { user?: DatatrakWebUserRequest.ResBody }) => {
+  const { deleteAccountRequested } = user || ({} as DatatrakWebUserRequest.ResBody);
   const { data: userRewards } = useUserRewards();
   return (
     <UserContent $appearsDisabled={deleteAccountRequested}>
