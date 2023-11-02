@@ -28,7 +28,7 @@ export const DeleteAccountSection = () => {
 
   return (
     <>
-      <ConfirmDeleteModal open={confirmationDialogOpen} onClose={toggleConfirmationDialog} />
+      <ConfirmDeleteModal open={true} onClose={toggleConfirmationDialog} />
       <AccountSettingsSection
         title="Delete account"
         description="By requesting your account to be deleted, you will still be able to log in. You will be contacted shortly to confirm your account deletion request"

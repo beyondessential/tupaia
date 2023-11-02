@@ -51,8 +51,8 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
-  primaryButton?: ButtonProps;
-  secondaryButton?: ButtonProps;
+  primaryButton?: ButtonProps | null;
+  secondaryButton?: ButtonProps | null;
   children?: ReactNode;
 }
 
