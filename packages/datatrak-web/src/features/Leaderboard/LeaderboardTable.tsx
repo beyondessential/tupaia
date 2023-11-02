@@ -80,7 +80,7 @@ export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
   if (isLoading) return null;
 
   const userIsInLeaderboard =
-    user && leaderboard?.some(({ user_id: userId }) => userId === user.id);
+    user && leaderboard?.some(({ userId }) => userId === user.id);
   return (
     <TableContainer>
       <Table>
@@ -93,7 +93,7 @@ export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
         </TableHead>
         <TableBody>
           {leaderboard?.map(
-            ({ user_id: userId, first_name: firstName, last_name: lastName, coconuts }, i) => {
+            ({ userId, firstName, lastName, coconuts }, i) => {
               const isActiveUser = user && user.id === userId;
               return (
                 <TableRow key={userId}>

@@ -35,8 +35,8 @@ export type SocialFeedRequest = Request<
 
 export class SocialFeedRoute extends Route<SocialFeedRequest> {
   private async getLeaderboardFeedItem() {
-    const { ctx } = this.req;
-    const leaderboard = await ctx.services.central.fetchResources('/leaderboard');
+    const { models } = this.req;
+    const leaderboard = await models.surveyResponse.getLeaderboard();
 
     return {
       id: 'leaderboard',

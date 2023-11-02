@@ -9,4 +9,3 @@ export { getSocialFeed } from './getSocialFeed';
 export { getUserRewards } from './getUserRewards';
 export { postChanges } from './postChanges';
 export * from './countChanges';
-export { getLeaderboardList } from './getLeaderboardList';
