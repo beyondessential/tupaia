@@ -5,7 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { LeaderboardItem } from '@tupaia/types';
 import { UserRewards } from '../../types';
 import {
   Table,
