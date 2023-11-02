@@ -154,11 +154,7 @@ const RadioGroupContainer = styled(RadioGroup)`
 /**
  * This is the parent list of all the map overlays available to pick from
  */
-export const MapOverlayList = ({
-  toggleOverlayLibrary,
-}: {
-  toggleOverlayLibrary: null | Function;
-}) => {
+export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
   const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
