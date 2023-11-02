@@ -21,6 +21,11 @@ function validate_name_ending() {
             log_error "❌ Invalid branch name ending: '$suffix'"
             exit 1
         fi
+        # api is one of our suffixes so makes sure [branch]-api doesn't match any other api suffixes
+        if [[ "$suffix" == *-api && $branch_name-api == *$suffix ]]; then
+            log_error "❌ Invalid branch name ending: '$suffix'"
+            exit 1
+        fi
     done
 }
 
