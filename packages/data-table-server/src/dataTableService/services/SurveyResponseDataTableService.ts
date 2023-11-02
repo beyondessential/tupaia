@@ -13,7 +13,7 @@ const requiredParamsSchema = yup.object().shape({
   assessorNames: yup.array().of(yup.string()),
   countryCodes: yup.array().of(yup.string()),
   surveyCodes: yup.array().of(yup.string()),
-  entityCodes: yup.array().of(yup.string()),
+  entities: yup.array().of(yup.string()),
   startDate: yup.date(),
   endDate: yup.date(),
   outdated: yup.boolean().default(false),
@@ -28,7 +28,7 @@ type SurveyResponseDataTableServiceContext = {
 enum BaseFilters {
   countryCodes = 'country.code',
   surveyCodes = 'survey.code',
-  entityCodes = 'entity.code',
+  entities = 'entity.code',
   assessorNames = 'survey_response.assessor_name',
   ids = 'survey_response.id',
   outdated = 'survey_response.outdated',
@@ -42,7 +42,7 @@ type Params = {
   endDate?: Date;
   countryCodes?: StringParam[];
   surveyCodes?: StringParam[];
-  entityCodes?: StringParam[];
+  entities?: StringParam[];
   assessorNames?: StringParam[];
   outdated?: boolean;
 };
