@@ -30,11 +30,13 @@ interface RequestedCountriesProps {
   requestedCountries: CountryAccessListItem[];
   onShowForm: () => void;
   hasAdditionalCountries: boolean;
+  isLandingPage?: boolean;
 }
 export const RequestedCountries = ({
   requestedCountries,
   onShowForm,
   hasAdditionalCountries,
+  isLandingPage,
 }: RequestedCountriesProps) => {
   return (
     <div>
@@ -59,13 +61,15 @@ export const RequestedCountries = ({
           Request additional countries
         </AuthModalButton>
       )}
-      <AuthModalButton
-        component={RouterButton}
-        modal={MODAL_ROUTES.PROJECTS}
-        searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-      >
-        Back to projects
-      </AuthModalButton>
+      {!isLandingPage && (
+        <AuthModalButton
+          component={RouterButton}
+          modal={MODAL_ROUTES.PROJECTS}
+          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+        >
+          Back to projects
+        </AuthModalButton>
+      )}
     </div>
   );
 };
