@@ -10,6 +10,7 @@ import { Button } from '../../components';
 
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
+  component: 'section',
 })`
   padding: 0.8rem;
   margin-top: 1.5rem;
