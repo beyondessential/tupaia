@@ -16,7 +16,7 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  max-height: 75%;
+  max-height: 3rem;
   width: auto;
   max-width: 70px;
   @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
@@ -26,7 +26,7 @@ const LogoImage = styled.img`
 
 const LogoLink = styled(Link)`
   cursor: pointer;
-  padding: 0.5em;
+  padding: 0.5em 0.5em 0.5em 0;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -46,7 +46,7 @@ const Name = styled(Typography)`
     font-size: 1.2rem;
   }
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 `;
 
