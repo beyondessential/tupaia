@@ -28,8 +28,7 @@ export const RequestProjectAccessModal = () => {
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const landingPageUrlSegment = location.pathname.split('/')[1];
-  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
+  const { isLandingPage } = useLandingPage();
   const { isLoggedIn, isLoading: isLoadingUser, isFetching } = useUser();
 
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);

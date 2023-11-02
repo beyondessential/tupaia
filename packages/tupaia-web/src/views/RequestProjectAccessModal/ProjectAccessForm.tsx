@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useLocation } from 'react-router';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Alert } from '@tupaia/ui-components';
@@ -19,7 +18,6 @@ import {
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
-import { useLandingPage } from '../../api/queries';
 
 const Note = styled.p`
   text-align: left;
