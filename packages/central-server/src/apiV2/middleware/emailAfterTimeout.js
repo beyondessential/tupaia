@@ -3,15 +3,15 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { sendEmail } from '@tupaia/server-utils';
 import { respond } from '@tupaia/utils';
-import { sendEmail } from '../../utilities';
 
 const sendResponseAsEmail = (user, subject, message, attachments) => {
   const text = `Hi ${user.first_name},
 
 ${message}
   `;
-  sendEmail(user.email, subject, text, attachments);
+  sendEmail(user.email, { subject, text, attachments });
 };
 
 const setupEmailResponse = async (req, res, constructEmailFromResponse) => {

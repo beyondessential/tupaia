@@ -5,7 +5,7 @@
 
 import generate from 'nanoid/non-secure/generate';
 import generateUUID from 'bson-objectid';
-import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { CodeGeneratorQuestionConfig } from '@tupaia/types';
 
 // With this config, in order to reach a 1% probability of at least one collision:
 // You would need: 1000 IDs generated per hour for ~211 years.
@@ -22,9 +22,7 @@ export const SHORT_ID = 'shortid';
 export const MONGO_ID = 'mongoid';
 
 // e.g. '632-NFO-LEU-I1QI'
-export const generateShortId = (
-  codeGeneratorConfig?: DatatrakWebSurveyRequest.CodeGeneratorConfig,
-) => {
+export const generateShortId = (codeGeneratorConfig?: CodeGeneratorQuestionConfig) => {
   // Use defaults for any missing config params, allowing users to specify some or all custom configurations
   const { alphabet, length, chunkLength, prefix } = {
     ...DEFAULT_SHORT_ID_CONFIG,

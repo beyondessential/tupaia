@@ -4,13 +4,15 @@
  */
 
 import { BooleanExpressionParser, ExpressionParser } from '@tupaia/expression-parser';
-import { DatatrakWebSurveyRequest, QuestionType } from '@tupaia/types';
+import {
+  ArithmeticQuestionConfig,
+  CodeGeneratorQuestionConfig,
+  ConditionQuestionConfig,
+  QuestionType,
+} from '@tupaia/types';
 import { SurveyScreenComponent } from '../../../types';
 import { formatSurveyScreenQuestions } from '../utils';
 import { generateMongoId, generateShortId } from './generateId';
-
-type ConditionConfig = DatatrakWebSurveyRequest.ConditionConfig;
-type ArithmeticConfig = DatatrakWebSurveyRequest.ArithmeticConfig;
 
 export const getIsQuestionVisible = (
   question: SurveyScreenComponent,
@@ -157,6 +159,21 @@ const resetInvisibleQuestions = (
   return updatedFormData;
 };
 
+const hasConditionConfig = (
+  ssc: SurveyScreenComponent,
+): ssc is SurveyScreenComponent & { config: { condition: ConditionQuestionConfig } } =>
+  ssc.type === QuestionType.Condition && ssc.config?.condition !== undefined;
+
+const hasArithmeticConfig = (
+  ssc: SurveyScreenComponent,
+): ssc is SurveyScreenComponent & { config: { arithmetic: ArithmeticQuestionConfig } } =>
+  ssc.type === QuestionType.Arithmetic && ssc.config?.arithmetic !== undefined;
+
+const hasCodeGeneratorConfig = (
+  ssc: SurveyScreenComponent,
+): ssc is SurveyScreenComponent & { config: { codeGenerator: CodeGeneratorQuestionConfig } } =>
+  ssc.type === QuestionType.CodeGenerator && ssc.config?.codeGenerator !== undefined;
+
 const updateDependentQuestions = (
   formData: Record<string, any>,
   screenComponents?: SurveyScreenComponent[],
@@ -166,9 +183,9 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
-    const { config, type, questionId } = question;
-    if (type === QuestionType.Condition) {
-      const { conditions } = config?.condition as ConditionConfig;
+    if (hasConditionConfig(question)) {
+      const { config, questionId } = question;
+      const { conditions } = config.condition;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
@@ -176,22 +193,19 @@ const updateDependentQuestions = (
         formDataCopy[questionId] = result;
       }
     }
-    if (type === QuestionType.Arithmetic) {
-      const result = getArithmeticResult(
-        expressionParser,
-        formDataCopy,
-        config?.arithmetic as ArithmeticConfig,
-      );
+    if (hasArithmeticConfig(question)) {
+      const { config, questionId } = question;
+      const result = getArithmeticResult(expressionParser, formDataCopy, config.arithmetic);
       if (result) {
         formDataCopy[questionId] = result;
       }
     }
-    if (type === QuestionType.CodeGenerator) {
-      const {
-        type: codeType,
-      } = config?.codeGenerator as DatatrakWebSurveyRequest.CodeGeneratorConfig;
+    if (hasCodeGeneratorConfig(question)) {
+      const { config, questionId } = question;
       const code =
-        codeType === 'shortid' ? generateShortId(config?.codeGenerator) : generateMongoId();
+        config.codeGenerator.type === 'shortid'
+          ? generateShortId(config.codeGenerator)
+          : generateMongoId();
       formDataCopy[questionId] = code;
     }
   });
@@ -216,7 +230,7 @@ export const getArithmeticDisplayAnswer = (config, answer, formData) => {
     valueTranslation = {},
     defaultValues = {},
     answerDisplayText = '',
-  } = config?.arithmetic as ArithmeticConfig;
+  } = config?.arithmetic as ArithmeticQuestionConfig;
   if (!answerDisplayText) return answer;
   const variables = expressionParser.getVariables(formula);
 
