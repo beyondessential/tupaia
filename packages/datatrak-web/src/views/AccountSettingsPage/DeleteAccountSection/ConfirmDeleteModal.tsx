@@ -11,8 +11,8 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { successToast } from '../../../utils';
 
 interface ConfirmDeleteModalProps {
-  open: boolean;
   onClose: () => void;
+  open: boolean;
 }
 
 const SuccessModal = ({ onClose }: { onClose: ConfirmDeleteModalProps['onClose'] }) => {
@@ -22,7 +22,7 @@ const SuccessModal = ({ onClose }: { onClose: ConfirmDeleteModalProps['onClose']
   };
   return (
     <SmallModal
-      open={open}
+      open
       onClose={onClose}
       title="Your request has been sent"
       secondaryButton={{
@@ -46,7 +46,7 @@ export const ConfirmDeleteModal = ({ open, onClose }: ConfirmDeleteModalProps) =
 
   return (
     <SmallModal
-      open={open}
+      open
       onClose={onClose}
       title="Are you sure you want to request the deletion of your account?"
       primaryButton={
