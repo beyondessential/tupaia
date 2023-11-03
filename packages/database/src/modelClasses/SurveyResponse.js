@@ -7,7 +7,7 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-const EXCLUDED_USERS = [
+const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
   "'kahlinda.mahoney@gmail.com'", // Kahlinda
   "'lparish1980@gmail.com'", // Lewis
