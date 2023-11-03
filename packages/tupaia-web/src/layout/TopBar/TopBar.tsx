@@ -21,7 +21,8 @@ const Header = styled.header<{
   $primaryColor?: string | null;
   $secondaryColor?: string | null;
 }>`
-  background-color: ${({ theme }) => theme.palette.background.default};
+  background-color: ${({ theme, $primaryColor }) =>
+    $primaryColor || theme.palette.background.default};
   height: ${TOP_BAR_HEIGHT_MOBILE};
   min-height: ${TOP_BAR_HEIGHT_MOBILE};
   display: flex;
@@ -34,7 +35,8 @@ const Header = styled.header<{
   border-bottom: 1px solid ${({ theme }) => theme.palette.background.paper};
 
   > * {
-    background-color: ${({ theme }) => theme.palette.background.default};
+    background-color: ${({ theme, $primaryColor }) =>
+      $primaryColor || theme.palette.background.default};
   }
   button,
   a,
