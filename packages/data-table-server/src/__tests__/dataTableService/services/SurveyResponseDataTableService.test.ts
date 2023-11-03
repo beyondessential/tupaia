@@ -45,7 +45,7 @@ describe('SurveyResponsesDataTableService', () => {
         name: 'endDate',
       },
       {
-        config: { defaultValue: false, type: 'boolean' },
+        config: { type: 'boolean' },
         name: 'outdated',
       },
     ]);
