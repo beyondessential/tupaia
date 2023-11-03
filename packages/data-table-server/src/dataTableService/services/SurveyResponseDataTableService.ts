@@ -16,7 +16,7 @@ const requiredParamsSchema = yup.object().shape({
   entityCodes: yup.array().of(yup.string()),
   startDate: yup.date(),
   endDate: yup.date(),
-  outdated: yup.boolean().default(false),
+  outdated: yup.boolean(),
 });
 
 const configSchema = yup.object();
