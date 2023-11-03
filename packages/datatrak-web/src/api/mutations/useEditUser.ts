@@ -37,7 +37,7 @@ export const useEditUser = (onSuccess?: () => void) => {
         updates.country_id = countryId;
       }
 
-      if (deleteAccountRequested) {
+      if (deleteAccountRequested !== undefined) {
         updates.delete_account_requested = deleteAccountRequested;
       }
       await put('me', {
