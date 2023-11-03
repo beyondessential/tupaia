@@ -1,8 +1,0 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
- */
-
-export const DELETE_ACCOUNT_REQUEST = 'DELETE_ACCOUNT_REQUEST';
-export const DELETE_ACCOUNT_REQUEST_FAILURE = 'DELETE_ACCOUNT_REQUEST_FAILURE';
-export const DELETE_ACCOUNT_REQUEST_SUCCESS = 'DELETE_ACCOUNT_REQUEST_SUCCESS';

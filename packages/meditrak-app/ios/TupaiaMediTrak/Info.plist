@@ -6,6 +6,8 @@
 	<string>9ebc1299709c07292206e24435e70ac7</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Tupaia MediTrak</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,17 +19,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.13.128</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>127</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -38,33 +38,33 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Take photos identifying facilities</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Take photos identifying facilities or assets</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
 	<string>Surveys are geo-tagged so your answers can be presented as a map overlay</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Surveys are geo-tagged so your answers can be presented as a map overlay</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Surveys are geo-tagged so your answers can be presented as a map overlay</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Select photos identifying facilities</string>
+	<string>Select photos identifying facilities or assets</string>
 	<key>UIAppFonts</key>
-	<array>
-		<string>Entypo.ttf</string>
-		<string>EvilIcons.ttf</string>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>Ionicons.ttf</string>
-		<string>MaterialCommunityIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-		<string>Octicons.ttf</string>
-		<string>SimpleLineIcons.ttf</string>
-		<string>Zocial.ttf</string>
-		<string>Feather.ttf</string>
-		<string>AntDesign.ttf</string>
-		<string>FontAwesome5_Brands.ttf</string>
-		<string>FontAwesome5_Regular.ttf</string>
-		<string>FontAwesome5_Solid.ttf</string>
-	</array>
+    <array>
+        <string>Entypo.ttf</string>
+        <string>EvilIcons.ttf</string>
+        <string>FontAwesome.ttf</string>
+        <string>Foundation.ttf</string>
+        <string>Ionicons.ttf</string>
+        <string>MaterialCommunityIcons.ttf</string>
+        <string>MaterialIcons.ttf</string>
+        <string>Octicons.ttf</string>
+        <string>SimpleLineIcons.ttf</string>
+        <string>Zocial.ttf</string>
+        <string>Feather.ttf</string>
+        <string>AntDesign.ttf</string>
+        <string>FontAwesome5_Brands.ttf</string>
+        <string>FontAwesome5_Regular.ttf</string>
+        <string>FontAwesome5_Solid.ttf</string>
+    </array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
