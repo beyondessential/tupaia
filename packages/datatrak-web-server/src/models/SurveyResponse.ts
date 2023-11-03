@@ -8,23 +8,11 @@ import {
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
-export type SurveyResponseModelFields = Readonly<{
-  id: string;
-  survey_id: string;
-  user_id: string;
-  start_time: string;
-  end_time: string;
-  metadata: Record<string, any>;
-  timezone: string | null;
-  entity_id: string;
-  data_time: string | null;
-  outdated: boolean | null;
-  approval_status: string;
-}>;
+import { SurveyResponse } from '@tupaia/types';
 
 export interface SurveyResponseModelType
-  extends SurveyResponseModelFields,
+  extends SurveyResponse,
     Omit<BaseSurveyResponseType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface SurveyResponseModel
-  extends Model<BaseSurveyResponseModel, SurveyResponseModelFields, SurveyResponseModelType> {}
+  extends Model<BaseSurveyResponseModel, SurveyResponse, SurveyResponseModelType> {}
