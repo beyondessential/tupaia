@@ -19,7 +19,7 @@ export const useEditUser = (onSuccess?: () => void) => {
 
   return useMutation<any, Error, UserPreferences, unknown>(
     async ({ projectId, countryId, deleteAccountRequested }: UserPreferences) => {
-      if (!projectId && !countryId && !deleteAccountRequested) {
+      if (!projectId && !countryId && deleteAccountRequested === undefined) {
         return;
       }
 
