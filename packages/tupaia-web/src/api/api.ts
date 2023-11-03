@@ -46,6 +46,7 @@ const getErrorMessage = (error: any) => {
     message = data.message;
   }
 
+  // remove axios `api error ...:` prefix
   return message?.split(': ')[1];
 };
 
