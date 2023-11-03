@@ -10,6 +10,9 @@ env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Workaround for meditrak-app needing node v16 but the monorepo using v14
+echo "16.20.2" > ../../.nvmrc
 nvm install
 nvm use
 npm install -g yarn
