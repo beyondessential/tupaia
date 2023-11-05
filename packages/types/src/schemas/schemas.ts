@@ -26877,6 +26877,35 @@ export const SurveyScreenComponentConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const LeaderboardItemSchema = {
+	"type": "object",
+	"properties": {
+		"user_id": {
+			"type": "string"
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		},
+		"coconuts": {
+			"type": "number"
+		},
+		"pigs": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"coconuts",
+		"first_name",
+		"last_name",
+		"pigs",
+		"user_id"
+	]
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
