@@ -25,7 +25,7 @@ const LegendFrame = styled.div<{
   margin: 0.6rem auto;
 
   ${p => p.theme.breakpoints.down('sm')} {
-    margin: 0.6rem;
+    margin: 0.6rem 0.6rem 0.6rem 0;
   }
 `;
 
@@ -33,11 +33,7 @@ const LegendName = styled.div`
   margin: auto 0.6rem;
 `;
 
-const coloredMeasureTypes = [
-  MeasureType.COLOR,
-  MeasureType.SPECTRUM,
-  MeasureType.SHADED_SPECTRUM,
-];
+const coloredMeasureTypes = [MeasureType.COLOR, MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM];
 
 // This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
 const checkMeasureType = (item: MeasureTypeLiteral, subset: MeasureTypeLiteral[]) =>
