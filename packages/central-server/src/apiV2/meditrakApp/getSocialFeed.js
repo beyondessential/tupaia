@@ -5,7 +5,6 @@
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
-import { getLeaderboard } from '../../social';
 import { allowNoPermissions } from '../../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
@@ -85,8 +84,9 @@ const intersperseDynamicFeedItems = async (feedItems, countryId, page, models) =
   }
 };
 
-const getLeaderboardFeedItem = async models => {
-  const leaderboard = await getLeaderboard(models);
+const getLeaderboardFeedItem = async () => {
+  const { models } = this.req;
+  const leaderboard = await models.surveyResponse.getLeaderboard();
 
   return {
     id: 'leaderboard',
