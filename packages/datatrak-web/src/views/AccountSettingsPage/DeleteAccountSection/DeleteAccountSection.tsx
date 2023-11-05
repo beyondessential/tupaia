@@ -4,12 +4,14 @@
  */
 
 import React, { useState } from 'react';
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { UserDetails } from './UserDetails';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
 import { useUser } from '../../../api/queries';
-import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
+import { AccountSettingsColumn } from '../AccountSettingsColumn';
+import { Button } from '../../../components';
 
 const RequestPendingText = styled(Typography)`
   flex: 1;
@@ -31,20 +33,29 @@ export const DeleteAccountSection = () => {
       <ConfirmDeleteModal open={confirmationDialogOpen} onClose={toggleConfirmationDialog} />
       <AccountSettingsSection
         title="Delete account"
-        description="By requesting your account to be deleted, you will still be able to log in. You will be contacted shortly to confirm your account deletion request"
-        button={{
-          label: 'Request deletion',
-          onClick: toggleConfirmationDialog,
-          disabled: deleteAccountRequested,
-          tooltip: deleteAccountRequested ? 'Request in progress' : undefined,
-        }}
-        centerColumn={<UserDetails user={user} />}
-        rightColumn={
-          user?.deleteAccountRequested ? (
-            <RequestPendingText>Account deletion request pending</RequestPendingText>
-          ) : null
+        description={
+          <Typography color="textSecondary">
+            By requesting your account to be deleted, you will still be able to log in. You will be
+            contacted shortly to confirm your account deletion request
+          </Typography>
         }
-      />
+      >
+        <AccountSettingsColumn>
+          <UserDetails user={user} />
+        </AccountSettingsColumn>
+        <AccountSettingsColumn>
+          {user?.deleteAccountRequested ? (
+            <RequestPendingText>Account deletion request pending</RequestPendingText>
+          ) : null}
+          <Button
+            tooltip={deleteAccountRequested ? 'Request in progress' : undefined}
+            disabled={deleteAccountRequested}
+            onClick={toggleConfirmationDialog}
+          >
+            Request deletion
+          </Button>
+        </AccountSettingsColumn>
+      </AccountSettingsSection>
     </>
   );
 };
