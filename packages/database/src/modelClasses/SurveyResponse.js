@@ -41,7 +41,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         ) r
         JOIN user_account on user_account.id = r.user_id
         WHERE ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}'`).join(' AND ')}
-        AND email NOT IN (${EXCLUDED_USERS.join(',')})
+        AND email NOT IN (${USERS_EXCLUDED_FROM_LEADER_BOARD.join(',')})
         ORDER BY coconuts DESC
         LIMIT ?;
       `,
