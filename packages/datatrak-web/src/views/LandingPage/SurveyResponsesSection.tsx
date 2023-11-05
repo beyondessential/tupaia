@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { useCurrentUserSurveyResponses } from '../../api/queries';
-import { Tile } from '../../components';
+import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 import styled from 'styled-components';
@@ -51,6 +51,7 @@ export const SurveyResponsesSection = () => {
                   {entityName}
                 </>
               }
+              Icon={SurveyTickIcon}
             >
               {countryName}, {shortDate(dataTime)}
             </Tile>

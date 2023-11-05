@@ -59,6 +59,7 @@ export const useSubmitSurvey = () => {
     {
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
+        queryClient.invalidateQueries('recentSurveys');
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
         resetForm();

@@ -10,7 +10,7 @@ import { Entity } from '../../types';
 
 type UserPreferences = { projectId?: Project['id']; countryId?: Entity['id'] };
 
-export const useEditUser = onSuccess => {
+export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, UserPreferences, unknown>(
@@ -39,7 +39,7 @@ export const useEditUser = onSuccess => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getUser');
-        onSuccess();
+        if (onSuccess) onSuccess();
       },
     },
   );
