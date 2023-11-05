@@ -32,7 +32,7 @@ export class UserRoute extends Route<UserRequest> {
       preferences = {},
     } = await ctx.services.central.getUser();
 
-    const { project_id: projectId, country_id: countryId } = preferences;
+    const { project_id: projectId, country_id: countryId, delete_account_requested } = preferences;
 
     let project = null;
     let country = null;
@@ -54,6 +54,7 @@ export class UserRoute extends Route<UserRequest> {
       projectId,
       project,
       country,
+      deleteAccountRequested: delete_account_requested === true,
     };
   }
 }

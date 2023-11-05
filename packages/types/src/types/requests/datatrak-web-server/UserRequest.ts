@@ -16,6 +16,7 @@ export interface ResBody {
   project?: ProjectResponse | null;
   projectId?: string;
   country?: Country | null;
+  deleteAccountRequested?: boolean;
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;
