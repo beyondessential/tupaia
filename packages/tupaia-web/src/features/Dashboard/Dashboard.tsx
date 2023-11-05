@@ -111,12 +111,6 @@ const DashboardItemsWrapper = styled.div<{
   column-gap: 0.8rem;
 `;
 
-const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -190,13 +184,13 @@ export const Dashboard = () => {
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
           <Breadcrumbs />
-          <DashboardImageContainer>
-            {entity?.photoUrl ? (
-              <Photo title={title} photoUrl={entity?.photoUrl} />
+          <div>
+            {entity?.imageUrl ? (
+              <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
               <StaticMap bounds={bounds} />
             )}
-          </DashboardImageContainer>
+          </div>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>

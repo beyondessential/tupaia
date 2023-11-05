@@ -6,9 +6,15 @@
 import React from 'react';
 import polyline from '@mapbox/polyline';
 import { Position } from 'geojson';
-import { DEFAULT_BOUNDS } from '../../constants';
+import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
 import { Media } from './Media';
+import styled from 'styled-components';
 
+const Wrapper = styled.div`
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
 const areBoundsValid = (b: Position[]) => {
   return Array.isArray(b) && b.length === 2;
 };
@@ -70,5 +76,9 @@ export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
   }
 
   const url = makeStaticMapUrl(bounds);
-  return <Media $backgroundImage={url} />;
+  return (
+    <Wrapper>
+      <Media $backgroundImage={url} />
+    </Wrapper>
+  );
 };
