@@ -6,7 +6,7 @@
 import { Paper, Typography } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Button } from '../../components';
+import { AccountSettingsColumn } from './AccountSettingsColumn';
 
 const Wrapper = styled(Paper).attrs({
   elevation: 0,
@@ -31,80 +31,24 @@ const Title = styled(Typography).attrs({
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 1rem;
-  &:not(:last-child) {
-    padding-right: 2rem;
-  }
-  &:first-child {
-    margin-bottom: 1.9rem;
-  }
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 28.5%;
-    margin-bottom: 0;
-    &:first-child {
-      width: 43%;
-      margin-bottom: 0;
-      p {
-        max-width: 22rem;
-      }
-    }
-    &:last-child {
-      justify-content: flex-end;
-    }
-  }
-`;
-
 interface AccountSettingsSectionProps {
   title?: ReactNode;
-  description?: string;
-  leftColumn?: ReactNode;
-  centerColumn?: ReactNode;
-  rightColumn?: ReactNode;
-  button?: {
-    label: string;
-    onClick: () => void;
-    tooltip?: string;
-    disabled?: boolean;
-  };
+  description?: ReactNode;
+  children?: ReactNode;
 }
 
 export const AccountSettingsSection = ({
   title,
   description,
-  leftColumn,
-  centerColumn,
-  rightColumn,
-  button,
+  children,
 }: AccountSettingsSectionProps) => {
   return (
     <Wrapper>
-      <Column>
+      <AccountSettingsColumn>
         <Title>{title}</Title>
-        <Typography color="textSecondary">{description}</Typography>
-        {leftColumn}
-      </Column>
-      <Column>{centerColumn}</Column>
-      <Column>
-        {rightColumn}
-        {button && (
-          <Button
-            onClick={button.onClick}
-            disabled={button.disabled}
-            tooltip={button.tooltip}
-            fullWidth
-          >
-            {button.label}
-          </Button>
-        )}
-      </Column>
+        {description}
+      </AccountSettingsColumn>
+      {children}
     </Wrapper>
   );
 };

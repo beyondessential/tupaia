@@ -11,8 +11,9 @@ import { PersonalDetailsSection } from './PersonalDetailsSection';
 import { ChangePasswordSection } from './ChangePasswordSection';
 import { RequestCountryAccessSection } from './RequestCountryAccessSection';
 import { DeleteAccountSection } from './DeleteAccountSection';
+import { PageContainer } from '../../components';
 
-const Wrapper = styled.div`
+const Wrapper = styled(PageContainer)`
   padding: 1.5rem;
   width: 100%;
   max-width: 89rem;
