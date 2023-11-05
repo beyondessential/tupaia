@@ -5,7 +5,7 @@
 
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
-import { BaseReport, MatrixReport } from '@tupaia/types';
+import { BaseReport } from '@tupaia/types';
 import { ExpandItemButton } from './ExpandItemButton';
 import {
   View,
@@ -33,9 +33,6 @@ const DisplayComponents = {
 const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
   // If there is no report, if means it is loading or there is an error, which is handled elsewhere
   if (!report) return false;
-  if (type === 'matrix') {
-    return (report as MatrixReport)?.rows?.length === 0;
-  }
   if (type === 'view' || type === 'chart') {
     return (report as BaseReport)?.data?.length === 0;
   }

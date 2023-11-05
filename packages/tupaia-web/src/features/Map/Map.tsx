@@ -43,6 +43,11 @@ const StyledMap = styled(LeafletMap)`
     z-index: 0;
   }
 
+  .leaflet-bottom {
+    // Set the z-index to 1 so it doesn't overlap dashboard controls on mobile
+    z-index: 1;
+  }
+
   // Overwrite default zoom control styles
   .leaflet-control-zoom {
     z-index: 1;

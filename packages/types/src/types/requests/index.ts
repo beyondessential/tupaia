@@ -15,11 +15,13 @@ export {
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
   DatatrakWebRecentSurveysRequest,
+  DatatrakWebLeaderboardRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
   TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
+  TupaiaWebExportDashboardRequest,
   TupaiaWebEntitiesRequest,
   TupaiaWebEntityRequest,
   TupaiaWebEntitySearchRequest,

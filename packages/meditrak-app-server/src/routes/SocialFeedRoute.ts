@@ -4,14 +4,10 @@
  */
 
 import { Request } from 'express';
-
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { NullableKeysToOptional } from '@tupaia/types';
-
-import { getLeaderboard } from './getLeaderboard';
-import { MeditrakAppServerModelRegistry } from '../../types';
-import { FeedItemFields } from '../../models';
+import { FeedItemFields } from '../models';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
@@ -38,8 +34,9 @@ export type SocialFeedRequest = Request<
 >;
 
 export class SocialFeedRoute extends Route<SocialFeedRequest> {
-  private async getLeaderboardFeedItem(models: MeditrakAppServerModelRegistry) {
-    const leaderboard = await getLeaderboard(models);
+  private async getLeaderboardFeedItem() {
+    const { models } = this.req;
+    const leaderboard = await models.surveyResponse.getLeaderboard();
 
     return {
       id: 'leaderboard',
@@ -59,14 +56,10 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
    * feed items. These feed items can be user specific and include profile information
    * where necessary.
    */
-  private async intersperseDynamicFeedItems(
-    feedItems: ResponseFeedItem[],
-    page: number,
-    models: MeditrakAppServerModelRegistry,
-  ) {
+  private async intersperseDynamicFeedItems(feedItems: ResponseFeedItem[], page: number) {
     if (page === 0) {
       // Add leaderboard to third item in feed.
-      const leaderboardItem = await this.getLeaderboardFeedItem(models);
+      const leaderboardItem = await this.getLeaderboardFeedItem();
       feedItems.splice(2, 0, leaderboardItem);
     }
   }
@@ -119,7 +112,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
       await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()))
     ).map(item => ({ ...item, creation_date: new Date(item.creation_date).toJSON() }));
 
-    await this.intersperseDynamicFeedItems(items, pageNumber, models);
+    await this.intersperseDynamicFeedItems(items, pageNumber);
 
     return {
       pageNumber,

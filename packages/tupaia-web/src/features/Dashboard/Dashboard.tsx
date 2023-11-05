@@ -62,7 +62,7 @@ const StickyBar = styled.div<{
 }>`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 
   h3 {
     padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};

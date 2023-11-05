@@ -5,7 +5,6 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import MockDate from 'mockdate';
-
 import { constructAccessToken } from '@tupaia/auth';
 import {
   findOrCreateDummyRecord,
@@ -60,6 +59,7 @@ describe('socialFeed', () => {
     });
 
     const databaseTimezone = await models.database.getTimezone();
+
     const timezoneConvertedFeedItems = FEED_ITEMS.map(feedItem => ({
       ...feedItem,
       creation_date: new Date(feedItem.creation_date).toLocaleString(databaseTimezone), // Adjust for timezone so tests work regardless of db timezone
@@ -69,6 +69,7 @@ describe('socialFeed', () => {
       timezoneConvertedFeedItems,
       countryCodeToId,
     );
+
     await Promise.all(
       feedItemsToInsert.map(async feedItem => {
         await findOrCreateDummyRecord(models.feedItem, feedItem, {});
@@ -113,6 +114,7 @@ describe('socialFeed', () => {
       expect(hasMorePages).toBe(false);
       expect(pageNumber).toBe(0);
       const expectedItems = replaceItemsCountryWithCountryId(FEED_ITEMS, countryCodeToId);
+
       addLeaderboardAsThirdItem(expectedItems, LEADERBOARD_ITEM);
       expect(filterItemFields(items)).toEqual(expectedItems);
     });

@@ -6,11 +6,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { LinkProps } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { Paper } from '@material-ui/core';
 import { AuthErrorMessage } from '../AuthErrorMessage';
 import { PasswordForm } from './PasswordForm';
 import { ResetPasswordSuccess } from './ResetPasswordSuccess';
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   width: 36rem;
   max-width: 100%;
   height: 100%;

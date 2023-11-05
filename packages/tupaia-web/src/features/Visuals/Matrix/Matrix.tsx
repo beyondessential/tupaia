@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext, useState } from 'react';
@@ -11,69 +11,21 @@ import { IconButton, Typography } from '@material-ui/core';
 import {
   MatrixColumnType,
   MatrixRowType,
-  getIsUsingDots,
   Matrix as MatrixComponent,
-  Alert,
   TextField,
+  NoData,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import {
-  ConditionalPresentationOptions,
-  MatrixConfig,
-  MatrixReport,
-  MatrixReportColumn,
-  MatrixReportRow,
-} from '@tupaia/types';
-import { DashboardItemConfig } from '../../types';
-import { DashboardItemContext } from '../DashboardItem';
-import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
-
-const NoDataMessage = styled(Alert).attrs({
-  severity: 'info',
-})`
-  width: 100%;
-  margin: 1rem auto;
-  max-width: 24rem;
-`;
+import { MatrixConfig, MatrixReport, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
+import { DashboardItemContext } from '../../DashboardItem';
+import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
+import { MatrixPreview } from './MatrixPreview';
 
 const SearchInput = styled(TextField)`
   margin-bottom: 0;
   .MuiInputBase-root {
     background-color: transparent;
   }
-`;
-
-const PlaceholderWrapper = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const PlaceholderWarningContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(43, 45, 56, 0.8);
-  @media (min-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
-const PlaceholderImage = styled.img`
-  max-width: 100%;
-`;
-
-const PlaceholderWarningText = styled(Typography)`
-  font-size: 1rem;
-  padding: 0.5rem;
-  text-align: center;
-  max-width: 25rem;
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -183,40 +135,11 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
   });
 };
 
-const getPlaceholderImage = ({
-  presentationOptions = {},
-  categoryPresentationOptions = {},
-}: MatrixConfig) => {
-  // if the matrix is not using any dots, show a text-only placeholder
-  if (!getIsUsingDots(presentationOptions) && !getIsUsingDots(categoryPresentationOptions))
-    return '/images/matrix-placeholder-text-only.png';
-  // if the matrix has applyLocation.columnIndexes, show a mix placeholder, because this means it is a mix of dots and text
-  if ((presentationOptions as ConditionalPresentationOptions)?.applyLocation?.columnIndexes)
-    return '/images/matrix-placeholder-mix.png';
-  // otherwise, show a dot-only placeholder
-  return '/images/matrix-placeholder-dot-only.png';
-};
-
-const MatrixPreview = ({ config }: { config?: DashboardItemConfig | null }) => {
-  const placeholderImage = getPlaceholderImage(config as MatrixConfig);
-  return (
-    <PlaceholderWrapper>
-      <PlaceholderWarningContainer>
-        <PlaceholderWarningText>
-          Please note that the Tupaia matrix chart cannot be properly viewed on small screens.
-        </PlaceholderWarningText>
-      </PlaceholderWarningContainer>
-
-      <PlaceholderImage src={placeholderImage} alt="Matrix Placeholder" />
-    </PlaceholderWrapper>
-  );
-};
-
 /**
  * This is the component that is used to display a matrix. It handles the parsing of the data into the format that the Matrix component can use, as well as placeholder images. It shows a message when there are no rows available to display.
  */
 
-export const Matrix = () => {
+const MatrixVisual = () => {
   const { config, report, isEnlarged } = useContext(DashboardItemContext);
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
@@ -226,10 +149,6 @@ export const Matrix = () => {
   const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, valueType);
   const parsedColumns = parseColumns(columns);
 
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) return <MatrixPreview config={config} />;
-  if (!parsedRows.length && !searchFilter) return <NoDataMessage>No data available</NoDataMessage>;
-
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
   };
@@ -237,6 +156,22 @@ export const Matrix = () => {
   const clearSearchFilter = () => {
     setSearchFilter('');
   };
+
+  if (!parsedRows.length && !searchFilter) {
+    return (
+      <NoData
+        viewContent={{
+          ...config,
+          ...report,
+        }}
+      />
+    );
+  }
+
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) {
+    return <MatrixPreview config={config} />;
+  }
 
   return (
     <>
@@ -268,5 +203,46 @@ export const Matrix = () => {
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
     </>
+  );
+};
+
+const Container = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+`;
+
+const MobileWarningText = styled.div`
+  font-size: 1rem;
+  text-align: center;
+  max-width: 25rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(43, 45, 56);
+  padding: 0.5rem;
+  z-index: 1;
+
+  @media (min-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
+
+const MobileWarning = () => {
+  return (
+    <MobileWarningText>
+      Please note that the Tupaia matrix chart cannot be properly viewed on small screens.
+    </MobileWarningText>
+  );
+};
+
+export const Matrix = () => {
+  return (
+    <Container>
+      <MobileWarning />
+      <MatrixVisual />
+    </Container>
   );
 };

@@ -6,26 +6,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SectionHeading } from './SectionHeading';
+import { Leaderboard } from '../../features';
 
-const Leaderboard = styled.section`
+const Wrapper = styled.section`
   grid-area: leaderboard;
   display: flex;
   flex-direction: column;
   height: 25rem;
 `;
 
-const ScrollBody = styled.div`
-  overflow: auto;
-  background: white;
-  border-radius: 10px;
-  flex: 1;
-`;
-
 export const LeaderboardSection = () => {
   return (
-    <Leaderboard>
+    <Wrapper>
       <SectionHeading>Tupaia leaderboard</SectionHeading>
-      <ScrollBody></ScrollBody>
-    </Leaderboard>
+      <Leaderboard />
+    </Wrapper>
   );
 };

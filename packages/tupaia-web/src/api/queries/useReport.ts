@@ -18,7 +18,6 @@ type QueryParams = Record<string, unknown> & {
   legacy?: DashboardItem['legacy'];
   startDate?: Moment | string | null;
   endDate?: Moment | string | null;
-  isExpanded?: boolean;
 };
 
 export const useReport = (reportCode: DashboardItem['reportCode'], params: QueryParams) => {
@@ -30,7 +29,6 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
     startDate,
     endDate,
     legacy,
-    isExpanded,
     ...rest
   } = params;
   const timeZone = getBrowserTimeZone();
@@ -47,7 +45,6 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
       itemCode,
       formattedStartDate,
       formattedEndDate,
-      isExpanded,
       ...Object.values(rest),
     ],
     (): Promise<TupaiaWebReportRequest.ResBody> =>
@@ -60,7 +57,6 @@ export const useReport = (reportCode: DashboardItem['reportCode'], params: Query
           timeZone,
           startDate: formattedStartDate,
           endDate: formattedEndDate,
-          isExpanded,
           ...rest,
         },
       }),
