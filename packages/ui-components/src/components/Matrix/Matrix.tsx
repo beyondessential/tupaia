@@ -68,6 +68,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
 
     updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
+ 
   return (
     <Wrapper>
       <MatrixContext.Provider
@@ -89,7 +90,8 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
             <MatrixHeader />
             <TableBody>
               {rows.map(row => (
-                <MatrixRow row={row} key={row.title} parents={[]} />
+                // add a random key to avoid bugs with re-rendering
+                <MatrixRow row={row} key={`${row.title}_${Math.random() * 1000}`} parents={[]} />
               ))}
             </TableBody>
           </Table>

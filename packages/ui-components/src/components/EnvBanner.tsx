@@ -14,6 +14,7 @@ const StyledBanner = styled(FlexCenter)<{
   $color: CSSStyleDeclaration['color'];
 }>`
   background: ${props => props.$color};
+  box-sizing: border-box;
   color: white;
   font-size: 13px;
   font-weight: 500;

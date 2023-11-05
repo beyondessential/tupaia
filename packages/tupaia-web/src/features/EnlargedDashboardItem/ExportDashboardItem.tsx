@@ -38,11 +38,17 @@ const Container = styled.div`
 const ExportContentContainer = styled(Container)`
   flex-grow: 1;
   display: flex;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 const LeftColumn = styled.div`
   width: 30%;
   text-align: left;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+  }
 `;
 
 const Title = styled(Typography).attrs({
@@ -109,6 +115,10 @@ const RightColumn = styled.div`
   width: 70%;
   padding-left: 1rem;
   padding-bottom: 1rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+    margin-top: 1rem;
+  }
 `;
 
 const ScrollableContent = styled.div`

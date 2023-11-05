@@ -139,7 +139,7 @@ export const Map = () => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
 
-  const zoom = entity?.bounds ? undefined : 10;
+  const zoom = entity?.bounds ? undefined : 15;
 
   return (
     <MapContainer>

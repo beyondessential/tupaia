@@ -10,20 +10,22 @@ import { IconButton, Slide } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 
 const Wrapper = styled.div`
-  position: relative;
-  overflow: hidden;
+  overflow-y: auto;
   max-width: 38rem;
+  width: 100%;
   padding: 0 1rem;
   flex: 1;
   display: flex;
-  align-items: center;
 `;
 
 const ImageWrapper = styled.div`
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   width: 100%;
   min-height: 30rem;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const Image = styled.img<{
   $isActive: boolean;
