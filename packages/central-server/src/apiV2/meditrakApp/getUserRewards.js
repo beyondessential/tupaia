@@ -9,7 +9,7 @@ import { getRewardsForUser } from '../../social';
 export const getUserRewards = async (req, res) => {
   const { userId, models } = req;
 
-  const rewards = await getRewardsForUser(models.database, userId);
+  const { coconuts, pigs } = await getRewardsForUser(models.database, userId);
 
-  respond(res, { coconuts: rewards?.coconuts, pigs: rewards?.pigs });
+  respond(res, { coconuts, pigs });
 };
