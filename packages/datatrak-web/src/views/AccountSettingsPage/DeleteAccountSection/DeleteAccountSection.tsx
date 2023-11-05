@@ -4,12 +4,12 @@
  */
 
 import React, { useState } from 'react';
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { UserDetails } from './UserDetails';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
 import { useUser } from '../../../api/queries';
-import { Typography } from '@material-ui/core';
-import styled from 'styled-components';
 
 const RequestPendingText = styled(Typography)`
   flex: 1;

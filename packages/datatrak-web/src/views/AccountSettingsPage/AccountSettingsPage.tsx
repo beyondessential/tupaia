@@ -32,7 +32,7 @@ const PageTitle = styled(Typography).attrs({
     margin-right: 0.5rem;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
-    font-sizeL 1.5rem;
+    font-size: 1.5rem;
   }
 `;
 
