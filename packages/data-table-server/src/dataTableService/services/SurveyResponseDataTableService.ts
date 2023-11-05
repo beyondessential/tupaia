@@ -12,7 +12,7 @@ const requiredParamsSchema = yup.object().shape({
   ids: yup.array().of(yup.string()),
   assessorNames: yup.array().of(yup.string()),
   countryCodes: yup.array().of(yup.string()),
-  surveyCodes: yup.array().of(yup.string()),
+  surveyCodes: yup.array().of(yup.string().required()).required(),
   entityCodes: yup.array().of(yup.string()),
   startDate: yup.date(),
   endDate: yup.date(),
@@ -41,7 +41,7 @@ type Params = {
   startDate?: Date;
   endDate?: Date;
   countryCodes?: StringParam[];
-  surveyCodes?: StringParam[];
+  surveyCodes: StringParam[];
   entityCodes?: StringParam[];
   assessorNames?: StringParam[];
   outdated?: boolean;
@@ -132,6 +132,7 @@ export class SurveyResponseDataTableService extends DataTableService<
       filter,
       columns: Object.values(ResponseColumns),
       sort: [`${ResponseColumns.surveyResponseDataTime} DESC`],
+      pageSize: 'ALL',
     });
 
     return results;

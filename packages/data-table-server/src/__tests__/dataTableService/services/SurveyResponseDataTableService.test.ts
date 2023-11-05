@@ -29,7 +29,7 @@ describe('SurveyResponsesDataTableService', () => {
         name: 'countryCodes',
       },
       {
-        config: { type: 'array', innerType: { type: 'string' } },
+        config: { type: 'array', innerType: { type: 'string', required: true }, required: true },
         name: 'surveyCodes',
       },
       {
@@ -56,6 +56,7 @@ describe('SurveyResponsesDataTableService', () => {
       ids: ['1'],
       startDate: '2019-01-01',
       endDate: '2021-01-01',
+      surveyCodes: ['survey1'],
     });
 
     expect(results).toEqual([CENTRAL_API_RESPONSES.surveyResponses[0]]);
