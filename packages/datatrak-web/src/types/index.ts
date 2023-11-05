@@ -11,3 +11,4 @@ export type {
   SurveyScreen,
 } from './surveys';
 export * from './entity';
+export * from './userRewards';

@@ -52,6 +52,7 @@ export {
   EntityQuestionConfig,
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
+  LeaderboardItem,
 } from './models-extra';
 export * from './requests';
 export * from './css';

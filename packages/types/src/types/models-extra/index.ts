@@ -58,3 +58,4 @@ export {
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
 } from './survey';
+export { LeaderboardItem } from './leaderboard';

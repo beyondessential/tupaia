@@ -13,3 +13,5 @@ export { useEntity } from './useEntity';
 export { useAutocompleteOptions } from './useAutocompleteOptions';
 export { useProject } from './useProject';
 export { useCountryAccessList } from './useCountryAccessList';
+export { useLeaderboard } from './useLeaderboard';
+export { useUserRewards } from './useUserRewards';
