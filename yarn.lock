@@ -10670,6 +10670,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
+    "@aws-sdk/client-s3": ^3.341.0
+    "@aws-sdk/credential-providers": ^3.341.0
+    "@aws-sdk/lib-storage": ^3.348.0
+    bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2

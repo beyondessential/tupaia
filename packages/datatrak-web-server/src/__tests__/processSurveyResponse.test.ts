@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { QuestionType } from '@tupaia/types';
-import { getBrowserTimeZone } from '@tupaia/utils';
+import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
@@ -23,6 +23,11 @@ const mockFindEntityById = async (id: string) => ({
 
 jest.mock('@tupaia/database', () => ({
   generateId: jest.fn(() => 'theEntityId'),
+}));
+
+jest.mock('@tupaia/utils', () => ({
+  ...jest.requireActual('@tupaia/utils'),
+  getUniqueSurveyQuestionFileName: jest.fn(() => 'theUniqueId'),
 }));
 
 describe('processSurveyResponse', () => {
@@ -381,6 +386,43 @@ describe('processSurveyResponse', () => {
         {
           code: 'answer2',
           id: generateId(),
+        },
+      ],
+    });
+  });
+  it('should handle when question type is File', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.File,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+          },
+        ],
+        answers: {
+          question1: {
+            value: 'theEncodedFile',
+            name: 'theFileName',
+          },
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.File,
+          body: {
+            data: 'theEncodedFile',
+            uniqueFileName: getUniqueSurveyQuestionFileName('theFileName'),
+          },
         },
       ],
     });
