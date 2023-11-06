@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
 import { useLandingPage, useUser } from '../../api/queries';
@@ -69,11 +69,10 @@ const ProjectScreen = ({
 };
 
 export const LandingPage = () => {
-  const { landingPageUrlSegment } = useParams();
   const { isLoggedIn } = useUser();
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
-  const { landingPage, isLoading, isLandingPage } = useLandingPage(landingPageUrlSegment!);
+  const { landingPage, isLoading, isLandingPage } = useLandingPage();
   if (!isLandingPage && !isLoading) return <Navigate to={DEFAULT_URL} replace />;
 
   const { imageUrl } = landingPage;
