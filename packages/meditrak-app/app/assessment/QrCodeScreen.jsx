@@ -3,19 +3,19 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef } from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import {connect} from 'react-redux';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
-import { FileSystem } from 'react-native-file-access';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 
-import { addMessage } from '../messages';
-import { Heading, TupaiaBackground, Button, Divider, QrCode } from '../widgets';
-import { THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
-import { formatPlural } from '../utilities';
-import { requestWritePermission } from '../utilities/writePermission/permission';
+import {addMessage} from '../messages';
+import {Heading, TupaiaBackground, Button, Divider, QrCode} from '../widgets';
+import {THEME_COLOR_ONE, THEME_FONT_SIZE_ONE} from '../globalStyles';
+import {formatPlural} from '../utilities';
+import {requestWritePermission} from '../utilities/writePermission/permission';
 
 const shareQrCode = (qrCodeRef, filename) => {
   qrCodeRef.toDataURL(dataURL => {
@@ -36,10 +36,10 @@ const downloadQrCode = async (qrCodeRef, filename, onSuccess, onFail) => {
   }
   qrCodeRef.toDataURL(async dataURL => {
     try {
-      const fullFilename = `${filename}.png`;
-      const filePath = `${RNFS.DocumentDirectoryPath}/${fullFilename}`;
+      const filenameWithExtension = `${filename}.png`;
+      const filePath = `${RNFS.DocumentDirectoryPath}/${filenameWithExtension}`;
       await RNFS.writeFile(filePath, dataURL, 'base64');
-      await FileSystem.cpExternal(filePath, fullFilename, 'downloads');
+      await CameraRoll.save(filePath, {album: 'Tupaia MediTrak QR Codes'});
       onSuccess();
     } catch (error) {
       onFail(error.message);
@@ -48,8 +48,8 @@ const downloadQrCode = async (qrCodeRef, filename, onSuccess, onFail) => {
 };
 
 const QrCodeScreenComponent = props => {
-  const { displayDownloadMessage } = props;
-  const { qrCodes = [], onClose = () => {} } = props.navigation.state.params;
+  const {displayDownloadMessage} = props;
+  const {qrCodes = [], onClose = () => {}} = props.navigation.state.params;
   const qrCodeImgsRef = useRef(new Array(qrCodes.length));
 
   return (
@@ -59,7 +59,7 @@ const QrCodeScreenComponent = props => {
         style={localStyles.heading}
       />
       <ScrollView>
-        {qrCodes.map(({ data, name }, index) => (
+        {qrCodes.map(({data, name}, index) => (
           <View key={data} style={localStyles.qrCodeContainer}>
             <QrCode
               getRef={ref => {
@@ -117,7 +117,7 @@ QrCodeScreenComponent.propTypes = {
   displayDownloadMessage: PropTypes.func.isRequired,
 };
 
-QrCodeScreenComponent.navigationOptions = ({ navigation }) => ({
+QrCodeScreenComponent.navigationOptions = ({navigation}) => ({
   headerTitle: navigation.state.params.title,
 });
 
@@ -149,8 +149,8 @@ const localStyles = StyleSheet.create({
     marginBottom: 20,
     width: 300,
   },
-  smallButton: { marginTop: 20, marginBottom: 5, width: 142 },
-  downloadButton: { marginRight: 16 },
+  smallButton: {marginTop: 20, marginBottom: 5, width: 142},
+  downloadButton: {marginRight: 16},
   buttonLabel: {
     fontWeight: 'bold',
   },
