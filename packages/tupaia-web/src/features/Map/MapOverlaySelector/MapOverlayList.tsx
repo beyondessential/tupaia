@@ -151,11 +151,14 @@ const RadioGroupContainer = styled(RadioGroup)`
   display: block;
 `;
 
+/**
+ * A utility that saves selected map overlay date ranges in state, so that it can be retrieved if the user navigates back to them
+ */
 const useSavedMapOverlayDates = () => {
   const [datesByMapOverlay, setDatesByMapOverlay] = useState({});
   const [urlSearchParams] = useSearchParams();
 
-  const setMapOverlayDateRange = (code: string, dateRange: string) => {
+  const saveMapOverlayDateRange = (code: string, dateRange: string) => {
     setDatesByMapOverlay({
       ...datesByMapOverlay,
       [code]: dateRange,
@@ -167,14 +170,23 @@ const useSavedMapOverlayDates = () => {
 
   useEffect(() => {
     if (mapOverlayCode && mapOverlayPeriod) {
-      setMapOverlayDateRange(mapOverlayCode, mapOverlayPeriod);
+      saveMapOverlayDateRange(mapOverlayCode, mapOverlayPeriod);
     }
   }, [mapOverlayCode, mapOverlayPeriod]);
 
   const getMapOverlayDateRange = (code: string) => datesByMapOverlay[code];
-  console.log('datesByMapOverlay', datesByMapOverlay);
 
-  return { getMapOverlayDateRange };
+  const getSavedMapOverlayDateRange = (code: string) => {
+    if (code) {
+      const savedDateRange = getMapOverlayDateRange(code);
+      if (savedDateRange) {
+        return savedDateRange;
+      }
+    }
+    return DEFAULT_PERIOD_PARAM_STRING;
+  };
+
+  return { getSavedMapOverlayDateRange };
 };
 
 /**
@@ -183,23 +195,18 @@ const useSavedMapOverlayDates = () => {
 export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { getMapOverlayDateRange } = useSavedMapOverlayDates();
+  const { getSavedMapOverlayDateRange } = useSavedMapOverlayDates();
   const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
     projectCode,
     entityCode,
   );
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+    const selectedCode = e.target.value;
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, selectedCode);
 
-    // when overlay changes, reset period to default
-    let newDateRange = DEFAULT_PERIOD_PARAM_STRING;
-    if (selectedOverlayCode) {
-      const savedDateRange = getMapOverlayDateRange(e.target.value);
-      if (savedDateRange) {
-        newDateRange = savedDateRange;
-      }
-    }
+    // when overlay changes, reset update the date period, using the saved date range if it exists
+    const newDateRange = getSavedMapOverlayDateRange(selectedCode);
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, newDateRange);
     setUrlParams(urlSearchParams);
 

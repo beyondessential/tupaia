@@ -139,7 +139,8 @@ export const MobileMapOverlaySelector = ({
           <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
         <OverlayListWrapper>
-          <MapOverlayList toggleOverlayLibrary={toggleOverlayLibrary} />
+          {/* Use the entity code as a key so that the local state of the MapOverlayList resets between entities */}
+          <MapOverlayList key={entityCode} toggleOverlayLibrary={toggleOverlayLibrary} />
         </OverlayListWrapper>
       </OverlayMenu>
     </Wrapper>
