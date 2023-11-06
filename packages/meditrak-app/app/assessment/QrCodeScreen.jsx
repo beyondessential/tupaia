@@ -40,7 +40,7 @@ const downloadQrCode = async (qrCodeRef, filename, onSuccess, onFail) => {
       const filenameWithExtension = `${filename}.png`;
       const filePath = `${RNFS.DocumentDirectoryPath}/${filenameWithExtension}`;
       await RNFS.writeFile(filePath, dataURL, 'base64');
-      await CameraRoll.save(filePath, {album: 'Meditrak QR Codes'});
+      await CameraRoll.save(filePath, {album: 'Tupaia MediTrak QR Codes'});
       onSuccess();
     } catch (error) {
       onFail(error.message);
