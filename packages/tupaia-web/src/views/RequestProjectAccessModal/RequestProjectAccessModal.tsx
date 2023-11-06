@@ -56,9 +56,9 @@ export const RequestProjectAccessModal = () => {
 
   const { data: countries } = useCountryAccessList();
   // the countries that are applicable to this project
-  const projectCountries = countries?.filter((c: CountryAccessListItem) =>
-    project?.names?.includes(c.name),
-  );
+  const projectCountries = countries
+    ?.filter((c: CountryAccessListItem) => project?.names?.includes(c.name))
+    .filter((c: CountryAccessListItem) => !c.hasAccess);
 
   const getCountriesByAccess = (hasRequests: boolean) => {
     return projectCountries?.filter(({ accessRequests }) => {
@@ -67,6 +67,8 @@ export const RequestProjectAccessModal = () => {
         : !accessRequests.includes(projectCode!);
     });
   };
+
+  const countriesWithAccess = countries.filter((c: CountryAccessListItem) => c.hasAccess);
 
   // the countries that have already got a request
   const requestedCountries = getCountriesByAccess(true);
@@ -91,6 +93,7 @@ export const RequestProjectAccessModal = () => {
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}
+          countriesWithAccess={countriesWithAccess}
           hasAdditionalCountries={availableCountries.length > 0}
           onShowForm={() => setRequestAdditionalCountries(true)}
           isLandingPage={isLandingPage}
