@@ -9,7 +9,6 @@ import {connect} from 'react-redux';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
-import {FileSystem} from 'react-native-file-access';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 
 import {addMessage} from '../messages';

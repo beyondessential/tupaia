@@ -11490,7 +11490,6 @@ __metadata:
     react-native-database: ^0.3.3
     react-native-device-info: ^10.9.0
     react-native-document-picker: ^9.0.1
-    react-native-file-access: ^3.0.4
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.13.0
     react-native-image-picker: ^7.0.0
@@ -38990,16 +38989,6 @@ __metadata:
     react-native-windows:
       optional: true
   checksum: a8ad0bc2ed13290e8d7ff5f77aa7e35ffda9fa380a7d01d1286111e92656415985d61469a50567b8bcb67e42c41a36b89e879d0d08b40d3fdda171eaa08721e4
-  languageName: node
-  linkType: hard
-
-"react-native-file-access@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "react-native-file-access@npm:3.0.4"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 05ad071c77747b8242435db88fee4672f12021cd1bf39b9949c2d11b56bbd7262842eeb443c04bf0094b480b03fb602b6d4f7b31a8d54d16fb09ec37b91fc164
   languageName: node
   linkType: hard
 
