@@ -9,7 +9,6 @@ import { allowNoPermissions } from '../../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
-// TODO: Remove as part of RN-502
 export const getSocialFeed = async (req, res) => {
   const { query, models } = req;
   const {
@@ -55,48 +54,9 @@ export const getSocialFeed = async (req, res) => {
   const hasMorePages = feedItems.length > numberPerPage;
   const items = await Promise.all(feedItems.slice(0, numberPerPage - 1).map(f => f.getData()));
 
-  await intersperseDynamicFeedItems(items, countryId, pageNumber, models);
-
   respond(res, {
     pageNumber,
     hasMorePages,
     items,
   });
-};
-
-/**
- * Adds dynamic feed items that aren't specified by the FeedItem model in-between
- * feed items. These feed items can be user specific and include profile information
- * where necessary.
- *
- * @param {array} feedItems Current set of feed items.
- * @param {string} countryId Current country ID for the feed.
- * @param {number} page Current page number.
- * @param {object} req Page request
- *
- * @returns {array} New set of feed items.
- */
-const intersperseDynamicFeedItems = async (feedItems, countryId, page, models) => {
-  if (page === 0) {
-    // Add leaderboard to second item in feed.
-    const leaderboardItem = await getLeaderboardFeedItem(models);
-    feedItems.splice(2, 0, leaderboardItem);
-  }
-};
-
-const getLeaderboardFeedItem = async () => {
-  const { models } = this.req;
-  const leaderboard = await models.surveyResponse.getLeaderboard();
-
-  return {
-    id: 'leaderboard',
-    type: 'leaderboard',
-    country_id: 'all',
-    creation_date: new Date(),
-    template_variables: {
-      title: 'Tupaia Leaderboard',
-      hasPigs: false, // this can be set to true if the meditrak-app table is fixed
-      leaderboard,
-    },
-  };
 };

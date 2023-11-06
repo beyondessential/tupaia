@@ -10027,6 +10027,7 @@ __metadata:
     "@vitejs/plugin-react": ^4.0.0
     axios: ^1.4.0
     bson-objectid: ^1.2.2
+    date-fns: ^2.12.0
     leaflet: ^1.7.1
     msw: ^1.3.1
     nanoid: ^2.0.3
