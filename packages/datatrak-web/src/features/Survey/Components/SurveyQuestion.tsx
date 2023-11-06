@@ -97,9 +97,10 @@ export const SurveyQuestion = ({
   const { mandatory: required, min, max } = validationCriteria || {};
 
   const getDefaultValue = () => {
+    if (formData[name] !== undefined) return formData[name];
     // This is so that the default value gets carried through to the component, and dates that have a visible value of 'today' have that value recognised when validating
     if (type?.includes('Date')) return new Date();
-    return formData[name];
+    return undefined;
   };
 
   const defaultValue = getDefaultValue();
@@ -107,6 +108,7 @@ export const SurveyQuestion = ({
   // display the entity error in it's own component because otherwise it will end up at the bottom of the big list of entities
   const displayError = errors[name] && errors[name].message && !type.includes('Entity');
   // Use a Controller so that the fields that require change handlers, values, etc work with react-hook-form, which is uncontrolled by default
+
   return (
     <QuestionWrapper>
       <Controller
