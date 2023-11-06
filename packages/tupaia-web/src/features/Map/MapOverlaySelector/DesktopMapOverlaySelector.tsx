@@ -208,7 +208,7 @@ export const DesktopMapOverlaySelector = ({
               </OverlayLibraryHeader>
               <OverlayLibraryContentWrapper>
                 <OverlayLibraryContentContainer>
-                  <MapOverlayList />
+                  <MapOverlayList key={entityCode} />
                 </OverlayLibraryContentContainer>
               </OverlayLibraryContentWrapper>
             </OverlayLibraryAccordion>

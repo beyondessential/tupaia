@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { DesktopMapOverlaySelector } from './DesktopMapOverlaySelector';
 import { MobileMapOverlaySelector } from './MobileMapOverlaySelector';
-import { MapOverlaySelectorContextProvider } from './MapOverlaySelectorContext';
 
 export const MapOverlaySelector = () => {
   const [overlayLibraryOpen, setOverlayLibraryOpen] = useState(false);
@@ -18,16 +17,14 @@ export const MapOverlaySelector = () => {
 
   return (
     <ErrorBoundary>
-      <MapOverlaySelectorContextProvider>
-        <MobileMapOverlaySelector
-          overlayLibraryOpen={overlayLibraryOpen}
-          toggleOverlayLibrary={toggleOverlayLibrary}
-        />
-        <DesktopMapOverlaySelector
-          overlayLibraryOpen={overlayLibraryOpen}
-          toggleOverlayLibrary={toggleOverlayLibrary}
-        />
-      </MapOverlaySelectorContextProvider>
+      <MobileMapOverlaySelector
+        overlayLibraryOpen={overlayLibraryOpen}
+        toggleOverlayLibrary={toggleOverlayLibrary}
+      />
+      <DesktopMapOverlaySelector
+        overlayLibraryOpen={overlayLibraryOpen}
+        toggleOverlayLibrary={toggleOverlayLibrary}
+      />
     </ErrorBoundary>
   );
 };

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -20,7 +20,6 @@ import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
-import { useMapOverlaySelectorContext } from './MapOverlaySelectorContext.tsx';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -152,13 +151,39 @@ const RadioGroupContainer = styled(RadioGroup)`
   display: block;
 `;
 
+const useSavedMapOverlayDates = () => {
+  const [datesByMapOverlay, setDatesByMapOverlay] = useState({});
+  const [urlSearchParams] = useSearchParams();
+
+  const setMapOverlayDateRange = (code: string, dateRange: string) => {
+    setDatesByMapOverlay({
+      ...datesByMapOverlay,
+      [code]: dateRange,
+    });
+  };
+
+  const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
+  const mapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
+
+  useEffect(() => {
+    if (mapOverlayCode && mapOverlayPeriod) {
+      setMapOverlayDateRange(mapOverlayCode, mapOverlayPeriod);
+    }
+  }, [mapOverlayCode, mapOverlayPeriod]);
+
+  const getMapOverlayDateRange = (code: string) => datesByMapOverlay[code];
+  console.log('datesByMapOverlay', datesByMapOverlay);
+
+  return { getMapOverlayDateRange };
+};
+
 /**
  * This is the parent list of all the map overlays available to pick from
  */
 export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { getMapOverlayDateRange } = useMapOverlaySelectorContext();
+  const { getMapOverlayDateRange } = useSavedMapOverlayDates();
   const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
     projectCode,
     entityCode,
