@@ -15,14 +15,8 @@ import { SurveyQRCode } from '../SurveyQRCode';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 1.2rem;
   flex: 1;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-right: 10rem;
-  }
+  height: 100%;
 `;
 const Container = styled.div`
   display: flex;
