@@ -20,6 +20,7 @@ import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
+import { useMapOverlaySelectorContext } from './MapOverlaySelectorContext.tsx';
 
 const AccordionWrapper = styled(Accordion)`
   background-color: transparent;
@@ -157,6 +158,7 @@ const RadioGroupContainer = styled(RadioGroup)`
 export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
+  const { getMapOverlayDateRange } = useMapOverlaySelectorContext();
   const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
     projectCode,
     entityCode,
@@ -164,8 +166,16 @@ export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
+
     // when overlay changes, reset period to default
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+    let newDateRange = DEFAULT_PERIOD_PARAM_STRING;
+    if (selectedOverlayCode) {
+      const savedDateRange = getMapOverlayDateRange(e.target.value);
+      if (savedDateRange) {
+        newDateRange = savedDateRange;
+      }
+    }
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, newDateRange);
     setUrlParams(urlSearchParams);
 
     if (toggleOverlayLibrary) {

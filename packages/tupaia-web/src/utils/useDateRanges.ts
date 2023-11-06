@@ -125,7 +125,7 @@ export const useDateRanges = (
   const startDate = urlStartDate || itemStartDate || defaultStartDate;
   const endDate = urlEndDate || itemEndDate || defaultEndDate;
 
-  const setDates = (_startDate: string, _endDate: string) => {
+  const setDates = (_startDate: string, _endDate: string, callback?: (string) => void) => {
     const period = GRANULARITY_CONFIG[periodGranularity as keyof typeof GRANULARITY_CONFIG]
       .momentUnit as moment.unitOfTime.StartOf;
     const startDate = moment(_startDate).startOf(period);
@@ -133,6 +133,10 @@ export const useDateRanges = (
     const urlPeriodString = convertDateRangeToUrlPeriodString({ startDate, endDate });
     urlSearchParams.set(urlParam, urlPeriodString);
     setUrlSearchParams(urlSearchParams);
+
+    if (callback) {
+      callback(urlPeriodString);
+    }
   };
 
   const onResetDate = () => {

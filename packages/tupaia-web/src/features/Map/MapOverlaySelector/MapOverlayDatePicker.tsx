@@ -11,6 +11,7 @@ import { useMapOverlayMapData } from '../utils';
 import { DateRangePicker } from '../../../components';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+import { useMapOverlaySelectorContext } from './MapOverlaySelectorContext';
 
 const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
@@ -22,6 +23,7 @@ const Wrapper = styled.div`
 export const MapOverlayDatePicker = () => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { setMapOverlayDateRange } = useMapOverlaySelectorContext();
   const {
     showDatePicker,
     startDate,
@@ -34,6 +36,16 @@ export const MapOverlayDatePicker = () => {
   } = useDateRanges(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, selectedOverlay);
 
   const { isLoading: isLoadingMapOverlayData } = useMapOverlayMapData();
+
+  const handleSetDate = (_startDate: string, _endDate: string) => {
+    const saveMapOverlayDateRangeForCode = dateRangeString => {
+      setMapOverlayDateRange(selectedOverlay.code, dateRangeString);
+    };
+
+    if (typeof setDates === 'function') {
+      setDates(_startDate, _endDate, saveMapOverlayDateRangeForCode);
+    }
+  };
 
   if (!showDatePicker) return null;
   return (
@@ -50,7 +62,7 @@ export const MapOverlayDatePicker = () => {
           minDate={minStartDate}
           maxDate={maxEndDate}
           granularity={periodGranularity}
-          onSetDates={setDates}
+          onSetDates={handleSetDate}
           onResetDate={onResetDate}
         />
       )}
