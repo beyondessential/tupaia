@@ -59,9 +59,6 @@ const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
       const { mandatory, min, max } = validationCriteria || {};
 
       if (!mandatory && !min && !max) return schema;
-
-      const questionName = type === QuestionType.PrimaryEntity ? 'entityId' : questionId;
-
       let fieldSchema = getBaseSchema(type);
 
       if (mandatory) {
@@ -99,7 +96,7 @@ const getValidationSchema = (screenComponents?: SurveyScreenComponent[]) => {
 
       return {
         ...schema,
-        [questionName]: fieldSchema,
+        [questionId]: fieldSchema,
       };
     }, {}) ?? {}
   );
