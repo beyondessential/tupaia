@@ -69,6 +69,7 @@ const CloseButton = styled(IconButton)<{
 const Message = styled(Typography)`
   font-size: 0.875rem;
   flex: 1;
+  word-break: break-word;
 `;
 
 interface ToastProps extends CustomContentProps {

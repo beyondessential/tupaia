@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { getBrowserTimeZone } from '@tupaia/utils';
+import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
   Entity,
@@ -15,6 +15,7 @@ import { buildUpsertEntity } from './buildUpsertEntity';
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
+type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -92,7 +93,6 @@ export const processSurveyResponse = async (
     };
 
     // Handle special question types
-    // TODO: file upload handling
     switch (type) {
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:
@@ -106,6 +106,17 @@ export const processSurveyResponse = async (
       case QuestionType.PrimaryEntity: {
         const entityId = answer as string;
         surveyResponse.entity_id = entityId;
+        break;
+      }
+      case QuestionType.File: {
+        const { name, value } = answer as FileUploadAnswerT;
+        answersToSubmit.push({
+          ...answerObject,
+          body: {
+            data: value,
+            uniqueFileName: getUniqueSurveyQuestionFileName(name),
+          },
+        });
         break;
       }
       case QuestionType.Autocomplete: {

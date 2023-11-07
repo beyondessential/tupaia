@@ -2,9 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { DatabaseError, UploadError } from '@tupaia/utils';
-import { getS3ImageFilePath, S3Client, S3, S3_BUCKET_PATH } from '@tupaia/server-utils';
+import { QuestionType } from '@tupaia/types';
+import {
+  DatabaseError,
+  getS3ImageFilePath,
+  S3Client,
+  S3,
+  S3_BUCKET_PATH,
+  UploadError,
+} from '@tupaia/utils';
 
 export async function upsertAnswers(models, answers, surveyResponseId) {
   const answerRecords = [];
@@ -16,8 +22,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       question_id: answer.question_id,
       survey_response_id: surveyResponseId,
     };
-
-    if (answer.type === 'Photo') {
+    if (answer.type === QuestionType.Photo) {
       const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
       if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
@@ -30,6 +35,21 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
         } catch (error) {
           throw new UploadError(error);
         }
+      }
+      // if the answer is a file object, upload it to s3 and save the url as the answer. If it's not a file object that means it is just a url to a file, which will be handled by default
+    } else if (
+      answer.type === QuestionType.File &&
+      answer.body?.hasOwnProperty('uniqueFileName') &&
+      answer.body?.hasOwnProperty('data')
+    ) {
+      try {
+        const s3Client = new S3Client(new S3());
+        answerDocument.text = await s3Client.uploadFile(
+          answer.body.uniqueFileName,
+          answer.body.data,
+        );
+      } catch (error) {
+        throw new UploadError(error);
       }
     } else {
       answerDocument.text = answer.body;

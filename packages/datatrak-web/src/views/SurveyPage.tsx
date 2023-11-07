@@ -25,15 +25,17 @@ const PageWrapper = styled.div`
   height: 100%;
 `;
 
-const SurveyScreenContainer = styled.div`
+const SurveyScreenContainer = styled.div<{
+  $scrollable?: boolean;
+}>`
   display: flex;
-  overflow: hidden;
+  overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-
+  width: 100vw;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: -1.25rem;
-    padding-top: 2rem;
+    padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
     padding-bottom: 2rem;
   }
 `;
@@ -41,7 +43,7 @@ const SurveyScreenContainer = styled.div`
 export const SurveyPage = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const { formData } = useSurveyForm();
+  const { formData, isSuccessScreen } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -53,7 +55,7 @@ export const SurveyPage = () => {
     <PageWrapper>
       <FormProvider {...formContext}>
         <SurveyToolbar />
-        <SurveyScreenContainer>
+        <SurveyScreenContainer $scrollable={isSuccessScreen}>
           <SurveySideMenu />
           {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}

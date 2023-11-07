@@ -37,11 +37,7 @@ const UserRewardCount = styled(Typography)`
   line-height: 1.25rem;
 `;
 
-interface UserRewardsSectionProps extends UserRewards {
-  isLoading: boolean;
-}
-export const UserRewardsSection = ({ pigs, coconuts, isLoading }: UserRewardsSectionProps) => {
-  if (isLoading) return null;
+export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
   return (
     <Wrapper>
       <UserRewardItem>

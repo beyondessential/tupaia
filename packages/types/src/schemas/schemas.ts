@@ -52629,7 +52629,8 @@ export const DataTableSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52669,7 +52670,8 @@ export const DataTableCreateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52710,7 +52712,8 @@ export const DataTableUpdateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -58926,7 +58929,8 @@ export const DataTableTypeSchema = {
 		"entity_attributes",
 		"entity_relations",
 		"events",
-		"sql"
+		"sql",
+		"survey_responses"
 	],
 	"type": "string"
 } 
@@ -58963,7 +58967,15 @@ export const AnswerTypeSchema = {
 			"type": "string"
 		},
 		"body": {
-			"type": "string"
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false
+				},
+				{
+					"type": "string"
+				}
+			]
 		},
 		"question_id": {
 			"type": "string"
@@ -58972,7 +58984,6 @@ export const AnswerTypeSchema = {
 	"additionalProperties": false,
 	"required": [
 		"body",
-		"id",
 		"question_id",
 		"type"
 	]
@@ -59003,7 +59014,15 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"body": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "object",
+								"additionalProperties": false
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"question_id": {
 						"type": "string"
@@ -59012,7 +59031,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"additionalProperties": false,
 				"required": [
 					"body",
-					"id",
 					"question_id",
 					"type"
 				]
@@ -59191,7 +59209,8 @@ export const DataTablePreviewRequestSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -59611,6 +59630,23 @@ export const AutocompleteAnswerSchema = {
 	"required": [
 		"label",
 		"optionSetId",
+		"value"
+	]
+} 
+
+export const FileUploadAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name",
 		"value"
 	]
 } 

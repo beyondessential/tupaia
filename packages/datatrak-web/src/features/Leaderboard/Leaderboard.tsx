@@ -17,14 +17,10 @@ const ScrollBody = styled.div`
 `;
 
 export const Leaderboard = () => {
-  const { data: userRewards, isLoading: isLoadingUserRewards } = useUserRewards();
+  const { data: userRewards, isSuccess } = useUserRewards();
   return (
     <ScrollBody>
-      <UserRewardsSection
-        pigs={userRewards?.pigs}
-        coconuts={userRewards?.coconuts}
-        isLoading={isLoadingUserRewards}
-      />
+      {isSuccess && <UserRewardsSection pigs={userRewards.pigs} coconuts={userRewards.coconuts} />}
       <LeaderboardTable userRewards={userRewards} />
     </ScrollBody>
   );

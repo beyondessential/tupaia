@@ -116,7 +116,8 @@ const ContentWrapper = styled.div<{
 }>`
   pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
-  height: 15rem; // to stop charts from shrinking to nothing at mobile size
+  height: ${({ $isExporting }) =>
+    $isExporting ? 'auto' : '15rem'}; // to stop charts from shrinking to nothing at mobile size
   min-height: ${({ $isEnlarged }) =>
     $isEnlarged
       ? '24rem'
