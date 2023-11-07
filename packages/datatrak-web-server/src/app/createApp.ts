@@ -34,6 +34,8 @@ import {
   RecentSurveysRoute,
   LeaderboardRequest,
   LeaderboardRoute,
+  ActivityFeedRequest,
+  ActivityFeedRoute,
 } from '../routes';
 
 const {
@@ -60,6 +62,7 @@ export function createApp() {
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
+    .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))

@@ -3,24 +3,21 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { FeedItem as BaseFeedItem } from '@tupaia/types';
-import { UseInfiniteQueryResult } from 'react-query';
+import {
+  DatatrakWebActivityFeedRequest,
+  FeedItemTypes,
+  MarkdownTemplateVariables,
+  SurveyResponseTemplateVariables,
+} from '@tupaia/types';
 
-type TemplateVariables = Record<string, any> & {
-  surveyName?: string;
-  countryName?: string;
-  regionName?: string;
-  imageUrl?: string;
-  link?: string;
-  authorName?: string;
+export type FeedItem = DatatrakWebActivityFeedRequest.ResBody['items'][0];
+
+export type SurveyResponseFeedItem = Omit<FeedItem, 'type' | 'templateVariables'> & {
+  type: FeedItemTypes.SurveyResponse;
+  templateVariables: SurveyResponseTemplateVariables;
 };
 
-export type FeedItem = Omit<BaseFeedItem, 'template_variables'> & {
-  template_variables: TemplateVariables;
-};
-
-export type ActivityFeedResponse = {
-  items?: FeedItem[];
-  pageNumber?: number;
-  hasMorePages?: boolean;
+export type MarkdownFeedItem = Omit<FeedItem, 'type' | 'templateVariables'> & {
+  type: FeedItemTypes.Markdown;
+  templateVariables: MarkdownTemplateVariables;
 };

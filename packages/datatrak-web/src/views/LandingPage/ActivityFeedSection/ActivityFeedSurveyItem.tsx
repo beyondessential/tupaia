@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ListItemProps, ListItem as MuiListItem, Typography } from '@material-ui/core';
-import { FeedItem } from '../../../types';
 import { format } from 'date-fns';
+import { ListItemProps, ListItem as MuiListItem, Typography } from '@material-ui/core';
+import { SurveyResponseFeedItem } from '../../../types';
 
 const ListItem = styled(MuiListItem)<ListItemProps>`
   padding: 1.2rem 0.6rem 1.2rem 0;
@@ -37,9 +37,9 @@ const Image = styled.img`
   height: 4rem;
 `;
 
-export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: FeedItem }) => {
-  const { template_variables: templateVariables, creation_date: creationDate } = feedItem;
-  const formattedDate = format(new Date(creationDate!), 'dd/MM/yyyy');
+export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseFeedItem }) => {
+  const { templateVariables, creationDate } = feedItem;
+  const formattedDate = creationDate ? format(new Date(creationDate! as Date), 'P') : '';
 
   const getLocationName = () => {
     if (templateVariables?.regionName)

@@ -4,13 +4,13 @@
  */
 import { useInfiniteQuery } from 'react-query';
 import { get } from '../api';
-import { ActivityFeedResponse } from '../../types';
+import { DatatrakWebActivityFeedRequest } from '@tupaia/types';
 
 export const useActivityFeed = () => {
   return useInfiniteQuery(
     ['activityFeed'],
-    ({ pageParam = 0 }): Promise<ActivityFeedResponse> =>
-      get('socialFeed', {
+    ({ pageParam = 0 }): Promise<DatatrakWebActivityFeedRequest.ResBody> =>
+      get('activityFeed', {
         params: {
           page: pageParam,
         },
