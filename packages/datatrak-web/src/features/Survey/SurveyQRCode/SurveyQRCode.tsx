@@ -16,16 +16,16 @@ export const SurveyQRCode = () => {
   const { surveyResponse } = state as { surveyResponse: string };
   if (!surveyResponse) return null;
 
-  const { createdEntities } = JSON.parse(surveyResponse);
-  if (!createdEntities.length) return null;
+  const { qrCodeEntitiesCreated } = JSON.parse(surveyResponse);
+  if (!qrCodeEntitiesCreated.length) return null;
 
   return (
     <>
       <QRCodePanel>
-        <QRCodeList createdEntities={createdEntities} />
+        <QRCodeList createdEntities={qrCodeEntitiesCreated} />
       </QRCodePanel>
       <QRCodeModal>
-        <QRCodeList createdEntities={createdEntities} variant="modal" />
+        <QRCodeList createdEntities={qrCodeEntitiesCreated} variant="modal" />
       </QRCodeModal>
     </>
   );

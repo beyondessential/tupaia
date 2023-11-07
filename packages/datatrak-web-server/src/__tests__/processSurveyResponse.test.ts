@@ -59,6 +59,7 @@ describe('processSurveyResponse', () => {
     timezone: getBrowserTimeZone(),
     options_created: [],
     entities_upserted: [],
+    qr_codes_to_create: [],
   };
 
   it('should process the survey response with standard question types', async () => {
@@ -340,6 +341,62 @@ describe('processSurveyResponse', () => {
         },
       ],
       entities_upserted: [
+        {
+          code: 'answer2',
+          id: 'answer1',
+        },
+      ],
+    });
+  });
+
+  it('should add to qr_codes_to_create when type is "Entity" and a generateQRCode config is set', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.Entity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {
+              entity: {
+                createNew: true,
+                generateQrCode: true,
+                fields: {
+                  code: {
+                    questionId: 'question2',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        answers: {
+          question1: 'answer1',
+          question2: 'answer2',
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.Entity,
+          body: 'answer1',
+        },
+      ],
+      entities_upserted: [
+        {
+          code: 'answer2',
+          id: 'answer1',
+        },
+      ],
+      qr_codes_to_create: [
         {
           code: 'answer2',
           id: 'answer1',
