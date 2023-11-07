@@ -5,12 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
+import { FeedItemTypes } from '@tupaia/types';
 import { SectionHeading } from '../SectionHeading';
 import { useActivityFeed } from '../../../api/queries';
 import { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
-import { FeedItem, MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
+import { MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
 import { InfiniteScroll } from './InfiniteScroll';
 
 const ActivityFeed = styled.section`
@@ -34,31 +34,31 @@ const List = styled.ul`
 `;
 
 export const ActivityFeedSection = () => {
-  const { data: activityFeed, fetchNextPage, hasNextPage } = useActivityFeed();
-
-  // flatten all pages into a single array
-  const allData = activityFeed?.pages?.reduce(
-    (result: FeedItem[], page: DatatrakWebActivityFeedRequest.ResBody) => {
-      const { items } = page;
-      if (!items) return result;
-      return [...result, ...items];
-    },
-    [],
-  );
+  const { data: activityFeed, fetchNextPage, hasNextPage, isFetchingNextPage } = useActivityFeed();
 
   return (
     <ActivityFeed>
       <SectionHeading>Activity feed</SectionHeading>
-      <InfiniteScroll onScroll={fetchNextPage} hasNextPage={hasNextPage}>
+      <InfiniteScroll
+        onScroll={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+      >
         <List>
-          {allData?.map(feedItem =>
-            feedItem.type === FeedItemTypes.SurveyResponse ? (
-              <ActivityFeedSurveyItem
-                feedItem={feedItem as SurveyResponseFeedItem}
-                key={feedItem.id}
-              />
-            ) : (
-              <ActivityFeedMarkdownItem feedItem={feedItem as MarkdownFeedItem} key={feedItem.id} />
+          {/** Creating a new flattened array out of these pages caused a re-render on all updates which led to some bugs, so doing a nested map is better here */}
+          {activityFeed?.pages?.map(page =>
+            page?.items?.map(feedItem =>
+              feedItem.type === FeedItemTypes.SurveyResponse ? (
+                <ActivityFeedSurveyItem
+                  feedItem={feedItem as SurveyResponseFeedItem}
+                  key={feedItem.id}
+                />
+              ) : (
+                <ActivityFeedMarkdownItem
+                  feedItem={feedItem as MarkdownFeedItem}
+                  key={feedItem.id}
+                />
+              ),
             ),
           )}
         </List>

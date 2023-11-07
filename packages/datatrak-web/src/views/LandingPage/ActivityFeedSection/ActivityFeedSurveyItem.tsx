@@ -33,8 +33,16 @@ const DateText = styled(Typography).attrs({
   margin-bottom: 1.3rem;
 `;
 
-const Image = styled.img`
+const ListItemImageContainer = styled.div`
   height: 4rem;
+  width: 4rem;
+`;
+
+const Image = styled.img.attrs({
+  src: '/survey-activity.svg',
+})`
+  height: 100%;
+  width: 100%;
 `;
 
 export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseFeedItem }) => {
@@ -51,8 +59,10 @@ export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseF
   const locationName = getLocationName();
   return (
     <ListItem>
-      {/** set aria-hidden on the image because the image isn't of any informational value */}
-      <Image src="/survey-activity.svg" aria-hidden />
+      <ListItemImageContainer>
+        {/** set aria-hidden on the image because the image isn't of any informational value */}
+        <Image aria-hidden />
+      </ListItemImageContainer>
       <Container>
         <Typography>{templateVariables?.authorName}</Typography>
         <DateText>{formattedDate}</DateText>
