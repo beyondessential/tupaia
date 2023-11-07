@@ -42,7 +42,13 @@ const ModalButton = styled(Button)`
 `;
 
 export const CancelSurveyModal = () => {
-  const { cancelModalOpen, closeCancelConfirmation } = useSurveyForm();
+  const { cancelModalOpen, closeCancelConfirmation, resetForm } = useSurveyForm();
+
+  const handleCancel = () => {
+    closeCancelConfirmation();
+    resetForm();
+  };
+
   return (
     <Modal open={cancelModalOpen} onClose={closeCancelConfirmation}>
       <Wrapper>
@@ -51,7 +57,7 @@ export const CancelSurveyModal = () => {
           If you exit, you will lose the progress you've made on the current survey
         </Typography>
         <ButtonWrapper>
-          <ModalButton variant="outlined" to="../../" onClick={closeCancelConfirmation}>
+          <ModalButton variant="outlined" to="../../" onClick={handleCancel}>
             Exit survey
           </ModalButton>
           <ModalButton onClick={closeCancelConfirmation}>Continue survey</ModalButton>
