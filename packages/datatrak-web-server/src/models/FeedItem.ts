@@ -8,16 +8,10 @@ import {
   FeedItemType as BaseFeedItemType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
-import { NullableKeysToOptional } from '@tupaia/types';
+import { FeedItem, NullableKeysToOptional } from '@tupaia/types';
 
-export type FeedItemFields = Omit<BaseFeedItemType, 'template_variables'> & {
-  template_variables: Record<string, any>;
-};
-
-export interface FeedItemType
-  extends FeedItemFields,
-    Omit<BaseFeedItemType, 'id' | 'creation_date'> {
-  getData: () => Promise<NullableKeysToOptional<FeedItemFields>>;
+export interface FeedItemType extends FeedItem, Omit<BaseFeedItemType, 'id' | 'creation_date'> {
+  getData: () => Promise<NullableKeysToOptional<FeedItem>>;
 }
 
-export interface FeedItemModel extends Model<BaseFeedItemModel, FeedItemFields, FeedItemType> {}
+export interface FeedItemModel extends Model<BaseFeedItemModel, FeedItem, FeedItemType> {}
