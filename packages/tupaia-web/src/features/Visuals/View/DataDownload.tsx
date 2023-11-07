@@ -135,7 +135,7 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
           Cancel
         </FormButton>
         <FormButton
-          // disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
+          disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
           onClick={() => fetchDownloadData(selectedCodes)}
         >
           Download
