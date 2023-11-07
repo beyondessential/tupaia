@@ -56,9 +56,9 @@ export const RequestProjectAccessModal = () => {
 
   const { data: countries } = useCountryAccessList();
   // the countries that are applicable to this project
-  const projectCountries = countries
-    ?.filter((c: CountryAccessListItem) => project?.names?.includes(c.name))
-    .filter((c: CountryAccessListItem) => !c.hasAccess);
+  const projectCountries = countries?.filter((c: CountryAccessListItem) =>
+    project?.names?.includes(c.name),
+  );
 
   const getCountriesByAccess = (hasRequests: boolean) => {
     return projectCountries?.filter(({ accessRequests }) => {
