@@ -16,6 +16,7 @@ const timeout = 45 * 1000; // 45 seconds
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
   cancelOnUnmount?: boolean;
+  returnHeaders?: boolean;
 };
 
 type RequestParametersWithMethod = RequestParameters & {
@@ -51,12 +52,17 @@ const getErrorMessage = (error: any) => {
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety
+
+/**
+ * This method handles the actual request to the API. It will throw an error if the response is not ok.
+ */
 const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
-  const requestOptions = getRequestOptions(options);
+  const { returnHeaders, ...requestOptions } = getRequestOptions(options);
 
   try {
     const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
 
+    if (returnHeaders) return response;
     return response.data;
   } catch (error: any) {
     // don't throw when is cancelled

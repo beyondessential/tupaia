@@ -22,7 +22,7 @@ import {
 import { ExportButton } from './ExportButton';
 
 const StyledModal = styled(Modal)`
-  .MuiPaper-root {
+  .MuiPaper-root:not(.MuiAlert-root) {
     background: ${({ theme }) => theme.palette.background.default};
   }
 `;
