@@ -20,10 +20,10 @@ const RecentSurveys = styled.section`
 
 const ScrollBody = styled.div`
   border-radius: 10px;
-  flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr));
   grid-column-gap: 1rem;
+
   // make a horizontal scrollable container for small screens
   ${({ theme }) => theme.breakpoints.down('sm')} {
     grid-auto-flow: column;
@@ -53,7 +53,7 @@ export const RecentSurveysSection = () => {
       <SectionHeading>My recent surveys</SectionHeading>
       <ScrollBody>
         {isSuccess && recentSurveys?.length ? (
-          recentSurveys?.map(({ surveyName, surveyCode, countryName, countryId }) => (
+          recentSurveys.map(({ surveyName, surveyCode, countryName, countryId }) => (
             <Tile
               key={`${surveyCode}-${countryName}`}
               title={surveyName}
