@@ -10,13 +10,6 @@ PACKAGES=$(${TUPAIA_DIR}/scripts/bash/getDeployablePackages.sh)
 # Start back end server packages
 for PACKAGE in ${PACKAGES[@]}; do
     if [[ $PACKAGE == *server ]]; then
-        if [[ $PACKAGE == 'meditrak-app-server' ]]; then
-            # reset cwd back to `/tupaia`
-            cd ${TUPAIA_DIR}
-
-            # ensure that the latest permissions based meditrak sync queue has been built
-            yarn workspace @tupaia/meditrak-app-server create-meditrak-sync-view
-        fi
         if [[ $PACKAGE == 'central-server' ]]; then
             # reset cwd back to `/tupaia`
             cd ${TUPAIA_DIR}
