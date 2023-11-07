@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ProjectSelectForm } from '../features';
 import { ROUTES } from '../constants';
 
@@ -18,9 +18,15 @@ const Container = styled(Paper).attrs({
 `;
 export const ProjectSelectPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { from } = location.state as {
+    from?: string;
+  };
 
   const onSuccess = () => {
-    navigate(ROUTES.HOME);
+    navigate(from || ROUTES.HOME, {
+      state: null,
+    });
   };
 
   return (
