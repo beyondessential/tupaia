@@ -62,7 +62,7 @@ const StickyBar = styled.div<{
 }>`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 
   h3 {
     padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};
@@ -109,12 +109,6 @@ const DashboardItemsWrapper = styled.div<{
   background-color: ${({ theme }) => theme.palette.background.paper};
   grid-template-columns: repeat(2, 1fr);
   column-gap: 0.8rem;
-`;
-
-const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
 `;
 
 export const Dashboard = () => {
@@ -190,13 +184,13 @@ export const Dashboard = () => {
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
           <Breadcrumbs />
-          <DashboardImageContainer>
-            {entity?.photoUrl ? (
-              <Photo title={title} photoUrl={entity?.photoUrl} />
+          <div>
+            {entity?.imageUrl ? (
+              <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
               <StaticMap bounds={bounds} />
             )}
-          </DashboardImageContainer>
+          </div>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>

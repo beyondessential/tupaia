@@ -12,7 +12,7 @@ export type AutocompleteAnswer = {
   label: string;
 };
 
-type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+export type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
 
 export type Answers = Record<string, Answer>;
 
@@ -26,6 +26,8 @@ interface SurveyResponse {
 }
 
 export type Params = Record<string, never>;
-export type ResBody = void;
+export type ResBody = {
+  createdEntities: Entity[];
+};
 export type ReqBody = SurveyResponse;
 export type ReqQuery = Record<string, never>;

@@ -5490,6 +5490,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:1.3.8":
+  version: 1.3.8
+  resolution: "@hookform/resolvers@npm:1.3.8"
+  peerDependencies:
+    react-hook-form: ">=6.6.0"
+  checksum: bf200a923273af954b4652c426c976a4b0a9b2b1d6976791a8c7fdcfa0784df3fbf5e6253bcf9f86f4ac17afe2e523df499f7d03e319dcae6bf2e136c6580a08
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.5.0":
   version: 0.5.0
   resolution: "@humanwhocodes/config-array@npm:0.5.0"
@@ -9804,6 +9813,7 @@ __metadata:
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -9837,7 +9847,6 @@ __metadata:
     moment-timezone: ^0.5.28
     morgan: ^1.9.0
     multer: ^1.4.3
-    nodemailer: ^4.7.0
     npm-run-all: ^4.1.5
     nyc: ^15.1.0
     public-ip: ^2.5.0
@@ -10000,6 +10009,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/datatrak-web@workspace:packages/datatrak-web"
   dependencies:
+    "@hookform/resolvers": 1.3.8
     "@material-ui/core": ^4.9.11
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
@@ -10032,6 +10042,7 @@ __metadata:
     styled-components: ^5.1.0
     typescript: ^5.0.2
     vite: ^4.3.2
+    yup: ^1.3.2
   languageName: unknown
   linkType: soft
 
@@ -10145,6 +10156,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     camelcase-keys: ^6.2.2
@@ -10202,6 +10214,7 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10424,6 +10437,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/server-utils@1.0.0, @tupaia/server-utils@workspace:packages/server-utils":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/server-utils@workspace:packages/server-utils"
+  dependencies:
+    "@aws-sdk/client-s3": ^3.341.0
+    "@aws-sdk/credential-providers": ^3.341.0
+    "@aws-sdk/lib-storage": ^3.348.0
+    "@tupaia/utils": 1.0.0
+    "@types/nodemailer": ^6.4.13
+    cookie: ^0.5.0
+    nodemailer: ^6.9.7
+    puppeteer: ^15.4.0
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/superset-api@1.0.0, @tupaia/superset-api@workspace:packages/superset-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
@@ -10448,11 +10476,9 @@ __metadata:
     ajv-formats: v3.0.0-rc.0
     better-ajv-errors: ^1.2.0
     camelcase-keys: ^6.2.2
-    cookie: ^0.5.0
     lodash.get: ^4.4.2
     moment: ^2.24.0
     moment-timezone: ^0.5.25
-    puppeteer: ^15.4.0
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -10466,6 +10492,7 @@ __metadata:
     "@tupaia/auth": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10643,9 +10670,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
-    "@aws-sdk/client-s3": ^3.341.0
-    "@aws-sdk/credential-providers": ^3.341.0
-    "@aws-sdk/lib-storage": ^3.348.0
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2
@@ -10684,6 +10708,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/dhis-api": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
+    "@tupaia/server-utils": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     async: ^2.6.0
@@ -11732,6 +11757,15 @@ __metadata:
   version: 16.18.11
   resolution: "@types/node@npm:16.18.11"
   checksum: 2a3b1da13063debe6e26f732defb5f03ef4ef732c3e08daba838d8850433bd00e537ce1a97ce9bcfc4b15db5218d701d1265fae94e0d6926906bec157e6b46e0
+  languageName: node
+  linkType: hard
+
+"@types/nodemailer@npm:^6.4.13":
+  version: 6.4.13
+  resolution: "@types/nodemailer@npm:6.4.13"
+  dependencies:
+    "@types/node": "*"
+  checksum: fd27d57d5801aaa7594d3bab748aedb1addc0c3a8ff9a21ea7675eec0e7e99cc477d05264b757b97691612fcfab37e52ded6c0725a700a90ad24fc7829dcc641
   languageName: node
   linkType: hard
 
@@ -32752,10 +32786,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^4.6.7, nodemailer@npm:^4.7.0":
+"nodemailer@npm:^4.6.7":
   version: 4.7.0
   resolution: "nodemailer@npm:4.7.0"
   checksum: 33f8774cd1883c693b4cafe66eb599e2351c3e0dfa29f4d37dcfcc26ad789490e9cede64784f4cd79db8ee7675381aafb9e52243859977a5c1ecd2fff6607d97
+  languageName: node
+  linkType: hard
+
+"nodemailer@npm:^6.9.7":
+  version: 6.9.7
+  resolution: "nodemailer@npm:6.9.7"
+  checksum: 0cf66d27aed3bd2cbdff9939402cec3d2119c31b2b9ff4af3bcd59f48287ea75b90c0ce2cd9eb0df838164972cd25581b4b723c91fd673e2608bcb28445ccb1b
   languageName: node
   linkType: hard
 
@@ -36201,6 +36242,13 @@ __metadata:
   version: 2.0.4
   resolution: "property-expr@npm:2.0.4"
   checksum: 7ac142e189f0feef685f327f582efe13bfbc24a0b6e2328afdb38520bc140caa5f91dfa9529f2539b4468d85dc83a593e1ef0e0f7401b525368bb634b323bf54
+  languageName: node
+  linkType: hard
+
+"property-expr@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "property-expr@npm:2.0.5"
+  checksum: 4ebe82ce45aaf1527e96e2ab84d75d25217167ec3ff6378cf83a84fb4abc746e7c65768a79d275881602ae82f168f9a6dfaa7f5e331d0fcc83d692770bcce5f1
   languageName: node
   linkType: hard
 
@@ -42425,6 +42473,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-case@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "tiny-case@npm:1.0.3"
+  checksum: 3f7a30c39d5b0e1bc097b0b271bec14eb5b836093db034f35a0de26c14422380b50dc12bfd37498cf35b192f5df06f28a710712c87ead68872a9e37ad6f6049d
+  languageName: node
+  linkType: hard
+
 "tiny-emitter@npm:^2.1.0":
   version: 2.1.0
   resolution: "tiny-emitter@npm:2.1.0"
@@ -45923,6 +45978,18 @@ __metadata:
     property-expr: ^2.0.4
     toposort: ^2.0.2
   checksum: 43a16786b47cc910fed4891cebdd89df6d6e31702e9462e8f969c73eac88551ce750732608012201ea6b93802c8847cb0aa27b5d57370640f4ecf30f9f97d4b0
+  languageName: node
+  linkType: hard
+
+"yup@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "yup@npm:1.3.2"
+  dependencies:
+    property-expr: ^2.0.5
+    tiny-case: ^1.0.3
+    toposort: ^2.0.2
+    type-fest: ^2.19.0
+  checksum: 08150c6e05b944b128dd27d423757d21a2b5dd3d000abd431c7f22349101d373b2ed5e5f66b5b308fe0579cd67ee788ed6935f810842d8c0fa46b0f7a1be0023
   languageName: node
   linkType: hard
 

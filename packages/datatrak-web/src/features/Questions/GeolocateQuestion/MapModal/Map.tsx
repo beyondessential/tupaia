@@ -14,15 +14,26 @@ import {
   ZoomControl,
 } from 'react-leaflet';
 
+// On small screens the map needs to fit in the body of the modal so that we don't create a scroll trap fo r the user
+// but the map container also needs a set height to render correctly so it's not possible to use flexbox to fill the height
+// and so we need to set the height manually using this fudge factor.
+const PAGE_PADDING = 280;
+
 const MapContainer = styled(BaseMapContainer)`
   height: 30rem;
   width: 100%;
   margin-top: 2.5rem;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 1rem;
+    height: calc(100vh - ${PAGE_PADDING}px);
+  }
 `;
 
 const Pin = new Icon({
   iconUrl: '/mapIcon.png',
   iconSize: [70, 70],
+  iconAnchor: [35, 60], // anchor the tip of the pin to the coordinates
 });
 
 type MapComponentProps = {
@@ -94,11 +105,11 @@ const PinDrop = ({ lat, lng, setCoordinates }: MapComponentProps) => {
 export const Map = ({ lat, lng, setCoordinates }: MapComponentProps) => {
   const coordinatesInvalid = [lat, lng].some(coordinate => !coordinate && coordinate !== 0);
 
-  // round coordinates to 2 decimal places before setting them
+  // round coordinates to 4 decimal places before setting them - any less and the coordinates are not very accurate
   const onUpdateCoordinates = ({ lat, lng }: LatLngLiteral) => {
     setCoordinates({
-      lat: parseFloat(lat.toFixed(2)),
-      lng: parseFloat(lng.toFixed(2)),
+      lat: parseFloat(lat.toFixed(4)),
+      lng: parseFloat(lng.toFixed(4)),
     });
   };
   return (

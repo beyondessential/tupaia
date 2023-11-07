@@ -10,11 +10,14 @@ import styled from 'styled-components';
 const StyledButton = styled(UIButton)`
   &.Mui-disabled {
     pointer-events: auto; // this is to allow the hover effect of a tooltip to work
+    &.MuiButton-containedPrimary {
+      opacity: 0.3; // overrides styles explicitly set in ui-components
+    }
   }
 `;
 
 interface ButtonProps extends Record<string, any> {
-  tooltip?: string;
+  tooltip?: ReactNode;
   children?: ReactNode;
   to?: To;
 }
@@ -36,7 +39,7 @@ const ButtonWrapper = ({
 export const Button = ({ tooltip, children, to, ...restOfProps }: ButtonProps) => {
   return (
     <ButtonWrapper tooltip={tooltip}>
-      <StyledButton component={to ? RouterLink : undefined} to={to} {...restOfProps}>
+      <StyledButton {...restOfProps} component={to ? RouterLink : undefined} to={to}>
         {children}
       </StyledButton>
     </ButtonWrapper>

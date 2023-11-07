@@ -33,6 +33,7 @@ export interface ConfirmDeleteModalProps {
   description?: string;
   cancelButtonText?: string;
   confirmButtonText?: string;
+  disablePortal?: boolean;
 }
 
 export const ConfirmDeleteModal = React.memo(
@@ -45,8 +46,9 @@ export const ConfirmDeleteModal = React.memo(
     description = `Once deleted this can't be undone.`,
     cancelButtonText = 'Cancel',
     confirmButtonText = 'Yes, Delete',
+    disablePortal = false,
   }: ConfirmDeleteModalProps) => (
-    <Dialog onClose={onCancel} open={isOpen}>
+    <Dialog onClose={onCancel} open={isOpen} disablePortal={disablePortal}>
       <DialogHeader onClose={onCancel} title={title} color="error" />
       <DialogContent>
         <Container>

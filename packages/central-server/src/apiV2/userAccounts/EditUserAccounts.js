@@ -4,7 +4,7 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
-import { S3Client, S3 } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/server-utils';
 import { EditHandler } from '../EditHandler';
 import {
   assertAnyPermissions,
@@ -51,7 +51,6 @@ export class EditUserAccounts extends EditHandler {
         ...hashAndSaltPassword(password),
       };
     }
-
 
     if (preferenceField) {
       throw new Error('Preferences should be updated via the specific preferences fields');

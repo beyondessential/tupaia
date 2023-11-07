@@ -11,6 +11,7 @@ import {
   Option as BaseOption,
 } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
+import { SurveyScreenComponentConfig } from '../../models-extra';
 
 export type Params = Record<string, never>;
 
@@ -19,7 +20,7 @@ type VisibilityCriteria = Record<Question['id'], any> & {
 };
 
 type ValidationCriteria = {
-  required?: boolean;
+  mandatory?: boolean;
   min?: number;
   max?: number;
 };
@@ -40,65 +41,6 @@ type CamelCasedComponent = KeysToCamelCase<
     | 'type'
   >
 >;
-
-export type CodeGeneratorConfig = {
-  type: 'shortid' | 'mongoid';
-  prefix?: string;
-  length?: number;
-  chunkLength?: number;
-  alphabet?: string;
-};
-
-export type AutocompleteConfig = {
-  createNew?: boolean;
-  attributes?: {
-    [key: string]: { questionId: Question['id'] };
-  };
-};
-
-export type ConditionConfig = {
-  conditions: {
-    [key: string]: {
-      formula: string;
-      defaultValues?: Record<Question['id'], any>;
-    };
-  };
-};
-
-type EntityQuestionConfig = {
-  createNew?: boolean;
-  fields?: Record<string, string | { questionId: Question['id'] }>;
-  filter?: {
-    type?: string[] | string;
-    grandparentId?: { questionId: Question['id'] };
-    parentId?: { questionId: Question['id'] };
-    attributes?: {
-      [key: string]: { questionId: Question['id'] };
-    };
-  };
-  // This is needed to support the old format of the entity question config
-  [key: string]: any;
-};
-
-export type ArithmeticConfig = {
-  formula: string;
-  defaultValues?: Record<Question['id'], any>;
-  answerDisplayText?: string;
-  valueTranslation?: Record<
-    Question['id'],
-    {
-      [key: string]: string | number;
-    }
-  >;
-};
-
-export type SurveyScreenComponentConfig = {
-  codeGenerator?: CodeGeneratorConfig;
-  autocomplete?: AutocompleteConfig;
-  entity?: EntityQuestionConfig;
-  condition?: ConditionConfig;
-  arithmetic?: ArithmeticConfig;
-};
 
 export type Option = Pick<BaseOption, 'value' | 'label'> & {
   color?: string;
