@@ -44,7 +44,9 @@ export const processSurveyResponse = async (
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
-  const surveyResponse: MeditrakSurveyResponseRequest = {
+  const surveyResponse: MeditrakSurveyResponseRequest & {
+    qr_codes_to_create?: Entity[];
+  } = {
     user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
@@ -55,6 +57,7 @@ export const processSurveyResponse = async (
     timestamp,
     timezone,
     entities_upserted: [],
+    qr_codes_to_create: [],
     options_created: [],
     answers: [],
   };
@@ -71,15 +74,18 @@ export const processSurveyResponse = async (
       [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
       isUpsertEntityQuestion(config)
     ) {
-      const entityObj = await buildUpsertEntity(
+      const entityObj = (await buildUpsertEntity(
         config,
         questionId,
         answers,
         countryId,
         findEntityById,
-      );
+      )) as Entity;
       if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
       answer = entityObj?.id;
+      if (config.entity?.generateQrCode) {
+        surveyResponse.qr_codes_to_create?.push(entityObj);
+      }
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
