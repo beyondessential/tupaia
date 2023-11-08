@@ -21,18 +21,6 @@ import { useModal, useGAEffect } from './utils';
 /**
  * This is the wrapper to handle any search param routes that should be modals
  */
-
-const modalViews = {
-  [MODAL_ROUTES.PROJECTS]: ProjectsModal,
-  [MODAL_ROUTES.LOGIN]: LoginModal,
-  [MODAL_ROUTES.REGISTER]: RegisterModal,
-  [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccessModal,
-  [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,
-  [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPasswordModal,
-  [MODAL_ROUTES.RESET_PASSWORD]: ResetPasswordModal,
-  [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
-};
-
 const modalParams = {
   [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: [URL_SEARCH_PARAMS.PROJECT],
   [MODAL_ROUTES.RESET_PASSWORD]: [URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN],
@@ -40,6 +28,17 @@ const modalParams = {
 
 export const ModalRoutes = () => {
   const { hash, closeModal } = useModal();
+
+  const modalViews = {
+    [MODAL_ROUTES.PROJECTS]: ProjectsModal,
+    [MODAL_ROUTES.LOGIN]: LoginModal,
+    [MODAL_ROUTES.REGISTER]: RegisterModal,
+    [MODAL_ROUTES.REQUEST_COUNTRY_ACCESS]: RequestCountryAccessModal,
+    [MODAL_ROUTES.REQUEST_PROJECT_ACCESS]: RequestProjectAccessModal,
+    [MODAL_ROUTES.FORGOT_PASSWORD]: ForgotPasswordModal,
+    [MODAL_ROUTES.RESET_PASSWORD]: ResetPasswordModal,
+    [MODAL_ROUTES.VERIFY_EMAIL_RESEND]: VerifyEmailResendModal,
+  };
 
   const modal = hash as typeof MODAL_ROUTES[keyof typeof MODAL_ROUTES];
   useGAEffect('User', 'Open Dialog', modal);
