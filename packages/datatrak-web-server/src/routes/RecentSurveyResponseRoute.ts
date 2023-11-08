@@ -24,7 +24,7 @@ export class RecentSurveyResponseRoute extends Route<RecentSurveyResponseRequest
     const { ctx, params } = this.req;
     const { id: responseId } = params;
 
-    const surveyResponse = await ctx.services.central.fetchResources(`surveyResponse/${responseId}`);
+    const surveyResponse = await ctx.services.central.fetchResources(`surveyResponses/${responseId}`);
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
