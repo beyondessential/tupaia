@@ -210,12 +210,16 @@ const Container = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+
+  // Make sure there is enough space for the mobile warning text
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    min-height: 5rem;
+  }
 `;
 
 const MobileWarningText = styled.div`
   font-size: 1rem;
   text-align: center;
-  max-width: 25rem;
   position: absolute;
   top: 0;
   left: 0;
@@ -223,7 +227,7 @@ const MobileWarningText = styled.div`
   height: 100%;
   background-color: rgba(43, 45, 56);
   padding: 0.5rem;
-  z-index: 1;
+  z-index: 10;
 
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;

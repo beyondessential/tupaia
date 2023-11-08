@@ -4,15 +4,14 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { gaEvent } from '../../utils';
 import { DEFAULT_URL, MODAL_ROUTES } from '../../constants';
 import { useLandingPage } from '../queries';
 
 export const useLogout = () => {
-  const { landingPageUrlSegment } = useParams();
-  const { isLandingPage } = useLandingPage(landingPageUrlSegment);
+  const { isLandingPage } = useLandingPage();
   const location = useLocation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
