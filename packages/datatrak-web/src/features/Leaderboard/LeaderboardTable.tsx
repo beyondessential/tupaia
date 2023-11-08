@@ -79,8 +79,6 @@ export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
   const { data: leaderboard, isLoading } = useLeaderboard();
   if (isLoading) return null;
 
-  const userIsInLeaderboard =
-    user && leaderboard?.some(({ userId }) => userId === user.id);
   return (
     <TableContainer>
       <Table>
@@ -92,30 +90,26 @@ export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {leaderboard?.map(
-            ({ userId, firstName, lastName, coconuts }, i) => {
-              const isActiveUser = user && user.id === userId;
-              return (
-                <TableRow key={userId}>
-                  <Cell>{i + 1}</Cell>
-                  <Cell $isActiveUser={isActiveUser}>
-                    {firstName} {lastName}
-                  </Cell>
-                  <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
-                </TableRow>
-              );
-            },
-          )}
+          {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
+            const isActiveUser = user && user.id === userId;
+            return (
+              <TableRow key={userId}>
+                <Cell>{i + 1}</Cell>
+                <Cell $isActiveUser={isActiveUser}>
+                  {firstName} {lastName}
+                </Cell>
+                <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
+              </TableRow>
+            );
+          })}
         </TableBody>
-        {!userIsInLeaderboard && (
-          <TableFooter>
-            <TableRow>
-              <FooterCell>-</FooterCell>
-              <FooterCell>{user?.userName}</FooterCell>
-              <FooterCell>{userRewards?.coconuts}</FooterCell>
-            </TableRow>
-          </TableFooter>
-        )}
+        <TableFooter>
+          <TableRow>
+            <FooterCell>-</FooterCell>
+            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>{userRewards?.coconuts}</FooterCell>
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );
