@@ -26877,6 +26877,35 @@ export const SurveyScreenComponentConfigSchema = {
 	"additionalProperties": false
 } 
 
+export const LeaderboardItemSchema = {
+	"type": "object",
+	"properties": {
+		"user_id": {
+			"type": "string"
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		},
+		"coconuts": {
+			"type": "number"
+		},
+		"pigs": {
+			"type": "number"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"coconuts",
+		"first_name",
+		"last_name",
+		"pigs",
+		"user_id"
+	]
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -52499,7 +52528,8 @@ export const DataTableSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52539,7 +52569,8 @@ export const DataTableCreateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -52580,7 +52611,8 @@ export const DataTableUpdateSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -58796,7 +58828,8 @@ export const DataTableTypeSchema = {
 		"entity_attributes",
 		"entity_relations",
 		"events",
-		"sql"
+		"sql",
+		"survey_responses"
 	],
 	"type": "string"
 } 
@@ -58833,7 +58866,15 @@ export const AnswerTypeSchema = {
 			"type": "string"
 		},
 		"body": {
-			"type": "string"
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false
+				},
+				{
+					"type": "string"
+				}
+			]
 		},
 		"question_id": {
 			"type": "string"
@@ -58842,7 +58883,6 @@ export const AnswerTypeSchema = {
 	"additionalProperties": false,
 	"required": [
 		"body",
-		"id",
 		"question_id",
 		"type"
 	]
@@ -58873,7 +58913,15 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"body": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "object",
+								"additionalProperties": false
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"question_id": {
 						"type": "string"
@@ -58882,7 +58930,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"additionalProperties": false,
 				"required": [
 					"body",
-					"id",
 					"question_id",
 					"type"
 				]
@@ -59061,7 +59108,8 @@ export const DataTablePreviewRequestSchema = {
 				"entity_attributes",
 				"entity_relations",
 				"events",
-				"sql"
+				"sql",
+				"survey_responses"
 			],
 			"type": "string"
 		}
@@ -59485,9 +59533,51 @@ export const AutocompleteAnswerSchema = {
 	]
 } 
 
+export const FileUploadAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name",
+		"value"
+	]
+} 
+
 export const AnswersSchema = {
 	"type": "object",
 	"additionalProperties": false
+} 
+
+export const RecentSurveySchema = {
+	"type": "object",
+	"properties": {
+		"surveyCode": {
+			"type": "string"
+		},
+		"surveyName": {
+			"type": "string"
+		},
+		"countryName": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"countryId",
+		"countryName",
+		"surveyCode",
+		"surveyName"
+	]
 } 
 
 export const CountryAccessSchema = {

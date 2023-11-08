@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
+import { Typography } from '@material-ui/core';
+import styled from 'styled-components';
 import { useCurrentUserSurveyResponses } from '../../api/queries';
-import { Tile } from '../../components';
+import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
-import styled from 'styled-components';
 
 const Container = styled.section`
   grid-area: recentResponses;
@@ -31,13 +32,13 @@ const ScrollBody = styled.div`
 `;
 
 export const SurveyResponsesSection = () => {
-  const { data, isSuccess } = useCurrentUserSurveyResponses();
+  const { data: recentSurveyResponses, isSuccess } = useCurrentUserSurveyResponses();
   return (
     <Container>
       <SectionHeading>My recent responses</SectionHeading>
       <ScrollBody>
-        {isSuccess &&
-          data.map(({ id, surveyName, dataTime, entityName, countryName }) => (
+        {isSuccess && recentSurveyResponses?.length > 0 ? (
+          recentSurveyResponses.map(({ id, surveyName, dataTime, entityName, countryName }) => (
             <Tile
               key={id}
               title={surveyName}
@@ -51,10 +52,16 @@ export const SurveyResponsesSection = () => {
                   {entityName}
                 </>
               }
+              Icon={SurveyTickIcon}
             >
               {countryName}, {shortDate(dataTime)}
             </Tile>
-          ))}
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary">
+            No recent surveys responses to display
+          </Typography>
+        )}
       </ScrollBody>
     </Container>
   );

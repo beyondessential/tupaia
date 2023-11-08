@@ -12,7 +12,19 @@ export type AutocompleteAnswer = {
   label: string;
 };
 
-export type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+export type FileUploadAnswer = {
+  name: string;
+  value: string;
+};
+
+export type Answer =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | AutocompleteAnswer
+  | FileUploadAnswer;
 
 export type Answers = Record<string, Answer>;
 
@@ -27,7 +39,7 @@ interface SurveyResponse {
 
 export type Params = Record<string, never>;
 export type ResBody = {
-  createdEntities: Entity[];
+  qrCodeEntitiesCreated: Entity[];
 };
 export type ReqBody = SurveyResponse;
 export type ReqQuery = Record<string, never>;

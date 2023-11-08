@@ -1755,6 +1755,7 @@ export enum DataTableType {
   'data_group_metadata' = 'data_group_metadata',
   'data_element_metadata' = 'data_element_metadata',
   'entity_attributes' = 'entity_attributes',
+  'survey_responses' = 'survey_responses',
 }
 export enum DataSourceType {
   'dataElement' = 'dataElement',

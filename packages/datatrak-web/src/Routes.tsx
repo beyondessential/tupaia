@@ -30,6 +30,7 @@ import {
   RequestProjectAccessPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  AccountSettingsPage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -52,10 +53,19 @@ const LoggedInRedirect = ({ children }) => {
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, isLoading, isFetched, data } = useUser();
+  const { isLoggedIn, isLoading, isFetched, data, isFetching } = useUser();
   const location = useLocation();
-  if (isLoading || !isFetched) return <FullPageLoader />;
-  if (!isLoggedIn) return <Navigate to="/login" replace={true} />;
+  if (isLoading || !isFetched || isFetching) return <FullPageLoader />;
+  if (!isLoggedIn)
+    return (
+      <Navigate
+        to="/login"
+        replace={true}
+        state={{
+          from: `${location.pathname}${location.search}`,
+        }}
+      />
+    );
 
   const PROJECT_SELECT_URLS = [ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS];
   // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
@@ -64,7 +74,15 @@ const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
 
   // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
   if (!data?.projectId && !PROJECT_SELECT_URLS.includes(location.pathname))
-    return <Navigate to={ROUTES.PROJECT_SELECT} replace={true} />;
+    return (
+      <Navigate
+        to={ROUTES.PROJECT_SELECT}
+        replace={true}
+        state={{
+          from: `${location.pathname}${location.search}`,
+        }}
+      />
+    );
   return children ? children : <Outlet />;
 };
 
@@ -153,6 +171,14 @@ export const Routes = () => {
             {SurveyPageRoutes}
           </Route>
         </Route>
+        <Route
+          path={ROUTES.ACCOUNT_SETTINGS}
+          element={
+            <PrivateRoute>
+              <AccountSettingsPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </RouterRoutes>

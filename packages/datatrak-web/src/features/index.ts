@@ -19,3 +19,4 @@ export {
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
 export { MobileAppPrompt } from './MobileAppPrompt';
+export { Leaderboard } from './Leaderboard';

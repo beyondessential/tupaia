@@ -11,3 +11,5 @@ export * as DatatrakWebSurveyRequest from './SurveyRequest';
 export * as DatatrakWebSubmitSurveyRequest from './SubmitSurveyRequest';
 export * as DatatrakWebSurveyResponsesRequest from './SurveyResponsesRequest';
 export * as DatatrakWebRecentSurveyResponseRequest from './RecentSurveyResponseRequest';
+export * as DatatrakWebRecentSurveysRequest from './RecentSurveysRequest';
+export * as DatatrakWebLeaderboardRequest from './LeaderboardRequest';

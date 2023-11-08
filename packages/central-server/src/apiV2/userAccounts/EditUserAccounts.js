@@ -18,7 +18,7 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * - /users/:userId
  */
 
-const USER_PREFERENCES_FIELDS = ['project_id', 'country_id'];
+const USER_PREFERENCES_FIELDS = ['project_id', 'country_id', 'delete_account_requested'];
 
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {

@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
 
@@ -15,6 +15,9 @@ type LoginCredentials = {
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { from } = location.state as { from: string };
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -29,8 +32,14 @@ export const useLogin = () => {
     {
       onSuccess: ({ user }) => {
         queryClient.invalidateQueries();
-        const path = user?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-        navigate(path);
+        if (from) {
+          navigate(from, {
+            state: null,
+          });
+        } else {
+          const path = user?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
+          navigate(path);
+        }
       },
       meta: {
         applyCustomErrorHandling: true,
