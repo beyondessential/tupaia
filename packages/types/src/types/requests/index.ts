@@ -14,6 +14,7 @@ export {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
+  DatatrakWebRecentSurveyResponseRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
