@@ -14,7 +14,7 @@ const PositionStyles = css`
   margin-right: 0.8rem;
   margin-bottom: 0.8rem;
   bottom: 100%;
-  z-index: 1;
+
   pointer-events: auto;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
@@ -39,6 +39,7 @@ const ExpandedLegend = styled.div`
   background-color: ${({ theme }) => theme.mobile.background};
   border-radius: 0.5rem;
   padding-top: 0.5rem;
+  z-index: 1;
   padding-bottom: 0.5rem;
 `;
 
