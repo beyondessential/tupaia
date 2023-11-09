@@ -114,6 +114,7 @@ export const SurveyPageRoutes = (
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
+      <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
       <Route
         path={ROUTES.SURVEY_SCREEN}
@@ -167,7 +168,6 @@ export const Routes = () => {
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-              <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
             {SurveyPageRoutes}

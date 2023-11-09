@@ -43,8 +43,7 @@ export const SurveyResponsesSection = () => {
               key={id}
               title={surveyName}
               text={entityName}
-              // Todo: update link to survey response route in WAITP-1452
-              to={`/#surveyResponse/${id}`}
+              to={`/survey/1/survey-response/${id}`}
               tooltip={
                 <>
                   {surveyName}

@@ -6,29 +6,13 @@
 import React, { useEffect } from 'react';
 import { ScrollableBody } from '../layout';
 import { QuestionType } from '@tupaia/types';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Paper as MuiPaper, Typography } from '@material-ui/core';
 import { useSurveyResponse } from '../api/queries';
 import { useSurveyForm } from '../features';
 import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../features/Survey/utils';
-
-const Paper = styled(MuiPaper).attrs({
-  variant: 'outlined',
-  elevation: 0,
-})`
-  flex: 1;
-  max-width: 63rem;
-  padding: 0;
-  overflow: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border-radius: 0;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: 1rem;
-    border-radius: 4px;
-  }
-`;
+import { SurveyQuestionGroup } from '../features/Survey/Components';
 
 const Header = styled.div`
   padding: 1rem;
@@ -90,16 +74,19 @@ const PageDescription = styled(Typography)`
 `;
 
 export const SurveyResponsePage = () => {
-  const { setFormData, visibleScreens } = useSurveyForm();
-  const { data } = useSurveyResponse('4b3ddd397b9248ecab53fd99');
+  const { surveyResponseId } = useParams();
+  const { setFormData, visibleScreens, formData } = useSurveyForm();
+  const { data } = useSurveyResponse(surveyResponseId);
 
   const answers = data?.answers;
 
   useEffect(() => {
-    console.log('answers', answers);
-    setFormData(answers);
-  }, [JSON.stringify(answers), setFormData]);
+    if (answers) {
+      setFormData(answers);
+    }
+  }, [JSON.stringify(answers)]);
 
+  console.log('visibleScreens', visibleScreens, formData);
   if (!data || !visibleScreens || !visibleScreens.length) return null;
 
   // split the questions into sections by screen so it's easier to read the long form
@@ -120,7 +107,7 @@ export const SurveyResponsePage = () => {
   });
 
   return (
-    <Paper>
+    <>
       <Header>
         <PageHeading>Review and submit</PageHeading>
         <PageDescription>
@@ -138,6 +125,6 @@ export const SurveyResponsePage = () => {
           ))}
         </Fieldset>
       </ScrollableBody>
-    </Paper>
+    </>
   );
 };
