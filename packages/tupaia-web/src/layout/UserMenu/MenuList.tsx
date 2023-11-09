@@ -7,6 +7,7 @@ import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { Button, ListItem, Link, ListItemProps } from '@material-ui/core';
 import { RouterLink } from '../../components';
+import { MOBILE_BREAKPOINT } from '../../constants';
 
 /**
  * Menulist is a component that displays a list of menu items for the hamburger menu
@@ -21,6 +22,9 @@ const MenuListWrapper = styled.ul<{
   margin-top: 1rem;
   * {
     color: ${({ $secondaryColor }) => $secondaryColor};
+  }
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    margin-top: 0;
   }
 `;
 
@@ -37,7 +41,6 @@ const MenuItemStyles = css`
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.08);
   }
-
 `;
 
 const MenuItemButton = styled(Button)`
