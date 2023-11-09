@@ -79,6 +79,12 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const SubmitData = (
+    <BaseMenuItem key="SubmitData" href="https://datatrak.tupaia.org" externalLink>
+      Submit data
+    </BaseMenuItem>
+  );
+
   const HelpCentre = (
     <BaseMenuItem
       key="help"
@@ -102,6 +108,7 @@ export const UserMenu = () => {
 
   const baseMenuItems = isLoggedIn
     ? [
+        SubmitData,
         ViewProjects,
         HelpCentre,
         ChangePassword,
