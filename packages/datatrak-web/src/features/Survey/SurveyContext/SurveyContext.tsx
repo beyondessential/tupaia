@@ -38,6 +38,7 @@ export const SurveyContext = ({ children }) => {
   const { data: survey } = useSurvey(surveyCode);
 
   const { formData } = state;
+  console.log('formdata', formData);
 
   const surveyScreens = survey?.screens || [];
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);

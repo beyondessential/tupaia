@@ -12,6 +12,7 @@ import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
 import { HEADER_HEIGHT } from '../../constants';
+import { useSurveyResponse } from '../../api/queries';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -78,6 +79,8 @@ const Grid = styled.div`
 `;
 
 export const LandingPage = () => {
+  const { data } = useSurveyResponse('4b3ddd397b9248ecab53fd99');
+  console.log('data', data);
   return (
     <PageContainer>
       <PageBody>
