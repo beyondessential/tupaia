@@ -12,5 +12,6 @@ export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { SubmitSurveyRequest, SubmitSurveyRoute } from './SubmitSurvey/SubmitSurveyRoute';
 export { RecentSurveysRequest, RecentSurveysRoute } from './RecentSurveysRoute';
+export { SingleSurveyResponseRequest, SingleSurveyResponseRoute } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
