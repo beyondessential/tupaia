@@ -2,14 +2,33 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+
+import { ScrollableBody } from '../layout';
 import React from 'react';
-import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
 import { QuestionType } from '@tupaia/types';
-import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
-import { useSurveyForm } from '../SurveyContext';
-import { SurveyQuestionGroup } from '../Components';
-import { ScrollableBody } from '../../../layout';
+import styled from 'styled-components';
+import { Paper as MuiPaper, Typography } from '@material-ui/core';
+import { useSurveyResponse } from '../api/queries';
+import { useSurveyForm } from '../features';
+import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../features/Survey/utils';
+
+const Paper = styled(MuiPaper).attrs({
+  variant: 'outlined',
+  elevation: 0,
+})`
+  flex: 1;
+  max-width: 63rem;
+  padding: 0;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-left: 1rem;
+    border-radius: 4px;
+  }
+`;
 
 const Header = styled.div`
   padding: 1rem;
@@ -70,8 +89,10 @@ const PageDescription = styled(Typography)`
   }
 `;
 
-export const SurveyReviewScreen = () => {
-  const { visibleScreens } = useSurveyForm();
+export const SurveyResponsePage = () => {
+  const { setFormData, visibleScreens } = useSurveyForm();
+  const { data } = useSurveyResponse('4b3ddd397b9248ecab53fd99');
+
   if (!visibleScreens || !visibleScreens.length) return null;
 
   // split the questions into sections by screen so it's easier to read the long form
@@ -92,7 +113,7 @@ export const SurveyReviewScreen = () => {
   });
 
   return (
-    <>
+    <Paper>
       <Header>
         <PageHeading>Review and submit</PageHeading>
         <PageDescription>
@@ -110,6 +131,6 @@ export const SurveyReviewScreen = () => {
           ))}
         </Fieldset>
       </ScrollableBody>
-    </>
+    </Paper>
   );
 };

@@ -31,6 +31,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AccountSettingsPage,
+  SurveyResponsePage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -166,6 +167,7 @@ export const Routes = () => {
             {/** Any private centred views should go in here */}
             <Route element={<CentredLayout />}>
               <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+              <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
             {SurveyPageRoutes}
