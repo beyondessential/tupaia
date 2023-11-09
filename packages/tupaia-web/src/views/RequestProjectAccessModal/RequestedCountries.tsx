@@ -28,12 +28,14 @@ const AccessRequestList = styled(List)`
 
 interface RequestedCountriesProps {
   requestedCountries: CountryAccessListItem[];
+  countriesWithAccess: CountryAccessListItem[];
   onShowForm: () => void;
   hasAdditionalCountries: boolean;
   isLandingPage?: boolean;
 }
 export const RequestedCountries = ({
   requestedCountries,
+  countriesWithAccess,
   onShowForm,
   hasAdditionalCountries,
   isLandingPage,
@@ -46,6 +48,12 @@ export const RequestedCountries = ({
       <SubHeading variant="h3">Countries requested for this project:</SubHeading>
       <AccessRequestList>
         {requestedCountries.map(({ name }) => (
+          <li key={name}>{name}</li>
+        ))}
+      </AccessRequestList>
+      <SubHeading variant="h3">Countries with approved access for this project:</SubHeading>
+      <AccessRequestList>
+        {countriesWithAccess.map(({ name }) => (
           <li key={name}>{name}</li>
         ))}
       </AccessRequestList>

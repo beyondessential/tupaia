@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   left: 0.5rem;
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 10;
 `;
 
 const StyledLink = styled.a`

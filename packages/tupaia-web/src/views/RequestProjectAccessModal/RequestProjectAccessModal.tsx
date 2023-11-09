@@ -68,6 +68,8 @@ export const RequestProjectAccessModal = () => {
     });
   };
 
+  const countriesWithAccess = countries.filter((c: CountryAccessListItem) => c.hasAccess);
+
   // the countries that have already got a request
   const requestedCountries = getCountriesByAccess(true);
 
@@ -91,6 +93,7 @@ export const RequestProjectAccessModal = () => {
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}
+          countriesWithAccess={countriesWithAccess}
           hasAdditionalCountries={availableCountries.length > 0}
           onShowForm={() => setRequestAdditionalCountries(true)}
           isLandingPage={isLandingPage}

@@ -16,3 +16,4 @@ export { useCountryAccessList } from './useCountryAccessList';
 export { useCurrentUserRecentSurveys, useRecentSurveys } from './useRecentSurveys';
 export { useLeaderboard } from './useLeaderboard';
 export { useUserRewards } from './useUserRewards';
+export { useActivityFeed } from './useActivityFeed';
