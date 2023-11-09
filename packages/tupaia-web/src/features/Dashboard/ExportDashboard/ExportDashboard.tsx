@@ -8,10 +8,10 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
 import { Button, CheckboxList, ListItemProps, LoadingContainer } from '@tupaia/ui-components';
-import { DashboardItem } from '../../types';
-import { Modal } from '../../components';
-import { useEntity, useProject } from '../../api/queries';
-import { useExportDashboard } from '../../api/mutations';
+import { DashboardItem } from '../../../types';
+import { Modal } from '../../../components';
+import { useEntity, useProject } from '../../../api/queries';
+import { useExportDashboard } from '../../../api/mutations';
 
 const Wrapper = styled.div`
   width: 56rem;
