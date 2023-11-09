@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import React, { useEffect } from 'react';
 import { ScrollableBody } from '../layout';
-import React from 'react';
 import { QuestionType } from '@tupaia/types';
 import styled from 'styled-components';
 import { Paper as MuiPaper, Typography } from '@material-ui/core';
@@ -93,7 +93,14 @@ export const SurveyResponsePage = () => {
   const { setFormData, visibleScreens } = useSurveyForm();
   const { data } = useSurveyResponse('4b3ddd397b9248ecab53fd99');
 
-  if (!visibleScreens || !visibleScreens.length) return null;
+  const answers = data?.answers;
+
+  useEffect(() => {
+    console.log('answers', answers);
+    setFormData(answers);
+  }, [JSON.stringify(answers), setFormData]);
+
+  if (!data || !visibleScreens || !visibleScreens.length) return null;
 
   // split the questions into sections by screen so it's easier to read the long form
   const questionSections = visibleScreens.map(screen => {
