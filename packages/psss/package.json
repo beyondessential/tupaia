@@ -12,7 +12,6 @@
   "scripts": {
     "preview": "vite preview",
     "build": "npm run --prefix ../../ package:build:vite",
-    "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-frontend",
