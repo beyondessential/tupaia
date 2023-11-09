@@ -38,8 +38,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.2",
     "lodash.groupby": "^4.6.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.keyby": "^4.6.0",
-    "lodash.isequal": "^4.6.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "@tupaia/types": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "@types/lodash.groupby": "^4.6.0",
-    "@types/lodash.keyby": "^4.6.0",
-    "@types/lodash.isequal": "^4.6.0"
+    "@types/lodash.isequal": "^4.5.0",
+    "@types/lodash.keyby": "^4.6.0"
   }
 }
