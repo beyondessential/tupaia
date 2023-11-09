@@ -14,13 +14,13 @@ const Container = styled.div`
   flex-direction: column;
   margin-left: 1rem;
   .MuiTypography-colorTextSecondary {
-    margin-bottom: 1.3rem;
+    margin-bottom: 0.62rem;
   }
 `;
 
 const ListItemImageContainer = styled.div`
-  height: 4rem;
-  width: 4rem;
+  height: 3.3rem;
+  width: 3.3rem;
 `;
 
 const Image = styled.img.attrs({
