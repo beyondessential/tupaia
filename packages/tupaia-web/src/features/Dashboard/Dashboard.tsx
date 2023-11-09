@@ -6,8 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Typography, Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Typography } from '@material-ui/core';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
@@ -112,9 +111,6 @@ const DashboardImageContainer = styled.div`
   }
 `;
 
-const Alert = props => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -131,21 +127,21 @@ export const Dashboard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
-  const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
-  console.log('active dashboard: ',activeDashboard)
 
-  const handleSubscribeClick = (isJoinedState) => {
-    setIsSubscribed(isJoinedState)
-    setIsSnackbarOpen(true)
+
+  const handleSubscribeClick = (isSubscribed) => {
+    // TODO: Add call for mailing list route subscription
   } 
 
-  const handleCloseSnackbar = (_event, reason: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  // TODO: Add mailing list mailingListEnabled and userSubscribed properties in Dashboard route
+  // const { mailingListEnabled = false, userSubscribed = false } = activeDashboard;
+  // useEffect(() => {
+  //   if(userSubscribed) {
+  //     setIsSubscribed(true)
+  //   }
+  //   setIsSubscribed(false)
+  // },[mailingListEnabled, userSubscribed])
 
-    setIsSnackbarOpen(false);
-  };
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
@@ -204,11 +200,6 @@ export const Dashboard = () => {
       <Panel $isExpanded={isExpanded}>
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
-          <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={isSnackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-            <Alert elevation={6} variant="filled" onClose={handleCloseSnackbar} severity="success">
-              {isSubscribed ? 'Succesfully joined dashboard mailing list' : 'You are now removed from this dashboard mailing list'}
-            </Alert>
-          </Snackbar>
           <Breadcrumbs />
           <DashboardImageContainer>
             {entity?.photoUrl ? (

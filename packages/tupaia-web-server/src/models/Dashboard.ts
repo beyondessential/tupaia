@@ -14,9 +14,6 @@ type DashboardFields = Readonly<{
   name: string;
   root_entity_code: string;
   sort_order: number | null;
-  config: {
-    mailingListEnabled: boolean;
-  };
 }>;
 
 interface DashboardType extends DashboardFields, Omit<BaseDashboardType, 'id'> {}

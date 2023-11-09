@@ -50,4 +50,3 @@ export {
   ScaleType,
   MeasureColorScheme,
 } from './mapOverlay';
-export { DashboardConfig } from './dashboard';

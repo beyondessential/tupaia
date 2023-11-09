@@ -73,17 +73,16 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
 };
 
 interface ActionsMenuProps {
-  dashboardConfig: Dashboard['config'];
+  mailingListEnabled: boolean;
   isSubscribed: boolean;
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSubscribeClick: Function;
 }
 
-const ActionsMenu = ({ dashboardConfig, isSubscribed, setExportModalOpen, handleSubscribeClick}: ActionsMenuProps) => {
+const ActionsMenu = ({ mailingListEnabled, isSubscribed, setExportModalOpen, handleSubscribeClick}: ActionsMenuProps) => {
   const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
   const menuOptions: ActionsMenuOptionType[] = [exportOption]
   
-  const { mailingListEnabled } = dashboardConfig;
   if(!mailingListEnabled) {
     return (
       <UIActionsMenu options={menuOptions} includesIcons={true} />
@@ -130,6 +129,8 @@ export const DashboardMenu = ({
   };
 
   const hasMultipleDashboards = dashboards.length > 1;
+  // TODO: retrieve mailinListEnabled from activeDashboard
+  // const { mailingListEnabled = false } = activeDashboard
 
   return (
     <>
@@ -139,7 +140,7 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu dashboardConfig={activeDashboard.config} isSubscribed={isSubscribed} setExportModalOpen={setExportModalOpen} handleSubscribeClick={handleSubscribeClick}/>
+          <ActionsMenu mailingListEnabled={true} isSubscribed={isSubscribed} setExportModalOpen={setExportModalOpen} handleSubscribeClick={handleSubscribeClick}/>
         </Box>
       )}
 
