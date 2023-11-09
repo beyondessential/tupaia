@@ -16,7 +16,7 @@ export type RecentSurveyResponseRequest = Request<
 >;
 
 const ANSWER_COLUMNS = [
-  'text', 'question.code'
+  'text', 'question_id'
 ]
 
 export class RecentSurveyResponseRoute extends Route<RecentSurveyResponseRequest> {
@@ -29,7 +29,7 @@ export class RecentSurveyResponseRoute extends Route<RecentSurveyResponseRequest
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
     });
-    const answers = answerList.reduce((output: Record<string, string>, answer: any) => ({ ...output, [answer['question.code']]: answer.text }), {});
+    const answers = answerList.reduce((output: Record<string, string>, answer: { question_id: string, text: string }) => ({ ...output, [answer.question_id]: answer.text }), {});
 
     return camelcaseKeys({ ...surveyResponse, answers }, { deep: true });
   }
