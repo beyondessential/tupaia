@@ -256,6 +256,8 @@
       "dbaeumer.vscode-eslint",
       "eamodio.gitlens",
       "esbenp.prettier-vscode",
+      "humao.rest-client",
+      "ryu1kn.partial-diff",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",
       "wayou.vscode-todo-highlight"
