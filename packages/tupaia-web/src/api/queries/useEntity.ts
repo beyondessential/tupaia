@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { useLocation } from 'react-router';
 import { EntityCode, ProjectCode, Entity } from '../../types';
 import { get } from '../api';
-import { DEFAULT_BOUNDS, MODAL_ROUTES } from '../../constants';
+import { DEFAULT_BOUNDS, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { useModal } from '../../utils';
 import { useUser } from './useUser';
 
@@ -37,7 +37,13 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
         if (e.code !== 403) return;
         if (!isLoggedIn) return navigateToLogin();
         if (location.hash === `#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`) return;
-        return navigateToModal(MODAL_ROUTES.REQUEST_COUNTRY_ACCESS);
+
+        return navigateToModal(MODAL_ROUTES.REQUEST_PROJECT_ACCESS, [
+          {
+            param: URL_SEARCH_PARAMS.PROJECT,
+            value: projectCode!,
+          },
+        ]);
       },
     },
   );
