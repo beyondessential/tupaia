@@ -36,6 +36,7 @@ const ButtonWrapper = ({
 }) => {
   if (!tooltip) return children;
   return (
+    // we need to wrap the button in a span so that there is not a console error about tooltips on disabled buttons
     <Tooltip title={tooltip} arrow enterDelay={1000}>
       <TooltipButtonWrapper>{children}</TooltipButtonWrapper>
     </Tooltip>
