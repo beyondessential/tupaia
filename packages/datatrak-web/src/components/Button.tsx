@@ -18,8 +18,6 @@ const StyledButton = styled(UIButton)`
 
 const TooltipButtonWrapper = styled.span`
   display: flex;
-  flex: 1;
-  width: 100%;
   flex-direction: column;
 `;
 
