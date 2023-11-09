@@ -6,20 +6,20 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebRecentSurveyResponseRequest } from '@tupaia/types';
+import { DatatrakWebSingleSurveyResponseRequest } from '@tupaia/types';
 
-export type RecentSurveyResponseRequest = Request<
-  DatatrakWebRecentSurveyResponseRequest.Params,
-  DatatrakWebRecentSurveyResponseRequest.ResBody,
-  DatatrakWebRecentSurveyResponseRequest.ReqBody,
-  DatatrakWebRecentSurveyResponseRequest.ReqQuery
+export type SingleSurveyResponseRequest = Request<
+  DatatrakWebSingleSurveyResponseRequest.Params,
+  DatatrakWebSingleSurveyResponseRequest.ResBody,
+  DatatrakWebSingleSurveyResponseRequest.ReqBody,
+  DatatrakWebSingleSurveyResponseRequest.ReqQuery
 >;
 
 const ANSWER_COLUMNS = [
   'text', 'question_id'
 ]
 
-export class RecentSurveyResponseRoute extends Route<RecentSurveyResponseRequest> {
+export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
   public async buildResponse() {
     const { ctx, params } = this.req;
     const { id: responseId } = params;
