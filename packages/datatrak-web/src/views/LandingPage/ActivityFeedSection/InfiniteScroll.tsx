@@ -56,15 +56,16 @@ export const InfiniteScroll = ({
   };
 
   useEffect(() => {
+    if (!container?.current || !loader?.current) return;
+
     // add scroll listener
     container?.current?.addEventListener('scroll', handleScroll);
 
     // remove scroll listener on unmount
     return () => {
-      console.log('removing');
       container?.current?.removeEventListener('scroll', handleScroll);
     };
-  }, [loader, container, hasNextPage]);
+  }, [loader?.current, container?.current, hasNextPage, isFetchingNextPage]);
 
   return (
     <ScrollBody ref={container}>

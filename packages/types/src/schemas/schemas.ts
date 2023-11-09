@@ -59690,6 +59690,9 @@ export const CamelCaseFeedItemSchema = {
 		"type": {
 			"type": "string"
 		},
+		"userId": {
+			"type": "string"
+		},
 		"countryId": {
 			"type": "string"
 		},
@@ -59928,9 +59931,6 @@ export const CamelCaseFeedItemSchema = {
 			"type": "string"
 		},
 		"recordId": {
-			"type": "string"
-		},
-		"userId": {
 			"type": "string"
 		},
 		"templateVariables": {

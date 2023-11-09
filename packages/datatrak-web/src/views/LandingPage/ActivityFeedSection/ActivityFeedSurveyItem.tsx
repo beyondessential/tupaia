@@ -5,37 +5,22 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { format } from 'date-fns';
-import { ListItemProps, ListItem as MuiListItem, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { SurveyResponseFeedItem } from '../../../types';
-
-const ListItem = styled(MuiListItem)<ListItemProps>`
-  padding: 1.2rem 0.6rem 1.2rem 0;
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-  }
-`;
 
 const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   margin-left: 1rem;
-  p {
-    font-size: 0.75rem;
+  .MuiTypography-colorTextSecondary {
+    margin-bottom: 0.62rem;
   }
 `;
 
-const DateText = styled(Typography).attrs({
-  color: 'textSecondary',
-})`
-  font-size: 0.625rem;
-  margin-bottom: 1.3rem;
-`;
-
 const ListItemImageContainer = styled.div`
-  height: 4rem;
-  width: 4rem;
+  height: 3.3rem;
+  width: 3.3rem;
 `;
 
 const Image = styled.img.attrs({
@@ -47,7 +32,7 @@ const Image = styled.img.attrs({
 
 export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
-  const formattedDate = creationDate ? format(new Date(creationDate! as Date), 'P') : '';
+  const formattedDate = creationDate ? new Date(creationDate as Date).toLocaleDateString() : '';
 
   const getLocationName = () => {
     if (templateVariables?.regionName)
@@ -58,18 +43,18 @@ export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseF
 
   const locationName = getLocationName();
   return (
-    <ListItem>
+    <>
       <ListItemImageContainer>
         {/** set aria-hidden on the image because the image isn't of any informational value */}
         <Image aria-hidden />
       </ListItemImageContainer>
       <Container>
         <Typography>{templateVariables?.authorName}</Typography>
-        <DateText>{formattedDate}</DateText>
+        <Typography color="textSecondary">{formattedDate}</Typography>
         <Typography>
           Completed <b>{templateVariables?.surveyName}</b> survey for <b>{locationName}</b>
         </Typography>
       </Container>
-    </ListItem>
+    </>
   );
 };

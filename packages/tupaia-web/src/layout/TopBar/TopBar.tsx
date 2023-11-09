@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
@@ -53,10 +52,8 @@ const Header = styled.header<{
 `;
 
 export const TopBar = () => {
-  const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
-  const { landingPage, isLandingPage } = useLandingPage(landingPageUrlSegment);
-
+  const { landingPage, isLandingPage } = useLandingPage();
   // use the landing page settings if found, else the defaults
   const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
   return (

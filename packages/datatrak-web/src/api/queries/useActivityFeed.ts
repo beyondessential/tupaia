@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useInfiniteQuery } from 'react-query';
-import { get } from '../api';
 import { DatatrakWebActivityFeedRequest } from '@tupaia/types';
+import { get } from '../api';
 
 export const useActivityFeed = () => {
   return useInfiniteQuery(
@@ -16,7 +16,10 @@ export const useActivityFeed = () => {
         },
       }),
     {
-      getNextPageParam: (data, pages) => (data?.hasMorePages ? pages.length : null),
+      getNextPageParam: (data, pages) => {
+        if (!data) return 0;
+        return data?.hasMorePages ? pages.length : undefined;
+      },
     },
   );
 };
