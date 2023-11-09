@@ -5,13 +5,10 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
-import downloadJs from 'downloadjs';
-import { Button, CheckboxList, ListItemProps, LoadingContainer } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
 import { Modal } from '../../../components';
-import { useEntity, useProject } from '../../../api/queries';
-import { useExportDashboard } from '../../../api/mutations';
+import { SelectVisualisation } from './SelectVisualisations';
+import { Preview } from './Preview';
 
 const Wrapper = styled.div`
   width: 56rem;
@@ -40,84 +37,34 @@ const Container = styled.div`
   }
 `;
 
-const ButtonGroup = styled.div`
-  padding-top: 2.5rem;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-`;
-
 interface ExportDashboardProps {
   isOpen: boolean;
   onClose: () => void;
   dashboardItems: DashboardItem[];
 }
 
-interface ListItem extends ListItemProps {
-  code: string;
-}
+const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
+const PREVIEW_SCREEN = 'PREVIEW';
 
 export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: project } = useProject(projectCode);
-  const { data: entity } = useEntity(projectCode, entityCode);
-  const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
-
-  const handleExportSuccess = (data: Blob) => {
-    downloadJs(data, `${exportFileName}.pdf`);
-  };
-
-  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard({
-    onSuccess: handleExportSuccess,
-  });
-
-  const list = dashboardItems.map(({ config, code }) => ({
-    name: config?.name,
-    code,
-    disabled: config?.type !== 'chart',
-    tooltip: config?.type !== 'chart' ? 'PDF export coming soon' : undefined,
-  }));
-
-  const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
-
-  const handleExport = () =>
-    requestPdfExport({
-      projectCode,
-      entityCode,
-      dashboardName,
-      selectedDashboardItems: selectedItems.map(({ code }) => code),
-    });
+  const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
+  const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
+  const onNext = () => setScreen(PREVIEW_SCREEN);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Wrapper>
         <Container>
-          <LoadingContainer
-            heading="Exporting charts to PDF"
-            isLoading={isLoading}
-            errorMessage={error?.message}
-            onReset={reset}
-          >
-            <CheckboxList
-              title="Select Visualisations"
-              list={list}
-              selectedItems={selectedItems}
-              setSelectedItems={setSelectedItems}
+          {screen === SELECT_VISUALISATIONS_SCREEN ? (
+            <SelectVisualisation
+              onNext={onNext}
+              onClose={onClose}
+              dashboardItems={dashboardItems}
+              setSelectedDashboardItems={setSelectedDashboardItems}
             />
-            <ButtonGroup>
-              <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleExport}
-                disabled={selectedItems.length === 0 || isLoading}
-              >
-                Download
-              </Button>
-            </ButtonGroup>
-          </LoadingContainer>
+          ) : (
+            <Preview onClose={onClose} selectedDashboardItems={selectedDashboardItems} />
+          )}
         </Container>
       </Wrapper>
     </Modal>
