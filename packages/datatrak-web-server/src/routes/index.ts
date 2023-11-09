@@ -13,4 +13,5 @@ export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { SubmitSurveyRequest, SubmitSurveyRoute } from './SubmitSurvey/SubmitSurveyRoute';
 export { RecentSurveyResponseRequest, RecentSurveyResponseRoute } from './RecentSurveyResponseRoute';
 export { RecentSurveysRequest, RecentSurveysRoute } from './RecentSurveysRoute';
+export { SingleSurveyResponseRequest, SingleSurveyResponseRoute } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
