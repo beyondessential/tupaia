@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebActivityFeedRequest, Survey, FeedItemTypes } from '@tupaia/types';
+import { DatatrakWebActivityFeedRequest, Survey, FeedItemTypes, FeedItem } from '@tupaia/types';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type ActivityFeedRequest = Request<
@@ -92,7 +92,10 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
     const items = (
       await Promise.all(feedItems.slice(0, NUMBER_PER_PAGE).map(f => f.getData()))
-    ).map((item: any) => ({ ...item, creation_date: new Date(item.creation_date!).toJSON() }));
+    ).map((feedItem: FeedItem) => ({
+      ...feedItem,
+      creation_date: new Date(feedItem.creation_date!).toJSON(),
+    }));
 
     return camelcaseKeys(
       {

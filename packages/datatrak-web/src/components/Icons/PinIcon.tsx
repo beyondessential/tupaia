@@ -15,7 +15,7 @@ export const PinIcon = (props: SvgIconProps) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_1278_17766)">
+      <g clipPath="url(#clip0_1278_17766)">
         <path
           fillRule="evenodd"
           clipRule="evenodd"

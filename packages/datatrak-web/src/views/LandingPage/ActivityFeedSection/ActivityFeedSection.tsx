@@ -45,8 +45,7 @@ const Body = styled.div`
 `;
 
 export const ActivityFeedSection = () => {
-  const { data: activityFeed, fetchNextPage, hasNextPage, isFetchingNextPage } = useActivityFeed();
-
+  const { data: activityFeed, fetchNextPage, hasNextPage, isFetching } = useActivityFeed();
   return (
     <ActivityFeed>
       <SectionHeading>Activity feed</SectionHeading>
@@ -54,7 +53,7 @@ export const ActivityFeedSection = () => {
         <InfiniteScroll
           onScroll={fetchNextPage}
           hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
+          isFetchingNextPage={isFetching}
         >
           <List>
             <PinnedFeedItem />
