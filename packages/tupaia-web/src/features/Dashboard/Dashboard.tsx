@@ -126,21 +126,7 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
 
-
-  const handleSubscribeClick = (isSubscribed) => {
-    // TODO: Add call for mailing list route subscription
-  } 
-
-  // TODO: Add mailing list mailingListEnabled and userSubscribed properties in Dashboard route
-  // const { mailingListEnabled = false, userSubscribed = false } = activeDashboard;
-  // useEffect(() => {
-  //   if(userSubscribed) {
-  //     setIsSubscribed(true)
-  //   }
-  //   setIsSubscribed(false)
-  // },[mailingListEnabled, userSubscribed])
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
@@ -212,7 +198,7 @@ export const Dashboard = () => {
             <TitleBar>
               <Title variant="h3">{title}</Title>
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} isSubscribed={isSubscribed} handleSubscribeClick={handleSubscribeClick}/>
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen}/>
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}

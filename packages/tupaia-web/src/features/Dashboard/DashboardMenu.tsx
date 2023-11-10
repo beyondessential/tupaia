@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ButtonBase, Menu, MenuItem, Box } from '@material-ui/core';
@@ -12,6 +12,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
 import { TOP_BAR_HEIGHT } from '../../constants';
+import { useDashboards } from '../../api/queries';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -73,13 +74,41 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
 };
 
 interface ActionsMenuProps {
-  mailingListEnabled: boolean;
-  isSubscribed: boolean;
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleSubscribeClick: Function;
 }
 
-const ActionsMenu = ({ mailingListEnabled, isSubscribed, setExportModalOpen, handleSubscribeClick}: ActionsMenuProps) => {
+const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
+  const [mailingListEnabled, setMailingListEnabled] = useState<boolean>(false)
+  const { projectCode, entityCode, dashboardName } = useParams();
+  const {
+    activeDashboard,
+  } = useDashboards(projectCode, entityCode, dashboardName);
+  
+
+
+  const handleSubscribe = (isUserSubscribed) => {
+    // TODO: Add subscribe and unsubscribe sequence
+    // Add react query to POST request for add or remove subscription
+    // Optional - add loading indicator to option.
+    console.log(isUserSubscribed)
+  } 
+  useEffect(() => {
+    const { mailingLists } = activeDashboard;
+    const { mailingListEntity, userSubscribed } = mailingLists.find(({mailingListEntityCode}) => {
+    mailingListEntityCode === entityCode
+    })
+    if(!mailingListEntity) {
+      setMailingListEnabled(false)
+      setIsSubscribed(false)
+    }
+    if(!userSubscribed) {
+      setMailingListEnabled(true)
+      setIsSubscribed(false)
+    }
+    setIsSubscribed(true)
+  },[activeDashboard])
+
   const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
   const menuOptions: ActionsMenuOptionType[] = [exportOption]
   
@@ -91,7 +120,7 @@ const ActionsMenu = ({ mailingListEnabled, isSubscribed, setExportModalOpen, han
 
   const subscribeOption = {
     label: isSubscribed ? 'Subscribed' : 'Subscribe', 
-    action: () => handleSubscribeClick(isSubscribed), 
+    action: () => handleSubscribe(isSubscribed), 
     ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
     toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
     color: isSubscribed ? 'primary' : undefined,
@@ -108,14 +137,10 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
   setExportModalOpen,
-  isSubscribed,
-  handleSubscribeClick
 }: {
   activeDashboard?: Dashboard;
   dashboards: Dashboard[];
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isSubscribed: boolean;
-  handleSubscribeClick: Function;
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -140,7 +165,7 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu mailingListEnabled={true} isSubscribed={isSubscribed} setExportModalOpen={setExportModalOpen} handleSubscribeClick={handleSubscribeClick}/>
+          <ActionsMenu setExportModalOpen={setExportModalOpen}/>
         </Box>
       )}
 
