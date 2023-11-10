@@ -11,7 +11,7 @@ import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
 import { RecentSurveysSection } from './RecentSurveysSection';
-import { HEADER_HEIGHT } from '../../constants';
+import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
 
 const PageContainer = styled(BasePageContainer)`
   display: flex;
@@ -29,7 +29,12 @@ const PageBody = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     height: calc(100vh - ${HEADER_HEIGHT});
-    padding: 4rem 0 2rem;
+    padding: 2rem 2.75rem 0.8rem 2.75rem;
+  }
+
+  ${DESKTOP_MEDIA_QUERY} {
+    padding-top: 4rem;
+    padding-bottom: 2.5rem;
   }
 `;
 
@@ -37,7 +42,7 @@ const Grid = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   min-height: 0; // This is needed to stop the grid overflowing the flex container
 
   .MuiButtonBase-root {
@@ -51,7 +56,7 @@ const Grid = styled.div`
 
   ${({ theme }) => theme.breakpoints.up('md')} {
     display: grid;
-    gap: 1.6rem 1.25rem;
+    gap: 1.25rem;
     grid-template-rows: auto auto;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
@@ -65,15 +70,18 @@ const Grid = styled.div`
   }
 
   ${({ theme }) => theme.breakpoints.up('lg')} {
-    grid-template-rows: 11.25rem auto;
     grid-template-columns: 23% 1fr 1fr 28%;
     grid-template-areas:
       'recentSurveys recentSurveys recentSurveys leaderboard'
       'recentResponses activityFeed activityFeed leaderboard';
-
     > div {
       min-height: auto;
     }
+  }
+
+  ${DESKTOP_MEDIA_QUERY} {
+    margin-top: 2.5rem;
+    gap: 1.81rem;
   }
 `;
 
