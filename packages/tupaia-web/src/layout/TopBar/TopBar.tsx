@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { Logo } from './Logo';
 import { UserMenu } from '../UserMenu';
 import { useLandingPage } from '../../api/queries';
@@ -20,8 +19,10 @@ import { EntitySearch } from '../../features';
 const Header = styled.header<{
   $primaryColor?: string | null;
   $secondaryColor?: string | null;
+  $isLandingPage?: boolean;
 }>`
-  background-color: ${({ theme }) => theme.palette.background.default};
+  background-color: ${({ theme, $primaryColor }) =>
+    $primaryColor || theme.palette.background.default};
   height: ${TOP_BAR_HEIGHT_MOBILE};
   min-height: ${TOP_BAR_HEIGHT_MOBILE};
   display: flex;
@@ -31,10 +32,14 @@ const Header = styled.header<{
   z-index: 1100;
   position: relative;
   padding: 0 0.625em;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.background.paper};
+  border-bottom: ${({ $isLandingPage, theme }) => {
+    if ($isLandingPage) return 'none';
+    return `1px solid ${theme.palette.background.paper}`;
+  }};
 
   > * {
-    background-color: ${({ theme }) => theme.palette.background.default};
+    background-color: ${({ theme, $primaryColor }) =>
+      $primaryColor || theme.palette.background.default};
   }
   button,
   a,
@@ -51,14 +56,16 @@ const Header = styled.header<{
 `;
 
 export const TopBar = () => {
-  const { landingPageUrlSegment } = useParams();
   // gets landing page data if landing page url segment is present, otherwise will return {}
-  const { landingPage, isLandingPage } = useLandingPage(landingPageUrlSegment);
-
+  const { landingPage, isLandingPage } = useLandingPage();
   // use the landing page settings if found, else the defaults
   const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
   return (
-    <Header $primaryColor={primaryHexcode} $secondaryColor={secondaryHexcode}>
+    <Header
+      $primaryColor={primaryHexcode}
+      $secondaryColor={secondaryHexcode}
+      $isLandingPage={isLandingPage}
+    >
       <Logo
         logoSrc={logoUrl || TUPAIA_LIGHT_LOGO_SRC}
         displayName={includeNameInHeader}

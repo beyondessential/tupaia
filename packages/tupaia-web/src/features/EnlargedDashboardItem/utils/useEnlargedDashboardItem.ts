@@ -53,12 +53,14 @@ export const useEnlargedDashboardItem = () => {
       projectCode,
       entityCode,
       dashboardCode: activeDashboard?.code,
-      startDate,
-      endDate,
       legacy: currentDashboardItem?.legacy,
       itemCode: currentDashboardItem?.code,
-      isExpanded: true,
-    };
+    } as Record<string, any>;
+
+    if (currentDashboardItem?.config?.periodGranularity) {
+      params.startDate = startDate;
+      params.endDate = endDate;
+    }
     if (!isDrillDown) return params;
     // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched
     // @ts-ignore - drillDown is all lowercase in the types config

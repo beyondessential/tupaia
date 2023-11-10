@@ -4,12 +4,15 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { gaEvent } from '../../utils';
 import { DEFAULT_URL, MODAL_ROUTES } from '../../constants';
+import { useLandingPage } from '../queries';
 
 export const useLogout = () => {
+  const { isLandingPage } = useLandingPage();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -18,7 +21,14 @@ export const useLogout = () => {
       gaEvent('User', 'Log out');
     },
     onSuccess: () => {
-      navigate(`${DEFAULT_URL}#${MODAL_ROUTES.LOGIN}`);
+      if (isLandingPage) {
+        navigate({
+          ...location,
+          hash: MODAL_ROUTES.LOGIN,
+        });
+      } else {
+        navigate(`${DEFAULT_URL}#${MODAL_ROUTES.LOGIN}`);
+      }
       queryClient.invalidateQueries();
     },
   });

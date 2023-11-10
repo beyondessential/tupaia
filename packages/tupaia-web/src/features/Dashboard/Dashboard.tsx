@@ -62,7 +62,7 @@ const StickyBar = styled.div<{
 }>`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 
   h3 {
     padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};
@@ -187,13 +187,13 @@ export const Dashboard = () => {
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
           <Breadcrumbs />
-          <DashboardImageContainer>
-            {entity?.photoUrl ? (
-              <Photo title={title} photoUrl={entity?.photoUrl} />
+          <div>
+            {entity?.imageUrl ? (
+              <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
               <StaticMap bounds={bounds} />
             )}
-          </DashboardImageContainer>
+          </div>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>

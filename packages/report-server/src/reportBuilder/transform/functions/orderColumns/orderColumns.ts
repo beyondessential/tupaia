@@ -22,7 +22,9 @@ const sortByValidator = yup
 export const paramsValidator = yup.object().shape({
   order: yup.array().of(yup.string().required()),
   sortBy: yupTsUtils.describableLazy(() => sortByValidator, [sortByValidator]),
-  direction: ascOrDescValidator.default('asc'),
+  direction: yupTsUtils.describableLazy(() => ascOrDescValidator.default('asc'), [
+    ascOrDescValidator.default('asc'),
+  ]),
 });
 
 const orderColumns = (table: TransformTable, params: OrderColumnsParams) => {

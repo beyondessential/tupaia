@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen } from '../../components';
-import { useCountryAccessList, useProject, useUser } from '../../api/queries';
+import { useCountryAccessList, useLandingPage, useProject, useUser } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
 import { ProjectDetails } from './ProjectDetails';
@@ -28,6 +28,7 @@ export const RequestProjectAccessModal = () => {
   const [requestAdditionalCountries, setRequestAdditionalCountries] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLandingPage } = useLandingPage();
   const { isLoggedIn, isLoading: isLoadingUser, isFetching } = useUser();
 
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
@@ -67,6 +68,8 @@ export const RequestProjectAccessModal = () => {
     });
   };
 
+  const countriesWithAccess = countries.filter((c: CountryAccessListItem) => c.hasAccess);
+
   // the countries that have already got a request
   const requestedCountries = getCountriesByAccess(true);
 
@@ -84,18 +87,24 @@ export const RequestProjectAccessModal = () => {
   return (
     <ModalBody>
       <LoadingScreen isLoading={isLoading} />
-      <ModalHeader />
+      <ModalHeader isLandingPage={isLandingPage} />
       <ProjectHero project={project} />
       <ProjectDetails project={project} />
       {showRequestedCountries && (
         <RequestedCountries
           requestedCountries={requestedCountries}
+          countriesWithAccess={countriesWithAccess}
           hasAdditionalCountries={availableCountries.length > 0}
           onShowForm={() => setRequestAdditionalCountries(true)}
+          isLandingPage={isLandingPage}
         />
       )}
       {showForm && (
-        <ProjectAccessForm availableCountries={availableCountries} projectName={project?.name} />
+        <ProjectAccessForm
+          availableCountries={availableCountries}
+          projectName={project?.name}
+          isLandingPage={isLandingPage}
+        />
       )}
     </ModalBody>
   );

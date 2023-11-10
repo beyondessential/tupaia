@@ -21,7 +21,7 @@ const getNoDataString = ({ noDataMessage, source, startDate, endDate }) => {
     return `No data for ${startDate} to ${endDate}`;
   }
 
-  return 'No data for selected dates';
+  return 'No data';
 };
 
 const StyledNoData = styled(SmallAlert)`

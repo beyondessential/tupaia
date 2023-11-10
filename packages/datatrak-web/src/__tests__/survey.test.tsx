@@ -6,7 +6,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderSurveyPage } from './helpers/render';
-import { handlers } from '../../mocks/handlers';
+import { handlers } from './mocks/handlers';
 
 const server = setupServer(
   ...handlers,

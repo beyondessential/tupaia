@@ -16,6 +16,7 @@ const timeout = 45 * 1000; // 45 seconds
 type RequestParameters = Record<string, any> & {
   params?: Record<string, any>;
   cancelOnUnmount?: boolean;
+  returnHeaders?: boolean;
 };
 
 type RequestParametersWithMethod = RequestParameters & {
@@ -28,13 +29,40 @@ const getRequestOptions = (options?: RequestParametersWithMethod) => {
   };
 };
 
+const getErrorMessage = (error: any) => {
+  const { data } = error.response;
+
+  let message;
+
+  // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
+  if (data.details) {
+    message = data.details;
+  }
+
+  if (data.error) {
+    message = data.error;
+  }
+
+  if (data.message) {
+    message = data.message;
+  }
+
+  // remove axios `api error ...:` prefix
+  return message?.split(': ')[1];
+};
+
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety
+
+/**
+ * This method handles the actual request to the API. It will throw an error if the response is not ok.
+ */
 const request = async (endpoint: string, options?: RequestParametersWithMethod) => {
-  const requestOptions = getRequestOptions(options);
+  const { returnHeaders, ...requestOptions } = getRequestOptions(options);
 
   try {
     const response = await axios(`${API_URL}/${endpoint}`, requestOptions);
 
+    if (returnHeaders) return response;
     return response.data;
   } catch (error: any) {
     // don't throw when is cancelled
@@ -43,18 +71,11 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
     if (error.response) {
       const { data } = error.response;
 
-      // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
-      if (data.details) {
-        throw new FetchError(data.details, error.response.status);
-      }
+      const message = getErrorMessage(error);
 
-      if (data.error) {
-        throw new FetchError(data.error, error.response.status);
-      }
+      const code = data.message ? data.code : error.response.status;
 
-      if (data.message) {
-        throw new FetchError(data.message, data.code);
-      }
+      throw new FetchError(message, code);
     }
     throw new Error(error);
   }

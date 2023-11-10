@@ -6,15 +6,19 @@ import React from 'react';
 import styled from 'styled-components';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
-import { MOBILE_BREAKPOINT, TOP_BAR_HEIGHT_MOBILE } from '../../../constants';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import { getMobileTopBarHeight } from '../../../utils/getTopBarHeight';
+import { useMapOverlays } from '../../../api/queries';
+import { useParams } from 'react-router';
 
 const Wrapper = styled.div`
   width: 100%;
-  z-index: 1;
+  z-index: 2;
   pointer-events: auto;
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -62,12 +66,15 @@ const OverlayListWrapper = styled.div`
 const OverlayMenu = styled.div<{
   $expanded: boolean;
 }>`
-  height: ${({ $expanded }) => ($expanded ? `calc(100vh - ${TOP_BAR_HEIGHT_MOBILE})` : '0')};
+  height: ${({ $expanded }) => ($expanded ? `calc(100vh - ${getMobileTopBarHeight()})` : '0')};
   transition: height 0.3s ease-in-out;
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   background-color: ${({ theme }) => theme.mobile.background};
+
+  overflow: auto;
+
   ${OverlayLibraryHeaderButton} {
     display: ${({ $expanded }) => ($expanded ? 'flex' : 'none')};
   }
@@ -96,19 +103,27 @@ export const MobileMapOverlaySelector = ({
   overlayLibraryOpen,
   toggleOverlayLibrary,
 }: MobileMapOverlaySelectorProps) => {
+  const { projectCode, entityCode } = useParams();
+  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
+
   return (
     <Wrapper>
       {!overlayLibraryOpen && (
         <ButtonWrapper>
           <MapOverlayDatePicker />
-          <ExpandButton onClick={toggleOverlayLibrary} aria-controls="overlay-selector">
+          <ExpandButton
+            onClick={hasMapOverlays ? toggleOverlayLibrary : undefined}
+            aria-controls="overlay-selector"
+          >
             <span>
               <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
               <MapOverlaySelectorTitle />
             </span>
-            <ArrowWrapper>
-              <ArrowForwardIos />
-            </ArrowWrapper>
+            {hasMapOverlays && (
+              <ArrowWrapper>
+                <ArrowForwardIos />
+              </ArrowWrapper>
+            )}
           </ExpandButton>
         </ButtonWrapper>
       )}
@@ -124,7 +139,8 @@ export const MobileMapOverlaySelector = ({
           <OverlayLibraryHeader>Overlay Library</OverlayLibraryHeader>
         </OverlayLibraryHeaderButton>
         <OverlayListWrapper>
-          <MapOverlayList />
+          {/* Use the entity code as a key so that the local state of the MapOverlayList resets between entities */}
+          <MapOverlayList key={entityCode} toggleOverlayLibrary={toggleOverlayLibrary} />
         </OverlayListWrapper>
       </OverlayMenu>
     </Wrapper>

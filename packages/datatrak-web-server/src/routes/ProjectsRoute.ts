@@ -14,10 +14,14 @@ export type ProjectsRequest = Request<
   DatatrakWebProjectsRequest.ReqQuery
 >;
 
+type ProjectT = DatatrakWebProjectsRequest.ResBody[0];
+
 export class ProjectsRoute extends Route<ProjectsRequest> {
   public async buildResponse() {
     const { ctx } = this.req;
     const { projects } = await ctx.services.webConfig.fetchProjects();
-    return projects;
+
+    // Sort projects alphabetically. Sorting is not supported by the API so we do it here.
+    return projects.sort((a: ProjectT, b: ProjectT) => a.name.localeCompare(b.name));
   }
 }

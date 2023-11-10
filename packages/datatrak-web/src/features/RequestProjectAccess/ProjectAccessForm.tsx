@@ -62,6 +62,11 @@ const TextArea = styled(TextField).attrs({
     font-size: 0.875rem;
     padding: 0.875rem;
   }
+  // we have to override this here as there are selectors inside ui-components with higher specificity than we can achieve via the theme overrides 
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    box-shadow: none;
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const SuccessWrapper = styled.div`

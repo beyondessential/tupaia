@@ -35,6 +35,7 @@ export class DataTableApi extends BaseApi {
       type: dataTableType,
       permission_groups: ['*'],
       runtimeParams: {},
+      config: {},
     });
   }
 }

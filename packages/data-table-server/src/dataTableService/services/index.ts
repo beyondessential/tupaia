@@ -11,3 +11,4 @@ export { EntityRelationsDataTableService } from './EntityRelationsDataTableServi
 export { EntitiesDataTableService } from './EntitiesDataTableService';
 export { SqlDataTableService } from './SqlDataTableService';
 export { EntityAttributesDataTableService } from './EntityAttributesDataTableService';
+export { SurveyResponseDataTableService } from './SurveyResponseDataTableService';

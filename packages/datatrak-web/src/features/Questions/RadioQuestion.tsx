@@ -102,6 +102,7 @@ export const RadioQuestion = ({
       </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (
         <RadioItem
+          key={value}
           $color={color}
           value={value}
           control={
