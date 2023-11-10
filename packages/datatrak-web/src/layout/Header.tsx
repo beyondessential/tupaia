@@ -25,7 +25,6 @@ const Container = styled(PageContainer).attrs({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.25rem;
 `;
 
 const LogoButton = styled(Button)`

@@ -26,6 +26,11 @@ const PageWrapper = styled.div`
   .MuiBox-root {
     height: 100%; // this is to fix the loader causing a scrollbar
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiContainer-root:has(&) {
+      padding: 0;
+    }
+  }
 `;
 
 const SurveyScreenContainer = styled.div<{

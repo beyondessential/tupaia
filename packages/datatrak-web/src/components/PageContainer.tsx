@@ -10,9 +10,6 @@ export const PageContainer = styled(Container).attrs({
   maxWidth: false,
 })`
   position: relative;
-  padding: 0;
   flex: 1;
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 0 1.25rem;
-  }
+  padding: 0 1.25rem;
 `;
