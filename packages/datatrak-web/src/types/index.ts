@@ -12,3 +12,4 @@ export type {
 } from './surveys';
 export * from './entity';
 export * from './userRewards';
+export * from './activityFeed';

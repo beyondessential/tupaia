@@ -8,12 +8,13 @@ import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useSurvey } from '../api/queries';
+import { CancelConfirmModal } from '../components';
 import {
-  CancelSurveyModal,
   SurveyToolbar,
   useSurveyForm,
   useValidationResolver,
   SurveySideMenu,
+  SurveyContext,
 } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
@@ -23,6 +24,9 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  .MuiBox-root {
+    height: 100%; // this is to fix the loader causing a scrollbar
+  }
 `;
 
 const SurveyScreenContainer = styled.div<{
@@ -40,18 +44,18 @@ const SurveyScreenContainer = styled.div<{
   }
 `;
 
-export const SurveyPage = () => {
+const SurveyPageInner = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const { formData, isSuccessScreen } = useSurveyForm();
+  const { formData, isSuccessScreen, cancelModalOpen, closeCancelConfirmation } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
   if (isLoading) {
     return <FullPageLoader />;
   }
+
   return (
-    // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
     <PageWrapper>
       <FormProvider {...formContext}>
         <SurveyToolbar />
@@ -62,7 +66,16 @@ export const SurveyPage = () => {
           <Outlet key={screenNumber} />
         </SurveyScreenContainer>
       </FormProvider>
-      <CancelSurveyModal />
+      <CancelConfirmModal isOpen={cancelModalOpen} onClose={closeCancelConfirmation} />
     </PageWrapper>
+  );
+};
+
+// The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
+export const SurveyPage = () => {
+  return (
+    <SurveyContext>
+      <SurveyPageInner />
+    </SurveyContext>
   );
 };

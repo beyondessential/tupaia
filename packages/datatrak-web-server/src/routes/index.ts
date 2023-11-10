@@ -15,3 +15,4 @@ export { RecentSurveyResponseRequest, RecentSurveyResponseRoute } from './Recent
 export { RecentSurveysRequest, RecentSurveysRoute } from './RecentSurveysRoute';
 export { SingleSurveyResponseRequest, SingleSurveyResponseRoute } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
+export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';

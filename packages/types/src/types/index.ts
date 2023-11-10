@@ -53,6 +53,10 @@ export {
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
   LeaderboardItem,
+  FeedItemTemplateVariables,
+  SurveyResponseTemplateVariables,
+  MarkdownTemplateVariables,
+  FeedItemTypes,
 } from './models-extra';
 export * from './requests';
 export * from './css';
