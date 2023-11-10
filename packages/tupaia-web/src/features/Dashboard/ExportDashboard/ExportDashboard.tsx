@@ -50,20 +50,25 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
   const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
   const onNext = () => setScreen(PREVIEW_SCREEN);
+  const onCloseModal = () => {
+    onClose();
+    setScreen(SELECT_VISUALISATIONS_SCREEN);
+    setSelectedDashboardItems([]);
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onCloseModal}>
       <Wrapper>
         <Container>
           {screen === SELECT_VISUALISATIONS_SCREEN ? (
             <SelectVisualisation
               onNext={onNext}
-              onClose={onClose}
+              onClose={onCloseModal}
               dashboardItems={dashboardItems}
               setSelectedDashboardItems={setSelectedDashboardItems}
             />
           ) : (
-            <Preview onClose={onClose} selectedDashboardItems={selectedDashboardItems} />
+            <Preview onClose={onCloseModal} selectedDashboardItems={selectedDashboardItems} />
           )}
         </Container>
       </Wrapper>

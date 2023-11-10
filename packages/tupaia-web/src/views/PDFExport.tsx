@@ -15,18 +15,41 @@ const Parent = styled.div`
   color: ${props => props.theme.palette.common.black};
 `;
 
+type PDFExportProps = {
+  projectCode?: string;
+  entityCode?: string;
+  dashboardName?: string;
+  selectedDashboardItems?: string[];
+};
+
 /**
  * This is the view that gets hit by puppeteer when generating a PDF.
  */
-export const PDFExport = () => {
+export const PDFExport = ({
+  projectCode: propsProjectCode,
+  entityCode: propsEntityCode,
+  dashboardName: propsDashboardName,
+  selectedDashboardItems: propsSelectedDashboardItems,
+}: PDFExportProps) => {
   // Hacky way to change default background color without touching root css.
   document.body.style.backgroundColor = 'white';
 
-  const { projectCode, entityCode, dashboardName } = useParams();
+  const {
+    projectCode: urlProjectCode,
+    entityCode: urlEntityCode,
+    dashboardName: urlDashboardName,
+  } = useParams();
+
+  const projectCode = propsProjectCode || urlProjectCode;
+  const entityCode = propsEntityCode || urlEntityCode;
+  const dashboardName = propsDashboardName || urlDashboardName;
+
   const [urlSearchParams] = useSearchParams();
+
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const selectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
+  const urlSelectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
+  const selectedDashboardItems = propsSelectedDashboardItems || urlSelectedDashboardItems;
 
   if (!activeDashboard) return null;
 
