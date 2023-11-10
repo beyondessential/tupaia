@@ -34,7 +34,7 @@ const StyledImg = styled.img`
   width: 369px;
   max-width: 80%;
   max-height: 50%;
-  margin-bottom: 2.75rem;
+  margin-block-end: 2.75rem;
 `;
 
 const Title = styled(Typography).attrs({
@@ -43,10 +43,10 @@ const Title = styled(Typography).attrs({
   font-size: 1.375rem;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     font-size: 1.9rem;
-    margin-bottom: 1.19rem;
+    margin-block-end: 1.19rem;
   }
 `;
 
@@ -54,7 +54,7 @@ const Text = styled(Typography)`
   max-width: 34.6rem;
   width: 100%;
   text-align: center;
-  margin-bottom: 1.875rem;
+  margin-block-end: 1.875rem;
 `;
 
 const ButtonGroup = styled.div`
