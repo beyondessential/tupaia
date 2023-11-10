@@ -13,3 +13,4 @@ export * as DatatrakWebSurveyResponsesRequest from './SurveyResponsesRequest';
 export * as DatatrakWebRecentSurveysRequest from './RecentSurveysRequest';
 export * as DatatrakWebSingleSurveyResponseRequest from './SingleSurveyResponseRequest';
 export * as DatatrakWebLeaderboardRequest from './LeaderboardRequest';
+export * as DatatrakWebActivityFeedRequest from './ActivityFeedRequest';

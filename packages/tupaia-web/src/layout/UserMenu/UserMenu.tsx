@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
 import { PopoverMenu } from './PopoverMenu';
@@ -47,12 +46,11 @@ export const UserMenu = () => {
     setMenuOpen(false);
   };
 
-  const { landingPageUrlSegment } = useParams();
   const theme = useTheme();
   const {
     isLandingPage,
     landingPage: { primaryHexcode, secondaryHexcode },
-  } = useLandingPage(landingPageUrlSegment);
+  } = useLandingPage();
 
   const { isLoggedIn, data } = useUser();
 

@@ -24,6 +24,9 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  .MuiBox-root {
+    height: 100%; // this is to fix the loader causing a scrollbar
+  }
 `;
 
 const SurveyScreenContainer = styled.div<{

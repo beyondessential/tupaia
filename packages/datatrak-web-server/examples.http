@@ -1,0 +1,32 @@
+@localhost = http://localhost:8110/v1
+@dev = https://dev-config.tupaia.org
+@host = {{localhost}}
+# Uncomment the line below to point at dev rather than localhost
+# @host = {{dev}}
+@contentType = application/json
+
+# In order to setup authorization, please set 'email' and 'password' in your restClient environement variables
+# see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
+@authorization  = Basic {{email}}:{{password}}
+
+### Login
+# @name login
+POST {{host}}/login HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "emailAddress": "{{email}}",
+    "password": "{{password}}"
+}
+
+ 
+
+### Get Activity feed
+# @name activityfeed
+
+GET {{host}}/activityFeed HTTP/1.1
+content-type: {{contentType}}
+
+ 
+ 
+ 
