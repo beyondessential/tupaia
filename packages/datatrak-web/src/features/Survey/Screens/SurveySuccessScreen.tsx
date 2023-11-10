@@ -30,6 +30,8 @@ const Container = styled.div`
 `;
 
 const StyledImg = styled.img`
+  aspect-ratio: 1;
+  width: 369px;
   max-width: 80%;
   max-height: 50%;
   margin-bottom: 2.75rem;
@@ -94,7 +96,7 @@ export const SurveySuccessScreen = () => {
   return (
     <Wrapper>
       <Container>
-        <StyledImg src="/submit-success.svg" alt="Survey submit success" />
+        <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>Survey submitted!</Title>
         <Text>{text}</Text>
         <ButtonGroup>
