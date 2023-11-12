@@ -6,6 +6,7 @@ import React from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
+import { DialogActions } from '@material-ui/core';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useSurvey } from '../api/queries';
 import { CancelConfirmModal } from '../components';
@@ -18,6 +19,7 @@ import {
 } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
+import { ErrorDisplay, Button } from '../components';
 
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`

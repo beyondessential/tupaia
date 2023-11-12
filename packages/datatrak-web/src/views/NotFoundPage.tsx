@@ -3,12 +3,17 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { Button, ErrorDisplay } from '../components';
+import { DialogActions } from '@material-ui/core';
 
-export const NotFoundPage = () => {
+export const NotFoundPage = ({ error }: { error?: Error }) => {
   return (
-    <div>
-      <h1>404</h1>
-      <p>Page not found</p>
-    </div>
+    <ErrorDisplay title="404: Page not found" error={error}>
+      <DialogActions>
+        <Button to="/" color="primary">
+          Return to home
+        </Button>
+      </DialogActions>
+    </ErrorDisplay>
   );
 };
