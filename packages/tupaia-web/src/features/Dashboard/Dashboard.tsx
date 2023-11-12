@@ -105,12 +105,6 @@ const DashboardItemsWrapper = styled.div<{
   column-gap: 0.8rem;
 `;
 
-const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
 
 export const Dashboard = () => {
   const navigate = useNavigate();
