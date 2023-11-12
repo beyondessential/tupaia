@@ -57652,6 +57652,9 @@ export const SurveySchema = {
 		"permission_group_id": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"requires_approval": {
 			"type": "boolean"
 		},
@@ -57700,6 +57703,9 @@ export const SurveyCreateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
@@ -57752,6 +57758,9 @@ export const SurveyUpdateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
