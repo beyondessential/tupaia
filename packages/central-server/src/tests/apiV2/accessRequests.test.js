@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { TestableApp } from '../testUtilities';
+import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
 
 describe('Access Requests', () => {
   const app = new TestableApp();
@@ -47,7 +47,7 @@ describe('Access Requests', () => {
   describe('User Entity Permission via Access Request', () => {
     it('creates permission when approved', async () => {
       const { userId, entityId, permissionGroupId } = await createData(
-        'test.user@tupaia.org',
+        TEST_USER_EMAIL,
         'KI',
         'unfpa',
         'UNFPA',
@@ -80,7 +80,7 @@ describe('Access Requests', () => {
 
     it('does not create permission when rejected', async () => {
       const { userId, entityId, permissionGroupId } = await createData(
-        'test.user@tupaia.org',
+        TEST_USER_EMAIL,
         'VE',
         'unfpa',
         'UNFPA',
