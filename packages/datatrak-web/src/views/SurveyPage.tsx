@@ -36,7 +36,7 @@ const SurveyScreenContainer = styled.div<{
   overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
   height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-  width: 100vw;
+  width: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: -1.25rem;
     padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
