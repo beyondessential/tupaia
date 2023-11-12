@@ -19,12 +19,14 @@ const Container = styled.section`
 
 const ScrollBody = styled.div`
   overflow: auto;
-
+  > span {
+    margin-bottom: 0.6rem;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: flex;
     flex-direction: row;
 
-    > a {
+    > span {
       min-width: 15rem;
       margin-right: 1rem;
     }
