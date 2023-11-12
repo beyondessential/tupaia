@@ -2,13 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Button, PageContainer } from '../components';
-import { HEADER_HEIGHT } from '../constants';
+import { Link as RouterLink, useMatch } from 'react-router-dom';
+import { Button, PageContainer, CancelConfirmModal } from '../components';
+import { HEADER_HEIGHT, ROUTES } from '../constants';
 import { UserMenu } from './UserMenu';
-import { useSurveyForm } from '../features';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.palette.background.paper};
@@ -47,27 +46,30 @@ const LogoButton = styled(Button)`
 `;
 
 export const Header = () => {
-  const { surveyCode } = useParams();
-  const { openCancelConfirmation, isSuccessScreen } = useSurveyForm();
-  const isActiveSurvey = !!surveyCode && !isSuccessScreen;
-  const onClickLogo = () => {
-    if (surveyCode && !isSuccessScreen) {
-      openCancelConfirmation();
+  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
+  const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
+  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+
+  const onClickLogo = e => {
+    if (isSurveyScreen && !isSuccessScreen) {
+      e.preventDefault();
+      setIsOpen(true);
     }
   };
+
+  const onClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <Wrapper>
       <Container>
-        <LogoButton
-          component={isActiveSurvey ? undefined : RouterLink}
-          onClick={onClickLogo}
-          to={isActiveSurvey ? undefined : '/'}
-          title="Home"
-        >
+        <LogoButton component={RouterLink} onClick={onClickLogo} to="/" title="Home">
           <img src="/datatrak-logo-black.svg" alt="tupaia-logo" />
         </LogoButton>
         <UserMenu />
       </Container>
+      <CancelConfirmModal isOpen={surveyCancelModalIsOpen} onClose={onClose} />
     </Wrapper>
   );
 };

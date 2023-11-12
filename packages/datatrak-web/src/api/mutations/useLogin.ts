@@ -12,12 +12,19 @@ type LoginCredentials = {
   email: string;
   password: string;
 };
+
+function hasFrom(state: unknown): state is { from: string } {
+  if (state !== null && typeof state === 'object' && 'from' in state) {
+    return typeof state.from === 'string';
+  }
+  return false;
+}
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { from } = location.state as { from: string };
+  const from = hasFrom(location.state) ? location.state.from : undefined;
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {

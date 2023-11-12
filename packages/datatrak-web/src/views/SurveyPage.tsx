@@ -8,12 +8,13 @@ import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useSurvey } from '../api/queries';
+import { CancelConfirmModal } from '../components';
 import {
-  CancelSurveyModal,
   SurveyToolbar,
   useSurveyForm,
   useValidationResolver,
   SurveySideMenu,
+  SurveyContext,
 } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
@@ -43,30 +44,38 @@ const SurveyScreenContainer = styled.div<{
   }
 `;
 
-export const SurveyPage = () => {
+const SurveyPageInner = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const { formData, isSuccessScreen } = useSurveyForm();
+  const { formData, isSuccessScreen, cancelModalOpen, closeCancelConfirmation } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
+
   return (
-    // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
     <PageWrapper>
-      {isLoading ? (
-        <FullPageLoader />
-      ) : (
-        <FormProvider {...formContext}>
-          <SurveyToolbar />
-          <SurveyScreenContainer $scrollable={isSuccessScreen}>
-            <SurveySideMenu />
-            {/* Use a key to render a different survey screen component for every screen number. This is so
+      <FormProvider {...formContext}>
+        <SurveyToolbar />
+        <SurveyScreenContainer $scrollable={isSuccessScreen}>
+          <SurveySideMenu />
+          {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
-            <Outlet key={screenNumber} />
-          </SurveyScreenContainer>
-        </FormProvider>
-      )}
-      <CancelSurveyModal />
+          <Outlet key={screenNumber} />
+        </SurveyScreenContainer>
+      </FormProvider>
+      <CancelConfirmModal isOpen={cancelModalOpen} onClose={closeCancelConfirmation} />
     </PageWrapper>
+  );
+};
+
+// The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
+export const SurveyPage = () => {
+  return (
+    <SurveyContext>
+      <SurveyPageInner />
+    </SurveyContext>
   );
 };
