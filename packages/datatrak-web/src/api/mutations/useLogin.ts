@@ -24,8 +24,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const from = hasFrom(location.state) ? location.state.from : undefined;
-  const from = location.state && location.state.from;
+  const from = hasFrom(location.state) ? location.state.from : undefined;
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
