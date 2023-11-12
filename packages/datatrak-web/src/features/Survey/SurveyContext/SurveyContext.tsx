@@ -4,7 +4,7 @@
  */
 
 import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useMatch, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api/queries';
@@ -12,6 +12,7 @@ import { getAllSurveyComponents } from '../utils';
 import { getDisplayQuestions, getIsQuestionVisible, getUpdatedFormData } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
+import { ROUTES } from '../../../constants';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -32,7 +33,6 @@ export const SurveyFormDispatchContext = createContext<Dispatch<SurveyFormAction
 
 export const SurveyContext = ({ children }) => {
   const [state, dispatch] = useReducer(surveyReducer, defaultContext);
-  const { pathname } = useLocation();
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
@@ -54,10 +54,6 @@ export const SurveyContext = ({ children }) => {
     })
     .filter(screen => screen.surveyScreenComponents.length > 0);
 
-  const numberOfScreens = visibleScreens.length;
-  const isLast = screenNumber === numberOfScreens;
-  const isReviewScreen = !screenNumber && pathname.includes('review');
-  const isSuccessScreen = !screenNumber && pathname.includes('success');
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   useEffect(() => {
@@ -84,15 +80,11 @@ export const SurveyContext = ({ children }) => {
       value={{
         ...state,
         activeScreen,
-        isLast,
-        numberOfScreens,
         screenNumber,
-        isReviewScreen,
         displayQuestions,
         surveyScreens,
         screenHeader,
         visibleScreens,
-        isSuccessScreen,
       }}
     >
       <SurveyFormDispatchContext.Provider value={dispatch}>
@@ -104,7 +96,7 @@ export const SurveyContext = ({ children }) => {
 
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
-  const { surveyScreens, formData } = surveyFormContext;
+  const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
@@ -134,8 +126,18 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
   };
 
+  const numberOfScreens = visibleScreens?.length;
+  const isLast = screenNumber === numberOfScreens;
+  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+
   return {
     ...surveyFormContext,
+    isLast,
+    isSuccessScreen,
+    isReviewScreen,
+    isResponseScreen,
     toggleSideMenu,
     setFormData,
     resetForm,

@@ -52,7 +52,7 @@ const CountryName = styled.span`
 
 export const SurveyToolbar = () => {
   const { surveyCode, screenNumber: screenNumberParam } = useParams();
-  const { screenNumber, numberOfScreens } = useSurveyForm();
+  const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   const { data: user } = useUser();
   const isMobile = useIsMobile();
@@ -68,6 +68,10 @@ export const SurveyToolbar = () => {
     return survey?.name;
   };
   const surveyName = getDisplaySurveyName();
+
+  if (isResponseScreen) {
+    return null;
+  }
 
   return (
     <Toolbar $toolbarIsTransparent={!screenNumberParam}>

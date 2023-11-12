@@ -12,7 +12,7 @@ import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH } from './Components';
+import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
 import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
@@ -120,6 +120,7 @@ export const SurveyLayout = () => {
     sideMenuOpen,
     numberOfScreens,
     isReviewScreen,
+    isResponseScreen,
     visibleScreens,
     openCancelConfirmation,
   } = useSurveyForm();
@@ -200,34 +201,39 @@ export const SurveyLayout = () => {
   const nextButtonText = getNextButtonText();
 
   return (
-    <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
-      <Paper>
-        <Form onSubmit={handleClickSubmit} noValidate>
-          <Outlet />
-          {isSubmittingSurvey && (
-            <LoadingContainer>
-              <SpinningLoader />
-            </LoadingContainer>
-          )}
-          <FormActions>
-            <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
-              Back
-            </BackButton>
-            <ButtonGroup>
-              <Button
-                onClick={openCancelConfirmation}
-                variant="outlined"
-                disabled={isSubmittingSurvey}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmittingSurvey}>
-                {nextButtonText}
-              </Button>
-            </ButtonGroup>
-          </FormActions>
-        </Form>
-      </Paper>
-    </ScrollableLayout>
+    <>
+      <SurveySideMenu />
+      <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
+        <Paper>
+          <Form onSubmit={handleClickSubmit} noValidate>
+            <Outlet />
+            {isSubmittingSurvey && (
+              <LoadingContainer>
+                <SpinningLoader />
+              </LoadingContainer>
+            )}
+            {!isResponseScreen && (
+              <FormActions>
+                <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
+                  Back
+                </BackButton>
+                <ButtonGroup>
+                  <Button
+                    onClick={openCancelConfirmation}
+                    variant="outlined"
+                    disabled={isSubmittingSurvey}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmittingSurvey}>
+                    {nextButtonText}
+                  </Button>
+                </ButtonGroup>
+              </FormActions>
+            )}
+          </Form>
+        </Paper>
+      </ScrollableLayout>
+    </>
   );
 };

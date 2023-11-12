@@ -40,15 +40,14 @@ const PageDescription = styled(Typography)`
 
 export const SurveyResponsePage = () => {
   const { surveyCode, surveyResponseId } = useParams();
-  const { reset } = useFormContext();
+  const formContext = useFormContext();
   const { data: survey } = useSurvey(surveyCode);
   const { data } = useSurveyResponse(surveyResponseId);
   const answers = data?.answers || {};
 
-  console.log('survey', survey);
   useEffect(() => {
     if (answers) {
-      reset(answers);
+      formContext.reset(answers);
     }
   }, [JSON.stringify(answers)]);
 

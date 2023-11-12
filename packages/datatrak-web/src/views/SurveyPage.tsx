@@ -9,13 +9,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useSurvey } from '../api/queries';
 import { CancelConfirmModal } from '../components';
-import {
-  SurveyToolbar,
-  useSurveyForm,
-  useValidationResolver,
-  SurveySideMenu,
-  SurveyContext,
-} from '../features';
+import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
 
@@ -60,7 +54,6 @@ const SurveyPageInner = () => {
       <FormProvider {...formContext}>
         <SurveyToolbar />
         <SurveyScreenContainer $scrollable={isSuccessScreen}>
-          <SurveySideMenu />
           {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
           <Outlet key={screenNumber} />
