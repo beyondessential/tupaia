@@ -115,25 +115,28 @@ export const SurveyQuestion = ({
         name={name}
         control={control}
         defaultValue={defaultValue}
-        render={({ onChange, ref, ...renderProps }, { invalid }) => (
-          <FieldComponent
-            {...props}
-            controllerProps={{
-              ...renderProps,
-              invalid,
-              ref,
-              onChange: e => {
-                handleOnChange(e);
-                onChange(e);
-              },
-            }}
-            required={required}
-            min={min}
-            max={max}
-            name={name}
-            type={type}
-          />
-        )}
+        render={({ onChange, ref, value, ...renderProps }, { invalid }) => {
+          return (
+            <FieldComponent
+              {...props}
+              controllerProps={{
+                ...renderProps,
+                value: value,
+                invalid,
+                ref,
+                onChange: e => {
+                  handleOnChange(e);
+                  onChange(e);
+                },
+              }}
+              required={required}
+              min={min}
+              max={max}
+              name={name}
+              type={type}
+            />
+          );
+        }}
       />
       {displayError && <FormHelperText error>*{errors[name].message}</FormHelperText>}
     </QuestionWrapper>

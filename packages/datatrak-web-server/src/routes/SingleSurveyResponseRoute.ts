@@ -15,22 +15,29 @@ export type SingleSurveyResponseRequest = Request<
   DatatrakWebSingleSurveyResponseRequest.ReqQuery
 >;
 
-const ANSWER_COLUMNS = [
-  'text', 'question_id'
-]
+const ANSWER_COLUMNS = ['text', 'question_id'];
 
 export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
   public async buildResponse() {
     const { ctx, params } = this.req;
     const { id: responseId } = params;
 
-    const surveyResponse = await ctx.services.central.fetchResources(`surveyResponses/${responseId}`);
+    const surveyResponse = await ctx.services.central.fetchResources(
+      `surveyResponses/${responseId}`,
+    );
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
       columns: ANSWER_COLUMNS,
     });
-    const answers = answerList.reduce((output: Record<string, string>, answer: { question_id: string, text: string }) => ({ ...output, [answer.question_id]: answer.text }), {});
+    const answers = answerList.reduce(
+      (output: Record<string, string>, answer: { question_id: string; text: string }) => ({
+        ...output,
+        [answer.question_id]: answer.text,
+      }),
+      {},
+    );
 
-    return camelcaseKeys({ ...surveyResponse, answers }, { deep: true });
+    // Don't return the answers in camel case because the keys are question IDs which we want in lowercase
+    return camelcaseKeys({ ...surveyResponse, answers });
   }
 }
