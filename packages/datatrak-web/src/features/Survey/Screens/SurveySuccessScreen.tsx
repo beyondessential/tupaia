@@ -106,7 +106,7 @@ export const SurveySuccessScreen = () => {
             </Button>
           )}
           <Button to="/" fullWidth>
-            Close
+            Return to dashboard
           </Button>
         </ButtonGroup>
       </Container>
