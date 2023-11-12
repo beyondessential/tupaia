@@ -31,7 +31,7 @@ const Container = styled.div`
 
 const StyledImg = styled.img`
   aspect-ratio: 1;
-  width: 369px;
+  width: 23rem;
   max-width: 80%;
   max-height: 50%;
   margin-block-end: 2.75rem;
