@@ -11,8 +11,8 @@ import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH, SurveySideMenu, SurveyToolbar, SurveyPaginator } from './Components';
-import { HEADER_HEIGHT, ROUTES, SURVEY_TOOLBAR_HEIGHT } from '../../constants';
+import { SIDE_MENU_WIDTH, SurveySideMenu, SurveyPaginator } from './Components';
+import { ROUTES } from '../../constants';
 import { useSubmitSurvey } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
 
@@ -28,21 +28,6 @@ const ScrollableLayout = styled.div<{
     padding: 0 1rem;
     margin-left: ${({ $sideMenuClosed }) => ($sideMenuClosed ? `-${SIDE_MENU_WIDTH}` : 0)};
     transition: margin 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
-  }
-`;
-
-const SurveyScreenContainer = styled.div<{
-  $scrollable?: boolean;
-}>`
-  display: flex;
-  overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
-  align-items: flex-start;
-  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
-  width: 100vw;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    margin-left: -1.25rem;
-    padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
-    padding-bottom: 2rem;
   }
 `;
 
@@ -94,12 +79,41 @@ export const SurveyLayout = () => {
     screenNumber,
     sideMenuOpen,
     numberOfScreens,
-    isSuccessScreen,
     isReviewScreen,
+    isResponseScreen,
     visibleScreens,
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
+
+  const handleStep = (path, data) => {
+    setFormData({ ...formData, ...data });
+    navigate(path);
+  };
+
+  const onStepPrevious = () => {
+    const data = getValues();
+    let path = ROUTES.SURVEY_SELECT;
+    const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
+    if (prevScreenNumber) {
+      path = generatePath(ROUTES.SURVEY_SCREEN, {
+        ...params,
+        screenNumber: String(prevScreenNumber),
+      });
+    }
+
+    handleStep(path, data);
+  };
+
+  const navigateNext = data => {
+    const path = isLast
+      ? generatePath(ROUTES.SURVEY_REVIEW, params)
+      : generatePath(ROUTES.SURVEY_SCREEN, {
+          ...params,
+          screenNumber: String(screenNumber! + 1),
+        });
+    handleStep(path, data);
+  };
 
   const onError = errors => {
     // If we're not on the last screen, we don't need to do anything, because the errors get focussed and handled by react-hook-form
@@ -127,35 +141,6 @@ export const SurveyLayout = () => {
     );
   };
 
-  const handleStep = (path, data) => {
-    setFormData({ ...formData, ...data });
-    navigate(path);
-  };
-
-  const navigateNext = data => {
-    const path = isLast
-      ? generatePath(ROUTES.SURVEY_REVIEW, params)
-      : generatePath(ROUTES.SURVEY_SCREEN, {
-          ...params,
-          screenNumber: String(screenNumber! + 1),
-        });
-    handleStep(path, data);
-  };
-
-  const onStepPrevious = () => {
-    const data = getValues();
-    let path = ROUTES.SURVEY_SELECT;
-    const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
-    if (prevScreenNumber) {
-      path = generatePath(ROUTES.SURVEY_SCREEN, {
-        ...params,
-        screenNumber: String(prevScreenNumber),
-      });
-    }
-
-    handleStep(path, data);
-  };
-
   const onSubmit = data => {
     if (isReviewScreen) return submitSurvey(data);
     return navigateNext(data);
@@ -165,23 +150,20 @@ export const SurveyLayout = () => {
 
   return (
     <>
-      <SurveyToolbar />
-      <SurveyScreenContainer $scrollable={isSuccessScreen}>
-        <SurveySideMenu />
-        <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
-          <Paper>
-            <Form onSubmit={handleClickSubmit} noValidate>
-              <Outlet />
-              {isSubmittingSurvey && (
-                <LoadingContainer>
-                  <SpinningLoader />
-                </LoadingContainer>
-              )}
-              <SurveyPaginator onStepPrevious={onStepPrevious} isLoading={isSubmittingSurvey} />
-            </Form>
-          </Paper>
-        </ScrollableLayout>
-      </SurveyScreenContainer>
+      <SurveySideMenu />
+      <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
+        <Paper>
+          <Form onSubmit={handleClickSubmit} noValidate>
+            <Outlet />
+            {isSubmittingSurvey && (
+              <LoadingContainer>
+                <SpinningLoader />
+              </LoadingContainer>
+            )}
+            <SurveyPaginator onStepPrevious={onStepPrevious} isLoading={isSubmittingSurvey} />
+          </Form>
+        </Paper>
+      </ScrollableLayout>
     </>
   );
 };

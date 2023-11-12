@@ -112,9 +112,9 @@ const SurveyPageRedirect = ({ children }) => {
 export const SurveyPageRoutes = (
   <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
     <Route index element={<SurveyStartRedirect />} />
-    <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
+    <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
-      <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
+      <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
       <Route
         path={ROUTES.SURVEY_SCREEN}
