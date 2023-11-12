@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { ActionsMenu as UIActionsMenu, ExportIcon, ActionsMenuOptionType } from '@tupaia/ui-components';
@@ -79,8 +79,6 @@ interface ActionsMenuProps {
 }
 
 const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false)
-  const [mailingListEnabled, setMailingListEnabled] = useState<boolean>(false)
   const { projectCode, entityCode, dashboardName } = useParams();
   const {
     activeDashboard,
@@ -94,40 +92,30 @@ const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
     // Optional - add loading indicator to option.
     console.log(isUserSubscribed)
   } 
-  useEffect(() => {
-    const { mailingLists } = activeDashboard;
-    const { mailingListEntity, userSubscribed } = mailingLists.find(({mailingListEntityCode}) => {
+  const { mailingLists } = activeDashboard;
+  const mailingList = mailingLists.find(({mailingListEntityCode}) => {
     mailingListEntityCode === entityCode
     })
-    if(!mailingListEntity) {
-      setMailingListEnabled(false)
-      setIsSubscribed(false)
-    }
-    if(!userSubscribed) {
-      setMailingListEnabled(true)
-      setIsSubscribed(false)
-    }
-    setIsSubscribed(true)
-  },[activeDashboard])
 
   const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
   const menuOptions: ActionsMenuOptionType[] = [exportOption]
   
-  if(!mailingListEnabled) {
+  if(mailingList) {
+    const { isSubscribed } = mailingList;
+    const subscribeOption = {
+      label: isSubscribed ? 'Subscribed' : 'Subscribe', 
+      action: () => handleSubscribe(isSubscribed), 
+      ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
+      toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
+      color: isSubscribed ? 'primary' : undefined,
+    }
+  
+    menuOptions.push(subscribeOption)
+  
     return (
       <UIActionsMenu options={menuOptions} includesIcons={true} />
     )
   }
-
-  const subscribeOption = {
-    label: isSubscribed ? 'Subscribed' : 'Subscribe', 
-    action: () => handleSubscribe(isSubscribed), 
-    ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
-    toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
-    color: isSubscribed ? 'primary' : undefined,
-  }
-
-  menuOptions.push(subscribeOption)
 
   return (
     <UIActionsMenu options={menuOptions} includesIcons={true} />
