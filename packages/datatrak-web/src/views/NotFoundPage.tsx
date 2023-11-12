@@ -11,7 +11,7 @@ interface NotFoundPageProps {
   title?: string;
 }
 
-export const NotFoundPage = ({ error, title = "404: Page not found" }:NotFoundPageProps) => {
+export const NotFoundPage = ({ error, title = '404: Page not found' }: NotFoundPageProps) => {
   return (
     <ErrorDisplay title={title} error={error}>
       <DialogActions>
