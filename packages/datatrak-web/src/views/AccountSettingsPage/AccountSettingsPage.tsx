@@ -42,7 +42,7 @@ export const AccountSettingsPage = () => {
     <Wrapper>
       <PageTitle>
         <Settings color="primary" />
-        Account Settings
+        Account settings
       </PageTitle>
       <PersonalDetailsSection />
       <ChangePasswordSection />
