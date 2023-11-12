@@ -116,7 +116,7 @@ const SurveyNotFoundRedirect = ({ children }) => {
   const { surveyCode } = useParams();
   const { isError, error } = useSurvey(surveyCode);
   if (isError) {
-    return <NotFoundPage error={error} />;
+    return <NotFoundPage error={error} title="Error fetching survey" />;
   }
   return children;
 };
