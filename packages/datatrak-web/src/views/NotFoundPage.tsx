@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Button, ErrorDisplay } from '../components';
 import { DialogActions } from '@material-ui/core';
+import { Button, ErrorDisplay } from '../components';
 
 export const NotFoundPage = ({ error }: { error?: Error }) => {
   return (
