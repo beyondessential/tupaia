@@ -138,6 +138,7 @@ export const useSurveyForm = () => {
     isSuccessScreen,
     isReviewScreen,
     isResponseScreen,
+    numberOfScreens,
     toggleSideMenu,
     setFormData,
     resetForm,

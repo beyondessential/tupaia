@@ -15,7 +15,6 @@ export type SurveyResponsesRequest = Request<
   DatatrakWebSurveyResponsesRequest.ReqQuery
 >;
 
-// Todo: update types with code
 const DEFAULT_FIELDS = [
   'assessor_name',
   'country.name',

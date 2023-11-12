@@ -5,45 +5,60 @@
 
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Typography } from '@material-ui/core';
+import { Paper as MuiPaper } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ScrollableBody } from '../layout';
-import { useSurvey, useSurveyResponse } from '../api/queries';
-import { SurveyReviewSection } from '../features/Survey/Components';
+import { useSurveyResponse } from '../api/queries';
+import { HEADER_HEIGHT } from '../constants';
+import { SurveyReviewSection, SurveyScreenHeader } from '../features/Survey/Components';
+import { Button } from '../components';
 
-const Header = styled.div`
-  padding: 1rem;
+const LayoutContainer = styled.div`
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - ${HEADER_HEIGHT});
+  padding: 3.5rem 0 2rem;
+`;
+
+const Paper = styled(MuiPaper).attrs({
+  variant: 'outlined',
+  elevation: 0,
+})`
+  flex: 1;
+  max-width: 63rem;
+  padding: 0;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    margin-left: 1rem;
+    border-radius: 4px;
+  }
+`;
+
+const FormActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-top: 1px solid ${props => props.theme.palette.divider};
+  button:last-child {
+    margin-left: auto;
   }
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 1.375rem 2.75rem;
-  }
-`;
-
-const PageHeading = styled(Typography).attrs({
-  variant: 'h2',
-})`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    font-size: 1rem;
-  }
-`;
-
-const PageDescription = styled(Typography)`
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    font-size: 0.875rem;
+    padding: 1rem;
   }
 `;
 
 export const SurveyResponsePage = () => {
-  const { surveyCode, surveyResponseId } = useParams();
+  const { surveyResponseId } = useParams();
   const formContext = useFormContext();
-  const { data: survey } = useSurvey(surveyCode);
-  const { data } = useSurveyResponse(surveyResponseId);
-  const answers = data?.answers || {};
+  const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
+  const answers = surveyResponse?.answers || {};
 
   useEffect(() => {
     if (answers) {
@@ -51,15 +66,19 @@ export const SurveyResponsePage = () => {
     }
   }, [JSON.stringify(answers)]);
 
+  const description = `${surveyResponse?.entityName} | ${surveyResponse?.countryName} ${surveyResponse?.dataTime}`;
+
   return (
-    <>
-      <Header>
-        <PageHeading>{survey?.name}</PageHeading>
-        <PageDescription>Ba Health Centre | Fiji 02/03/23</PageDescription>
-      </Header>
-      <ScrollableBody>
-        <SurveyReviewSection />
-      </ScrollableBody>
-    </>
+    <LayoutContainer>
+      <Paper>
+        <SurveyScreenHeader heading={surveyResponse?.surveyName} description={description} />
+        <ScrollableBody>
+          <SurveyReviewSection />
+        </ScrollableBody>
+        <FormActions>
+          <Button>Close</Button>
+        </FormActions>
+      </Paper>
+    </LayoutContainer>
   );
 };

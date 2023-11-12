@@ -17,13 +17,26 @@ export type SingleSurveyResponseRequest = Request<
 
 const ANSWER_COLUMNS = ['text', 'question_id'];
 
+const DEFAULT_FIELDS = [
+  'assessor_name',
+  'country.name',
+  'data_time',
+  'entity.name',
+  'id',
+  'survey.name',
+  'survey.code',
+];
+
 export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
   public async buildResponse() {
-    const { ctx, params } = this.req;
+    const { ctx, params, query } = this.req;
     const { id: responseId } = params;
+
+    const { fields = DEFAULT_FIELDS } = query;
 
     const surveyResponse = await ctx.services.central.fetchResources(
       `surveyResponses/${responseId}`,
+      { columns: fields },
     );
     const answerList = await ctx.services.central.fetchResources('answers', {
       filter: { survey_response_id: surveyResponse.id },
