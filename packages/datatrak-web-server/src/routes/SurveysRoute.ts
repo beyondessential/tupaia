@@ -21,13 +21,20 @@ export type SurveysRequest = Request<
 export class SurveysRoute extends Route<SurveysRequest> {
   public async buildResponse() {
     const { ctx, query = {} } = this.req;
-    const { fields } = query;
+    const { fields = [], projectId } = query;
+
     const surveys = await ctx.services.central.fetchResources('surveys', {
-      columns: fields,
+      columns: [...fields, 'project_id'], // TODO: remove this when this is a db filter for project_id
       pageSize: 'ALL', // Override default page size of 100
     });
+
+    // TODO: make this a db filter when survey project_id field is non-nullable. For now, we need to manually filter
+    const projectSurveys = surveys.filter(
+      (survey: Survey) => survey.projectId === null || survey.projectId === projectId,
+    );
+
     return sortBy(
-      camelcaseKeys(surveys, {
+      camelcaseKeys(projectSurveys, {
         deep: true,
       }),
       ['name', 'surveyGroupName'],

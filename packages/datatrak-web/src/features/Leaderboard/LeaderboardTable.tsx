@@ -76,7 +76,7 @@ const FooterCell = styled(TableCell)`
 
 export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
   const { data: user } = useUser();
-  const { data: leaderboard, isLoading } = useLeaderboard();
+  const { data: leaderboard, isLoading } = useLeaderboard(user?.projectId);
   if (isLoading) return null;
 
   return (
