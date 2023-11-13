@@ -351,7 +351,7 @@ export const constructForSingle = (models, recordType) => {
     case TYPES.SURVEY:
       return {
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
-        name: [isAString],
+        name: [isAString, constructIsShorterThan(50)],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
           async countryNames => {
