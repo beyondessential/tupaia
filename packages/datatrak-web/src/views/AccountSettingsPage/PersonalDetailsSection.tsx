@@ -36,51 +36,45 @@ export const PersonalDetailsSection = () => {
     }
   `;
 
-  const accountSettingsForm = (
-    <PersonalDetailsForm>
-      <StyledTextField
-        name="firstName"
-        label="First name"
-        placeholder="First name"
-        autoComplete="given-name"
-        value={user.firstName}
-        required
-      />
-      <StyledTextField
-        name="lastName"
-        label="Last name"
-        placeholder="Last name"
-        autoComplete="family-name"
-        value={user.lastName}
-        required
-      />
-      <StyledTextField
-        name="email"
-        label="Email"
-        placeholder="Email"
-        tooltip="You cannot change your email address"
-        autoComplete="email"
-        value={user.email}
-        required
-        disabled
-      />
-      <StyledTextField
-        name="contactNumber"
-        label="Contact number (optional)"
-        placeholder="Contact number"
-        autoComplete="tel"
-      />
-      <StyledTextField name="employer" label="Employer" placeholder="Employer" required />
-      <StyledTextField name="position" label="Position" placeholder="Position" required />
-      <ActionButton>Save changes</ActionButton>
-    </PersonalDetailsForm>
-  );
-
   return (
-    <AccountSettingsSection
-      title="Personal details"
-      description="Edit your personal details"
-      children={accountSettingsForm}
-    />
+    <AccountSettingsSection title="Personal details" description="Edit your personal details">
+      <PersonalDetailsForm>
+        <StyledTextField
+          name="firstName"
+          label="First name"
+          placeholder="First name"
+          autoComplete="given-name"
+          value={user.firstName}
+          required
+        />
+        <StyledTextField
+          name="lastName"
+          label="Last name"
+          placeholder="Last name"
+          autoComplete="family-name"
+          value={user.lastName}
+          required
+        />
+        <StyledTextField
+          name="email"
+          label="Email"
+          placeholder="Email"
+          tooltip="You cannot change your email address"
+          autoComplete="email"
+          value={user.email}
+          required
+          disabled
+        />
+        <StyledTextField
+          name="contactNumber"
+          label="Contact number (optional)"
+          placeholder="Contact number"
+          autoComplete="tel"
+        />
+        <StyledTextField name="employer" label="Employer" placeholder="Employer" required />
+        <StyledTextField name="position" label="Position" placeholder="Position" required />
+        <ActionButton>Save changes</ActionButton>
+      </PersonalDetailsForm>
+    </AccountSettingsSection>
   );
 };
