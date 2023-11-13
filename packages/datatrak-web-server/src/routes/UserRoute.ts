@@ -49,6 +49,8 @@ export class UserRoute extends Route<UserRequest> {
 
     return {
       userName: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
       email,
       id,
       projectId,
