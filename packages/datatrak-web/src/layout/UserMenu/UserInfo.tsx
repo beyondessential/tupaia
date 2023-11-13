@@ -92,7 +92,7 @@ export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void })
     <Wrapper>
       {user.isLoggedIn ? (
         <Details>
-          <UserName>{user.name}</UserName>
+          <UserName>{user.userName}</UserName>
           {user.projectId && (
             <ProjectButton onClick={openProjectModal} tooltip="Change project">
               {user.project?.name}
