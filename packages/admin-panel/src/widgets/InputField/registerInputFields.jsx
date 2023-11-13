@@ -252,6 +252,10 @@ export const registerInputFields = () => {
         startAdornment: props.startAdornment ? (
           <InputAdornment position="start">{props.startAdornment}</InputAdornment>
         ) : null,
+      }}
+      // disable eslint rule as we want to allow the use of minLength and maxLength, and inputProps and InputProps are valid mui component props
+      // eslint-disable-next-line react/jsx-no-duplicate-props
+      inputProps={{
         minLength: props.minLength,
         maxLength: props.maxLength,
       }}
