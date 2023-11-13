@@ -93,7 +93,7 @@ const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
     console.log(isUserSubscribed)
   } 
   const { mailingLists } = activeDashboard;
-  const mailingList = mailingLists.find(({mailingListEntityCode}) => {
+  const mailingList = mailingLists?.find(({mailingListEntityCode}) => {
     mailingListEntityCode === entityCode
     })
 
