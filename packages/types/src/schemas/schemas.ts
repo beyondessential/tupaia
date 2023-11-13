@@ -51976,6 +51976,147 @@ export const DashboardItemUpdateSchema = {
 	"additionalProperties": false
 } 
 
+export const DashboardMailingListSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_id": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboard_id",
+		"entity_id",
+		"id",
+		"project_id"
+	]
+} 
+
+export const DashboardMailingListCreateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_id": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboard_id",
+		"entity_id",
+		"project_id"
+	]
+} 
+
+export const DashboardMailingListUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_id": {
+			"type": "string"
+		},
+		"entity_id": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const DashboardMailingListEntrySchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_mailing_list_id": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"subscribed": {
+			"type": "boolean"
+		},
+		"unsubscribed_time": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboard_mailing_list_id",
+		"email",
+		"id",
+		"subscribed"
+	]
+} 
+
+export const DashboardMailingListEntryCreateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_mailing_list_id": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"subscribed": {
+			"type": "boolean"
+		},
+		"unsubscribed_time": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboard_mailing_list_id",
+		"email"
+	]
+} 
+
+export const DashboardMailingListEntryUpdateSchema = {
+	"type": "object",
+	"properties": {
+		"dashboard_mailing_list_id": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"subscribed": {
+			"type": "boolean"
+		},
+		"unsubscribed_time": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
@@ -60023,7 +60164,24 @@ export const CountryAccessSchema = {
 	]
 } 
 
-export const DashboardWithItemsSchema = {
+export const MailingListSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"isSubscribed": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entityCode",
+		"isSubscribed"
+	]
+} 
+
+export const DashboardWithMetadataSchema = {
 	"type": "object",
 	"properties": {
 		"items": {
@@ -68038,6 +68196,25 @@ export const DashboardWithItemsSchema = {
 					"config",
 					"id",
 					"legacy"
+				]
+			}
+		},
+		"mailingLists": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"entityCode": {
+						"type": "string"
+					},
+					"isSubscribed": {
+						"type": "boolean"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"entityCode",
+					"isSubscribed"
 				]
 			}
 		},

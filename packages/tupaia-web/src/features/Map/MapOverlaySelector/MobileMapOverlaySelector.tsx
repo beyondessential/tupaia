@@ -16,7 +16,7 @@ import { useParams } from 'react-router';
 
 const Wrapper = styled.div`
   width: 100%;
-  z-index: 1;
+  z-index: 2;
   pointer-events: auto;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
