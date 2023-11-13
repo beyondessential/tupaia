@@ -9,13 +9,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { useSurvey } from '../api/queries';
 import { CancelConfirmModal } from '../components';
-import {
-  SurveyToolbar,
-  useSurveyForm,
-  useValidationResolver,
-  SurveySideMenu,
-  SurveyContext,
-} from '../features';
+import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
 
@@ -36,11 +30,15 @@ const PageWrapper = styled.div`
 
 const SurveyScreenContainer = styled.div<{
   $scrollable?: boolean;
+  $hasToolbar?: boolean;
 }>`
   display: flex;
   overflow: ${({ $scrollable }) => ($scrollable ? 'auto' : 'hidden')};
   align-items: flex-start;
-  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
+  height: ${({ $hasToolbar }) =>
+    $hasToolbar
+      ? `calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT})`
+      : `calc(100vh - ${HEADER_HEIGHT})`};
   width: 100vw;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: -1.25rem;
@@ -52,7 +50,13 @@ const SurveyScreenContainer = styled.div<{
 const SurveyPageInner = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const { formData, isSuccessScreen, cancelModalOpen, closeCancelConfirmation } = useSurveyForm();
+  const {
+    formData,
+    isSuccessScreen,
+    isResponseScreen,
+    cancelModalOpen,
+    closeCancelConfirmation,
+  } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -64,8 +68,7 @@ const SurveyPageInner = () => {
     <PageWrapper>
       <FormProvider {...formContext}>
         <SurveyToolbar />
-        <SurveyScreenContainer $scrollable={isSuccessScreen}>
-          <SurveySideMenu />
+        <SurveyScreenContainer $scrollable={isSuccessScreen} $hasToolbar={!isResponseScreen}>
           {/* Use a key to render a different survey screen component for every screen number. This is so
       that the screen can be easily initialised with the form data. See https://react.dev/learn/you-might-not-need-an-effect#resetting-all-state-when-a-prop-changes */}
           <Outlet key={screenNumber} />
