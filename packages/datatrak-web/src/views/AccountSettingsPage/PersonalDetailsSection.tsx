@@ -43,6 +43,7 @@ export const PersonalDetailsSection = () => {
         label="First name"
         placeholder="First name"
         autoComplete="given-name"
+        value={user.firstName}
         required
       />
       <StyledTextField
@@ -50,12 +51,14 @@ export const PersonalDetailsSection = () => {
         label="Last name"
         placeholder="Last name"
         autoComplete="family-name"
+        value={user.lastName}
         required
       />
       <StyledTextField
         name="email"
         label="Email"
         placeholder="Email"
+        tooltip="You cannot change your email address"
         autoComplete="email"
         value={user.email}
         required
