@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { QuestionType } from '@tupaia/types';
-import { SurveyQuestionGroup } from './SurveyQuestionGroup.tsx';
-import { useSurveyForm } from '../SurveyContext';
-import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
+import { SurveyQuestionGroup } from './SurveyQuestionGroup';
+import { formatSurveyScreenQuestions, getSurveyScreenNumber } from '../utils';
+import { useSurveyForm } from '../SurveyContext';
 
 const Section = styled.section`
   padding: 1rem 0;
