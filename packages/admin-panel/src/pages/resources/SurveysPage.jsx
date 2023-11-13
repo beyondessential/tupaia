@@ -26,6 +26,10 @@ const SURVEY_FIELDS = {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
+    editConfig: {
+      maxLength: 50,
+      secondaryLabel: 'Max length: 50 characters',
+    },
   },
   code: {
     Header: 'Code',
@@ -179,6 +183,10 @@ const SURVEY_FIELDS = {
 };
 
 const SURVEY_COLUMNS = [
+  {
+    Header: 'Project',
+    source: 'project.code',
+  },
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {

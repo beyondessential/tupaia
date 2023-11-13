@@ -19,6 +19,7 @@ import { EntitySearch } from '../../features';
 const Header = styled.header<{
   $primaryColor?: string | null;
   $secondaryColor?: string | null;
+  $isLandingPage?: boolean;
 }>`
   background-color: ${({ theme, $primaryColor }) =>
     $primaryColor || theme.palette.background.default};
@@ -31,7 +32,10 @@ const Header = styled.header<{
   z-index: 1100;
   position: relative;
   padding: 0 0.625em;
-  border-bottom: 1px solid ${({ theme }) => theme.palette.background.paper};
+  border-bottom: ${({ $isLandingPage, theme }) => {
+    if ($isLandingPage) return 'none';
+    return `1px solid ${theme.palette.background.paper}`;
+  }};
 
   > * {
     background-color: ${({ theme, $primaryColor }) =>
@@ -57,7 +61,11 @@ export const TopBar = () => {
   // use the landing page settings if found, else the defaults
   const { primaryHexcode, secondaryHexcode, includeNameInHeader, name, logoUrl } = landingPage;
   return (
-    <Header $primaryColor={primaryHexcode} $secondaryColor={secondaryHexcode}>
+    <Header
+      $primaryColor={primaryHexcode}
+      $secondaryColor={secondaryHexcode}
+      $isLandingPage={isLandingPage}
+    >
       <Logo
         logoSrc={logoUrl || TUPAIA_LIGHT_LOGO_SRC}
         displayName={includeNameInHeader}

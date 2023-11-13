@@ -72,7 +72,7 @@ export const ExpandItemButton = () => {
   if (isEnlarged || isExport) return null;
 
   const getIsExpandable = () => {
-    if (periodGranularity) return true;
+    if (!periodGranularity) return false;
     else if (EXPANDABLE_TYPES.includes(type)) return true;
     else if (viewType && EXPANDABLE_TYPES.includes(viewType)) return true;
     else if (viewType === 'qrCodeVisual') {

@@ -18,4 +18,5 @@ export type ResBody = RecentSurvey[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   userId: string;
+  projectId?: string;
 }

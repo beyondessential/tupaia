@@ -31,6 +31,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AccountSettingsPage,
+  SurveyResponsePage,
 } from './views';
 import { useUser } from './api/queries';
 import { ROUTES } from './constants';
@@ -113,6 +114,7 @@ export const SurveyPageRoutes = (
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
+      <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
       <Route
         path={ROUTES.SURVEY_SCREEN}

@@ -312,6 +312,43 @@ export interface DashboardItemUpdate {
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
 }
+export interface DashboardMailingList {
+  'dashboard_id': string;
+  'entity_id': string;
+  'id': string;
+  'project_id': string;
+}
+export interface DashboardMailingListCreate {
+  'dashboard_id': string;
+  'entity_id': string;
+  'project_id': string;
+}
+export interface DashboardMailingListUpdate {
+  'dashboard_id'?: string;
+  'entity_id'?: string;
+  'id'?: string;
+  'project_id'?: string;
+}
+export interface DashboardMailingListEntry {
+  'dashboard_mailing_list_id': string;
+  'email': string;
+  'id': string;
+  'subscribed': boolean;
+  'unsubscribed_time'?: Date | null;
+}
+export interface DashboardMailingListEntryCreate {
+  'dashboard_mailing_list_id': string;
+  'email': string;
+  'subscribed'?: boolean;
+  'unsubscribed_time'?: Date | null;
+}
+export interface DashboardMailingListEntryUpdate {
+  'dashboard_mailing_list_id'?: string;
+  'email'?: string;
+  'id'?: string;
+  'subscribed'?: boolean;
+  'unsubscribed_time'?: Date | null;
+}
 export interface DashboardRelation {
   'child_id': string;
   'dashboard_id': string;
@@ -1352,6 +1389,7 @@ export interface Survey {
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }
@@ -1364,6 +1402,7 @@ export interface SurveyCreate {
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }
@@ -1377,6 +1416,7 @@ export interface SurveyUpdate {
   'name'?: string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }

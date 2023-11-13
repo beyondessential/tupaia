@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 const UsernameContainer = styled.p<{
   $isLandingPage?: boolean;
 }>`
-  padding-right: ${({ $isLandingPage }) => ($isLandingPage ? '1.5rem' : '5px')};
+  padding-right: ${({ $isLandingPage }) => ($isLandingPage ? '0.6rem' : '5px')};
   margin: 0;
   font-weight: ${({ $isLandingPage, theme }) =>
     $isLandingPage ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
@@ -54,7 +54,7 @@ const SignInButton = styled(RouterButton).attrs({
   border-radius: 18px;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   height: 30px;
-  margin-right: 1.7rem;
+  margin-right: 1.3rem;
   padding-left: 1em;
   padding-right: 1em;
 `;
