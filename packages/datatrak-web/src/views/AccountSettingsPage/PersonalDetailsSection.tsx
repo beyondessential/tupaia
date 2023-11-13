@@ -22,7 +22,7 @@ const PersonalDetailsForm = styled.form`
   gap: 1.56rem 1.25rem;
   max-width: 44.25rem;
   width: 100%;
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template-columns: repeat(2, 1fr);
   }
 
