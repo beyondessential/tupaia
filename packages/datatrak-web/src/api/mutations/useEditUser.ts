@@ -8,20 +8,25 @@ import { Project } from '@tupaia/types';
 import { put } from '../api';
 import { Entity } from '../../types';
 
-type UserPreferences = { projectId?: Project['id']; countryId?: Entity['id'] };
+type UserPreferences = {
+  projectId?: Project['id'];
+  countryId?: Entity['id'];
+  deleteAccountRequested?: boolean;
+};
 
-export const useEditUser = onSuccess => {
+export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, UserPreferences, unknown>(
-    async ({ projectId, countryId }: UserPreferences) => {
-      if (!projectId && !countryId) {
+    async ({ projectId, countryId, deleteAccountRequested }: UserPreferences) => {
+      if (!projectId && !countryId && deleteAccountRequested === undefined) {
         return;
       }
 
       const updates = {} as {
         project_id?: Project['id'];
         country_id?: Entity['id'];
+        delete_account_requested?: boolean;
       };
 
       if (projectId) {
@@ -32,6 +37,9 @@ export const useEditUser = onSuccess => {
         updates.country_id = countryId;
       }
 
+      if (deleteAccountRequested !== undefined) {
+        updates.delete_account_requested = deleteAccountRequested;
+      }
       await put('me', {
         data: updates,
       });
@@ -39,7 +47,7 @@ export const useEditUser = onSuccess => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getUser');
-        onSuccess();
+        if (onSuccess) onSuccess();
       },
     },
   );

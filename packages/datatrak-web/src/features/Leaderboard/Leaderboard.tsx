@@ -13,18 +13,18 @@ const ScrollBody = styled.div`
   overflow: auto;
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
-  flex: 1;
+  max-height: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex: 1;
+  }
 `;
 
 export const Leaderboard = () => {
-  const { data: userRewards, isLoading: isLoadingUserRewards } = useUserRewards();
+  const { data: userRewards, isSuccess } = useUserRewards();
   return (
     <ScrollBody>
-      <UserRewardsSection
-        pigs={userRewards?.pigs}
-        coconuts={userRewards?.coconuts}
-        isLoading={isLoadingUserRewards}
-      />
+      {isSuccess && <UserRewardsSection pigs={userRewards.pigs} coconuts={userRewards.coconuts} />}
       <LeaderboardTable userRewards={userRewards} />
     </ScrollBody>
   );

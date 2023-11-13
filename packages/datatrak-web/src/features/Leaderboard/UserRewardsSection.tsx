@@ -8,13 +8,14 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Coconut, Pig } from '../../components';
 import { UserRewards } from '../../types';
+import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding: 1.1rem 2rem;
   border-bottom: 1px solid ${props => props.theme.palette.divider};
-  ${({ theme }) => theme.breakpoints.up('lg')} {
+  ${DESKTOP_MEDIA_QUERY} {
     padding: 1.7rem 2.2rem;
   }
 `;
@@ -37,11 +38,7 @@ const UserRewardCount = styled(Typography)`
   line-height: 1.25rem;
 `;
 
-interface UserRewardsSectionProps extends UserRewards {
-  isLoading: boolean;
-}
-export const UserRewardsSection = ({ pigs, coconuts, isLoading }: UserRewardsSectionProps) => {
-  if (isLoading) return null;
+export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
   return (
     <Wrapper>
       <UserRewardItem>
