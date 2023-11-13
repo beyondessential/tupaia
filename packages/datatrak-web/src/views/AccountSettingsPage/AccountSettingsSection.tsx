@@ -47,7 +47,7 @@ export const AccountSettingsSection = ({
     <Wrapper>
       <AccountSettingsColumn>
         <Title>{title}</Title>
-        {description}
+        <Typography color="textSecondary">{description}</Typography>
       </AccountSettingsColumn>
       {children}
     </Wrapper>
