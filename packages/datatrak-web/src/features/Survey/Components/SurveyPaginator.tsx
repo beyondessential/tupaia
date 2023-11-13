@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useOutletContext } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { useSurveyForm } from '../SurveyContext';
 import { Button } from '../../../components';
@@ -47,9 +48,12 @@ const BackButton = styled(Button).attrs({
   }
 `;
 
-export const SurveyPaginator = ({ isLoading, onStepPrevious }) => {
+type SurveyLayoutContextT = { isLoading: boolean; onStepPrevious: () => void };
+
+export const SurveyPaginator = () => {
   const { isLast, isReviewScreen, openCancelConfirmation } = useSurveyForm();
   const isMobile = useIsMobile();
+  const { isLoading, onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
 
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';

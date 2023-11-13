@@ -11,7 +11,7 @@ import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH, SurveySideMenu, SurveyPaginator } from './Components';
+import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
 import { useSubmitSurvey } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
@@ -154,13 +154,12 @@ export const SurveyLayout = () => {
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
-            <Outlet />
+            <Outlet context={{ onStepPrevious, isSubmittingSurvey }} />
             {isSubmittingSurvey && (
               <LoadingContainer>
                 <SpinningLoader />
               </LoadingContainer>
             )}
-            <SurveyPaginator onStepPrevious={onStepPrevious} isLoading={isSubmittingSurvey} />
           </Form>
         </Paper>
       </ScrollableLayout>
