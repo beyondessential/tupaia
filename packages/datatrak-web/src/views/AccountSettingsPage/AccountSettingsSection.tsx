@@ -18,6 +18,7 @@ const Wrapper = styled(Paper).attrs({
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    gap: 2.5rem;
     justify-content: space-between;
     padding: 2.5rem;
   }
