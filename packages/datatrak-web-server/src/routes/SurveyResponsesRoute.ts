@@ -22,6 +22,7 @@ const DEFAULT_FIELDS = [
   'entity.name',
   'id',
   'survey.name',
+  'survey.code',
 ];
 
 const DEFAULT_LIMIT = 16;

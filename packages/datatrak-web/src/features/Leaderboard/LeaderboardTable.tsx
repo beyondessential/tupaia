@@ -16,6 +16,7 @@ import {
   TableFooter,
 } from '@material-ui/core';
 import { useLeaderboard, useUser } from '../../api/queries';
+import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 interface LeaderboardTableProps {
   userRewards?: UserRewards;
@@ -36,32 +37,36 @@ const TableContainer = styled(MuiTableContainer)`
 
 const HeaderCell = styled(TableCell)`
   border-bottom-color: ${({ theme }) => theme.palette.divider};
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    padding-top: 0.7rem;
-    padding-bottom: 0.7rem;
+  line-height: 1.4;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    padding-top: 0.3rem;
+    padding-bottom: 0.4rem;
+  }
+  ${DESKTOP_MEDIA_QUERY} {
+    padding-top: 1.2rem;
+    padding-bottom: 1.1rem;
   }
 `;
 
 const Cell = styled(TableCell)<{
   $isActiveUser?: boolean;
 }>`
-  padding-top: 1rem;
-  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.6rem;
   border: none;
   font-weight: ${({ $isActiveUser, theme }) =>
     $isActiveUser ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
   &:first-child {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
-  tr:last-child & {
-    padding-bottom: 1rem;
-  }
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-top: 1.2rem;
+  ${DESKTOP_MEDIA_QUERY} {
+    padding-top: 1.1rem;
     padding-bottom: 0.6rem;
     tr:last-child & {
-      padding-bottom: 1.2rem;
+      padding-bottom: 1rem;
     }
   }
 `;
@@ -72,6 +77,14 @@ const FooterCell = styled(TableCell)`
   color: ${({ theme }) => theme.palette.text.primary};
   border-bottom: none;
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    padding: 0.5rem 1rem;
+  }
+
+  ${DESKTOP_MEDIA_QUERY} {
+    padding-top: 1.1rem;
+    padding-bottom: 0.6rem;
+  }
 `;
 
 export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {

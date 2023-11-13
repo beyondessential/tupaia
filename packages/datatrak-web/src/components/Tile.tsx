@@ -13,7 +13,6 @@ const ButtonWrapper = styled(Button)`
   justify-content: flex-start;
   align-items: flex-start;
   background: ${({ theme }) => theme.palette.background.paper};
-  margin-bottom: 1rem;
   padding: 0.8rem 1rem;
   border-radius: 0.625rem;
   font-size: 0.75rem;

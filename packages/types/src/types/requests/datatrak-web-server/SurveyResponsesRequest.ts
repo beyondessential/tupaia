@@ -14,6 +14,7 @@ type SurveyResponse = {
   entityName: Entity['name'];
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
+  surveyCode: Survey['code'];
 };
 
 export type ResBody = SurveyResponse[];
