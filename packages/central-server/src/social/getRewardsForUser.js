@@ -9,11 +9,11 @@ export const getRewardsForUser = async (database, userId, projectId = '') => {
     `SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
     FROM survey_response
     JOIN survey on survey.id=survey_id
-    where (survey.project_id = ? OR survey.project_id IS NULL)
-    AND user_id = ?
+    WHERE user_id = ?
+    ${projectId ? 'AND (project_id = ? OR project_id IS NULL)' : ''}
     GROUP BY user_id;
     `,
-    [projectId, userId],
+    [userId, projectId],
   );
 
   if (rewards) {

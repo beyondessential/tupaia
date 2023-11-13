@@ -39,7 +39,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
           SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
           FROM survey_response
           JOIN survey on survey.id=survey_id
-          WHERE (survey.project_id = ? OR survey.project_id IS NULL)
+          ${projectId ? 'WHERE (survey.project_id = ? OR survey.project_id IS NULL)' : ''}
           GROUP BY user_id
         ) r
         JOIN user_account on user_account.id = r.user_id
