@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
@@ -12,6 +12,7 @@ import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { Typography } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -33,6 +34,20 @@ const PreviewPanelContainer = styled.div`
   flex-direction: column;
 `;
 
+const PreviewHeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.3rem;
+`;
+
+const PreviewPagination = styled(Pagination)`
+  .MuiPaginationItem-page {
+    font-size: 0.7rem;
+  }
+`;
+
 const PreviewContainer = styled.div`
   display: flex;
   background-color: white;
@@ -44,7 +59,7 @@ const PreviewContainer = styled.div`
 const Title = styled(Typography)`
   color: white;
   font-weight: 400;
-  font-size: 1.625rem;
+  font-size: 0.875rem;
   line-height: 1.4;
 `;
 
@@ -57,6 +72,9 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
+  const [page, setPage] = useState(1);
+  const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
+  const visualisationToPreview = selectedDashboardItems[page - 1];
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -85,13 +103,21 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
     >
       <Container>
         <PreviewPanelContainer>
-          <Title>Preview</Title>
+          <PreviewHeaderContainer>
+            <Title>Preview</Title>
+            <PreviewPagination
+              size="small"
+              siblingCount={0}
+              count={selectedDashboardItems.length}
+              onChange={onPageChange}
+            />
+          </PreviewHeaderContainer>
           <PreviewContainer>
             <PDFExport
               projectCode={projectCode}
               entityCode={entityCode}
               dashboardName={dashboardName}
-              selectedDashboardItems={selectedDashboardItems}
+              selectedDashboardItems={[visualisationToPreview]}
               isPreview
             />
           </PreviewContainer>
