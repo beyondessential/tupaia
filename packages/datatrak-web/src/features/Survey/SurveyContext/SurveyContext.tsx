@@ -126,7 +126,7 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
   };
 
-  const numberOfScreens = visibleScreens?.length;
+  const numberOfScreens = visibleScreens?.length || 0;
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
