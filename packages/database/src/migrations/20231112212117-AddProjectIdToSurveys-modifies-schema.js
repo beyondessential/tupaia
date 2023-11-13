@@ -30,7 +30,7 @@ exports.down = async function (db) {
   await db.runSql(`
   ALTER TABLE survey DROP COLUMN project_id;
 `);
-  await db.runSql(`DROP INDEX IF EXISTS survey_project_id_idx);`);
+  await db.runSql(`DROP INDEX IF EXISTS survey_project_id_idx;`);
 };
 
 exports._meta = {
