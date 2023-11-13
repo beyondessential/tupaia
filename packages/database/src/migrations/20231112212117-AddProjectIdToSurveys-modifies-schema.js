@@ -28,7 +28,7 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   await db.runSql(`
-  ALTER TABLE user_account DROP COLUMN project_id;
+  ALTER TABLE survey DROP COLUMN project_id;
 `);
   await db.runSql(`DROP INDEX IF EXISTS survey_project_id_idx);`);
 };
