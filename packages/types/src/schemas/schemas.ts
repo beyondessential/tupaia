@@ -59693,7 +59693,24 @@ export const CountryAccessSchema = {
 	]
 } 
 
-export const DashboardWithItemsSchema = {
+export const MailingListSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"isSubscribed": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"entityCode",
+		"isSubscribed"
+	]
+} 
+
+export const DashboardWithMetadataSchema = {
 	"type": "object",
 	"properties": {
 		"items": {
@@ -67708,6 +67725,25 @@ export const DashboardWithItemsSchema = {
 					"config",
 					"id",
 					"legacy"
+				]
+			}
+		},
+		"mailingLists": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"entityCode": {
+						"type": "string"
+					},
+					"isSubscribed": {
+						"type": "boolean"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"entityCode",
+					"isSubscribed"
 				]
 			}
 		},

@@ -5,17 +5,18 @@
 import React, { useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { ButtonBase, Menu, MenuItem, Paper } from '@material-ui/core';
+import { ActionsMenu as UIActionsMenu, ExportIcon, ActionsMenuOptionType } from '@tupaia/ui-components';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { ButtonBase, Menu, MenuItem, Box, Paper } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../types';
 import { TOP_BAR_HEIGHT } from '../../constants';
+import { useDashboards } from '../../api/queries';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   background-color: ${({ theme }) => theme.palette.background.paper};
-  width: 100%;
   padding: 1rem 2rem;
   font-size: 1.125rem;
   font-weight: 500;
@@ -73,14 +74,65 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   );
 };
 
+interface ActionsMenuProps {
+  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
+  const { projectCode, entityCode, dashboardName } = useParams();
+  const {
+    activeDashboard,
+  } = useDashboards(projectCode, entityCode, dashboardName);
+  
+
+
+  const handleSubscribe = (isUserSubscribed) => {
+    // TODO: Add subscribe and unsubscribe sequence
+    // Add react query to POST request for add or remove subscription
+    // Optional - add loading indicator to option.
+    console.log(isUserSubscribed)
+  } 
+  const { mailingLists } = activeDashboard;
+  const mailingList = mailingLists.find(({mailingListEntityCode}) => {
+    mailingListEntityCode === entityCode
+    })
+
+  const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
+  const menuOptions: ActionsMenuOptionType[] = [exportOption]
+  
+  if(mailingList) {
+    const { isSubscribed } = mailingList;
+    const subscribeOption = {
+      label: isSubscribed ? 'Subscribed' : 'Subscribe', 
+      action: () => handleSubscribe(isSubscribed), 
+      ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
+      toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
+      color: isSubscribed ? 'primary' : undefined,
+    }
+  
+    menuOptions.push(subscribeOption)
+  
+    return (
+      <UIActionsMenu options={menuOptions} includesIcons={true} />
+    )
+  }
+
+  return (
+    <UIActionsMenu options={menuOptions} includesIcons={true} />
+  )
+}
+
 export const DashboardMenu = ({
   activeDashboard,
   dashboards,
+  setExportModalOpen,
 }: {
   activeDashboard?: Dashboard;
   dashboards: Dashboard[];
+  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
 
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -95,10 +147,13 @@ export const DashboardMenu = ({
   return (
     <>
       {activeDashboard && (
-        <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
-          {activeDashboard?.name}
-          {hasMultipleDashboards && <KeyboardArrowDownIcon />}
-        </MenuButton>
+        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
+          <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
+            {activeDashboard?.name}
+            {hasMultipleDashboards && <KeyboardArrowDownIcon />}
+          </MenuButton>
+          <ActionsMenu setExportModalOpen={setExportModalOpen}/>
+        </Box>
       )}
       <StyledMenu
         id="dashboards-menu"
