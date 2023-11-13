@@ -7,12 +7,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
-import { Button, LoadingContainer } from '@tupaia/ui-components';
+import { Typography, FormGroup } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
+import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
-import { Typography } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -21,17 +21,79 @@ const ButtonGroup = styled.div`
   justify-content: flex-end;
 `;
 
-const Container = styled.div`
+const PrimaryContext = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  width 100%;
+  align-items: start;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   flex-basis: 83.3333%;
 `;
 
-const PreviewPanelContainer = styled.div`
+const ExportSettingsContainer = styled.div`
+  height: 100%;
+  width: 60%;
   display: flex;
   flex-direction: column;
+  margin-right: 2rem;
+`;
+
+const ExportSetting = styled.div`
+  border: ${({ theme }) => theme.palette.text.secondary};
+  border-width: 0.1rem;
+  border-style: solid;
+  border-radius: 10px;
+
+  .MuiFormGroup-root {
+    align-content: start;
+  }
+
+  .MuiFormControlLabel-label {
+    font-size: 0.875rem;
+  }
+
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 1rem;
+`;
+
+const Legend = styled.legend`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+const Checkbox = styled(BaseCheckbox)`
+  margin: 0.5rem 0 0 1rem;
+  .MuiButtonBase-root {
+    padding: 0;
+    margin-right: 0.5rem;
+  }
+  label {
+    padding: 0.5rem 0 0 0.5rem;
+  }
+`;
+
+const PreviewPanelContainer = styled.div`
+  height: 100%;
+  width: 38%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ExportSettingsInstructionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  padding-bottom: 0.7rem;
 `;
 
 const PreviewHeaderContainer = styled.div`
@@ -51,14 +113,20 @@ const PreviewPagination = styled(Pagination)`
 const PreviewContainer = styled.div`
   display: flex;
   background-color: white;
-  height: 27rem;
-  width: 40rem;
+  height: 30rem;
+  min-width: 20rem;
   overflow: auto;
 `;
 
-const Title = styled(Typography)`
-  color: white;
-  font-weight: 400;
+const Instructions = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 0.875rem;
+  line-height: 1.4;
+`;
+
+const PreviewTitle = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-weight: bold;
   font-size: 0.875rem;
   line-height: 1.4;
 `;
@@ -101,28 +169,56 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
       errorMessage={error?.message}
       onReset={reset}
     >
-      <Container>
-        <PreviewPanelContainer>
-          <PreviewHeaderContainer>
-            <Title>Preview</Title>
-            <PreviewPagination
-              size="small"
-              siblingCount={0}
-              count={selectedDashboardItems.length}
-              onChange={onPageChange}
-            />
-          </PreviewHeaderContainer>
-          <PreviewContainer>
-            <PDFExport
-              projectCode={projectCode}
-              entityCode={entityCode}
-              dashboardName={dashboardName}
-              selectedDashboardItems={[visualisationToPreview]}
-              isPreview
-            />
-          </PreviewContainer>
-        </PreviewPanelContainer>
-      </Container>
+      <PrimaryContext>
+        <Container>
+          <ExportSettingsContainer>
+            <ExportSettingsInstructionsContainer>
+              <Instructions>Edit export settings and click 'Download'.</Instructions>
+            </ExportSettingsInstructionsContainer>
+            <ExportSetting>
+              <FormGroup>
+                <Legend>Display options (coming soon)</Legend>
+                <Checkbox
+                  label="Export with Labels"
+                  value={true}
+                  name="displayOptions"
+                  color="primary"
+                  checked={false}
+                  disabled
+                />
+                <Checkbox
+                  label="Export with Table"
+                  value={true}
+                  name="displayOptions"
+                  color="primary"
+                  checked={true}
+                  disabled
+                />
+              </FormGroup>
+            </ExportSetting>
+          </ExportSettingsContainer>
+          <PreviewPanelContainer>
+            <PreviewHeaderContainer>
+              <PreviewTitle>Preview</PreviewTitle>
+              <PreviewPagination
+                size="small"
+                siblingCount={0}
+                count={selectedDashboardItems.length}
+                onChange={onPageChange}
+              />
+            </PreviewHeaderContainer>
+            <PreviewContainer>
+              <PDFExport
+                projectCode={projectCode}
+                entityCode={entityCode}
+                dashboardName={dashboardName}
+                selectedDashboardItems={[visualisationToPreview]}
+                isPreview
+              />
+            </PreviewContainer>
+          </PreviewPanelContainer>
+        </Container>
+      </PrimaryContext>
       <ButtonGroup>
         <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
           Cancel

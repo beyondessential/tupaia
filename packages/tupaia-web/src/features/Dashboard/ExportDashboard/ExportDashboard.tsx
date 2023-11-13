@@ -6,16 +6,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DashboardItem } from '../../../types';
-import { Modal } from '../../../components';
+import { Modal as BaseModal } from '../../../components';
 import { SelectVisualisation } from './SelectVisualisations';
 import { Preview } from './Preview';
+import { Typography } from '@material-ui/core';
+
+const Modal = styled(BaseModal)`
+  .MuiPaper-root {
+    text-align: left;
+  }
+`;
 
 const Wrapper = styled.div`
-  width: 56rem;
+  width: 75rem;
+  height: 45rem;
   max-width: 100%;
-  padding: 2.5rem 1.875rem 0rem 1.875rem;
+  padding: 2.5rem 2.875rem 0rem 2.875rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
 `;
 
 const Container = styled.div`
@@ -24,6 +34,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-basis: 83.3333%;
+  width: 100%;
   button {
     text-transform: none;
   }
@@ -35,6 +46,13 @@ const Container = styled.div`
       font-size: 1rem;
     }
   }
+`;
+
+const Title = styled(Typography)`
+  color: ${props => props.theme.palette.text.primary};
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 1.4;
 `;
 
 interface ExportDashboardProps {
@@ -59,6 +77,7 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
   return (
     <Modal isOpen={isOpen} onClose={onCloseModal}>
       <Wrapper>
+        <Title>Export dashboard</Title>
         <Container>
           {screen === SELECT_VISUALISATIONS_SCREEN ? (
             <SelectVisualisation

@@ -25,7 +25,7 @@ const StyledA4Page = styled(A4Page)<{
   $isPreview?: boolean;
 }>`
   ${({ $isPreview }) => ($isPreview ? 'width: 100%;' : '')};
-  ${({ $isPreview }) => ($isPreview ? 'zoom: 0.5;' : '')};
+  ${({ $isPreview }) => ($isPreview ? 'zoom: 0.25;' : '')};
   ${({ $isPreview }) => ($isPreview ? 'aspect-ratio: 0.707;' : '')};
 `;
 

@@ -7,12 +7,37 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, CheckboxList, ListItemProps } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
+import { Typography } from '@material-ui/core';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width 100%;
+`;
+
+const PrimaryContext = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width 100%;
+  align-items: start;
+`;
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
   width: 100%;
   display: flex;
   justify-content: flex-end;
+`;
+
+const Instructions = styled(Typography)`
+  color: ${props => props.theme.palette.text.primary};
+  font-size: 1rem;
+`;
+
+const CheckboxListContainer = styled.div`
+  padding-top: 1.5rem;
+  width: 100%;
 `;
 
 interface ExportDashboardProps {
@@ -47,13 +72,20 @@ export const SelectVisualisation = ({
   };
 
   return (
-    <>
-      <CheckboxList
-        title="Select Visualisations"
-        list={list}
-        selectedItems={selectedItems}
-        setSelectedItems={onChange}
-      />
+    <Container>
+      <PrimaryContext>
+        <Instructions>
+          Select the visualisations you would like to export and click 'Next'.
+        </Instructions>
+        <CheckboxListContainer>
+          <CheckboxList
+            title="Select Visualisations"
+            list={list}
+            selectedItems={selectedItems}
+            setSelectedItems={onChange}
+          />
+        </CheckboxListContainer>
+      </PrimaryContext>
       <ButtonGroup>
         <Button variant="outlined" color="default" onClick={onClose}>
           Cancel
@@ -67,6 +99,6 @@ export const SelectVisualisation = ({
           Next
         </Button>
       </ButtonGroup>
-    </>
+    </Container>
   );
 };
