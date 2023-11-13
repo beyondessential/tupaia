@@ -8,19 +8,19 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import { ErrorDisplay } from '../components';
 import { useUser } from './queries';
 
-type UserContextType = (DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean }) | null;
+type CurrentUserContextType = (DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean }) | null;
 
-const UserContext = createContext<UserContextType>(null);
+const CurrentUserContext = createContext<CurrentUserContextType>(null);
 
 export const useCurrentUser = () => {
-  const currentUser = useContext(UserContext);
+  const currentUser = useContext(CurrentUserContext);
   if (!currentUser) {
     throw new Error('useCurrentUser must be used within a CurrentUserContextProvider');
   }
   return currentUser;
 };
 
-export const CurrentUserContext = ({ children }: { children: React.ReactNode }) => {
+export const CurrentUserContextProvider = ({ children }: { children: React.ReactNode }) => {
   const currentUserQuery = useUser();
 
   if (currentUserQuery.isLoading) {
@@ -34,5 +34,5 @@ export const CurrentUserContext = ({ children }: { children: React.ReactNode }) 
   const data = currentUserQuery.data;
   const userData = { ...data, isLoggedIn: !!data?.email };
 
-  return <UserContext.Provider value={userData}>{children}</UserContext.Provider>;
+  return <CurrentUserContext.Provider value={userData}>{children}</CurrentUserContext.Provider>;
 };
