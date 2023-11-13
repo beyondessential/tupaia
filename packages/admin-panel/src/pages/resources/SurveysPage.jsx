@@ -179,6 +179,10 @@ const SURVEY_FIELDS = {
 };
 
 const SURVEY_COLUMNS = [
+  {
+    Header: 'Project',
+    source: 'project.code',
+  },
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {

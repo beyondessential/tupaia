@@ -14,18 +14,23 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function (db) {
-  return db.runSql(`
+exports.up = async function (db) {
+  await db.runSql(`
     ALTER TABLE survey
     ADD COLUMN project_id TEXT,
-    ADD FOREIGN KEY (project_id) REFERENCES project(id)
+    ADD FOREIGN KEY (project_id) REFERENCES project(id); 
   `);
+
+  await db.runSql(` 
+  CREATE INDEX survey_project_id_idx ON survey USING btree (project_id);
+`);
 };
 
-exports.down = function (db) {
-  return db.runSql(`
+exports.down = async function (db) {
+  await db.runSql(`
   ALTER TABLE survey DROP COLUMN project_id;
 `);
+  await db.runSql(`DROP INDEX IF EXISTS survey_project_id_idx;`);
 };
 
 exports._meta = {
