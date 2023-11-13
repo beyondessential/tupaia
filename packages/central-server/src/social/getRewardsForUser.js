@@ -3,15 +3,17 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export const getRewardsForUser = async (database, userId) => {
+export const getRewardsForUser = async (database, userId, projectId = '') => {
+  // TODO: remove the null project_id check once all surveys have been migrated to have a project_id
   const [rewards] = await database.executeSql(
-    `
-    SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+    `SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
     FROM survey_response
-    WHERE user_id = ?
+    JOIN survey on survey.id=survey_id
+    where (survey.project_id = ? OR survey.project_id IS NULL)
+    AND user_id = ?
     GROUP BY user_id;
     `,
-    userId,
+    [projectId, userId],
   );
 
   if (rewards) {
