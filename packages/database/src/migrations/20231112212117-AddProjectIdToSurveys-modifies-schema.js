@@ -15,7 +15,11 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.runSql(`ALTER TABLE survey ADD project_id TEXT NULL`);
+  return db.runSql(`
+    ALTER TABLE survey
+    ADD COLUMN project_id TEXT,
+    ADD FOREIGN KEY (project_id) REFERENCES project(id)
+  `);
 };
 
 exports.down = function (db) {
