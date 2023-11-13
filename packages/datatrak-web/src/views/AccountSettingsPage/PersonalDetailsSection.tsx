@@ -30,8 +30,8 @@ export const PersonalDetailsSection = () => {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    label {
-      color: #2e2f33 !important; // TODO: Get colour from theme
+    .MuiFormLabel-root {
+      color: ${props => props.theme.palette.text.primary};
       font-weight: 500;
     }
   `;
