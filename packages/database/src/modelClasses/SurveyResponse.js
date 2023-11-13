@@ -32,7 +32,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   }
 
   // TODO: remove the null check once we have migrated all surveys to have project ids and meditrak-app supports projects
-  async getLeaderboard(projectId = '', rowCount = 10) {
+  async getLeaderboard(projectId, rowCount = 10) {
+    const bindings = projectId ? [projectId, rowCount] : [rowCount];
     return this.database.executeSql(
       `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
         FROM (
@@ -48,7 +49,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
         ORDER BY coconuts DESC
         LIMIT ?;
       `,
-      [projectId, rowCount],
+      bindings,
     );
   }
 }
