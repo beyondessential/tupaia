@@ -15,6 +15,7 @@ type SurveyResponse = {
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
   surveyProjectId: Survey['project_id'];
+  surveyCode: Survey['code'];
 };
 
 export type ResBody = SurveyResponse[];

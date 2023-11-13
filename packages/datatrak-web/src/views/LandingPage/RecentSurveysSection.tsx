@@ -23,7 +23,13 @@ const ScrollBody = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(33.3% - 1rem), 1fr));
   grid-column-gap: 1rem;
+  grid-row-gap: 0.6rem;
 
+  // make a vertical scrollable container for medium screens (tablet)
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
   // make a horizontal scrollable container for small screens
   ${({ theme }) => theme.breakpoints.down('sm')} {
     grid-auto-flow: column;

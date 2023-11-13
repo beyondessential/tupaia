@@ -13,7 +13,11 @@ const ScrollBody = styled.div`
   overflow: auto;
   background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 10px;
-  flex: 1;
+  max-height: 100%;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex: 1;
+  }
 `;
 
 export const Leaderboard = () => {
