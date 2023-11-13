@@ -15,7 +15,7 @@ import {
   TableRow,
   TableFooter,
 } from '@material-ui/core';
-import { useLeaderboard, useUser } from '../../api/queries';
+import { useLeaderboard, useCurrentUser } from '../../api';
 import { DESKTOP_MEDIA_QUERY } from '../../constants';
 
 interface LeaderboardTableProps {
@@ -88,8 +88,8 @@ const FooterCell = styled(TableCell)`
 `;
 
 export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
-  const { data: user } = useUser();
-  const { data: leaderboard, isLoading } = useLeaderboard(user?.projectId);
+  const user = useCurrentUser();
+  const { data: leaderboard, isLoading } = useLeaderboard(user.projectId);
   if (isLoading) return null;
 
   return (
@@ -119,7 +119,7 @@ export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
         <TableFooter>
           <TableRow>
             <FooterCell>-</FooterCell>
-            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>{user.userName}</FooterCell>
             <FooterCell>{userRewards?.coconuts}</FooterCell>
           </TableRow>
         </TableFooter>

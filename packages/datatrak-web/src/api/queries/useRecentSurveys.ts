@@ -4,8 +4,8 @@
  */
 import { useQuery } from 'react-query';
 import { DatatrakWebRecentSurveysRequest, Project, UserAccount } from '@tupaia/types';
-import { useUser } from './useUser';
 import { get } from '../api';
+import { useCurrentUser } from '../currentUserContext';
 
 export const useRecentSurveys = (userId?: UserAccount['id'], projectId?: Project['id']) => {
   return useQuery(
@@ -17,6 +17,6 @@ export const useRecentSurveys = (userId?: UserAccount['id'], projectId?: Project
 };
 
 export const useCurrentUserRecentSurveys = () => {
-  const { data: user } = useUser();
-  return useRecentSurveys(user.id, user?.projectId);
+  const { id, projectId } = useCurrentUser();
+  return useRecentSurveys(id, projectId);
 };

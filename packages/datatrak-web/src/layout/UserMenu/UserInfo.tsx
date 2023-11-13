@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button } from '../../components';
-import { useUser } from '../../api/queries';
+import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
@@ -86,14 +86,14 @@ const AuthButtons = styled.div`
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void }) => {
-  const { isLoggedIn, data: user } = useUser();
+  const user = useCurrentUser();
 
   return (
     <Wrapper>
-      {isLoggedIn ? (
+      {user.isLoggedIn ? (
         <Details>
           <UserName>{user.name}</UserName>
-          {user?.projectId && (
+          {user.projectId && (
             <ProjectButton onClick={openProjectModal} tooltip="Change project">
               {user.project?.name}
             </ProjectButton>

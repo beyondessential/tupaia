@@ -6,10 +6,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Drawer as MuiDrawer, Paper as MuiPaper, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
 import { IconButton, RouterLink } from '@tupaia/ui-components';
+import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
 import { MenuButton, MenuList } from './MenuList';
-import { useUser } from '../../api/queries';
+import { useCurrentUser } from '../../api';
 import { Button } from '../../components';
 
 const Drawer = styled(MuiDrawer)`
@@ -76,11 +76,11 @@ interface DrawerMenuProps {
   openProjectModal: () => void;
 }
 export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMenuProps) => {
-  const { isLoggedIn, data: user } = useUser();
+  const user = useCurrentUser();
   // When not logged in, show the login and register buttons in the drawer menu
 
   const getAdditionalMenuItems = () => {
-    if (isLoggedIn) {
+    if (user.isLoggedIn) {
       return [];
     }
     return [
@@ -105,8 +105,8 @@ export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMe
     >
       <MenuHeader>
         <UserDetails>
-          {user?.name && <UserName>{user.name}</UserName>}
-          {user?.project?.name && (
+          {user.name && <UserName>{user.name}</UserName>}
+          {user.project?.name && (
             <UserProject onClick={openProjectModal} title="Change project">
               {user.project.name}
             </UserProject>
