@@ -13,6 +13,7 @@ import { DashboardItem } from '../types';
 
 const Parent = styled.div`
   color: ${props => props.theme.palette.common.black};
+  flex-grow: 1;
 `;
 
 type PDFExportProps = {
@@ -20,6 +21,7 @@ type PDFExportProps = {
   entityCode?: string;
   dashboardName?: string;
   selectedDashboardItems?: string[];
+  isPreview?: boolean;
 };
 
 /**
@@ -30,6 +32,7 @@ export const PDFExport = ({
   entityCode: propsEntityCode,
   dashboardName: propsDashboardName,
   selectedDashboardItems: propsSelectedDashboardItems,
+  isPreview = false,
 }: PDFExportProps) => {
   // Hacky way to change default background color without touching root css.
   document.body.style.backgroundColor = 'white';
@@ -71,6 +74,7 @@ export const PDFExport = ({
           dashboardItem={dashboardItem}
           entityName={entity?.name}
           activeDashboard={activeDashboard}
+          isPreview={isPreview}
         />
       ))}
     </Parent>

@@ -10,12 +10,42 @@ import downloadJs from 'downloadjs';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
+import { PDFExport } from '../../../views';
+import { Typography } from '@material-ui/core';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
   width: 100%;
   display: flex;
   justify-content: flex-end;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 83.3333%;
+`;
+
+const PreviewPanelContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const PreviewContainer = styled.div`
+  display: flex;
+  background-color: white;
+  height: 27rem;
+  width: 40rem;
+  overflow: auto;
+`;
+
+const Title = styled(Typography)`
+  color: white;
+  font-weight: 400;
+  font-size: 1.625rem;
+  line-height: 1.4;
 `;
 
 interface ExportDashboardProps {
@@ -53,6 +83,20 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
       errorMessage={error?.message}
       onReset={reset}
     >
+      <Container>
+        <PreviewPanelContainer>
+          <Title>Preview</Title>
+          <PreviewContainer>
+            <PDFExport
+              projectCode={projectCode}
+              entityCode={entityCode}
+              dashboardName={dashboardName}
+              selectedDashboardItems={selectedDashboardItems}
+              isPreview
+            />
+          </PreviewContainer>
+        </PreviewPanelContainer>
+      </Container>
       <ButtonGroup>
         <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
           Cancel

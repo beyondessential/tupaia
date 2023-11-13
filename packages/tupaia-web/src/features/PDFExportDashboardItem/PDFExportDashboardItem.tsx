@@ -21,6 +21,14 @@ import { useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
+const StyledA4Page = styled(A4Page)<{
+  $isPreview?: boolean;
+}>`
+  ${({ $isPreview }) => ($isPreview ? 'width: 100%;' : '')};
+  ${({ $isPreview }) => ($isPreview ? 'zoom: 0.5;' : '')};
+  ${({ $isPreview }) => ($isPreview ? 'aspect-ratio: 0.707;' : '')};
+`;
+
 const Wrapper = styled.div`
   margin: 0 7.8rem;
 `;
@@ -88,10 +96,12 @@ export const PDFExportDashboardItem = ({
   dashboardItem,
   entityName,
   activeDashboard,
+  isPreview = false,
 }: {
   dashboardItem?: DashboardItem;
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
+  isPreview?: boolean;
 }) => {
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
@@ -130,7 +140,7 @@ export const PDFExportDashboardItem = ({
 
   const data = isLoading ? undefined : (report as BaseReport).data;
   return (
-    <A4Page key={dashboardItem?.code}>
+    <StyledA4Page key={dashboardItem?.code} $isPreview={isPreview}>
       <PDFExportHeader>{entityName}</PDFExportHeader>
       <A4PageContent>
         <DashboardTitleContainer>
@@ -164,6 +174,6 @@ export const PDFExportDashboardItem = ({
           </ExportContent>
         </Wrapper>
       </A4PageContent>
-    </A4Page>
+    </StyledA4Page>
   );
 };
