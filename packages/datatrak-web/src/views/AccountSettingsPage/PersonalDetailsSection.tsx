@@ -29,7 +29,7 @@ const PersonalDetailsForm = styled.form`
 
   .MuiFormLabel-root {
     color: ${props => props.theme.palette.text.primary};
-    font-weight: 500;
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
 `;
 
