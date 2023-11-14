@@ -76,6 +76,7 @@ export const PersonalDetailsSection = () => {
           name="employer"
           label="Employer"
           placeholder="Employer"
+          autoComplete="organization"
           defaultValue={user.employer}
           required
         />
@@ -83,6 +84,7 @@ export const PersonalDetailsSection = () => {
           name="position"
           label="Position"
           placeholder="Position"
+          autoComplete="organization-title"
           defaultValue={user.position}
           required
         />
