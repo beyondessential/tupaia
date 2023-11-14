@@ -22,6 +22,7 @@ import { ExportDashboard } from './ExportDashboard';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
+import {SubscribeModal } from './SubscribeModal' 
 
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -120,7 +121,7 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-
+  
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
@@ -206,6 +207,11 @@ export const Dashboard = () => {
           isOpen={exportModalOpen}
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
+      />
+      <SubscribeModal 
+        isOpen={true}
+        onClose={() => setExportModalOpen(false)}
+        activeDashboard={activeDashboard}
       />
       </Panel>
     </ErrorBoundary>

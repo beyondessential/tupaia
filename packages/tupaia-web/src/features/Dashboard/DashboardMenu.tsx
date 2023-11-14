@@ -84,8 +84,6 @@ const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
     activeDashboard,
   } = useDashboards(projectCode, entityCode, dashboardName);
   
-
-
   const handleSubscribe = (isUserSubscribed) => {
     // TODO: Add subscribe and unsubscribe sequence
     // Add react query to POST request for add or remove subscription
@@ -93,7 +91,7 @@ const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
     console.log(isUserSubscribed)
   } 
   const { mailingLists } = activeDashboard;
-  const mailingList = mailingLists.find(({mailingListEntityCode}) => {
+  const mailingList = mailingLists?.find(({mailingListEntityCode}) => {
     mailingListEntityCode === entityCode
     })
 
