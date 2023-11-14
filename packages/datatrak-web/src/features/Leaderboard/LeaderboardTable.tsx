@@ -116,7 +116,7 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
           </HeaderRow>
         </TableHead>
         <Body $rowCount={leaderboard?.length}>
-          {leaderboard.map(({ userId, firstName, lastName, coconuts }, i) => {
+          {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
             const isActiveUser = user && user.id === userId;
             return (
               <Row key={userId}>
