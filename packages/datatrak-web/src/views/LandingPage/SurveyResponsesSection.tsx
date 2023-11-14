@@ -6,7 +6,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { useCurrentUserSurveyResponses } from '../../api/queries';
+import { useCurrentUserSurveyResponses } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';

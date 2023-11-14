@@ -9,7 +9,7 @@ import { useFormContext } from 'react-hook-form';
 import { FormHelperText } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntity, useUser } from '../../../api/queries';
+import { useEntities, useEntity, useCurrentUser } from '../../../api';
 import { useDebounce } from '../../../utils';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
@@ -25,8 +25,8 @@ const Container = styled.div`
 `;
 
 const useSearchResults = (searchValue, config) => {
-  const { data: user } = useUser();
-  const projectCode = user?.project?.code;
+  const user = useCurrentUser();
+  const projectCode = user.project?.code;
   const filters = useEntityBaseFilters(config);
   const attributeFilter = useAttributeFilter(config);
 

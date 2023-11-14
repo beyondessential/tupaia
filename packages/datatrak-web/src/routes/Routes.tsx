@@ -1,19 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
-import {
-  Navigate,
-  Route,
-  Routes as RouterRoutes,
-  Outlet,
-  generatePath,
-  useParams,
-  useLocation,
-} from 'react-router-dom';
-import { FullPageLoader } from '@tupaia/ui-components';
+import React from 'react';
+import { Navigate, Route, Routes as RouterRoutes, generatePath, useParams } from 'react-router-dom';
 import {
   LandingPage,
   SurveyPage,
@@ -32,59 +23,23 @@ import {
   ResetPasswordPage,
   AccountSettingsPage,
   SurveyResponsePage,
-} from './views';
-import { useUser } from './api/queries';
-import { ROUTES } from './constants';
-import { CentredLayout, BackgroundPageLayout, MainPageLayout } from './layout';
-import { SurveyLayout, useSurveyForm } from './features';
+} from '../views';
+import { useCurrentUser } from '../api';
+import { ROUTES } from '../constants';
+import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
+import { SurveyLayout, useSurveyForm } from '../features';
+import { PrivateRoute } from './PrivateRoute';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
  */
 const LoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, isLoading, isFetched, data } = useUser();
-  if (isLoading || !isFetched) {
-    return <FullPageLoader />;
-  }
+  const { isLoggedIn, ...user } = useCurrentUser();
+
   if (!isLoggedIn) {
     return children;
   }
-  return <Navigate to={data?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
-};
-
-// Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, isLoading, isFetched, data, isFetching } = useUser();
-  const location = useLocation();
-  if (isLoading || !isFetched || isFetching) return <FullPageLoader />;
-  if (!isLoggedIn)
-    return (
-      <Navigate
-        to="/login"
-        replace={true}
-        state={{
-          from: `${location.pathname}${location.search}`,
-        }}
-      />
-    );
-
-  const PROJECT_SELECT_URLS = [ROUTES.PROJECT_SELECT, ROUTES.REQUEST_ACCESS];
-  // If the user is logged in and has a project, but is attempting to go to the project select page, redirect to the home page
-  if (data?.projectId && PROJECT_SELECT_URLS.includes(location.pathname))
-    return <Navigate to={ROUTES.HOME} replace={true} />;
-
-  // If the user is logged in and does not have a project and is not already on the project select page, redirect to the project select page
-  if (!data?.projectId && !PROJECT_SELECT_URLS.includes(location.pathname))
-    return (
-      <Navigate
-        to={ROUTES.PROJECT_SELECT}
-        replace={true}
-        state={{
-          from: `${location.pathname}${location.search}`,
-        }}
-      />
-    );
-  return children ? children : <Outlet />;
+  return <Navigate to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
 };
 
 const SurveyStartRedirect = () => {
@@ -92,12 +47,6 @@ const SurveyStartRedirect = () => {
   const path = generatePath(ROUTES.SURVEY_SCREEN, { ...params, screenNumber: '1' });
   return <Navigate to={path} replace={true} />;
 };
-
-/**
- * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
- * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
- *
- * **/
 
 // This is to redirect the user to the start of the survey if they try to access a screen that is not visible on the survey
 const SurveyPageRedirect = ({ children }) => {
@@ -128,6 +77,10 @@ export const SurveyPageRoutes = (
   </Route>
 );
 
+/**
+ * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
+ * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
+ **/
 export const Routes = () => {
   return (
     <RouterRoutes>

@@ -3,13 +3,13 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useState } from 'react';
-import { useEntities, useUser } from '../../api/queries';
+import { useEntities, useCurrentUser } from '../../api';
 import { Entity } from '../../types';
 
 export const useUserCountries = () => {
-  const { data: user, isLoading: isLoadingUser } = useUser();
+  const user = useCurrentUser();
   const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
-  const { data: countries, isLoading: isLoadingCountries } = useEntities(user?.project?.code, {
+  const { data: countries, isLoading: isLoadingCountries } = useEntities(user.project?.code, {
     type: 'country',
   });
 
@@ -21,7 +21,7 @@ export const useUserCountries = () => {
     if (newSelectedCountry) return newSelectedCountry;
 
     // if the user has a country, return that country if it can be found
-    if (user?.country && countries?.find(({ code }) => code === user?.country?.code)) {
+    if (user.country && countries?.find(({ code }) => code === user.country?.code)) {
       return user.country;
     }
 
@@ -41,11 +41,11 @@ export const useUserCountries = () => {
   const selectedCountry = getSelectedCountry();
 
   return {
-    isLoading: isLoadingUser || isLoadingCountries || !countries,
+    isLoading: isLoadingCountries || !countries,
     countries: alphabetisedCountries,
     selectedCountry,
     updateSelectedCountry: setSelectedCountry,
     // if the user has a country code, and it doesn't match the selected country, then the country has been updated, which means we need to update the user
-    countryHasUpdated: selectedCountry?.code !== user?.country?.code,
+    countryHasUpdated: selectedCountry?.code !== user.country?.code,
   };
 };

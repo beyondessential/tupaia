@@ -11,6 +11,7 @@ import { SnackbarProvider } from 'notistack';
 import { theme } from './theme';
 import { Toast } from './components';
 import { errorToast } from './utils';
+import { CurrentUserContextProvider } from './api';
 
 const defaultQueryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -45,21 +46,23 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <CssBaseline />
-          <SnackbarProvider
-            Components={{
-              success: Toast,
-              error: Toast,
-              warning: Toast,
-              info: Toast,
-            }}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-          >
-            {children}
-          </SnackbarProvider>
+          <CurrentUserContextProvider>
+            <CssBaseline />
+            <SnackbarProvider
+              Components={{
+                success: Toast,
+                error: Toast,
+                warning: Toast,
+                info: Toast,
+              }}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              {children}
+            </SnackbarProvider>
+          </CurrentUserContextProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </MuiThemeProvider>

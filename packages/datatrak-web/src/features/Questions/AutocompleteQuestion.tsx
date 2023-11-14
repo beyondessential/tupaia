@@ -9,7 +9,7 @@ import { Paper } from '@material-ui/core';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
-import { useAutocompleteOptions } from '../../api/queries';
+import { useAutocompleteOptions } from '../../api';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { QuestionHelperText } from './QuestionHelperText';
 
