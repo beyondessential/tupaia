@@ -61,7 +61,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Email"
           tooltip="You cannot change your email address"
           autoComplete="email"
-          defaultValue={user.email}
+          value={user.email}
           required
           disabled
         />
