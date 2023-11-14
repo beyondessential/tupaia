@@ -5,12 +5,23 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
 import { TextField } from '@tupaia/ui-components';
 
-const ActionButton = styled(Button)`
+type PersonalDetails = {
+  firstName: string;
+  lastName: string;
+  contactNumber?: string;
+  employer: string;
+  position: string;
+};
+
+const submitChanges: SubmitHandler<PersonalDetails> = details => console.log(details);
+
+const SaveButton = styled(Button)`
   grid-column: -2;
 `;
 
@@ -35,16 +46,30 @@ const PersonalDetailsForm = styled.form`
 
 export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
+  const {
+    formState: { isDirty },
+    register,
+    handleSubmit,
+  } = useForm({
+    defaultValues: {
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
+      contactNumber: user.contactNumber ?? '',
+      employer: user.employer ?? '',
+      position: user.position ?? '',
+    },
+  });
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
-      <PersonalDetailsForm>
+      <PersonalDetailsForm onSubmit={handleSubmit(submitChanges)}>
         <StyledTextField
           name="firstName"
           label="First name"
           placeholder="First name"
           autoComplete="given-name"
           defaultValue={user.firstName}
+          {...register('firstName')}
           required
         />
         <StyledTextField
@@ -53,6 +78,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Last name"
           autoComplete="family-name"
           defaultValue={user.lastName}
+          {...register('lastName')}
           required
         />
         <StyledTextField
@@ -71,6 +97,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Contact number"
           autoComplete="tel"
           defaultValue={user.contactNumber}
+          {...register('contactNumber')}
         />
         <StyledTextField
           name="employer"
@@ -78,6 +105,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Employer"
           autoComplete="organization"
           defaultValue={user.employer}
+          {...register('employer')}
           required
         />
         <StyledTextField
@@ -86,9 +114,12 @@ export const PersonalDetailsSection = () => {
           placeholder="Position"
           autoComplete="organization-title"
           defaultValue={user.position}
+          {...register('position')}
           required
         />
-        <ActionButton disabled>Save changes</ActionButton>
+        <SaveButton type="submit" disabled={!isDirty}>
+          Save changes
+        </SaveButton>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );
