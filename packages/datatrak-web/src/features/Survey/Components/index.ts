@@ -9,3 +9,4 @@ export { SurveyToolbar } from './SurveyToolbar';
 export * from './SurveySideMenu';
 export { SurveyReviewSection } from './SurveyReviewSection';
 export { SurveyPaginator } from './SurveyPaginator';
+export { CountrySelectModal } from './CountrySelectModal';

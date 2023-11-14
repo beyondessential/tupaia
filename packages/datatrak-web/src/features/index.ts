@@ -15,6 +15,7 @@ export {
   getAllSurveyComponents,
   SurveySideMenu,
   useValidationResolver,
+  CountrySelectModal,
 } from './Survey';
 export { RequestProjectAccess } from './RequestProjectAccess';
 export { MobileAppPrompt } from './MobileAppPrompt';
