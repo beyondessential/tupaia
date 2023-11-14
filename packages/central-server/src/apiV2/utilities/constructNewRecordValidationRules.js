@@ -350,6 +350,7 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.SURVEY:
       return {
+        'project.code': [hasContent, constructRecordExistsWithField(models.project, 'code')],
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
         name: [isAString],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
