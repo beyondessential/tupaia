@@ -4,11 +4,11 @@
  */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { Dialog, DialogActions, Paper, Typography } from '@material-ui/core';
 import { useCurrentUser, useEntities, useSurvey } from '../../../api';
 import { Button, SelectList } from '../../../components';
 import { useEditUser } from '../../../api/mutations';
-import { useParams } from 'react-router-dom';
 import { SurveyParams } from '../../../types';
 
 const Wrapper = styled(Paper)`
