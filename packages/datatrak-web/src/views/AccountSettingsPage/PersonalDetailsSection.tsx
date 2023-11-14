@@ -86,7 +86,7 @@ export const PersonalDetailsSection = () => {
           value={user.position}
           required
         />
-        <ActionButton tooltip="Change details to save changes">Save changes</ActionButton>
+        <ActionButton>Save changes</ActionButton>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );
