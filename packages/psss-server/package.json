@@ -40,5 +40,8 @@
     "express": "^4.16.2",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/lodash.groupby": "^4.6.7"
   }
 }

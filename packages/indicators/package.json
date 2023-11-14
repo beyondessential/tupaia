@@ -29,5 +29,8 @@
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/lodash.groupby": "^4.6.7"
   }
 }

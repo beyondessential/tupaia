@@ -28,6 +28,9 @@
     "qs": "^6.10.1"
   },
   "devDependencies": {
-    "@tupaia/types": "1.0.0"
+    "@tupaia/types": "1.0.0",
+    "@types/lodash.pick": "^4.4.7",
+    "@types/node-fetch": "^2.6.4",
+    "@types/qs": "^6.9.8"
   }
 }

@@ -24,6 +24,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@types/needle": "^2.5.3"
+    "@types/needle": "^2.5.3",
+    "@types/node-fetch": "^2.6.4"
   }
 }

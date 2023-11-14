@@ -53,7 +53,6 @@
     "@storybook/react": "^6.3.9",
     "@tupaia/types": "1.0.0",
     "@types/downloadjs": "^1.4.3",
-    "@types/jest": "^29.5.1",
     "@types/lodash.throttle": "^4.1.7",
     "@types/qrcode": "^1.5.1",
     "@types/react-dom": "^16.9.18",
