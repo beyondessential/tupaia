@@ -3,15 +3,14 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import MuiInfoIcon from '@material-ui/icons/Info';
 import styled from 'styled-components';
-import { Tooltip } from '@tupaia/ui-components';
-import { Link } from '@material-ui/core';
+import { IconButton, Link, Popover } from '@material-ui/core';
 
 const Wrapper = styled.div`
   position: absolute;
-  bottom: 0.4rem;
+  bottom: 0;
   left: 0.5rem;
   display: flex;
   align-items: center;
@@ -32,7 +31,6 @@ const StyledLink = styled.a`
 
 const InfoIcon = styled(MuiInfoIcon)`
   font-size: 1.2rem;
-  margin-left: 0.3rem;
   margin-top: -0.1rem;
 
   &:hover {
@@ -46,30 +44,20 @@ const AttributionLink = styled(Link)`
   justify-content: center;
   padding: 0.5rem 2rem;
   font-size: 0.9rem;
-  color: ${props => props.theme.palette.common.white};
+  .leaflet-container & {
+    color: ${props => props.theme.palette.text.primary};
+  }
 `;
 
-const Content = (
-  <>
-    <AttributionLink href="https://leafletjs.com/" target="_blank">
-      Leaflet
-    </AttributionLink>
-    <AttributionLink href="https://www.mapbox.com/about/maps/" target="_blank">
-      Mapbox &copy;
-    </AttributionLink>
-    <AttributionLink href="http://www.openstreetmap.org/copyright" target="_blank">
-      OpenStreetMap &copy;
-    </AttributionLink>
-    <AttributionLink href="https://www.mapbox.com/map-feedback/" target="_blank">
-      Improve this map
-    </AttributionLink>
-  </>
-);
-
 export const MapWatermark = () => {
-  const [showTooltip, setShowTooltip] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
+  const anchorEl = useRef(null);
+
+  const togglePopover = () => {
+    setShowPopover(!showPopover);
+  };
   return (
-    <Wrapper>
+    <Wrapper ref={anchorEl}>
       <StyledLink
         href="http://mapbox.com/about/maps"
         className="mapbox-wordmark"
@@ -78,15 +66,44 @@ export const MapWatermark = () => {
       >
         Mapbox
       </StyledLink>
-      <Tooltip
-        title={Content}
-        interactive
-        open={showTooltip}
-        onClick={() => setShowTooltip(true)}
-        onClose={() => setShowTooltip(false)}
-      >
+      <IconButton onClick={togglePopover}>
         <InfoIcon />
-      </Tooltip>
+      </IconButton>
+      <Popover
+        open={showPopover}
+        onClose={() => setShowPopover(false)}
+        disablePortal
+        anchorEl={anchorEl?.current}
+        anchorOrigin={{
+          vertical: -150,
+          horizontal: 0,
+        }}
+      >
+        <AttributionLink href="https://leafletjs.com/" target="_blank" onClick={togglePopover}>
+          Leaflet
+        </AttributionLink>
+        <AttributionLink
+          href="https://www.mapbox.com/about/maps/"
+          target="_blank"
+          onClick={togglePopover}
+        >
+          Mapbox &copy;
+        </AttributionLink>
+        <AttributionLink
+          href="http://www.openstreetmap.org/copyright"
+          target="_blank"
+          onClick={togglePopover}
+        >
+          OpenStreetMap &copy;
+        </AttributionLink>
+        <AttributionLink
+          href="https://www.mapbox.com/map-feedback/"
+          target="_blank"
+          onClick={togglePopover}
+        >
+          Improve this map
+        </AttributionLink>
+      </Popover>
     </Wrapper>
   );
 };
