@@ -70,10 +70,23 @@ export const PersonalDetailsSection = () => {
           label="Contact number (optional)"
           placeholder="Contact number"
           autoComplete="tel"
+          value={user.contactNumber}
         />
-        <StyledTextField name="employer" label="Employer" placeholder="Employer" required />
-        <StyledTextField name="position" label="Position" placeholder="Position" required />
-        <ActionButton>Save changes</ActionButton>
+        <StyledTextField
+          name="employer"
+          label="Employer"
+          placeholder="Employer"
+          value={user.employer}
+          required
+        />
+        <StyledTextField
+          name="position"
+          label="Position"
+          placeholder="Position"
+          value={user.position}
+          required
+        />
+        <ActionButton tooltip="Change details to save changes">Save changes</ActionButton>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );

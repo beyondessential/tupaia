@@ -29,6 +29,9 @@ export class UserRoute extends Route<UserRequest> {
       first_name: firstName,
       last_name: lastName,
       email,
+      employer,
+      position,
+      mobile_number: contactNumber,
       preferences = {},
     } = await ctx.services.central.getUser();
 
@@ -53,7 +56,10 @@ export class UserRoute extends Route<UserRequest> {
       lastName,
       email,
       id,
+      employer,
+      position,
       projectId,
+      contactNumber,
       project,
       country,
       deleteAccountRequested: delete_account_requested === true,
