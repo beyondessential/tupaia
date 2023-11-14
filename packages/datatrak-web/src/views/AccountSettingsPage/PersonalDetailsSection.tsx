@@ -86,7 +86,7 @@ export const PersonalDetailsSection = () => {
           value={user.position}
           required
         />
-        <ActionButton>Save changes</ActionButton>
+        <ActionButton disabled>Save changes</ActionButton>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );
