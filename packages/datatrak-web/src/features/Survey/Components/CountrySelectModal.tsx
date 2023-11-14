@@ -30,7 +30,7 @@ export const CountrySelectModal = () => {
   const { mutate, isLoading: isConfirming } = useEditUser(() => {
     setIsOpen(false);
   });
-  const { data: countries = [] } = useEntities(user.project?.code, {
+  const { data: countries } = useEntities(user.project?.code, {
     type: 'country',
   });
 
@@ -38,19 +38,22 @@ export const CountrySelectModal = () => {
   const userCountryName = user.country?.name;
 
   useEffect(() => {
-    // If there is a valid country selected, then we don't need to do anything
-    if (userCountryName && countries && surveyCountryNames?.includes(userCountryName)) {
+    // If the countries have not loaded yet, Or If there is a valid country selected, then don't do anything
+    if (!countries || (userCountryName && surveyCountryNames.includes(userCountryName))) {
       return;
     }
 
-    if (surveyCountryNames?.length === 1) {
-      const country = countries.find(country => surveyCountryNames[0] === country.name);
+    // If there is only one country for a survey, simply select it
+    if (surveyCountryNames.length === 1) {
+      const country = countries?.find(country => surveyCountryNames[0] === country.name);
 
       if (country?.id) {
         mutate({ countryId: country.id });
         return;
       }
     }
+
+    // Otherwise, open the modal and let the user select a country
     setIsOpen(true);
   }, [JSON.stringify(surveyCountryNames), userCountryName, JSON.stringify(countries)]);
 
