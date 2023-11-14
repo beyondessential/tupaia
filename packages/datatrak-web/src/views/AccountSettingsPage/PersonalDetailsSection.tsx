@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useUser } from '../../api/queries';
+import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
 import { TextField } from '@tupaia/ui-components';
@@ -34,7 +34,7 @@ const PersonalDetailsForm = styled.form`
 `;
 
 export const PersonalDetailsSection = () => {
-  const { data: user } = useUser();
+  const user = useCurrentUser();
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
