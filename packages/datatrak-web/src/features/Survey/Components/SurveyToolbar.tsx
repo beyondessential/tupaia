@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { SurveyIcon, TopProgressBar } from '../../../components';
-import { useSurvey, useUser } from '../../../api/queries';
+import { useSurvey, useCurrentUser } from '../../../api';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useIsMobile } from '../../../utils';
@@ -54,7 +54,7 @@ export const SurveyToolbar = () => {
   const { surveyCode, screenNumber: screenNumberParam } = useParams();
   const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: user } = useUser();
+  const user = useCurrentUser();
   const isMobile = useIsMobile();
 
   const getDisplaySurveyName = () => {
@@ -80,7 +80,7 @@ export const SurveyToolbar = () => {
         {survey?.name && (
           <Typography variant="h1">
             {surveyName}
-            {user?.country?.name && <CountryName>| {user?.country?.name}</CountryName>}
+            {user.country?.name && <CountryName>| {user.country?.name}</CountryName>}
           </Typography>
         )}
       </SurveyTitleWrapper>
