@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
@@ -35,26 +35,6 @@ const PersonalDetailsForm = styled.form`
 
 export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
-  const [firstNameValue, setFirstNameValue] = useState(user.firstName ?? '');
-  const [lastNameValue, setLastNameValue] = useState(user.lastName ?? '');
-  const [contactNumberValue, setContactNumberValue] = useState(user.contactNumber ?? '');
-  const [employerValue, setEmployerValue] = useState(user.employer ?? '');
-  const [positionValue, setPositionValue] = useState(user.position ?? '');
-  const [buttonIsDisabled, setButtonDisabled] = useState(true);
-
-  function detailsHaveChanged(): boolean {
-    return (
-      firstNameValue.trim() === (user.firstName ?? '') &&
-      lastNameValue.trim() === (user.lastName ?? '') &&
-      contactNumberValue.trim() === (user.contactNumber ?? '') &&
-      employerValue.trim() === (user.employer ?? '') &&
-      positionValue.trim() === (user.position ?? '')
-    );
-  }
-
-  function updateSaveButtonInteractability(): void {
-    setButtonDisabled(!detailsHaveChanged);
-  }
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
@@ -64,11 +44,7 @@ export const PersonalDetailsSection = () => {
           label="First name"
           placeholder="First name"
           autoComplete="given-name"
-          value={firstNameValue}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => {
-            setFirstNameValue(e.target.value);
-            updateSaveButtonInteractability();
-          }}
+          defaultValue={user.firstName}
           required
         />
         <StyledTextField
@@ -76,11 +52,7 @@ export const PersonalDetailsSection = () => {
           label="Last name"
           placeholder="Last name"
           autoComplete="family-name"
-          value={lastNameValue}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => {
-            setLastNameValue(e.target.value);
-            updateSaveButtonInteractability();
-          }}
+          defaultValue={user.lastName}
           required
         />
         <StyledTextField
@@ -89,7 +61,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Email"
           tooltip="You cannot change your email address"
           autoComplete="email"
-          value={user.email}
+          defaultValue={user.email}
           required
           disabled
         />
@@ -98,22 +70,14 @@ export const PersonalDetailsSection = () => {
           label="Contact number (optional)"
           placeholder="Contact number"
           autoComplete="tel"
-          value={contactNumberValue}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => {
-            setContactNumberValue(e.target.value);
-            updateSaveButtonInteractability();
-          }}
+          defaultValue={user.contactNumber}
         />
         <StyledTextField
           name="employer"
           label="Employer"
           placeholder="Employer"
           autoComplete="organization"
-          value={employerValue}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => {
-            setEmployerValue(e.target.value);
-            updateSaveButtonInteractability();
-          }}
+          defaultValue={user.employer}
           required
         />
         <StyledTextField
@@ -121,14 +85,10 @@ export const PersonalDetailsSection = () => {
           label="Position"
           placeholder="Position"
           autoComplete="organization-title"
-          value={positionValue}
-          onChange={(e: { target: { value: React.SetStateAction<string> } }) => {
-            setPositionValue(e.target.value);
-            updateSaveButtonInteractability();
-          }}
+          defaultValue={user.position}
           required
         />
-        <ActionButton disabled={buttonIsDisabled}>Save changes</ActionButton>
+        <ActionButton disabled>Save changes</ActionButton>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );
