@@ -12048,6 +12048,7 @@ __metadata:
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     lodash.groupby: ^4.6.0
+    mockdate: ^3.0.5
     npm-run-all: ^4.1.5
     winston: ^3.3.3
   languageName: unknown
@@ -12060,6 +12061,9 @@ __metadata:
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.pick": ^4.4.7
+    "@types/node-fetch": ^2.6.4
+    "@types/qs": ^6.9.8
     lodash.pick: ^4.4.0
     node-fetch: ^1.7.3
     qs: ^6.10.1
@@ -12204,6 +12208,7 @@ __metadata:
     "@tupaia/database": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.groupby": ^4.6.7
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
@@ -12418,6 +12423,7 @@ __metadata:
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.groupby": ^4.6.7
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
   languageName: unknown
@@ -12596,6 +12602,7 @@ __metadata:
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
+    "@types/lodash.groupby": ^4.6.7
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     client-sessions: ^0.8.0
@@ -12735,6 +12742,7 @@ __metadata:
   dependencies:
     "@tupaia/utils": 1.0.0
     "@types/needle": ^2.5.3
+    "@types/node-fetch": ^2.6.4
     https-proxy-agent: ^5.0.1
     node-fetch: ^1.7.3
     winston: ^3.3.3
@@ -12885,7 +12893,6 @@ __metadata:
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/downloadjs": ^1.4.3
-    "@types/jest": ^29.5.1
     "@types/lodash.throttle": ^4.1.7
     "@types/qrcode": ^1.5.1
     "@types/react-dom": ^16.9.18
@@ -12927,7 +12934,6 @@ __metadata:
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
-    "@types/jest": ^29.5.1
     "@types/leaflet": ^1.7.1
     "@types/react-dom": ^16.9.18
     "@types/styled-components": ^5.1.26
@@ -13656,13 +13662,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.5.1":
-  version: 29.5.3
-  resolution: "@types/jest@npm:29.5.3"
+"@types/jest@npm:^29.5.4":
+  version: 29.5.10
+  resolution: "@types/jest@npm:29.5.10"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: e36bb92e0b9e5ea7d6f8832baa42f087fc1697f6cd30ec309a07ea4c268e06ec460f1f0cfd2581daf5eff5763475190ec1ad8ac6520c49ccfe4f5c0a48bfa676
+  checksum: ef385905787db528de9b6beb2688865c0bb276e64256ed60b9a1a6ffc0b75737456cb5e27e952a3241c5845b6a1da487470010dd30f3ca59c8581624c564a823
   languageName: node
   linkType: hard
 
@@ -13769,6 +13775,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.groupby@npm:^4.6.7":
+  version: 4.6.9
+  resolution: "@types/lodash.groupby@npm:4.6.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: b8310a9f89badc42a504887ca0b9619c2a284b3fec8dc505cf72508eb6beba47b822df939c7d57c0f69bc685f51ff5a232e0480ecad6b18b7ab76fecc1d74691
+  languageName: node
+  linkType: hard
+
 "@types/lodash.isequal@npm:^4.5.0":
   version: 4.5.6
   resolution: "@types/lodash.isequal@npm:4.5.6"
@@ -13811,6 +13826,15 @@ __metadata:
   dependencies:
     "@types/lodash": "*"
   checksum: c53b5efc8bf69583aecd823ecb23ee489d44cc741246f69b0add0756dde2a53f94c86139bf77a95222ccdc992eee63dfb1be41f4f03ab18266fbb085d7ba30de
+  languageName: node
+  linkType: hard
+
+"@types/lodash.pick@npm:^4.4.7":
+  version: 4.4.9
+  resolution: "@types/lodash.pick@npm:4.4.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 007c298133b5bc2157f13d6641b139d2782b4af7b6a942cc4b1a427c6ebc6020e46b32ee2e782607389b0c63a5211d51152606424fdfe25f3eeac8afea0bdf02
   languageName: node
   linkType: hard
 
@@ -14152,6 +14176,13 @@ __metadata:
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
   checksum: 7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
+  languageName: node
+  linkType: hard
+
+"@types/qs@npm:^6.9.8":
+  version: 6.9.10
+  resolution: "@types/qs@npm:6.9.10"
+  checksum: 3e479ee056bd2b60894baa119d12ecd33f20a25231b836af04654e784c886f28a356477630430152a86fba253da65d7ecd18acffbc2a8877a336e75aa0272c67
   languageName: node
   linkType: hard
 
@@ -46126,6 +46157,7 @@ __metadata:
     "@beyondessential/eslint-config-jest": ^1.0.0
     "@beyondessential/eslint-config-js": ^1.1.1
     "@beyondessential/eslint-config-ts": ^1.3.2
+    "@types/jest": ^29.5.4
     "@vitejs/plugin-react": ^4.0.4
     babel-eslint: ^10.1.0
     babel-jest: ^27.0.6
