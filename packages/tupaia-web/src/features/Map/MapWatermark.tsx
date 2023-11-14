@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   left: 0.5rem;
   display: flex;
   align-items: center;
-  z-index: 10;
+  z-index: 10; // needs to be this to be clickable over the map
 `;
 
 const StyledLink = styled.a`
