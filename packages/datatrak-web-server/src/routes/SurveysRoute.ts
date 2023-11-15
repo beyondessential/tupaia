@@ -11,6 +11,7 @@ import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 
 type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
 
+// Todo: consolidate types between SurveysRoute and SingleSurveyRoute
 export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.Params,
   SingleSurveyResponse[],
