@@ -6,12 +6,12 @@ import React from 'react';
 import { DialogActions } from '@material-ui/core';
 import { Button, ErrorDisplay } from '../components';
 
-interface NotFoundPageProps {
+interface ErrorPageProps {
   error?: Error;
   title?: string;
 }
 
-export const NotFoundPage = ({ error, title = '404: Page not found' }: NotFoundPageProps) => {
+export const ErrorPage = ({ error, title = '404: Page not found' }: ErrorPageProps) => {
   return (
     <ErrorDisplay title={title} error={error}>
       <DialogActions>

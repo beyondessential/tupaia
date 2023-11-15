@@ -11,7 +11,7 @@ import {
   SurveySelectPage,
   LoginPage,
   VerifyEmailPage,
-  NotFoundPage,
+  ErrorPage,
   RegisterPage,
   VerifyEmailResendPage,
   SurveyReviewScreen,
@@ -66,7 +66,7 @@ const SurveyNotFoundRedirect = ({ children }) => {
   const { surveyCode } = useParams();
   const { isError, error } = useSurvey(surveyCode);
   if (isError) {
-    return <NotFoundPage error={error as Error} title="Error fetching survey" />;
+    return <ErrorPage error={error as Error} title="Error fetching survey" />;
   }
   return children;
 };
@@ -154,7 +154,7 @@ export const Routes = () => {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>
   );
