@@ -6,9 +6,9 @@
 import React from 'react';
 import polyline from '@mapbox/polyline';
 import { Position } from 'geojson';
+import styled from 'styled-components';
 import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
 import { Media } from './Media';
-import styled from 'styled-components';
 
 const Wrapper = styled.div`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
@@ -70,7 +70,11 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
   return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
 };
 
-export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
+interface StaticMapProps {
+  title?: string;
+  bounds: Position[];
+}
+export const StaticMap = ({ bounds, title }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }
@@ -78,7 +82,7 @@ export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
   const url = makeStaticMapUrl(bounds);
   return (
     <Wrapper>
-      <Media $backgroundImage={url} />
+      <Media $backgroundImage={url} aria-label={`Static map image for ${title}`} />
     </Wrapper>
   );
 };
