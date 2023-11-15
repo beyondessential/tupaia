@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactNode } from 'react';
-import { MutationCache, QueryClient, QueryClientProvider } from 'react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
@@ -22,16 +22,20 @@ const defaultQueryClient = new QueryClient({
       }
     },
   }),
+  queryCache: new QueryCache({
+    // use the errorToast function to display errors by default. If you want to override this, apply an meta.applyCustomErrorHandling to the mutation or an onError to the query
+    onError: (error: any, query) => {
+      if (!query?.meta || !query?.meta?.applyCustomErrorHandling) {
+        errorToast(error.message);
+      }
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnWindowFocus: false,
-      retry: 0,
+      retry: false,
       keepPreviousData: false,
-      // use the errorToast function to display errors by default. If you want to override this, apply an onError function to the query
-      onError: (error: any) => {
-        errorToast(error.message);
-      },
     },
   },
 });
