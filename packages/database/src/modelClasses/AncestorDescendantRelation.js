@@ -32,6 +32,10 @@ export class AncestorDescendantRelationModel extends DatabaseModel {
     return AncestorDescendantRelationType;
   }
 
+  get cacheEnabled() {
+    return true;
+  }
+
   get cacheDependencies() {
     // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
     return [TYPES.ANCESTOR_DESCENDANT_RELATION];
