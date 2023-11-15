@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Link, SwipeableDrawer, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useIsMobile } from '../utils';
 import styled from 'styled-components';
+import { SwipeableDrawer, Typography } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
+import { BROWSERS, getBrowser, getIsMobileDevice } from '../utils';
 
 const Container = styled.div`
   padding: 2.2rem 1.25rem 3.4rem 1.25rem;
@@ -59,14 +59,6 @@ const OptionButton = styled(Button)`
   font-weight: 400;
 `;
 
-const BROWSERS = {
-  CHROME: 'Chrome',
-  FIREFOX: 'Firefox',
-  SAFARI: 'Safari',
-  OPERA: 'Opera',
-  EDGE: 'Edge',
-};
-
 const BROWSER_ICONS = {
   [BROWSERS.CHROME]: '/chrome-icon.png',
   [BROWSERS.FIREFOX]: '/firefox-icon.png',
@@ -75,45 +67,86 @@ const BROWSER_ICONS = {
   [BROWSERS.EDGE]: '/edge-icon.png',
 };
 
+// each of these will have a fallback url and an app url. The app url will be a link to the app itself, and the fallback url will be a link to the applicable app store
 const APP_URL = {
-  ANDROID: 'https://play.google.com/store/apps/details?id=com.tupaiameditrak',
-  IOS: 'https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537',
+  ANDROID: {
+    fallback: 'https://play.google.com/store/apps/details?id=com.tupaiameditrak',
+    app: 'intent://#Intent;package=com.tupaiameditrak;end', // eventually this is where the deep link will go
+  },
+  IOS: {
+    fallback: 'https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537',
+    app: 'tupaiameditrak://', // eventually this is where the deep link will go
+  },
+};
+
+const COOKIE_NAME = 'promptedCookie';
+
+const usePromptCookie = () => {
+  const setCookie = () => {
+    const date = new Date();
+    date.setTime(date.getTime() + 24 * 60 * 60 * 1000); // 24 hours, in milliseconds
+    const expires = 'expires=' + date.toUTCString();
+    const cookie = `${COOKIE_NAME}=${true};${expires};path=/`;
+    document.cookie = cookie;
+  };
+
+  const getCookie = () => {
+    // get the cookie
+    const cname = `${COOKIE_NAME}=`;
+    const decodedCookie = decodeURIComponent(document.cookie);
+    // split the cookie into an array
+
+    const ca = decodedCookie.split(';');
+    // return the value of the cookie if it exists, otherwise return undefined
+    return ca
+      .find(cookie => cookie.trim().startsWith(cname))
+      ?.trim()
+      .substring(cname.length);
+  };
+
+  const hasBeenPromptedCookie = getCookie();
+  // set the initial state as true if the cookie exists, otherwise false
+  const [prompted, setPrompted] = useState(!!hasBeenPromptedCookie);
+
+  const setHasBeenPrompted = () => {
+    setCookie();
+    setPrompted(true);
+  };
+
+  return {
+    prompted,
+    setHasBeenPrompted,
+  };
+};
+
+const getAppLink = () => {
+  const userAgent = window.navigator.userAgent;
+  return userAgent.includes('Mac') ? APP_URL.IOS : APP_URL.ANDROID;
 };
 
 export const MobileAppPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(true);
-  const isMobile = useIsMobile();
-  if (!isMobile) return null;
+  const isMobile = getIsMobileDevice();
+  const { prompted, setHasBeenPrompted } = usePromptCookie();
+  if (!isMobile || prompted) return null;
 
-  const userAgent = window.navigator.userAgent;
-  const getAppLink = () => {
-    return userAgent.includes('Mac') ? APP_URL.IOS : APP_URL.ANDROID;
-  };
-
-  const getBrowser = () => {
-    if (userAgent.match(/chrome|chromium|crios/i)) {
-      return BROWSERS.CHROME;
-    }
-    if (userAgent.match(/firefox|fxios/i)) {
-      return BROWSERS.FIREFOX;
-    }
-    if (userAgent.match(/safari/i)) {
-      return BROWSERS.SAFARI;
-    }
-    if (userAgent.match(/opr/i)) {
-      return BROWSERS.OPERA;
-    }
-    if (userAgent.match(/edg/i)) {
-      return BROWSERS.EDGE;
-    }
-    return null;
-  };
   const browser = getBrowser();
   const browserIcon = browser ? BROWSER_ICONS[browser] : null;
   const appLink = getAppLink();
 
+  const onOpenApp = () => {
+    togglePrompt();
+    window.location.href = appLink.app;
+    // Set a timeout to redirect to the app store after a reasonable time
+    setTimeout(() => {
+      window.location.href = appLink.fallback;
+    }, 2000);
+  };
+
   const togglePrompt = () => {
+    // only set the cookie if the user has clicked on one of the options
     setShowPrompt(!showPrompt);
+    setHasBeenPrompted();
   };
 
   const displayOptions = [
@@ -121,8 +154,8 @@ export const MobileAppPrompt = () => {
       icon: '/tupaia-pin.svg',
       text: 'Datatrak app',
       button: {
-        text: 'Download',
-        href: appLink,
+        text: 'Open',
+        onClick: onOpenApp,
       },
     },
     {
@@ -151,27 +184,16 @@ export const MobileAppPrompt = () => {
       }}
     >
       <Container>
-        <Title>Download the DataTrak app?</Title>
+        <Title>Open the DataTrak app?</Title>
         <div>
           {displayOptions.map(
-            ({
-              icon,
-              text,
-              button: { onClick, href, variant = 'contained', text: buttonText },
-            }) => (
+            ({ icon, text, button: { onClick, variant = 'contained', text: buttonText } }) => (
               <Option key={text!}>
                 <LeftColumn>
                   <OptionIcon>{icon && <img src={icon} />}</OptionIcon>
                   <OptionText>{text}</OptionText>
                 </LeftColumn>
-                <OptionButton
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  component={href ? Link : undefined}
-                  onClick={onClick}
-                  variant={variant}
-                >
+                <OptionButton onClick={onClick} variant={variant}>
                   {buttonText}
                 </OptionButton>
               </Option>
