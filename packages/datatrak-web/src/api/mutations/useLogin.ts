@@ -4,7 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useFromLocation } from '../../utils';
+import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
 
@@ -12,18 +13,6 @@ type LoginCredentials = {
   email: string;
   password: string;
 };
-
-function hasFrom(state: unknown): state is { from: string } {
-  if (state !== null && typeof state === 'object' && 'from' in state) {
-    return typeof state.from === 'string';
-  }
-  return false;
-}
-
-function useFromLocation() {
-  const location = useLocation();
-  return hasFrom(location.state) ? location.state.from : undefined;
-}
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
