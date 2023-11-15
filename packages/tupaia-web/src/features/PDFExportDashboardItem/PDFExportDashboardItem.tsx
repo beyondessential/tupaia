@@ -128,7 +128,7 @@ export const PDFExportDashboardItem = ({
   const title = getTitle();
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
-  const { data } = report as BaseReport;
+  const data = isLoading ? undefined : (report as BaseReport).data;
   return (
     <A4Page key={dashboardItem?.code}>
       <PDFExportHeader>{entityName}</PDFExportHeader>
@@ -144,7 +144,13 @@ export const PDFExportDashboardItem = ({
           <ExportContent $hasData={data && data?.length > 0}>
             <DashboardItemContext.Provider
               value={{
-                config,
+                config: {
+                  ...config,
+                  presentationOptions: {
+                    ...config.presentationOptions,
+                    exportWithTable: true,
+                  },
+                },
                 report,
                 reportCode,
                 isLoading,

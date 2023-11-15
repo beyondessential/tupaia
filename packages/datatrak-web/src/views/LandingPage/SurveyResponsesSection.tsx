@@ -6,7 +6,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { useCurrentUserSurveyResponses } from '../../api/queries';
+import { useCurrentUserSurveyResponses } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -19,12 +19,14 @@ const Container = styled.section`
 
 const ScrollBody = styled.div`
   overflow: auto;
-
+  > span {
+    margin-bottom: 0.6rem;
+  }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: flex;
     flex-direction: row;
 
-    > a {
+    > span {
       min-width: 15rem;
       margin-right: 1rem;
     }
@@ -38,25 +40,26 @@ export const SurveyResponsesSection = () => {
       <SectionHeading>My recent responses</SectionHeading>
       <ScrollBody>
         {isSuccess && recentSurveyResponses?.length > 0 ? (
-          recentSurveyResponses.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-            <Tile
-              key={id}
-              title={surveyName}
-              text={entityName}
-              // Todo: update link to survey response route in WAITP-1452
-              to={`/#surveyResponse/${id}`}
-              tooltip={
-                <>
-                  {surveyName}
-                  <br />
-                  {entityName}
-                </>
-              }
-              Icon={SurveyTickIcon}
-            >
-              {countryName}, {shortDate(dataTime)}
-            </Tile>
-          ))
+          recentSurveyResponses.map(
+            ({ id, surveyName, surveyCode, dataTime, entityName, countryName }) => (
+              <Tile
+                key={id}
+                title={surveyName}
+                text={entityName}
+                to={`/survey/${surveyCode}/response/${id}`}
+                tooltip={
+                  <>
+                    {surveyName}
+                    <br />
+                    {entityName}
+                  </>
+                }
+                Icon={SurveyTickIcon}
+              >
+                {countryName}, {shortDate(dataTime)}
+              </Tile>
+            ),
+          )
         ) : (
           <Typography variant="body2" color="textSecondary">
             No recent surveys responses to display

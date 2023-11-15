@@ -14,6 +14,8 @@ type SurveyResponse = {
   entityName: Entity['name'];
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
+  surveyProjectId: Survey['project_id'];
+  surveyCode: Survey['code'];
 };
 
 export type ResBody = SurveyResponse[];
@@ -23,4 +25,5 @@ export interface ReqQuery {
   userId: string;
   pageSize?: number;
   sort?: string[];
+  projectId?: string;
 }

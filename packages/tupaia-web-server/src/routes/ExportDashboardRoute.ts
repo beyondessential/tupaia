@@ -7,8 +7,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
-import { downloadPageAsPDF } from '@tupaia/server-utils';
-import { stringifyQuery } from '@tupaia/utils';
+import { downloadDashboardAsPdf } from '../utils';
 
 export type ExportDashboardRequest = Request<
   TupaiaWebExportDashboardRequest.Params,
@@ -25,12 +24,19 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
     const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
     const { cookie } = this.req.headers;
 
-    const endpoint = `${projectCode}/${entityCode}/${dashboardName}/pdf-export`;
-    const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
-      selectedDashboardItems: selectedDashboardItems?.join(','),
-    });
+    if (!cookie) {
+      throw new Error(`Must have a valid session to export a dashboard`);
+    }
 
-    const buffer = await downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);
+    const buffer = await downloadDashboardAsPdf(
+      projectCode,
+      entityCode,
+      dashboardName,
+      baseUrl,
+      cookie,
+      cookieDomain,
+      selectedDashboardItems,
+    );
     return { contents: buffer, type: 'application/pdf' };
   }
 }
