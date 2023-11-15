@@ -7,8 +7,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import { SectionHeading } from './SectionHeading';
-import { SurveyIcon, Tile } from '../../components';
 import { Typography } from '@material-ui/core';
+import { SpinningLoader } from '@tupaia/ui-components';
+import { SurveyIcon, Tile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api/queries';
 import { useEditUser } from '../../api/mutations';
 
@@ -42,7 +43,7 @@ const ScrollBody = styled.div`
 `;
 
 export const RecentSurveysSection = () => {
-  const { data: recentSurveys = [], isSuccess } = useCurrentUserRecentSurveys();
+  const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   const navigate = useNavigate();
   const { mutateAsync: editUser } = useEditUser();
 
@@ -57,30 +58,33 @@ export const RecentSurveysSection = () => {
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
-      <ScrollBody>
-        {isSuccess && recentSurveys?.length ? (
-          recentSurveys.map(({ surveyName, surveyCode, countryName, countryId }) => (
-            <Tile
-              key={`${surveyCode}-${countryName}`}
-              title={surveyName}
-              text={countryName}
-              tooltip={
-                <>
-                  {surveyName}
-                  <br />
-                  {countryName}
-                </>
-              }
-              Icon={SurveyIcon}
-              onClick={() => handleSelectSurvey(surveyCode, countryId)}
-            />
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            No recent surveys to display
-          </Typography>
-        )}
-      </ScrollBody>
+      {isLoading && <SpinningLoader />}
+      {isSuccess && (
+        <ScrollBody>
+          {recentSurveys?.length ? (
+            recentSurveys.map(({ surveyName, surveyCode, countryName, countryId }) => (
+              <Tile
+                key={`${surveyCode}-${countryName}`}
+                title={surveyName}
+                text={countryName}
+                tooltip={
+                  <>
+                    {surveyName}
+                    <br />
+                    {countryName}
+                  </>
+                }
+                Icon={SurveyIcon}
+                onClick={() => handleSelectSurvey(surveyCode, countryId)}
+              />
+            ))
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No recent surveys to display
+            </Typography>
+          )}
+        </ScrollBody>
+      )}
     </RecentSurveys>
   );
 };

@@ -5,5 +5,6 @@
 
 export { errorToast, successToast } from './toast';
 export { useDebounce } from './useDebounce';
+export { useFromLocation } from './useFromLocation';
 export { useIsMobile } from './useIsMobile';
 export * from './date';

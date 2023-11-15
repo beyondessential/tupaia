@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   padding: 1.1rem 2rem;
   border-bottom: 1px solid ${props => props.theme.palette.divider};
   ${DESKTOP_MEDIA_QUERY} {
-    padding: 1.7rem 2.2rem;
+    padding: 1.5rem 2.2rem;
   }
 `;
 

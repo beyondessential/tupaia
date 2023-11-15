@@ -10,7 +10,7 @@ export { LoginPage } from './LoginPage';
 export { RegisterPage } from './RegisterPage';
 export { VerifyEmailResendPage } from './VerifyEmailResendPage';
 export { VerifyEmailPage } from './VerifyEmailPage';
-export { NotFoundPage } from './NotFoundPage';
+export { ErrorPage } from './ErrorPage';
 export { ProjectSelectPage } from './ProjectSelectPage';
 export { SurveyResponsePage } from './SurveyResponsePage';
 export { SurveySuccessScreen, SurveyReviewScreen, SurveyScreen } from '../features';
