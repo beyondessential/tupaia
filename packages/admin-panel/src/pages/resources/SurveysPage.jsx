@@ -22,6 +22,18 @@ const SERVICE_TYPES = [
 ];
 
 const SURVEY_FIELDS = {
+  project: {
+    Header: 'Project',
+    source: 'project.code',
+    editConfig: {
+      sourceKey: 'project.code',
+      optionsEndpoint: 'projects',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: false,
+      secondaryLabel: 'Select the project this survey should be available in',
+    },
+  },
   name: {
     Header: 'Name',
     source: 'name',
@@ -183,10 +195,7 @@ const SURVEY_FIELDS = {
 };
 
 const SURVEY_COLUMNS = [
-  {
-    Header: 'Project',
-    source: 'project.code',
-  },
+  SURVEY_FIELDS.project,
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
@@ -238,6 +247,7 @@ const CREATE_CONFIG = {
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
     fields: [
+      SURVEY_FIELDS.project,
       SURVEY_FIELDS.name,
       SURVEY_FIELDS.code,
       SURVEY_FIELDS.country_ids,
