@@ -45,7 +45,7 @@ const ArrowButton = styled(IconButton)`
     left: 0.5rem;
   }
   &:last-child {
-    right: 0.5rem;
+    right: 2.5rem;
   }
   svg {
     width: 3rem;

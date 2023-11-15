@@ -19,7 +19,7 @@ const useZoomToEntity = () => {
   const map = useMap();
 
   useEffect(() => {
-    if (!entity || !map) return;
+    if (!entity || !map || (!entity.point && !entity.bounds)) return;
     if (entity.bounds) {
       map.flyToBounds(entity.bounds, {
         animate: false, // don't animate, as it can slow things down a bit
