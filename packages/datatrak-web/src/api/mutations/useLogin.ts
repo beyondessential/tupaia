@@ -19,12 +19,16 @@ function hasFrom(state: unknown): state is { from: string } {
   }
   return false;
 }
+
+function useFromLocation() {
+  const location = useLocation();
+  return hasFrom(location.state) ? location.state.from : undefined;
+}
+
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = hasFrom(location.state) ? location.state.from : undefined;
+  const from = useFromLocation();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
