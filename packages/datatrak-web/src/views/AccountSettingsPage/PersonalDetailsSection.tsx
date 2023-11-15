@@ -19,7 +19,9 @@ type PersonalDetails = {
   position: string;
 };
 
-const submitChanges: SubmitHandler<PersonalDetails> = details => console.log(details);
+function submitChanges(details: PersonalDetails): SubmitHandler<PersonalDetails> {
+  console.log(details);
+}
 
 const SaveButton = styled(Button)`
   grid-column: -2;
@@ -48,9 +50,9 @@ export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
   const {
     formState: { isDirty },
-    register,
     handleSubmit,
-  } = useForm({
+    register,
+  } = useForm<PersonalDetails>({
     defaultValues: {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
@@ -69,8 +71,8 @@ export const PersonalDetailsSection = () => {
           placeholder="First name"
           autoComplete="given-name"
           defaultValue={user.firstName}
-          {...register('firstName')}
-          required
+          {...register('firstName', { required: true })}
+          // required
         />
         <StyledTextField
           name="lastName"
@@ -78,7 +80,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Last name"
           autoComplete="family-name"
           defaultValue={user.lastName}
-          {...register('lastName')}
+          {...register('lastName', { required: true })}
           required
         />
         <StyledTextField
@@ -97,7 +99,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Contact number"
           autoComplete="tel"
           defaultValue={user.contactNumber}
-          {...register('contactNumber')}
+          {...register('contactNumber', { required: true })}
         />
         <StyledTextField
           name="employer"
@@ -105,7 +107,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Employer"
           autoComplete="organization"
           defaultValue={user.employer}
-          {...register('employer')}
+          {...register('employer', { required: true })}
           required
         />
         <StyledTextField
@@ -114,7 +116,7 @@ export const PersonalDetailsSection = () => {
           placeholder="Position"
           autoComplete="organization-title"
           defaultValue={user.position}
-          {...register('position')}
+          {...register('position', { required: true })}
           required
         />
         <SaveButton type="submit" disabled={!isDirty}>
