@@ -447,6 +447,49 @@ describe('processSurveyResponse', () => {
       ],
     });
   });
+
+  it('should use the country id for new entities if parent id is not filled in', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.PrimaryEntity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {
+              entity: {
+                createNew: true,
+                fields: {
+                  parentId: {
+                    questionId: 'question2',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        answers: {
+          question2: '',
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      entity_id: generateId(),
+      answers: [],
+      entities_upserted: [
+        {
+          parent_id: (await mockFindEntityById('theCountryId')).id,
+          id: generateId(),
+        },
+      ],
+    });
+  });
   it('should handle when question type is File', async () => {
     const result = await processSurveyResponse(
       {

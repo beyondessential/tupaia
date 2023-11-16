@@ -33,10 +33,9 @@ export const buildUpsertEntity = async (
     const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
 
     if (fieldName === 'parentId') {
-      if (typeof fieldValue !== 'string') {
-        throw new Error(`parentId must be a string`);
-      }
-      const entityRecord = await findEntityById(fieldValue);
+      // If the parentId field is not answered, use the country id
+      const parentValue = (fieldValue as string) || countryId;
+      const entityRecord = await findEntityById(parentValue);
       entity.parent_id = entityRecord.id;
     } else {
       entity[fieldName as keyof Entity] = fieldValue;
