@@ -147,7 +147,11 @@ export const PersonalDetailsSection = () => {
         />
         <ButtonWrapper>
           {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
-          <Button type="submit" tooltip="Change details to save changes" disabled={!isDirty}>
+          <Button
+            type="submit"
+            tooltip={isDirty ? null : 'Change details to save changes'}
+            disabled={!isDirty}
+          >
             Save changes
           </Button>
         </ButtonWrapper>
