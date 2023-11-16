@@ -151,6 +151,7 @@ export const PersonalDetailsSection = () => {
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
             disabled={!isDirty}
+            fullWidth
           >
             Save changes
           </Button>
