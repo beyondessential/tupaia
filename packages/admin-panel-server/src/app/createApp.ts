@@ -11,6 +11,8 @@ import { upload } from '../middleware';
 import {
   ExportDashboardVisualisationRequest,
   ExportDashboardVisualisationRoute,
+  ExportDataTableRequest,
+  ExportDataTableRoute,
   ExportMapOverlayVisualisationRequest,
   ExportMapOverlayVisualisationRoute,
   FetchDashboardVisualisationRequest,
@@ -25,6 +27,8 @@ import {
   FetchDataTablePreviewDataRoute,
   ImportDashboardVisualisationRequest,
   ImportDashboardVisualisationRoute,
+  ImportDataTableRequest,
+  ImportDataTableRoute,
   SaveDashboardVisualisationRequest,
   SaveDashboardVisualisationRoute,
   SaveMapOverlayVisualisationRequest,
@@ -96,6 +100,7 @@ export function createApp() {
       'export/dashboardVisualisation/:dashboardVisualisationId',
       handleWith(ExportDashboardVisualisationRoute),
     )
+    .get('export/dataTable/:dataTableId', handleWith(ExportDataTableRoute))
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
@@ -104,6 +109,7 @@ export function createApp() {
       'export/dashboardVisualisation',
       handleWith(ExportDashboardVisualisationRoute),
     )
+    .post<ExportDataTableRequest>('export/dataTable', handleWith(ExportDataTableRoute))
     .post<ExportMapOverlayVisualisationRequest>(
       'export/mapOverlayVisualisation',
       handleWith(ExportMapOverlayVisualisationRoute),
@@ -112,6 +118,11 @@ export function createApp() {
       'import/dashboardVisualisations',
       upload.array('dashboardVisualisations'),
       handleWith(ImportDashboardVisualisationRoute),
+    )
+    .post<ImportDataTableRequest>(
+      'import/dataTables',
+      upload.array('dataTables'),
+      handleWith(ImportDataTableRoute),
     )
     .post<ImportMapOverlayVisualisationRequest>(
       'import/mapOverlayVisualisations',
