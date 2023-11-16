@@ -26,10 +26,10 @@ export type AnswersT = Record<string, Answer>;
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
   const user = useCurrentUser();
-  const { surveyCode } = useParams();
+  const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: country } = useCountry();
+  const { data: country } = useCountry(user.project?.code, countryCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,

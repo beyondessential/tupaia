@@ -4,19 +4,13 @@
  */
 
 import { useQuery } from 'react-query';
-import { TupaiaWebEntityRequest } from '@tupaia/types';
-import { useCurrentUser } from '../CurrentUserContext';
+import { WebServerEntityRequest } from '@tupaia/types';
 import { get } from '../api';
-import { useParams } from 'react-router-dom';
 
-export const useCountry = () => {
-  const { countryCode } = useParams();
-  const user = useCurrentUser();
-  const projectCode = user.project?.code;
-
+export const useCountry = (projectCode, countryCode) => {
   return useQuery(
     ['entity', projectCode, countryCode],
-    (): Promise<TupaiaWebEntityRequest.ResBody> => get(`entity/${projectCode}/${countryCode}`),
+    (): Promise<WebServerEntityRequest.ResBody> => get(`entity/${projectCode}/${countryCode}`),
     { enabled: !!projectCode && !!countryCode },
   );
 };

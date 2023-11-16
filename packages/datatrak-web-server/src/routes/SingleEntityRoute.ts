@@ -5,14 +5,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebEntityRequest, Entity } from '@tupaia/types';
+import { Entity, WebServerEntityRequest } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 
 export type SingleEntityRequest = Request<
-  TupaiaWebEntityRequest.Params,
-  TupaiaWebEntityRequest.ResBody,
-  TupaiaWebEntityRequest.ReqBody,
-  TupaiaWebEntityRequest.ReqQuery
+  WebServerEntityRequest.Params,
+  WebServerEntityRequest.ResBody,
+  WebServerEntityRequest.ReqBody,
+  WebServerEntityRequest.ReqQuery
 >;
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
