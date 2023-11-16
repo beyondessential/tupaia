@@ -74,7 +74,7 @@ const APP_URL = {
     app: 'intent://#Intent;package=com.tupaiameditrak;end', // eventually this is where the deep link will go
   },
   IOS: {
-    fallback: 'https://itunes.apple.com/us/app/tupaia-meditrak/id1245053537',
+    fallback: 'https://itunes.apple.com/app/tupaia-meditrak/id1245053537',
     app: 'tupaiameditrak://', // eventually this is where the deep link will go
   },
 };
