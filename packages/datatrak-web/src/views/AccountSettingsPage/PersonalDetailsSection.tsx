@@ -115,7 +115,7 @@ export const PersonalDetailsSection = () => {
               placeholder="Contact number"
               autoComplete="tel"
               defaultValue={user.contactNumber}
-              inputProps={{ enterKeyHint: 'next' }}
+              inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
               {...register('contactNumber', { required: true })}
             />
           }
