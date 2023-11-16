@@ -4,7 +4,12 @@
  */
 
 import { useParams } from 'react-router';
-import { useEntitiesWithLocation, useEntity, useMapOverlays } from '../../../api/queries';
+import {
+  useEntitiesWithLocation,
+  useEntity,
+  useEntityAncestors,
+  useMapOverlays,
+} from '../../../api/queries';
 import { useMapOverlayTableData } from './useMapOverlayTableData.ts';
 import { Entity } from '../../../types';
 
@@ -49,7 +54,9 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, mea
   );
 };
 
-const getRootEntityCode = (entity?: Entity) => {
+const useRootEntityCode = (entity, measureLevel) => {
+  const { projectCode, entityCode } = useParams();
+  const { data: entityAncestors } = useEntityAncestors(projectCode, entityCode);
   if (!entity) {
     return undefined;
   }
@@ -59,6 +66,15 @@ const getRootEntityCode = (entity?: Entity) => {
   // the root entity the country
   if (type === 'country' || !parentCode) {
     return code;
+  }
+
+  // if is non-spatial, find the parent at the measure level and set that as the parent as the rootEntity code, and it will handle getting the correct entities for the selected measure level, similar to how the overlay table does
+  if (!entity.point && !entity.bounds) {
+    const measure = entityAncestors?.find(
+      (entity: Entity) => entity.type === measureLevel?.toLowerCase(),
+    ) as Entity;
+
+    return measure?.parentCode;
   }
 
   // The default behaviour is to show visuals from the parent down which means that visuals will normally
@@ -76,7 +92,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
     isPolygonSerieses,
     selectedOverlay?.measureLevel,
   );
-  const rootEntityCode = getRootEntityCode(entity);
+  const rootEntityCode = useRootEntityCode(entity, selectedOverlay?.measureLevel);
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
