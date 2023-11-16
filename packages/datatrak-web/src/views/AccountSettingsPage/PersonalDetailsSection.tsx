@@ -5,11 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
-import { TextField } from '@tupaia/ui-components';
+import { TextField, Tooltip } from '@tupaia/ui-components';
 
 type PersonalDetails = {
   firstName: string;
@@ -49,6 +49,7 @@ const PersonalDetailsForm = styled.form`
 export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
   const {
+    control,
     formState: { isDirty },
     handleSubmit,
     register,
@@ -65,59 +66,84 @@ export const PersonalDetailsSection = () => {
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
       <PersonalDetailsForm onSubmit={handleSubmit(submitChanges)}>
-        <StyledTextField
+        <Controller
+          control={control}
           name="firstName"
-          label="First name"
-          placeholder="First name"
-          autoComplete="given-name"
-          defaultValue={user.firstName}
-          {...register('firstName', { required: true })}
-          // required
+          as={
+            <StyledTextField
+              label="First name"
+              placeholder="First name"
+              autoComplete="given-name"
+              defaultValue={user.firstName}
+              {...register('firstName', { required: true })}
+              required
+            />
+          }
         />
-        <StyledTextField
+        <Controller
+          control={control}
           name="lastName"
-          label="Last name"
-          placeholder="Last name"
-          autoComplete="family-name"
-          defaultValue={user.lastName}
-          {...register('lastName', { required: true })}
-          required
+          as={
+            <StyledTextField
+              label="Last name"
+              placeholder="Last name"
+              autoComplete="family-name"
+              defaultValue={user.lastName}
+              {...register('lastName', { required: true })}
+              required
+            />
+          }
         />
         <StyledTextField
           name="email"
           label="Email"
           placeholder="Email"
-          tooltip="You cannot change your email address"
+          title="You cannot change your email address"
           autoComplete="email"
           value={user.email}
           required
           disabled
         />
-        <StyledTextField
+        <Controller
+          control={control}
           name="contactNumber"
-          label="Contact number (optional)"
-          placeholder="Contact number"
-          autoComplete="tel"
-          defaultValue={user.contactNumber}
-          {...register('contactNumber', { required: true })}
+          as={
+            <StyledTextField
+              label="Contact number (optional)"
+              placeholder="Contact number"
+              autoComplete="tel"
+              defaultValue={user.contactNumber}
+              {...register('contactNumber', { required: true })}
+            />
+          }
         />
-        <StyledTextField
+        <Controller
+          control={control}
           name="employer"
-          label="Employer"
-          placeholder="Employer"
-          autoComplete="organization"
-          defaultValue={user.employer}
-          {...register('employer', { required: true })}
-          required
+          as={
+            <StyledTextField
+              label="Employer"
+              placeholder="Employer"
+              autoComplete="organization"
+              defaultValue={user.employer}
+              {...register('employer', { required: true })}
+              required
+            />
+          }
         />
-        <StyledTextField
+        <Controller
+          control={control}
           name="position"
-          label="Position"
-          placeholder="Position"
-          autoComplete="organization-title"
-          defaultValue={user.position}
-          {...register('position', { required: true })}
-          required
+          as={
+            <StyledTextField
+              label="Position"
+              placeholder="Position"
+              autoComplete="organization-title"
+              defaultValue={user.position}
+              {...register('position', { required: true })}
+              required
+            />
+          }
         />
         <SaveButton type="submit" disabled={!isDirty}>
           Save changes
