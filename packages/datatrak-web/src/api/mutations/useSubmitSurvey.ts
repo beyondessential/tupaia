@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
-import { post, useCurrentUser } from '../../api';
+import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -29,11 +29,12 @@ export const useSurveyResponseData = () => {
   const { surveyCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { data: country } = useCountry();
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
-    countryId: user.country?.id,
+    countryId: country?.id,
     userId: user.id,
   };
 };
