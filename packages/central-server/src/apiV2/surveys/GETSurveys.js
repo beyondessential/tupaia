@@ -23,6 +23,9 @@ import { processColumns } from '../GETHandler/helpers';
  * - /countries/id/surveys
  */
 
+const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
+const COUNTRY_NAMES_COLUMN = 'countryNames';
+
 export class GETSurveys extends GETHandler {
   permissionsFilteredInternally = true;
 
@@ -94,15 +97,19 @@ export class GETSurveys extends GETHandler {
       return super.getProcessedColumns();
     }
 
-    const unprocessedColumns =
-      columnsString &&
-      JSON.parse(columnsString).filter(col => !['surveyQuestions', 'countryNames'].includes(col));
+    const parsedColumns = columnsString && JSON.parse(columnsString);
+    this.includeQuestions = parsedColumns.includes(SURVEY_QUESTIONS_COLUMN);
+    this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
+
+    const unprocessedColumns = parsedColumns.filter(
+      col => ![SURVEY_QUESTIONS_COLUMN, COUNTRY_NAMES_COLUMN].includes(col),
+    );
     return processColumns(this.models, unprocessedColumns, this.recordType);
   }
 
   async getSurveyQuestionsValues(surveyIds) {
     // See README.md
-    if (surveyIds.length === 0) return {};
+    if (surveyIds.length === 0 || !this.includeQuestions) return {};
     const rows = await this.database.executeSql(
       `
     SELECT 
@@ -138,7 +145,7 @@ export class GETSurveys extends GETHandler {
   }
 
   async getSurveyCountryNames(surveyIds) {
-    if (surveyIds.length === 0) return {};
+    if (surveyIds.length === 0 || !this.includeCountryNames) return {};
     const rows = await this.database.executeSql(
       `
     SELECT survey.id, array_agg(country.name) as country_names
