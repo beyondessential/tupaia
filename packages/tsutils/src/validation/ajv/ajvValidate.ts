@@ -15,5 +15,5 @@ export const ajvValidate = <T>(schema: Schema, data: unknown) => {
   }
 
   const betterErrors = betterAjvErrors(schema, data, validate.errors || [], { format: 'js' });
-  throw new Error(`Validation Error: ${betterErrors.map(err => err.error)}`);
+  throw new Error(`Validation Error:${betterErrors.map(err => err.error)}`);
 };

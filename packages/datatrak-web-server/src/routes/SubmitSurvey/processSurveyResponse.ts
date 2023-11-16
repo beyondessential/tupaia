@@ -12,7 +12,7 @@ import {
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
 
-type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type SubmittedSurveyResponseType = DatatrakWebSubmitSurveyRequest.ReqBody;
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
@@ -29,7 +29,7 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
-  surveyResponseData: SurveyRequestT,
+  surveyResponseData: SubmittedSurveyResponseType,
   findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {

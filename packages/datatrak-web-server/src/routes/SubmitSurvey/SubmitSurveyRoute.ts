@@ -4,27 +4,29 @@
  */
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyRequest } from '@tupaia/types';
 import { processSurveyResponse } from './processSurveyResponse';
+import { validateSurveySubmission } from './validateSurveySubmission';
 
 export type SubmitSurveyRequest = Request<
-  RequestT.Params,
-  RequestT.ResBody,
-  RequestT.ReqBody,
-  RequestT.ReqQuery
+  DatatrakWebSubmitSurveyRequest.Params,
+  DatatrakWebSubmitSurveyRequest.ResBody,
+  DatatrakWebSubmitSurveyRequest.ReqBody,
+  DatatrakWebSubmitSurveyRequest.ReqQuery
 >;
 
 export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
-  public async buildResponse() {
-    const surveyResponseData = this.req.body;
-    const { central: centralApi } = this.req.ctx.services;
-
+  protected getEntity(entityId: string) {
     // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
-    const getEntity = (entityId: string) => this.req.models.entity.findById(entityId);
+    return this.req.models.entity.findById(entityId);
+  }
+  public async buildResponse() {
+    const { central: centralApi } = this.req.ctx.services;
+    const surveyResponseData = validateSurveySubmission(this.req.body);
 
     const { qr_codes_to_create, ...processedResponse } = await processSurveyResponse(
       surveyResponseData,
-      getEntity,
+      this.getEntity,
     );
 
     await centralApi.createSurveyResponses([processedResponse]);
