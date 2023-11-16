@@ -15,7 +15,7 @@ export type SingleEntityRequest = Request<
   WebServerEntityRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
 
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
