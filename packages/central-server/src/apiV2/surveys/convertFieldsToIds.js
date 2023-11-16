@@ -6,8 +6,12 @@
 /**
  *  See SurveysPage comments regarding RN-910
  */
-export const convertNamesToIds = async (models, fields) => {
-  const { countryNames, 'permission_group.name': permissionGroupName } = fields;
+export const convertFieldsToIds = async (models, fields) => {
+  const {
+    countryNames,
+    'permission_group.name': permissionGroupName,
+    'project.code': projectCode,
+  } = fields;
 
   const updatedFields = { ...fields };
 
@@ -27,6 +31,18 @@ export const convertNamesToIds = async (models, fields) => {
         throw new Error('Permission Group not found');
       }
       updatedFields.permission_group_id = permissionGroup.id;
+    }
+  }
+
+  if (projectCode !== undefined) {
+    if (projectCode === null) {
+      updatedFields.project_id = null;
+    } else {
+      const project = await models.project.findOne({ code: projectCode });
+      if (!project) {
+        throw new Error('Project not found');
+      }
+      updatedFields.project_id = project.id;
     }
   }
 
