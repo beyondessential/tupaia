@@ -4,6 +4,7 @@
  */
 
 import {
+  ValidationError,
   constructIsNotPresentOr,
   constructIsValidEntityType,
   constructIsValidEntityTypes,
@@ -11,7 +12,7 @@ import {
 } from '@tupaia/utils';
 import { validateIsYesOrNo } from '../../validatorFunctions';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
-import { isEmpty, isYes } from '../../utilities';
+import { convertCellToJson, isEmpty, isYes } from '../../utilities';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 
 const { ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
@@ -89,6 +90,8 @@ export class EntityConfigValidator extends JsonFieldValidator {
         pointsToPrecedingEntityQuestion(...params),
     );
 
+    const pointsToAnotherMandatoryQuestion = this.constructPointsToMandatoryQuestion(rowIndex);
+
     return {
       allowScanQrCode: [constructIsNotPresentOr(validateIsYesOrNo)],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
@@ -97,9 +100,12 @@ export class EntityConfigValidator extends JsonFieldValidator {
       'attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
       'fields.code': [
         hasContentOnlyIfCanCreateNew,
-        constructIsNotPresentOr(pointsToAnotherQuestion),
+        constructIsNotPresentOr(pointsToAnotherMandatoryQuestion),
       ],
-      'fields.name': [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
+      'fields.name': [
+        hasContentIfCanCreateNew,
+        constructIsNotPresentOr(pointsToAnotherMandatoryQuestion),
+      ],
       'fields.parent': [pointsToValidPrecedingEntityQuestion],
       'fields.grandparent': [pointsToValidPrecedingEntityQuestion],
       'fields.type': [
@@ -114,6 +120,29 @@ export class EntityConfigValidator extends JsonFieldValidator {
         constructIsNotPresentOr(constructIsValidEntityTypes(this.models.entity)),
       ],
       'filter.attributes.type': [constructIsNotPresentOr(pointsToAnotherQuestion)],
+    };
+  }
+
+  constructPointsToMandatoryQuestion(rowIndex) {
+    return value => {
+      const questionCode = value;
+      const question = this.findOtherQuestion(questionCode, rowIndex, this.questions.length);
+
+      if (!question) {
+        throw new ValidationError(`Should reference another question in the survey`);
+      }
+
+      if (!question.validationCriteria) {
+        throw new ValidationError(`Referenced question should be mandatory`);
+      }
+
+      const { validationCriteria } = question;
+      const parsedValidationCriteria = convertCellToJson(validationCriteria);
+
+      if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true')
+        throw new ValidationError(`Referenced question should be mandatory`);
+
+      return true;
     };
   }
 
