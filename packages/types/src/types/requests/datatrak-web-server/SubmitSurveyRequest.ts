@@ -28,7 +28,7 @@ export type Answer =
 
 export type Answers = Record<string, Answer>;
 
-interface SurveyResponse {
+export interface DatatrakWebSurveyResponseRequest {
   userId: UserAccount['id'];
   surveyId: Survey['id'];
   countryId: Entity['id'];
@@ -41,5 +41,5 @@ export type Params = Record<string, never>;
 export type ResBody = {
   qrCodeEntitiesCreated: Entity[];
 };
-export type ReqBody = SurveyResponse;
+export type ReqBody = DatatrakWebSurveyResponseRequest;
 export type ReqQuery = Record<string, never>;

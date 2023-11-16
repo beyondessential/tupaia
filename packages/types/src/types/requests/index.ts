@@ -6,6 +6,8 @@
 
 export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
+export { DatatrakWebSurveyResponseRequest } from './datatrak-web-server/SubmitSurveyRequest';
+
 export {
   DatatrakWebEntitiesRequest,
   DatatrakWebProjectsRequest,

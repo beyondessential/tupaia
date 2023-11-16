@@ -59399,239 +59399,6 @@ export const KeysToCamelCaseSchema = {
 	"additionalProperties": false
 } 
 
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"attributes": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"bounds": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"code": {
-				"type": "string"
-			},
-			"countryCode": {
-				"type": "string"
-			},
-			"id": {
-				"type": "string"
-			},
-			"imageUrl": {
-				"type": "string"
-			},
-			"metadata": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"name": {
-				"type": "string"
-			},
-			"parentId": {
-				"type": "string"
-			},
-			"point": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"region": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"type": {
-				"enum": [
-					"asset",
-					"case",
-					"case_contact",
-					"catchment",
-					"city",
-					"complaint",
-					"country",
-					"disaster",
-					"district",
-					"facility",
-					"farm",
-					"fetp_graduate",
-					"field_station",
-					"fiji_aspen_facility",
-					"household",
-					"incident",
-					"incident_reported",
-					"individual",
-					"institute",
-					"larval_habitat",
-					"local_government",
-					"medical_area",
-					"msupply_store",
-					"nursing_zone",
-					"postcode",
-					"project",
-					"repair_request",
-					"school",
-					"sub_catchment",
-					"sub_district",
-					"sub_facility",
-					"trap",
-					"village",
-					"water_sample",
-					"wish_sub_district",
-					"world"
-				],
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"code",
-			"id",
-			"name"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ProjectResponseSchema = {
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
-		},
-		"dashboardGroupName": {
-			"type": "string"
-		},
-		"defaultMeasure": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
-			"type": "string"
-		},
-		"entityId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"logoUrl": {
-			"type": "string"
-		},
-		"permissionGroups": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sortOrder": {
-			"type": "number"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"required": [
-		"code",
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const VisibilityCriteriaSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -59760,6 +59527,439 @@ export const CamelCasedSurveyScreenSchema = {
 	]
 } 
 
+export const ResBodySchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"canRepeat": {
+			"type": "boolean"
+		},
+		"code": {
+			"type": "string"
+		},
+		"countryIds": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"dataGroupId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"integrationMetadata": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"name": {
+			"type": "string"
+		},
+		"periodGranularity": {
+			"enum": [
+				"daily",
+				"monthly",
+				"quarterly",
+				"weekly",
+				"yearly"
+			],
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"projectId": {
+			"type": "string"
+		},
+		"requiresApproval": {
+			"type": "boolean"
+		},
+		"surveyGroupId": {
+			"type": "string"
+		},
+		"surveyGroupName": {
+			"type": "string"
+		},
+		"screens": {
+			"type": "array",
+			"items": {
+				"additionalProperties": false,
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"screenNumber": {
+						"type": "number"
+					},
+					"surveyScreenComponents": {
+						"type": "array",
+						"items": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"answersEnablingFollowUp": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"componentNumber": {
+									"type": "number"
+								},
+								"detailLabel": {
+									"type": "string"
+								},
+								"isFollowUp": {
+									"type": "boolean"
+								},
+								"questionId": {
+									"type": "string"
+								},
+								"text": {
+									"type": "string"
+								},
+								"code": {
+									"type": "string"
+								},
+								"name": {
+									"type": "string"
+								},
+								"type": {
+									"enum": [
+										"Arithmetic",
+										"Autocomplete",
+										"Binary",
+										"Checkbox",
+										"CodeGenerator",
+										"Condition",
+										"Date",
+										"DateOfData",
+										"DateTime",
+										"Entity",
+										"File",
+										"FreeText",
+										"Geolocate",
+										"Instruction",
+										"Number",
+										"Photo",
+										"PrimaryEntity",
+										"Radio",
+										"SubmissionDate"
+									],
+									"type": "string"
+								},
+								"dataElementId": {
+									"type": "string"
+								},
+								"detail": {
+									"type": "string"
+								},
+								"hook": {
+									"type": "string"
+								},
+								"optionSetId": {
+									"type": "string"
+								},
+								"visibilityCriteria": {
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"_conjunction": {
+											"type": "string"
+										}
+									}
+								},
+								"validationCriteria": {
+									"type": "object",
+									"properties": {
+										"mandatory": {
+											"type": "boolean"
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false
+								},
+								"config": {
+									"type": "object",
+									"properties": {
+										"codeGenerator": {
+											"type": "object",
+											"properties": {
+												"type": {
+													"enum": [
+														"mongoid",
+														"shortid"
+													],
+													"type": "string"
+												},
+												"prefix": {
+													"type": "string"
+												},
+												"length": {
+													"type": "number"
+												},
+												"chunkLength": {
+													"type": "number"
+												},
+												"alphabet": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"type"
+											]
+										},
+										"autocomplete": {
+											"type": "object",
+											"properties": {
+												"createNew": {
+													"type": "boolean"
+												},
+												"attributes": {
+													"type": "object",
+													"additionalProperties": {
+														"type": "object",
+														"properties": {
+															"questionId": {
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"questionId"
+														]
+													}
+												}
+											},
+											"additionalProperties": false
+										},
+										"entity": {
+											"type": "object",
+											"additionalProperties": {},
+											"properties": {
+												"createNew": {
+													"type": "boolean"
+												},
+												"fields": {
+													"type": "object",
+													"additionalProperties": false
+												},
+												"filter": {
+													"type": "object",
+													"properties": {
+														"type": {
+															"anyOf": [
+																{
+																	"type": "array",
+																	"items": {
+																		"type": "string"
+																	}
+																},
+																{
+																	"type": "string"
+																}
+															]
+														},
+														"grandparentId": {
+															"type": "object",
+															"properties": {
+																"questionId": {
+																	"type": "string"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"questionId"
+															]
+														},
+														"parentId": {
+															"type": "object",
+															"properties": {
+																"questionId": {
+																	"type": "string"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"questionId"
+															]
+														},
+														"attributes": {
+															"type": "object",
+															"additionalProperties": {
+																"type": "object",
+																"properties": {
+																	"questionId": {
+																		"type": "string"
+																	}
+																},
+																"additionalProperties": false,
+																"required": [
+																	"questionId"
+																]
+															}
+														}
+													},
+													"additionalProperties": false
+												}
+											}
+										},
+										"condition": {
+											"type": "object",
+											"properties": {
+												"conditions": {
+													"type": "object",
+													"additionalProperties": {
+														"type": "object",
+														"properties": {
+															"formula": {
+																"type": "string"
+															},
+															"defaultValues": {
+																"type": "object",
+																"additionalProperties": false
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"formula"
+														]
+													}
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"conditions"
+											]
+										},
+										"arithmetic": {
+											"type": "object",
+											"properties": {
+												"formula": {
+													"type": "string"
+												},
+												"defaultValues": {
+													"type": "object",
+													"additionalProperties": false
+												},
+												"answerDisplayText": {
+													"type": "string"
+												},
+												"valueTranslation": {
+													"type": "object",
+													"additionalProperties": false
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"formula"
+											]
+										}
+									},
+									"additionalProperties": false
+								},
+								"componentId": {
+									"type": "string"
+								},
+								"label": {
+									"type": "string"
+								},
+								"options": {
+									"type": "array",
+									"items": {
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"label": {
+												"type": "string"
+											},
+											"value": {
+												"type": "string"
+											},
+											"color": {
+												"type": "string"
+											}
+										},
+										"required": [
+											"value"
+										]
+									}
+								},
+								"screenId": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"componentNumber",
+								"questionId",
+								"text",
+								"type"
+							]
+						}
+					}
+				},
+				"required": [
+					"id",
+					"screenNumber",
+					"surveyScreenComponents"
+				]
+			}
+		},
+		"countryNames": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"required": [
+		"code",
+		"id",
+		"name",
+		"screens"
+	]
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"fields": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"projectId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AutocompleteAnswerSchema = {
 	"type": "object",
 	"properties": {
@@ -59804,6 +60004,423 @@ export const FileUploadAnswerSchema = {
 export const AnswersSchema = {
 	"type": "object",
 	"additionalProperties": false
+} 
+
+export const DatatrakWebSurveyResponseRequestSchema = {
+	"type": "object",
+	"properties": {
+		"userId": {
+			"type": "string"
+		},
+		"surveyId": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		},
+		"questions": {
+			"type": "array",
+			"items": {
+				"additionalProperties": false,
+				"type": "object",
+				"properties": {
+					"answersEnablingFollowUp": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"componentNumber": {
+						"type": "number"
+					},
+					"detailLabel": {
+						"type": "string"
+					},
+					"isFollowUp": {
+						"type": "boolean"
+					},
+					"questionId": {
+						"type": "string"
+					},
+					"text": {
+						"type": "string"
+					},
+					"code": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"enum": [
+							"Arithmetic",
+							"Autocomplete",
+							"Binary",
+							"Checkbox",
+							"CodeGenerator",
+							"Condition",
+							"Date",
+							"DateOfData",
+							"DateTime",
+							"Entity",
+							"File",
+							"FreeText",
+							"Geolocate",
+							"Instruction",
+							"Number",
+							"Photo",
+							"PrimaryEntity",
+							"Radio",
+							"SubmissionDate"
+						],
+						"type": "string"
+					},
+					"dataElementId": {
+						"type": "string"
+					},
+					"detail": {
+						"type": "string"
+					},
+					"hook": {
+						"type": "string"
+					},
+					"optionSetId": {
+						"type": "string"
+					},
+					"visibilityCriteria": {
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"_conjunction": {
+								"type": "string"
+							}
+						}
+					},
+					"validationCriteria": {
+						"type": "object",
+						"properties": {
+							"mandatory": {
+								"type": "boolean"
+							},
+							"min": {
+								"type": "number"
+							},
+							"max": {
+								"type": "number"
+							}
+						},
+						"additionalProperties": false
+					},
+					"config": {
+						"type": "object",
+						"properties": {
+							"codeGenerator": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"mongoid",
+											"shortid"
+										],
+										"type": "string"
+									},
+									"prefix": {
+										"type": "string"
+									},
+									"length": {
+										"type": "number"
+									},
+									"chunkLength": {
+										"type": "number"
+									},
+									"alphabet": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"autocomplete": {
+								"type": "object",
+								"properties": {
+									"createNew": {
+										"type": "boolean"
+									},
+									"attributes": {
+										"type": "object",
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"questionId": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"questionId"
+											]
+										}
+									}
+								},
+								"additionalProperties": false
+							},
+							"entity": {
+								"type": "object",
+								"additionalProperties": {},
+								"properties": {
+									"createNew": {
+										"type": "boolean"
+									},
+									"fields": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"filter": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"anyOf": [
+													{
+														"type": "array",
+														"items": {
+															"type": "string"
+														}
+													},
+													{
+														"type": "string"
+													}
+												]
+											},
+											"grandparentId": {
+												"type": "object",
+												"properties": {
+													"questionId": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"questionId"
+												]
+											},
+											"parentId": {
+												"type": "object",
+												"properties": {
+													"questionId": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"questionId"
+												]
+											},
+											"attributes": {
+												"type": "object",
+												"additionalProperties": {
+													"type": "object",
+													"properties": {
+														"questionId": {
+															"type": "string"
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"questionId"
+													]
+												}
+											}
+										},
+										"additionalProperties": false
+									}
+								}
+							},
+							"condition": {
+								"type": "object",
+								"properties": {
+									"conditions": {
+										"type": "object",
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"formula": {
+													"type": "string"
+												},
+												"defaultValues": {
+													"type": "object",
+													"additionalProperties": false
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"formula"
+											]
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"conditions"
+								]
+							},
+							"arithmetic": {
+								"type": "object",
+								"properties": {
+									"formula": {
+										"type": "string"
+									},
+									"defaultValues": {
+										"type": "object",
+										"additionalProperties": false
+									},
+									"answerDisplayText": {
+										"type": "string"
+									},
+									"valueTranslation": {
+										"type": "object",
+										"additionalProperties": false
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"formula"
+								]
+							}
+						},
+						"additionalProperties": false
+					},
+					"componentId": {
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"options": {
+						"type": "array",
+						"items": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"label": {
+									"type": "string"
+								},
+								"value": {
+									"type": "string"
+								},
+								"color": {
+									"type": "string"
+								}
+							},
+							"required": [
+								"value"
+							]
+						}
+					},
+					"screenId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"componentNumber",
+					"questionId",
+					"text",
+					"type"
+				]
+			}
+		},
+		"answers": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"startTime": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"answers",
+		"countryId",
+		"questions",
+		"startTime",
+		"surveyId",
+		"userId"
+	]
+} 
+
+export const ProjectResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
 } 
 
 export const RecentSurveySchema = {
