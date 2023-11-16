@@ -11,6 +11,7 @@ export { useSurveyResponse } from './useSurveyResponse';
 export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
 export { useEntities } from './useEntities';
 export { useEntity } from './useEntity';
+export { useCountry } from './useCountry';
 export { useAutocompleteOptions } from './useAutocompleteOptions';
 export { useProject } from './useProject';
 export { useCountryAccessList } from './useCountryAccessList';

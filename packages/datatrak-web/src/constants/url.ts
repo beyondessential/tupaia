@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-const SURVEY_URL = '/survey/:surveyCode';
+const SURVEY_URL = '/survey/:countryCode/:surveyCode';
 
 export const ROUTES = {
   HOME: '/',

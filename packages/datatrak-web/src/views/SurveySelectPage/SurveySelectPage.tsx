@@ -102,12 +102,6 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
-
-  const navigateToSurvey = () => {
-    navigate(`/survey/${selectedSurvey?.value}`);
-  };
-  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
-  const user = useCurrentUser();
   const {
     countries,
     selectedCountry,
@@ -115,6 +109,11 @@ export const SurveySelectPage = () => {
     countryHasUpdated,
     isLoading: isLoadingCountries,
   } = useUserCountries();
+  const navigateToSurvey = () => {
+    navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
+  };
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
+  const user = useCurrentUser();
 
   const { data: surveys, isLoading } = useSurveys(selectedCountry?.name, user.projectId);
 
