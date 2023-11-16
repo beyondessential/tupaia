@@ -75,6 +75,7 @@ export const PersonalDetailsSection = () => {
               placeholder="First name"
               autoComplete="given-name"
               defaultValue={user.firstName}
+              inputProps={{ enterKeyHint: 'next' }}
               {...register('firstName', { required: true })}
               required
             />
@@ -89,6 +90,7 @@ export const PersonalDetailsSection = () => {
               placeholder="Last name"
               autoComplete="family-name"
               defaultValue={user.lastName}
+              inputProps={{ enterKeyHint: 'next' }}
               {...register('lastName', { required: true })}
               required
             />
@@ -113,6 +115,7 @@ export const PersonalDetailsSection = () => {
               placeholder="Contact number"
               autoComplete="tel"
               defaultValue={user.contactNumber}
+              inputProps={{ enterKeyHint: 'next' }}
               {...register('contactNumber', { required: true })}
             />
           }
@@ -126,6 +129,7 @@ export const PersonalDetailsSection = () => {
               placeholder="Employer"
               autoComplete="organization"
               defaultValue={user.employer}
+              inputProps={{ enterKeyHint: 'next' }}
               {...register('employer', { required: true })}
               required
             />
@@ -140,6 +144,7 @@ export const PersonalDetailsSection = () => {
               placeholder="Position"
               autoComplete="organization-title"
               defaultValue={user.position}
+              inputProps={{ enterKeyHint: 'done' }}
               {...register('position', { required: true })}
               required
             />
