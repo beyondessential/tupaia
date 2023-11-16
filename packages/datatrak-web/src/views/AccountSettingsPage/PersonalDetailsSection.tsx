@@ -9,7 +9,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
-import { TextField, Tooltip } from '@tupaia/ui-components';
+import { TextField } from '@tupaia/ui-components';
 
 type PersonalDetails = {
   firstName: string;
@@ -23,7 +23,7 @@ function submitChanges(details: PersonalDetails): SubmitHandler<PersonalDetails>
   console.log(details);
 }
 
-const SaveButton = styled(Button)`
+const ButtonWrapper = styled.div`
   grid-column: -2;
 `;
 
@@ -145,9 +145,12 @@ export const PersonalDetailsSection = () => {
             />
           }
         />
-        <SaveButton type="submit" disabled={!isDirty}>
-          Save changes
-        </SaveButton>
+        <ButtonWrapper>
+          {/* Cannot apply grid-column directly to <Button> because tooltip attribute wraps it in a flexbox */}
+          <Button type="submit" disabled={!isDirty} tooltip="Change details to save changes">
+            Save changes
+          </Button>
+        </ButtonWrapper>
       </PersonalDetailsForm>
     </AccountSettingsSection>
   );
