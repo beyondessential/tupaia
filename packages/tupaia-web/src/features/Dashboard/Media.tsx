@@ -12,7 +12,8 @@ export const Media = styled.div<{
   min-height: 12.5rem;
   width: 100%;
   padding-bottom: 25%;
-  background-image: ${({ $backgroundImage }) => `url("${$backgroundImage}")`};
+  background: ${({ $backgroundImage }) =>
+    `linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("${$backgroundImage}")`};
   background-size: cover;
   background-position: center;
 `;
