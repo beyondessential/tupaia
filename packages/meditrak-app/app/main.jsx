@@ -11,16 +11,15 @@ import {createStore, compose} from 'redux';
 import {persistStore, persistCombineReducers, createTransform} from 'redux-persist';
 import {ErrorHandler} from 'redux-persist-error-handler';
 
+import Bugsnag from '@bugsnag/react-native';
 import {Meditrak} from './Meditrak';
 import {api} from './api';
 import {database} from './database';
 import {reducers} from './reducers';
 import {createMiddleware} from './middleware';
 import {NavigationConnectedApp} from './navigation';
-import {analytics, CrashReporter} from './utilities';
+import {analytics} from './utilities';
 import {isBeta, betaBranch} from './version';
-
-const crashReporter = new CrashReporter(analytics);
 
 const composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -29,7 +28,6 @@ const enhancers = composer(
     api,
     database,
     analytics,
-    crashReporter,
   }),
 );
 
@@ -56,10 +54,25 @@ const persistedReducers = persistCombineReducers(
 const store = createStore(persistedReducers, {}, enhancers);
 
 api.injectReduxStore(store);
-crashReporter.injectReduxStore(store);
 
 const persistedStore = persistStore(store);
 // persistedStore.purge(); // Uncomment this to wipe bad redux state during development
+
+Bugsnag.start({
+  onError: event => {
+    try {
+      console.log('onError', event);
+      if (store) {
+        event.addMetadata('reduxState', store.getState());
+        const {authentication = {}} = store.getState();
+        const {currentUserId, emailAddress, name} = authentication;
+        event.setUser(currentUserId, emailAddress, name);
+      }
+    } catch (e) {
+      console.log(`Failed to set context on Bugsnag error: ${e}`);
+    }
+  },
+});
 
 const App = () => (
   <ErrorHandler persistedStore={persistedStore}>

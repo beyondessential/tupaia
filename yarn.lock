@@ -6548,6 +6548,146 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bugsnag/core@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/core@npm:7.19.0"
+  dependencies:
+    "@bugsnag/cuid": ^3.0.0
+    "@bugsnag/safe-json-stringify": ^6.0.0
+    error-stack-parser: ^2.0.3
+    iserror: 0.0.2
+    stack-generator: ^2.0.3
+  checksum: 324e1aa7bd62bd478c4e8459b2f54c71b4fb20d26075363a07be039f0cc65702b5996cee2e7955d0763b6535358376d45ef385cb9e24717441e1925de6aa5753
+  languageName: node
+  linkType: hard
+
+"@bugsnag/cuid@npm:^3.0.0":
+  version: 3.0.2
+  resolution: "@bugsnag/cuid@npm:3.0.2"
+  checksum: cf85d78f0107b25bcfc4396e5c2cf7eb58a28777f07b9c6e976d529417a8284bb69ec715f13917c2b6ad3803e7bb563621b0374c31e09d4c6b3156aba9939955
+  languageName: node
+  linkType: hard
+
+"@bugsnag/delivery-react-native@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/delivery-react-native@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: 4e657bd4d5078a4a7ea29f72d94a3306b834803a208d3c8dd7447d561c5ca490b30b9aa48d57fe4474b5fca9abb1589b7a6135627cea9b17ddb6091925df8ecc
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-console-breadcrumbs@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-console-breadcrumbs@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: b8d20f3330fe98511b36d4b13f853ad58e9b59a897a946d5162a8066f04d5e793947e92206694e2ec59044f64ed89245b868bd9b0348c075e37861deefbefad7
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-network-breadcrumbs@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-network-breadcrumbs@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: fdef76e787472df21177a5e472783488c7691b702837718c93b291887326f0518f1bd5c984bf2f1b18bc46a9e8dc65f160a1b81d7bf6591e1818f595c0ade35c
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-client-sync@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-client-sync@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: 47266e3aa4e42698cfd9b85083e37dc290e23175e28f85fca7467d3ac26932884e903ebda339ee86680ebd6ba706cd19d19666f01b7ef9466266c61095c848fd
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-event-sync@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-event-sync@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: a05f9ddf05e363852af91903f73b513708057b9f70682b00791b9a61070192e1a0a936a9e9b6d62bbae80441f964729d2d710c8e6788614a8a18972aa6d806bc
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-global-error-handler@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-global-error-handler@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: 43ec13c1dfea81e9b847aadbb84e16f9591da400a028e8d10aa937cbd97af0c69603777f875698ec14518388d82aee853be40e1bdddfeb21f2d77d240e603806
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-hermes@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-hermes@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: 546236b58eeb39efbf72e11f7e4cbc0ee3366364b7ed21f9712bde671a4eef45526bf3f57298fabdabcc3207d0d12fc12a0a6901500923ff1018417f2fac5cbe
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-session@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-session@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: 1b72a2adb29e05efb6cc2e495586fe911ba2756df0dc72f00a217c388f2c614ffb89af50f32f913fe5586f18181e8d750dc34077f4523856782113fcac0abec4
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react-native-unhandled-rejection@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react-native-unhandled-rejection@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  checksum: a305d27d68fc3446bc6a7ca586cc67766d710f24ee47deeb3cf3e3d26c3bbe8d23e39b49a1e6f636da8306005153061fe2c0b50441af2381546fe03c289130b5
+  languageName: node
+  linkType: hard
+
+"@bugsnag/plugin-react@npm:^7.19.0":
+  version: 7.19.0
+  resolution: "@bugsnag/plugin-react@npm:7.19.0"
+  peerDependencies:
+    "@bugsnag/core": ^7.0.0
+  peerDependenciesMeta:
+    "@bugsnag/core":
+      optional: true
+  checksum: b245c24df126da9bb413972ade7f1a947ba161ddfb837a980d2be7329ab43feee437d0fb7390a9eaa0cd251f5a41f38c53878bb5601d891ecfe511f5e3671251
+  languageName: node
+  linkType: hard
+
+"@bugsnag/react-native@npm:^7.21.0":
+  version: 7.21.0
+  resolution: "@bugsnag/react-native@npm:7.21.0"
+  dependencies:
+    "@bugsnag/core": ^7.19.0
+    "@bugsnag/delivery-react-native": ^7.19.0
+    "@bugsnag/plugin-console-breadcrumbs": ^7.19.0
+    "@bugsnag/plugin-network-breadcrumbs": ^7.19.0
+    "@bugsnag/plugin-react": ^7.19.0
+    "@bugsnag/plugin-react-native-client-sync": ^7.19.0
+    "@bugsnag/plugin-react-native-event-sync": ^7.19.0
+    "@bugsnag/plugin-react-native-global-error-handler": ^7.19.0
+    "@bugsnag/plugin-react-native-hermes": ^7.19.0
+    "@bugsnag/plugin-react-native-session": ^7.19.0
+    "@bugsnag/plugin-react-native-unhandled-rejection": ^7.19.0
+    iserror: ^0.0.2
+  checksum: fe9c6e2292647be21cbec88952b119e239f2d223543c7686c17db07432294c82f733efd6a40de2036051d37220fa01caf06630f3eab04e20fe7190cc6760b1e2
+  languageName: node
+  linkType: hard
+
+"@bugsnag/safe-json-stringify@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@bugsnag/safe-json-stringify@npm:6.0.0"
+  checksum: 74f5d96af5f2f14be038ff939093329cdc6b3cc94eca6ce5ecd9e66a6d30819bcfd22f99c0ff229de56c0ef601cbca292f86ef5c9940ed2692bc9e005ac1f261
+  languageName: node
+  linkType: hard
+
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.3
   resolution: "@cnakazawa/watch@npm:1.0.3"
@@ -12381,6 +12521,7 @@ __metadata:
     "@babel/core": ^7.20.0
     "@babel/preset-env": ^7.20.0
     "@babel/runtime": ^7.20.0
+    "@bugsnag/react-native": ^7.21.0
     "@react-native-async-storage/async-storage": ^1.19.3
     "@react-native-camera-roll/camera-roll": ^6.0.0
     "@react-native-community/datetimepicker": ^7.6.1
@@ -22816,6 +22957,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"error-stack-parser@npm:^2.0.3":
+  version: 2.1.4
+  resolution: "error-stack-parser@npm:2.1.4"
+  dependencies:
+    stackframe: ^1.3.4
+  checksum: 3b916d2d14c6682f287c8bfa28e14672f47eafe832701080e420e7cdbaebb2c50293868256a95706ac2330fe078cf5664713158b49bc30d7a5f2ac229ded0e18
+  languageName: node
+  linkType: hard
+
 "error-stack-parser@npm:^2.0.6":
   version: 2.0.6
   resolution: "error-stack-parser@npm:2.0.6"
@@ -29211,6 +29361,13 @@ __metadata:
   dependencies:
     punycode: 2.x.x
   checksum: 77adfbe8d6b3f9970c37516e008fd1c2e33be186f4cd09b31daf37a9fa8f82adc0dd8ce4bd12818f0c0e63018f9ec0c22490793d704ed635770c98a9d48b21c4
+  languageName: node
+  linkType: hard
+
+"iserror@npm:0.0.2, iserror@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "iserror@npm:0.0.2"
+  checksum: e22080b3a650289303039ad804875bdd8a41af467c5cc8f844529d8bc2b2613f449214aa04cc9c541c219f501e3c6943528dc5ed18ca9fc73e00ee45723f7106
   languageName: node
   linkType: hard
 
@@ -43872,6 +44029,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"stack-generator@npm:^2.0.3":
+  version: 2.0.10
+  resolution: "stack-generator@npm:2.0.10"
+  dependencies:
+    stackframe: ^1.3.4
+  checksum: 4fc3978a934424218a0aa9f398034e1f78153d5ff4f4ff9c62478c672debb47dd58de05b09fc3900530cbb526d72c93a6e6c9353bacc698e3b1c00ca3dda0c47
+  languageName: node
+  linkType: hard
+
 "stack-trace@npm:0.0.x":
   version: 0.0.10
   resolution: "stack-trace@npm:0.0.10"
@@ -43908,6 +44074,13 @@ __metadata:
   version: 1.1.1
   resolution: "stackframe@npm:1.1.1"
   checksum: 6031b30cc070972be6b12f4f4109e62150912ddbc8d6d2bc1707387bfa74b69ec298aa1211b9bf8dc4cf4f5245a5cdb72dda4b7c0467ea0cce2d10e4f10ffe3a
+  languageName: node
+  linkType: hard
+
+"stackframe@npm:^1.3.4":
+  version: 1.3.4
+  resolution: "stackframe@npm:1.3.4"
+  checksum: bae1596873595c4610993fa84f86a3387d67586401c1816ea048c0196800c0646c4d2da98c2ee80557fd9eff05877efe33b91ba6cd052658ed96ddc85d19067d
   languageName: node
   linkType: hard
 

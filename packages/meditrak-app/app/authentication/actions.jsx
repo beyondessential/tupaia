@@ -95,12 +95,10 @@ export const requestLogin = () => ({
   type: LOGIN_REQUEST,
 });
 
-export const receiveLogin = (emailAddress, user, accessPolicy, installId) => async (
-  dispatch,
-  getState,
-  { database, crashReporter },
-) => {
-  dispatch(resetToWelcomeScreen());
+export const receiveLogin =
+  (emailAddress, user, accessPolicy, installId) =>
+  async (dispatch, getState, {database}) => {
+    dispatch(resetToWelcomeScreen());
 
   const syncWasSuccessful = await database.synchronise(dispatch);
   const existingLoginDetails = database.getCurrentLoginDetails();
@@ -121,10 +119,8 @@ export const receiveLogin = (emailAddress, user, accessPolicy, installId) => asy
     name: user.name,
   });
 
-  crashReporter.setUser(installId, user.name, emailAddress);
-
-  dispatch(resetToHome());
-};
+    dispatch(resetToHome());
+  };
 
 export const receiveUpdatedAccessPolicy = userDetails => (dispatch, getState, { database }) =>
   database.updateUser(userDetails);
@@ -134,15 +130,16 @@ export const receiveLoginError = errorMessage => ({
   errorMessage,
 });
 
-export const logout = () => (dispatch, getState, { analytics, crashReporter }) => {
-  dispatch(resetToLogin());
-  dispatch({
-    type: LOGOUT,
-  });
+export const logout =
+  () =>
+  (dispatch, getState, {analytics}) => {
+    dispatch(resetToLogin());
+    dispatch({
+      type: LOGOUT,
+    });
 
-  crashReporter.clearUser();
-  analytics.trackEvent('Log out');
-};
+    analytics.trackEvent('Log out');
+  };
 
 export const logoutWithError = errorMessage => (dispatch, getState, { database }) => {
   database.clearCurrentUserSession();

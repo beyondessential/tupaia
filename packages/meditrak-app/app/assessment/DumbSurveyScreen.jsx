@@ -6,7 +6,7 @@
 import React from 'react';
 import {ActivityIndicator, Animated, StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
-// import { Client as BugsnagClient } from 'bugsnag-react-native';
+import Bugsnag from '@bugsnag/react-native';
 
 import {database} from '../database';
 import {QuestionScreen} from './QuestionScreen';
@@ -25,8 +25,6 @@ import {DEFAULT_PADDING, THEME_COLOR_ONE, THEME_FONT_SIZE_ONE} from '../globalSt
 import {HeaderLeftButton} from '../navigation/HeaderLeftButton';
 
 const LENGTH_OF_TRANSITION = 300;
-
-// const bugsnag = new BugsnagClient();
 
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({navigation}) => ({
@@ -90,7 +88,7 @@ export class DumbSurveyScreen extends React.Component {
    */
   componentDidCatch(error, info) {
     error.message = `Survey boundary error: ${error.message}`;
-    // bugsnag.notify(error);
+    Bugsnag.notify(error);
   }
 
   onToggleToc() {

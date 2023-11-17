@@ -11,6 +11,7 @@
     "reset-cache": "echo Run me and exit to reset cache && react-native start --reset-cache"
   },
   "dependencies": {
+    "@bugsnag/react-native": "^7.21.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-camera-roll/camera-roll": "^6.0.0",
     "@react-native-community/datetimepicker": "^7.6.1",
