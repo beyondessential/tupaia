@@ -11,3 +11,5 @@ export { DashboardRelationModel } from './DashboardRelation';
 export { DashboardModel } from './Dashboard';
 export { EntityModel } from './Entity';
 export { UserModel } from './User';
+export { DashboardMailingListModel } from './DashboardMailingList';
+export { ProjectModel } from './Project';

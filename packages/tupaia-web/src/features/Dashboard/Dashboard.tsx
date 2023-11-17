@@ -121,6 +121,7 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+  const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
   
 
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -193,7 +194,7 @@ export const Dashboard = () => {
             <TitleBar>
               <Title variant="h3">{title}</Title>
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen}/>
+            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} setSubscribeModalOpen={setSubscribeModalOpen}/>
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
@@ -207,12 +208,12 @@ export const Dashboard = () => {
           isOpen={exportModalOpen}
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
-      />
-      <SubscribeModal 
-        isOpen={true}
-        onClose={() => setExportModalOpen(false)}
-        activeDashboard={activeDashboard}
-      />
+        />
+        <SubscribeModal 
+          isOpen={subscribeModalOpen}
+          onClose={() => setSubscribeModalOpen(false)}
+          activeDashboard={activeDashboard}
+        />
       </Panel>
     </ErrorBoundary>
   );

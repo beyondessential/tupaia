@@ -13,7 +13,7 @@ export const Subtitle = styled(Typography)`
 `;
 
 export const ModalParagraph = styled(Typography)`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   line-height: 1.3;
   margin-top: 1rem;
   margin-bottom: 2rem;

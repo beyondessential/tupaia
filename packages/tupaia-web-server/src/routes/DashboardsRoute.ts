@@ -5,7 +5,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
+import {
+  Entity,
+  DashboardItem,
+  Dashboard,
+  TupaiaWebDashboardsRequest,
+  DashboardMailingList,
+  DashboardMailingListEntry,
+} from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
 import { camelcaseKeys } from '@tupaia/tsutils';
 
@@ -61,7 +68,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     );
   };
   public async buildResponse() {
-    const { params, ctx, accessPolicy } = this.req;
+    const { params, ctx, accessPolicy, session } = this.req;
     const { projectCode, entityCode } = params;
 
     // We're including the root entity in this request, so we don't need to double up fetching it
@@ -140,7 +147,48 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardsWithItems = dashboards.map((rawDashboard: Dashboard) => {
+    const dashboardMailingLists = await ctx.services.central.fetchResources(
+      'dashboardMailingLists',
+      {
+        filter: {
+          dashboard_id: {
+            comparator: 'IN',
+            comparisonValue: dashboards.map((d: Dashboard) => d.id),
+          },
+        },
+        // Override the default limit of 100 records
+        pageSize: DEFAULT_PAGE_SIZE,
+      },
+    );
+
+    const dashboardMailingListEntities = await this.req.models.entity.all({
+      id: dashboardMailingLists.map((dml: DashboardMailingList) => dml.entity_id),
+    });
+
+    const dashboardMailingListEntries: DashboardMailingListEntry[] = await ctx.services.central.fetchResources(
+      'dashboardMailingListEntries',
+      {
+        filter: {
+          dashboard_mailing_list_id: {
+            comparator: 'IN',
+            comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id),
+          },
+        },
+        // Override the default limit of 100 records
+        pageSize: DEFAULT_PAGE_SIZE,
+      },
+    );
+
+    const mailingLists = dashboardMailingLists.map((list: DashboardMailingList) => ({
+      dashboardId: list.dashboard_id,
+      entityCode: dashboardMailingListEntities.find(entity => entity.id === list.entity_id).code,
+      isSubscribed: !!dashboardMailingListEntries.find(
+        (entry: DashboardMailingListEntry) =>
+          entry.dashboard_mailing_list_id === list.id && entry.email === session.email,
+      ),
+    }));
+
+    const dashboardsWithMetadata = dashboards.map((rawDashboard: Dashboard) => {
       // @ts-ignore model causes a circular loop in camelcase
       // but we can't strip it because typescript doesn't know about it
       const { model, ...dashboard } = rawDashboard;
@@ -155,10 +203,19 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           .map(({ item }: { item: DashboardItem }) => ({
             ...item,
           })),
+        mailingLists: mailingLists
+          .filter(
+            (list: { dashboardId: string; entityCode: string; isSubscribed: boolean }) =>
+              list.dashboardId === dashboard.id,
+          )
+          .map(({ entityCode, isSubscribed }: { entityCode: string; isSubscribed: boolean }) => ({
+            entityCode,
+            isSubscribed,
+          })),
       };
     });
 
-    const response = dashboardsWithItems.filter(
+    const response = dashboardsWithMetadata.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 

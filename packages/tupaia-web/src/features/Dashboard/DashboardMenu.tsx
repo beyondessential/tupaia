@@ -13,6 +13,8 @@ import styled from 'styled-components';
 import { Dashboard } from '../../types';
 import { TOP_BAR_HEIGHT } from '../../constants';
 import { useDashboards } from '../../api/queries';
+import {useSubscribe} from '../../api/mutations'
+
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -76,33 +78,31 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
 
 interface ActionsMenuProps {
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubscribeModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ActionsMenu = ({ setExportModalOpen}: ActionsMenuProps) => {
+const ActionsMenu = ({ setExportModalOpen, setSubscribeModalOpen }: ActionsMenuProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
+ 
   const {
     activeDashboard,
   } = useDashboards(projectCode, entityCode, dashboardName);
-  
-  const handleSubscribe = (isUserSubscribed) => {
-    // TODO: Add subscribe and unsubscribe sequence
-    // Add react query to POST request for add or remove subscription
-    // Optional - add loading indicator to option.
-    console.log(isUserSubscribed)
-  } 
-  const { mailingLists } = activeDashboard;
-  const mailingList = mailingLists?.find(({mailingListEntityCode}) => {
-    mailingListEntityCode === entityCode
-    })
+  const { data: subscriptionRecord } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
 
+  const { mailingLists } = activeDashboard;
+  const mailingList = mailingLists?.find(({ entityCode: mailingListEntityCode }) =>
+    mailingListEntityCode === entityCode)
+  console.log('mailingList',mailingList)
   const exportOption: ActionsMenuOptionType = { label: 'Export', action: () => setExportModalOpen(true), ActionIcon: () => <ExportIcon fill="white"/>, toolTipTitle: 'Export dashboard' }
   const menuOptions: ActionsMenuOptionType[] = [exportOption]
+
+  console.log('subscription data',subscriptionRecord)
   
   if(mailingList) {
     const { isSubscribed } = mailingList;
     const subscribeOption = {
       label: isSubscribed ? 'Subscribed' : 'Subscribe', 
-      action: () => handleSubscribe(isSubscribed), 
+      action: () => setSubscribeModalOpen(true), 
       ActionIcon: isSubscribed ? CheckCircleIcon : AddCircleOutlineIcon, 
       toolTipTitle: isSubscribed ? 'Remove yourself from email updates' : 'Subscribe to receive dashboard email updates', 
       color: isSubscribed ? 'primary' : undefined,
@@ -124,10 +124,12 @@ export const DashboardMenu = ({
   activeDashboard,
   dashboards,
   setExportModalOpen,
+  setSubscribeModalOpen
 }: {
   activeDashboard?: Dashboard;
   dashboards: Dashboard[];
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubscribeModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -150,7 +152,7 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu setExportModalOpen={setExportModalOpen}/>
+          <ActionsMenu setExportModalOpen={setExportModalOpen} setSubscribeModalOpen={setSubscribeModalOpen}/>
         </Box>
       )}
       <StyledMenu

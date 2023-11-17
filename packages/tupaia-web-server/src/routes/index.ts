@@ -31,3 +31,4 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
+export { SubscribeRoute, SubscribeRequest } from './SubscribeRoute';

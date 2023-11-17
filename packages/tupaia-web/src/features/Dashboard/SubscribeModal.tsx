@@ -3,22 +3,23 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useUser } from '../../api/queries';
 import { Dashboard } from '../../types';
 import { Modal } from '../../components';
 import { Form } from '../../components';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { TextField } from '../../components';
 import { Title, ModalParagraph } from '../../components';
 import { Button, Typography } from '@material-ui/core';
 import { FORM_FIELD_VALIDATION } from '../../constants';
-import { MODAL_SUBSCRIBE_TEXT, MODAL_UNSUBSCRIBE_TEXT, MODAL_SUBSCRIBE_TITLE, MODAL_UNSUBSCRIBE_TITLE } from './constants';
+import { MODAL_SUBSCRIBE_TEXT, MODAL_SUBSCRIBE_TITLE } from './constants';
+import { useSubscribe } from '../../api/mutations';
 
 const Wrapper = styled.div`
-  width: 30rem;
+  width: 45rem;
   max-width: 100%;
   padding: 2.5rem 1.875rem 0rem 1.875rem;
   display: flex;
@@ -65,49 +66,53 @@ interface SubscribeModalProps {
 
 
 export const SubscribeModal = ({ isOpen, onClose, activeDashboard }: SubscribeModalProps) => {
-  const { entityCode } = useParams();
-  const { data: user } = useUser();
+  const { entityCode, projectCode } = useParams();
+  const { data: user, isLoggedIn } = useUser();
+  const [emailInput, setEmailInput] = useState<string>('')
   console.log('activeDashboard',activeDashboard)
 
-  
+  useEffect(() => {
+    if(isLoggedIn && user.email) {
+      setEmailInput(user.email)
+    }
+  }, [user])
   const formContext = useForm({
     mode: 'onChange',
-    defaultValues: {
-     email: user?.email 
-    },
   });
-  console.log('user',user)
-  const handleSubscribe = () => {
-    console.log('handling subscribing')
-  }
 
-  const verifyMailingList = activeDashboard => {
+
+  const getHasMailingList = activeDashboard => {
+    if(!activeDashboard){
+      return false
+    }
     const { mailingLists } = activeDashboard;
     if(!mailingLists) {
       return false
     }
-    return true
+    const mailingList = mailingLists.find(({entityCode: mailingListEntityCode}) => mailingListEntityCode === entityCode)
+    return !!mailingList
+  }
+  const hasMailingList = getHasMailingList(activeDashboard)
+
+  const handleChange = newValue => {
+    if(!isLoggedIn) {
+      setEmailInput(newValue)
+    }
   }
 
-  const isSubscribed = (activeDashboard) => {
-    const { mailingLists } = activeDashboard;
-    const { isSubscribed } = mailingLists?.find(({mailingListEntityCode}) => {
-      mailingListEntityCode === entityCode
-    })
-    return isSubscribed
-  }
-
+  console.log('active dashboard',activeDashboard)
+  const { mutateAsync: subscribe, isLoading } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Wrapper>
-            {activeDashboard && verifyMailingList(activeDashboard)? 
+            {activeDashboard && hasMailingList? 
               (<Container>
-              <Form formContext={formContext}>
+              <Form formContext={formContext} onSubmit={subscribe as SubmitHandler<any>}>
                 <Title align="left" variant="h5">
-                  {isSubscribed(activeDashboard) ? MODAL_UNSUBSCRIBE_TITLE : MODAL_SUBSCRIBE_TITLE}
+                  {MODAL_SUBSCRIBE_TITLE}
                 </Title>
                 <ModalParagraph align="left" gutterBottom>
-                  {isSubscribed(activeDashboard) ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
+                  {MODAL_SUBSCRIBE_TEXT}
                 </ModalParagraph >
                 <TextField 
                   name="email" 
@@ -115,18 +120,17 @@ export const SubscribeModal = ({ isOpen, onClose, activeDashboard }: SubscribeMo
                   required
                   type="email"
                   options={{...FORM_FIELD_VALIDATION.EMAIL}}
-                  value="dian@horribleshopping.com"
-                  disabled
+                  onChange={(event) => handleChange(event.target.value)}
+                  value={emailInput}
                 />
                 <ButtonGroup>
-                  <Button variant="outlined" color="default" onClick={onClose} disabled={false}>
+                  <Button variant="outlined" color="default" onClick={onClose}>
                     Cancel
                   </Button>
                   <SubscribeButton
+                    type="submit"
                     variant="contained"
                     color="primary"
-                    onClick={handleSubscribe}
-                    disabled={false}
                   >
                     Subscribe
                   </SubscribeButton>
