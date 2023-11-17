@@ -19,6 +19,8 @@
     "@react-native-community/netinfo": "^9.4.1",
     "@tupaia/access-policy": "workspace:^",
     "@tupaia/expression-parser": "workspace:^",
+    "appcenter": "^5.0.0",
+    "appcenter-analytics": "^5.0.0",
     "bson-objectid": "^2.0.4",
     "moment": "^2.29.4",
     "nanoid": "^2.0.3",

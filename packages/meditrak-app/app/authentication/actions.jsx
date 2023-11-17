@@ -5,7 +5,7 @@
 
 import { Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-// import AppCenter from 'appcenter';
+import * as AppCenter from 'appcenter';
 
 import { saltAndHash } from './saltAndHash';
 import {
@@ -42,15 +42,14 @@ export const login =
   async (dispatch, getState, {api, database, analytics}) => {
     dispatch(requestLogin());
     analytics.trackEvent('Request login');
-    // const installId = await AppCenter.getInstallId();
-    const installId = null;
+    const installId = await AppCenter.getInstallId();
 
     const loginCredentials = {
       emailAddress,
       password,
       deviceName: await DeviceInfo.getDeviceName(),
       devicePlatform: Platform.OS,
-      installId: null, // installId,
+      installId,
     };
     let response;
     try {

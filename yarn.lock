@@ -12534,6 +12534,8 @@ __metadata:
     "@tupaia/expression-parser": "workspace:^"
     "@types/react": ^18.0.24
     "@types/react-test-renderer": ^18.0.0
+    appcenter: ^5.0.0
+    appcenter-analytics: ^5.0.0
     babel-jest: ^29.2.1
     bson-objectid: ^2.0.4
     eslint: ^8.19.0
@@ -15290,7 +15292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:^0.8.3":
+"@xmldom/xmldom@npm:^0.8.3, @xmldom/xmldom@npm:^0.8.8":
   version: 0.8.10
   resolution: "@xmldom/xmldom@npm:0.8.10"
   checksum: 4c136aec31fb3b49aaa53b6fcbfe524d02a1dc0d8e17ee35bd3bf35e9ce1344560481cd1efd086ad1a4821541482528672306d5e37cdbd187f33d7fadd3e2cf0
@@ -16057,6 +16059,38 @@ __metadata:
   version: 1.0.2
   resolution: "app-root-dir@npm:1.0.2"
   checksum: d4b1653fc60b6465b982bf5a88b12051ed2d807d70609386a809306e1c636496f53522d61fa30f9f98c71aaae34f34e1651889cf17d81a44e3dafd2859d495ad
+  languageName: node
+  linkType: hard
+
+"appcenter-analytics@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "appcenter-analytics@npm:5.0.0"
+  dependencies:
+    appcenter: 5.0.0
+  checksum: d48805059c5afb4ed0401140e0aaaa7a9222491cf86c9ec501706caec8ae57aed7b1d57599a77ba70fccb18c4545a988ff7e9bf459342c50384f23b918d3d8af
+  languageName: node
+  linkType: hard
+
+"appcenter-link-scripts@npm:5.0.0":
+  version: 5.0.0
+  resolution: "appcenter-link-scripts@npm:5.0.0"
+  dependencies:
+    debug: 4.1.1
+    glob: 5.0.15
+    mkdirp: 0.5.3
+    plist: ^3.0.2
+    which: 1.2.11
+    xcode: 2.0.0
+  checksum: 8361c5a72c3c3315a4e35052cef3c287433237ae55c801defb3d164951609ac5b2f38c4b2e3dcd090fd1f81a1ee24d930023a0af1a9942b87edfa268fb7210d5
+  languageName: node
+  linkType: hard
+
+"appcenter@npm:5.0.0, appcenter@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "appcenter@npm:5.0.0"
+  dependencies:
+    appcenter-link-scripts: 5.0.0
+  checksum: baf34d17b4540e57571ab046c5be3d816c499e0f1bbf4d7b63337a2215094c789e090c4b327ed9dbd6ca36792ca65ba299a6f280d4fd4958e142d157a0d4432b
   languageName: node
   linkType: hard
 
@@ -17652,7 +17686,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-js@npm:^1.3.1":
+"base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
   checksum: 669632eb3745404c2f822a18fc3a0122d2f9a7a13f7fb8b5823ee19d1d2ff9ee5b52c53367176ea4ad093c332fd5ab4bd0ebae5a8e27917a4105a4cfc86b1005
@@ -17748,6 +17782,13 @@ __metadata:
     hoopy: ^0.1.4
     tryer: ^1.0.1
   checksum: 0ca673234170eb3dcf00fb1d867ba274729ab05779dd19b35628c49da7adc32472b5f0bca0554ffdca15b094f9b36f16f2a8992ba8884ebd1d351d7f27abee7b
+  languageName: node
+  linkType: hard
+
+"big-integer@npm:1.6.x":
+  version: 1.6.51
+  resolution: "big-integer@npm:1.6.51"
+  checksum: 3d444173d1b2e20747e2c175568bedeebd8315b0637ea95d75fd27830d3b8e8ba36c6af40374f36bdaea7b5de376dcada1b07587cb2a79a928fccdb6e6e3c518
   languageName: node
   linkType: hard
 
@@ -17913,6 +17954,24 @@ __metadata:
     type-fest: ^0.8.1
     widest-line: ^3.1.0
   checksum: ce2b565a2e44b33d11336155675cf4f7f0e13dbf7412928845aefd6a2cf65e0da2dbb0a2cb198b7620a2ae714416a2eb710926b780f15d19f6250a19633b29af
+  languageName: node
+  linkType: hard
+
+"bplist-creator@npm:0.1.1":
+  version: 0.1.1
+  resolution: "bplist-creator@npm:0.1.1"
+  dependencies:
+    stream-buffers: 2.2.x
+  checksum: b0d40d1d1623f1afdbb575cfc8075d742d2c4f0eb458574be809e3857752d1042a39553b3943d2d7f505dde92bcd43e1d7bdac61c9cd44475d696deb79f897ce
+  languageName: node
+  linkType: hard
+
+"bplist-parser@npm:0.3.2":
+  version: 0.3.2
+  resolution: "bplist-parser@npm:0.3.2"
+  dependencies:
+    big-integer: 1.6.x
+  checksum: fad0f6eb155a9b636b4096a1725ce972a0386490d7d38df7be11a3a5645372446b7c44aacbc6626d24d2c17d8b837765361520ebf2960aeffcaf56765811620e
   languageName: node
   linkType: hard
 
@@ -26336,6 +26395,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:5.0.15":
+  version: 5.0.15
+  resolution: "glob@npm:5.0.15"
+  dependencies:
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: 2 || 3
+    once: ^1.3.0
+    path-is-absolute: ^1.0.0
+  checksum: f9742448303460672607e569457f1b57e486a79a985e269b69465834d2075b243378225f65dc54c09fcd4b75e4fb34442aec88f33f8c65fa4abccc8ee2dc2f5d
+  languageName: node
+  linkType: hard
+
 "glob@npm:7.1.6, glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.1, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6":
   version: 7.1.6
   resolution: "glob@npm:7.1.6"
@@ -29368,6 +29440,13 @@ __metadata:
   version: 0.0.2
   resolution: "iserror@npm:0.0.2"
   checksum: e22080b3a650289303039ad804875bdd8a41af467c5cc8f844529d8bc2b2613f449214aa04cc9c541c219f501e3c6943528dc5ed18ca9fc73e00ee45723f7106
+  languageName: node
+  linkType: hard
+
+"isexe@npm:^1.1.1":
+  version: 1.1.2
+  resolution: "isexe@npm:1.1.2"
+  checksum: a35523bc88b8c14c8934a0a411cff0bbf193c64a3049d75ca76c1508f7323a6ef933fa2e96437241713ec16d65c5368a5de99bd3320c0fbfb0ce2c63c8418f84
   languageName: node
   linkType: hard
 
@@ -34736,6 +34815,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mkdirp@npm:0.5.3":
+  version: 0.5.3
+  resolution: "mkdirp@npm:0.5.3"
+  dependencies:
+    minimist: ^1.2.5
+  bin:
+    mkdirp: bin/cmd.js
+  checksum: 7c63182c26bd48d2fa3e65f0c9d2b146d62ae5843f7d04af37e4530ff4c7a116b2649d0ce75a51efc54a514a6b7251368e471cecb1cc6a0e316a1ef119a3374f
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:0.x.x, mkdirp@npm:~0.5.0, mkdirp@npm:~0.5.1":
   version: 0.5.1
   resolution: "mkdirp@npm:0.5.1"
@@ -37615,6 +37705,17 @@ __metadata:
   version: 0.4.1
   resolution: "pkginfo@npm:0.4.1"
   checksum: 0f13694f3682345647b7cb887fb6fe258df51b635f252324cd75eeb8181b4381cb8b9d91dc2d869849e857192b403bea65038d2f7c05b524eeae69ece5048209
+  languageName: node
+  linkType: hard
+
+"plist@npm:^3.0.2, plist@npm:^3.0.5":
+  version: 3.1.0
+  resolution: "plist@npm:3.1.0"
+  dependencies:
+    "@xmldom/xmldom": ^0.8.8
+    base64-js: ^1.5.1
+    xmlbuilder: ^15.1.1
+  checksum: c8ea013da8646d4c50dff82f9be39488054621cc229957621bb00add42b5d4ce3657cf58d4b10c50f7dea1a81118f825838f838baeb4e6f17fab453ecf91d424
   languageName: node
   linkType: hard
 
@@ -43379,6 +43480,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"simple-plist@npm:^1.0.0":
+  version: 1.4.0
+  resolution: "simple-plist@npm:1.4.0"
+  dependencies:
+    bplist-creator: 0.1.1
+    bplist-parser: 0.3.2
+    plist: ^3.0.5
+  checksum: fa8086f6b781c289f1abad21306481dda4af6373b32a5d998a70e53c2b7218a1d21ebb5ae3e736baae704c21d311d3d39d01d0e6a2387eda01b4020b9ebd909e
+  languageName: node
+  linkType: hard
+
 "simple-swizzle@npm:^0.2.2":
   version: 0.2.2
   resolution: "simple-swizzle@npm:0.2.2"
@@ -44192,6 +44304,13 @@ __metadata:
     inherits: ~2.0.1
     readable-stream: ^2.0.2
   checksum: 8de7bcab5582e9a931ae1a4768be7efe8fa4b0b95fd368d16d8cf3e494b897d6b0a7238626de5d71686e53bddf417fd59d106cfa3af0ec055f61a8d1f8fc77b3
+  languageName: node
+  linkType: hard
+
+"stream-buffers@npm:2.2.x":
+  version: 2.2.0
+  resolution: "stream-buffers@npm:2.2.0"
+  checksum: 4587d9e8f050d689fb38b4295e73408401b16de8edecc12026c6f4ae92956705ecfd995ae3845d7fa3ebf19502d5754df9143d91447fd881d86e518f43882c1c
   languageName: node
   linkType: hard
 
@@ -48032,6 +48151,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"which@npm:1.2.11":
+  version: 1.2.11
+  resolution: "which@npm:1.2.11"
+  dependencies:
+    isexe: ^1.1.1
+  bin:
+    which: ./bin/which
+  checksum: 90ef6058ae47569dd2317b5e906e5e7bfb17dde6b350225337ba001b48fed9d7155e70a5e8e7825af2a4770e9421c5e18b8ace922ac28e0f1dcc0c1b6b13bea9
+  languageName: node
+  linkType: hard
+
 "which@npm:2.0.2, which@npm:^2.0.1, which@npm:^2.0.2":
   version: 2.0.2
   resolution: "which@npm:2.0.2"
@@ -48579,6 +48709,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xcode@npm:2.0.0":
+  version: 2.0.0
+  resolution: "xcode@npm:2.0.0"
+  dependencies:
+    simple-plist: ^1.0.0
+    uuid: ^3.3.2
+  checksum: 08684e579f77f8706718993253c5300f4d8a10941106c3ff023fbbcbb07095a45248222684a66633f97cf996b863e95fb584d993765eb0c469fa13c63a695c8c
+  languageName: node
+  linkType: hard
+
 "xdg-basedir@npm:^4.0.0":
   version: 4.0.0
   resolution: "xdg-basedir@npm:4.0.0"
@@ -48637,6 +48777,13 @@ __metadata:
     sax: ">=0.6.0"
     xmlbuilder: ~9.0.1
   checksum: ca8b2fee430d450a18947786bfd7cd1a353ee00fc6fd550acbc8a8e65f1b4df5e9786fcb2990c1a5514ecd554d445fb74e1d716b3a4fcfffc10554aeb5db482b
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "xmlbuilder@npm:15.1.1"
+  checksum: 14f7302402e28d1f32823583d121594a9dca36408d40320b33f598bd589ca5163a352d076489c9c64d2dc1da19a790926a07bf4191275330d4de2b0d85bb1843
   languageName: node
   linkType: hard
 
