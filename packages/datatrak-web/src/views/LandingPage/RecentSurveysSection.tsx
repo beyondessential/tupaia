@@ -47,13 +47,13 @@ export const RecentSurveysSection = () => {
   const navigate = useNavigate();
   const { mutateAsync: editUser } = useEditUser();
 
-  const handleSelectSurvey = async (surveyCode: string, countryId: string) => {
+  const handleSelectSurvey = async (surveyCode: string, countryId: string, countryCode: string) => {
     // set the selected country in the user's profile
     await editUser({
       countryId,
     });
     // then navigate to the survey
-    navigate(`survey/${surveyCode}/1`);
+    navigate(`survey/${countryCode}/${surveyCode}/1`);
   };
   return (
     <RecentSurveys>
@@ -62,7 +62,7 @@ export const RecentSurveysSection = () => {
       {isSuccess && (
         <ScrollBody>
           {recentSurveys?.length ? (
-            recentSurveys.map(({ surveyName, surveyCode, countryName, countryId }) => (
+            recentSurveys.map(({ surveyName, surveyCode, countryName, countryId, countryCode }) => (
               <Tile
                 key={`${surveyCode}-${countryName}`}
                 title={surveyName}
@@ -75,7 +75,7 @@ export const RecentSurveysSection = () => {
                   </>
                 }
                 Icon={SurveyIcon}
-                onClick={() => handleSelectSurvey(surveyCode, countryId)}
+                onClick={() => handleSelectSurvey(surveyCode, countryId, countryCode)}
               />
             ))
           ) : (
