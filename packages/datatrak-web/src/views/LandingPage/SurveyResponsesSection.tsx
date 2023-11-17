@@ -70,7 +70,7 @@ export const SurveyResponsesSection = () => {
                 surveyCode,
                 dataTime,
                 entityName,
-                countryId, // Todo: fix this
+                countryId,
                 countryName,
                 countryCode,
               }) => (
