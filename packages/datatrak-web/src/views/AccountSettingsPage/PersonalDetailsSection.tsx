@@ -10,18 +10,15 @@ import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
 import { TextField } from '@tupaia/ui-components';
+import { useEditUser } from '../../api/mutations';
 
 type PersonalDetails = {
   firstName: string;
   lastName: string;
-  contactNumber?: string;
+  mobileNumber?: string;
   employer: string;
   position: string;
 };
-
-function submitChanges(details: PersonalDetails): SubmitHandler<PersonalDetails> {
-  console.log(details);
-}
 
 const ButtonWrapper = styled.div`
   grid-column: -2;
@@ -47,7 +44,9 @@ const PersonalDetailsForm = styled.form`
 `;
 
 export const PersonalDetailsSection = () => {
+  const { mutate: updateUser } = useEditUser();
   const user = useCurrentUser();
+
   const {
     control,
     formState: { isDirty },
@@ -57,7 +56,7 @@ export const PersonalDetailsSection = () => {
     defaultValues: {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
-      contactNumber: user.contactNumber ?? '',
+      mobileNumber: user.mobileNumber ?? '',
       employer: user.employer ?? '',
       position: user.position ?? '',
     },
@@ -65,7 +64,7 @@ export const PersonalDetailsSection = () => {
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
-      <PersonalDetailsForm onSubmit={handleSubmit(submitChanges)}>
+      <PersonalDetailsForm onSubmit={handleSubmit(updateUser)}>
         <Controller
           control={control}
           name="firstName"
@@ -108,15 +107,15 @@ export const PersonalDetailsSection = () => {
         />
         <Controller
           control={control}
-          name="contactNumber"
+          name="mobileNumber"
           as={
             <StyledTextField
               label="Contact number (optional)"
               placeholder="Contact number"
               autoComplete="tel"
-              defaultValue={user.contactNumber}
+              defaultValue={user.mobileNumber}
               inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-              {...register('contactNumber', { required: true })}
+              {...register('mobileNumber', { required: true })}
             />
           }
         />
