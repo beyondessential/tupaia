@@ -59437,6 +59437,9 @@ export const CamelCasedQuestionSchema = {
 		"name": {
 			"type": "string"
 		},
+		"id": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"Arithmetic",
@@ -59476,6 +59479,7 @@ export const CamelCasedQuestionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"id",
 		"text",
 		"type"
 	]
@@ -59635,6 +59639,9 @@ export const ResBodySchema = {
 									"type": "string"
 								},
 								"name": {
+									"type": "string"
+								},
+								"id": {
 									"type": "string"
 								},
 								"type": {
@@ -59910,6 +59917,7 @@ export const ResBodySchema = {
 							},
 							"required": [
 								"componentNumber",
+								"id",
 								"questionId",
 								"text",
 								"type"
@@ -60049,6 +60057,9 @@ export const DatatrakWebSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"name": {
+						"type": "string"
+					},
+					"id": {
 						"type": "string"
 					},
 					"type": {
@@ -60324,6 +60335,7 @@ export const DatatrakWebSurveyResponseRequestSchema = {
 				},
 				"required": [
 					"componentNumber",
+					"id",
 					"questionId",
 					"text",
 					"type"

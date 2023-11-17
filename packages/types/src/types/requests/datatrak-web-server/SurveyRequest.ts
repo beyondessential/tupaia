@@ -27,7 +27,7 @@ type ValidationCriteria = {
 
 // Separating these out because sometimes the camel casing of Record<string, unknown> is not then identitied as still being a Record<string, unknown>
 
-type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options' | 'id'>>;
+type CamelCasedQuestion = KeysToCamelCase<Omit<Question, 'options'>>;
 
 type CamelCasedComponent = KeysToCamelCase<
   Omit<
