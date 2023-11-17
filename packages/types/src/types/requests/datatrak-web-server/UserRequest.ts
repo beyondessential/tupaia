@@ -17,7 +17,7 @@ export interface ResBody {
   email?: string;
   employer?: string;
   position?: string;
-  contactNumber?: string;
+  mobileNumber?: string | null;
   project?: ProjectResponse | null;
   projectId?: string;
   country?: Country | null;
