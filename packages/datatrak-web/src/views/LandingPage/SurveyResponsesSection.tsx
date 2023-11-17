@@ -7,7 +7,8 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useCurrentUserSurveyResponses } from '../../api';
+import { useNavigate } from 'react-router';
+import { useCurrentUser, useCurrentUserSurveyResponses, useEditUser } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -35,7 +36,26 @@ const ScrollBody = styled.div`
 `;
 
 export const SurveyResponsesSection = () => {
+  const navigate = useNavigate();
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+  const user = useCurrentUser();
+  const { mutateAsync: editUser } = useEditUser();
+
+  const handleSelectSurveyResponse = async (
+    surveyCode: string,
+    countryCode: string,
+    countryId: string,
+    surveyResponseId: string,
+  ) => {
+    // Set the selected country in the user's profile if it is different to selected survey's country
+    if (user.country?.id !== countryId) {
+      await editUser({
+        countryId,
+      });
+    }
+    // then navigate to the survey response
+    navigate(`/survey/${countryCode}/${surveyCode}/response/${surveyResponseId}`);
+  };
   return (
     <Container>
       <SectionHeading>My recent responses</SectionHeading>
@@ -44,12 +64,21 @@ export const SurveyResponsesSection = () => {
         <ScrollBody>
           {recentSurveyResponses?.length > 0 ? (
             recentSurveyResponses.map(
-              ({ id, surveyName, surveyCode, dataTime, entityName, countryName, countryCode }) => (
+              ({
+                id,
+                surveyName,
+                surveyCode,
+                dataTime,
+                entityName,
+                countryId, // Todo: fix this
+                countryName,
+                countryCode,
+              }) => (
                 <Tile
                   key={id}
                   title={surveyName}
                   text={entityName}
-                  to={`/survey/${countryCode}/${surveyCode}/response/${id}`}
+                  onClick={() => handleSelectSurveyResponse(surveyCode, countryCode, countryId, id)}
                   tooltip={
                     <>
                       {surveyName}

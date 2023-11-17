@@ -5,6 +5,7 @@
 
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
+import keyBy from 'lodash.keyby';
 import { Route } from '@tupaia/server-boilerplate';
 import {
   DatatrakWebSurveyResponsesRequest,
@@ -48,7 +49,7 @@ const DEFAULT_SORT = ['data_time DESC'];
 
 export class SurveyResponsesRoute extends Route<SurveyResponsesRequest> {
   public async buildResponse() {
-    const { ctx, query } = this.req;
+    const { ctx, query, models } = this.req;
 
     const {
       fields = DEFAULT_FIELDS,
@@ -73,6 +74,28 @@ export class SurveyResponsesRoute extends Route<SurveyResponsesRequest> {
         surveyResponse['survey.project_id'] === null ||
         surveyResponse['survey.project_id'] === projectId,
     );
-    return camelcaseKeys(projectSurveyResponses, { deep: true });
+
+    // Need to manually include the country ids as it's not possible to include them through the central server api
+    const uniqueCountryCodes = [
+      ...new Set(
+        projectSurveyResponses.map(
+          (surveyResponse: SurveyResponseT) => surveyResponse['country.code'],
+        ),
+      ),
+    ];
+
+    const countryEntityRecords = await models.entity.find(
+      // @ts-ignore
+      { code: uniqueCountryCodes },
+      { columns: ['id', 'country_code'] },
+    );
+    const countriesByCode = keyBy(countryEntityRecords, 'country_code');
+    const surveyResponsesResponse = projectSurveyResponses.map(
+      (surveyResponse: SurveyResponseT) => ({
+        ...surveyResponse,
+        countryId: countriesByCode[surveyResponse['country.code']].id,
+      }),
+    );
+    return camelcaseKeys(surveyResponsesResponse, { deep: true });
   }
 }

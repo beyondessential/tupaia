@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Project } from '@tupaia/types';
 import { put } from '../api';
 import { Entity } from '../../types';
+import { successToast } from '../../utils';
 
 type UserPreferences = {
   projectId?: Project['id'];
@@ -43,9 +44,16 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', {
         data: updates,
       });
+      return updates;
     },
     {
-      onSuccess: () => {
+      onSuccess: updates => {
+        if (updates && 'project_id' in updates) {
+          successToast('Preferred project updated');
+        }
+        if (updates && 'country_id' in updates) {
+          successToast('Preferred country updated');
+        }
         queryClient.invalidateQueries('getUser');
         if (onSuccess) onSuccess();
       },

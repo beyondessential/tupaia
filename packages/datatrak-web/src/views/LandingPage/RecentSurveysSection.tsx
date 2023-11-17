@@ -6,12 +6,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
-import { SectionHeading } from './SectionHeading';
 import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
+import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
-import { useCurrentUserRecentSurveys } from '../../api/queries';
-import { useEditUser } from '../../api/mutations';
+import { useCurrentUser, useEditUser, useCurrentUserRecentSurveys } from '../../api';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -43,15 +42,18 @@ const ScrollBody = styled.div`
 `;
 
 export const RecentSurveysSection = () => {
+  const user = useCurrentUser();
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   const navigate = useNavigate();
   const { mutateAsync: editUser } = useEditUser();
 
   const handleSelectSurvey = async (surveyCode: string, countryId: string, countryCode: string) => {
-    // set the selected country in the user's profile
-    await editUser({
-      countryId,
-    });
+    // Set the selected country in the user's profile if it is different to selected survey's country
+    if (user.country?.id !== countryId) {
+      await editUser({
+        countryId,
+      });
+    }
     // then navigate to the survey
     navigate(`survey/${countryCode}/${surveyCode}/1`);
   };
