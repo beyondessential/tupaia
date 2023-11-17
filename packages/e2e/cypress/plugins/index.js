@@ -4,6 +4,8 @@
  */
 
 const cypressDotenv = require('cypress-dotenv');
+const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+const path = require('path');
 const fs = require('fs');
 
 module.exports = (on, config) => {
@@ -19,6 +21,28 @@ module.exports = (on, config) => {
       return fs.existsSync(filename) ? fs.readFileSync(filename, 'utf8') : null;
     },
   });
+
+  const options = webpackPreprocessor.defaultOptions;
+
+  // Stub out unsupported transitive dependencies
+  options.webpackOptions.resolve = {
+    alias: {
+      fs: path.resolve(__dirname, 'moduleMock.js'),
+      yargs: path.resolve(__dirname, 'moduleMock.js'),
+      child_process: path.resolve(__dirname, 'moduleMock.js'),
+    },
+  };
+
+  // Run latest @babel/preset-env preset to transpile modern js
+  options.webpackOptions.module.rules.push({
+    test: /\.(js|jsx)$/,
+    loader: require.resolve('babel-loader'),
+    options: {
+      presets: ['@babel/preset-env'],
+    },
+  });
+
+  on('file:preprocessor', webpackPreprocessor(options));
 
   return cypressDotenv(config);
 };
