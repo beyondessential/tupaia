@@ -94,10 +94,14 @@ export class GETSurveys extends GETHandler {
     const { columns: columnsString } = this.req.query;
 
     if (!columnsString) {
+      // Always include these by default
+      this.includeQuestions = true;
+      this.includeCountryNames = true;
       return super.getProcessedColumns();
     }
 
     const parsedColumns = columnsString && JSON.parse(columnsString);
+    // If we've requested specific columns, we allow skipping these fields by not requesting them
     this.includeQuestions = parsedColumns.includes(SURVEY_QUESTIONS_COLUMN);
     this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
 
