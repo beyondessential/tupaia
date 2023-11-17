@@ -56246,6 +56246,10 @@ export const MeditrakSyncQueueSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"delete",
+				"update"
+			],
 			"type": "string"
 		}
 	},
@@ -56830,6 +56834,10 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 			"type": "string"
 		},
 		"type": {
+			"enum": [
+				"delete",
+				"update"
+			],
 			"type": "string"
 		}
 	},
@@ -58995,6 +59003,14 @@ export const PeriodGranularitySchema = {
 		"quarterly",
 		"weekly",
 		"yearly"
+	],
+	"type": "string"
+} 
+
+export const MeditrakSyncQueueChangeTypeSchema = {
+	"enum": [
+		"delete",
+		"update"
 	],
 	"type": "string"
 } 
