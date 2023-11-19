@@ -51,7 +51,6 @@ export const processSurveyResponse = async (
     survey_id: surveyId,
     start_time: startTime,
     entity_id: countryId,
-    country_id: countryId,
     end_time: timestamp,
     data_time: timestamp,
     timestamp,

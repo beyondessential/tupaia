@@ -60447,12 +60447,16 @@ export const RecentSurveySchema = {
 		"countryName": {
 			"type": "string"
 		},
+		"countryCode": {
+			"type": "string"
+		},
 		"countryId": {
 			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"countryCode",
 		"countryId",
 		"countryName",
 		"surveyCode",

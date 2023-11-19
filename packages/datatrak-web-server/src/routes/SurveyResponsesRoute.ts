@@ -34,6 +34,7 @@ type SurveyResponseT = Record<string, any> & {
 const DEFAULT_FIELDS = [
   'assessor_name',
   'country.name',
+  'country.code',
   'data_time',
   'entity.name',
   'id',
