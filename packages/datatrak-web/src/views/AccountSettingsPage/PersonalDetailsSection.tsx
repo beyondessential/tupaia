@@ -56,7 +56,7 @@ export const PersonalDetailsSection = () => {
     defaultValues: {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
-      mobileNumber: user.mobileNumber ?? '',
+      mobileNumber: user.contactNumber ?? '',
       employer: user.employer ?? '',
       position: user.position ?? '',
     },
