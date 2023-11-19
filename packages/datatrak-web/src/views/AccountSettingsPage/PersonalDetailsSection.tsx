@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
@@ -13,11 +13,11 @@ import { TextField } from '@tupaia/ui-components';
 import { useEditUser } from '../../api/mutations';
 
 type PersonalDetails = {
-  firstName: string;
-  lastName: string;
-  mobileNumber?: string;
-  employer: string;
-  position: string;
+  firstName?: string;
+  lastName?: string;
+  mobileNumber?: string | null;
+  employer?: string;
+  position?: string;
 };
 
 const ButtonWrapper = styled.div`
