@@ -5,6 +5,8 @@
 #import <AppCenterReactNative.h>
 #import <AppCenterReactNativeAnalytics.h>
 
+#import <Bugsnag/Bugsnag.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -16,6 +18,8 @@
 
   [AppCenterReactNative register];
   [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];
+  
+  [Bugsnag start];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
