@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
-import { post, useCurrentUser } from '../../api';
+import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -26,14 +26,15 @@ export type AnswersT = Record<string, Answer>;
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
   const user = useCurrentUser();
-  const { surveyCode } = useParams();
+  const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { data: country } = useCountry(user.project?.code, countryCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
-    countryId: user.country?.id,
+    countryId: country?.id,
     userId: user.id,
   };
 };

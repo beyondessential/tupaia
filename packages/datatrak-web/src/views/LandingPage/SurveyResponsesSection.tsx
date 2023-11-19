@@ -36,6 +36,7 @@ const ScrollBody = styled.div`
 
 export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+
   return (
     <Container>
       <SectionHeading>My recent responses</SectionHeading>
@@ -44,12 +45,12 @@ export const SurveyResponsesSection = () => {
         <ScrollBody>
           {recentSurveyResponses?.length > 0 ? (
             recentSurveyResponses.map(
-              ({ id, surveyName, surveyCode, dataTime, entityName, countryName }) => (
+              ({ id, surveyName, surveyCode, dataTime, entityName, countryName, countryCode }) => (
                 <Tile
                   key={id}
                   title={surveyName}
                   text={entityName}
-                  to={`/survey/${surveyCode}/response/${id}`}
+                  to={`/survey/${countryCode}/${surveyCode}/response/${id}`}
                   tooltip={
                     <>
                       {surveyName}

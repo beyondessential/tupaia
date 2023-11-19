@@ -5,19 +5,19 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { WebServerEntityRequest, Entity } from '@tupaia/types';
+import { Entity, WebServerEntityRequest } from '@tupaia/types';
 import { camelcaseKeys } from '@tupaia/tsutils';
 
-export type EntityRequest = Request<
+export type SingleEntityRequest = Request<
   WebServerEntityRequest.Params,
   WebServerEntityRequest.ResBody,
   WebServerEntityRequest.ReqBody,
   WebServerEntityRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
+const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
 
-export class EntityRoute extends Route<EntityRequest> {
+export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
     const { params, query, ctx } = this.req;
     const { projectCode, entityCode } = params;
