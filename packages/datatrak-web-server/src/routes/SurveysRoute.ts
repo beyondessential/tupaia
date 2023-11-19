@@ -25,17 +25,16 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const { fields = [], projectId } = query;
 
     const surveys = await ctx.services.central.fetchResources('surveys', {
-      columns: [...fields, 'project_id'], // TODO: remove this when this is a db filter for project_id
+      filter: {
+        ...query,
+        project_id: projectId,
+      },
+      columns: fields,
       pageSize: 'ALL', // Override default page size of 100
     });
 
-    // TODO: make this a db filter when survey project_id field is non-nullable. For now, we need to manually filter
-    const projectSurveys = surveys.filter(
-      (survey: Survey) => survey.project_id === null || survey.project_id === projectId,
-    );
-
     return sortBy(
-      camelcaseKeys(projectSurveys, {
+      camelcaseKeys(surveys, {
         deep: true,
       }),
       ['name', 'surveyGroupName'],
