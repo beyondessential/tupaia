@@ -10,7 +10,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { useEditUser } from '../../api/mutations';
 import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../../components';
 import { Survey } from '../../types';
-import { useSurveys } from '../../api/queries';
+import { useSurveys, useCurrentUser } from '../../api';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
 import { useUserCountries } from './useUserCountries';
 import { HEADER_HEIGHT } from '../../constants';
@@ -102,12 +102,6 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
-
-  const navigateToSurvey = () => {
-    navigate(`/survey/${selectedSurvey?.value}`);
-  };
-  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
-
   const {
     countries,
     selectedCountry,
@@ -115,8 +109,13 @@ export const SurveySelectPage = () => {
     countryHasUpdated,
     isLoading: isLoadingCountries,
   } = useUserCountries();
+  const navigateToSurvey = () => {
+    navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
+  };
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
+  const user = useCurrentUser();
 
-  const { data: surveys, isLoading } = useSurveys(selectedCountry?.name);
+  const { data: surveys, isLoading } = useSurveys(selectedCountry?.name, user.projectId);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =

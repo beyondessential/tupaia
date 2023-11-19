@@ -6,10 +6,10 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
-import { post } from '../../api';
+import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { useSurvey, useUser } from '../queries';
+import { useSurvey } from '../queries';
 import { successToast } from '../../utils';
 
 type AutocompleteAnswer = {
@@ -25,16 +25,17 @@ export type AnswersT = Record<string, Answer>;
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
-  const { data: user } = useUser();
-  const { surveyCode } = useParams();
+  const user = useCurrentUser();
+  const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { data: country } = useCountry(user.project?.code, countryCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
-    countryId: user?.country?.id,
-    userId: user?.id,
+    countryId: country?.id,
+    userId: user.id,
   };
 };
 
@@ -47,7 +48,7 @@ export const useSubmitSurvey = () => {
   const surveyResponseData = useSurveyResponseData();
 
   return useMutation<any, Error, AnswersT, unknown>(
-    async (answers: AnswersT) => { 
+    async (answers: AnswersT) => {
       if (!answers) {
         return;
       }

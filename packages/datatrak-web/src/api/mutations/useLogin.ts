@@ -4,7 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useFromLocation } from '../../utils';
+import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
 
@@ -13,18 +14,10 @@ type LoginCredentials = {
   password: string;
 };
 
-function hasFrom(state: unknown): state is { from: string } {
-  if (state !== null && typeof state === 'object' && 'from' in state) {
-    return typeof state.from === 'string';
-  }
-  return false;
-}
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = hasFrom(location.state) ? location.state.from : undefined;
+  const from = useFromLocation();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -44,7 +37,7 @@ export const useLogin = () => {
             state: null,
           });
         } else {
-          const path = user?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
+          const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
           navigate(path);
         }
       },

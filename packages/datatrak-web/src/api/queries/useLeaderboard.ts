@@ -3,12 +3,17 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
-import { DatatrakWebLeaderboardRequest } from '@tupaia/types';
+import { DatatrakWebLeaderboardRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 
-export const useLeaderboard = () => {
+export const useLeaderboard = (projectId?: Project['id']) => {
   return useQuery(
-    ['leaderboard'],
-    (): Promise<DatatrakWebLeaderboardRequest.ResBody> => get('leaderboard'),
+    ['leaderboard', projectId],
+    (): Promise<DatatrakWebLeaderboardRequest.ResBody> =>
+      get('leaderboard', {
+        params: {
+          projectId,
+        },
+      }),
   );
 };

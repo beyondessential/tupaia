@@ -13,6 +13,9 @@ export const useSurvey = (surveyCode?: string) => {
     (): Promise<DatatrakWebSurveyRequest.ResBody> => get(`surveys/${surveyCode}`),
     {
       enabled: !!surveyCode,
+      meta: {
+        applyCustomErrorHandling: true,
+      },
     },
   );
 };

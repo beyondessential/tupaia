@@ -107,8 +107,9 @@ export const SurveySideMenu = () => {
     setFormData,
     isReviewScreen,
     isSuccessScreen,
+    isResponseScreen,
   } = useSurveyForm();
-  if (isReviewScreen || isSuccessScreen) return null;
+  if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
   const onChangeScreen = () => {
     setFormData(getValues());
     if (isMobile) toggleSideMenu();

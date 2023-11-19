@@ -6,7 +6,8 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { useCurrentUserSurveyResponses } from '../../api/queries';
+import { SpinningLoader } from '@tupaia/ui-components';
+import { useCurrentUserSurveyResponses } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -34,37 +35,42 @@ const ScrollBody = styled.div`
 `;
 
 export const SurveyResponsesSection = () => {
-  const { data: recentSurveyResponses, isSuccess } = useCurrentUserSurveyResponses();
+  const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
+
   return (
     <Container>
       <SectionHeading>My recent responses</SectionHeading>
-      <ScrollBody>
-        {isSuccess && recentSurveyResponses?.length > 0 ? (
-          recentSurveyResponses.map(({ id, surveyName, dataTime, entityName, countryName }) => (
-            <Tile
-              key={id}
-              title={surveyName}
-              text={entityName}
-              // Todo: update link to survey response route in WAITP-1452
-              to={`/#surveyResponse/${id}`}
-              tooltip={
-                <>
-                  {surveyName}
-                  <br />
-                  {entityName}
-                </>
-              }
-              Icon={SurveyTickIcon}
-            >
-              {countryName}, {shortDate(dataTime)}
-            </Tile>
-          ))
-        ) : (
-          <Typography variant="body2" color="textSecondary">
-            No recent surveys responses to display
-          </Typography>
-        )}
-      </ScrollBody>
+      {isLoading && <SpinningLoader />}
+      {isSuccess && (
+        <ScrollBody>
+          {recentSurveyResponses?.length > 0 ? (
+            recentSurveyResponses.map(
+              ({ id, surveyName, surveyCode, dataTime, entityName, countryName, countryCode }) => (
+                <Tile
+                  key={id}
+                  title={surveyName}
+                  text={entityName}
+                  to={`/survey/${countryCode}/${surveyCode}/response/${id}`}
+                  tooltip={
+                    <>
+                      {surveyName}
+                      <br />
+                      {entityName}
+                    </>
+                  }
+                  Icon={SurveyTickIcon}
+                >
+                  {countryName}, {shortDate(dataTime)}
+                </Tile>
+              ),
+            )
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No recent surveys responses to display
+            </Typography>
+          )}
+        </ScrollBody>
+      )}
     </Container>
   );
 };

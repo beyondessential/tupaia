@@ -24,6 +24,8 @@ import {
   ProjectsRequest,
   SurveyRequest,
   SurveyRoute,
+  SingleEntityRequest,
+  SingleEntityRoute,
   EntitiesRequest,
   EntitiesRoute,
   ProjectRequest,
@@ -56,6 +58,7 @@ export function createApp() {
     .attachApiClientToContext(authHandlerProvider)
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
+    .get<SingleEntityRequest>('entity/:projectCode/:entityCode', handleWith(SingleEntityRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
