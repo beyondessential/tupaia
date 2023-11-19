@@ -5,13 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
-import { SectionHeading } from './SectionHeading';
 import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
+import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
-import { useCurrentUserRecentSurveys } from '../../api/queries';
-import { useEditUser } from '../../api/mutations';
+import { useCurrentUserRecentSurveys } from '../../api';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -44,17 +42,6 @@ const ScrollBody = styled.div`
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
-  const navigate = useNavigate();
-  const { mutateAsync: editUser } = useEditUser();
-
-  const handleSelectSurvey = async (surveyCode: string, countryId: string) => {
-    // set the selected country in the user's profile
-    await editUser({
-      countryId,
-    });
-    // then navigate to the survey
-    navigate(`survey/${surveyCode}/1`);
-  };
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
@@ -62,7 +49,7 @@ export const RecentSurveysSection = () => {
       {isSuccess && (
         <ScrollBody>
           {recentSurveys?.length ? (
-            recentSurveys.map(({ surveyName, surveyCode, countryName, countryId }) => (
+            recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
               <Tile
                 key={`${surveyCode}-${countryName}`}
                 title={surveyName}
@@ -75,7 +62,7 @@ export const RecentSurveysSection = () => {
                   </>
                 }
                 Icon={SurveyIcon}
-                onClick={() => handleSelectSurvey(surveyCode, countryId)}
+                to={`/survey/${countryCode}/${surveyCode}/1`}
               />
             ))
           ) : (
