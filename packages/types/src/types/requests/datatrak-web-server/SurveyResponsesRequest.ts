@@ -11,7 +11,6 @@ type SurveyResponse = {
   assessorName: SurveyResponseT['assessor_name'];
   countryName: Country['name'];
   countryCode: Country['code'];
-  countryId: Entity['id'];
   dataTime: Date;
   entityName: Entity['name'];
   id: SurveyResponseT['id'];

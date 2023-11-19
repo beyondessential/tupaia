@@ -43,7 +43,6 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', {
         data: updates,
       });
-      return updates;
     },
     {
       onSuccess: () => {
