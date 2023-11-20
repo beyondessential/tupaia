@@ -13,6 +13,7 @@ import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-c
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
+import { MOBILE_BREAKPOINT } from '../../../constants';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -31,18 +32,29 @@ const PrimaryContext = styled.div`
 
 const Container = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   flex-basis: 83.3333%;
+
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    flex-direction: row;
+  }
 `;
 
 const ExportSettingsContainer = styled.div`
   height: 100%;
-  width: 60%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  margin-right: 2rem;
+  margin-bottom: 2rem;
+
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    width: 62%;
+    margin-right: 2rem;
+    margin-bottom: 0;
+  }
 `;
 
 const ExportSetting = styled.div`
@@ -84,9 +96,13 @@ const Checkbox = styled(BaseCheckbox)`
 
 const PreviewPanelContainer = styled.div`
   height: 100%;
-  width: 38%;
+  width: 100%;
   display: flex;
   flex-direction: column;
+
+  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
+    width: 36%;
+  }
 `;
 
 const ExportSettingsInstructionsContainer = styled.div`
@@ -180,7 +196,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                 <Legend>Display options (coming soon)</Legend>
                 <Checkbox
                   label="Export with Labels"
-                  value={true}
+                  value
                   name="displayOptions"
                   color="primary"
                   checked={false}
@@ -188,10 +204,10 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                 />
                 <Checkbox
                   label="Export with Table"
-                  value={true}
+                  value
                   name="displayOptions"
                   color="primary"
-                  checked={true}
+                  checked
                   disabled
                 />
               </FormGroup>
