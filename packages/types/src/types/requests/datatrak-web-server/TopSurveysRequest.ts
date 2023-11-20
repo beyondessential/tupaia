@@ -7,7 +7,7 @@ import { Country, Survey } from '../../models';
 
 export type Params = Record<string, never>;
 
-export type RecentSurvey = {
+export type TopSurvey = {
   surveyCode: Survey['code'];
   surveyName: Survey['name'];
   countryName: Country['name'];
@@ -15,7 +15,7 @@ export type RecentSurvey = {
   countryId: Country['id'];
 };
 
-export type ResBody = RecentSurvey[];
+export type ResBody = TopSurvey[];
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   userId: string;
