@@ -84,8 +84,8 @@ android {
         applicationId "com.tupaiameditrak"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 135
-        versionName "1.14.135"
+        versionCode 136
+        versionName "1.14.136"
     }
     signingConfigs {
         debug {
