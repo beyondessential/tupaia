@@ -6,11 +6,11 @@
 export const getRewardsForUser = async (database, userId, projectId = '') => {
   const [rewards] = await database.executeSql(
     `SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
-    FROM survey_response
-    JOIN survey on survey.id=survey_id
-    WHERE user_id = ?
-    ${projectId ? 'AND project_id = ?' : ''}
-    GROUP BY user_id;
+     FROM survey_response
+              JOIN survey on survey.id=survey_id
+     WHERE user_id = ?
+         ${projectId ? 'AND project_id = ?' : ''}
+     GROUP BY user_id;
     `,
     [userId, projectId],
   );
