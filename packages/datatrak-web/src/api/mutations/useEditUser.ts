@@ -7,13 +7,14 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Project } from '@tupaia/types';
 import { put } from '../api';
 import { Entity } from '../../types';
+import { successToast } from '../../utils';
 
 type UserDetails = {
   firstName?: string;
   lastName?: string;
   employer?: string;
   position?: string;
-  mobileNumber?: string;
+  mobileNumber?: string | null;
 
   // Preferences
   projectId?: Project['id'];
@@ -51,6 +52,7 @@ export const useEditUser = (onSuccess?: () => void) => {
     },
     {
       onSuccess: () => {
+        successToast('Personal details updated');
         queryClient.invalidateQueries('getUser');
         if (onSuccess) onSuccess();
       },
