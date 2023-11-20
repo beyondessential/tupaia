@@ -14,7 +14,6 @@ import {
   TableHead,
   TableRow,
   TableFooter,
-  Typography,
 } from '@material-ui/core';
 import { UserRewards } from '../../types';
 
