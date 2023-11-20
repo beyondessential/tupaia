@@ -61,15 +61,15 @@ export const PersonalDetailsSection = () => {
     },
   });
 
-  function onSubmit(userDetails: UserAccountDetails): SubmitHandler<PersonalDetailsFormFields> {
-    // TODO: Refactor to use map(); remember to use Object.entries()
-    for (const field in userDetails) {
-      if (!dirtyFields[field]) {
-        delete userDetails[field];
-      }
-    }
+  function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
+    const updates = Object.keys(dirtyFields)
+      .filter(field => dirtyFields[field])
+      .reduce(
+        (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field] }),
+        {} as UserAccountDetails,
+      );
 
-    updateUser(userDetails);
+    updateUser(updates);
   }
 
   return (
