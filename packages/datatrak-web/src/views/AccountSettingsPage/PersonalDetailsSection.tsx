@@ -61,7 +61,7 @@ export const PersonalDetailsSection = () => {
     },
   });
 
-  function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
+  function onSubmit(userDetails: UserAccountDetails): SubmitHandler<PersonalDetailsFormFields> {
     // TODO: Refactor to use map(); remember to use Object.entries()
     for (const field in userDetails) {
       if (!dirtyFields[field]) {
