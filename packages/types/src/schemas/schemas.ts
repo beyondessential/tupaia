@@ -59829,7 +59829,7 @@ export const AnswersSchema = {
 	"additionalProperties": false
 } 
 
-export const RecentSurveySchema = {
+export const TopSurveySchema = {
 	"type": "object",
 	"properties": {
 		"surveyCode": {
