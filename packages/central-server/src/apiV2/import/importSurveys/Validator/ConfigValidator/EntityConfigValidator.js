@@ -139,8 +139,9 @@ export class EntityConfigValidator extends JsonFieldValidator {
       const { validationCriteria } = question;
       const parsedValidationCriteria = convertCellToJson(validationCriteria);
 
-      if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true')
+      if (!parsedValidationCriteria.mandatory || parsedValidationCriteria.mandatory !== 'true') {
         throw new ValidationError(`Referenced question should be mandatory`);
+       } 
 
       return true;
     };
