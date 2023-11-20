@@ -6,7 +6,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
+import { Dashboard, TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { downloadDashboardAsPdf } from '../utils';
 
 export type ExportDashboardRequest = Request<
@@ -20,7 +20,7 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
   protected type = 'download' as const;
 
   public async buildResponse() {
-    const { projectCode, entityCode, dashboardName } = this.req.params;
+    const { projectCode, entityCode, dashboardCode } = this.req.params;
     const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
     const { cookie } = this.req.headers;
 
@@ -28,10 +28,19 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
       throw new Error(`Must have a valid session to export a dashboard`);
     }
 
+    const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
+      filter: { code: dashboardCode },
+      columns: ['name'],
+    })) as Pick<Dashboard, 'name'>[];
+
+    if (!dashboard) {
+      throw new Error(`Cannot find dashboard with code: ${dashboardCode}`);
+    }
+
     const buffer = await downloadDashboardAsPdf(
       projectCode,
       entityCode,
-      dashboardName,
+      dashboard.name,
       baseUrl,
       cookie,
       cookieDomain,

@@ -8,6 +8,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { sendEmail } from '@tupaia/server-utils';
 import {
+  Dashboard,
   DashboardMailingList,
   DashboardMailingListEntry,
   Entity,
@@ -25,8 +26,8 @@ export type EmailDashboardRequest = Request<
 
 export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
   public async buildResponse() {
-    const { projectCode, entityCode, dashboardName } = this.req.params;
-    const { dashboardId, baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
+    const { projectCode, entityCode, dashboardCode } = this.req.params;
+    const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -51,6 +52,10 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       },
       columns: ['id', 'name'],
     })) as Pick<Entity, 'id' | 'name'>[];
+    const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
+      filter: { code: dashboardCode },
+      columns: ['id', 'name'],
+    })) as Pick<Dashboard, 'id' | 'name'>[];
 
     // TODO: Add check to ensure user has permissions to send the email (RN-1073)
 
@@ -58,7 +63,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       'dashboardMailingLists',
       {
         filter: {
-          dashboard_id: dashboardId,
+          dashboard_id: dashboard.id,
           project_id: project.id,
           entity_id: entity.id,
         },
@@ -68,7 +73,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
 
     if (!mailingList) {
       return {
-        message: `There is no mailing list for dashboard: ${dashboardName} at: ${entity.name} in project: ${projectEntity.name}`,
+        message: `There is no mailing list for dashboard: ${dashboard.name} at: ${entity.name} in project: ${projectEntity.name}`,
       };
     }
 
@@ -90,7 +95,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     const buffer = await downloadDashboardAsPdf(
       projectCode,
       entityCode,
-      dashboardName,
+      dashboard.name,
       baseUrl,
       cookie,
       cookieDomain,
@@ -98,9 +103,9 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     );
 
     const emails = mailingListEntries.map(({ email }) => email);
-    const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboardName}`;
-    const text = `Latest data for the ${dashboardName} dashboard in ${entity.name}.`;
-    const filename = `${projectEntity.name}-${entity.name}-${dashboardName}-export.pdf`;
+    const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboard.name}`;
+    const text = `Latest data for the ${dashboard.name} dashboard in ${entity.name}.`;
+    const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
     sendEmail(emails, {
       subject,

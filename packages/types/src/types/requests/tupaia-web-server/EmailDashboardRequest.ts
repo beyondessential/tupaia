@@ -6,7 +6,7 @@
 export interface Params {
   projectCode: string;
   entityCode: string;
-  dashboardName: string;
+  dashboardCode: string;
 }
 export interface ResBody {
   message: string;
@@ -14,7 +14,6 @@ export interface ResBody {
 export type ReqBody = {
   cookieDomain: string;
   baseUrl: string;
-  dashboardId: string;
   selectedDashboardItems?: string[];
 };
 export type ReqQuery = Record<string, string>;

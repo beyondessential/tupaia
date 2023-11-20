@@ -9,31 +9,23 @@ import { Dashboard, DashboardItem, EntityCode, ProjectCode } from '../../types';
 type EmailDashboardParams = {
   projectCode?: ProjectCode;
   entityCode?: EntityCode;
-  dashboardName?: Dashboard['name'];
-  dashboardId?: Dashboard['id'];
+  dashboardCode?: Dashboard['code'];
   selectedDashboardItems?: DashboardItem['code'][];
 };
 
 // Requests a dashboard export from the server to be mailed to the mailing list
 export const useEmailDashboard = ({ onSuccess }: { onSuccess?: () => void }) => {
   return useMutation<any, Error, EmailDashboardParams, unknown>(
-    ({
-      projectCode,
-      entityCode,
-      dashboardName,
-      dashboardId,
-      selectedDashboardItems,
-    }: EmailDashboardParams) => {
+    ({ projectCode, entityCode, dashboardCode, selectedDashboardItems }: EmailDashboardParams) => {
       const baseUrl = `${window.location.protocol}/${window.location.host}`;
 
       // Auth cookies are saved against this domain. Pass this to server, so that when it pretends to be us, it can do the same.
       const cookieDomain = new URL(API_URL).hostname;
 
-      return post(`dashboards/${projectCode}/${entityCode}/${dashboardName}/email`, {
+      return post(`dashboards/${projectCode}/${entityCode}/${dashboardCode}/email`, {
         data: {
           cookieDomain,
           baseUrl,
-          dashboardId,
           selectedDashboardItems,
         },
       });

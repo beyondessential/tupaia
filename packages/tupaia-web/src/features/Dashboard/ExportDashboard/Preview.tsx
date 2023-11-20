@@ -10,7 +10,7 @@ import downloadJs from 'downloadjs';
 import { Typography, FormGroup } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-components';
-import { useEntity, useProject } from '../../../api/queries';
+import { useDashboards, useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
@@ -167,6 +167,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
+  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
@@ -190,7 +191,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
     requestPdfExport({
       projectCode,
       entityCode,
-      dashboardName,
+      dashboardCode: activeDashboard.code,
       selectedDashboardItems,
     });
 

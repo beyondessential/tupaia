@@ -49,11 +49,11 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.DashboardsRoute),
     )
     .post<routes.ExportDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/export',
+      'dashboards/:projectCode/:entityCode/:dashboardCode/export',
       handleWith(routes.ExportDashboardRoute),
     )
     .post<routes.EmailDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/email',
+      'dashboards/:projectCode/:entityCode/:dashboardCode/email',
       handleWith(routes.EmailDashboardRoute),
     )
     .get<routes.CountryAccessListRequest>(
