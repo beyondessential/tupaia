@@ -63,7 +63,6 @@
     "faker": "^4.1.0",
     "fast-glob": "^3.2.5",
     "react-docgen-typescript-plugin": "^1.0.5",
-    "react-password-strength-bar": "^0.3.3",
-    "typescript": "^5.0.4"
+    "react-password-strength-bar": "^0.3.3"
   }
 }
