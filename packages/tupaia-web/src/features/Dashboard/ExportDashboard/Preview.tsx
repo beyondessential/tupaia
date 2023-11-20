@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
-import { Typography, FormGroup } from '@material-ui/core';
+import { Typography, FormGroup, Divider as BaseDivider } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-components';
 import { useDashboards, useEntity, useProject } from '../../../api/queries';
@@ -16,6 +16,8 @@ import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { ExportSettingLabel } from './ExportSettingLabel';
 import { ExportSettingsInstructions } from './ExportSettingsInstructions';
+import { useDashboardMailingList } from '../../../utils';
+import { MailingListButton } from './MailingListButton';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -63,7 +65,7 @@ const ExportSetting = styled.div`
   border: ${({ theme }) => theme.palette.text.secondary};
   border-width: 0.1rem;
   border-style: solid;
-  border-radius: 10px;
+  border-radius: 7px;
 
   .MuiFormGroup-root {
     align-content: start;
@@ -148,6 +150,12 @@ const PreviewTitle = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
+const Divider = styled(BaseDivider)`
+  background-color: ${({ theme }) => theme.palette.text.secondary};
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
@@ -158,6 +166,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const mailingList = useDashboardMailingList();
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
@@ -222,6 +231,10 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                   />
                 </fieldset>
               </FormGroup>
+              {mailingList ? <Divider /> : null}
+              {mailingList ? (
+                <MailingListButton selectedDashboardItems={selectedDashboardItems} />
+              ) : null}
             </ExportSetting>
           </ExportSettingsContainer>
           {!isLoading && (
