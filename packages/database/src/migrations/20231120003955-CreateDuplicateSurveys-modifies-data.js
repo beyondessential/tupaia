@@ -27,11 +27,7 @@ const getProjectId = async (db, projectCode) => {
 
 // get new survey code by appending project initials to old survey code
 const getNewSurveyCode = (oldSurveyCode, newProjectCode) => {
-  const projectInitials = newProjectCode
-    .split('_')
-    .map(word => word[0])
-    .join('');
-  return `${oldSurveyCode}_${projectInitials.toUpperCase()}`;
+  return `${oldSurveyCode}_DT`;
 };
 
 // get survey with code surveyCode
@@ -215,6 +211,10 @@ const removeSurvey = async (db, survey) => {
       .join(',')});
   `);
   }
+
+  await db.runSql(`
+    DELETE FROM survey_response WHERE survey_id = '${existingSurvey.id}';
+  `);
 
   await db.runSql(`
     DELETE FROM survey_screen WHERE survey_id = '${existingSurvey.id}';
