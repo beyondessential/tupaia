@@ -11,7 +11,7 @@ import {
   SurveySelectPage,
   LoginPage,
   VerifyEmailPage,
-  NotFoundPage,
+  ErrorPage,
   RegisterPage,
   VerifyEmailResendPage,
   SurveyReviewScreen,
@@ -24,7 +24,7 @@ import {
   AccountSettingsPage,
   SurveyResponsePage,
 } from '../views';
-import { useCurrentUser } from '../api';
+import { useCurrentUser, useSurvey } from '../api';
 import { ROUTES } from '../constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { SurveyLayout, useSurveyForm } from '../features';
@@ -52,14 +52,34 @@ const SurveyStartRedirect = () => {
 const SurveyPageRedirect = ({ children }) => {
   const { screenNumber } = useParams();
   const { visibleScreens } = useSurveyForm();
+
   if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
     return <SurveyStartRedirect />;
   }
   return children;
 };
 
+/**
+ * This is to redirect the user to the survey not found page if they try to access a survey that does not exist
+ */
+const SurveyNotFoundRedirect = ({ children }) => {
+  const { surveyCode } = useParams();
+  const { isError, error } = useSurvey(surveyCode);
+  if (isError) {
+    return <ErrorPage error={error as Error} title="Error fetching survey" />;
+  }
+  return children;
+};
+
 export const SurveyPageRoutes = (
-  <Route path={ROUTES.SURVEY} element={<SurveyPage />}>
+  <Route
+    path={ROUTES.SURVEY}
+    element={
+      <SurveyNotFoundRedirect>
+        <SurveyPage />
+      </SurveyNotFoundRedirect>
+    }
+  >
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
     <Route element={<SurveyLayout />}>
@@ -134,7 +154,7 @@ export const Routes = () => {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>
   );

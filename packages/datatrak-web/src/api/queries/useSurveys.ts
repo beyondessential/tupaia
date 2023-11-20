@@ -14,7 +14,7 @@ export const useSurveys = (selectedCountryName?: Entity['name'], projectId?: Pro
     (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
       get('surveys', {
         params: {
-          fields: ['name', 'code', 'id', 'survey_group.name'],
+          fields: ['name', 'code', 'id', 'survey_group.name', 'countryNames'],
           projectId,
         },
       }),

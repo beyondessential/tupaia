@@ -16,7 +16,7 @@ import { useParams } from 'react-router';
 
 const Wrapper = styled.div`
   width: 100%;
-  z-index: 2;
+  z-index: 11; // above the map+watermark
   pointer-events: auto;
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
@@ -66,7 +66,8 @@ const OverlayListWrapper = styled.div`
 const OverlayMenu = styled.div<{
   $expanded: boolean;
 }>`
-  height: ${({ $expanded }) => ($expanded ? `calc(100vh - ${getMobileTopBarHeight()})` : '0')};
+  // we use dvh here to make up for mobile viewports which have system ui bars (e.g. forward button, address bar etc) that are not accounted for in vh units. Support for this is widespread for modern browsers (https://caniuse.com/viewport-unit-variants), especially relative to usage.
+  height: ${({ $expanded }) => ($expanded ? `calc(100dvh - ${getMobileTopBarHeight()})` : '0')};
   transition: height 0.3s ease-in-out;
   width: 100%;
   position: fixed;

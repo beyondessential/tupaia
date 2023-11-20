@@ -2,17 +2,17 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { FullPageLoader } from '@tupaia/ui-components';
-import { useSurvey } from '../api/queries';
+import { useCountry, useCurrentUser, useEditUser, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
-
+import { successToast } from '../utils';
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ const SurveyScreenContainer = styled.div<{
     $hasToolbar
       ? `calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT})`
       : `calc(100vh - ${HEADER_HEIGHT})`};
-  width: 100vw;
+  width: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
     margin-left: -1.25rem;
     padding-top: ${({ $scrollable }) => ($scrollable ? '0' : '2rem')};
@@ -81,6 +81,27 @@ const SurveyPageInner = () => {
 
 // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
 export const SurveyPage = () => {
+  const { countryCode } = useParams<SurveyParams>();
+  const { mutateAsync: editUser } = useEditUser();
+  const user = useCurrentUser();
+  const { data: surveyCountry } = useCountry(user.project?.code, countryCode);
+
+  // Update the user's preferred country if they start a survey in a different country
+  // Todo: add check for project code once project_ids are added to the survey table
+  useEffect(() => {
+    if (!surveyCountry?.code) {
+      return;
+    }
+    if (user.country?.code !== countryCode) {
+      editUser(
+        {
+          countryId: surveyCountry?.id,
+        },
+        { onSuccess: () => successToast(`Preferred country updated to ${surveyCountry?.name}`) },
+      );
+    }
+  }, [surveyCountry?.code]);
+
   return (
     <SurveyContext>
       <SurveyPageInner />

@@ -23,7 +23,6 @@ import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
 
-
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
 const MIN_SIDEBAR_WIDTH = 360;
@@ -105,7 +104,6 @@ const DashboardItemsWrapper = styled.div<{
   column-gap: 0.8rem;
 `;
 
-
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -120,7 +118,6 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
@@ -185,14 +182,18 @@ export const Dashboard = () => {
             {entity?.imageUrl ? (
               <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
-              <StaticMap bounds={bounds} />
+              <StaticMap bounds={bounds} title={title} />
             )}
           </div>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen}/>
+            <DashboardMenu
+              activeDashboard={activeDashboard}
+              dashboards={dashboards}
+              setExportModalOpen={setExportModalOpen}
+            />
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
@@ -206,7 +207,7 @@ export const Dashboard = () => {
           isOpen={exportModalOpen}
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
-      />
+        />
       </Panel>
     </ErrorBoundary>
   );

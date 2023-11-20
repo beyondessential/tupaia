@@ -32,7 +32,13 @@ export const Photo = ({ title, photoUrl }: PhotoProps) => {
           <img src={imageSrc} alt={title} />
         </Dialog>
       )}
-      <Media $backgroundImage={imageSrc} onClick={() => setIsEnlarged(true)} as={ButtonBase} />
+      <Media
+        $backgroundImage={imageSrc}
+        onClick={() => setIsEnlarged(true)}
+        as={ButtonBase}
+        title="Expand image"
+        aria-label={title}
+      />
     </>
   );
 };

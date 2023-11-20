@@ -7,13 +7,14 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import sortBy from 'lodash.sortby';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 
-type Survey = DatatrakWebSurveyRequest.ResBody;
+type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
 
+// Todo: consolidate types between SurveysRoute and SingleSurveyRoute
 export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.Params,
-  Survey[],
+  SingleSurveyResponse[],
   DatatrakWebSurveyRequest.ReqBody,
   DatatrakWebSurveyRequest.ReqQuery
 >;
@@ -30,7 +31,7 @@ export class SurveysRoute extends Route<SurveysRequest> {
 
     // TODO: make this a db filter when survey project_id field is non-nullable. For now, we need to manually filter
     const projectSurveys = surveys.filter(
-      (survey: Survey) => survey.projectId === null || survey.projectId === projectId,
+      (survey: Survey) => survey.project_id === null || survey.project_id === projectId,
     );
 
     return sortBy(

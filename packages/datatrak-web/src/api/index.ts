@@ -5,4 +5,5 @@
 
 export * from './api';
 export * from './queries';
-export { useCurrentUser, CurrentUserContextProvider } from './CurrentUserContext.tsx';
+export * from './mutations';
+export { useCurrentUser, CurrentUserContextProvider } from './CurrentUserContext';
