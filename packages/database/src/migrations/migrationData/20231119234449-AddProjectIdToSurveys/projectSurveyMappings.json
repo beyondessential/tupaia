@@ -2213,5 +2213,95 @@
     "surveyName": "World Bank Service Delivery",
     "surveyCode": "WBSDD",
     "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "OKE02 Farmer Profile",
+    "surveyCode": "OKE02",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "OKE03 Farm Product Inventory",
+    "surveyCode": "OKE03",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "OKE00 Market Mapping",
+    "surveyCode": "OKE00",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "Product availability",
+    "surveyCode": "OKE04",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "3 - Child Health & Immunisation",
+    "surveyCode": "PEHS_CHI_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "4 - NCDs",
+    "surveyCode": "PEHS_NCD_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "5 - Communicable Diseases",
+    "surveyCode": "PEHS_CDS_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "12 - Environmental Health",
+    "surveyCode": "PEHS_EMH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "13 - Health Promotion",
+    "surveyCode": "PEHS_HPM_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "10 - Eye & ENT (ENT & Audiology)",
+    "surveyCode": "PEHS_EEA_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "6 - Rehabilitation",
+    "surveyCode": "PEHS_RHB_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "7 - Mental Health",
+    "surveyCode": "PEHS_MTH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "1 - General Medical Services",
+    "surveyCode": "PEHS_GMS_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "2 - Maternal, Newborn & Family Planning",
+    "surveyCode": "PEHS_MNF_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "9 - Oral Health",
+    "surveyCode": "PEHS_ORH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "11 - Diagnostics",
+    "surveyCode": "PEHS_DGT_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "8 - Gender Based Violence",
+    "surveyCode": "PEHS_GBV_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia DataTrak Feedback",
+    "surveyCode": "TDF",
+    "projectCode": "dl_tamanu"
   }
 ]
