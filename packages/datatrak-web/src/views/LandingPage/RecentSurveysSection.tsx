@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
-import { useCurrentUserRecentSurveys } from '../../api';
+import { useCurrentUser, useCurrentUserRecentSurveys } from '../../api';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -42,6 +42,7 @@ const ScrollBody = styled.div`
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+  const { project } = useCurrentUser();
   return (
     <RecentSurveys>
       <SectionHeading>My recent surveys</SectionHeading>
@@ -67,7 +68,7 @@ export const RecentSurveysSection = () => {
             ))
           ) : (
             <Typography variant="body2" color="textSecondary">
-              No recent surveys to display
+              No recent surveys to display for {project?.name || 'project'}
             </Typography>
           )}
         </ScrollBody>

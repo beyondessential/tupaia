@@ -1,0 +1,26 @@
+[
+  {
+    "code": "ehealth_cook_islands",
+    "countryCode": "CK",
+    "name": "Cook Islands eHealth",
+    "description": "Improving health outcomes in the Cook Islands through digital health systems"
+  },
+  {
+    "code": "ehealth_tokelau",
+    "countryCode": "TK",
+    "name": "Tokelau eHealth",
+    "description": "Improving health outcomes in Tokelau through digital health systems"
+  },
+  {
+    "code": "ehealth_timor_leste",
+    "countryCode": "TL",
+    "name": "Timor Leste eHealth",
+    "description": "Improving health outcomes in Timor Leste through digital health systems"
+  },
+  {
+    "code": "ehealth_vanuatu",
+    "countryCode": "VU",
+    "name": "Vanuatu eHealth",
+    "description": "Improving health outcomes in Vanuatu through digital health systems"
+  }
+]

@@ -14,6 +14,7 @@ import {
   TableHead,
   TableRow,
   TableFooter,
+  Typography,
 } from '@material-ui/core';
 import { UserRewards } from '../../types';
 
@@ -96,6 +97,10 @@ const FooterCell = styled(Cell)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
+const NoDataMessage = styled(TableCell)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+`;
+
 interface LeaderboardTableProps {
   userRewards?: UserRewards;
   user?: DatatrakWebUserRequest.ResBody & {
@@ -116,6 +121,11 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
           </HeaderRow>
         </TableHead>
         <Body $rowCount={leaderboard?.length}>
+          {leaderboard?.length === 0 && (
+            <NoDataMessage>
+              No leaderboard entries to display for {user?.project?.name || 'project'}
+            </NoDataMessage>
+          )}
           {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
             const isActiveUser = user && user.id === userId;
             return (

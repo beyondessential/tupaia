@@ -25,8 +25,8 @@ export class SurveysRoute extends Route<SurveysRequest> {
     const { fields = [], projectId } = query;
 
     const surveys = await ctx.services.central.fetchResources('surveys', {
+      ...query,
       filter: {
-        ...query,
         project_id: projectId,
       },
       columns: fields,
