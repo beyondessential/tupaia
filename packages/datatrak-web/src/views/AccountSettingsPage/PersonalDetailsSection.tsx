@@ -74,7 +74,7 @@ export const PersonalDetailsSection = () => {
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
-      <PersonalDetailsForm onSubmit={handleSubmit(details => onSubmit(details))}>
+      <PersonalDetailsForm onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
           name="firstName"
