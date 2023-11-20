@@ -161,7 +161,7 @@ interface ExportDashboardProps {
   selectedDashboardItems: string[];
 }
 
-export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
+export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);

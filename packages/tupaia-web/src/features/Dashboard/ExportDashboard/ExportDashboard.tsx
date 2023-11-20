@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { DashboardItem } from '../../../types';
 import { Modal as BaseModal } from '../../../components';
 import { SelectVisualisation } from './SelectVisualisations';
-import { Preview } from './Preview';
+import { ExportSettings } from './ExportSettings';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {
@@ -71,12 +71,12 @@ interface ExportDashboardProps {
 }
 
 const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
-const PREVIEW_SCREEN = 'PREVIEW';
+const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
 
 export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
   const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
-  const onNext = () => setScreen(PREVIEW_SCREEN);
+  const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
   const onCloseModal = () => {
     onClose();
     setScreen(SELECT_VISUALISATIONS_SCREEN);
@@ -96,7 +96,10 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
               setSelectedDashboardItems={setSelectedDashboardItems}
             />
           ) : (
-            <Preview onClose={onCloseModal} selectedDashboardItems={selectedDashboardItems} />
+            <ExportSettings
+              onClose={onCloseModal}
+              selectedDashboardItems={selectedDashboardItems}
+            />
           )}
         </Container>
       </Wrapper>
