@@ -48,7 +48,6 @@ describe('processSurveyResponse', () => {
   };
 
   const processedResponseData = {
-    country_id: 'theCountryId',
     survey_id: 'theSurveyId',
     user_id: 'theUserId',
     start_time: 'theStartTime',

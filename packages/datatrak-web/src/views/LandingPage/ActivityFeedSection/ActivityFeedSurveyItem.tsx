@@ -24,7 +24,7 @@ const ListItemImageContainer = styled.div`
 `;
 
 const Image = styled.img.attrs({
-  src: '/survey-activity.svg',
+  src: '/tupaia-high-five.svg',
 })`
   height: 100%;
   width: 100%;
