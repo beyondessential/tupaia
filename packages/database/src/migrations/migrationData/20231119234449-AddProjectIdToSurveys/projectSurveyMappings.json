@@ -15,9 +15,34 @@
     "projectCode": "aim_demo"
   },
   {
+    "surveyName": "Incident - Response",
+    "surveyCode": "IR",
+    "projectCode": "aim_demo"
+  },
+  {
     "surveyName": "Incident - Report Incident",
     "surveyCode": "IRI",
     "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Dispose or Revalue an Asset",
+    "surveyCode": "TADA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Biomedical Safety Test",
+    "surveyCode": "TABST",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Biomedical IPM",
+    "surveyCode": "TAI",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Maintain or Verify an Asset",
+    "surveyCode": "TASM",
+    "projectCode": "asset_management"
   },
   {
     "surveyName": "DL Asset Biomed IPM",
@@ -105,8 +130,43 @@
     "projectCode": "asset_management"
   },
   {
+    "surveyName": "Change Asset Type",
+    "surveyCode": "TACC",
+    "projectCode": "asset_management"
+  },
+  {
     "surveyName": "Register an Asset",
     "surveyCode": "TAR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Registration Details of Asset",
+    "surveyCode": "TARA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Repair Request",
+    "surveyCode": "TARR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Repair",
+    "surveyCode": "TARS",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Transfer",
+    "surveyCode": "COUAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Initiate a Transfer",
+    "surveyCode": "IAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Location of an Asset",
+    "surveyCode": "TALC",
     "projectCode": "asset_management"
   },
   {
@@ -135,8 +195,18 @@
     "projectCode": "covid_samoa"
   },
   {
+    "surveyName": "Samoa COVID-19 Facility Assessment",
+    "surveyCode": "SC1FA",
+    "projectCode": "covid_samoa"
+  },
+  {
     "surveyName": "Samoa COVID-19 Index Case - Contact Tracing",
     "surveyCode": "SC1ICCT",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Public Facility Assessment",
+    "surveyCode": "SC1PFA",
     "projectCode": "covid_samoa"
   },
   {
@@ -1250,8 +1320,23 @@
     "projectCode": "pacmossi"
   },
   {
+    "surveyName": "Adult Mosquito Survey & Collection",
+    "surveyCode": "PAMC",
+    "projectCode": "pacmossi"
+  },
+  {
     "surveyName": "PacMOSSI Adult Mosquito Collection PW",
     "surveyCode": "PAMCP",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Field Station Mapping",
+    "surveyCode": "PFSM",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Larval Survey & Collection",
+    "surveyCode": "PLS",
     "projectCode": "pacmossi"
   },
   {
@@ -1267,6 +1352,11 @@
   {
     "surveyName": "PacMOSSI Ovitrap Analysis FJ",
     "surveyCode": "POAF",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Project Metadata",
+    "surveyCode": "PPM",
     "projectCode": "pacmossi"
   },
   {
@@ -1633,6 +1723,11 @@
     "surveyName": "Population - Fiji",
     "surveyCode": "population_FJ",
     "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Pharmacy RH Spot Check Tool",
+    "surveyCode": "PRSCT",
+    "projectCode": "unfpa"
   },
   {
     "surveyName": "Reproductive Health Combined",
@@ -2120,73 +2215,93 @@
     "projectCode": "mhms_solomon"
   },
   {
-    "surveyName": "Change Asset Type",
-    "surveyCode": "TACC",
-    "projectCode": "asset_management"
+    "surveyName": "OKE02 Farmer Profile",
+    "surveyCode": "OKE02",
+    "projectCode": "Okeuid_palau"
   },
   {
-    "surveyName": "Change Registration Details of Asset",
-    "surveyCode": "TARA",
-    "projectCode": "asset_management"
+    "surveyName": "OKE03 Farm Product Inventory",
+    "surveyCode": "OKE03",
+    "projectCode": "Okeuid_palau"
   },
   {
-    "surveyName": "Repair Request",
-    "surveyCode": "TARR",
-    "projectCode": "asset_management"
+    "surveyName": "OKE00 Market Mapping",
+    "surveyCode": "OKE00",
+    "projectCode": "Okeuid_palau"
   },
   {
-    "surveyName": "Complete or Update a Repair",
-    "surveyCode": "TARS",
-    "projectCode": "asset_management"
+    "surveyName": "Product availability",
+    "surveyCode": "OKE04",
+    "projectCode": "Okeuid_palau"
   },
   {
-    "surveyName": "Complete or Update a Transfer",
-    "surveyCode": "COUAT",
-    "projectCode": "asset_management"
+    "surveyName": "3 - Child Health & Immunisation",
+    "surveyCode": "PEHS_CHI_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Initiate a Transfer",
-    "surveyCode": "IAT",
-    "projectCode": "asset_management"
+    "surveyName": "4 - NCDs",
+    "surveyCode": "PEHS_NCD_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Change Location of an Asset",
-    "surveyCode": "TALC",
-    "projectCode": "asset_management"
+    "surveyName": "5 - Communicable Diseases",
+    "surveyCode": "PEHS_CDS_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Samoa COVID-19 Facility Assessment",
-    "surveyCode": "SC1FA",
-    "projectCode": "covid_samoa"
+    "surveyName": "12 - Environmental Health",
+    "surveyCode": "PEHS_EMH_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Samoa COVID-19 Public Facility Assessment",
-    "surveyCode": "SC1PFA",
-    "projectCode": "covid_samoa"
+    "surveyName": "13 - Health Promotion",
+    "surveyCode": "PEHS_HPM_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Adult Mosquito Survey & Collection",
-    "surveyCode": "PAMC",
-    "projectCode": "pacmossi"
+    "surveyName": "10 - Eye & ENT (ENT & Audiology)",
+    "surveyCode": "PEHS_EEA_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "PacMOSSI Field Station Mapping",
-    "surveyCode": "PFSM",
-    "projectCode": "pacmossi"
+    "surveyName": "6 - Rehabilitation",
+    "surveyCode": "PEHS_RHB_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Larval Survey & Collection",
-    "surveyCode": "PLS",
-    "projectCode": "pacmossi"
+    "surveyName": "7 - Mental Health",
+    "surveyCode": "PEHS_MTH_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "PacMOSSI Project Metadata",
-    "surveyCode": "PPM",
-    "projectCode": "pacmossi"
+    "surveyName": "1 - General Medical Services",
+    "surveyCode": "PEHS_GMS_V2",
+    "projectCode": "fanafana"
   },
   {
-    "surveyName": "Pharmacy RH Spot Check Tool",
-    "surveyCode": "PRSCT",
-    "projectCode": "unfpa"
+    "surveyName": "2 - Maternal, Newborn & Family Planning",
+    "surveyCode": "PEHS_MNF_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "9 - Oral Health",
+    "surveyCode": "PEHS_ORH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "11 - Diagnostics",
+    "surveyCode": "PEHS_DGT_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "8 - Gender Based Violence",
+    "surveyCode": "PEHS_GBV_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia DataTrak Feedback",
+    "surveyCode": "TDF",
+    "projectCode": "dl_tamanu"
   }
 ]

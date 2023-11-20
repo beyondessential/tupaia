@@ -97,7 +97,9 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       // Central returns overlays you can view in at least one of its countries
       // We run an additional filter here to narrow down to the specific country we're requesting for
       (overlay: MapOverlay) =>
-        accessPolicy.getPermissionGroups([rootEntityCode]).includes(overlay.permission_group),
+        entity.type === 'project' || // Don't worry about projects, we don't give permissions against them
+        !overlay.permission_group || // No permission group means publicly accessible
+        accessPolicy.getPermissionGroups([rootEntityCode]).includes(overlay.permission_group), // Filter by country/permission pair
     );
 
     if (mapOverlays.length === 0) {
