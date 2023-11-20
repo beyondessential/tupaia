@@ -15,7 +15,7 @@ export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['name', 'code', 'id', 'can_repeat', 'survey_group.name'];
+const DEFAULT_FIELDS = ['name', 'code', 'id', 'can_repeat', 'survey_group.name', 'surveyQuestions'];
 
 const parseOption = (option: string) => {
   try {
