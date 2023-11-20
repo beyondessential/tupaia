@@ -2118,5 +2118,75 @@
     "surveyName": "World Bank Service Delivery",
     "surveyCode": "WBSDD",
     "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "Change Asset Type",
+    "surveyCode": "TACC",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Registration Details of Asset",
+    "surveyCode": "TARA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Repair Request",
+    "surveyCode": "TARR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Repair",
+    "surveyCode": "TARS",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Transfer",
+    "surveyCode": "COUAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Initiate a Transfer",
+    "surveyCode": "IAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Location of an Asset",
+    "surveyCode": "TALC",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Facility Assessment",
+    "surveyCode": "SC1FA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Public Facility Assessment",
+    "surveyCode": "SC1PFA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Adult Mosquito Survey & Collection",
+    "surveyCode": "PAMC",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Field Station Mapping",
+    "surveyCode": "PFSM",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Larval Survey & Collection",
+    "surveyCode": "PLS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Project Metadata",
+    "surveyCode": "PPM",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Pharmacy RH Spot Check Tool",
+    "surveyCode": "PRSCT",
+    "projectCode": "unfpa"
   }
 ]
