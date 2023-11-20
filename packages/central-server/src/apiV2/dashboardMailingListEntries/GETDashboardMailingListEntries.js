@@ -40,7 +40,7 @@ export class GETDashboardMailingListEntries extends GETHandler {
 
   async getPermissionsFilter(criteria, options) {
     // Get all dashboards the user has permission to and join on dashboard_mailing_list
-    const dbConditions = await getDashboardsDBFilter(this.accessPolicy, this.models, {});
+    const dbConditions = await getDashboardsDBFilter(this.accessPolicy, this.models, criteria);
     const dbOptions = { ...options };
     dbOptions.multiJoin = mergeMultiJoin(
       [
