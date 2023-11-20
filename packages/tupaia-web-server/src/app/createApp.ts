@@ -12,9 +12,9 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
-import { attachAccessPolicy } from './middleware';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
+import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
