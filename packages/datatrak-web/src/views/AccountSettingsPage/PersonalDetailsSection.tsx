@@ -107,7 +107,7 @@ export const PersonalDetailsSection = () => {
           name="email"
           label="Email"
           placeholder="Email"
-          title="You cannot change your email address"
+          tooltip="You cannot change your email address"
           autoComplete="email"
           value={user.email}
           required
