@@ -5,20 +5,18 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
 import { TextField } from '@tupaia/ui-components';
 import { useEditUser } from '../../api/mutations';
+import { DatatrakWebUserRequest } from '@tupaia/types';
 
-type PersonalDetails = {
-  firstName?: string;
-  lastName?: string;
-  mobileNumber?: string | null;
-  employer?: string;
-  position?: string;
-};
+type PersonalDetailsFormFields = Pick<
+  DatatrakWebUserRequest.ResBody,
+  'firstName' | 'lastName' | 'mobileNumber' | 'employer' | 'position'
+>;
 
 const ButtonWrapper = styled.div`
   grid-column: -2;
@@ -49,14 +47,14 @@ export const PersonalDetailsSection = () => {
 
   const {
     control,
-    formState: { isDirty },
+    formState: { isDirty, dirtyFields },
     handleSubmit,
     register,
-  } = useForm<PersonalDetails>({
+  } = useForm<PersonalDetailsFormFields>({
     defaultValues: {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
-      mobileNumber: user.mobileNumber ?? '',
+      mobileNumber: user.contactNumber ?? '',
       employer: user.employer ?? '',
       position: user.position ?? '',
     },
