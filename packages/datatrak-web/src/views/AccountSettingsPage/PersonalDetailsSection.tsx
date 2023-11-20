@@ -62,9 +62,21 @@ export const PersonalDetailsSection = () => {
     },
   });
 
+  function onSubmit(
+    userDetails: DatatrakWebUserRequest.ResBody,
+  ): SubmitHandler<PersonalDetailsFormFields> {
+    for (const field in userDetails) {
+      if (!dirtyFields[field]) {
+        delete userDetails[field];
+      }
+    }
+
+    updateUser(userDetails);
+  }
+
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
-      <PersonalDetailsForm onSubmit={handleSubmit(updateUser)}>
+      <PersonalDetailsForm onSubmit={handleSubmit(details => onSubmit(details))}>
         <Controller
           control={control}
           name="firstName"
