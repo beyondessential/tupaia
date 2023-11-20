@@ -14,6 +14,7 @@ import { useDashboards, useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { ExportSettingLabel } from './ExportSettingLabel';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -79,12 +80,6 @@ const ExportSetting = styled.div`
   fieldset {
     border: 0;
   }
-`;
-
-const Legend = styled.legend`
-  color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const Checkbox = styled(BaseCheckbox)`
@@ -211,7 +206,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
             <ExportSetting>
               <FormGroup>
                 <fieldset>
-                  <Legend>Display options (coming soon)</Legend>
+                  <ExportSettingLabel>Display options (coming soon)</ExportSettingLabel>
                   <Checkbox
                     label="Export with Labels"
                     value
