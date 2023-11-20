@@ -9,9 +9,7 @@ import { ButtonBase, Menu, MenuItem, Box, Paper } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../../types';
 import { TOP_BAR_HEIGHT } from '../../../constants';
-import {ActionsMenu } from './ActionsMenu'
-
-
+import { ActionsMenu } from './ActionsMenu';
 
 const MenuButton = styled(ButtonBase)`
   display: flex;
@@ -80,8 +78,6 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   );
 };
 
-
-
 export const DashboardMenu = ({
   activeDashboard,
   dashboards,
@@ -113,7 +109,11 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu setExportModalOpen={setExportModalOpen} activeDashboard={activeDashboard} setSubscribeModalOpen={setSubscribeModalOpen}/>
+          <ActionsMenu
+            setExportModalOpen={setExportModalOpen}
+            activeDashboard={activeDashboard}
+            setSubscribeModalOpen={setSubscribeModalOpen}
+          />
         </MenuButtonWrapper>
       )}
       <StyledMenu

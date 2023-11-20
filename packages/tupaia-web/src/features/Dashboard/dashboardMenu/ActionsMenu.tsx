@@ -10,9 +10,8 @@ import {
 } from '@tupaia/ui-components';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { useParams } from 'react-router';
 import { Dashboard } from '../../../types';
-import { useMailingList } from './useMailingList';
+import { useDashboardMailingList } from '../../../utils';
 
 interface ActionsMenuProps {
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,11 +24,12 @@ export const ActionsMenu = ({
   activeDashboard,
   setSubscribeModalOpen,
 }: ActionsMenuProps) => {
-  const { entityCode } = useParams();
+  const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {
     return null;
   }
+
   const menuOptions: ActionsMenuOptionType[] = [];
   const exportOption: ActionsMenuOptionType = {
     label: 'Export',
@@ -40,10 +40,8 @@ export const ActionsMenu = ({
   };
   menuOptions.push(exportOption);
 
-  const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
-
-  if (hasMailingList) {
-    if (isSubscribed) {
+  if (mailingList) {
+    if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
         ActionIcon: CheckCircleIcon,

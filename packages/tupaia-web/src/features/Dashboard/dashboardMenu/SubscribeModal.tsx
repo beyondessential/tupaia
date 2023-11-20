@@ -14,13 +14,13 @@ import { Dashboard } from '../../../types';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
 import { useSubscribe, useUnsubscribe } from '../../../api/mutations';
+import { useDashboardMailingList } from '../../../utils';
 import {
   MODAL_SUBSCRIBE_TEXT,
   MODAL_SUBSCRIBE_TITLE,
   MODAL_UNSUBSCRIBE_TEXT,
   MODAL_UNSUBSCRIBE_TITLE,
 } from './constants';
-import { useMailingList } from './useMailingList';
 
 const Wrapper = styled.div`
   width: 45rem;
@@ -92,6 +92,8 @@ export const SubscribeModal = ({
 }: SubscribeModalProps) => {
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();
+  const mailingList = useDashboardMailingList();
+  const isSubscribed = mailingList ? mailingList.isSubscribed : false;
   const formContext = useForm({
     mode: 'onChange',
   });
@@ -105,8 +107,6 @@ export const SubscribeModal = ({
     error: unsubscribeError,
     reset: resetUnsubscribe,
   } = useUnsubscribe(projectCode, entityCode, activeDashboard?.code);
-
-  const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
 
   const handleSubmit = async data => {
     if (isSubscribed) {
@@ -132,7 +132,7 @@ export const SubscribeModal = ({
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <Wrapper>
-        {activeDashboard && hasMailingList ? (
+        {activeDashboard && mailingList ? (
           <Container>
             <Form formContext={formContext} onSubmit={handleSubmit}>
               <Title align="left" variant="h5">
