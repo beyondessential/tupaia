@@ -31,7 +31,7 @@ const getNewSurveyCode = (oldSurveyCode, newProjectCode) => {
     .split('_')
     .map(word => word[0])
     .join('');
-  return `${oldSurveyCode}_${projectInitials}`;
+  return `${oldSurveyCode}_${projectInitials.toUppercase()}`;
 };
 
 // get survey with code surveyCode
@@ -40,9 +40,6 @@ const getExistingSurvey = async (db, surveyCode) => {
   SELECT * FROM survey WHERE code = '${surveyCode}';
   `);
 
-  if (!existingSurvey.rows.length) {
-    throw new Error(`No survey found with code ${surveyCode}`);
-  }
   return existingSurvey.rows[0];
 };
 
@@ -52,16 +49,13 @@ const getSurveyScreens = async (db, surveyId) => {
   SELECT * FROM survey_screen WHERE survey_id = '${surveyId}';
   `);
 
-  if (!surveyScreens.rows.length) {
-    throw new Error(`No survey screens found with survey id ${surveyId}`);
-  }
   return surveyScreens.rows;
 };
 
 // get the survey screen components for the survey screens
 const getSurveyScreenComponents = async (db, surveyScreens) => {
   const surveyScreenComponents = await db.runSql(`
-  SELECT * FROM survey_screen_component WHERE survey_screen_id IN (${surveyScreens
+  SELECT * FROM survey_screen_component WHERE screen_id IN (${surveyScreens
     .map(screen => `'${screen.id}'`)
     .join(',')});
   `);
@@ -81,22 +75,34 @@ const getDataGroup = async (db, dataGroupId) => {
   return dataGroup.rows[0];
 };
 
+// these are the only country names that will be in the provided surveys' names
+const countryNames = ['Tonga', 'Samoa'];
+
+const getNewSurveyName = surveyName => {
+  // Remove country name from survey name, and add Demo Land to make it unique
+  const countryNameRegex = new RegExp(countryNames.join('|'), 'gi');
+  return `${surveyName.replace(countryNameRegex, '')} - Demo Land`;
+};
+
 const createNewSurvey = async (db, survey, countryId, permissionGroupId) => {
   const { oldSurveyCode, newProjectCode } = survey;
   const newProjectId = await getProjectId(db, newProjectCode);
   const newSurveyCode = getNewSurveyCode(oldSurveyCode, newProjectCode);
 
+  const existingSurvey = await getExistingSurvey(db, oldSurveyCode);
+
+  // if that survey doesn't exist, don't break, just return early
+  if (!existingSurvey) return;
+
   const {
     id,
     name,
-    description,
     can_repeat,
     survey_group_id,
     integration_metadata,
-    period_granularity,
     requires_approval,
     data_group_id,
-  } = await getExistingSurvey(db, oldSurveyCode);
+  } = existingSurvey;
 
   const existingSurveyScreens = await getSurveyScreens(db, id);
 
@@ -117,15 +123,13 @@ const createNewSurvey = async (db, survey, countryId, permissionGroupId) => {
   await insertObject(db, 'survey', {
     id: newSurveyId,
     code: newSurveyCode,
-    countryIds: `{${countryId}}`,
+    country_ids: `{${countryId}}`,
     project_id: newProjectId,
     permission_group_id: permissionGroupId,
-    name,
-    description,
+    name: getNewSurveyName(name),
     can_repeat,
     survey_group_id,
     integration_metadata,
-    period_granularity,
     requires_approval,
     data_group_id: newSurveyDataGroupId,
   });
@@ -149,11 +153,26 @@ const createNewSurvey = async (db, survey, countryId, permissionGroupId) => {
 
   // create the new survey screen components
   const newSurveyScreenComponents = existingSurveyScreenComponents.map(component => {
-    const newSurveyScreenId = surveyScreenIdMap[component.survey_screen_id];
+    const {
+      question_id,
+      component_number,
+      is_follow_up,
+      visibility_criteria,
+      question_label,
+      detail_label,
+      config,
+    } = component;
+    const newSurveyScreenId = surveyScreenIdMap[component.screen_id];
     return {
-      ...component,
+      question_id,
+      component_number,
+      is_follow_up,
+      visibility_criteria,
+      question_label,
+      detail_label,
+      config,
       id: generateId(),
-      survey_screen_id: newSurveyScreenId,
+      screen_id: newSurveyScreenId,
     };
   });
 
@@ -183,17 +202,21 @@ const removeSurvey = async (db, survey) => {
 
   const existingSurvey = await getExistingSurvey(db, newSurveyCode);
 
+  if (!existingSurvey) return;
+
   const existingSurveyScreens = await getSurveyScreens(db, existingSurvey.id);
 
   await db.runSql(`
     DELETE FROM data_group WHERE code = '${newSurveyCode}';
   `);
 
-  await db.runSql(`
-    DELETE FROM survey_screen_component WHERE survey_screen_id IN (${existingSurveyScreens
+  if (existingSurveyScreens.length) {
+    await db.runSql(`
+    DELETE FROM survey_screen_component WHERE screen_id IN (${existingSurveyScreens
       .map(screen => `'${screen.id}'`)
       .join(',')});
   `);
+  }
 
   await db.runSql(`
     DELETE FROM survey_screen WHERE survey_id = '${existingSurvey.id}';
