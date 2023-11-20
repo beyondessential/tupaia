@@ -31,7 +31,7 @@ const getNewSurveyCode = (oldSurveyCode, newProjectCode) => {
     .split('_')
     .map(word => word[0])
     .join('');
-  return `${oldSurveyCode}_${projectInitials.toUppercase()}`;
+  return `${oldSurveyCode}_${projectInitials.toUpperCase()}`;
 };
 
 // get survey with code surveyCode
@@ -158,21 +158,19 @@ const createNewSurvey = async (db, survey, countryId, permissionGroupId) => {
       component_number,
       is_follow_up,
       visibility_criteria,
-      question_label,
-      detail_label,
       config,
+      validation_criteria,
     } = component;
     const newSurveyScreenId = surveyScreenIdMap[component.screen_id];
     return {
       question_id,
       component_number,
       is_follow_up,
-      visibility_criteria,
-      question_label,
-      detail_label,
-      config,
       id: generateId(),
       screen_id: newSurveyScreenId,
+      visibility_criteria,
+      config,
+      validation_criteria,
     };
   });
 
