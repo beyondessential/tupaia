@@ -6,16 +6,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useCurrentUser } from '../../api';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
+import { successToast } from '../../utils';
 import { TextField } from '@tupaia/ui-components';
+import { useCurrentUser } from '../../api';
 import { useEditUser } from '../../api/mutations';
-import { DatatrakWebUserRequest } from '@tupaia/types';
+import { UserAccountDetails } from '../../types';
 
 type PersonalDetailsFormFields = Pick<
-  DatatrakWebUserRequest.ResBody,
-  'firstName' | 'lastName' | 'mobileNumber' | 'employer' | 'position'
+  UserAccountDetails,
+  'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
 >;
 
 const ButtonWrapper = styled.div`
@@ -42,7 +43,7 @@ const PersonalDetailsForm = styled.form`
 `;
 
 export const PersonalDetailsSection = () => {
-  const { mutate: updateUser } = useEditUser();
+  const { mutate: updateUser } = useEditUser(() => successToast('Personal details updated'));
   const user = useCurrentUser();
 
   const {
@@ -60,9 +61,8 @@ export const PersonalDetailsSection = () => {
     },
   });
 
-  function onSubmit(
-    userDetails: DatatrakWebUserRequest.ResBody,
-  ): SubmitHandler<PersonalDetailsFormFields> {
+  function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
+    // TODO: Refactor to use map(); remember to use Object.entries()
     for (const field in userDetails) {
       if (!dirtyFields[field]) {
         delete userDetails[field];
