@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { DashboardItem } from '../../../types';
 import { Modal as BaseModal } from '../../../components';
 import { SelectVisualisation } from './SelectVisualisations';
 import { Preview } from './Preview';
-import { Typography } from '@material-ui/core';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {

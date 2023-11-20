@@ -24,9 +24,7 @@ import { PDFExportHeader } from './PDFExportHeader';
 const StyledA4Page = styled(A4Page)<{
   $isPreview?: boolean;
 }>`
-  ${({ $isPreview }) => ($isPreview ? 'width: 100%;' : '')};
-  ${({ $isPreview }) => ($isPreview ? 'zoom: 0.25;' : '')};
-  ${({ $isPreview }) => ($isPreview ? 'aspect-ratio: 0.707;' : '')};
+  ${({ $isPreview }) => ($isPreview ? `width: 100%; zoom: 0.25;` : '')};
 `;
 
 const Wrapper = styled.div`
@@ -138,7 +136,7 @@ export const PDFExportDashboardItem = ({
   const title = getTitle();
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
-  const data = isLoading ? undefined : (report as BaseReport).data;
+  const data = isLoading ? undefined : (report as BaseReport)?.data;
   return (
     <StyledA4Page key={dashboardItem?.code} $isPreview={isPreview}>
       <PDFExportHeader>{entityName}</PDFExportHeader>

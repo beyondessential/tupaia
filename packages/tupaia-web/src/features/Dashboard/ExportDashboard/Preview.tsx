@@ -142,7 +142,7 @@ const Instructions = styled(Typography)`
 
 const PreviewTitle = styled(Typography)`
   color: ${({ theme }) => theme.palette.text.primary};
-  font-weight: bold;
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   font-size: 0.875rem;
   line-height: 1.4;
 `;

@@ -5,9 +5,9 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
 import { Button, CheckboxList, ListItemProps } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
-import { Typography } from '@material-ui/core';
 
 const Container = styled.div`
   display: flex;
