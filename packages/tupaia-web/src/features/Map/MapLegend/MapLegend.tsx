@@ -8,14 +8,15 @@ import { Legend, LegendProps } from '@tupaia/ui-map-components';
 import { MobileMapLegend } from './MobileMapLegend';
 import { useSearchParams } from 'react-router-dom';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
-import { useMapOverlayData } from '../utils';
+import { useMapOverlayMapData } from '../utils';
 import styled from 'styled-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 
 const DesktopWrapper = styled.div`
   pointer-events: auto;
-  margin: 0.4rem 0.625rem;
+  margin: 0.4rem 0.625rem 1.5rem 0.625rem;
   font-size: 0.875rem;
+  z-index: 1;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
@@ -37,9 +38,9 @@ const SeriesDivider = styled.div`
 export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   const [urlSearchParams] = useSearchParams();
   const selectedOverlay = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
-  const { isLoading, isFetched, ...overlayReportData } = useMapOverlayData();
+  const { isLoading, isFetched, ...overlayReportData } = useMapOverlayMapData();
 
-  if (!selectedOverlay || !overlayReportData || !isFetched || isLoading) {
+  if (!selectedOverlay || !overlayReportData || isLoading) {
     return null;
   }
 
@@ -55,15 +56,13 @@ export const MapLegend = ({ hiddenValues, setValueHidden }: LegendProps) => {
   );
 
   return (
-    <>
-      <ErrorBoundary>
-        <MobileMapLegend>
-          <LegendComponent />
-        </MobileMapLegend>
-        <DesktopWrapper>
-          <LegendComponent />
-        </DesktopWrapper>
-      </ErrorBoundary>
-    </>
+    <ErrorBoundary>
+      <MobileMapLegend>
+        <LegendComponent />
+      </MobileMapLegend>
+      <DesktopWrapper>
+        <LegendComponent />
+      </DesktopWrapper>
+    </ErrorBoundary>
   );
 };

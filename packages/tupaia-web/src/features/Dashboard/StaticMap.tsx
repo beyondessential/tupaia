@@ -6,9 +6,15 @@
 import React from 'react';
 import polyline from '@mapbox/polyline';
 import { Position } from 'geojson';
-import { DEFAULT_BOUNDS } from '../../constants';
+import styled from 'styled-components';
+import { DEFAULT_BOUNDS, MOBILE_BREAKPOINT } from '../../constants';
 import { Media } from './Media';
 
+const Wrapper = styled.div`
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    display: none;
+  }
+`;
 const areBoundsValid = (b: Position[]) => {
   return Array.isArray(b) && b.length === 2;
 };
@@ -61,14 +67,22 @@ const makeStaticMapUrl = (polygonBounds: Position[]) => {
 
   const zoomLevel = longitude === 180 ? 1 : 2;
 
-  return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false`;
+  return `${MAPBOX_BASE_URL}${boundingBoxPath}/${longitude},${latitude},${zoomLevel}/${size}@2x?access_token=${MAPBOX_TOKEN}&attribution=false&logo=false`;
 };
 
-export const StaticMap = ({ bounds }: { bounds: Position[] }) => {
+interface StaticMapProps {
+  title?: string;
+  bounds: Position[];
+}
+export const StaticMap = ({ bounds, title }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }
 
   const url = makeStaticMapUrl(bounds);
-  return <Media $backgroundImage={url}/>;
+  return (
+    <Wrapper>
+      <Media $backgroundImage={url} aria-label={`Static map image for ${title}`} />
+    </Wrapper>
+  );
 };

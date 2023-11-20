@@ -10,9 +10,15 @@ export interface Params {
   entityCode: string;
 }
 
-interface DashboardWithItems extends Dashboard {
-  items: KeysToCamelCase<DashboardItem>[];
+interface MailingList {
+  entityCode: string;
+  isSubscribed: boolean;
 }
-export type ResBody = KeysToCamelCase<DashboardWithItems>[];
+
+interface DashboardWithMetadata extends Dashboard {
+  items: DashboardItem[];
+  mailingLists?: MailingList[];
+}
+export type ResBody = KeysToCamelCase<DashboardWithMetadata>[];
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

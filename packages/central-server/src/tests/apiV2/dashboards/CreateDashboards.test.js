@@ -4,12 +4,12 @@
  */
 
 import { expect } from 'chai';
-import { findOrCreateDummyRecord } from '@tupaia/database';
+import { buildAndInsertProjectsAndHierarchies, findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../testUtilities';
+import { TestableApp, resetTestData } from '../../testUtilities';
 
 describe('Permissions checker for CreateDashboards', async () => {
   const DEFAULT_POLICY = {
@@ -27,6 +27,24 @@ describe('Permissions checker for CreateDashboards', async () => {
 
   const app = new TestableApp();
   const { models } = app;
+
+  before(async () => {
+    await resetTestData();
+
+    await buildAndInsertProjectsAndHierarchies(models, [
+      {
+        code: 'test_project',
+        name: 'Test Project',
+        entities: [
+          { code: 'KI', country_code: 'KI' },
+          { code: 'VU', country_code: 'VU' },
+          { code: 'TO', country_code: 'TO' },
+          { code: 'SB', country_code: 'SB' },
+          { code: 'LA', country_code: 'LA' },
+        ],
+      },
+    ]);
+  });
 
   afterEach(() => {
     app.revokeAccess();

@@ -4,11 +4,10 @@
  */
 
 import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
-
-import { sendEmail } from '../../utilities';
+import { sendEmail } from '@tupaia/server-utils';
 
 export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
-  notifiers = [onUpsertSendPermissionGrantEmail];
+  notifiers = [onUpsertSendPermissionGrantEmail, expireAccess];
 }
 
 const EMAILS = {
@@ -54,11 +53,19 @@ async function onUpsertSendPermissionGrantEmail(
 
   const { subject, body, signOff } = EMAILS[platform];
 
-  sendEmail(
-    user.email,
+  sendEmail(user.email, {
     subject,
-    body(user.first_name, permissionGroup.name, entity.name),
-    null,
+    text: body(user.first_name, permissionGroup.name, entity.name),
     signOff,
-  );
+  });
+}
+
+/**
+ * This sets the expiry on the users session information to cause a permission refresh. We do this to
+ * ensure we don't use a cached version of the accessPolicy after changing a users access
+ */
+async function expireAccess({ new_record: newRecord, old_record: oldRecord }, models) {
+  const userId = newRecord?.user_id || oldRecord.user_id;
+  const user = await models.user.findById(userId);
+  await user.expireSessionToken('tupaia_web');
 }

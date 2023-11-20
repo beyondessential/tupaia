@@ -303,6 +303,10 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     return EntityType;
   }
 
+  get cacheEnabled() {
+    return true;
+  }
+
   // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
   get cacheDependencies() {
     return [TYPES.ANCESTOR_DESCENDANT_RELATION];

@@ -6,12 +6,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Button } from '@tupaia/ui-components';
-import { Link, List } from '@material-ui/core';
-import { ViewReport } from '../../../types';
+import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
+import { List, Typography } from '@material-ui/core';
+import { ViewReport } from '@tupaia/types';
 import { CheckboxList, Form as BaseForm } from '../../../components';
-import { transformDownloadLink } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+import { useDownloadRawData } from '../../../api/mutations';
 
 const ListItem = styled.li`
   text-align: center;
@@ -31,6 +31,9 @@ const Form = styled(BaseForm)`
   align-items: center;
   > fieldset {
     flex-grow: 1;
+  }
+  .MuiBox-root {
+    flex: 1;
   }
   legend {
     margin-bottom: 1.5rem;
@@ -54,6 +57,19 @@ const CheckboxListWrapper = styled.div`
   max-width: 100%;
 `;
 
+const ErrorMessage = styled(Typography).attrs({
+  variant: 'body1',
+  color: 'error',
+})`
+  margin-bottom: 1rem;
+`;
+
+const EmailDownloadAlert = styled(Alert).attrs({
+  severity: 'info',
+})`
+  margin-bottom: 1rem;
+`;
+
 interface DataDownloadProps {
   report: ViewReport;
   isEnlarged?: boolean;
@@ -65,6 +81,14 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
   const formContext = useForm({
     mode: 'onChange',
   });
+  const selectedCodes = formContext.watch(reportCode!);
+  const {
+    mutateAsync: fetchDownloadData,
+    isLoading,
+    error,
+    data: downloadResponse,
+  } = useDownloadRawData(report?.downloadUrl);
+
   const { data } = report;
   if (!isEnlarged)
     return (
@@ -75,16 +99,22 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
       </List>
     );
 
-  const selectedCodes = formContext.watch(reportCode!);
-  const downloadLink = transformDownloadLink(`/${report.downloadUrl}&surveyCodes=${selectedCodes}`);
-
   const closeModal = () => {
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT);
     urlSearchParams.delete(URL_SEARCH_PARAMS.REPORT_PERIOD);
     setUrlSearchParams(urlSearchParams);
   };
-  return (
+  return isLoading ? (
+    <SpinningLoader />
+  ) : (
     <Form formContext={formContext}>
+      {downloadResponse?.emailTimeoutHit && (
+        <EmailDownloadAlert>
+          This export is taking a while, and will continue in the background. You will be emailed
+          when the export process completes.
+        </EmailDownloadAlert>
+      )}
+      {error && <ErrorMessage>{error.message}</ErrorMessage>}
       <CheckboxListWrapper>
         <CheckboxList
           options={
@@ -100,17 +130,14 @@ export const DataDownload = ({ report, isEnlarged }: DataDownloadProps) => {
           required
         />
       </CheckboxListWrapper>
+
       <ButtonWrapper>
         <FormButton variant="outlined" color="default" onClick={closeModal}>
           Cancel
         </FormButton>
         <FormButton
-          component={Link}
-          disabled={!selectedCodes || selectedCodes.length === 0}
-          href={downloadLink}
-          download
-          target="_blank"
-          rel="noreferrer noopener"
+          disabled={!selectedCodes || selectedCodes.length === 0 || isLoading}
+          onClick={() => fetchDownloadData(selectedCodes)}
         >
           Download
         </FormButton>

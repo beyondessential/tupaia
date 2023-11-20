@@ -64,7 +64,8 @@ export const processSurveyResponse = async (getState, database, userId, question
 
     // Save any entities used in the recent list
     if (['PrimaryEntity', 'Entity'].includes(question.type)) {
-      const { type: entityTypes } = question.config.entity;
+      const { filter } = question.config.entity;
+      const entityTypes = filter?.type || [];
       addRecentEntityId(
         database,
         userId,

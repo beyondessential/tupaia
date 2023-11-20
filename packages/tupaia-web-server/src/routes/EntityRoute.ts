@@ -5,14 +5,14 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import camelCaseKeys from 'camelcase-keys';
-import { TupaiaWebEntityRequest } from '@tupaia/types';
+import { WebServerEntityRequest, Entity } from '@tupaia/types';
+import { camelcaseKeys } from '@tupaia/tsutils';
 
 export type EntityRequest = Request<
-  TupaiaWebEntityRequest.Params,
-  TupaiaWebEntityRequest.ResBody,
-  TupaiaWebEntityRequest.ReqBody,
-  TupaiaWebEntityRequest.ReqQuery
+  WebServerEntityRequest.Params,
+  WebServerEntityRequest.ResBody,
+  WebServerEntityRequest.ReqBody,
+  WebServerEntityRequest.ReqQuery
 >;
 
 const DEFAULT_FIELDS = ['parent_code', 'code', 'name', 'type'];
@@ -22,11 +22,11 @@ export class EntityRoute extends Route<EntityRequest> {
     const { params, query, ctx } = this.req;
     const { projectCode, entityCode } = params;
 
-    const entity = await ctx.services.entity.getEntity(projectCode, entityCode, {
+    const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
       fields: DEFAULT_FIELDS,
       ...query,
-    });
+    })) as Entity;
 
-    return camelCaseKeys(entity);
+    return camelcaseKeys(entity);
   }
 }

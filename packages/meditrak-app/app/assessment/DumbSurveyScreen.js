@@ -4,8 +4,9 @@
  */
 
 import React from 'react';
-import { ActivityIndicator, Animated, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { Client as BugsnagClient } from 'bugsnag-react-native';
 
 import { database } from '../database';
 import { QuestionScreen } from './QuestionScreen';
@@ -20,14 +21,17 @@ import {
   STATUS_MESSAGE_ERROR,
 } from '../widgets';
 import { SurveyTableOfContents } from './SurveyTableOfContents';
-import { THEME_COLOR_ONE } from '../globalStyles';
+import { DEFAULT_PADDING, THEME_COLOR_ONE, THEME_FONT_SIZE_ONE } from '../globalStyles';
 import { HeaderLeftButton } from '../navigation/HeaderLeftButton';
 
 const LENGTH_OF_TRANSITION = 300;
 
+const bugsnag = new BugsnagClient();
+
 export class DumbSurveyScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.state.params.headerLabel,
+    // eslint-disable-next-line global-require
     headerLeft: () => <HeaderLeftButton source={require('../images/x.png')} labelVisible={false} />,
   });
 
@@ -72,6 +76,21 @@ export class DumbSurveyScreen extends React.Component {
     if (this.props.errorMessage !== nextProps.errorMessage) return true;
     if (this.state !== nextState) return true;
     return false;
+  }
+
+  /**
+   * Error boundary
+   */
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  /**
+   * Error boundary logger
+   */
+  componentDidCatch(error, info) {
+    error.message = `Survey boundary error: ${error.message}`;
+    bugsnag.notify(error);
   }
 
   onToggleToc() {
@@ -134,6 +153,15 @@ export class DumbSurveyScreen extends React.Component {
       screenIndex,
       questions,
     } = this.props;
+    const { hasError } = this.state;
+    if (hasError) {
+      return (
+        <Text style={localStyles.hasErrorText}>
+          The survey has entered an invalid state. Please contact your survey administrator.
+        </Text>
+      );
+    }
+
     const { isTableOfContentsVisible } = this.state;
 
     return (
@@ -250,5 +278,10 @@ const localStyles = StyleSheet.create({
   actionBar: {
     position: 'relative',
     height: ACTION_BAR_HEIGHT,
+  },
+  hasErrorText: {
+    fontSize: THEME_FONT_SIZE_ONE,
+    textAlign: 'center',
+    padding: DEFAULT_PADDING,
   },
 });

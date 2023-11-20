@@ -38,10 +38,7 @@ const Title = styled(Typography).attrs({
   text-align: center;
   margin: 0;
   line-height: 1.4;
-  padding-top: 1.5rem; // to account for buttons on modal at smaller screens overlapping title text
-  @media screen and (min-width: ${({ theme }) => theme.breakpoints.values.sm}px) {
-    padding-top: 0;
-  }
+  padding: 1.5rem 1.5rem 0; // to account for buttons on modal at smaller screens overlapping title text
 `;
 
 const TitleWrapper = styled(FlexColumn)`
@@ -64,17 +61,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-interface EnlargedDashboardVisualProps {
-  entityName?: Entity['name'];
-  isPreview?: boolean;
-}
-
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
   padding-top: 1rem;
   padding-bottom: 0.3rem;
 `;
+interface EnlargedDashboardVisualProps {
+  entityName?: Entity['name'];
+  isPreview?: boolean;
+}
+
 /*
  * EnlargedDashboardVisual is the enlarged dashboard item report visuals. It handles the case of a preview as well as the regular enlarged dashboard item.
  */
@@ -162,7 +159,7 @@ export const EnlargedDashboardVisual = ({
             {startDate &&
               endDate &&
               `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}. `}
-            Exported on {date} from Tupaia.org
+            Exported on {date} from tupaia.org
           </ExportDate>
         )}
       </ContentWrapper>

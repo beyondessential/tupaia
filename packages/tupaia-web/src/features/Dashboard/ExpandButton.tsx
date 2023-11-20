@@ -22,6 +22,10 @@ const SemiCircle = styled(Button)`
   border-bottom-left-radius: 60px;
   cursor: pointer;
   padding: 0;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
 `;
 
 const CloseArrowIcon = styled(KeyboardArrowRight)`

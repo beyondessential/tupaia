@@ -6,10 +6,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Typography, Button } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { Typography } from '@material-ui/core';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
-import { ErrorBoundary } from '@tupaia/ui-components';
+import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { ExpandButton } from './ExpandButton';
@@ -19,14 +18,15 @@ import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
+import { ExportDashboard } from './ExportDashboard';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard } from '../../utils';
-import { ExportDashboard } from './ExportDashboard';
+import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
-const MAX_SIDEBAR_COLLAPSED_WIDTH = 500;
-const MIN_SIDEBAR_WIDTH = 350;
+const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
+const MIN_SIDEBAR_WIDTH = 360;
+const MIN_EXPANDED_SIDEBAR_WIDTH = 700;
 
 const Panel = styled.div<{
   $isExpanded: boolean;
@@ -37,10 +37,12 @@ const Panel = styled.div<{
   width: 100%;
   overflow: visible;
   min-height: 100%;
+
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: ${({ $isExpanded }) => ($isExpanded ? 50 : 25)}%;
+    width: ${({ $isExpanded }) => ($isExpanded ? 60 : 25)}%;
     height: 100%;
-    min-width: ${MIN_SIDEBAR_WIDTH}px;
+    min-width: ${({ $isExpanded }) =>
+      $isExpanded ? MIN_EXPANDED_SIDEBAR_WIDTH : MIN_SIDEBAR_WIDTH}px;
     max-width: ${({ $isExpanded }) =>
       $isExpanded ? MAX_SIDEBAR_EXPANDED_WIDTH : MAX_SIDEBAR_COLLAPSED_WIDTH}px;
   }
@@ -50,29 +52,36 @@ const ScrollBody = styled.div`
   position: relative;
   height: 100%;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    overflow: auto;
+    overflow-y: scroll;
+  }
+`;
+
+const StickyBar = styled.div<{
+  $isExpanded: boolean;
+}>`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  h3 {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '0rem')};
+  }
+
+  > .MuiButtonBase-root {
+    padding-left: ${({ $isExpanded }) => ($isExpanded ? '2rem' : '1.2rem')};
   }
 `;
 
 const TitleBar = styled.div`
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.background.default};
-  z-index: 1;
+
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     display: none;
   }
-`;
-
-const ExportButton = styled(Button).attrs({
-  variant: 'outlined',
-})`
-  font-size: 0.6875rem;
-  margin: 0 1rem;
 `;
 
 const Title = styled(Typography)`
@@ -80,7 +89,6 @@ const Title = styled(Typography)`
   font-weight: 400;
   font-size: 1.625rem;
   line-height: 1.4;
-  padding: 0 1rem;
 `;
 
 const DashboardItemsWrapper = styled.div<{
@@ -96,12 +104,6 @@ const DashboardItemsWrapper = styled.div<{
   column-gap: 0.8rem;
 `;
 
-const DashboardImageContainer = styled.div`
-  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
-    display: none;
-  }
-`;
-
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -115,7 +117,8 @@ export const Dashboard = () => {
     isFetched,
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
@@ -126,9 +129,7 @@ export const Dashboard = () => {
     isLoadingDashboards,
     isError,
   );
-  useEffect(() => {
-    gaEvent('Dashboard', 'Change Tab', activeDashboard?.name);
-  }, [activeDashboard?.name]);
+  useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -167,30 +168,35 @@ export const Dashboard = () => {
       },
       [],
     ) ?? [];
-
+  const title =
+    entity?.type === 'project' && project?.config?.projectDashboardHeader
+      ? project?.config?.projectDashboardHeader
+      : entity?.name;
   return (
     <ErrorBoundary>
       <Panel $isExpanded={isExpanded}>
         <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
         <ScrollBody>
           <Breadcrumbs />
-          <DashboardImageContainer>
-            {entity?.photoUrl ? (
-              <Photo title={entity?.name} photoUrl={entity?.photoUrl} />
+          <div>
+            {entity?.imageUrl ? (
+              <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
-              <StaticMap bounds={bounds} />
+              <StaticMap bounds={bounds} title={title} />
             )}
-          </DashboardImageContainer>
-          <TitleBar>
-            <Title variant="h3">{entity?.name}</Title>
-            {activeDashboard && (
-              <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-                Export
-              </ExportButton>
-            )}
-          </TitleBar>
-          <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+          </div>
+          <StickyBar $isExpanded={isExpanded}>
+            <TitleBar>
+              <Title variant="h3">{title}</Title>
+            </TitleBar>
+            <DashboardMenu
+              activeDashboard={activeDashboard}
+              dashboards={dashboards}
+              setExportModalOpen={setExportModalOpen}
+            />
+          </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
+            {isLoadingDashboards && <SpinningLoader mt={5} />}
             {visibleDashboards?.map(item => (
               <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
             ))}

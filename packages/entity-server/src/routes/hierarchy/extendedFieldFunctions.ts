@@ -35,6 +35,16 @@ const getLocationType = (entity: EntityType) => {
   return 'no-coordinates';
 };
 
+const getParentName = async (
+  entity: EntityType,
+  context: {
+    hierarchyId: string;
+  },
+) => {
+  const { hierarchyId } = context;
+  return (await entity.getParent(hierarchyId))?.name;
+};
+
 const getPoint = (entity: EntityType) => {
   return entity.getPoint();
 };
@@ -80,6 +90,7 @@ export const extendedFieldFunctions = {
   region: getRegion,
   bounds: getBounds,
   qualified_name: getQualifiedName,
+  parent_name: getParentName,
 };
 
 export const isExtendedField = (field: string): field is keyof typeof extendedFieldFunctions =>

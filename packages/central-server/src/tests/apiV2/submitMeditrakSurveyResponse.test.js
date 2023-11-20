@@ -4,16 +4,8 @@
  */
 
 import { expect, assert } from 'chai';
-import sinon from 'sinon';
+import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
-  oneSecondSleep,
-  randomIntBetween,
-  getS3ImageFilePath,
-  S3_BUCKET_NAME,
-  S3Client,
-} from '@tupaia/utils';
-import {
-  generateId,
   generateTestId,
   generateValueOfType,
   TYPES,
@@ -22,8 +14,13 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
-import { TEST_IMAGE_DATA } from '../testData';
-import { setupDummySyncQueue, TestableApp, upsertEntity, upsertQuestion } from '../testUtilities';
+import {
+  setupDummySyncQueue,
+  TEST_USER_EMAIL,
+  TestableApp,
+  upsertEntity,
+  upsertQuestion,
+} from '../testUtilities';
 
 const entityId = generateTestId();
 const surveyId = generateTestId();
@@ -43,7 +40,7 @@ const generateDummySurveyResponse = (extraFields = {}) => {
     entity_id: entityId,
     survey_id: surveyId,
     user_id: userId,
-    entities_created: [],
+    entities_upserted: [],
     timezone: defaultTimezone,
     approval_status: 'not_required',
     answers: [],
@@ -70,15 +67,15 @@ const generateDummyEntityDetails = () => ({
 
 const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
-function expectEqualStrings(a, b) {
+function expectEqualStrings(a, b, key = '?') {
   try {
-    return expect(a.toString()).to.equal(b.toString());
+    return expect(a.toString()).to.equal(b.toString(), `Failed expectEqualStrings with "${key}"`);
   } catch (e) {
     // Errors are thrown by the toString() method.
     return assert.fail(
       a,
       b,
-      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings.`,
+      `${a} was not equal to ${b}, exception thrown probably because one or both are not strings. Key: "${key}"`,
     );
   }
 }
@@ -92,15 +89,6 @@ describe('POST /surveyResponse', async () => {
 
   before(async () => {
     defaultTimezone = (await models.database.getTimezone()).TimeZone;
-    sinon.stub(S3Client.prototype, 'uploadImage').callsFake(data => {
-      const id = generateId();
-      mockS3Bucket[id] = data;
-      return id;
-    });
-  });
-
-  after(() => {
-    S3Client.prototype.uploadImage.restore();
   });
 
   describe('SubmitSurveyResponse', () => {
@@ -131,7 +119,7 @@ describe('POST /surveyResponse', async () => {
       ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
-      const user = await models.user.findOne();
+      const user = await models.user.findOne({ email: TEST_USER_EMAIL });
       userId = user.id;
     });
 
@@ -190,9 +178,9 @@ describe('POST /surveyResponse', async () => {
         );
         expect(firstSurveyResponse).to.exist;
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
-          // Other than 'answers' and 'entities_created', all values in the original object should match the database
-          if (!['answers', 'entities_created', 'timestamp'].includes(key)) {
-            expectEqualStrings(firstSurveyResponse[key], value);
+          // Other than 'answers' and 'entities_upserted', all values in the original object should match the database
+          if (!['answers', 'entities_upserted', 'timestamp'].includes(key)) {
+            expectEqualStrings(firstSurveyResponse[key], value, key);
           }
         });
       });
@@ -317,78 +305,77 @@ describe('POST /surveyResponse', async () => {
       });
     });
 
-    describe('Survey responses containing images', () => {
-      const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
-      const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
-        imageResponseObject.id
-      }.png`;
-
-      it('correctly adds survey responses containing imageURL', async () => {
-        const previousNumberOfSurveyResponses = await models.surveyResponse.count();
-        const previousNumberOfAnswers = await models.answer.count();
-        const imageAnswerObject = generateDummyAnswer();
-        imageAnswerObject.type = 'Photo';
-        imageAnswerObject.body = imageResponseObject.id;
-        const surveyResponseObject = generateDummySurveyResponse();
-        surveyResponseObject.answers.push(imageAnswerObject);
-
-        const surveyPostResponse = await app.post('surveyResponse', {
-          body: [surveyResponseObject],
-        });
-        const numberOfSurveyResponsesAdded =
-          (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
-        const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
-        expect(surveyPostResponse.statusCode).to.equal(200);
-        expect(numberOfSurveyResponsesAdded).to.equal(1);
-        expect(numberOfAnswersAdded).to.equal(1);
-        const answer = await models.answer.findById(imageAnswerObject.id);
-        expect(answer.text).to.equal(IMAGE_URL);
-      });
-
-      it('correctly adds survey responses containing image base64 String', async () => {
-        const previousNumberOfSurveyResponses = await models.surveyResponse.count();
-        const previousNumberOfAnswers = await models.answer.count();
-        const imageAnswerObject = generateDummyAnswer();
-        imageAnswerObject.type = 'Photo';
-        imageAnswerObject.body = TEST_IMAGE_DATA;
-        const surveyResponseObject = generateDummySurveyResponse();
-        surveyResponseObject.answers.push(imageAnswerObject);
-
-        const surveyPostResponse = await app.post('surveyResponse', {
-          body: [surveyResponseObject],
-        });
-        const numberOfSurveyResponsesAdded =
-          (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
-        const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
-        expect(surveyPostResponse.statusCode).to.equal(200);
-        expect(numberOfSurveyResponsesAdded).to.equal(1);
-        expect(numberOfAnswersAdded).to.equal(1);
-        const answer = await models.answer.findById(imageAnswerObject.id);
-        expect(answer.text).to.exist;
-        const image = mockS3Bucket[answer.text];
-        expect(image).to.equal(TEST_IMAGE_DATA);
-      });
-    });
+    // TODO: re-enable after S3Client is properly mocked after RN-982
+    // describe('Survey responses containing images', () => {
+    //   const imageResponseObject = { id: generateId(), data: TEST_IMAGE_DATA };
+    //   const IMAGE_URL = `${BUCKET_URL}/${S3_BUCKET_NAME}/${getS3ImageFilePath()}${
+    //     imageResponseObject.id
+    //   }.png`;
+    //
+    //   it('correctly adds survey responses containing imageURL', async () => {
+    //     const previousNumberOfSurveyResponses = await models.surveyResponse.count();
+    //     const previousNumberOfAnswers = await models.answer.count();
+    //     const imageAnswerObject = generateDummyAnswer();
+    //     imageAnswerObject.type = 'Photo';
+    //     imageAnswerObject.body = imageResponseObject.id;
+    //     const surveyResponseObject = generateDummySurveyResponse();
+    //     surveyResponseObject.answers.push(imageAnswerObject);
+    //
+    //     const surveyPostResponse = await app.post('surveyResponse', {
+    //       body: [surveyResponseObject],
+    //     });
+    //     const numberOfSurveyResponsesAdded =
+    //       (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
+    //     const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
+    //     expect(surveyPostResponse.statusCode).to.equal(200);
+    //     expect(numberOfSurveyResponsesAdded).to.equal(1);
+    //     expect(numberOfAnswersAdded).to.equal(1);
+    //     const answer = await models.answer.findById(imageAnswerObject.id);
+    //     expect(answer.text).to.equal(IMAGE_URL);
+    //   });
+    //
+    //   it('correctly adds survey responses containing image base64 String', async () => {
+    //     const previousNumberOfSurveyResponses = await models.surveyResponse.count();
+    //     const previousNumberOfAnswers = await models.answer.count();
+    //     const imageAnswerObject = generateDummyAnswer();
+    //     imageAnswerObject.type = 'Photo';
+    //     imageAnswerObject.body = TEST_IMAGE_DATA;
+    //     const surveyResponseObject = generateDummySurveyResponse();
+    //     surveyResponseObject.answers.push(imageAnswerObject);
+    //
+    //     const surveyPostResponse = await app.post('surveyResponse', {
+    //       body: [surveyResponseObject],
+    //     });
+    //     const numberOfSurveyResponsesAdded =
+    //       (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
+    //     const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
+    //     expect(surveyPostResponse.statusCode).to.equal(200);
+    //     expect(numberOfSurveyResponsesAdded).to.equal(1);
+    //     expect(numberOfAnswersAdded).to.equal(1);
+    //     const answer = await models.answer.findById(imageAnswerObject.id);
+    //     expect(answer.text).to.exist;
+    //   });
+    // });
 
     describe('Survey responses creating entities', () => {
       it('adds created entities to the database', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
         const surveyResponseObject = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
         });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
         expect(syncResponse.statusCode).to.equal(200);
 
-        const entities = await models.entity.find({ id: entitiesCreated.map(e => e.id) });
-        expect(entities.length).to.equal(entitiesCreated.length);
+        const entities = await models.entity.find({ id: entitiesUpserted.map(e => e.id) });
+        expect(entities.length).to.equal(entitiesUpserted.length);
       });
 
       it('can use a created entity as the primary entity of the same response', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
-        const primaryEntityId = entitiesCreated[0].id;
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesUpserted[0].id;
         const surveyResponseObject = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
           entity_id: primaryEntityId,
         });
 
@@ -400,10 +387,10 @@ describe('POST /surveyResponse', async () => {
       });
 
       it('can use a created entity as the primary entity of a different response in the same batch', async () => {
-        const entitiesCreated = new Array(5).fill(0).map(() => generateDummyEntityDetails());
-        const primaryEntityId = entitiesCreated[0].id;
+        const entitiesUpserted = new Array(5).fill(0).map(() => generateDummyEntityDetails());
+        const primaryEntityId = entitiesUpserted[0].id;
         const surveyResponseObjectOne = generateDummySurveyResponse({
-          entities_created: entitiesCreated,
+          entities_upserted: entitiesUpserted,
         });
         const surveyResponseObjectTwo = generateDummySurveyResponse({
           entity_id: primaryEntityId,

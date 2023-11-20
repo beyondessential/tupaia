@@ -96,7 +96,7 @@ export const useMapOverlayReport = (
     },
     {
       enabled,
-      keepPreviousData: enabled, // Only keep previous data if this is still enabled. This fixes an issue where going back to an entity with no map overlays would show the previous entity's map overlay data
+      keepPreviousData: false,
     },
   );
 };

@@ -43,7 +43,13 @@ const PRESENTATION_TYPES = {
 };
 
 const CONDITION_CHECK_METHOD = {
-  '=': (value: any, filterValue: ConditionValue) => value === filterValue,
+  '=': (value: any, filterValue: ConditionValue) => {
+    // Make sure we are comparing the same types
+    if (typeof filterValue === 'number') {
+      return parseFloat(value) === filterValue;
+    }
+    return value === filterValue;
+  },
   '>': (value: number, filterValue: number) => value > filterValue,
   '<': (value: number, filterValue: number) => value < filterValue,
   '>=': (value: number, filterValue: number) => value >= filterValue,
@@ -60,6 +66,8 @@ const getPresentationOptionFromCondition = (
   value: any,
 ) => {
   const { conditions = [] } = options;
+  // handle undefined values so they don't accidentally get displayed as the default condition
+  if (value === undefined) return null;
 
   const option = conditions.find(
     ({ condition }: { condition: PresentationOptionCondition['condition'] }) => {
@@ -69,8 +77,15 @@ const getPresentationOptionFromCondition = (
           const checkConditionMethod =
             CONDITION_CHECK_METHOD[operator as keyof typeof CONDITION_CHECK_METHOD];
 
+          let parsedValue = value;
+
+          if (operator !== '=') {
+            // If operator is not '=' then we need to parse the value to a number
+            parsedValue = parseFloat(parsedValue);
+          }
+
           return checkConditionMethod
-            ? checkConditionMethod(value, conditionalValue as number)
+            ? checkConditionMethod(parsedValue, conditionalValue as number)
             : false;
         });
       }
@@ -107,7 +122,9 @@ export const getPresentationOption = (options: PresentationOptions, value: any) 
 };
 
 export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
-  return Object.keys(presentationOptions).length > 0;
+  return (
+    Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
+  );
 }
 
 export function checkIfApplyDotStyle(

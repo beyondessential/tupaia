@@ -7,7 +7,7 @@ import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate } from '@tupaia/tsutils';
 import { EntityType, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
-import { MultiEntityRequestBodySchema } from '../types';
+import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
 const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
 
@@ -76,11 +76,22 @@ const getFilterInfo = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
   rootEntity: EntityType,
 ) => {
+  const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
+    code: req.params.hierarchyName,
+  });
+
+  // Fetch all country codes we have any of the project permission groups access to
+  const projectAccessibleCountries: string[] = [];
+  for (const permission of projectPermissionGroups) {
+    projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
+  }
+
+  // Fetch countries specific to the hierarchy, filtered by the accessibility list
   const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
     .filter(notNull)
     .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
-    .filter(countryCode => req.accessPolicy.allows(countryCode));
+    .filter(countryCode => projectAccessibleCountries.includes(countryCode));
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);
@@ -118,8 +129,11 @@ export const attachMultiEntityContext = async (
   next: NextFunction,
 ) => {
   try {
-    await ajvValidate(MultiEntityRequestBodySchema, req.body);
-    const { entities: entityCodes } = req.body;
+    const validatedBody = ajvValidate<MultiEntityRequestBody>(
+      MultiEntityRequestBodySchema,
+      req.body,
+    );
+    const { entities: entityCodes } = validatedBody;
 
     const context = await validateEntitiesAndBuildContext(req, entityCodes);
 

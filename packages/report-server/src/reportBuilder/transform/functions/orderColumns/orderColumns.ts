@@ -7,10 +7,12 @@ import { isDefined, yupTsUtils } from '@tupaia/tsutils';
 import { yup } from '@tupaia/utils';
 import { TransformTable } from '../../table';
 import { sortByFunctions } from './sortByFunctions';
+import { ascOrDescValidator } from '../utils';
 
 type OrderColumnsParams = {
   columnOrder?: string[];
   sorter?: (column1: string, column2: string) => number;
+  direction?: 'asc' | 'desc';
 };
 
 const sortByValidator = yup
@@ -20,13 +22,18 @@ const sortByValidator = yup
 export const paramsValidator = yup.object().shape({
   order: yup.array().of(yup.string().required()),
   sortBy: yupTsUtils.describableLazy(() => sortByValidator, [sortByValidator]),
+  direction: yupTsUtils.describableLazy(() => ascOrDescValidator.default('asc'), [
+    ascOrDescValidator.default('asc'),
+  ]),
 });
 
 const orderColumns = (table: TransformTable, params: OrderColumnsParams) => {
-  const { columnOrder = ['*'], sorter } = params;
+  const { columnOrder = ['*'], sorter, direction } = params;
 
   if (sorter) {
-    return new TransformTable(table.getColumns().sort(sorter), table.getRows());
+    const newColumns = table.getColumns().sort(sorter);
+    if (direction === 'desc') newColumns.reverse();
+    return new TransformTable(newColumns, table.getRows());
   }
 
   if (!columnOrder.includes('*')) {
@@ -69,7 +76,7 @@ const orderColumns = (table: TransformTable, params: OrderColumnsParams) => {
 const buildParams = (params: unknown): OrderColumnsParams => {
   const validatedParams = paramsValidator.validateSync(params);
 
-  const { order, sortBy } = validatedParams;
+  const { order, sortBy, direction } = validatedParams;
 
   if (order && sortBy) {
     throw new Error('Cannot provide explicit column order and a sort by function');
@@ -83,6 +90,7 @@ const buildParams = (params: unknown): OrderColumnsParams => {
 
   if (sortBy) {
     return {
+      direction,
       sorter: sortByFunctions[sortBy],
     };
   }

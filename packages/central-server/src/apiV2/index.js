@@ -84,6 +84,7 @@ import {
   EditUserAccounts,
   GETUserAccounts,
   GETUserForMe,
+  EditUserForMe,
 } from './userAccounts';
 import {
   CreateUserEntityPermissions,
@@ -96,7 +97,6 @@ import { GetEntityTypes } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
-import { editUser } from './editUser';
 import { requestCountryAccess } from './requestCountryAccess';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
@@ -126,6 +126,18 @@ import {
 import { CreateLandingPage, EditLandingPage } from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
 import { suggestSurveyCode } from './suggestSurveyCode';
+import {
+  CreateDashboardMailingList,
+  DeleteDashboardMailingList,
+  EditDashboardMailingList,
+  GETDashboardMailingLists,
+} from './dashboardMailingLists';
+import {
+  CreateDashboardMailingListEntry,
+  DeleteDashboardMailingListEntry,
+  EditDashboardMailingListEntry,
+  GETDashboardMailingListEntries,
+} from './dashboardMailingListEntries';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -175,6 +187,11 @@ apiV2.get(
   useRouteHandler(GETDashboardRelations),
 );
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
+apiV2.get('/dashboardMailingLists/:recordId?', useRouteHandler(GETDashboardMailingLists));
+apiV2.get(
+  '/dashboardMailingListEntries/:recordId?',
+  useRouteHandler(GETDashboardMailingListEntries),
+);
 apiV2.get('/dashboardRelations/:recordId?', useRouteHandler(GETDashboardRelations));
 apiV2.get('/dashboardVisualisations/:recordId?', useRouteHandler(GETDashboardVisualisations));
 apiV2.get('/mapOverlayVisualisations/:recordId?', useRouteHandler(GETMapOverlayVisualisations));
@@ -275,6 +292,8 @@ apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
+apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
+apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
@@ -310,6 +329,8 @@ apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
 apiV2.put('/questions/:recordId', useRouteHandler(EditQuestions));
 apiV2.put('/dashboards/:recordId', useRouteHandler(EditDashboard));
 apiV2.put('/dashboardItems/:recordId', useRouteHandler(EditDashboardItem));
+apiV2.put('/dashboardMailingLists/:recordId', useRouteHandler(EditDashboardMailingList));
+apiV2.put('/dashboardMailingListEntries/:recordId', useRouteHandler(EditDashboardMailingListEntry));
 apiV2.put('/dashboardRelations/:recordId', useRouteHandler(EditDashboardRelation));
 apiV2.put('/dashboardVisualisations/:recordId', useRouteHandler(EditDashboardVisualisation));
 apiV2.put('/mapOverlayVisualisations/:recordId', useRouteHandler(EditMapOverlayVisualisation));
@@ -320,7 +341,7 @@ apiV2.put('/mapOverlayGroupRelations/:recordId', useRouteHandler(EditMapOverlayG
 apiV2.put('/indicators/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/projects/:recordId', useRouteHandler(EditProject));
 apiV2.put('/entities/:recordId', useRouteHandler(EditEntity));
-apiV2.put('/me', catchAsyncErrors(editUser));
+apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
@@ -347,6 +368,11 @@ apiV2.delete('/optionSets/:recordId', useRouteHandler(DeleteOptionSets));
 apiV2.delete('/questions/:recordId', useRouteHandler(DeleteQuestions));
 apiV2.delete('/dashboards/:recordId', useRouteHandler(DeleteDashboard));
 apiV2.delete('/dashboardItems/:recordId', useRouteHandler(DeleteDashboardItem));
+apiV2.delete('/dashboardMailingLists/:recordId', useRouteHandler(DeleteDashboardMailingList));
+apiV2.delete(
+  '/dashboardMailingListEntries/:recordId',
+  useRouteHandler(DeleteDashboardMailingListEntry),
+);
 apiV2.delete('/dashboardRelations/:recordId', useRouteHandler(DeleteDashboardRelation));
 apiV2.delete('/legacyReports/:recordId', useRouteHandler(DeleteLegacyReport));
 apiV2.delete('/mapOverlays/:recordId', useRouteHandler(DeleteMapOverlays));

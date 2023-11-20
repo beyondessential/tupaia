@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class OptionType extends DatabaseType {
+export class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
   static fieldValidators = new Map()

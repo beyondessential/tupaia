@@ -4,16 +4,12 @@
  */
 
 import { Request } from 'express';
-import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import {
-  Entity,
-  DashboardItem,
-  DashboardRelation,
-  Dashboard,
-  TupaiaWebDashboardsRequest,
-} from '@tupaia/types';
+import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
+import { camelcaseKeys } from '@tupaia/tsutils';
+
+import { DashboardRelationType } from '../models/DashboardRelation';
 
 interface DashboardWithItems extends Dashboard {
   items: DashboardItem[];
@@ -65,7 +61,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     );
   };
   public async buildResponse() {
-    const { params, ctx } = this.req;
+    const { params, ctx, accessPolicy } = this.req;
     const { projectCode, entityCode } = params;
 
     // We're including the root entity in this request, so we don't need to double up fetching it
@@ -77,23 +73,26 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     );
     const rootEntity = entities.find((e: Entity) => e.code === entityCode);
 
-    const dashboards = await ctx.services.central.fetchResources('dashboards', {
-      filter: { root_entity_code: entities.map((e: Entity) => e.code) },
-      sort: ['sort_order', 'name'],
-    });
+    const rootEntityPermissions = rootEntity.country_code
+      ? accessPolicy.getPermissionGroups([rootEntity.country_code])
+      : accessPolicy.getPermissionGroups(); // country_code is null for project level
+
+    const dashboards: Dashboard[] = await this.req.models.dashboard.find(
+      {
+        root_entity_code: entities.map((e: Entity) => e.code),
+      },
+      { sort: ['sort_order ASC', 'name ASC'] },
+    );
 
     if (!dashboards.length) {
       return this.getNoDataDashboard(rootEntity, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations = await ctx.services.central.fetchResources('dashboardRelations', {
-      filter: {
+    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
+      {
         // Attached to the given dashboards
-        dashboard_id: {
-          comparator: 'IN',
-          comparisonValue: dashboards.map((d: Dashboard) => d.id),
-        },
+        dashboard_id: dashboards.map((d: Dashboard) => d.id),
         // For the root entity type
         entity_types: {
           comparator: '@>',
@@ -105,15 +104,14 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparisonValue: [projectCode],
         },
       },
-      // Override the default limit of 100 records
-      pageSize: DEFAULT_PAGE_SIZE,
-    });
+    );
 
+    // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
       filter: {
         id: {
           comparator: 'IN',
-          comparisonValue: dashboardRelations.map((dr: DashboardRelation) => dr.child_id),
+          comparisonValue: dashboardRelations.map((dr: DashboardRelationType) => dr.child_id),
         },
       },
       // Override the default limit of 100 records
@@ -122,23 +120,36 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     // Merged and sorted to make mapping easier
     const mergedItemRelations = orderBy(
-      dashboardRelations.map((relation: DashboardRelation) => ({
-        relation,
-        item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
-      })),
+      dashboardRelations
+        .filter((relation: DashboardRelationType) =>
+          // We run a permissions filter here instead of in the central fetch so we
+          // know whether the "no data" or "no permission" dashboard is more appropriate
+          relation.permission_groups.some((permissionGroup: string) =>
+            rootEntityPermissions.includes(permissionGroup),
+          ),
+        )
+        .map((relation: DashboardRelationType) => ({
+          relation,
+          item: dashboardItems.find((item: DashboardItem) => item.id === relation.child_id),
+        })),
       [
-        ({ relation }: { relation: DashboardRelation }) => relation.sort_order,
-        ({ item }: { item: DashboardItem }) => item.code,
+        ({ relation }: { relation: DashboardRelationType }) =>
+          relation.sort_order === null ? 1 : 0, // Puts null values last
+        ({ relation }: { relation: DashboardRelationType }) => relation.sort_order,
+        ({ item }: { item: DashboardItem }) => item.config?.name,
       ],
     );
 
-    const dashboardsWithItems = dashboards.map((dashboard: Dashboard) => {
+    const dashboardsWithItems = dashboards.map((rawDashboard: Dashboard) => {
+      // @ts-ignore model causes a circular loop in camelcase
+      // but we can't strip it because typescript doesn't know about it
+      const { model, ...dashboard } = rawDashboard;
       return {
         ...dashboard,
         // Filter by the relations, map to the items
         items: mergedItemRelations
           .filter(
-            ({ relation }: { relation: DashboardRelation }) =>
+            ({ relation }: { relation: DashboardRelationType }) =>
               relation.dashboard_id === dashboard.id,
           )
           .map(({ item }: { item: DashboardItem }) => ({
@@ -147,17 +158,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       };
     });
 
-    if (!dashboardsWithItems.length && !dashboardRelations.length) {
-      return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
-    }
-
     const response = dashboardsWithItems.filter(
       (dashboard: DashboardWithItems) => dashboard.items.length > 0,
     );
 
     if (!response.length) {
-      // Returns in an array already
-      return this.getNoDataDashboard(rootEntity.code, NO_ACCESS_DASHBOARD_ITEM_CODE);
+      const dashboardCode = dashboardRelations.length
+        ? NO_ACCESS_DASHBOARD_ITEM_CODE
+        : NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE;
+      return this.getNoDataDashboard(rootEntity.code, dashboardCode);
     }
 
     return camelcaseKeys(response, {

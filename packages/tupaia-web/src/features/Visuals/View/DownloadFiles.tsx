@@ -7,11 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from '@material-ui/core';
 import { useSearchParams } from 'react-router-dom';
-import { ViewConfig } from '@tupaia/types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
 import { DownloadFilesVisual } from '@tupaia/ui-components';
 import { useDownloadFiles } from '../../../api/mutations';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { ViewReport } from '../../../types';
 
 const StyledDownloadFilesVisual = styled(DownloadFilesVisual)`
   .filename {
@@ -19,6 +18,23 @@ const StyledDownloadFilesVisual = styled(DownloadFilesVisual)`
   }
   .checkbox-icon {
     color: ${({ theme }) => darken(theme.palette.common.white, 0.1)};
+  }
+  button {
+    text-transform: none;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  // override button styles from @tupaia/ui-components to match the theme of the app
+  .MuiButton-text {
+    border: 1px solid ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.primary.main};
+  }
+  .MuiButton-containedPrimary {
+    box-shadow: none;
+    border: 1px solid ${({ theme }) => theme.palette.primary.main};
+    &:hover {
+      border-color: ${({ theme }) => darken(theme.palette.primary.main, 0.3)};
+    }
   }
 `;
 
@@ -35,7 +51,7 @@ export const DownloadFiles = ({
 }: DownloadFilesVisualProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
-  const { mutate: download, error, reset } = useDownloadFiles();
+  const { mutateAsync: download, error, reset, isLoading } = useDownloadFiles();
 
   const onClose = () => {
     reset();
@@ -53,6 +69,7 @@ export const DownloadFiles = ({
       error={errorObj?.message}
       isEnlarged={isEnlarged}
       onClose={onClose}
+      isLoading={isLoading}
     />
   );
 };

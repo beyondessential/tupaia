@@ -6,22 +6,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import {
-  TileLayer,
-  LeafletMap,
-  ZoomControl,
-  TilePicker,
-  LeafletMapProps,
-} from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity } from '../../api/queries';
-import { PolygonNavigationLayer, DataVisualsLayer } from './MapOverlays';
-import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayData } from './utils';
-import { gaEvent } from '../../utils';
+import { MapOverlaysLayer } from './MapOverlaysLayer';
+import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
+import { useGAEffect } from '../../utils';
+import { DemoLand } from './DemoLand';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -40,6 +34,11 @@ const StyledMap = styled(LeafletMap)`
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
+  }
+
+  .leaflet-bottom {
+    // Set the z-index to 1 so it doesn't overlap dashboard controls on mobile
+    z-index: 1;
   }
 
   // Overwrite default zoom control styles
@@ -117,35 +116,28 @@ const getAutoTileset = () => {
 
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(projectCode, entityCode);
 
   useDefaultMapOverlay(projectCode, entityCode);
 
   // Setup legend hidden values
-  const { serieses } = useMapOverlayData();
+  const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
   // Setup Tile Picker
-
   const initialTileSet = getAutoTileset();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
+  useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
   const onTileSetChange = (tileSetKey: string) => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
-    gaEvent('Map', 'Change Tile Set', activeTileSet.label);
   };
 
   return (
-    <ErrorBoundary>
-      <MapContainer>
-        <StyledMap
-          center={entity?.point as LeafletMapProps['center']}
-          bounds={entity?.bounds as LeafletMapProps['bounds']}
-          zoom={15 as LeafletMapProps['zoom']}
-          shouldSnapToPosition
-        >
+    <MapContainer>
+      <ErrorBoundary>
+        <StyledMap shouldSnapToPosition>
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
-          <PolygonNavigationLayer />
-          <DataVisualsLayer hiddenValues={hiddenValues} />
+          <MapOverlaysLayer hiddenValues={hiddenValues} />
+          <DemoLand />
           <ZoomControl position="bottomright" />
           <MapWatermark />
         </StyledMap>
@@ -163,7 +155,7 @@ export const Map = () => {
             />
           </TilePickerWrapper>
         </MapControlWrapper>
-      </MapContainer>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </MapContainer>
   );
 };

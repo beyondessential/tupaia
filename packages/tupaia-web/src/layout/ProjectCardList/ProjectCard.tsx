@@ -9,7 +9,7 @@ import Alarm from '@material-ui/icons/Alarm';
 import { darken, lighten } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { SingleProject } from '../../types';
-import { MODAL_ROUTES } from '../../constants';
+import { MODAL_ROUTES, MOBILE_BREAKPOINT } from '../../constants';
 import { RouterButton } from '../../components';
 
 const Card = styled.div`
@@ -30,6 +30,12 @@ const Card = styled.div`
     padding: 2.5rem;
   }
 
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    padding-top: 2.5rem;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+  }
+
   button {
     margin-top: auto;
   }
@@ -43,8 +49,8 @@ const LogoWrapper = styled.div`
 const Logo = styled.div`
   position: relative;
   background: white;
-  width: 4.75rem;
-  height: 4.75rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 3px;
   overflow: hidden;
 
@@ -55,6 +61,7 @@ const Logo = styled.div`
     transform: translate(-50%, -50%);
     max-width: 100%;
     max-height: 100%;
+    padding: 0.3rem;
   }
 `;
 
@@ -95,7 +102,7 @@ const BaseLink = styled(RouterButton)`
   line-height: 1.2;
   text-transform: none;
   padding: 0.6875rem 1.25rem;
-  min-width: 10rem;
+  width: 100%;
 
   &:hover {
     background: ${({ theme }) => darken(theme.palette.primary.main, 0.1)};
@@ -103,6 +110,9 @@ const BaseLink = styled(RouterButton)`
 
   .MuiSvgIcon-root {
     font-size: 1.2em;
+  }
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    margin-bottom: 0.875rem;
   }
 `;
 
@@ -123,6 +133,9 @@ const OutlineLink = styled(BaseLink).attrs({
   &.Mui-disabled {
     border-color: ${({ theme }) => theme.palette.text.secondary};
     color: ${({ theme }) => theme.palette.text.secondary};
+  }
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    margin-bottom: 0.875rem;
   }
 `;
 
@@ -151,7 +164,7 @@ export const ProjectPendingLink = () => (
 
 export const ProjectAllowedLink = ({ url, isLandingPage }: LinkProps) => (
   <BaseLink to={url} target={isLandingPage ? '_blank' : '_self'}>
-    View Project
+    View project
   </BaseLink>
 );
 

@@ -4,7 +4,7 @@ DIR=$(dirname "$0")
 . ${DIR}/utils.sh
 
 INVALID_CHARS=('/' '\' '.' '&' '?' '_')
-SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config db export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api meditrak-api data-table-api tonga-aggregation www tupaia-web-api tupaia-web-rewrite)
+SUBDOMAIN_SUFFIXES=(admin admin-api aggregation api config db export lesmis lesmis-api mobile psss psss-api report report-api ssh entity entity-api meditrak-api data-table-api tonga-aggregation www tupaia-web-api tupaia-web-rewrite datatrak-web-api datatrak)
 
 # Branch names are used in AWS EC2 deployments. They are combined with standard suffixes
 # to create deployment urls, eg {{branchName}}-tonga-aggregation.tupaia.org
@@ -18,6 +18,11 @@ function validate_name_ending() {
 
     for suffix in ${SUBDOMAIN_SUFFIXES[@]}; do
         if [[ "$branch_name" == *$suffix ]]; then
+            log_error "❌ Invalid branch name ending: '$suffix'"
+            exit 1
+        fi
+        # api is one of our suffixes so makes sure [branch]-api doesn't match any other api suffixes
+        if [[ "$suffix" == *-api && $branch_name-api == *$suffix ]]; then
             log_error "❌ Invalid branch name ending: '$suffix'"
             exit 1
         fi

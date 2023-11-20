@@ -49,6 +49,14 @@
       "path": "packages/data-table-server"
     },
     {
+      "name": "datatrak-web",
+      "path": "packages/datatrak-web"
+    },
+    {
+      "name": "datatrak-web-server",
+      "path": "packages/datatrak-web-server"
+    },
+    {
       "name": "database",
       "path": "packages/database"
     },
@@ -113,12 +121,28 @@
       "path": "packages/server-boilerplate"
     },
     {
+      "name": "server-utils",
+      "path": "packages/server-utils"
+    },
+    {
       "name": "superset-api",
       "path": "packages/superset-api"
     },
     {
+      "name": "tupaia-web",
+      "path": "packages/tupaia-web"
+    },
+    {
       "name": "tupaia-web-server",
       "path": "packages/tupaia-web-server"
+    },
+    {
+      "name": "tsutils",
+      "path": "packages/tsutils"
+    },
+    {
+      "name": "types",
+      "path": "packages/types"
     },
     {
       "name": "ui-chart-components",
@@ -135,18 +159,6 @@
     {
       "name": "utils",
       "path": "packages/utils"
-    },
-    {
-      "name": "tupaia-web",
-      "path": "packages/tupaia-web"
-    },
-    {
-      "name": "tsutils",
-      "path": "packages/tsutils"
-    },
-    {
-      "name": "types",
-      "path": "packages/types"
     },
     {
       "name": "weather-api",
@@ -176,6 +188,7 @@
       "Codeship",
       "ctes",
       "datetime",
+      "Datatrak",
       "debouncing",
       "deleters",
       "dhis",
@@ -219,6 +232,7 @@
       "singularise",
       "spec",
       "specs",
+      "Syncable",
       "testid",
       "Tongatapu",
       "Tupaia",
@@ -227,10 +241,7 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": [
-      "typescript",
-      "typescriptreact"
-    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
     "files.exclude": {
       "packages/": true
     },

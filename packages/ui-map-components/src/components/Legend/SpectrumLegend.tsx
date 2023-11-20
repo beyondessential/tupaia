@@ -138,7 +138,7 @@ export const SpectrumLegend = React.memo(
     const { value } = valueMapping.null;
 
     return (
-      <FlexCenter>
+      <FlexCenter flexWrap="wrap">
         <SpectrumContainer $hasNoData={!!noDataColour}>
           {renderSpectrum({
             min,

@@ -17,7 +17,8 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9997",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test:withdb --runInBand",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/server-boilerplate": "1.0.0",
+    "@tupaia/server-utils": "1.0.0",
     "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "async": "^2.6.0",

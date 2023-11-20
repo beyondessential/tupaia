@@ -4,17 +4,18 @@
  */
 
 import React, { useContext } from 'react';
-import { IconButton, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { getDisplayedColumns } from './utils';
-import { CellLink } from './CellLink';
+import { CellButton } from './CellButton';
+import { Button } from '../Button';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
-  $expanded: boolean;
+  $expanded?: boolean;
 }>`
   transform: ${({ $expanded }) => ($expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
   transition: transform 0.3s ease-in-out;
@@ -39,7 +40,7 @@ const HeaderCell = styled(TableCell).attrs({
 
 const RowHeaderCellContent = styled.div<{
   $depth: number;
-  $isGrouped: boolean;
+  $isGrouped?: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -51,8 +52,23 @@ const RowHeaderCellContent = styled.div<{
   padding-right: 1rem;
   padding-left: ${({ $depth, $isGrouped }) =>
     $isGrouped ? `${1.5 + $depth * 1.5}rem` : `${0.5 + $depth * 1.5}rem`};
-  button {
+`;
+
+const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
+  as: Button,
+  variant: 'text',
+  color: 'default',
+})<ButtonProps>`
+  text-transform: none;
+  text-align: left;
+  svg {
     margin-right: 0.5rem;
+  }
+  @media screen and (max-width: 600px) {
+    padding: 0.4rem;
+    .MuiButton-label span {
+      word-break: break-word;
+    }
   }
 `;
 
@@ -61,6 +77,55 @@ interface MatrixRowProps {
   row: MatrixRowType;
   parents: MatrixRowTitle[];
 }
+
+type MatrixRowHeaderProps = {
+  depth: number;
+  isExpanded: boolean;
+  rowTitle: string;
+  hasChildren: boolean;
+  children: React.ReactNode;
+  disableExpandButton: boolean;
+  onClick?: MatrixRowType['onClick'];
+};
+
+const ExpandableRowHeaderCell = ({
+  children,
+  isExpanded,
+  depth,
+  disableExpandButton,
+  toggleExpandedRows,
+}: Pick<MatrixRowHeaderProps, 'children' | 'depth' | 'isExpanded' | 'disableExpandButton'> & {
+  toggleExpandedRows: () => void;
+}) => {
+  return (
+    <HeaderCell>
+      <ExpandableRowHeaderCellContent
+        $depth={depth}
+        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
+        $isGrouped
+        onClick={toggleExpandedRows}
+        disabled={disableExpandButton}
+      >
+        <ExpandIcon $expanded={isExpanded} />
+        <span>{children}</span>
+      </ExpandableRowHeaderCellContent>
+    </HeaderCell>
+  );
+};
+
+const ClickableRowHeaderCell = ({
+  children,
+  onClick,
+  depth,
+}: Pick<MatrixRowHeaderProps, 'children' | 'onClick' | 'depth'>) => {
+  return (
+    <HeaderCell>
+      <RowHeaderCellContent $depth={depth} onClick={onClick} as={CellButton}>
+        {children}
+      </RowHeaderCellContent>
+    </HeaderCell>
+  );
+};
 
 /**
  * This component renders the first cell of a row. It renders a button to expand/collapse the row if it has children, otherwise it renders a regular cell.
@@ -72,16 +137,8 @@ const RowHeaderCell = ({
   hasChildren,
   children,
   disableExpandButton,
-  link,
-}: {
-  depth: number;
-  isExpanded: boolean;
-  rowTitle: string;
-  hasChildren: boolean;
-  children: React.ReactNode;
-  disableExpandButton?: boolean;
-  link?: typeof Location | string;
-}) => {
+  onClick,
+}: MatrixRowHeaderProps) => {
   const dispatch = useContext(MatrixDispatchContext)!;
   const toggleExpandedRows = () => {
     if (isExpanded) {
@@ -91,26 +148,28 @@ const RowHeaderCell = ({
     }
   };
 
+  if (hasChildren)
+    return (
+      <ExpandableRowHeaderCell
+        depth={depth}
+        isExpanded={isExpanded}
+        toggleExpandedRows={toggleExpandedRows}
+        disableExpandButton={disableExpandButton}
+      >
+        {children}
+      </ExpandableRowHeaderCell>
+    );
+
+  if (onClick)
+    return (
+      <ClickableRowHeaderCell depth={depth} onClick={onClick}>
+        {children}
+      </ClickableRowHeaderCell>
+    );
+
   return (
     <HeaderCell>
-      <RowHeaderCellContent
-        $depth={depth}
-        $isGrouped={!!hasChildren}
-        as={link ? CellLink : 'div'}
-        to={link}
-      >
-        {hasChildren && (
-          <IconButton
-            aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
-            size="small"
-            onClick={toggleExpandedRows}
-            disabled={disableExpandButton}
-          >
-            <ExpandIcon $expanded={isExpanded} />
-          </IconButton>
-        )}
-        {children}
-      </RowHeaderCellContent>
+      <RowHeaderCellContent $depth={depth}>{children}</RowHeaderCellContent>
     </HeaderCell>
   );
 };
@@ -119,7 +178,7 @@ const RowHeaderCell = ({
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
-  const { children, title, link } = row;
+  const { children, title, onClick } = row;
   const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
     MatrixContext,
   );
@@ -142,15 +201,15 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           rowTitle={title}
           hasChildren={isCategory}
           disableExpandButton={disableExpand}
-          link={link}
+          onClick={onClick}
         >
           {title}
         </RowHeaderCell>
-        {displayedColumns.map(({ key, title }) => (
+        {displayedColumns.map(({ key, title: cellTitle }) => (
           <MatrixCell
-            key={`column-${key || title}-row-${row.title}-value`}
+            key={`column-${key || cellTitle}-row-${title}-value`}
             value={row[key as string]}
-            rowTitle={row.title}
+            rowTitle={title}
             colKey={key}
             isCategory={isCategory}
           />

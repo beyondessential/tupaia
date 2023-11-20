@@ -20,11 +20,11 @@ export class KeyValueCellBuilder {
     return question.code;
   };
 
-  async processKey(key) {
-    return key;
+  async processField(field) {
+    return field;
   }
 
-  async processValue(value, key) {
+  async processValue(value) {
     return value.toString();
   }
 
@@ -36,17 +36,19 @@ export class KeyValueCellBuilder {
     if (!jsonStringOrObject) {
       return '';
     }
+
     const fullObject =
       typeof jsonStringOrObject === 'string' ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
     const object = this.extractRelevantObject(fullObject) || {};
+
     const processedFields = await Promise.all(
-      Object.entries(object).map(async ([key, value]) => {
-        if (this.individualFieldProcessors[key]) {
-          return this.individualFieldProcessors[key](this.models, value);
+      Object.entries(object).map(async ([field, value]) => {
+        if (this.individualFieldProcessors[field]) {
+          return this.individualFieldProcessors[field](this.models, value);
         }
-        const processedKey = await this.processKey(key);
-        const processedValue = await this.processValue(value, key);
-        return `${processedKey}: ${processedValue}`;
+        const processedField = await this.processField(field);
+        const processedValue = await this.processValue(value, field);
+        return `${processedField}: ${processedValue}`;
       }),
     );
     return processedFields.join('\r\n');

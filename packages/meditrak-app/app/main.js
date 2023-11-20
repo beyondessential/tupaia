@@ -4,7 +4,7 @@
  */
 import 'react-native-gesture-handler';
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from 'react-redux';
 import { createStore, compose } from 'redux';
@@ -72,3 +72,6 @@ const App = () => (
 );
 
 AppRegistry.registerComponent('TupaiaMediTrak', () => App);
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); // Ignore all log notifications

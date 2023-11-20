@@ -24,7 +24,7 @@ export const useEnlargedDashboardItem = () => {
   );
 
   const currentDashboardItem = activeDashboard?.items.find(
-    dashboardItem => dashboardItem.code === reportCode,
+    dashboardItem => dashboardItem.reportCode === reportCode,
   ) as DashboardItem;
 
   const { startDate, endDate } = useDateRanges(
@@ -53,11 +53,14 @@ export const useEnlargedDashboardItem = () => {
       projectCode,
       entityCode,
       dashboardCode: activeDashboard?.code,
-      startDate,
-      endDate,
       legacy: currentDashboardItem?.legacy,
       itemCode: currentDashboardItem?.code,
-    };
+    } as Record<string, any>;
+
+    if (currentDashboardItem?.config?.periodGranularity) {
+      params.startDate = startDate;
+      params.endDate = endDate;
+    }
     if (!isDrillDown) return params;
     // If the report is a drilldown, we want to add the drilldown id to the params, so that correct data is fetched
     // @ts-ignore - drillDown is all lowercase in the types config
@@ -70,10 +73,13 @@ export const useEnlargedDashboardItem = () => {
 
   const params = getParameters();
 
-  const { data: reportData, isLoading: isLoadingReportData, error, refetch } = useReport(
-    reportCode,
-    params,
-  );
+  const {
+    data: reportData,
+    isLoading: isLoadingReportData,
+    error,
+    refetch,
+    isFetching,
+  } = useReport(reportCode, params);
 
   return {
     activeDashboard,
@@ -81,7 +87,7 @@ export const useEnlargedDashboardItem = () => {
     currentDashboardItem,
     isLoadingDashboards,
     reportData,
-    isLoadingReportData,
+    isLoadingReportData: isLoadingReportData || isFetching,
     reportError: error,
     refetchReportData: refetch,
     parentDashboardItem,

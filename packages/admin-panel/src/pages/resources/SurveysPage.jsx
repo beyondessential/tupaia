@@ -22,10 +22,26 @@ const SERVICE_TYPES = [
 ];
 
 const SURVEY_FIELDS = {
+  project: {
+    Header: 'Project',
+    source: 'project.code',
+    editConfig: {
+      sourceKey: 'project.code',
+      optionsEndpoint: 'projects',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: false,
+      secondaryLabel: 'Select the project this survey should be available in',
+    },
+  },
   name: {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
+    editConfig: {
+      maxLength: 50,
+      secondaryLabel: 'Max length: 50 characters',
+    },
   },
   code: {
     Header: 'Code',
@@ -179,6 +195,7 @@ const SURVEY_FIELDS = {
 };
 
 const SURVEY_COLUMNS = [
+  SURVEY_FIELDS.project,
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
@@ -230,6 +247,7 @@ const CREATE_CONFIG = {
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
     fields: [
+      SURVEY_FIELDS.project,
       SURVEY_FIELDS.name,
       SURVEY_FIELDS.code,
       SURVEY_FIELDS.country_ids,
@@ -319,11 +337,6 @@ const QUESTION_COLUMNS = [
                 type: 'json',
                 getJsonFieldSchema: () => [
                   {
-                    label: 'Accepted Types (comma separated values)',
-                    fieldName: 'type',
-                    csv: true,
-                  },
-                  {
                     label: 'Create New',
                     fieldName: 'createNew',
                     type: 'boolean',
@@ -339,43 +352,102 @@ const QUESTION_COLUMNS = [
                     type: 'boolean',
                   },
                   {
-                    label: 'Parent Entity',
-                    fieldName: 'parentId',
-                    type: 'json',
-                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                    label: 'Hide Parent Entity Name',
+                    fieldName: 'hideParentName',
+                    type: 'boolean',
                   },
                   {
-                    label: 'Grandparent Entity',
-                    fieldName: 'grandparentId',
+                    label: 'Filter',
+                    fieldName: 'filter',
                     type: 'json',
-                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                    getJsonFieldSchema: () => [
+                      {
+                        label: 'Accepted Types (comma separated values)',
+                        fieldName: 'type',
+                        csv: true,
+                      },
+                      {
+                        label: 'Parent Entity',
+                        fieldName: 'parentId',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                      {
+                        label: 'Grandparent Entity',
+                        fieldName: 'grandparentId',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                      {
+                        label: 'Attributes',
+                        fieldName: 'attributes',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          {
+                            label: 'Type',
+                            fieldName: 'type',
+                            type: 'json',
+                            getJsonFieldSchema: () => [
+                              { label: 'Question Id', fieldName: 'questionId' },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
                   },
                   {
-                    label: 'Attributes',
-                    fieldName: 'attributes',
+                    label: 'Fields',
+                    fieldName: 'fields',
                     type: 'json',
                     getJsonFieldSchema: () => [
                       {
                         label: 'Type',
                         fieldName: 'type',
+                      },
+                      {
+                        label: 'Parent Entity',
+                        fieldName: 'parentId',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                      {
+                        label: 'Attributes',
+                        fieldName: 'attributes',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          {
+                            label: 'Type',
+                            fieldName: 'type',
+                            type: 'json',
+                            getJsonFieldSchema: () => [
+                              { label: 'Question Id', fieldName: 'questionId' },
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        label: 'Name',
+                        fieldName: 'name',
+                        type: 'json',
+                        getJsonFieldSchema: () => [
+                          { label: 'Question Id', fieldName: 'questionId' },
+                        ],
+                      },
+                      {
+                        label: 'Code',
+                        fieldName: 'code',
                         type: 'json',
                         getJsonFieldSchema: () => [
                           { label: 'Question Id', fieldName: 'questionId' },
                         ],
                       },
                     ],
-                  },
-                  {
-                    label: 'Name',
-                    fieldName: 'name',
-                    type: 'json',
-                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
-                  },
-                  {
-                    label: 'Code',
-                    fieldName: 'code',
-                    type: 'json',
-                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                 ],
               },

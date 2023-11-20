@@ -7,7 +7,7 @@ import { yup, orderBy } from '@tupaia/utils';
 import { yupTsUtils } from '@tupaia/tsutils';
 
 import { Row } from '../../types';
-import { starSingleOrMultipleColumnsValidator } from './transformValidators';
+import { ascOrDescValidator, starSingleOrMultipleColumnsValidator } from './utils';
 import { TransformTable } from '../table';
 import { TransformParser } from '../parser';
 
@@ -15,8 +15,6 @@ type SortParams = {
   by: string | string[];
   direction: 'asc' | 'desc' | ('asc' | 'desc')[];
 };
-
-const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);
 
 export const paramsValidator = yup.object().shape({
   by: starSingleOrMultipleColumnsValidator,

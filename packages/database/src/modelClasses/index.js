@@ -13,12 +13,16 @@ import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
+import { DashboardMailingListModel } from './DashboardMailingList';
+import { DashboardMailingListEntryModel } from './DashboardMailingListEntry';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
 import { DataGroupModel } from './DataGroup';
 import { DataServiceSyncGroupModel } from './DataServiceSyncGroup';
 import { DataTableModel } from './DataTable';
+import { DisasterModel } from './Disaster';
+import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityHierarchyModel } from './EntityHierarchy';
 import { EntityRelationModel } from './EntityRelation';
@@ -70,6 +74,8 @@ export const modelClasses = {
   Country: CountryModel,
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
+  DashboardMailingList: DashboardMailingListModel,
+  DashboardMailingListEntry: DashboardMailingListEntryModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataElementDataService: DataElementDataServiceModel,
@@ -79,6 +85,8 @@ export const modelClasses = {
   DataServiceSyncGroup: DataServiceSyncGroupModel,
   DataTable: DataTableModel,
   DhisInstance: DhisInstanceModel,
+  Disaster: DisasterModel,
+  DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
   EntityHierarchy: EntityHierarchyModel,
   EntityRelation: EntityRelationModel,
@@ -155,7 +163,7 @@ export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
-export { SurveyModel } from './Survey';
+export { SurveyModel, SurveyType } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
@@ -163,4 +171,11 @@ export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
+export { DashboardType, DashboardModel } from './Dashboard';
 export { DashboardItemType, DashboardItemModel } from './DashboardItem';
+export { DashboardMailingListType, DashboardMailingListModel } from './DashboardMailingList';
+export {
+  DashboardMailingListEntryType,
+  DashboardMailingListEntryModel,
+} from './DashboardMailingListEntry';
+export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';

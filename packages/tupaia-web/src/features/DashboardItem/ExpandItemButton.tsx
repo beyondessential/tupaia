@@ -8,8 +8,9 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
+import { ViewReport } from '@tupaia/types';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemConfig, ViewReport } from '../../types';
+import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
 
 const ExpandableButton = styled(Button).attrs({
@@ -51,15 +52,13 @@ const ExpandButtonText = styled.span`
 `;
 
 const ZoomInIcon = styled(MuiZoomIcon)`
-  margin-right: 1rem;
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     width: 1.5rem;
     height: 1.5rem;
-    margin-right: 0;
   }
 `;
 
-const EXPANDABLE_TYPES = ['chart', 'matrix', 'dataDownload', 'filesDownload'];
+const EXPANDABLE_TYPES = ['chart', 'dataDownload', 'filesDownload'];
 
 /**
  * ExpandItemButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
@@ -74,9 +73,13 @@ export const ExpandItemButton = () => {
 
   const getIsExpandable = () => {
     if (periodGranularity) return true;
-    else if (EXPANDABLE_TYPES.includes(type)) return true;
-    else if (viewType && EXPANDABLE_TYPES.includes(viewType)) return true;
-    else if (viewType === 'qrCodeVisual') {
+    // always allow matrix to be expanded
+    else if (type === 'matrix') return true;
+    // only expand expandable types if they have data, if they don't have periodGranularity set
+    else if (EXPANDABLE_TYPES.includes(type) || (viewType && EXPANDABLE_TYPES.includes(viewType))) {
+      const { data } = report as ViewReport;
+      return data && data.length > 0;
+    } else if (viewType === 'qrCodeVisual') {
       const { data } = report as ViewReport;
       return data && data.length > 1;
     }
@@ -99,8 +102,7 @@ export const ExpandItemButton = () => {
   const text = getText();
 
   return (
-    <ExpandableButton onClick={handleExpandDashboardItem}>
-      <ZoomInIcon />
+    <ExpandableButton onClick={handleExpandDashboardItem} startIcon={<ZoomInIcon />}>
       <ExpandButtonText>{text}</ExpandButtonText>
     </ExpandableButton>
   );
