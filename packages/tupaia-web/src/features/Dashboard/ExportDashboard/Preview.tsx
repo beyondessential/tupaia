@@ -15,6 +15,7 @@ import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { ExportSettingLabel } from './ExportSettingLabel';
+import { ExportSettingsInstructions } from './ExportSettingsInstructions';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -138,12 +139,6 @@ const PreviewContainer = styled.div`
   overflow-x: hidden;
 `;
 
-const Instructions = styled(Typography)`
-  color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 0.875rem;
-  line-height: 1.4;
-`;
-
 const PreviewTitle = styled(Typography).attrs({
   variant: 'h2',
 })`
@@ -201,7 +196,9 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
         <Container>
           <ExportSettingsContainer>
             <ExportSettingsInstructionsContainer>
-              <Instructions>Edit export settings and click 'Download'.</Instructions>
+              <ExportSettingsInstructions>
+                Edit export settings and click 'Download'.
+              </ExportSettingsInstructions>
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
               <FormGroup>
