@@ -75,6 +75,10 @@ const ExportSetting = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 1rem;
+
+  fieldset {
+    border: 0;
+  }
 `;
 
 const Legend = styled.legend`
@@ -140,7 +144,9 @@ const Instructions = styled(Typography)`
   line-height: 1.4;
 `;
 
-const PreviewTitle = styled(Typography)`
+const PreviewTitle = styled(Typography).attrs({
+  variant: 'h2',
+})`
   color: ${({ theme }) => theme.palette.text.primary};
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   font-size: 0.875rem;
@@ -193,23 +199,25 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
               <FormGroup>
-                <Legend>Display options (coming soon)</Legend>
-                <Checkbox
-                  label="Export with Labels"
-                  value
-                  name="displayOptions"
-                  color="primary"
-                  checked={false}
-                  disabled
-                />
-                <Checkbox
-                  label="Export with Table"
-                  value
-                  name="displayOptions"
-                  color="primary"
-                  checked
-                  disabled
-                />
+                <fieldset>
+                  <Legend>Display options (coming soon)</Legend>
+                  <Checkbox
+                    label="Export with Labels"
+                    value
+                    name="displayOptions"
+                    color="primary"
+                    checked={false}
+                    disabled
+                  />
+                  <Checkbox
+                    label="Export with Table"
+                    value
+                    name="displayOptions"
+                    color="primary"
+                    checked
+                    disabled
+                  />
+                </fieldset>
               </FormGroup>
             </ExportSetting>
           </ExportSettingsContainer>

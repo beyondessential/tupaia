@@ -48,7 +48,9 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled(Typography)`
+const Title = styled(Typography).attrs({
+  variant: 'h1',
+})`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
   font-size: 1.2rem;
