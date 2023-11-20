@@ -100,7 +100,7 @@ export function createApp() {
       'export/dashboardVisualisation/:dashboardVisualisationId',
       handleWith(ExportDashboardVisualisationRoute),
     )
-    .get('export/dataTable/:dataTableId', handleWith(ExportDataTableRoute))
+    .get<ExportDataTableRequest>('export/dataTable/:dataTableId', handleWith(ExportDataTableRoute))
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
@@ -109,7 +109,6 @@ export function createApp() {
       'export/dashboardVisualisation',
       handleWith(ExportDashboardVisualisationRoute),
     )
-    .post<ExportDataTableRequest>('export/dataTable', handleWith(ExportDataTableRoute))
     .post<ExportMapOverlayVisualisationRequest>(
       'export/mapOverlayVisualisation',
       handleWith(ExportMapOverlayVisualisationRoute),

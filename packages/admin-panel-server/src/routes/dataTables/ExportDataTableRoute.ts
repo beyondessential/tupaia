@@ -9,7 +9,7 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DataTable } from './types';
 
 export type ExportDataTableRequest = Request<
-  { dataTableId?: string },
+  { dataTableId: string },
   { contents: DataTable; filePath: string; type: string },
   Record<string, never>,
   Record<string, any>
