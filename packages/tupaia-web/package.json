@@ -11,7 +11,7 @@
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "scripts": {
-    "build": "tsc && npm run --prefix ../../ package:build:vite",
+    "build": "yarn package:build:types && yarn package:build:vite",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
