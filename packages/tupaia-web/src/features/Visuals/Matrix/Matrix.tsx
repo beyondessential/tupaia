@@ -207,23 +207,19 @@ const MatrixVisual = () => {
 };
 
 const Container = styled.div`
-  position: relative;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  // Make sure there is enough space for the mobile warning text
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
+    min-height: 5rem;
+  }
 `;
 
 const MobileWarningText = styled.div`
   font-size: 1rem;
   text-align: center;
-  max-width: 25rem;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(43, 45, 56);
-  padding: 0.5rem;
-  z-index: 1;
+  padding: 0.5rem 0.5rem 1rem;
 
   @media (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;

@@ -59,3 +59,9 @@ export {
   ArithmeticQuestionConfig,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
+export {
+  FeedItemTemplateVariables,
+  FeedItemTypes,
+  SurveyResponseTemplateVariables,
+  MarkdownTemplateVariables,
+} from './feedItem';

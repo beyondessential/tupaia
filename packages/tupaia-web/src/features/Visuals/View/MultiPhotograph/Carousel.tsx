@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   overflow-y: auto;
   max-width: 38rem;
   width: 100%;
-  padding: 0 1rem;
+  margin: 0 1rem;
   flex: 1;
   display: flex;
 `;
@@ -45,7 +45,7 @@ const ArrowButton = styled(IconButton)`
     left: 0.5rem;
   }
   &:last-child {
-    right: 0.5rem;
+    right: 2.5rem;
   }
   svg {
     width: 3rem;

@@ -14,3 +14,4 @@ export { EntityQuestion } from './EntityQuestion';
 export { AutocompleteQuestion } from './AutocompleteQuestion';
 export { ReadOnlyQuestion } from './ReadOnlyQuestion';
 export { PhotoQuestion } from './PhotoQuestion';
+export { FileQuestion } from './FileQuestion';

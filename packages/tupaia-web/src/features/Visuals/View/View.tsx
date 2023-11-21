@@ -22,6 +22,7 @@ import { MultiPhotograph } from './MultiPhotograph';
 const MultiSingleValueWrapper = styled.div`
   & + & {
     margin-top: 1rem;
+    text-align: center;
   }
 `;
 interface ViewProps {

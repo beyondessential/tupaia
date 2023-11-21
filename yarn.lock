@@ -10028,6 +10028,7 @@ __metadata:
     axios: ^1.4.0
     bson-objectid: ^1.2.2
     leaflet: ^1.7.1
+    markdown-to-jsx: ^6.4.1
     msw: ^1.3.1
     nanoid: ^2.0.3
     notistack: ^3.0.1
@@ -10670,6 +10671,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/utils@workspace:packages/utils"
   dependencies:
+    "@aws-sdk/client-s3": ^3.341.0
+    "@aws-sdk/credential-providers": ^3.341.0
+    "@aws-sdk/lib-storage": ^3.348.0
+    bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2

@@ -16,3 +16,4 @@ export { SurveySuccessScreen, SurveyReviewScreen, SurveyScreen } from '../featur
 export { RequestProjectAccessPage } from './RequestProjectAccessPage';
 export { ForgotPasswordPage } from './ForgotPasswordPage';
 export { ResetPasswordPage } from './ResetPasswordPage';
+export { AccountSettingsPage } from './AccountSettingsPage';

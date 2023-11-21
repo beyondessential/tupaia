@@ -4,7 +4,7 @@
  */
 
 export const getRewardsForUser = async (database, userId) => {
-  const [{ coconuts, pigs }] = await database.executeSql(
+  const [rewards] = await database.executeSql(
     `
     SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
     FROM survey_response
@@ -13,5 +13,11 @@ export const getRewardsForUser = async (database, userId) => {
     `,
     userId,
   );
-  return { coconuts, pigs };
+
+  if (rewards) {
+    const { coconuts, pigs } = rewards;
+    return { coconuts, pigs };
+  }
+
+  return { coconuts: 0, pigs: 0 };
 };

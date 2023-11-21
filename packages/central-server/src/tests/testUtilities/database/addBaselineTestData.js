@@ -8,6 +8,7 @@ import { encryptPassword } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { getModels } from './getModels';
+import { TEST_USER_EMAIL } from '../constants';
 
 const models = getModels();
 
@@ -56,7 +57,7 @@ export async function addBaselineTestData() {
   );
 
   await createUserAccessor(models, {
-    emailAddress: 'test.user@tupaia.org',
+    emailAddress: TEST_USER_EMAIL,
     password: 'test.password',
     firstName: 'Test',
     lastName: 'User',

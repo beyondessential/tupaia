@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { Button, Modal } from '../../../components';
-import { useSurveyForm } from '..';
+import { Button } from './Button';
+import { Modal } from './Modal';
 
 const Wrapper = styled.div`
   max-width: 28rem;
@@ -41,20 +41,24 @@ const ModalButton = styled(Button)`
   }
 `;
 
-export const CancelSurveyModal = () => {
-  const { cancelModalOpen, closeCancelConfirmation } = useSurveyForm();
+export const CancelConfirmModal = ({
+  isOpen,
+  onClose,
+  headingText = 'Survey in progress',
+  bodyText = "If you exit, you will lose the progress you've made on the current survey",
+  confirmText = 'Exit survey',
+  cancelText = 'Continue survey',
+}) => {
   return (
-    <Modal open={cancelModalOpen} onClose={closeCancelConfirmation}>
+    <Modal open={isOpen} onClose={onClose}>
       <Wrapper>
-        <Heading>Survey in progress</Heading>
-        <Typography align="center">
-          If you exit, you will lose the progress you've made on the current survey
-        </Typography>
+        <Heading>{headingText}</Heading>
+        <Typography align="center">{bodyText}</Typography>
         <ButtonWrapper>
-          <ModalButton variant="outlined" to="../../" onClick={closeCancelConfirmation}>
-            Exit survey
+          <ModalButton variant="outlined" to="/" onClick={onClose}>
+            {confirmText}
           </ModalButton>
-          <ModalButton onClick={closeCancelConfirmation}>Continue survey</ModalButton>
+          <ModalButton onClick={onClose}>{cancelText}</ModalButton>
         </ButtonWrapper>
       </Wrapper>
     </Modal>
