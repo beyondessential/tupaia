@@ -34,11 +34,17 @@ const Logo = styled.img.attrs({
   margin-right: 0.5rem;
 `;
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
 export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
   const formattedDate = creationDate ? new Date(creationDate as Date).toLocaleDateString() : '';
   return (
-    <div>
+    <ContentWrapper>
       <Header>
         <Logo />
         <div>
@@ -54,6 +60,6 @@ export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedI
           alt={`Image for feed item ${templateVariables?.title}`}
         />
       )}
-    </div>
+    </ContentWrapper>
   );
 };

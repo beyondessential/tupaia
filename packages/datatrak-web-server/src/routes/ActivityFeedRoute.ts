@@ -52,12 +52,13 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
   public async buildResponse() {
     const { query, models, ctx } = this.req;
-    const { page: queryPage } = query;
+    const { page: queryPage, projectId } = query;
 
     // get the user's surveys they have access to so that we can filter the feed items
     const userSurveys = await ctx.services.central.fetchResources('surveys', {
       columns: ['name'],
       pageSize: 'ALL',
+      filter: { project_id: projectId },
     });
 
     const page = queryPage ? parseInt(queryPage, 10) : 0;

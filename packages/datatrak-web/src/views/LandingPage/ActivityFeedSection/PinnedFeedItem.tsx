@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useActivityFeed } from '../../../api/queries';
+import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import styled from 'styled-components';
 import { ActivityFeedItem } from './ActivityFeedItem';
@@ -18,7 +18,7 @@ const PinIcon = styled(BasePinIcon)`
 `;
 
 export const PinnedFeedItem = () => {
-  const { data: activityFeed } = useActivityFeed();
+  const { data: activityFeed } = useCurrentProjectActivityFeed();
 
   if (!activityFeed || !activityFeed?.pages?.length) return null;
 

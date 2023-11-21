@@ -28,4 +28,7 @@ export type ResBody = {
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ReqBody = Record<string, any>;
-export type ReqQuery = Record<string, never>;
+export type ReqQuery = {
+  projectId: string;
+  page?: string;
+};

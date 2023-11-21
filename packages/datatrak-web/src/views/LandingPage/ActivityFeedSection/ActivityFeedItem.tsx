@@ -7,7 +7,9 @@ import styled from 'styled-components';
 import { ListItem, ListItemProps } from '@material-ui/core';
 
 export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
-  padding: 1.12rem 0.6rem 0.6rem 0;
+  padding: 1.12rem 0.6rem 0.6rem 0.2rem;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 0.75rem;
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   }
@@ -21,5 +23,10 @@ export const ActivityFeedItem = styled(ListItem)<ListItemProps>`
   .MuiTypography-colorTextSecondary {
     font-size: 0.625rem;
     margin-top: 0.2rem;
+  }
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
   }
 `;
