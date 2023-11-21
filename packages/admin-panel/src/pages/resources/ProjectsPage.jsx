@@ -11,12 +11,7 @@ import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
 const PROJECTS_ENDPOINT = 'projects';
 
-const FIELDS = [
-  {
-    Header: 'Code',
-    source: 'code',
-    editable: false,
-  },
+const DEFAULT_FIELDS = [
   {
     Header: 'Description',
     source: 'description',
@@ -104,12 +99,29 @@ const FIELDS = [
   },
 ];
 
+const CREATE_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+  },
+  ...DEFAULT_FIELDS,
+];
+
+const EDIT_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+    editable: false,
+  },
+  ...DEFAULT_FIELDS,
+];
+
 const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
   },
-  ...FIELDS,
+  ...CREATE_FIELDS,
   {
     Header: 'Country Code/s',
     source: 'country.code',
@@ -139,7 +151,7 @@ const NEW_PROJECT_COLUMNS = [
 ];
 
 const COLUMNS = [
-  ...FIELDS,
+  ...EDIT_FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
@@ -147,7 +159,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',
-      fields: FIELDS,
+      fields: EDIT_FIELDS,
     },
   },
 ];
