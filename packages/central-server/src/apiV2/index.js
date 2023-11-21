@@ -94,7 +94,7 @@ import {
   GETUserEntityPermissions,
 } from './userEntityPermissions';
 import { EditEntity, GETEntities, DeleteEntity } from './entities';
-import { GetEntityTypes } from './entityTypes';
+import { GetEntityTypes, CreateEntityType } from './entityTypes';
 import { EditAccessRequests, GETAccessRequests } from './accessRequests';
 import { changePassword } from './changePassword';
 import { deleteAccount } from './deleteAccount';
@@ -315,6 +315,7 @@ apiV2.post('/landingPages', useRouteHandler(CreateLandingPage));
 apiV2.post('/surveys', multipartJson(), useRouteHandler(CreateSurvey));
 apiV2.post('/dhisInstances', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/supersetInstances', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/entityTypes', useRouteHandler(CreateEntityType));
 
 /**
  * PUT routes

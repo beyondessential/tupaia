@@ -19,11 +19,25 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
+const CREATE_CONFIG = {
+  title: 'Add a new entity type',
+  actionConfig: {
+    editEndpoint: ENTITY_TYPES_ENDPOINT,
+    fields: [
+      {
+        Header: 'Type',
+        source: 'type',
+      },
+    ],
+  },
+};
+
 export const EntityTypesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entity Types"
     endpoint={ENTITY_TYPES_ENDPOINT}
     columns={ENTITY_TYPES_COLUMNS}
+    createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
   />
 );
