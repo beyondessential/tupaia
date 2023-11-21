@@ -15,7 +15,6 @@ export class CreateEntityType extends BESAdminCreateHandler {
   }
 
   async createRecord() {
-    console.log('newRecordData', this.newRecordData);
     await this.models.entity.addEntityType(this.newRecordData);
     return { message: `Successfully added entity_type: ${this.newRecordData.type}` };
   }
