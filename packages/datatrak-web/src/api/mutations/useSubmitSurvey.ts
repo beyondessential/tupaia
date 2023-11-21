@@ -10,7 +10,7 @@ import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
-import { successToast } from '../../utils';
+import { gaEvent, successToast } from '../../utils';
 
 type AutocompleteAnswer = {
   isNew?: boolean;
@@ -44,6 +44,7 @@ export const useSubmitSurvey = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
+  const { data: survey } = useSurvey(params.surveyCode);
 
   const surveyResponseData = useSurveyResponseData();
 
@@ -58,6 +59,13 @@ export const useSubmitSurvey = () => {
       });
     },
     {
+      onMutate: () => {
+        // Send off survey submissions by survey, project, and country
+        gaEvent('submit_survey', params.surveyCode!, survey?.name);
+        gaEvent('submit_survey', params.projectCode!);
+        gaEvent('submit_survey', params.countryCode!);
+        // TODO: add a user event?
+      },
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
         queryClient.invalidateQueries('recentSurveys');
