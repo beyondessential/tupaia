@@ -103,6 +103,9 @@ const FIELDS = [
   },
 ];
 
+// We don't want to be able to edit 'code' so we filter it out of the fields list
+const EDIT_FIELDS = FIELDS.filter(x => x.source !== 'code');
+
 const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Name',
@@ -146,7 +149,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',
-      fields: FIELDS.filter(x => x.source !== 'code'),
+      fields: EDIT_FIELDS,
     },
   },
 ];
