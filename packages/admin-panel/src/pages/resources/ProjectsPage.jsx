@@ -146,7 +146,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',
-      fields: FIELDS,
+      fields: FIELDS.filter(x => x.source !== 'code'),
     },
   },
 ];
