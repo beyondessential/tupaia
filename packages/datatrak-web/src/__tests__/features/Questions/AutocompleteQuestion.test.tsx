@@ -8,13 +8,19 @@ import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderComponent } from '../../helpers/render';
-import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
+import { AutocompleteQuestion } from '../../../features/Questions';
 
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'theParentQuestionAnswer',
   }),
 }));
+
+jest.mock('../../../api/queries/useUser', () => {
+  return {
+    useUser: jest.fn().mockReturnValue({}),
+  };
+});
 
 const options = [
   {

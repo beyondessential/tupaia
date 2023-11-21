@@ -2,14 +2,13 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { useParams } from 'react-router-dom';
 import { SurveyScreenComponentConfig } from '@tupaia/types';
-import { useUser } from '../../../api/queries';
 import { useSurveyForm } from '../../Survey';
 
 export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  const { data: userData } = useUser();
-  const countryCode = userData?.country?.code;
+  const { countryCode } = useParams();
 
   const filters = { countryCode } as Record<string, string | string[]>;
 

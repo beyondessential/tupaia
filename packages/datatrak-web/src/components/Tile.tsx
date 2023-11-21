@@ -44,12 +44,14 @@ const Heading = styled(Typography)`
 const Text = styled(Typography)`
   font-size: 0.75rem;
   color: ${({ theme }) => theme.palette.text.secondary};
-  margin-bottom: 0.2rem;
   text-align: left;
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  &:not(:last-child) {
+    margin-bottom: 0.2rem;
+  }
 `;
 
 interface TileProps {
