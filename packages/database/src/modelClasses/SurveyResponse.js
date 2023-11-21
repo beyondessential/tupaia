@@ -19,6 +19,7 @@ const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'josh@sussol.net'", // mSupply API Client
   "'unicef.laos.edu@gmail.com'", // Laos Schools Data Collector
   "'tamanu-server@tupaia.org'", // Tamanu Server
+  "'public@tupaia.org'", // Public User
 ];
 const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
