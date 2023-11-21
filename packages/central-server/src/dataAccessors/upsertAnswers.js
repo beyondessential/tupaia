@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
 import { QuestionType } from '@tupaia/types';
-import { S3Client, S3, getS3ImageFilePath, S3_BUCKET_PATH } from '@tupaia/server-utils';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 
 export async function upsertAnswers(models, answers, surveyResponseId) {
