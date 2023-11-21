@@ -18,8 +18,8 @@ import {
   UserRequest,
   SurveysRoute,
   SurveysRequest,
-  SubmissionHistoryRequest,
-  SubmissionHistoryRoute,
+  SurveyResponsesRequest,
+  SurveyResponsesRoute,
   ProjectsRoute,
   ProjectsRequest,
   SurveyRequest,
@@ -32,8 +32,8 @@ import {
   ProjectRoute,
   SubmitSurveyRoute,
   SubmitSurveyRequest,
-  TopSurveysRequest,
-  TopSurveysRoute,
+  RecentSurveysRequest,
+  RecentSurveysRoute,
   LeaderboardRequest,
   LeaderboardRoute,
   ActivityFeedRequest,
@@ -61,12 +61,12 @@ export function createApp() {
     .get<SingleEntityRequest>('entity/:projectCode/:entityCode', handleWith(SingleEntityRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
-    .get<SubmissionHistoryRequest>('submissionHistory', handleWith(SubmissionHistoryRoute))
+    .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))
     .get<SurveyRequest>('surveys/:surveyCode', handleWith(SurveyRoute))
     .get<ProjectsRequest>('projects', handleWith(ProjectsRoute))
     .get<LeaderboardRequest>('leaderboard', handleWith(LeaderboardRoute))
     .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
-    .get<TopSurveysRequest>('topSurveys', handleWith(TopSurveysRoute))
+    .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

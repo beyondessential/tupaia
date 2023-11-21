@@ -7,18 +7,18 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import {
-  DatatrakWebSubmissionHistoryRequest,
+  DatatrakWebSurveyResponsesRequest,
   SurveyResponse,
   Country,
   Entity,
   Survey,
 } from '@tupaia/types';
 
-export type SubmissionHistoryRequest = Request<
-  DatatrakWebSubmissionHistoryRequest.Params,
-  DatatrakWebSubmissionHistoryRequest.ResBody,
-  DatatrakWebSubmissionHistoryRequest.ReqBody,
-  DatatrakWebSubmissionHistoryRequest.ReqQuery
+export type SurveyResponsesRequest = Request<
+  DatatrakWebSurveyResponsesRequest.Params,
+  DatatrakWebSurveyResponsesRequest.ResBody,
+  DatatrakWebSurveyResponsesRequest.ReqBody,
+  DatatrakWebSurveyResponsesRequest.ReqQuery
 >;
 
 type SurveyResponseT = Record<string, any> & {
@@ -46,7 +46,7 @@ const DEFAULT_LIMIT = 16;
 
 const DEFAULT_SORT = ['data_time DESC'];
 
-export class SubmissionHistoryRoute extends Route<SubmissionHistoryRequest> {
+export class SurveyResponsesRoute extends Route<SurveyResponsesRequest> {
   public async buildResponse() {
     const { ctx, query } = this.req;
 

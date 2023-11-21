@@ -9,9 +9,9 @@ import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SectionHeading } from './SectionHeading';
 import { SurveyIcon, Tile } from '../../components';
-import { useCurrentUserTopSurveys } from '../../api';
+import { useCurrentUserRecentSurveys } from '../../api';
 
-const TopSurveys = styled.section`
+const RecentSurveys = styled.section`
   grid-area: recentSurveys;
   display: flex;
   flex-direction: column;
@@ -40,16 +40,16 @@ const ScrollBody = styled.div`
   }
 `;
 
-export const TopSurveysSection = () => {
-  const { data: surveys = [], isSuccess, isLoading } = useCurrentUserTopSurveys();
+export const RecentSurveysSection = () => {
+  const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   return (
-    <TopSurveys>
-      <SectionHeading>Top surveys</SectionHeading>
+    <RecentSurveys>
+      <SectionHeading>My recent surveys</SectionHeading>
       {isLoading && <SpinningLoader />}
       {isSuccess && (
         <ScrollBody>
-          {surveys?.length ? (
-            surveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
+          {recentSurveys?.length ? (
+            recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
               <Tile
                 key={`${surveyCode}-${countryName}`}
                 title={surveyName}
@@ -67,11 +67,11 @@ export const TopSurveysSection = () => {
             ))
           ) : (
             <Typography variant="body2" color="textSecondary">
-              No surveys to display
+              No recent surveys to display
             </Typography>
           )}
         </ScrollBody>
       )}
-    </TopSurveys>
+    </RecentSurveys>
   );
 };

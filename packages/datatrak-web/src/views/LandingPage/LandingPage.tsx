@@ -7,10 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { PageContainer as BasePageContainer } from '../../components';
 import { SurveySelectSection } from './SurveySelectSection';
-import { SubmissionHistorySection } from './SubmissionHistorySection';
+import { SurveyResponsesSection } from './SurveyResponsesSection';
 import { LeaderboardSection } from './LeaderboardSection';
 import { ActivityFeedSection } from './ActivityFeedSection';
-import { TopSurveysSection } from './TopSurveysSection';
+import { RecentSurveysSection } from './RecentSurveysSection';
 import { DESKTOP_MEDIA_QUERY, HEADER_HEIGHT } from '../../constants';
 
 const PageContainer = styled(BasePageContainer)`
@@ -92,8 +92,8 @@ export const LandingPage = () => {
         <SurveySelectSection />
         <Grid>
           <LeaderboardSection />
-          <TopSurveysSection />
-          <SubmissionHistorySection />
+          <RecentSurveysSection />
+          <SurveyResponsesSection />
           <ActivityFeedSection />
         </Grid>
       </PageBody>

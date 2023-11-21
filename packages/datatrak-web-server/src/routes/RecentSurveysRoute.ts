@@ -6,16 +6,16 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebTopSurveysRequest } from '@tupaia/types';
+import { DatatrakWebRecentSurveysRequest } from '@tupaia/types';
 
-export type TopSurveysRequest = Request<
-  DatatrakWebTopSurveysRequest.Params,
-  DatatrakWebTopSurveysRequest.ResBody,
-  DatatrakWebTopSurveysRequest.ReqBody,
-  DatatrakWebTopSurveysRequest.ReqQuery
+export type RecentSurveysRequest = Request<
+  DatatrakWebRecentSurveysRequest.Params,
+  DatatrakWebRecentSurveysRequest.ResBody,
+  DatatrakWebRecentSurveysRequest.ReqBody,
+  DatatrakWebRecentSurveysRequest.ReqQuery
 >;
 
-export class TopSurveysRoute extends Route<TopSurveysRequest> {
+export class RecentSurveysRoute extends Route<RecentSurveysRequest> {
   public async buildResponse() {
     const { query, models } = this.req;
 
@@ -37,7 +37,7 @@ export class TopSurveysRoute extends Route<TopSurveysRequest> {
       [userId, projectId],
     );
 
-    return camelcaseKeys(surveyResponses as DatatrakWebTopSurveysRequest.ResBody, {
+    return camelcaseKeys(surveyResponses as DatatrakWebRecentSurveysRequest.ResBody, {
       deep: true,
     });
   }
