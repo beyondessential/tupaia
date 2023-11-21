@@ -72,7 +72,7 @@ const ExportSetting = styled.div`
   }
 
   .MuiFormControlLabel-label {
-    font-size: 0.875rem;
+    font-size: 0.825rem;
   }
 
   display: flex;
@@ -86,7 +86,7 @@ const ExportSetting = styled.div`
 `;
 
 const Checkbox = styled(BaseCheckbox)`
-  margin: 0.5rem 0 0 1rem;
+  margin: 0;
   .MuiButtonBase-root {
     padding: 0;
     margin-right: 0.5rem;
@@ -220,6 +220,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
                     color="primary"
                     checked={false}
                     disabled
+                    size="small"
                   />
                   <Checkbox
                     label="Export with Table"
@@ -228,6 +229,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
                     color="primary"
                     checked
                     disabled
+                    size="small"
                   />
                 </fieldset>
               </FormGroup>
