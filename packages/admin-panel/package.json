@@ -56,7 +56,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.throttle": "^4.1.1",
-    "moment": "^2.22.2",
+    "moment": "^2.24.0",
     "parse-link-header": "^2.0.0",
     "prop-types": "^15.6.0",
     "qrcode": "^1.5.3",
