@@ -105,17 +105,40 @@ export const Routes = () => {
   return (
     <RouterRoutes>
       <Route path="/" element={<MainPageLayout />}>
+        {/* PRIVATE ROUTES */}
         <Route path="/" element={<PrivateRoute />}>
           <Route index element={<LandingPage />} />
+          <Route
+            path="/"
+            element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
+          >
+            <Route element={<CentredLayout />}>
+              <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+              <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
+            </Route>
+            {SurveyPageRoutes}
+          </Route>
+          <Route path={ROUTES.ACCOUNT_SETTINGS} element={<AccountSettingsPage />} />
+          <Route
+            path="/"
+            element={
+              <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
+            }
+          >
+            <Route path="/" element={<CentredLayout />}>
+              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
+              <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
+            </Route>
+          </Route>
         </Route>
-        {/** Any views that should have the background image should go in here */}
+
+        {/* PUBLIC ROUTES*/}
         <Route
           path="/"
           element={
             <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
           }
         >
-          {/** Any public centred views should go in here */}
           <Route path="/" element={<CentredLayout />}>
             <Route
               path={ROUTES.LOGIN}
@@ -130,30 +153,8 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
             <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
-            <Route element={<PrivateRoute />}>
-              <Route path={ROUTES.PROJECT_SELECT} element={<ProjectSelectPage />} />
-              <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
-            </Route>
           </Route>
         </Route>
-        <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
-          <Route element={<PrivateRoute />}>
-            {/** Any private centred views should go in here */}
-            <Route element={<CentredLayout />}>
-              <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-              <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
-            </Route>
-            {SurveyPageRoutes}
-          </Route>
-        </Route>
-        <Route
-          path={ROUTES.ACCOUNT_SETTINGS}
-          element={
-            <PrivateRoute>
-              <AccountSettingsPage />
-            </PrivateRoute>
-          }
-        />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>
