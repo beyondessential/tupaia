@@ -11,8 +11,8 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "scripts": {
     "build": "rm -rf dist && run-s \"build:* {@}\" --",
-    "build:desktop": "BUILD_PATH='./build/desktop/' npm run --prefix ../../ package:build:react-scripts",
-    "build:mobile": "BUILD_PATH='./build/mobile/' REACT_APP_APP_TYPE=mobile npm run --prefix ../../ package:build:react-scripts",
+    "build:desktop": "BUILD_PATH='./build/desktop/' yarn run package:build:react-scripts",
+    "build:mobile": "BUILD_PATH='./build/mobile/' REACT_APP_APP_TYPE=mobile yarn run package:build:react-scripts",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "PORT=8088 yarn package:start:react-scripts",
@@ -85,6 +85,7 @@
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "^11.0.2",
     "@testing-library/user-event": "^12.0.11",
+    "@tupaia/build-scripts": "1.0.0",
     "case": "^1.6.3",
     "chalk": "1.1.3",
     "cheerio": "^1.0.0-rc.3",

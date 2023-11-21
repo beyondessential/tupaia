@@ -38,6 +38,7 @@
   "devDependencies": {
     "@mui/types": "^7.2.4",
     "@testing-library/react": "12.1.2",
+    "@tupaia/build-scripts": "1.0.0",
     "@tupaia/types": "1.0.0",
     "@types/leaflet": "^1.7.1",
     "@types/material-ui": "^0.21.12",
@@ -49,11 +50,11 @@
     "vite": "^4.3.2"
   },
   "scripts": {
-    "build": "tsc && npm run --prefix ../../ package:build:vite",
+    "build": "tsc && yarn run package:build:vite",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
-    "start-dev": "npm run --prefix ../../ package:start:vite",
+    "start-dev": "yarn run package:start:vite",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
     "start-central-server": "yarn workspace @tupaia/central-server start-dev",
     "start-datatrak-web-server": "yarn workspace @tupaia/datatrak-web-server start-dev",

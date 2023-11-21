@@ -51,6 +51,7 @@
     "@mui/types": "^7.2.4",
     "@storybook/addon-essentials": "6.3.9",
     "@storybook/react": "^6.3.9",
+    "@tupaia/build-scripts": "1.0.0",
     "@tupaia/types": "1.0.0",
     "@types/downloadjs": "^1.4.3",
     "@types/lodash.throttle": "^4.1.7",

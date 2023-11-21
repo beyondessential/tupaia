@@ -124,11 +124,11 @@ jobs:
           node-version: 14.19.3
           cache: yarn
       - run: yarn set version 3.2.1
-      - name: Install the package, root project dependencies (for shared scripts), and the package's dependencies
-        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia ${{ matrix.package }}
-      - name: build-dev dependencies
+      - name: Install the package, and its dependencies
+        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus ${{ matrix.package }}
+      - name: Build dependencies
         run: yarn workspaces foreach --parallel --topological --verbose --recursive --jobs unlimited --from ${{ matrix.package }} --exclude ${{matrix.package}} run build-dev #
-      - name: build (if script exists)
+      - name: Build package (if script exists)
         run: yarn workspaces foreach --include ${{ matrix.package }} run build
 
   test:
@@ -189,13 +189,13 @@ jobs:
           node-version: 14.19.3
           cache: yarn
       - run: yarn set version 3.2.1
-      - name: Install the package, root project dependencies (for shared scripts), and the package's dependencies
-        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia ${{ matrix.package }}
-      - name: build-dev dependencies
+      - name: Install the package, and its dependencies
+        run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus ${{ matrix.package }}
+      - name: Build dependencies
         run: yarn workspaces foreach --parallel --topological --verbose --recursive --jobs unlimited --from ${{ matrix.package }} --exclude ${{matrix.package}} run build-dev #
-      - name: setup-test (if script exists)
+      - name: Setup-test (if script exists)
         run: yarn workspaces foreach --include ${{ matrix.package }} run setup-test
-      - name: test (if script exists)
+      - name: Test (if script exists)
         run: yarn workspaces foreach --include ${{ matrix.package }} run test
 
   allgreen:

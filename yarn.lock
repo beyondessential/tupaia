@@ -5803,13 +5803,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@colors/colors@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@colors/colors@npm:1.6.0"
-  checksum: aa209963e0c3218e80a4a20553ba8c0fbb6fa13140540b4e5f97923790be06801fc90172c1114fc8b7e888b3d012b67298cde6b9e81521361becfaee400c662f
-  languageName: node
-  linkType: hard
-
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
   resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
@@ -10142,6 +10135,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/access-policy@workspace:packages/access-policy"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     npm-run-all: ^4.1.5
   languageName: unknown
   linkType: soft
@@ -10152,6 +10146,7 @@ __metadata:
   dependencies:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
@@ -10180,6 +10175,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
@@ -10234,6 +10230,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/aggregator@workspace:packages/aggregator"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10247,6 +10244,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/api-client@workspace:packages/api-client"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10265,6 +10263,7 @@ __metadata:
   dependencies:
     "@beyondessential/tupaia-access-policy": ^2.5.1
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/utils": 1.0.0
     jsonwebtoken: ^7.4.3
@@ -10276,6 +10275,50 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/build-scripts@1.0.0, @tupaia/build-scripts@workspace:packages/build-scripts":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/build-scripts@workspace:packages/build-scripts"
+  dependencies:
+    "@babel/cli": ^7.11.6
+    "@babel/core": ^7.23.3
+    "@babel/node": ^7.10.5
+    "@babel/plugin-proposal-class-properties": ^7.18.6
+    "@babel/plugin-proposal-export-default-from": ^7.22.17
+    "@babel/plugin-proposal-object-rest-spread": ^7.20.7
+    "@babel/plugin-proposal-private-methods": ^7.18.6
+    "@babel/plugin-proposal-private-property-in-object": ^7.21.11
+    "@babel/plugin-transform-runtime": ^7.18.10
+    "@babel/preset-env": ^7.23.3
+    "@babel/preset-react": ^7.23.3
+    "@babel/types": ^7.23.0
+    "@beyondessential/eslint-config-jest": ^1.0.0
+    "@beyondessential/eslint-config-js": ^1.1.1
+    "@beyondessential/eslint-config-ts": ^1.3.2
+    "@types/jest": ^29.5.4
+    "@vitejs/plugin-react": ^4.0.4
+    babel-eslint: ^10.1.0
+    babel-jest: ^27.0.6
+    concurrently: ^5.2.0
+    cypress-dotenv: ^1.2.2
+    dotenv: ^16.0.3
+    eslint: ^7.9.0
+    eslint-import-resolver-babel-module: ^5.3.1
+    eslint-plugin-cypress: ^2.11.1
+    eslint-plugin-module-resolver: ^1.5.0
+    jest: ^27.0.6
+    jest-extended: ^0.11.5
+    jest-when: ^2.7.2
+    nodemon: ^2.0.4
+    npm-package-json-lint: 5.1.0
+    ts-jest: ^27.1.3
+    ts-node: ^10.7.0
+    typescript: ^4.2.0
+    vite: ^4.4.8
+    vite-plugin-ejs: ^1.6.4
+    yargs: 15.4.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/central-server@workspace:packages/central-server":
   version: 0.0.0-use.local
   resolution: "@tupaia/central-server@workspace:packages/central-server"
@@ -10283,6 +10326,7 @@ __metadata:
     "@babel/polyfill": ^7.0.0
     "@tupaia/access-policy": 3.0.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/dhis-api": 1.0.0
@@ -10343,6 +10387,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/data-api@workspace:packages/data-api"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10362,6 +10407,7 @@ __metadata:
   resolution: "@tupaia/data-broker@workspace:packages/data-broker"
   dependencies:
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/data-api": 1.0.0
     "@tupaia/data-lake-api": 1.0.0
     "@tupaia/database": 1.0.0
@@ -10394,6 +10440,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/data-lake-api@workspace:packages/data-lake-api"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10417,6 +10464,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/aggregator": 1.0.0
     "@tupaia/api-client": 3.1.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
@@ -10436,6 +10484,7 @@ __metadata:
   dependencies:
     "@babel/node": ^7.10.5
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     db-migrate: ^0.11.5
@@ -10464,6 +10513,7 @@ __metadata:
   dependencies:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
@@ -10493,6 +10543,7 @@ __metadata:
     "@mui/types": ^7.2.4
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
@@ -10534,6 +10585,7 @@ __metadata:
   resolution: "@tupaia/dhis-api@workspace:packages/dhis-api"
   dependencies:
     "@tupaia/aggregator": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/utils": 1.0.0
     chai-as-promised: ^7.1.1
@@ -10578,6 +10630,7 @@ __metadata:
   dependencies:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/tsutils": 1.0.0
@@ -10595,6 +10648,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/expression-parser@workspace:packages/expression-parser"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     date-fns: ^2.16.1
     lodash.startcase: ^4.4.0
     mathjs: ^11.11.0
@@ -10607,6 +10661,7 @@ __metadata:
   resolution: "@tupaia/indicators@workspace:packages/indicators"
   dependencies:
     "@tupaia/aggregator": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/tsutils": 1.0.0
@@ -10622,6 +10677,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/kobo-api@workspace:packages/kobo-api"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/utils": 1.0.0
     npm-run-all: ^4.1.5
   languageName: unknown
@@ -10632,6 +10688,7 @@ __metadata:
   resolution: "@tupaia/lesmis-server@workspace:packages/lesmis-server"
   dependencies:
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/server-utils": 1.0.0
@@ -10655,6 +10712,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": 3.0.0
     "@tupaia/admin-panel": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/ui-map-components": 1.0.0
@@ -10690,6 +10748,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/server-utils": 1.0.0
@@ -10793,6 +10852,7 @@ __metadata:
   resolution: "@tupaia/psss-server@workspace:packages/psss-server"
   dependencies:
     "@tupaia/access-policy": 3.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/types": 1.0.0
@@ -10819,6 +10879,7 @@ __metadata:
     "@material-ui/pickers": ^3.2.10
     "@material-ui/styles": ^4.9.10
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -10860,6 +10921,7 @@ __metadata:
     "@tupaia/aggregator": 1.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/expression-parser": 1.0.0
@@ -10894,6 +10956,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/tsutils": 1.0.0
     "@tupaia/types": 1.0.0
@@ -10923,6 +10986,7 @@ __metadata:
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/cookie": ^0.5.4
     "@types/nodemailer": ^6.4.13
@@ -10936,6 +11000,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/superset-api@workspace:packages/superset-api"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/needle": ^2.5.3
     "@types/node-fetch": ^2.6.4
@@ -10949,6 +11014,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/tsutils@workspace:packages/tsutils"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/lodash.get": ^4.4.2
@@ -10971,6 +11037,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/api-client": 3.1.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/server-boilerplate": 1.0.0
     "@tupaia/server-utils": 1.0.0
@@ -11005,6 +11072,7 @@ __metadata:
     "@storybook/react": ^7.0.18
     "@storybook/react-vite": ^7.0.18
     "@storybook/testing-library": ^0.0.14-next.2
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-chart-components": 1.0.0
     "@tupaia/ui-components": 1.0.0
@@ -11056,6 +11124,7 @@ __metadata:
     "@material-ui/core": ^4.9.8
     "@material-ui/styles": ^4.9.10
     "@storybook/react": ^6.3.9
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -11086,6 +11155,7 @@ __metadata:
     "@mui/x-data-grid": ^4.0.0
     "@storybook/addon-essentials": 6.3.9
     "@storybook/react": ^6.3.9
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/downloadjs": ^1.4.3
@@ -11127,6 +11197,7 @@ __metadata:
     "@material-ui/styles": ^4.9.10
     "@mui/types": ^7.2.4
     "@storybook/react": ^6.3.9
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
     "@tupaia/utils": 1.0.0
@@ -11152,6 +11223,7 @@ __metadata:
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
+    "@tupaia/build-scripts": 1.0.0
     bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
@@ -11176,6 +11248,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tupaia/weather-api@workspace:packages/weather-api"
   dependencies:
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/utils": 1.0.0
   languageName: unknown
   linkType: soft
@@ -11187,6 +11260,7 @@ __metadata:
     "@tupaia/access-policy": 3.0.0
     "@tupaia/aggregator": 1.0.0
     "@tupaia/auth": 1.0.0
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/data-broker": 1.0.0
     "@tupaia/database": 1.0.0
     "@tupaia/dhis-api": 1.0.0
@@ -11248,6 +11322,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.11.0
     "@testing-library/react": ^11.0.2
     "@testing-library/user-event": ^12.0.11
+    "@tupaia/build-scripts": 1.0.0
     "@tupaia/ui-chart-components": 1.0
     "@tupaia/ui-components": 1.0
     "@tupaia/ui-map-components": 1.0
@@ -40090,45 +40165,6 @@ __metadata:
 "tupaia@workspace:.":
   version: 0.0.0-use.local
   resolution: "tupaia@workspace:."
-  dependencies:
-    "@babel/cli": ^7.11.6
-    "@babel/core": ^7.23.3
-    "@babel/node": ^7.10.5
-    "@babel/plugin-proposal-class-properties": ^7.18.6
-    "@babel/plugin-proposal-export-default-from": ^7.22.17
-    "@babel/plugin-proposal-object-rest-spread": ^7.20.7
-    "@babel/plugin-proposal-private-methods": ^7.18.6
-    "@babel/plugin-proposal-private-property-in-object": ^7.21.11
-    "@babel/plugin-transform-runtime": ^7.18.10
-    "@babel/preset-env": ^7.23.3
-    "@babel/preset-react": ^7.23.3
-    "@babel/types": ^7.23.0
-    "@beyondessential/eslint-config-jest": ^1.0.0
-    "@beyondessential/eslint-config-js": ^1.1.1
-    "@beyondessential/eslint-config-ts": ^1.3.2
-    "@types/jest": ^29.5.4
-    "@vitejs/plugin-react": ^4.0.4
-    babel-eslint: ^10.1.0
-    babel-jest: ^27.0.6
-    concurrently: ^5.2.0
-    cypress-dotenv: ^1.2.2
-    dotenv: ^16.0.3
-    eslint: ^7.9.0
-    eslint-import-resolver-babel-module: ^5.3.1
-    eslint-plugin-cypress: ^2.11.1
-    eslint-plugin-module-resolver: ^1.5.0
-    jest: ^27.0.6
-    jest-extended: ^0.11.5
-    jest-when: ^2.7.2
-    nodemon: ^2.0.4
-    npm-package-json-lint: 5.1.0
-    ts-jest: ^27.1.3
-    ts-node: ^10.7.0
-    typescript: ^4.2.0
-    vite: ^4.4.8
-    vite-plugin-ejs: ^1.6.4
-    winston: ^3.10.0
-    yargs: 15.4.1
   languageName: unknown
   linkType: soft
 
@@ -41898,25 +41934,6 @@ __metadata:
     pkginfo: 0.3.x
     stack-trace: 0.0.x
   checksum: 60b070baa6d9ef7c3f2ba6c835154e57899a922abfbbcc112817124cb37fa2c3e0e8997752db6d2d398605dfcbea062e606e6d4f8af66622fd7c013b57f1b9fc
-  languageName: node
-  linkType: hard
-
-"winston@npm:^3.10.0":
-  version: 3.11.0
-  resolution: "winston@npm:3.11.0"
-  dependencies:
-    "@colors/colors": ^1.6.0
-    "@dabh/diagnostics": ^2.0.2
-    async: ^3.2.3
-    is-stream: ^2.0.0
-    logform: ^2.4.0
-    one-time: ^1.0.0
-    readable-stream: ^3.4.0
-    safe-stable-stringify: ^2.3.1
-    stack-trace: 0.0.x
-    triple-beam: ^1.3.0
-    winston-transport: ^4.5.0
-  checksum: ca4454070f7a71b19f53c8c1765c59a013dab220edb49161b2e81917751d3e9edc3382430e4fb050feda04fb8463290ecab7cbc9240ec8d3d3b32a121849bbb0
   languageName: node
   linkType: hard
 

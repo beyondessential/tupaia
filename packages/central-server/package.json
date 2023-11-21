@@ -14,8 +14,7 @@
   "scripts": {
     "build": "rm -rf dist && run-p -c \"build:* {@}\" --",
     "build:src": "yarn package:build:js",
-    "build:types": "npm run --prefix ../../ package:build:types",
-    "build-dev": "npm run build",
+    "build:types": "yarn run package:build:types",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start": "node dist",
@@ -73,6 +72,7 @@
     "xlsx": "^0.10.9"
   },
   "devDependencies": {
+    "@tupaia/build-scripts": "1.0.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",

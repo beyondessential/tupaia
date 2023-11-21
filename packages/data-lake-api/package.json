@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build": "rm -rf dist && yarn run package:build:ts",
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -36,6 +36,7 @@
     "pg": "8.5.1"
   },
   "devDependencies": {
+    "@tupaia/build-scripts": "1.0.0",
     "@types/lodash.groupby": "^4.6.7",
     "jest": "^27.0.6"
   }
