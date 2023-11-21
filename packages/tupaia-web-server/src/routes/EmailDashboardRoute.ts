@@ -72,9 +72,9 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     )) as Pick<DashboardMailingList, 'id'>[];
 
     if (!mailingList) {
-      return {
-        message: `There is no mailing list for dashboard: ${dashboard.name} at: ${entity.name} in project: ${projectEntity.name}`,
-      };
+      throw new Error(
+        `There is no mailing list for dashboard: ${dashboard.name} at: ${entity.name} in project: ${projectEntity.name}`,
+      );
     }
 
     const mailingListEntries = (await this.req.ctx.services.central.fetchResources(
@@ -89,7 +89,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     )) as Pick<DashboardMailingListEntry, 'email'>[];
 
     if (mailingListEntries.length === 0) {
-      return { message: 'There are no users subscribed to this dashboard mailing list' };
+      return { message: 'There are no users subscribed to this mailing list' };
     }
 
     const buffer = await downloadDashboardAsPdf(
@@ -113,6 +113,6 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       attachments: [{ filename, content: buffer }],
     });
 
-    return { message: 'Sent dashboard export to the mailing list' };
+    return { message: 'Export successfully sent!' };
   }
 }
