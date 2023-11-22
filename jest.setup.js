@@ -19,6 +19,8 @@ dotenv.config();
 
 const winston = require('winston');
 
+const { addCustomJestMatchers } = require('./addCustomJestMatchers');
+
 const customMatchers = [
   {
     description: {
@@ -67,7 +69,10 @@ const customMatchers = [
   },
 ];
 
+addCustomJestMatchers(expect, customMatchers);
+
 // Silence winston logs
 winston.configure({
   transports: [new winston.transports.Console({ silent: true })],
 });
+
