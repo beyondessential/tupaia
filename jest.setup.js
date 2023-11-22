@@ -19,8 +19,6 @@ dotenv.config();
 
 const winston = require('winston');
 
-const { addCustomJestMatchers } = require('@tupaia/utils');
-
 const customMatchers = [
   {
     description: {
@@ -68,8 +66,6 @@ const customMatchers = [
     isAsync: true,
   },
 ];
-
-addCustomJestMatchers(expect, customMatchers);
 
 // Silence winston logs
 winston.configure({

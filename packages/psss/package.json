@@ -11,7 +11,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "scripts": {
     "preview": "vite preview",
-    "build": "npm run --prefix ../../ package:build:vite",
+    "build": "yarn run package:build:vite",
     "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@tupaia/auth": "1.0.0",
+    "@tupaia/build-scripts": "1.0.0",
     "@tupaia/database": "1.0.0",
     "cross-env": "^7.0.2",
     "mockdate": "^3.0.5",
