@@ -12,6 +12,9 @@
   "source": "src/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "scripts": {
     "build": "rm -rf dist && yarn package:build:ts",
     "build-dev": "npm run build",
