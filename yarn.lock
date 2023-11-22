@@ -11061,6 +11061,7 @@ __metadata:
     "@tupaia/utils": 1.0.0
     "@types/lodash.get": ^4.4.7
     "@types/recharts": ^1.8.24
+    "@types/styled-components": ^5.0.1
     lodash.get: ^4.4.2
     moment: ^2.29.1
     prop-types: ^15.7.2
@@ -12633,6 +12634,17 @@ __metadata:
     "@types/react": "*"
     csstype: ^3.0.2
   checksum: 84f53b3101739b20d1731554fb7735bc2f3f5d050a8b392e9845403c8c8bbd729737d033978649f9195a97b557875b010d46e35a4538564a2d0dbcce661dbf76
+  languageName: node
+  linkType: hard
+
+"@types/styled-components@npm:^5.0.1":
+  version: 5.1.32
+  resolution: "@types/styled-components@npm:5.1.32"
+  dependencies:
+    "@types/hoist-non-react-statics": "*"
+    "@types/react": "*"
+    csstype: ^3.0.2
+  checksum: c08909348aed553a710809c55c0cd0b26b7f0e364c99c5b21c7eca66cf8446bb4a57fff7ad0484646affa692acc181ff51061c9cd7b26bab468960c29eae1901
   languageName: node
   linkType: hard
 

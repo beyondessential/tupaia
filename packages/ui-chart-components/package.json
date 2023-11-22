@@ -40,6 +40,7 @@
         "@storybook/react": "^6.3.9",
         "@tupaia/types": "1.0.0",
         "@types/lodash.get": "^4.4.7",
-        "@types/recharts": "^1.8.24"
+        "@types/recharts": "^1.8.24",
+        "@types/styled-components": "^5.0.1"
     }
 }
