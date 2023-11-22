@@ -3,4 +3,5 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-export { Routes, SurveyPageRoutes } from './Routes';
+export { Routes } from './Routes';
+export { SurveyPageRoutes } from './SurveyPageRoutes';

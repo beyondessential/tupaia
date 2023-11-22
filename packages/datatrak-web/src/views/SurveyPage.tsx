@@ -84,13 +84,13 @@ export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUser();
-  const { data: surveyCountry } = useCountry(user.project?.code, countryCode);
   const { data: survey } = useSurvey(surveyCode);
+  const { data: surveyCountry } = useCountry(survey?.project?.code, countryCode);
 
   // Update the user's preferred country if they start a survey in a different country
   // Todo: add check for project code once project_ids are added to the survey table
   useEffect(() => {
-    if (!surveyCountry?.code) {
+    if (!surveyCountry?.code || !user.isLoggedIn) {
       return;
     }
     if (user.country?.code !== countryCode) {

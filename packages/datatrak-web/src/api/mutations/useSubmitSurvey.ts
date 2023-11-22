@@ -29,13 +29,13 @@ export const useSurveyResponseData = () => {
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: country } = useCountry(user.project?.code, countryCode);
+  const { data: country } = useCountry(survey?.project?.code, countryCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: country?.id,
-    userId: user.id,
+    userId: user.id, // Remove user if not logged in
   };
 };
 

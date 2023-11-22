@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { SurveyIcon, TopProgressBar } from '../../../components';
-import { useCountry, useCurrentUser, useSurvey } from '../../../api';
+import { useCountry, useSurvey } from '../../../api';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useIsMobile } from '../../../utils';
@@ -51,11 +51,10 @@ const CountryName = styled.span`
 `;
 
 export const SurveyToolbar = () => {
-  const user = useCurrentUser();
   const { surveyCode, screenNumber: screenNumberParam, countryCode } = useParams();
   const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
-  const { data: country } = useCountry(user.project?.code, countryCode);
   const { data: survey } = useSurvey(surveyCode);
+  const { data: country } = useCountry(survey?.project?.code, countryCode);
   const isMobile = useIsMobile();
 
   const getDisplaySurveyName = () => {

@@ -19,6 +19,10 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
     const surveyResponseData = this.req.body;
     const { central: centralApi } = this.req.ctx.services;
 
+    // Todo: Lookup and add public user here
+    // Better to add it here rather than return it from the user endpoint because it's only meant to be used to submit surveys and
+    // we don't want to expose it to other endpoints
+
     // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
     const getEntity = (entityId: string) => this.req.models.entity.findById(entityId);
 

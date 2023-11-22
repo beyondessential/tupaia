@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { useIsMobile } from '../utils';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
+import { useCurrentUser } from '../api';
 
 const Container = styled.div`
   padding: 2.2rem 1.25rem 3.4rem 1.25rem;
@@ -81,9 +82,10 @@ const APP_URL = {
 };
 
 export const MobileAppPrompt = () => {
+  const user = useCurrentUser();
   const [showPrompt, setShowPrompt] = useState(true);
   const isMobile = useIsMobile();
-  if (!isMobile) return null;
+  if (!isMobile || !user.isLoggedIn) return null;
 
   const userAgent = window.navigator.userAgent;
   const getAppLink = () => {
