@@ -48,6 +48,8 @@
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.0",
+    "@types/lodash.groupby": "^4.6.0",
+    "@types/lodash.keyby": "^4.6.0",
     "@types/semver-compare": "^1.0.1"
   }
 }
