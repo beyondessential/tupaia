@@ -12572,7 +12572,7 @@ __metadata:
     react-navigation-stack: ^2.10.4
     react-redux: ^8.1.2
     react-test-renderer: 18.2.0
-    realm: ^12.1.0
+    realm: ^12.3.1
     redux: ^4.2.1
     redux-persist: ^6.0.0
     redux-persist-error-handler: ^0.1.1
@@ -41390,9 +41390,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"realm@npm:^12.1.0":
-  version: 12.2.1
-  resolution: "realm@npm:12.2.1"
+"realm@npm:^12.3.1":
+  version: 12.3.1
+  resolution: "realm@npm:12.3.1"
   dependencies:
     bson: ^4.7.2
     debug: ^4.3.4
@@ -41405,7 +41405,7 @@ __metadata:
   peerDependenciesMeta:
     react-native:
       optional: true
-  checksum: 35c3be82c06fd3f3d90da60e7b41f9cc74456d8b3266c1b2fdc2d849193c7f0e634c2b743d8a3ff6e87f335d60f5d5af56b921c6d9d091cb88a6dbfb43e4191b
+  checksum: 509b47c6bec677f23bc0463af9db7abb86875acbffbfb39087d544179eae0c24f3c1e00c7365217d05b0d816aed5af3626997790d52f91b4f8d91896c59ef5a0
   languageName: node
   linkType: hard
 
