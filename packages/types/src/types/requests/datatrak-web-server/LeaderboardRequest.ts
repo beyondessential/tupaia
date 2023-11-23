@@ -10,4 +10,6 @@ export type Params = Record<string, never>;
 
 export type ResBody = KeysToCamelCase<LeaderboardItem>[];
 export type ReqBody = Record<string, never>;
-export type ReqQuery = Record<string, never>;
+export type ReqQuery = {
+  projectId?: string;
+};

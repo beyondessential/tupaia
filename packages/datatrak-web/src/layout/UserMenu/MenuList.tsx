@@ -7,7 +7,7 @@ import React, { ComponentType, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Link, ListItem } from '@material-ui/core';
 import { Button, RouterLink } from '@tupaia/ui-components';
-import { useUser } from '../../api/queries';
+import { useCurrentUser } from '../../api';
 import { useLogout } from '../../api/mutations';
 import { ROUTES } from '../../constants';
 
@@ -48,7 +48,7 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu: () => void;
 }) => {
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn } = useCurrentUser();
   const { mutate: logout } = useLogout();
 
   // The help centre link is the same for both logged in and logged out users

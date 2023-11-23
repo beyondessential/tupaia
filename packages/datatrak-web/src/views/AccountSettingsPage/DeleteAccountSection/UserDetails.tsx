@@ -6,8 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { DatatrakWebUserRequest } from '@tupaia/types';
-import { useUserRewards } from '../../../api/queries';
+import { useCurrentUser, useUserRewards } from '../../../api';
 import { Coconut, Pig } from '../../../components';
 
 const UserContent = styled.div<{
@@ -59,14 +58,14 @@ const UserRewardsItem = styled(Typography)`
   }
 `;
 
-export const UserDetails = ({ user }: { user?: DatatrakWebUserRequest.ResBody }) => {
-  const { deleteAccountRequested } = user || ({} as DatatrakWebUserRequest.ResBody);
+export const UserDetails = () => {
+  const user = useCurrentUser();
   const { data: userRewards } = useUserRewards();
   return (
-    <UserContent $appearsDisabled={deleteAccountRequested}>
+    <UserContent $appearsDisabled={user.deleteAccountRequested}>
       <div>
-        <UserName>{user?.userName}</UserName>
-        <Typography>{user?.email}</Typography>
+        <UserName>{user.userName}</UserName>
+        <Typography>{user.email}</Typography>
       </div>
       <UserRewards>
         <UserRewardsItem>
