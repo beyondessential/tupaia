@@ -7,6 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
+import { getIsPublicPermissionGroup } from '../utils';
 
 export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.Params,
@@ -23,6 +24,7 @@ const DEFAULT_FIELDS = [
   'survey_group.name',
   'project_id',
   'surveyQuestions',
+  'permission_group.name',
 ];
 
 const parseOption = (option: string) => {
@@ -93,7 +95,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
       ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
       : null;
 
-    const { surveyQuestions, ...restOfSurvey } = survey;
+    const { surveyQuestions, permissionGroupName, ...restOfSurvey } = survey;
 
     const formattedScreens = surveyQuestions
       .map((screen: any) => {
@@ -109,6 +111,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
     // renaming survey_questions to screens to make it make more representative of what it is, since questions is more representative of the component within the screen
     return {
       ...restOfSurvey,
+      isPublic: getIsPublicPermissionGroup(permissionGroupName),
       screens: formattedScreens,
       project,
     };

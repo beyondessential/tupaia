@@ -68,6 +68,7 @@ type SurveyResponse = KeysToCamelCase<Survey> & {
   surveyGroupName?: string | null;
   screens: SurveyScreen[];
   countryNames?: string[];
+  isPublic: boolean;
   project?: WebServerProjectRequest.ProjectResponse | null;
 };
 

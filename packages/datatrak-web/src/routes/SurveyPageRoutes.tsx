@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
+import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../constants';
 import {
   ErrorPage,
@@ -15,14 +16,16 @@ import {
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { useSurvey } from '../api';
+import { PrivateRoute } from './PrivateRoute';
 
+// Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = () => {
   const params = useParams();
   const path = generatePath(ROUTES.SURVEY_SCREEN, { ...params, screenNumber: '1' });
   return <Navigate to={path} replace={true} />;
 };
 
-// This is to redirect the user to the start of the survey if they try to access a screen that is not visible on the survey
+// Redirect to the start of the survey if they try to access a screen that is not visible on the survey
 const SurveyPageRedirect = ({ children }) => {
   const { screenNumber } = useParams();
   const { visibleScreens } = useSurveyForm();
@@ -33,15 +36,23 @@ const SurveyPageRedirect = ({ children }) => {
   return children;
 };
 
-/**
- * This is to redirect the user to the survey not found page if they try to access a survey that does not exist
- */
-const SurveyNotFoundRedirect = ({ children }) => {
+const SurveyRoute = ({ children }) => {
   const { surveyCode } = useParams();
-  const { isError, error } = useSurvey(surveyCode);
+  const { isError, error, isLoading, data: survey } = useSurvey(surveyCode);
+
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
+
+  // Redirect to survey not found page if survey code does not exist
   if (isError) {
     return <ErrorPage error={error as Error} title="Error fetching survey" />;
   }
+
+  if (!survey?.isPublic) {
+    return <PrivateRoute>{children}</PrivateRoute>;
+  }
+
   return children;
 };
 
@@ -49,9 +60,9 @@ export const SurveyPageRoutes = (
   <Route
     path={ROUTES.SURVEY}
     element={
-      <SurveyNotFoundRedirect>
+      <SurveyRoute>
         <SurveyPage />
-      </SurveyNotFoundRedirect>
+      </SurveyRoute>
     }
   >
     <Route index element={<SurveyStartRedirect />} />

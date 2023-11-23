@@ -13,6 +13,8 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
+  padding-bottom: 10%;
 `;
 
 const Container = styled(Paper).attrs({

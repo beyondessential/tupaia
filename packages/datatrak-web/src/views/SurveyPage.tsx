@@ -6,7 +6,6 @@ import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
-import { FullPageLoader } from '@tupaia/ui-components';
 import { useCountry, useCurrentUser, useEditUser, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
@@ -48,8 +47,7 @@ const SurveyScreenContainer = styled.div<{
 `;
 
 const SurveyPageInner = () => {
-  const { surveyCode, screenNumber } = useParams<SurveyParams>();
-  const { isLoading } = useSurvey(surveyCode);
+  const { screenNumber } = useParams<SurveyParams>();
   const {
     formData,
     isSuccessScreen,
@@ -59,10 +57,6 @@ const SurveyPageInner = () => {
   } = useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
-
-  if (isLoading) {
-    return <FullPageLoader />;
-  }
 
   return (
     <PageWrapper>
@@ -88,7 +82,6 @@ export const SurveyPage = () => {
   const { data: surveyCountry } = useCountry(survey?.project?.code, countryCode);
 
   // Update the user's preferred country if they start a survey in a different country
-  // Todo: add check for project code once project_ids are added to the survey table
   useEffect(() => {
     if (!surveyCountry?.code || !user.isLoggedIn) {
       return;
@@ -103,11 +96,13 @@ export const SurveyPage = () => {
     }
   }, [surveyCountry?.code]);
 
+  // Update the user's preferred project if they start a survey in a different project to the saved project
   useEffect(() => {
-    if (!survey) return;
+    if (!survey?.projectId || !user.isLoggedIn) {
+      return;
+    }
     const { projectId } = survey;
-    if (user.isLoggedIn && projectId && user?.projectId !== projectId) {
-      // Update the user's preferred project if they start a survey in a different project to the saved project
+    if (user?.projectId !== projectId) {
       editUser(
         {
           projectId,
