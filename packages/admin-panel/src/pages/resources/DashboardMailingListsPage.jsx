@@ -6,6 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { prettyArray } from '../../utilities';
 
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
@@ -50,6 +52,21 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       secondaryLabel: 'Select the entity this dashboard mailing list should be for',
     },
   },
+  email_admin_permission_groups: {
+    Header: 'Email admin permission groups',
+    source: 'email_admin_permission_groups',
+    Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'email_admin_permission_groups',
+      allowMultipleValues: true,
+      secondaryLabel:
+        'Users with any of these permissions can send out the dashboard to the mailing list',
+    },
+  },
 };
 
 const DASHBOARD_MAILING_LIST_COLUMNS = [
@@ -65,6 +82,7 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
         DASHBOARD_MAILING_LIST_FIELDS.project,
         DASHBOARD_MAILING_LIST_FIELDS.dashboard_code,
         DASHBOARD_MAILING_LIST_FIELDS.entity_name,
+        DASHBOARD_MAILING_LIST_FIELDS.email_admin_permission_groups,
       ],
     },
   },
@@ -85,6 +103,7 @@ const CREATE_CONFIG = {
       DASHBOARD_MAILING_LIST_FIELDS.project,
       DASHBOARD_MAILING_LIST_FIELDS.dashboard_code,
       DASHBOARD_MAILING_LIST_FIELDS.entity_name,
+      DASHBOARD_MAILING_LIST_FIELDS.email_admin_permission_groups,
     ],
     title: 'New dashboard mailing list',
   },
