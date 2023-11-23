@@ -7,6 +7,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { sendEmail } from '@tupaia/server-utils';
+import { PermissionsError } from '@tupaia/utils';
 import {
   Dashboard,
   DashboardMailingList,
@@ -50,14 +51,16 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       filter: {
         code: entityCode,
       },
-      columns: ['id', 'name'],
-    })) as Pick<Entity, 'id' | 'name'>[];
+      columns: ['id', 'name', 'country_code'],
+    })) as Pick<Entity, 'id' | 'name' | 'country_code'>[];
     const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
       filter: { code: dashboardCode },
       columns: ['id', 'name'],
     })) as Pick<Dashboard, 'id' | 'name'>[];
 
-    // TODO: Add check to ensure user has permissions to send the email (RN-1073)
+    const entityPermissions = entity.country_code
+      ? this.req.accessPolicy.getPermissionGroups([entity.country_code])
+      : this.req.accessPolicy.getPermissionGroups(); // country_code is null for project level
 
     const [mailingList] = (await this.req.ctx.services.central.fetchResources(
       'dashboardMailingLists',
@@ -67,13 +70,23 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
           project_id: project.id,
           entity_id: entity.id,
         },
-        columns: ['id'],
+        columns: ['id', 'email_admin_permission_groups'],
       },
-    )) as Pick<DashboardMailingList, 'id'>[];
+    )) as Pick<DashboardMailingList, 'id' | 'email_admin_permission_groups'>[];
 
     if (!mailingList) {
       throw new Error(
         `There is no mailing list for dashboard: ${dashboard.name} at: ${entity.name} in project: ${projectEntity.name}`,
+      );
+    }
+
+    if (
+      !mailingList.email_admin_permission_groups.some(permissionGroup =>
+        entityPermissions.includes(permissionGroup),
+      )
+    ) {
+      throw new PermissionsError(
+        `User must belong to one of the mailing list's email admin permission groups in order to send the email export`,
       );
     }
 
