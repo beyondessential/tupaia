@@ -39,7 +39,7 @@ export const SurveyResponsesSection = () => {
 const {project } = useCurrentUser()
   return (
     <Container>
-      <SectionHeading>My recent responses</SectionHeading>
+      <SectionHeading>Submission history</SectionHeading>
       {isLoading && <SpinningLoader />}
       {isSuccess && (
         <ScrollBody>
