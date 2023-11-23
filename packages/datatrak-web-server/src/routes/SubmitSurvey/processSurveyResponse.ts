@@ -47,7 +47,7 @@ export const processSurveyResponse = async (
   const surveyResponse: MeditrakSurveyResponseRequest & {
     qr_codes_to_create?: Entity[];
   } = {
-    user_id: userId,
+    user_id: userId!,
     survey_id: surveyId,
     start_time: startTime,
     entity_id: countryId,

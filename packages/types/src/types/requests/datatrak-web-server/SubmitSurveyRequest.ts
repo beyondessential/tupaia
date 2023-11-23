@@ -29,7 +29,7 @@ export type Answer =
 export type Answers = Record<string, Answer>;
 
 interface SurveyResponse {
-  userId: UserAccount['id'];
+  userId: UserAccount['id'] | null;
   surveyId: Survey['id'];
   countryId: Entity['id'];
   questions: SurveyScreenComponent[];

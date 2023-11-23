@@ -35,7 +35,7 @@ export const useSurveyResponseData = () => {
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: country?.id,
-    userId: user.id, // Remove user if not logged in
+    userId: user.isLoggedIn ? user.id : null, // Let the server assign the public user if not logged in
   };
 };
 

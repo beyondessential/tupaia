@@ -118,6 +118,7 @@ export const submitResponses = async (models, userId, responses) => {
 };
 
 export async function surveyResponse(req, res) {
+  // Todo: submit survey with a not logged in user??
   const { userId, body, models } = req;
 
   let results = [];
