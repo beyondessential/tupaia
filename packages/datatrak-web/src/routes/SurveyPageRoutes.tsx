@@ -56,7 +56,7 @@ const SurveyRoute = ({ children }) => {
   return children;
 };
 
-export const SurveyPageRoutes = (
+export const SurveyRoutes = (
   <Route
     path={ROUTES.SURVEY}
     element={

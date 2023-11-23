@@ -23,7 +23,7 @@ import { useCurrentUser } from '../api';
 import { ROUTES } from '../constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
-import { SurveyPageRoutes } from './SurveyPageRoutes';
+import { SurveyRoutes } from './SurveyRoutes';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -73,7 +73,7 @@ export const Routes = () => {
 
         {/* PUBLIC ROUTES*/}
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
-          {SurveyPageRoutes}
+          {SurveyRoutes}
         </Route>
         <Route
           path="/"

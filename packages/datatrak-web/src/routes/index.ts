@@ -4,4 +4,4 @@
  */
 
 export { Routes } from './Routes';
-export { SurveyPageRoutes } from './SurveyPageRoutes';
+export { SurveyRoutes } from './SurveyRoutes';
