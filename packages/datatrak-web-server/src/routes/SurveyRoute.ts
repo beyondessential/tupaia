@@ -7,7 +7,6 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
-import { getIsPublicPermissionGroup } from '../utils';
 
 export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.Params,
@@ -86,7 +85,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
       filter: { code: surveyCode },
       columns: fields,
     });
-    if (!surveys.length) throw new Error(`Survey with code ${surveyCode} not found`);
+
+    if (!surveys.length)
+      throw new Error(
+        `Survey with code ${surveyCode} not found. Either it does not exist or you do not have access to it.`,
+      );
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
@@ -111,7 +114,6 @@ export class SurveyRoute extends Route<SurveyRequest> {
     // renaming survey_questions to screens to make it make more representative of what it is, since questions is more representative of the component within the screen
     return {
       ...restOfSurvey,
-      isPublic: getIsPublicPermissionGroup(permissionGroupName),
       screens: formattedScreens,
       project,
     };

@@ -101,6 +101,7 @@ const validateAllResponses = async (models, responses) => {
   );
 
   const errors = validations.filter(x => x);
+  console.log('ERRORS', errors);
   if (errors.length > 0) {
     throw new MultiValidationError(
       'The request contained invalid responses. No records have been created; please fix the issues and send the whole request again.',
@@ -118,8 +119,14 @@ export const submitResponses = async (models, userId, responses) => {
 };
 
 export async function surveyResponse(req, res) {
-  // Todo: submit survey with a not logged in user??
-  const { userId, body, models } = req;
+  const { userId, body, query, models } = req;
+  const { submitAsPublic } = query;
+
+  let submitterId = userId;
+  if (submitAsPublic) {
+    const user = await models.user.findOne({ email: 'public@tupaia.org' });
+    submitterId = user.id;
+  }
 
   let results = [];
   const responses = Array.isArray(body) ? body : [body];
@@ -136,7 +143,7 @@ export async function surveyResponse(req, res) {
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
     );
 
-    results = await saveResponsesToDatabase(transactingModels, userId, responses);
+    results = await saveResponsesToDatabase(transactingModels, submitterId, responses);
 
     if (req.query.waitForAnalyticsRebuild) {
       const { database } = transactingModels;

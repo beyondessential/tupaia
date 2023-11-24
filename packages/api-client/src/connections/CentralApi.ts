@@ -43,11 +43,14 @@ export class CentralApi extends BaseApi {
     return this.connection.post('me/changePassword', null, passwordChangeFields);
   }
 
-  public async createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
+  public async createSurveyResponses(
+    responses: MeditrakSurveyResponseRequest[],
+    queryParameters?: QueryParameters,
+  ): Promise<void> {
     const BATCH_SIZE = 500;
     for (let i = 0; i < responses.length; i += BATCH_SIZE) {
       const chunk = responses.slice(i, i + BATCH_SIZE);
-      await this.connection.post('surveyResponse', null, chunk);
+      await this.connection.post('surveyResponse', queryParameters, chunk);
     }
   }
 

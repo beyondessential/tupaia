@@ -13,6 +13,9 @@ import {
 import { buildUpsertEntity } from './buildUpsertEntity';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
+type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
+  qr_codes_to_create?: Entity[];
+};
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
@@ -33,21 +36,19 @@ export const processSurveyResponse = async (
   findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {
-    userId,
     surveyId,
     countryId,
     questions = [],
     answers = {},
     startTime,
+    userId,
   } = surveyResponseData;
   const timezone = getBrowserTimeZone();
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
-  const surveyResponse: MeditrakSurveyResponseRequest & {
-    qr_codes_to_create?: Entity[];
-  } = {
-    user_id: userId!,
+  const surveyResponse: CentralServerSurveyResponseT = {
+    user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
     entity_id: countryId,

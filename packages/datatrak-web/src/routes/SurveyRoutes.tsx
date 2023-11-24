@@ -7,7 +7,6 @@ import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../constants';
 import {
-  ErrorPage,
   SurveyPage,
   SurveyResponsePage,
   SurveyReviewScreen,
@@ -16,7 +15,6 @@ import {
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { useSurvey } from '../api';
-import { PrivateRoute } from './PrivateRoute';
 
 // Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = () => {
@@ -38,19 +36,23 @@ const SurveyPageRedirect = ({ children }) => {
 
 const SurveyRoute = ({ children }) => {
   const { surveyCode } = useParams();
-  const { isError, error, isLoading, data: survey } = useSurvey(surveyCode);
+  const { isError, isLoading } = useSurvey(surveyCode);
 
   if (isLoading) {
     return <FullPageLoader />;
   }
 
-  // Redirect to survey not found page if survey code does not exist
+  // Redirect to login page if survey does not exist or the user does not have permission
   if (isError) {
-    return <ErrorPage error={error as Error} title="Error fetching survey" />;
-  }
-
-  if (!survey?.isPublic) {
-    return <PrivateRoute>{children}</PrivateRoute>;
+    return (
+      <Navigate
+        to="/login"
+        replace={true}
+        state={{
+          from: `${location.pathname}${location.search}`,
+        }}
+      />
+    );
   }
 
   return children;

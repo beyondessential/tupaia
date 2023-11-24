@@ -4,4 +4,3 @@
  */
 
 export { sortSearchResults } from './sortSearchResults';
-export { getIsPublicPermissionGroup } from './getIsPublicPermissionGroup';
