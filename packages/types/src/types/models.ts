@@ -1771,14 +1771,8 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
-  'facility_building' = 'facility_building',
-  'facility_division' = 'facility_division',
-  'facility_section' = 'facility_section',
-  'hospital_ward' = 'hospital_ward',
   'farm' = 'farm',
   'repair_request' = 'repair_request',
-  'district_operational' = 'district_operational',
-  'commune' = 'commune',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
