@@ -127,6 +127,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: Pol
     <LayerGroup>
       {polygons.map((measure: MeasureData) => {
         const { region, code, color, name, permanentTooltip = false } = measure;
+
         const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
         const displayType = getDisplayType(measure);
         const PolygonComponent = POLYGON_COMPONENTS[displayType];
@@ -160,7 +161,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: Pol
               orgUnitMeasureData={measure as MeasureData}
               orgUnitName={name}
               hasMeasureValue={showDataOnTooltip}
-              permanent={isLoading || permanentTooltip}
+              permanent={permanentTooltip}
             />
           </PolygonComponent>
         );
