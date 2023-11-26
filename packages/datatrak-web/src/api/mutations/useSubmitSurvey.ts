@@ -62,8 +62,8 @@ export const useSubmitSurvey = () => {
       onMutate: () => {
         // Send off survey submissions by survey, project, and country
         gaEvent('submit_survey', params.surveyCode!, survey?.name);
-        gaEvent('submit_survey', params.projectCode!);
-        gaEvent('submit_survey', params.countryCode!);
+        gaEvent('submit_survey_by_project', params.projectCode!);
+        gaEvent('submit_survey_by_country', params.countryCode!);
         // TODO: add a user event?
       },
       onSuccess: data => {
