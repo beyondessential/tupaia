@@ -44,6 +44,7 @@ export const useSubmitSurvey = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
+  const user = useCurrentUser();
   const { data: survey } = useSurvey(params.surveyCode);
 
   const surveyResponseData = useSurveyResponseData();
@@ -60,11 +61,11 @@ export const useSubmitSurvey = () => {
     },
     {
       onMutate: () => {
-        // Send off survey submissions by survey, project, and country
+        // Send off survey submissions by survey, project, country, and userId
         gaEvent('submit_survey', params.surveyCode!, survey?.name);
         gaEvent('submit_survey_by_project', params.projectCode!);
         gaEvent('submit_survey_by_country', params.countryCode!);
-        // TODO: add a user event?
+        gaEvent('submit_survey_by_user', user.id!);
       },
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
