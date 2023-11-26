@@ -23,7 +23,6 @@ const DEFAULT_FIELDS = [
   'survey_group.name',
   'project_id',
   'surveyQuestions',
-  'permission_group.name',
 ];
 
 const parseOption = (option: string) => {
@@ -98,7 +97,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
       ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
       : null;
 
-    const { surveyQuestions, permissionGroupName, ...restOfSurvey } = survey;
+    const { surveyQuestions, ...restOfSurvey } = survey;
 
     const formattedScreens = surveyQuestions
       .map((screen: any) => {

@@ -9,7 +9,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
-import { SurveyPageRoutes } from '../../routes';
+import { SurveyRoutes } from '../../routes';
 import { SurveyContext } from '../../features';
 
 export function renderComponent(children) {
@@ -31,7 +31,7 @@ export function renderPage(activeUrl) {
               </SurveyContext>
             }
           >
-            {SurveyPageRoutes}
+            {SurveyRoutes}
           </Route>
         </Routes>
       </MemoryRouter>

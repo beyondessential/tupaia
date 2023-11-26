@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
@@ -47,6 +48,7 @@ describe('surveyResponse endpoint', () => {
   before(async () => {
     await app.grantFullAccess();
 
+    const publicUser = await upsertDummyRecord(models.user, { email: 'public@tupaia.org' });
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
       country_id: country.id,
@@ -443,6 +445,48 @@ describe('surveyResponse endpoint', () => {
     );
     expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
     expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
+  });
+
+  it('Should support submitting survey responses with the public user', async () => {
+    const response = await app.post('surveyResponse?submitAsPublic=true', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: 123,
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    expectSuccess(response);
+
+    const { body } = response;
+    const { surveyResponseId } = body.results[0];
+    const { user_id } = await models.surveyResponse.findById(surveyResponseId);
+    const user = await models.user.findById(user_id);
+    expect(user.email).to.equal('public@tupaia.org');
+  });
+
+  it('Submits survey responses with the logged in user by default', async () => {
+    const response = await app.post('surveyResponse', {
+      body: {
+        survey_id: surveyId,
+        entity_id: ENTITY_ID,
+        timestamp: 123,
+        answers: {
+          [questionCode(1)]: '123',
+        },
+      },
+    });
+
+    expectSuccess(response);
+
+    const { body } = response;
+    const { surveyResponseId } = body.results[0];
+    const { user_id } = await models.surveyResponse.findById(surveyResponseId);
+    const user = await models.user.findById(user_id);
+    expect(user.email).to.equal('test.user@tupaia.org');
   });
 
   describe('Update entity for existing survey response', async function () {

@@ -38,6 +38,19 @@ export class UserModel extends DatabaseModel {
     return UserType;
   }
 
+  /**
+   * Returns the user that is used for submitting surveys when not logged in
+   * @returns {Promise<null|*>}
+   */
+  async findPublicUser() {
+    const user = await this.findOne({ email: 'public@tupaia.org' });
+    if (!user) {
+      throw new Error('Public user not found. There must be a user with email public@tupaia.org');
+    }
+
+    return user;
+  }
+
   emailVerifiedStatuses = {
     UNVERIFIED: 'unverified',
     VERIFIED: 'verified',

@@ -101,7 +101,6 @@ const validateAllResponses = async (models, responses) => {
   );
 
   const errors = validations.filter(x => x);
-  console.log('ERRORS', errors);
   if (errors.length > 0) {
     throw new MultiValidationError(
       'The request contained invalid responses. No records have been created; please fix the issues and send the whole request again.',
@@ -124,7 +123,7 @@ export async function surveyResponse(req, res) {
 
   let submitterId = userId;
   if (submitAsPublic) {
-    const user = await models.user.findOne({ email: 'public@tupaia.org' });
+    const user = await models.user.findPublicUser();
     submitterId = user.id;
   }
 
