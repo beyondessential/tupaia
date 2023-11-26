@@ -69,6 +69,7 @@ const TransparentShadedPolygon = styled(BasePolygon)<PolygonProps>`
 interface PolygonLayerProps {
   measureData: MeasureData[];
   serieses: Series[];
+  isLoading?: boolean;
 }
 
 const POLYGON_COMPONENTS = {
@@ -85,7 +86,7 @@ const DISPLAY_TYPES = {
   active: 'activePolygon',
 };
 
-export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerProps) => {
+export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: PolygonLayerProps) => {
   const { projectCode, entityCode: activeEntityCode } = useParams();
   const navigateToEntity = useNavigateToEntity();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
@@ -102,6 +103,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
       return isActive ? DISPLAY_TYPES.active : DISPLAY_TYPES.basic;
     }
     if (
+      !isLoading &&
       isPolygonSerieses &&
       overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
     ) {
@@ -158,7 +160,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
               orgUnitMeasureData={measure as MeasureData}
               orgUnitName={name}
               hasMeasureValue={showDataOnTooltip}
-              permanent={permanentTooltip}
+              permanent={isLoading || permanentTooltip}
             />
           </PolygonComponent>
         );

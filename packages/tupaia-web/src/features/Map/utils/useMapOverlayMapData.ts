@@ -109,7 +109,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
         organisationUnitCode: entityRelative.code,
         coordinates: entityRelative.point,
         region: entityRelative.region,
-        permanentTooltip: !selectedOverlay,
+        permanentTooltip: !selectedOverlay 
       };
     });
 
