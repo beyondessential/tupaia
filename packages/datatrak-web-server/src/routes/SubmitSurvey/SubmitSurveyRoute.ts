@@ -28,9 +28,11 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
       findEntityById,
     );
 
-    // If the user is not logged in, submit the survey response as public
-    const submitAsPublic = !processedResponse.user_id;
-    await centralApi.createSurveyResponses([processedResponse], { submitAsPublic });
+    await centralApi.createSurveyResponses(
+      [processedResponse],
+      // If the user is not logged in, submit the survey response as public
+      processedResponse.user_id ? undefined : { submitAsPublic: true },
+    );
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],
     };

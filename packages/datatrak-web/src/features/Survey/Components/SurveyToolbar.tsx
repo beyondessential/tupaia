@@ -11,7 +11,7 @@ import { useCountry, useSurvey } from '../../../api';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useIsMobile } from '../../../utils';
-import { CopyPageUrlButton } from './CopyPageUrlButton';
+import { CopySurveyUrlButton } from './CopySurveyUrlButton';
 
 const Toolbar = styled.div<{
   $toolbarIsTransparent?: boolean;
@@ -85,7 +85,7 @@ export const SurveyToolbar = () => {
           <Typography variant="h1">
             {surveyName}
             {<CountryName>| {country?.name}</CountryName>}
-            <CopyPageUrlButton />
+            <CopySurveyUrlButton />
           </Typography>
         )}
       </SurveyTitleWrapper>
