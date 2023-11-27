@@ -114,7 +114,6 @@ export const Dashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
   const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
-  // const { isLoggedIn } = useUser();
 
   const {
     dashboards,
@@ -126,9 +125,6 @@ export const Dashboard = () => {
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-
-
-  
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
