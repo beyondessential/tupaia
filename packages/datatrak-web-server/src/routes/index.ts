@@ -19,3 +19,4 @@ export {
 } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
+export { GenerateLoginTokenRequest, GenerateLoginTokenRoute } from './GenerateLoginTokenRoute';
