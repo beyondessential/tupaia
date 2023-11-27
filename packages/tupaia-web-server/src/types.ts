@@ -12,7 +12,6 @@ import {
   DashboardRelationModel,
   EntityModel,
   UserModel,
-  ProjectModel,
 } from './models';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
@@ -23,5 +22,4 @@ export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly dashboard: DashboardModel;
   readonly entity: EntityModel;
   readonly user: UserModel;
-  readonly project: ProjectModel;
 }
