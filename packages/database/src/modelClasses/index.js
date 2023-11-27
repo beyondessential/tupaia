@@ -179,3 +179,4 @@ export {
   DashboardMailingListEntryModel,
 } from './DashboardMailingListEntry';
 export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';
+export { OneTimeLoginType, OneTimeLoginModel } from './OneTimeLogin';
