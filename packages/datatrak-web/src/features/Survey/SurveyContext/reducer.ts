@@ -8,6 +8,8 @@ import { ACTION_TYPES, SurveyFormAction } from './actions';
 
 export type SurveyFormContextType = {
   startTime: string;
+  surveyCode?: string;
+  surveyProjectCode?: string;
   formData: Record<string, any>;
   activeScreen: SurveyScreenComponent[];
   isLast: boolean;

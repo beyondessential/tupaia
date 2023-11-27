@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -54,8 +54,20 @@ export function createApp() {
     attachModels: true,
   })
     .useSessionModel(DataTrakSessionModel)
+
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
+    .use('*', (req: Request, res: Response, next: NextFunction) => {
+      console.log('test');
+      const session = req.session;
+
+      if (!session) {
+        req.ctx.services.entityPublic = req.ctx.services.entity;
+      } else {
+        req.entityServerRequestMode = 'public';
+      }
+      next();
+    })
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:projectCode/:entityCode', handleWith(SingleEntityRoute))

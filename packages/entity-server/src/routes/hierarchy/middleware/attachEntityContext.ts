@@ -73,25 +73,30 @@ const validateEntitiesAndBuildContext = async (
 };
 
 const getFilterInfo = async (
-  req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string; isPublic?: boolean }>,
   rootEntity: EntityType,
 ) => {
-  const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
-    code: req.params.hierarchyName,
-  });
-
-  // Fetch all country codes we have any of the project permission groups access to
-  const projectAccessibleCountries: string[] = [];
-  for (const permission of projectPermissionGroups) {
-    projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
-  }
-
-  // Fetch countries specific to the hierarchy, filtered by the accessibility list
-  const allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
+  let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
     .filter(notNull)
-    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index) // De-duplicate countryCodes
-    .filter(countryCode => projectAccessibleCountries.includes(countryCode));
+    .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
+
+  // @ts-ignore
+  console.log('Entity Server Session', req.isPublic);
+  if (!req.query.isPublic) {
+    const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
+      code: req.params.hierarchyName,
+    });
+
+    // Fetch all country codes we have any of the project permission groups access to
+    const projectAccessibleCountries: string[] = [];
+    for (const permission of projectPermissionGroups) {
+      projectAccessibleCountries.push(...req.accessPolicy.getEntitiesAllowed(permission));
+    }
+    allowedCountries = allowedCountries.filter(countryCode =>
+      projectAccessibleCountries.includes(countryCode),
+    );
+  }
 
   const { filter: queryFilter } = req.query;
   const filter = extractFilterFromQuery(allowedCountries, queryFilter);

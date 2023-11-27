@@ -22,6 +22,9 @@ export class SingleEntityRoute extends Route<SingleEntityRequest> {
     const { params, query, ctx } = this.req;
     const { projectCode, entityCode } = params;
 
+    // if session is provided
+    console.log('Orchestration Server Session', this.req.session);
+
     const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
       fields: DEFAULT_FIELDS,
       ...query,

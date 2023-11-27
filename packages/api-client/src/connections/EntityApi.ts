@@ -96,7 +96,12 @@ export class EntityApi extends BaseApi {
     }
 
     const { field, fields, filter } = queryOptions;
-    return { field, fields: this.stringifyFields(fields), filter: this.stringifyFilter(filter) };
+    return {
+      field,
+      fields: this.stringifyFields(fields),
+      filter: this.stringifyFilter(filter),
+      mode: 'public',
+    };
   }
 
   private stringifyRelationshipsSubQueryParameters<Pref extends 'ancestor' | 'descendant'>(
