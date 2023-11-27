@@ -39,7 +39,7 @@ export const SurveyResponsesSection = () => {
 
   return (
     <Container>
-      <SectionHeading>My recent responses</SectionHeading>
+      <SectionHeading>Submission history</SectionHeading>
       {isLoading && <SpinningLoader />}
       {isSuccess && (
         <ScrollBody>
