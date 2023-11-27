@@ -2,15 +2,16 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Route, Routes as RouterRoutes, useLocation, useSearchParams } from 'react-router-dom';
 import { LandingPage, PDFExport, ProjectPage } from './views';
 import { Dashboard } from './features';
-import { MODAL_ROUTES, DEFAULT_URL } from './constants';
+import { MODAL_ROUTES, DEFAULT_URL, URL_SEARCH_PARAMS } from './constants';
 import { useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
 import { gaEvent, useEntityLink } from './utils';
+import { useOneTimeLogin } from './api/mutations';
 
 const HomeRedirect = () => {
   const { isLoggedIn } = useUser();
@@ -52,6 +53,15 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
  *
  * **/
 export const Routes = () => {
+   const [urlSearchParams] = useSearchParams();
+   const { mutate: attemptLogin } = useOneTimeLogin();
+   const token = urlSearchParams.get(URL_SEARCH_PARAMS.ONE_TIME_LOGIN_TOKEN);
+   useEffect(() => {
+     if (token) {
+       attemptLogin({ token });
+     }
+   }, [token]);
+
   const { isLoading, isFetched } = useUser();
 
   const showLoader = isLoading && !isFetched;

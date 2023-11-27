@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
@@ -22,8 +22,6 @@ import { ExportDashboard } from './ExportDashboard';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
-import { URL_SEARCH_PARAMS } from '../../constants';
-import { useOneTimeLogin } from '../../api/mutations';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -109,16 +107,6 @@ const DashboardItemsWrapper = styled.div<{
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [urlSearchParams] = useSearchParams();
-  const { mutate: attemptLogin } = useOneTimeLogin();
-  const token = urlSearchParams.get(URL_SEARCH_PARAMS.ONE_TIME_LOGIN_TOKEN);
-  useEffect(() => {
-    if (token) {
-      // TODO: Don't show log-in modal if this succeeds
-      attemptLogin({ token });
-    }
-  }, [token]);
 
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
