@@ -47,7 +47,7 @@
     "leaflet": "^1.7.1",
     "lodash.debounce": "^4.0.8",
     "lodash.keyby": "^4.6.0",
-    "moment": "^2.22.2",
+    "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "query-string": "^5.1.1",
     "react": "^16.13.1",
