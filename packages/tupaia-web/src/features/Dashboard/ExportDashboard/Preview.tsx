@@ -135,7 +135,8 @@ const PreviewContainer = styled.div`
   background-color: white;
   height: 30rem;
   min-width: 20rem;
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const Instructions = styled(Typography)`
@@ -237,7 +238,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                 entityCode={entityCode}
                 dashboardName={dashboardName}
                 selectedDashboardItems={[visualisationToPreview]}
-                isPreview
+                isPreview={!isLoading}
               />
             </PreviewContainer>
           </PreviewPanelContainer>

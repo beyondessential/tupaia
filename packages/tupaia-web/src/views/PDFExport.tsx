@@ -11,9 +11,11 @@ import { useSearchParams } from 'react-router-dom';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
 
-const Parent = styled.div`
+const A4_RATIO = 1 / 1.41;
+const Parent = styled.div<{ $isPreview?: boolean }>`
   color: ${props => props.theme.palette.common.black};
   flex-grow: 1;
+  ${({ $isPreview }) => ($isPreview ? `aspect-ratio: ${A4_RATIO};` : '')};
 `;
 
 type PDFExportProps = {
@@ -67,7 +69,7 @@ export const PDFExport = ({
   );
 
   return (
-    <Parent>
+    <Parent $isPreview={isPreview}>
       {dashboardItems?.map(dashboardItem => (
         <PDFExportDashboardItem
           key={dashboardItem.code}
