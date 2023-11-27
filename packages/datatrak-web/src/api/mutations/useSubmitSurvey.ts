@@ -6,11 +6,11 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
-import { post } from '../../api';
+import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { useSurvey, useUser } from '../queries';
-import { successToast } from '../../utils';
+import { useSurvey } from '../queries';
+import { gaEvent, successToast } from '../../utils';
 
 type AutocompleteAnswer = {
   isNew?: boolean;
@@ -25,16 +25,17 @@ export type AnswersT = Record<string, Answer>;
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
-  const { data: user } = useUser();
-  const { surveyCode } = useParams();
+  const user = useCurrentUser();
+  const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
+  const { data: country } = useCountry(user.project?.code, countryCode);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
-    countryId: user?.country?.id,
-    userId: user?.id,
+    countryId: country?.id,
+    userId: user.id,
   };
 };
 
@@ -43,6 +44,8 @@ export const useSubmitSurvey = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
+  const user = useCurrentUser();
+  const { data: survey } = useSurvey(params.surveyCode);
 
   const surveyResponseData = useSurveyResponseData();
 
@@ -57,8 +60,16 @@ export const useSubmitSurvey = () => {
       });
     },
     {
+      onMutate: () => {
+        // Send off survey submissions by survey, project, country, and userId
+        gaEvent('submit_survey', params.surveyCode!, survey?.name);
+        gaEvent('submit_survey_by_project', user.project?.code!);
+        gaEvent('submit_survey_by_country', params.countryCode!);
+        gaEvent('submit_survey_by_user', user.id!);
+      },
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
+        queryClient.invalidateQueries('recentSurveys');
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
         resetForm();

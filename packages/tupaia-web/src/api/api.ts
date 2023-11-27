@@ -48,7 +48,7 @@ const getErrorMessage = (error: any) => {
   }
 
   // remove axios `api error ...:` prefix
-  return message?.split(': ')[1];
+  return message?.includes(':') ? message?.split(': ')[1] : message;
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety

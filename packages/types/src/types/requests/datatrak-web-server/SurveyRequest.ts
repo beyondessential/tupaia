@@ -73,4 +73,5 @@ export type ResBody = SurveyResponse;
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
+  projectId?: string;
 }

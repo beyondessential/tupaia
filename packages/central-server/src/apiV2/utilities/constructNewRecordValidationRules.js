@@ -83,7 +83,7 @@ export const constructForSingle = (models, recordType) => {
         user_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
         permission_group_id: [
           // Always require a permission group ID, by default an item should at least be public.
-          constructRecordExistsWithId(models.permissionGroup),
+          constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup)),
         ],
         type: [isAString],
         template_variables: [constructIsEmptyOr(isPlainObject)],
@@ -361,8 +361,9 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.SURVEY:
       return {
+        'project.code': [hasContent, constructRecordExistsWithField(models.project, 'code')],
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
-        name: [isAString],
+        name: [isAString, constructIsShorterThan(50)],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
           async countryNames => {

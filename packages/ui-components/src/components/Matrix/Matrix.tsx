@@ -57,7 +57,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
       const { offsetWidth } = tableEl?.current;
       // 200px is the max width of a column that we want to show
       const usableWidth = offsetWidth - 200; // the max size of the first column (row title)
-      const updatedMaxCols = Math.floor(usableWidth / 200);
+      const updatedMaxCols = Math.floor(usableWidth / 200) || 1;
 
       const flattenedColumns = getFlattenedColumns(columns);
       dispatch({
@@ -68,7 +68,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
 
     updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
- 
+
   return (
     <Wrapper>
       <MatrixContext.Provider

@@ -15,14 +15,8 @@ import { SurveyQRCode } from '../SurveyQRCode';
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 1.2rem;
   flex: 1;
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-right: 10rem;
-  }
+  height: 100%;
 `;
 const Container = styled.div`
   display: flex;
@@ -36,9 +30,11 @@ const Container = styled.div`
 `;
 
 const StyledImg = styled.img`
+  aspect-ratio: 1;
+  width: 23rem;
   max-width: 80%;
   max-height: 50%;
-  margin-bottom: 2.75rem;
+  margin-block-end: 2.75rem;
 `;
 
 const Title = styled(Typography).attrs({
@@ -47,10 +43,10 @@ const Title = styled(Typography).attrs({
   font-size: 1.375rem;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-block-end: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     font-size: 1.9rem;
-    margin-bottom: 1.19rem;
+    margin-block-end: 1.19rem;
   }
 `;
 
@@ -58,7 +54,7 @@ const Text = styled(Typography)`
   max-width: 34.6rem;
   width: 100%;
   text-align: center;
-  margin-bottom: 1.875rem;
+  margin-block-end: 1.875rem;
 `;
 
 const ButtonGroup = styled.div`
@@ -100,7 +96,7 @@ export const SurveySuccessScreen = () => {
   return (
     <Wrapper>
       <Container>
-        <StyledImg src="/submit-success.svg" alt="Survey submit success" />
+        <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>Survey submitted!</Title>
         <Text>{text}</Text>
         <ButtonGroup>
@@ -110,7 +106,7 @@ export const SurveySuccessScreen = () => {
             </Button>
           )}
           <Button to="/" fullWidth>
-            Close
+            Return to dashboard
           </Button>
         </ButtonGroup>
       </Container>

@@ -26457,6 +26457,18 @@ export const IconKeySchema = {
 	"type": "string"
 } 
 
+export const ScaleTypeSchema = {
+	"enum": [
+		"gpi",
+		"neutral",
+		"neutralReverse",
+		"performance",
+		"performanceDesc",
+		"time"
+	],
+	"type": "string"
+} 
+
 export const MeasureTypeSchema = {
 	"enum": [
 		"color",
@@ -26878,6 +26890,7 @@ export const SurveyScreenComponentConfigSchema = {
 } 
 
 export const LeaderboardItemSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
 	"type": "object",
 	"properties": {
 		"user_id": {
@@ -26903,6 +26916,106 @@ export const LeaderboardItemSchema = {
 		"last_name",
 		"pigs",
 		"user_id"
+	]
+} 
+
+export const FeedItemTypesSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
+	"enum": [
+		"SurveyResponse",
+		"markdown"
+	],
+	"type": "string"
+} 
+
+export const SurveyResponseTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"surveyName": {
+			"type": "string"
+		},
+		"countryName": {
+			"type": "string"
+		},
+		"regionName": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"link": {
+			"type": "string"
+		},
+		"authorName": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const MarkdownTemplateVariablesSchema = {
+	"type": "object",
+	"properties": {
+		"title": {
+			"type": "string"
+		},
+		"image": {
+			"type": "string"
+		},
+		"body": {
+			"type": "string"
+		},
+		"link": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const FeedItemTemplateVariablesSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"surveyName": {
+					"type": "string"
+				},
+				"countryName": {
+					"type": "string"
+				},
+				"regionName": {
+					"type": "string"
+				},
+				"imageUrl": {
+					"type": "string"
+				},
+				"link": {
+					"type": "string"
+				},
+				"authorName": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"image": {
+					"type": "string"
+				},
+				"body": {
+					"type": "string"
+				},
+				"link": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		}
 	]
 } 
 
@@ -27670,6 +27783,36 @@ export const ClinicUpdateSchema = {
 		}
 	},
 	"additionalProperties": false
+} 
+
+export const CommentSchema = {
+	"type": "object",
+	"properties": {
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"last_modified_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"text": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"created_time",
+		"id",
+		"last_modified_time",
+		"text"
+	]
 } 
 
 export const CommentCreateSchema = {
@@ -57692,6 +57835,9 @@ export const SurveySchema = {
 		"permission_group_id": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"requires_approval": {
 			"type": "boolean"
 		},
@@ -57740,6 +57886,9 @@ export const SurveyCreateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
@@ -57792,6 +57941,9 @@ export const SurveyUpdateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
@@ -59007,7 +59159,15 @@ export const AnswerTypeSchema = {
 			"type": "string"
 		},
 		"body": {
-			"type": "string"
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false
+				},
+				{
+					"type": "string"
+				}
+			]
 		},
 		"question_id": {
 			"type": "string"
@@ -59016,7 +59176,6 @@ export const AnswerTypeSchema = {
 	"additionalProperties": false,
 	"required": [
 		"body",
-		"id",
 		"question_id",
 		"type"
 	]
@@ -59047,7 +59206,15 @@ export const MeditrakSurveyResponseRequestSchema = {
 						"type": "string"
 					},
 					"body": {
-						"type": "string"
+						"anyOf": [
+							{
+								"type": "object",
+								"additionalProperties": false
+							},
+							{
+								"type": "string"
+							}
+						]
 					},
 					"question_id": {
 						"type": "string"
@@ -59056,7 +59223,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"additionalProperties": false,
 				"required": [
 					"body",
-					"id",
 					"question_id",
 					"type"
 				]
@@ -59250,27 +59416,8 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
-export const CamelCaseSchema = {
+export const ParamsSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const CamelCasePartSchema = {
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
 	"type": "object",
 	"additionalProperties": false
 } 
@@ -59660,9 +59807,360 @@ export const AutocompleteAnswerSchema = {
 	]
 } 
 
+export const FileUploadAnswerSchema = {
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"value": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"name",
+		"value"
+	]
+} 
+
 export const AnswersSchema = {
 	"type": "object",
 	"additionalProperties": false
+} 
+
+export const RecentSurveySchema = {
+	"type": "object",
+	"properties": {
+		"surveyCode": {
+			"type": "string"
+		},
+		"surveyName": {
+			"type": "string"
+		},
+		"countryName": {
+			"type": "string"
+		},
+		"countryCode": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"countryCode",
+		"countryId",
+		"countryName",
+		"surveyCode",
+		"surveyName"
+	]
+} 
+
+export const CamelCaseFeedItemSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"userId": {
+			"type": "string"
+		},
+		"countryId": {
+			"type": "string"
+		},
+		"creationDate": {
+			"type": "object",
+			"properties": {
+				"toString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleDateString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toLocaleTimeString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"valueOf": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCDay": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getTimezoneOffset": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setTime": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMilliseconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCSeconds": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMinutes": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCHours": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCDate": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCMonth": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"setUTCFullYear": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toUTCString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toISOString": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"toJSON": {
+					"type": "object",
+					"additionalProperties": false
+				},
+				"getVarDate": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"getDate",
+				"getDay",
+				"getFullYear",
+				"getHours",
+				"getMilliseconds",
+				"getMinutes",
+				"getMonth",
+				"getSeconds",
+				"getTime",
+				"getTimezoneOffset",
+				"getUTCDate",
+				"getUTCDay",
+				"getUTCFullYear",
+				"getUTCHours",
+				"getUTCMilliseconds",
+				"getUTCMinutes",
+				"getUTCMonth",
+				"getUTCSeconds",
+				"getVarDate",
+				"setDate",
+				"setFullYear",
+				"setHours",
+				"setMilliseconds",
+				"setMinutes",
+				"setMonth",
+				"setSeconds",
+				"setTime",
+				"setUTCDate",
+				"setUTCFullYear",
+				"setUTCHours",
+				"setUTCMilliseconds",
+				"setUTCMinutes",
+				"setUTCMonth",
+				"setUTCSeconds",
+				"toDateString",
+				"toISOString",
+				"toJSON",
+				"toLocaleDateString",
+				"toLocaleString",
+				"toLocaleTimeString",
+				"toString",
+				"toTimeString",
+				"toUTCString",
+				"valueOf"
+			]
+		},
+		"geographicalAreaId": {
+			"type": "string"
+		},
+		"permissionGroupId": {
+			"type": "string"
+		},
+		"recordId": {
+			"type": "string"
+		},
+		"templateVariables": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"surveyName": {
+							"type": "string"
+						},
+						"countryName": {
+							"type": "string"
+						},
+						"regionName": {
+							"type": "string"
+						},
+						"imageUrl": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						},
+						"authorName": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"type": "object",
+					"properties": {
+						"title": {
+							"type": "string"
+						},
+						"image": {
+							"type": "string"
+						},
+						"body": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"id"
+	]
 } 
 
 export const CountryAccessSchema = {

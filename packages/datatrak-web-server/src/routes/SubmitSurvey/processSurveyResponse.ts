@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { getBrowserTimeZone } from '@tupaia/utils';
+import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
   Entity,
@@ -15,6 +15,7 @@ import { buildUpsertEntity } from './buildUpsertEntity';
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
+type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
   if (!config?.entity) {
@@ -43,17 +44,19 @@ export const processSurveyResponse = async (
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
-  const surveyResponse: MeditrakSurveyResponseRequest = {
+  const surveyResponse: MeditrakSurveyResponseRequest & {
+    qr_codes_to_create?: Entity[];
+  } = {
     user_id: userId,
     survey_id: surveyId,
     start_time: startTime,
     entity_id: countryId,
-    country_id: countryId,
     end_time: timestamp,
     data_time: timestamp,
     timestamp,
     timezone,
     entities_upserted: [],
+    qr_codes_to_create: [],
     options_created: [],
     answers: [],
   };
@@ -70,15 +73,18 @@ export const processSurveyResponse = async (
       [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
       isUpsertEntityQuestion(config)
     ) {
-      const entityObj = await buildUpsertEntity(
+      const entityObj = (await buildUpsertEntity(
         config,
         questionId,
         answers,
         countryId,
         findEntityById,
-      );
+      )) as Entity;
       if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
       answer = entityObj?.id;
+      if (config.entity?.generateQrCode) {
+        surveyResponse.qr_codes_to_create?.push(entityObj);
+      }
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
@@ -92,7 +98,6 @@ export const processSurveyResponse = async (
     };
 
     // Handle special question types
-    // TODO: file upload handling
     switch (type) {
       // format dates to be ISO strings
       case QuestionType.SubmissionDate:
@@ -106,6 +111,17 @@ export const processSurveyResponse = async (
       case QuestionType.PrimaryEntity: {
         const entityId = answer as string;
         surveyResponse.entity_id = entityId;
+        break;
+      }
+      case QuestionType.File: {
+        const { name, value } = answer as FileUploadAnswerT;
+        answersToSubmit.push({
+          ...answerObject,
+          body: {
+            data: value,
+            uniqueFileName: getUniqueSurveyQuestionFileName(name),
+          },
+        });
         break;
       }
       case QuestionType.Autocomplete: {

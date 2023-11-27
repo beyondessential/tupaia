@@ -25,7 +25,6 @@ import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
 import {SubscribeModal } from './dashboardMenu/SubscribeModal' 
 
 
-
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
 const MIN_SIDEBAR_WIDTH = 360;
@@ -106,7 +105,6 @@ const DashboardItemsWrapper = styled.div<{
   grid-template-columns: repeat(2, 1fr);
   column-gap: 0.8rem;
 `;
-
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -189,7 +187,7 @@ export const Dashboard = () => {
             {entity?.imageUrl ? (
               <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
-              <StaticMap bounds={bounds} />
+              <StaticMap bounds={bounds} title={title} />
             )}
           </div>
           <StickyBar $isExpanded={isExpanded}>

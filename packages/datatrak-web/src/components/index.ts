@@ -13,3 +13,6 @@ export { TextInput } from './TextInput';
 export { Toast } from './Toast';
 export { Tile } from './Tile';
 export * from './Icons';
+export { SmallModal } from './SmallModal';
+export { CancelConfirmModal } from './CancelConfirmModal';
+export { ErrorDisplay } from './ErrorDisplay';

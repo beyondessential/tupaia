@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { UserRewards } from '../../types';
+import { DatatrakWebLeaderboardRequest, DatatrakWebUserRequest } from '@tupaia/types';
 import {
   Table,
   TableBody,
@@ -15,107 +15,127 @@ import {
   TableRow,
   TableFooter,
 } from '@material-ui/core';
-import { useLeaderboard, useUser } from '../../api/queries';
-
-interface LeaderboardTableProps {
-  userRewards?: UserRewards;
-}
+import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
   padding: 0.2rem 1.6rem;
-
-  td {
-    &:first-child {
-      text-align: center;
-    }
-    &:last-child {
-      text-align: right;
-    }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  table {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  thead,
+  tfoot {
+    display: flex;
   }
 `;
 
-const HeaderCell = styled(TableCell)`
-  border-bottom-color: ${({ theme }) => theme.palette.divider};
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    padding-top: 0.7rem;
-    padding-bottom: 0.7rem;
+const Row = styled(TableRow)`
+  display: flex;
+  width: 100%;
+`;
+
+const HeaderRow = styled(Row)`
+  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
+  padding: 0.4rem 0;
+  margin-bottom: 0.5rem;
+  @media screen and (min-height: 900px) {
+    padding: 0.6rem 0;
   }
+`;
+
+const Body = styled(TableBody)<{
+  $rowCount?: number;
+}>`
+  display: flex;
+  flex-direction: column;
+  justify-content: ${({ $rowCount = 0 }) => ($rowCount < 10 ? 'flex-start' : 'space-between')};
+  width: 100%;
+  flex: 1;
+`;
+
+const FooterRow = styled(Row)`
+  border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  padding: 0.3rem 0;
+  margin-top: 0.3rem;
 `;
 
 const Cell = styled(TableCell)<{
   $isActiveUser?: boolean;
 }>`
-  padding-top: 1rem;
+  padding-top: 0.3rem;
   padding-bottom: 0.3rem;
   border: none;
   font-weight: ${({ $isActiveUser, theme }) =>
     $isActiveUser ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
-  &:first-child {
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  }
-  tr:last-child & {
-    padding-bottom: 1rem;
-  }
-
-  ${({ theme }) => theme.breakpoints.up('lg')} {
-    padding-top: 1.2rem;
-    padding-bottom: 0.6rem;
-    tr:last-child & {
-      padding-bottom: 1.2rem;
-    }
-  }
-`;
-
-const FooterCell = styled(TableCell)`
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   font-size: 0.875rem;
   color: ${({ theme }) => theme.palette.text.primary};
-  border-bottom: none;
-  border-top: 1px solid ${({ theme }) => theme.palette.divider};
+  width: 55%;
+  text-align: left;
+  &:first-child {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    width: 20%;
+  }
+  &:last-child {
+    text-align: right;
+    width: 25%;
+  }
 `;
 
-export const LeaderboardTable = ({ userRewards }: LeaderboardTableProps) => {
-  const { data: user } = useUser();
-  const { data: leaderboard, isLoading } = useLeaderboard();
-  if (isLoading) return null;
+const HeaderCell = styled(Cell)`
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.4;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
 
-  const userIsInLeaderboard =
-    user && leaderboard?.some(({ userId }) => userId === user.id);
+const FooterCell = styled(Cell)`
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
+interface LeaderboardTableProps {
+  userRewards?: UserRewards;
+  user?: DatatrakWebUserRequest.ResBody & {
+    isLoggedIn: boolean;
+  };
+  leaderboard?: DatatrakWebLeaderboardRequest.ResBody;
+}
+
+export const LeaderboardTable = ({ userRewards, user, leaderboard }: LeaderboardTableProps) => {
   return (
     <TableContainer>
       <Table>
         <TableHead>
-          <TableRow>
+          <HeaderRow>
             <HeaderCell>#</HeaderCell>
             <HeaderCell>Name</HeaderCell>
             <HeaderCell>Score</HeaderCell>
-          </TableRow>
+          </HeaderRow>
         </TableHead>
-        <TableBody>
-          {leaderboard?.map(
-            ({ userId, firstName, lastName, coconuts }, i) => {
-              const isActiveUser = user && user.id === userId;
-              return (
-                <TableRow key={userId}>
-                  <Cell>{i + 1}</Cell>
-                  <Cell $isActiveUser={isActiveUser}>
-                    {firstName} {lastName}
-                  </Cell>
-                  <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
-                </TableRow>
-              );
-            },
-          )}
-        </TableBody>
-        {!userIsInLeaderboard && (
-          <TableFooter>
-            <TableRow>
-              <FooterCell>-</FooterCell>
-              <FooterCell>{user?.userName}</FooterCell>
-              <FooterCell>{userRewards?.coconuts}</FooterCell>
-            </TableRow>
-          </TableFooter>
-        )}
+        <Body $rowCount={leaderboard?.length}>
+          {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
+            const isActiveUser = user && user.id === userId;
+            return (
+              <Row key={userId}>
+                <Cell>{i + 1}</Cell>
+                <Cell $isActiveUser={isActiveUser}>
+                  {firstName} {lastName}
+                </Cell>
+                <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
+              </Row>
+            );
+          })}
+        </Body>
+        <TableFooter>
+          <FooterRow>
+            <FooterCell>-</FooterCell>
+            <FooterCell>{user?.userName}</FooterCell>
+            <FooterCell>{userRewards?.coconuts}</FooterCell>
+          </FooterRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

@@ -27,7 +27,7 @@ const LogoImage = styled.img`
 
 const LogoLink = styled(Link)`
   cursor: pointer;
-  padding: 0.5em 0.5em 0.5em 0;
+  padding: 0.3em 0.5em 0.3em 0;
   height: 100%;
   display: flex;
   justify-content: center;

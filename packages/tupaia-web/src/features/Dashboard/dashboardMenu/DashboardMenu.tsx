@@ -26,6 +26,13 @@ const MenuButton = styled(ButtonBase)`
   }
 `;
 
+const MenuButtonWrapper = styled(Box)`
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const StyledMenu = styled(Menu)`
   margin: 0 auto 0 2rem;
 `;
@@ -88,7 +95,6 @@ export const DashboardMenu = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -102,13 +108,13 @@ export const DashboardMenu = ({
   return (
     <>
       {activeDashboard && (
-        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center">
+        <MenuButtonWrapper>
           <MenuButton onClick={handleClickListItem} disabled={!hasMultipleDashboards}>
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
           <ActionsMenu setExportModalOpen={setExportModalOpen} activeDashboard={activeDashboard} setSubscribeModalOpen={setSubscribeModalOpen}/>
-        </Box>
+        </MenuButtonWrapper>
       )}
       <StyledMenu
         id="dashboards-menu"

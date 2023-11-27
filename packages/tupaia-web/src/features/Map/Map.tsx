@@ -6,19 +6,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import {
-  TileLayer,
-  LeafletMap,
-  ZoomControl,
-  TilePicker,
-  LeafletMapProps,
-} from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity } from '../../api/queries';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
 import { useGAEffect } from '../../utils';
@@ -123,7 +116,6 @@ const getAutoTileset = () => {
 
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(projectCode, entityCode);
 
   useDefaultMapOverlay(projectCode, entityCode);
 
@@ -139,17 +131,10 @@ export const Map = () => {
     setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
   };
 
-  const zoom = entity?.bounds ? undefined : 15;
-
   return (
     <MapContainer>
       <ErrorBoundary>
-        <StyledMap
-          center={entity?.point as LeafletMapProps['center']}
-          bounds={entity?.bounds as LeafletMapProps['bounds']}
-          zoom={zoom as LeafletMapProps['zoom']}
-          shouldSnapToPosition
-        >
+        <StyledMap shouldSnapToPosition>
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
           <MapOverlaysLayer hiddenValues={hiddenValues} />
           <DemoLand />

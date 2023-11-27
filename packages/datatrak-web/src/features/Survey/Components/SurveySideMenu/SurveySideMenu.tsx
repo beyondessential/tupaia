@@ -4,12 +4,11 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { To } from 'react-router';
+import { To, Link as RouterLink } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import { Drawer as BaseDrawer, ListItem, List, ButtonProps } from '@material-ui/core';
 import { useSurveyForm } from '../../SurveyContext';
 import { SideMenuButton } from './SideMenuButton';
-import { ButtonLink } from '../../../../components';
 import { useIsMobile } from '../../../../utils';
 import { getSurveyScreenNumber } from '../../utils';
 
@@ -43,7 +42,7 @@ const SurveyMenuContent = styled(List)`
 
 const SurveyMenuItem = styled(ListItem).attrs({
   button: true,
-  component: ButtonLink,
+  component: RouterLink,
   variant: 'text',
   color: 'default',
 })<
@@ -108,8 +107,9 @@ export const SurveySideMenu = () => {
     setFormData,
     isReviewScreen,
     isSuccessScreen,
+    isResponseScreen,
   } = useSurveyForm();
-  if (isReviewScreen || isSuccessScreen) return null;
+  if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
   const onChangeScreen = () => {
     setFormData(getValues());
     if (isMobile) toggleSideMenu();

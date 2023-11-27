@@ -58,7 +58,7 @@ const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
   // Delete all the same references
   const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
     const { info, ...restValues } = mapOverlayItem;
-    delete info!['reference'];
+    delete info!.reference;
     return { ...restValues, info };
   });
 
@@ -70,26 +70,37 @@ const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
 
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
-    const { query, params, ctx } = this.req;
+    const { query, params, ctx, accessPolicy } = this.req;
     const { projectCode, entityCode } = params;
     const { pageSize } = query;
 
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+    const rootEntityCode = entity.country_code || entity.code;
+
     // Do the initial overlay fetch from the central server, since that enforces permissions
-    const mapOverlays = await ctx.services.central.fetchResources('mapOverlays', {
-      filter: {
-        country_codes: {
-          comparator: '@>',
-          // Project entities do not have a country_code
-          comparisonValue: [entity.country_code || entity.code],
+    const mapOverlays = (
+      await ctx.services.central.fetchResources('mapOverlays', {
+        filter: {
+          country_codes: {
+            comparator: '@>',
+            // Project entities do not have a country_code
+            comparisonValue: [rootEntityCode],
+          },
+          project_codes: {
+            comparator: '@>',
+            comparisonValue: [projectCode],
+          },
         },
-        project_codes: {
-          comparator: '@>',
-          comparisonValue: [projectCode],
-        },
-      },
-      pageSize: pageSize || DEFAULT_PAGE_SIZE,
-    });
+        pageSize: pageSize || DEFAULT_PAGE_SIZE,
+      })
+    ).filter(
+      // Central returns overlays you can view in at least one of its countries
+      // We run an additional filter here to narrow down to the specific country we're requesting for
+      (overlay: MapOverlay) =>
+        entity.type === 'project' || // Don't worry about projects, we don't give permissions against them
+        !overlay.permission_group || // No permission group means publicly accessible
+        accessPolicy.getPermissionGroups([rootEntityCode]).includes(overlay.permission_group), // Filter by country/permission pair
+    );
 
     if (mapOverlays.length === 0) {
       return {

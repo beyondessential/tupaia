@@ -3,9 +3,27 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useQuery } from 'react-query';
+import { Project } from '@tupaia/types';
 import { get } from '../api';
 import { UserRewards } from '../../types';
+import { useCurrentUser } from '../CurrentUserContext';
+
+const useRewards = (projectId?: Project['id']) => {
+  return useQuery(
+    ['rewards', projectId],
+    (): Promise<UserRewards> =>
+      get('me/rewards', {
+        params: {
+          projectId,
+        },
+      }),
+    {
+      enabled: !!projectId,
+    },
+  );
+};
 
 export const useUserRewards = () => {
-  return useQuery(['rewards'], (): Promise<UserRewards> => get('me/rewards'));
+  const user = useCurrentUser();
+  return useRewards(user.projectId);
 };

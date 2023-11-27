@@ -12,9 +12,12 @@ import { Entity, Option } from '../../models';
 type Id = string;
 
 type AnswerType = {
-  id: Id;
+  id?: Id;
   type: string;
-  body: string;
+  body: string | Record<string, unknown>;
+  /**
+   * @checkIdExists { "table": "question" }
+   */
   question_id: string;
 };
 
