@@ -11,6 +11,7 @@ export const URL_SEARCH_PARAMS = {
   REPORT: 'report',
   REPORT_PERIOD: 'reportPeriod',
   REPORT_DRILLDOWN_ID: 'reportDrillDownId',
+  ONE_TIME_LOGIN_TOKEN: 'loginToken',
 };
 
 export enum MODAL_ROUTES {
