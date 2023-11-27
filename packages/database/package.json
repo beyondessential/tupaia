@@ -31,7 +31,6 @@
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
   },
   "dependencies": {
-    "@tupaia/auth": "1.0.0",
     "@tupaia/tsutils": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",

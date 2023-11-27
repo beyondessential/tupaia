@@ -7,6 +7,16 @@ import sha256 from 'sha256';
 import crypto from 'crypto';
 
 /**
+ * Helper function to check if a given password matches the user's password
+ * @param {User} user
+ * @param {string} password
+ * @return {boolean}
+ */
+export const checkPassword = (user, password) => {
+  return encryptPassword(password, user.password_salt) === user.password_hash;
+};
+
+/**
  * Helper function to encrypt passwords using sha256
  */
 export function encryptPassword(password, salt) {
