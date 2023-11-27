@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SurveyResponseFeedItem } from '../../../types';
+import { displayDate } from '../../../utils';
 
 const Container = styled.div`
   display: flex;
@@ -32,7 +33,7 @@ const Image = styled.img.attrs({
 
 export const ActivityFeedSurveyItem = ({ feedItem }: { feedItem: SurveyResponseFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
-  const formattedDate = creationDate ? new Date(creationDate as Date).toLocaleDateString() : '';
+  const formattedDate = displayDate(creationDate as Date);
 
   const getLocationName = () => {
     if (templateVariables?.regionName)

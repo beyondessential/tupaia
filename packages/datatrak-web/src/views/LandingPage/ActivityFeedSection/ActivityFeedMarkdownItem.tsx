@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import { MarkdownFeedItem } from '../../../types';
-import { shortDate } from '../../../utils';
+import { displayDate } from '../../../utils';
 
 const Heading = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
@@ -37,7 +37,7 @@ const Logo = styled.img.attrs({
 
 export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
-  const formattedDate = creationDate ? shortDate(creationDate as Date) : '';
+  const formattedDate = displayDate(creationDate as Date);
   return (
     <div>
       <Header>

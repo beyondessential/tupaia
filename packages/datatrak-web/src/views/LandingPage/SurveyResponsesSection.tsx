@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useCurrentUserSurveyResponses } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
-import { shortDate } from '../../utils';
+import { displayDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
@@ -60,7 +60,7 @@ export const SurveyResponsesSection = () => {
                   }
                   Icon={SurveyTickIcon}
                 >
-                  {countryName}, {shortDate(dataTime)}
+                  {countryName}, {displayDate(dataTime)}
                 </Tile>
               ),
             )

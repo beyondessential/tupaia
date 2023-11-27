@@ -12,7 +12,7 @@ import { ScrollableBody } from '../layout';
 import { useSurveyResponse } from '../api/queries';
 import { SurveyReviewSection } from '../features/Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
-import { shortDate } from '../utils';
+import { displayDate } from '../utils';
 
 const Header = styled.div`
   display: flex;
@@ -70,7 +70,7 @@ const getSubHeadingText = surveyResponse => {
   if (!surveyResponse) {
     return null;
   }
-  const date = shortDate(surveyResponse.dataTime);
+  const date = displayDate(surveyResponse.dataTime);
   const country = surveyResponse?.countryName;
   const entity = surveyResponse?.entityName;
   const location = country === entity ? country : `${entity} | ${country}`;
