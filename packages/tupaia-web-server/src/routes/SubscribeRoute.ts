@@ -21,16 +21,29 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
       params: { projectCode, entityCode, dashboardCode },
     } = this.req;
 
-    const dashboard = await this.req.models.dashboard.findOne({ code: dashboardCode });
-    const project = await this.req.models.project.findOne({ code: projectCode });
-    const entity = await this.req.models.entity.findOne({ code: entityCode });
-
-    const dashboardMailingList = await this.req.models.dashboardMailingList.findOne({
-      project_id: project.id,
-      entity_id: entity.id,
-      dashboard_id: dashboard.id,
+    const [dashboard] = await ctx.services.central.fetchResources('dashboards', {
+      filter: {
+        code: dashboardCode,
+      },
+    });
+    const [project] = await ctx.services.central.fetchResources('projects', {
+      filter: {
+        code: projectCode,
+      },
     });
 
+    const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+
+    const [dashboardMailingList] = await ctx.services.central.fetchResources(
+      'dashboardMailingLists',
+      {
+        filter: {
+          project_id: project.id,
+          entity_id: entity.id,
+          dashboard_id: dashboard.id,
+        },
+      },
+    );
     if (!dashboardMailingList) {
       throw new Error(
         `No mailing list found for dashboard code '${dashboardCode}', at entity code '${entityCode}' for project with code '${projectCode}'`,
@@ -47,10 +60,10 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
     const upsertedEntry = ctx.services.central.upsertResource(
       'dashboardMailingListEntries',
       {
-        // filter: {
-        //   dashboard_mailing_list_id: mailingListId,
-        //   email: this.req.body.email,
-        // },
+        filter: {
+          dashboard_mailing_list_id: dashboardMailingList.id,
+          email: this.req.body.email,
+        },
       },
       dashboardMailingListEntry,
     );

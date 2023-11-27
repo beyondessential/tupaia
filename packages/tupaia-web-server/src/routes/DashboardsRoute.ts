@@ -15,11 +15,16 @@ import {
 } from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
 import { camelcaseKeys } from '@tupaia/tsutils';
-
 import { DashboardRelationType } from '../models/DashboardRelation';
 
-interface DashboardWithItems extends Dashboard {
+interface MailingList {
+  isSubscribed: boolean;
+  entityCode: string;
+}
+
+interface DashboardWithMetadata extends Dashboard {
   items: DashboardItem[];
+  mailingLists: MailingList[];
 }
 
 export type DashboardsRequest = Request<
@@ -60,6 +65,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
               config,
             },
           ],
+          mailingLists: [],
         },
       ],
       {
@@ -161,31 +167,35 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       },
     );
 
-    const dashboardMailingListEntities = await this.req.models.entity.all({
-      id: dashboardMailingLists.map((dml: DashboardMailingList) => dml.entity_id),
-    });
-
-    const dashboardMailingListEntries: DashboardMailingListEntry[] = await ctx.services.central.fetchResources(
-      'dashboardMailingListEntries',
-      {
-        filter: {
-          dashboard_mailing_list_id: {
-            comparator: 'IN',
-            comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id),
-          },
-        },
-        // Override the default limit of 100 records
-        pageSize: DEFAULT_PAGE_SIZE,
-      },
+    const dashboardMailingListEntities: Entity[] = await ctx.services.entity.getDescendantsOfEntity(
+      projectCode,
+      entityCode,
+      { fields: ['id', 'code'] },
+      true,
     );
+
+    const dashboardMailingListEntries: DashboardMailingListEntry[] | [] = session
+      ? await ctx.services.central.fetchResources('dashboardMailingListEntries', {
+          filter: {
+            dashboard_mailing_list_id: {
+              comparator: 'IN',
+              comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id)[0],
+            },
+          },
+          // Override the default limit of 100 records
+          pageSize: DEFAULT_PAGE_SIZE,
+        })
+      : [];
 
     const mailingLists = dashboardMailingLists.map((list: DashboardMailingList) => ({
       dashboardId: list.dashboard_id,
-      entityCode: dashboardMailingListEntities.find(entity => entity.id === list.entity_id).code,
-      isSubscribed: !!dashboardMailingListEntries.find(
-        (entry: DashboardMailingListEntry) =>
-          entry.dashboard_mailing_list_id === list.id && entry.email === session.email,
-      ),
+      entityCode: dashboardMailingListEntities.find(entity => entity.id === list.entity_id)?.code,
+      isSubscribed: session
+        ? dashboardMailingListEntries.some(
+            (entry: DashboardMailingListEntry) =>
+              entry.dashboard_mailing_list_id === list.id && entry.email === session.email,
+          )
+        : false,
     }));
 
     const dashboardsWithMetadata = dashboards.map((rawDashboard: Dashboard) => {
@@ -208,15 +218,23 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
             (list: { dashboardId: string; entityCode: string; isSubscribed: boolean }) =>
               list.dashboardId === dashboard.id,
           )
-          .map(({ entityCode, isSubscribed }: { entityCode: string; isSubscribed: boolean }) => ({
-            entityCode,
-            isSubscribed,
-          })),
+          .map(
+            ({
+              entityCode: mailingListEntityCode,
+              isSubscribed,
+            }: {
+              entityCode: string;
+              isSubscribed: boolean;
+            }) => ({
+              entityCode: mailingListEntityCode,
+              isSubscribed,
+            }),
+          ),
       };
     });
 
     const response = dashboardsWithMetadata.filter(
-      (dashboard: DashboardWithItems) => dashboard.items.length > 0,
+      (dashboard: DashboardWithMetadata) => dashboard.items.length > 0,
     );
 
     if (!response.length) {

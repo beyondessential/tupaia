@@ -16,13 +16,14 @@ import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity, useProject } from '../../api/queries';
-import { DashboardMenu } from './DashboardMenu';
+import { DashboardMenu } from './dashboardMenu/DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { ExportDashboard } from './ExportDashboard';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
-import {SubscribeModal } from './SubscribeModal' 
+import {SubscribeModal } from './dashboardMenu/SubscribeModal' 
+
 
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -112,16 +113,21 @@ export const Dashboard = () => {
   const location = useLocation();
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
+  // const { isLoggedIn } = useUser();
+
   const {
     dashboards,
     activeDashboard,
     isLoading: isLoadingDashboards,
     isError,
     isFetched,
+    refetch
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
-  const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
+
+
   
 
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -135,7 +141,7 @@ export const Dashboard = () => {
     isError,
   );
   useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
-
+  
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
@@ -210,9 +216,10 @@ export const Dashboard = () => {
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
         />
         <SubscribeModal 
-          isOpen={subscribeModalOpen}
-          onClose={() => setSubscribeModalOpen(false)}
-          activeDashboard={activeDashboard}
+            isOpen={subscribeModalOpen}
+            onClose={() => setSubscribeModalOpen(false)}
+            activeDashboard={activeDashboard}
+            onSubscribe={refetch}
         />
       </Panel>
     </ErrorBoundary>

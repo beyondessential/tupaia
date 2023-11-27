@@ -11,7 +11,6 @@ export const useSubscribe = (projectCode, entityCode, dashboardCode) => {
   return useMutation<any, Error, TupaiaWebSubscribeRequest.ReqBody, unknown>(({
     email
   }: TupaiaWebSubscribeRequest.ReqBody) => {
-    console.log('email',email)
     return post(`subscribe/${projectCode}/${entityCode}/${dashboardCode}`, { data: { email } });
   });
 };
