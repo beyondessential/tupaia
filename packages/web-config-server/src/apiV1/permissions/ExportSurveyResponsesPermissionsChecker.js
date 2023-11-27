@@ -19,6 +19,7 @@ export class ExportSurveyResponsesPermissionsChecker extends DashboardItemPermis
 
     // check that the selected surveys sits within the report
     const { itemCode, surveyCodes: selectedCodeInput } = this.query;
+
     const dashboardItem = await this.fetchAndCacheDashboardItem(itemCode);
 
     // Old survey responses exporter only works with legacy report. Will be good to improve this.
