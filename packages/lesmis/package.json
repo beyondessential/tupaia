@@ -13,7 +13,6 @@
   "scripts": {
     "build": "npm run --prefix ../../ package:build:vite",
     "preview": "vite preview",
-    "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
     "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
