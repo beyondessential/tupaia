@@ -87,7 +87,7 @@
     "yargs": "15.4.1"
   },
   "engines": {
-    "node": "^14.19.3 || ^16.20.2"
+    "node": "^16.20.2"
   },
   "packageManager": "yarn@3.2.1"
 }
