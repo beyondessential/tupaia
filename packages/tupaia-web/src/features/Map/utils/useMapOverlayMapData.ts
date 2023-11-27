@@ -96,7 +96,6 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
-
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
     ?.filter(
@@ -109,7 +108,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
         organisationUnitCode: entityRelative.code,
         coordinates: entityRelative.point,
         region: entityRelative.region,
-        permanentTooltip: !selectedOverlay,
+        permanentTooltip: !selectedOverlay || mapOverlayData?.isLoading,
       };
     });
 
