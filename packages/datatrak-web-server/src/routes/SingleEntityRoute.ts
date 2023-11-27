@@ -15,21 +15,17 @@ export type SingleEntityRequest = Request<
   WebServerEntityRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
-
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
-    const { projectCode, entityCode } = params;
+    const { params, query, models } = this.req;
+    const { entityCode } = params;
 
-    // if session is provided
-    console.log('Orchestration Server Session', this.req.session);
+    const { id, type, name, code } = await models.entity.findOne(
+      { code: entityCode },
+      // @ts-ignore - server-boilerplate types don't include columns
+      { columns: ['id', 'type', 'code', 'name'] },
+    );
 
-    const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
-      fields: DEFAULT_FIELDS,
-      ...query,
-    })) as Entity;
-
-    return camelcaseKeys(entity);
+    return { id, name, type, code };
   }
 }

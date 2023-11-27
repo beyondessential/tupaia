@@ -48,13 +48,8 @@ const SurveyScreenContainer = styled.div<{
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
-  const {
-    formData,
-    isSuccessScreen,
-    isResponseScreen,
-    cancelModalOpen,
-    closeCancelConfirmation,
-  } = useSurveyForm();
+  const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
+    useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -79,7 +74,7 @@ export const SurveyPage = () => {
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUser();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: surveyCountry } = useCountry(survey?.project?.code, countryCode);
+  const { data: surveyCountry } = useCountry(countryCode);
 
   // Update the user's preferred country if they start a survey in a different country
   useEffect(() => {

@@ -55,7 +55,7 @@ export const SurveyToolbar = () => {
   const { surveyCode, screenNumber: screenNumberParam, countryCode } = useParams();
   const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: country } = useCountry(survey?.project?.code, countryCode);
+  const { data: country } = useCountry(countryCode);
   const isMobile = useIsMobile();
 
   const getDisplaySurveyName = () => {

@@ -73,17 +73,17 @@ const validateEntitiesAndBuildContext = async (
 };
 
 const getFilterInfo = async (
-  req: Request<{ hierarchyName: string }, any, any, { filter?: string; isPublic?: boolean }>,
+  req: Request<{ hierarchyName: string }, any, any, { filter?: string; isPublic?: string }>,
   rootEntity: EntityType,
 ) => {
+  const isPublic = req.query.isPublic?.toLowerCase() === 'true';
+
   let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
     .filter(notNull)
     .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
 
-  // @ts-ignore
-  console.log('Entity Server Session', req.isPublic);
-  if (!req.query.isPublic) {
+  if (!isPublic) {
     const { permission_groups: projectPermissionGroups } = await req.models.project.findOne({
       code: req.params.hierarchyName,
     });

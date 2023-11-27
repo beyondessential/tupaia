@@ -100,7 +100,6 @@ export class EntityApi extends BaseApi {
       field,
       fields: this.stringifyFields(fields),
       filter: this.stringifyFilter(filter),
-      mode: 'public',
     };
   }
 
@@ -163,10 +162,12 @@ export class EntityApi extends BaseApi {
       filter?: any;
     },
     includeRootEntity = false,
+    isPublic = false,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
       ...this.stringifyQueryParameters(queryOptions),
       includeRootEntity: `${includeRootEntity}`,
+      isPublic: `${isPublic}`,
     });
   }
 

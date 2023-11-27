@@ -27,7 +27,7 @@ const Container = styled.div`
 
 const useSearchResults = (searchValue, config) => {
   const filters = useEntityBaseFilters(config);
-  const { surveyProjectCode, surveyCode } = useSurveyForm();
+  const { surveyProjectCode } = useSurveyForm();
   const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);

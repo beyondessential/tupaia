@@ -30,8 +30,9 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
+    const { query, ctx, session } = this.req;
     const { services } = ctx;
+    const isLoggedIn = !!session;
 
     const {
       filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
@@ -71,10 +72,15 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       };
     }
 
-    const entities = await services.entity.getDescendantsOfEntity(projectCode, entityCode, {
-      fields,
-      filter,
-    });
+    const entities = await services.entity.getDescendantsOfEntity(
+      projectCode,
+      entityCode,
+      {
+        fields,
+        filter,
+      },
+      !isLoggedIn,
+    );
 
     const sortedEntities = searchString
       ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)

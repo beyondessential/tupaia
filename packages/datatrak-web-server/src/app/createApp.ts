@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
   OrchestratorApiBuilder,
@@ -57,20 +57,9 @@ export function createApp() {
 
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
-    .use('*', (req: Request, res: Response, next: NextFunction) => {
-      console.log('test');
-      const session = req.session;
-
-      if (!session) {
-        req.ctx.services.entityPublic = req.ctx.services.entity;
-      } else {
-        req.entityServerRequestMode = 'public';
-      }
-      next();
-    })
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<SingleEntityRequest>('entity/:projectCode/:entityCode', handleWith(SingleEntityRoute))
+    .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))
     .get<SurveysRequest>('surveys', handleWith(SurveysRoute))
     .get<SurveyResponsesRequest>('surveyResponses', handleWith(SurveyResponsesRoute))

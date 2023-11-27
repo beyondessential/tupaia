@@ -7,10 +7,10 @@ import { useQuery } from 'react-query';
 import { WebServerEntityRequest } from '@tupaia/types';
 import { get } from '../api';
 
-export const useCountry = (projectCode, countryCode) => {
+export const useCountry = countryCode => {
   return useQuery(
-    ['entity', projectCode, countryCode],
-    (): Promise<WebServerEntityRequest.ResBody> => get(`entity/${projectCode}/${countryCode}`),
-    { enabled: !!projectCode && !!countryCode },
+    ['entity', countryCode],
+    (): Promise<WebServerEntityRequest.ResBody> => get(`entity/${countryCode}`),
+    { enabled: !!countryCode },
   );
 };
