@@ -2,8 +2,6 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { encryptPassword } from '@tupaia/auth';
-
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -17,11 +15,6 @@ export class UserType extends DatabaseType {
       userFullName += ` ${this.last_name}`;
     }
     return userFullName;
-  }
-
-  // Checks if the provided non-encrypted password corresponds to this user
-  checkPassword(password) {
-    return encryptPassword(password, this.password_salt) === this.password_hash;
   }
 
   checkIsEmailUnverified() {
