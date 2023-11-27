@@ -10,6 +10,8 @@ import { ButtonLink as BaseButtonLink, Button } from '../../components';
 import { Typography } from '@material-ui/core';
 import { useCurrentUser, post } from '../../api';
 
+const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org'
+
 const SurveyAlert = styled.div`
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
@@ -115,8 +117,6 @@ const SurveyAlertContent = styled.div`
   }
 `;
 
-const TUPAIA_URL = 'https://tupaia.org';
-
 export const SurveySelectSection = () => {
   const user = useCurrentUser();
   return (
@@ -127,7 +127,7 @@ export const SurveySelectSection = () => {
           <Button variant="outlined" onClick={async () => {
               const { token } = await post('generateLoginToken');
               if (token) {
-                window.open(`${TUPAIA_URL}/${user.project?.code}/${user.project?.code}?loginToken=${token}`, '_blank');
+                window.open(`${TUPAIA_REDIRECT_URL}/${user.project?.code}/${user.project?.code}?loginToken=${token}`, '_blank');
               }
             }}>
             Explore Data
