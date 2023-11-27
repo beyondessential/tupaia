@@ -4,10 +4,10 @@
  */
 
 import { Link, SwipeableDrawer, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
-import { useIsMobile } from '../utils';
 import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
+import React, { useState } from 'react';
+import { useIsMobile } from '../utils';
 import { useCurrentUser } from '../api';
 
 const Container = styled.div`
