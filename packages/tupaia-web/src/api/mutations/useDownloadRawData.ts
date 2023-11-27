@@ -13,7 +13,7 @@ export const useDownloadRawData = downloadUrl => {
         responseType: 'blob',
         returnHeaders: true,
         params: {
-          surveyCodes,
+          surveyCodes: surveyCodes.join(','),
         },
       });
       // before returning the data, parse it if it's json, so that we can access the emailTimeoutHit property
