@@ -48,13 +48,13 @@ export const processMeasureData = ({
 
     return {
       ...entity,
-      ...measure, 
+      ...measure,
       isHidden,
       radius,
       organisationUnitCode: entity.code,
       coordinates: entity.point,
       region: entity.region,
-      color: isLoading ? null : color,
+      color,
       icon,
       originalValue,
     };
