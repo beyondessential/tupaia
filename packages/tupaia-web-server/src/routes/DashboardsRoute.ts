@@ -174,7 +174,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           filter: {
             dashboard_mailing_list_id: {
               comparator: 'IN',
-              comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id)[0],
+              comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id),
             },
           },
           // Override the default limit of 100 records
