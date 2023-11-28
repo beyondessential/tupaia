@@ -16,14 +16,14 @@ import { mergeMultiJoin } from '../utilities';
  * Handles endpoints:
  * - /dashboardMailingListEntries
  * - /dashboardMailingListEntries/:dashboardMailingListEntryId
+ * - /dashboardMailingLists/:dashboardMailingListId/dashboardMailingListEntries
  */
 export class GETDashboardMailingListEntries extends GETHandler {
   permissionsFilteredInternally = true;
 
   async findSingleRecord(dashboardMailingListEntryId, options) {
-    const dashboardMailingListEntry = await super.findSingleRecord(
+    const dashboardMailingListEntry = await this.models.dashboardMailingListEntry.findById(
       dashboardMailingListEntryId,
-      options,
     );
     const dashboardMailingList = await this.models.dashboardMailingList.findById(
       dashboardMailingListEntry.dashboard_mailing_list_id,
@@ -35,7 +35,7 @@ export class GETDashboardMailingListEntries extends GETHandler {
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, dashboardChecker]));
 
-    return dashboardMailingListEntry;
+    return super.findSingleRecord(dashboardMailingListEntryId, options);
   }
 
   async getPermissionsFilter(criteria, options) {
@@ -65,5 +65,13 @@ export class GETDashboardMailingListEntries extends GETHandler {
       ...criteria,
     };
     return { dbConditions: filterDbConditions, dbOptions };
+  }
+
+  async getPermissionsViaParentFilter(criteria, options) {
+    const { dbConditions, dbOptions } = await this.getPermissionsFilter(criteria, options);
+    return {
+      dbConditions: { ...dbConditions, 'dashboard_mailing_list.id': this.parentRecordId },
+      dbOptions,
+    };
   }
 }

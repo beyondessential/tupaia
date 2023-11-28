@@ -22,7 +22,7 @@
     "appcenter": "^5.0.0",
     "appcenter-analytics": "^5.0.0",
     "bson-objectid": "^2.0.4",
-    "moment": "^2.29.4",
+    "moment": "^2.24.0",
     "nanoid": "^2.0.3",
     "react": "18.2.0",
     "react-native": "0.72.5",
