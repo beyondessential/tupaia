@@ -5,21 +5,26 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebSubscribeRequest } from '@tupaia/types';
+import { TupaiaWebUnsubscribeRequest } from '@tupaia/types';
 
-export type SubscribeRequest = Request<
-  TupaiaWebSubscribeRequest.Params,
-  TupaiaWebSubscribeRequest.ResBody,
-  TupaiaWebSubscribeRequest.ReqBody,
-  TupaiaWebSubscribeRequest.ReqQuery
+export type UnsubscribeRequest = Request<
+  TupaiaWebUnsubscribeRequest.Params,
+  TupaiaWebUnsubscribeRequest.ResBody,
+  TupaiaWebUnsubscribeRequest.ReqBody,
+  TupaiaWebUnsubscribeRequest.ReqQuery
 >;
 
-export class SubscribeRoute extends Route<SubscribeRequest> {
+export class Unsubscribe extends Route<UnsubscribeRequest> {
   public async buildResponse() {
     const {
       ctx,
       params: { projectCode, entityCode, dashboardCode },
+      session,
     } = this.req;
+
+    if (!session) {
+      throw new Error('User must be logged in to unsubscribe');
+    }
 
     const [dashboard] = await ctx.services.central.fetchResources('dashboards', {
       filter: {
@@ -50,14 +55,7 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
       );
     }
 
-    const dashboardMailingListEntry = {
-      dashboard_mailing_list_id: dashboardMailingList.id,
-      email: this.req.body.email,
-      subscribed: true,
-      unsubscribed_time: null,
-    };
-
-    const upsertedEntry = await ctx.services.central.upsertResource(
+    const [dashboardMailingListEntry] = await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {
@@ -65,9 +63,23 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
           email: this.req.body.email,
         },
       },
-      dashboardMailingListEntry,
     );
 
-    return upsertedEntry;
+    if (!dashboardMailingListEntry) {
+      throw new Error(
+        `No mailing list entry found with requested email address for dashboard code '${dashboardCode}', at entity code '${entityCode}' for project with code '${projectCode}'`,
+      );
+    }
+
+    const updatedEntry = await ctx.services.central.updateResource(
+      `dashboardMailingListEntries/${dashboardMailingListEntry.id}`,
+      {},
+      {
+        subscribed: false,
+        unsubscribed_time: this.req.body.unsubscribeTime,
+      },
+    );
+
+    return updatedEntry;
   }
 }
