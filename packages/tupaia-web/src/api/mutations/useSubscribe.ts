@@ -14,4 +14,3 @@ export const useSubscribe = (projectCode, entityCode, dashboardCode) => {
     return post(`subscribe/${projectCode}/${entityCode}/${dashboardCode}`, { data: { email } });
   });
 };
-5

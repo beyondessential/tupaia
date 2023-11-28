@@ -27,6 +27,10 @@ interface DashboardWithMetadata extends Dashboard {
   mailingLists: MailingList[];
 }
 
+interface DashboardMailingListWithEntityCode extends DashboardMailingList {
+  'entity.code': string;
+}
+
 export type DashboardsRequest = Request<
   TupaiaWebDashboardsRequest.Params,
   TupaiaWebDashboardsRequest.ResBody,
@@ -102,8 +106,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
-      {
+    const dashboardRelations: DashboardRelationType[] =
+      await this.req.models.dashboardRelation.find({
         // Attached to the given dashboards
         dashboard_id: dashboards.map((d: Dashboard) => d.id),
         // For the root entity type
@@ -116,8 +120,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparator: '@>',
           comparisonValue: [projectCode],
         },
-      },
-    );
+      });
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -153,28 +156,20 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardMailingLists = await ctx.services.central.fetchResources(
-      'dashboardMailingLists',
-      {
+    const dashboardMailingLists: DashboardMailingListWithEntityCode[] =
+      await ctx.services.central.fetchResources('dashboardMailingLists', {
         filter: {
           dashboard_id: {
             comparator: 'IN',
             comparisonValue: dashboards.map((d: Dashboard) => d.id),
           },
         },
+        columns: ['id', 'entity.code', 'dashboard_id'],
         // Override the default limit of 100 records
         pageSize: DEFAULT_PAGE_SIZE,
-      },
-    );
+      });
 
-    const dashboardMailingListEntities: Entity[] = await ctx.services.entity.getDescendantsOfEntity(
-      projectCode,
-      entityCode,
-      { fields: ['id', 'code'] },
-      true,
-    );
-
-    const dashboardMailingListEntries: DashboardMailingListEntry[] | [] = session
+    const dashboardMailingListEntries: DashboardMailingListEntry[] = session
       ? await ctx.services.central.fetchResources('dashboardMailingListEntries', {
           filter: {
             dashboard_mailing_list_id: {
@@ -187,9 +182,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
         })
       : [];
 
-    const mailingLists = dashboardMailingLists.map((list: DashboardMailingList) => ({
+    const mailingLists = dashboardMailingLists.map((list: DashboardMailingListWithEntityCode) => ({
       dashboardId: list.dashboard_id,
-      entityCode: dashboardMailingListEntities.find(entity => entity.id === list.entity_id)?.code,
+      entityCode: list['entity.code'],
       isSubscribed: session
         ? dashboardMailingListEntries.some(
             (entry: DashboardMailingListEntry) =>
@@ -214,22 +209,12 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
             ...item,
           })),
         mailingLists: mailingLists
-          .filter(
-            (list: { dashboardId: string; entityCode: string; isSubscribed: boolean }) =>
-              list.dashboardId === dashboard.id,
-          )
-          .map(
-            ({
-              entityCode: mailingListEntityCode,
-              isSubscribed,
-            }: {
-              entityCode: string;
-              isSubscribed: boolean;
-            }) => ({
-              entityCode: mailingListEntityCode,
-              isSubscribed,
-            }),
-          ),
+
+          .filter(list => list.dashboardId === dashboard.id)
+          .map(({ entityCode: mailingListEntityCode, isSubscribed }) => ({
+            entityCode: mailingListEntityCode,
+            isSubscribed,
+          })),
       };
     });
 
