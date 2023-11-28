@@ -14,7 +14,7 @@ export type UnsubscribeRequest = Request<
   TupaiaWebUnsubscribeRequest.ReqQuery
 >;
 
-export class Unsubscribe extends Route<UnsubscribeRequest> {
+export class UnsubscribeRoute extends Route<UnsubscribeRequest> {
   public async buildResponse() {
     const {
       ctx,

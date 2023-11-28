@@ -188,7 +188,9 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       isSubscribed: session
         ? dashboardMailingListEntries.some(
             (entry: DashboardMailingListEntry) =>
-              entry.dashboard_mailing_list_id === list.id && entry.email === session.email,
+              entry.dashboard_mailing_list_id === list.id &&
+              entry.email === session.email &&
+              entry.subscribed,
           )
         : false,
     }));

@@ -16,5 +16,6 @@ export * from './useRequestResetPassword';
 export { useExportToExcel } from './useExportToExcel';
 export { useExportDashboard } from './useExportDashboard';
 export { useDownloadRawData } from './useDownloadRawData';
-export { useSubscribe } from './useSubscribe'
+export { useSubscribe } from './useSubscribe';
+export { useUnsubscribe } from './useUnsubscribe';
 export { useEmailDashboard } from './useEmailDashboard';

@@ -11,19 +11,18 @@ import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
+import { useDashboards, useEntity, useProject } from '../../api/queries';
+import { DashboardItem } from '../DashboardItem';
+import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
+import { DashboardItem as DashboardItemType } from '../../types';
+import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
 import { ExpandButton } from './ExpandButton';
 import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
-import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardMenu } from './dashboardMenu/DashboardMenu';
-import { DashboardItem } from '../DashboardItem';
 import { ExportDashboard } from './ExportDashboard';
-import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
-import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
-import {SubscribeModal } from './dashboardMenu/SubscribeModal' 
-
+import { SubscribeModal } from './dashboardMenu/SubscribeModal';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -119,7 +118,7 @@ export const Dashboard = () => {
     isLoading: isLoadingDashboards,
     isError,
     isFetched,
-    refetch
+    refetch,
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
   const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
@@ -135,7 +134,7 @@ export const Dashboard = () => {
     isError,
   );
   useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
-  
+
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
     gaEvent('Pages', 'Toggle Info Panel');
@@ -194,7 +193,12 @@ export const Dashboard = () => {
             <TitleBar>
               <Title variant="h3">{title}</Title>
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} setExportModalOpen={setExportModalOpen} setSubscribeModalOpen={setSubscribeModalOpen}/>
+            <DashboardMenu
+              activeDashboard={activeDashboard}
+              dashboards={dashboards}
+              setExportModalOpen={setExportModalOpen}
+              setSubscribeModalOpen={setSubscribeModalOpen}
+            />
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
@@ -209,11 +213,11 @@ export const Dashboard = () => {
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
         />
-        <SubscribeModal 
-            isOpen={subscribeModalOpen}
-            onClose={() => setSubscribeModalOpen(false)}
-            activeDashboard={activeDashboard}
-            onSubscribe={refetch}
+        <SubscribeModal
+          isOpen={subscribeModalOpen}
+          onClose={() => setSubscribeModalOpen(false)}
+          activeDashboard={activeDashboard}
+          onSubscriptionRequestSuccess={refetch}
         />
       </Panel>
     </ErrorBoundary>
