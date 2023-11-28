@@ -68790,3 +68790,46 @@ export const SubscribeRequestSchema = {
 	]
 } 
 
+export const UnsubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const UnsubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		},
+		"unsubscribeTime": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"unsubscribeTime"
+	]
+} 
+
