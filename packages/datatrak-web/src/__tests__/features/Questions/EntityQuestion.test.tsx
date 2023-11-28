@@ -13,6 +13,7 @@ import { EntityQuestion } from '../../../features/Questions';
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
+    surveyProjectCode: 'explore',
   }),
 }));
 
