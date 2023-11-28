@@ -87,7 +87,7 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.SubscribeRoute),
     )
     .put<routes.UnsubscribeRequest>(
-      'unsubscribe/:projectCode/:entityCode/:dashboardCode',
+      'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
       handleWith(routes.UnsubscribeRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))

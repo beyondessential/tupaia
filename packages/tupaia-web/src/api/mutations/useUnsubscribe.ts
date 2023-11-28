@@ -10,7 +10,7 @@ import { put } from '../api';
 export const useUnsubscribe = (projectCode, entityCode, dashboardCode) => {
   return useMutation<any, Error, TupaiaWebUnsubscribeRequest.ReqBody, unknown>(
     ({ email }: TupaiaWebUnsubscribeRequest.ReqBody) => {
-      return put(`unsubscribe/${projectCode}/${entityCode}/${dashboardCode}`, {
+      return put(`dashboard/${projectCode}/${entityCode}/${dashboardCode}/unsubscribe`, {
         data: {
           email,
           unsubscribeTime: new Date(),
