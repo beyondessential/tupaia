@@ -83,7 +83,7 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
     .post<routes.SubscribeRequest>(
-      'subscribe/:projectCode/:entityCode/:dashboardCode',
+      'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
       handleWith(routes.SubscribeRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
