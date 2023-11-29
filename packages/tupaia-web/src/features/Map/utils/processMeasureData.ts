@@ -17,28 +17,31 @@ interface processMeasureDataProps {
   entitiesData: Entity[];
   serieses: Series[];
   hiddenValues: LegendProps['hiddenValues'];
+  isLoading: boolean;
 }
 
 export const processMeasureData = ({
-  measureData,
+  measureData = [],
   entitiesData,
-  serieses,
+  serieses = [],
   hiddenValues,
+  isLoading,
 }: processMeasureDataProps) => {
-  if (!measureData || !serieses) {
+  if (!isLoading && (!measureData.length || !serieses.length)) {
     return [];
   }
 
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   const entityMeasureData = entitiesData?.map((entity: Entity) => {
-    const measure = measureData.find(
-      (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
-    );
+    const measure =
+      measureData.find(
+        (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
+      ) || ({} as MeasureData);
 
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
       measure!,
-      serieses,
+      serieses || [],
       hiddenValues,
       radiusScaleFactor,
     );

@@ -44,9 +44,10 @@ export const MapOverlaysLayer = ({
 }) => {
   const { serieses, measureData, isLoading } = useMapOverlayMapData(hiddenValues);
   useZoomToEntity();
+
   return (
     <>
-      <PolygonLayer measureData={measureData} serieses={serieses} />
+      <PolygonLayer measureData={measureData} serieses={serieses} isLoading={isLoading} />
       {isLoading ? null : <MarkerLayer measureData={measureData} serieses={serieses} />}
     </>
   );

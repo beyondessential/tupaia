@@ -60,13 +60,7 @@ export const LoginModal = () => {
           options={FORM_FIELD_VALIDATION.EMAIL}
           required
         />
-        <TextField
-          name="password"
-          label="Password"
-          type="password"
-          options={FORM_FIELD_VALIDATION.PASSWORD}
-          required
-        />
+        <TextField name="password" label="Password" type="password" required />
         <ForgotPasswordText as={RouterLink} modal={MODAL_ROUTES.FORGOT_PASSWORD}>
           Forgot password?
         </ForgotPasswordText>
