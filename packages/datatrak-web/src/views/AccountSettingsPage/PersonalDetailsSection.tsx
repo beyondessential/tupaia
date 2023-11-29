@@ -105,6 +105,7 @@ export const PersonalDetailsSection = () => {
         />
         <StyledTextField
           name="email"
+          type="email"
           label="Email"
           placeholder="Email"
           tooltip="You cannot change your email address"
@@ -121,6 +122,7 @@ export const PersonalDetailsSection = () => {
               label="Contact number (optional)"
               placeholder="Contact number"
               autoComplete="tel"
+              type="tel"
               inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
               {...register('mobileNumber', { required: true })}
             />
