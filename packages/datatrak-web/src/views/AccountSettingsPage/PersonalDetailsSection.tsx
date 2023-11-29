@@ -52,12 +52,9 @@ export const PersonalDetailsSection = () => {
   } = useForm<PersonalDetailsFormFields>();
 
   function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
-    const updates = Object.keys(dirtyFields)
-      .filter(field => dirtyFields[field])
-      .reduce(
-        (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field] }),
-        {} as UserAccountDetails,
-      );
+    const updates: UserAccountDetails = Object.fromEntries(
+      Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
+    );
 
     updateUser(updates);
   }
