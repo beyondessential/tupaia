@@ -14,3 +14,4 @@ export { useRequestResetPassword } from './useRequestResetPassword';
 export { useResetPassword } from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
 export { useOneTimeLogin } from './useOneTimeLogin';
+export { useTupaiaRedirect } from './useTupaiaRedirect';
