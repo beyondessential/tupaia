@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { useDashboards, useEntity } from '../api/queries';
 import { useSearchParams } from 'react-router-dom';
+import { useDashboards, useEntity } from '../api/queries';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
 
@@ -27,6 +27,8 @@ export const PDFExport = () => {
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { data: entity } = useEntity(projectCode, entityCode);
   const selectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
+  console.log('PDF EXPORT', activeDashboard);
+  console.log('PDF selectedDashboardItems', selectedDashboardItems);
 
   if (!activeDashboard) return null;
 
@@ -39,6 +41,8 @@ export const PDFExport = () => {
     },
     [],
   );
+
+  console.log('dashboardItems', dashboardItems);
 
   return (
     <Parent>

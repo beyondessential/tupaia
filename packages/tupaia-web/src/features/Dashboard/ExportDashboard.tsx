@@ -63,20 +63,35 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
   const { data: entity } = useEntity(projectCode, entityCode);
   const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
 
+  console.log('selectedItems', JSON.stringify(selectedItems));
+
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
   };
 
-  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard({
+  const {
+    mutate: requestPdfExport,
+    error,
+    isLoading,
+    reset,
+  } = useExportDashboard({
     onSuccess: handleExportSuccess,
   });
 
-  const list = dashboardItems.map(({ config, code }) => ({
-    name: config?.name,
-    code,
-    disabled: config?.type !== 'chart',
-    tooltip: config?.type !== 'chart' ? 'PDF export coming soon' : undefined,
-  }));
+  // Todo: include view types
+  console.log(
+    'dashboardItems',
+    dashboardItems.map(x => ({ name: x.config.name, type: x.config.type })),
+  );
+  const list = dashboardItems.map(({ config, code }) => {
+    const isSupported = config?.type === 'chart' || config?.type === 'view';
+    return {
+      name: `${config?.name} -> ${config?.type}`,
+      code,
+      disabled: !isSupported,
+      tooltip: !isSupported ? 'PDF export coming soon' : undefined,
+    };
+  });
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
