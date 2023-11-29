@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { TextField } from '@tupaia/ui-components';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
@@ -46,19 +46,10 @@ export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
 
   const {
-    control,
     formState: { isDirty, dirtyFields },
     handleSubmit,
     register,
-  } = useForm<PersonalDetailsFormFields>({
-    defaultValues: {
-      firstName: user.firstName ?? '',
-      lastName: user.lastName ?? '',
-      mobileNumber: user.mobileNumber ?? '',
-      employer: user.employer ?? '',
-      position: user.position ?? '',
-    },
-  });
+  } = useForm<PersonalDetailsFormFields>();
 
   function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
     const updates = Object.keys(dirtyFields)
@@ -74,86 +65,69 @@ export const PersonalDetailsSection = () => {
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
       <PersonalDetailsForm onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          control={control}
+        <StyledTextField
+          autoComplete="given-name"
+          defaultValue={user.firstName ?? ''}
+          inputProps={{ enterKeyHint: 'next' }}
+          inputRef={register}
+          label="First name"
           name="firstName"
-          as={
-            <StyledTextField
-              label="First name"
-              placeholder="First name"
-              autoComplete="given-name"
-              inputProps={{ enterKeyHint: 'next' }}
-              {...register('firstName', { required: true })}
-              required
-            />
-          }
-        />
-        <Controller
-          control={control}
-          name="lastName"
-          as={
-            <StyledTextField
-              label="Last name"
-              placeholder="Last name"
-              autoComplete="family-name"
-              inputProps={{ enterKeyHint: 'next' }}
-              {...register('lastName', { required: true })}
-              required
-            />
-          }
+          placeholder="First name"
+          required
         />
         <StyledTextField
-          name="email"
-          type="email"
-          label="Email"
-          placeholder="Email"
-          tooltip="You cannot change your email address"
-          autoComplete="email"
-          value={user.email}
+          autoComplete="family-name"
+          defaultValue={user.lastName ?? ''}
+          inputProps={{ enterKeyHint: 'next' }}
+          inputRef={register}
+          label="Last name"
+          name="lastName"
+          placeholder="Last name"
           required
+        />
+        <StyledTextField
+          autoComplete="email"
           disabled
+          inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
+          inputRef={register}
+          label="Email"
+          name="email"
+          placeholder="Email"
+          required
+          tooltip="You cannot change your email address"
+          type="email"
+          value={user.email}
         />
-        <Controller
-          control={control}
+        <StyledTextField
+          autoComplete="tel"
+          defaultValue={user.mobileNumber ?? ''}
+          inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
+          inputRef={register}
+          label="Contact number (optional)"
           name="mobileNumber"
-          as={
-            <StyledTextField
-              label="Contact number (optional)"
-              placeholder="Contact number"
-              autoComplete="tel"
-              type="tel"
-              inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-              {...register('mobileNumber', { required: true })}
-            />
-          }
+          placeholder="Contact number"
+          required
+          type="tel"
         />
-        <Controller
-          control={control}
+        <StyledTextField
+          autoComplete="organization"
+          defaultValue={user.employer ?? ''}
+          inputProps={{ enterKeyHint: 'next' }}
+          inputRef={register}
+          label="Employer"
           name="employer"
-          as={
-            <StyledTextField
-              label="Employer"
-              placeholder="Employer"
-              autoComplete="organization"
-              inputProps={{ enterKeyHint: 'next' }}
-              {...register('employer', { required: true })}
-              required
-            />
-          }
+          placeholder="Employer"
+          required
         />
-        <Controller
-          control={control}
+        <StyledTextField
+          autoComplete="organization-title"
+          defaultValue={user.position ?? ''}
+          inputProps={{ enterKeyHint: 'done' }}
+          inputRef={register}
+          label="Position"
           name="position"
-          as={
-            <StyledTextField
-              label="Position"
-              placeholder="Position"
-              autoComplete="organization-title"
-              inputProps={{ enterKeyHint: 'done' }}
-              {...register('position', { required: true })}
-              required
-            />
-          }
+          placeholder="Position"
+          required
         />
         <ButtonWrapper>
           {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
