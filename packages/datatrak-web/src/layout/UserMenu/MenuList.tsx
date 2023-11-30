@@ -13,8 +13,6 @@ import { ROUTES } from '../../constants';
 
 const Menu = styled.ul`
   list-style: none;
-  margin-block-start: 0;
-  margin-block-end: 0;
   padding-inline-start: 0;
   margin: 0.5rem 0;
 `;
