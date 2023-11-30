@@ -105,7 +105,6 @@ export const PersonalDetailsSection = () => {
         <StyledTextField
           autoComplete="tel"
           inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-          inputRef={register({ required: true })}
           label="Contact number (optional)"
           name="mobileNumber"
           placeholder="Contact number"
