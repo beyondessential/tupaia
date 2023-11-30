@@ -65,9 +65,12 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 };
 
 export const View = ({ customConfig, customReport }: ViewProps) => {
-  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
-    DashboardItemContext,
-  );
+  const {
+    config: originalConfig,
+    report: originalReport,
+    isEnlarged,
+    isExport,
+  } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
@@ -121,6 +124,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         }
         config={viewConfig}
         isEnlarged={isEnlarged}
+        isExport={isExport}
         isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
       />
       {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}

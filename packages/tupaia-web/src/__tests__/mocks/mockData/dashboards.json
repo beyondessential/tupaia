@@ -46,7 +46,21 @@
         "config": {
           "name": "Multi value row",
           "type": "view",
-          "viewType": "multiValueRow"
+          "viewType": "multiValueRow",
+          "presentationOptions": {
+            "rowHeader": {
+              "name": "Facility Name",
+              "color": "white"
+            },
+            "leftColumn": {
+              "color": "white",
+              "header": "Assesment Date 1"
+            },
+            "rightColumn": {
+              "color": "white",
+              "header": "Assesment Date 2"
+            }
+          }
         },
         "legacy": false
       },

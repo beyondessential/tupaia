@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { CssColor, SingleValueViewConfig, ViewConfig, ViewReport } from '@tupaia/types';
-import { DashboardItemContext } from '../../DashboardItem';
 
 const Text = styled(Typography)<{
   $dataColor?: CssColor;
@@ -33,14 +32,15 @@ interface SingleValueProps {
   report: ViewReport;
   config: ViewConfig;
   isMultiSingleValue?: boolean;
+  isExport?: boolean;
 }
 
 export const SingleValue = ({
   report: { data = [] },
   config,
   isMultiSingleValue,
+  isExport,
 }: SingleValueProps) => {
-  const { isExport } = useContext(DashboardItemContext);
   const { dataColor } = (config || {}) as SingleValueViewConfig;
   const { value, name } = data[0] || {};
   const textColor = isExport ? 'inherit' : dataColor;

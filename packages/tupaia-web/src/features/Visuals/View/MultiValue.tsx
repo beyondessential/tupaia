@@ -13,7 +13,7 @@ const StyledTable = styled(Table)<{
 }>`
   th.MuiTableCell-root,
   td.MuiTableCell-root {
-    ${props => !props.$isExport && 'color: currentColor;'}
+    ${props => props.$isExport && 'color: currentColor;'}
   }
 `;
 
@@ -46,6 +46,7 @@ const BooleanDisplay = ({ value, config = {} as MultiValueViewConfig }: BooleanD
 interface MultiValueProps {
   report: ViewReport;
   config: ViewConfig;
+  isExport?: boolean;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -60,10 +61,10 @@ const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
+export const MultiValue = ({ report: { data }, config, isExport }: MultiValueProps) => {
   const { valueType } = config;
   return (
-    <StyledTable>
+    <StyledTable $isExport={isExport}>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
           <TableRow key={i}>
