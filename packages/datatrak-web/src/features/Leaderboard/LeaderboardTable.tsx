@@ -66,8 +66,7 @@ const FooterRow = styled(Row)`
 const Cell = styled(TableCell)<{
   $isActiveUser?: boolean;
 }>`
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
+  padding-block: 0.3rem;
   border: none;
   font-weight: ${({ $isActiveUser, theme }) =>
     $isActiveUser ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
@@ -86,8 +85,7 @@ const Cell = styled(TableCell)<{
 `;
 
 const HeaderCell = styled(Cell)`
-  padding-top: 0;
-  padding-bottom: 0;
+  padding-block: 0;
   line-height: 1.4;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
@@ -131,7 +129,7 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
         </Body>
         <TableFooter>
           <FooterRow>
-            <FooterCell>-</FooterCell>
+            <FooterCell>&mdash;</FooterCell>
             <FooterCell>{user?.userName}</FooterCell>
             <FooterCell>{userRewards?.coconuts}</FooterCell>
           </FooterRow>
