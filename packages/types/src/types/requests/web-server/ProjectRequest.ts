@@ -13,6 +13,7 @@ export type ProjectResponse = KeysToCamelCase<Project> & {
   name: string;
   hasAccess: boolean;
   hasPendingAccess: boolean;
+  homeEntityCode: string;
 };
 
 export type ResBody = ProjectResponse;
