@@ -2,7 +2,6 @@
   "name": "@tupaia/tupaia-web",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "description": "Web app that integrates with and displays data from the Tupaia project",
   "repository": {
     "type": "git",
