@@ -46,10 +46,18 @@ export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
 
   const {
-    formState: { isDirty, dirtyFields },
+    formState: { isDirty, dirtyFields, isSubmitting },
     handleSubmit,
     register,
-  } = useForm<PersonalDetailsFormFields>();
+  } = useForm<PersonalDetailsFormFields>({
+    defaultValues: {
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
+      mobileNumber: user.mobileNumber ?? '',
+      employer: user.employer ?? '',
+      position: user.position ?? '',
+    },
+  });
 
   function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
     const updates: UserAccountDetails = Object.fromEntries(
@@ -64,9 +72,8 @@ export const PersonalDetailsSection = () => {
       <PersonalDetailsForm onSubmit={handleSubmit(onSubmit)}>
         <StyledTextField
           autoComplete="given-name"
-          defaultValue={user.firstName ?? ''}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register}
+          inputRef={register({ required: true })}
           label="First name"
           name="firstName"
           placeholder="First name"
@@ -74,9 +81,8 @@ export const PersonalDetailsSection = () => {
         />
         <StyledTextField
           autoComplete="family-name"
-          defaultValue={user.lastName ?? ''}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register}
+          inputRef={register({ required: true })}
           label="Last name"
           name="lastName"
           placeholder="Last name"
@@ -86,7 +92,6 @@ export const PersonalDetailsSection = () => {
           autoComplete="email"
           disabled
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
-          inputRef={register}
           label="Email"
           name="email"
           placeholder="Email"
@@ -97,20 +102,17 @@ export const PersonalDetailsSection = () => {
         />
         <StyledTextField
           autoComplete="tel"
-          defaultValue={user.mobileNumber ?? ''}
           inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-          inputRef={register}
+          inputRef={register({ required: true })}
           label="Contact number (optional)"
           name="mobileNumber"
           placeholder="Contact number"
-          required
           type="tel"
         />
         <StyledTextField
           autoComplete="organization"
-          defaultValue={user.employer ?? ''}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register}
+          inputRef={register({ required: true })}
           label="Employer"
           name="employer"
           placeholder="Employer"
@@ -118,9 +120,8 @@ export const PersonalDetailsSection = () => {
         />
         <StyledTextField
           autoComplete="organization-title"
-          defaultValue={user.position ?? ''}
           inputProps={{ enterKeyHint: 'done' }}
-          inputRef={register}
+          inputRef={register({ required: true })}
           label="Position"
           name="position"
           placeholder="Position"
@@ -131,7 +132,7 @@ export const PersonalDetailsSection = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty}
+            disabled={!isDirty || isSubmitting}
             fullWidth
           >
             Save changes
