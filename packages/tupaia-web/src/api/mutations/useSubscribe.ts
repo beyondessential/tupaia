@@ -4,13 +4,15 @@
  */
 
 import { useMutation } from 'react-query';
+import { TupaiaWebSubscribeRequest } from '@tupaia/types';
 import { post } from '../api';
-import { TupaiaWebSubscribeRequest } from '@tupaia/types'
 
 export const useSubscribe = (projectCode, entityCode, dashboardCode) => {
-  return useMutation<any, Error, TupaiaWebSubscribeRequest.ReqBody, unknown>(({
-    email
-  }: TupaiaWebSubscribeRequest.ReqBody) => {
-    return post(`subscribe/${projectCode}/${entityCode}/${dashboardCode}`, { data: { email } });
-  });
+  return useMutation<any, Error, TupaiaWebSubscribeRequest.ReqBody, unknown>(
+    ({ email }: TupaiaWebSubscribeRequest.ReqBody) => {
+      return post(`dashboard/${projectCode}/${entityCode}/${dashboardCode}/subscribe`, {
+        data: { email },
+      });
+    },
+  );
 };
