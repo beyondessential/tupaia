@@ -42,7 +42,9 @@ const PersonalDetailsForm = styled.form`
 `;
 
 export const PersonalDetailsSection = () => {
-  const { mutate: updateUser } = useEditUser(() => successToast('Personal details updated'));
+  const { mutate: updateUser } = useEditUser(() =>
+    successToast('Your personal details have been successfully updated'),
+  );
   const user = useCurrentUser();
 
   const {
