@@ -18,7 +18,7 @@ export const useTupaiaRedirect = () => {
     },
     {
       onSuccess: ({ token }) => {
-        window.open(`${TUPAIA_REDIRECT_URL}/${user.project?.code}/${user.project?.code}?loginToken=${token}`, '_blank');
+        window.open(`${TUPAIA_REDIRECT_URL}/${user.project?.code}/${user.project?.homeEntityCode}?loginToken=${token}`, '_blank');
       },
     }
   );
