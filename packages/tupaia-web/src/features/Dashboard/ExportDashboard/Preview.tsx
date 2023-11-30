@@ -100,12 +100,13 @@ const Checkbox = styled(BaseCheckbox)`
 
 const PreviewPanelContainer = styled.div`
   height: 100%;
-  width: 100%;
+  width: 36%;
   display: flex;
   flex-direction: column;
 
-  @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
-    width: 36%;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    width: 100%;
+    align-items: center;
   }
 `;
 
@@ -122,6 +123,9 @@ const PreviewHeaderContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 0.3rem;
+  @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
+    width: 100%;
+  }
 `;
 
 const PreviewPagination = styled(Pagination)`
@@ -135,7 +139,7 @@ const PreviewContainer = styled.div`
   background-color: white;
   height: 30rem;
   min-width: 20rem;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 
@@ -171,7 +175,12 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
     downloadJs(data, `${exportFileName}.pdf`);
   };
 
-  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard({
+  const {
+    mutate: requestPdfExport,
+    error,
+    isLoading,
+    reset,
+  } = useExportDashboard({
     onSuccess: handleExportSuccess,
   });
 
