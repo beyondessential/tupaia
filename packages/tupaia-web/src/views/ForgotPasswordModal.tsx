@@ -96,9 +96,9 @@ export const ForgotPasswordModal = () => {
           <AuthModalButton type="submit" isLoading={isLoading}>
             Reset password
           </AuthModalButton>
-          <CancelButton modal={MODAL_ROUTES.LOGIN}>Back to log in</CancelButton>
+          <CancelButton modal={MODAL_ROUTES.LOGIN}>Back to login</CancelButton>
           <LinkText align="center">
-            Don't have an account?{' '}
+            Don&rsquo;t have an account?{' '}
             <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
           </LinkText>
         </StyledForm>
