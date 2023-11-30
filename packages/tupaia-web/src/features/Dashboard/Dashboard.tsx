@@ -217,7 +217,7 @@ export const Dashboard = () => {
           isOpen={subscribeModalOpen}
           onClose={() => setSubscribeModalOpen(false)}
           activeDashboard={activeDashboard}
-          onSubscriptionRequestSuccess={refetch}
+          onToggleSubscription={refetch}
         />
       </Panel>
     </ErrorBoundary>

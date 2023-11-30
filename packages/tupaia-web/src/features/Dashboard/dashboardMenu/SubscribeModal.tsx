@@ -74,14 +74,14 @@ interface SubscribeModalProps {
   isOpen: boolean;
   onClose: () => void;
   activeDashboard?: Dashboard;
-  onSubscriptionRequestSuccess: () => void;
+  onToggleSubscription: () => void;
 }
 
 export const SubscribeModal = ({
   isOpen,
   onClose,
   activeDashboard,
-  onSubscriptionRequestSuccess,
+  onToggleSubscription,
 }: SubscribeModalProps) => {
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();
@@ -103,7 +103,7 @@ export const SubscribeModal = ({
     } else {
       await subscribe(data);
     }
-    onSubscriptionRequestSuccess();
+    onToggleSubscription();
     onClose();
   };
 
