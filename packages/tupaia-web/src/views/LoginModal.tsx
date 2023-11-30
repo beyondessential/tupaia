@@ -23,8 +23,8 @@ const StyledForm = styled(Form)`
 
 const LinkText = styled(Typography)`
   font-weight: 400;
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 0.6875rem;
+  line-height: 1.4;
   color: white;
 
   a {
