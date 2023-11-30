@@ -122,7 +122,7 @@ export const SurveySelectSection = () => {
       <SurveyAlertContent>
         <ButtonWrapper>
           <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-          <Button variant="outlined" onClick={() => { tupaiaRedirect({}) }}>
+          <Button variant="outlined" onClick={tupaiaRedirect}>
             Explore Data
           </Button>
         </ButtonWrapper>
