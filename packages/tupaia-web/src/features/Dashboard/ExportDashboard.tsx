@@ -31,7 +31,7 @@ const Container = styled.div`
     text-transform: none;
   }
   .loading-screen {
-    background-color: ${props => props.theme.palette.background.default};
+    background: ${({ theme }) => theme.palette.background.paper};
     border: 0;
     button {
       padding: 0.5em 1.75em;
@@ -67,7 +67,12 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
     downloadJs(data, `${exportFileName}.pdf`);
   };
 
-  const { mutate: requestPdfExport, error, isLoading, reset } = useExportDashboard({
+  const {
+    mutate: requestPdfExport,
+    error,
+    isLoading,
+    reset,
+  } = useExportDashboard({
     onSuccess: handleExportSuccess,
   });
 
