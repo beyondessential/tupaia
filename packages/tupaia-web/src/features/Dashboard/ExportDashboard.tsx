@@ -57,13 +57,32 @@ interface ListItem extends ListItemProps {
   code: string;
 }
 
+const getIsSupported = (config: DashboardItem['config']) => {
+  if (config?.type === 'chart') {
+    return true;
+  }
+  if (config?.type === 'view' && config?.viewType) {
+    const SUPPORTED_VIEW_TYPES = [
+      'singleValue',
+      'singleDate',
+      // 'singleDownloadLink',
+      'multiValue',
+      'multiValueRow',
+      // 'dataDownload',
+      // 'filesDownload',
+      'qrCodeVisual',
+      'multiPhotograph',
+    ];
+    return SUPPORTED_VIEW_TYPES.includes(config.viewType);
+  }
+  return false;
+};
+
 export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
-
-  console.log('selectedItems', JSON.stringify(selectedItems));
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -78,15 +97,10 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
     onSuccess: handleExportSuccess,
   });
 
-  // Todo: include view types
-  console.log(
-    'dashboardItems',
-    dashboardItems.map(x => ({ name: x.config.name, type: x.config.type })),
-  );
   const list = dashboardItems.map(({ config, code }) => {
-    const isSupported = config?.type === 'chart' || config?.type === 'view';
+    const isSupported = getIsSupported(config);
     return {
-      name: `${config?.name} -> ${config?.type}`,
+      name: config?.name,
       code,
       disabled: !isSupported,
       tooltip: !isSupported ? 'PDF export coming soon' : undefined,
