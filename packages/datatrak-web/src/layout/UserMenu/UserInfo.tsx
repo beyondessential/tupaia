@@ -48,6 +48,7 @@ const ProjectButton = styled(Button).attrs({
   }
   color: ${props => props.theme.palette.text.secondary};
   &:hover {
+    background: none;
     color: ${props => props.theme.palette.action.hover};
     text-decoration: underline;
   }
