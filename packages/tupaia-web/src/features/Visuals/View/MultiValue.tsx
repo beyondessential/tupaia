@@ -8,6 +8,15 @@ import { Table, TableCell as MuiTableCell, TableRow, TableBody } from '@material
 import { CheckCircle, Cancel } from '@material-ui/icons';
 import { MultiValueViewConfig, ViewConfig, ViewReport, ViewDataItem } from '@tupaia/types';
 
+const StyledTable = styled(Table)<{
+  $isExport?: boolean;
+}>`
+  th.MuiTableCell-root,
+  td.MuiTableCell-root {
+    ${props => !props.$isExport && 'color: currentColor;'}
+  }
+`;
+
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
 }>`
@@ -54,7 +63,7 @@ const TableCell = styled(MuiTableCell)`
 export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
   const { valueType } = config;
   return (
-    <Table>
+    <StyledTable>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
           <TableRow key={i}>
@@ -72,6 +81,6 @@ export const MultiValue = ({ report: { data }, config }: MultiValueProps) => {
           </TableRow>
         ))}
       </TableBody>
-    </Table>
+    </StyledTable>
   );
 };
