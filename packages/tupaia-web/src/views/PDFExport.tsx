@@ -27,8 +27,6 @@ export const PDFExport = () => {
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const { data: entity } = useEntity(projectCode, entityCode);
   const selectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
-  console.log('PDF EXPORT', activeDashboard);
-  console.log('PDF selectedDashboardItems', selectedDashboardItems);
 
   if (!activeDashboard) return null;
 
@@ -41,8 +39,6 @@ export const PDFExport = () => {
     },
     [],
   );
-
-  console.log('dashboardItems', dashboardItems);
 
   return (
     <Parent>

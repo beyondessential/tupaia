@@ -31,15 +31,51 @@ const Thumbnail = styled.div<{
   }
 `;
 
+const ExportWrapper = styled.div``;
+
+const Image = styled.img`
+  width: 48%;
+  height: auto;
+  border: 1px solid #000;
+  background-image: url(${({ src }) => src});
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 10px;
+
+  &:nth-child(n) {
+    margin-right: 1%;
+  }
+  &:nth-child(2n) {
+    margin-left: 1%;
+  }
+`;
+
 interface MultiPhotographPreviewProps {
   report: ViewReport;
   config: ViewConfig;
+  isExport?: boolean;
 }
 
 export const MultiPhotographPreview = ({
   report: { data = [] },
   config,
+  isExport,
 }: MultiPhotographPreviewProps) => {
+  if (isExport) {
+    const thumbnails = data.map(({ value }) => value);
+    return (
+      <ExportWrapper>
+        {thumbnails.map((thumbnail, i) => (
+          <Image
+            src={thumbnail}
+            key={thumbnail}
+            aria-label={`Thumbnail ${i + 1} for visualisation ${config?.name}`}
+          />
+        ))}
+      </ExportWrapper>
+    );
+  }
+
   const thumbnails = data.slice(0, MAX_THUMBNAILS).map(({ value }) => value);
   return (
     <Wrapper>

@@ -11,9 +11,12 @@ interface MultiPhotographProps {
   report: ViewReport;
   config: ViewConfig;
   isEnlarged?: boolean;
+  isExport?: boolean;
 }
 
-export const MultiPhotograph = ({ report, config, isEnlarged }: MultiPhotographProps) => {
-  if (!isEnlarged) return <MultiPhotographPreview report={report} config={config} />;
+export const MultiPhotograph = ({ report, config, isEnlarged, isExport }: MultiPhotographProps) => {
+  if (!isEnlarged || isExport) {
+    return <MultiPhotographPreview report={report} config={config} isExport={isExport} />;
+  }
   return <MultiPhotographEnlarged report={report} config={config} />;
 };
