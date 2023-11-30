@@ -104,7 +104,7 @@ export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void })
           <AuthLink variant="text" to={ROUTES.REGISTER}>
             Register
           </AuthLink>
-          <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
+          <LoginLink to={ROUTES.LOGIN}>Log in</LoginLink>
         </AuthButtons>
       )}
     </Wrapper>
