@@ -69,7 +69,7 @@ export const MenuList = ({
         },
         helpCentre,
         {
-          label: 'Logout',
+          label: 'Log out',
           onClick: onClickLogout,
           component: 'button',
         },
