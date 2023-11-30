@@ -41,8 +41,7 @@ export const ActionsMenu = ({
   menuOptions.push(exportOption);
 
   const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
-  console.log('activeDashboard', activeDashboard);
-  console.log('isSubscribed', isSubscribed);
+
   if (hasMailingList) {
     if (isSubscribed) {
       menuOptions.push({
