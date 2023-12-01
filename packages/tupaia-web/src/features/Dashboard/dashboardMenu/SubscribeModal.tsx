@@ -51,6 +51,13 @@ const Container = styled.div`
   }
 `;
 
+export const ErrorMessageText = styled(Typography)`
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+`;
+
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
   width: 100%;
@@ -88,12 +95,16 @@ export const SubscribeModal = ({
   const formContext = useForm({
     mode: 'onChange',
   });
-  const { mutateAsync: subscribe } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
-  const { mutateAsync: unsubscribe } = useUnsubscribe(
-    projectCode,
-    entityCode,
-    activeDashboard?.code,
-  );
+  const {
+    mutateAsync: subscribe,
+    error: subscribeError,
+    reset: resetSubscribe,
+  } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
+  const {
+    mutateAsync: unsubscribe,
+    error: unsubscribeError,
+    reset: resetUnsubscribe,
+  } = useUnsubscribe(projectCode, entityCode, activeDashboard?.code);
 
   const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
 
@@ -107,8 +118,19 @@ export const SubscribeModal = ({
     onClose();
   };
 
+  const handleClose = () => {
+    if (isSubscribed) {
+      resetUnsubscribe();
+    } else {
+      resetSubscribe();
+    }
+    onClose();
+  };
+
+  const isMutateError = !!subscribeError || !!unsubscribeError;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose}>
       <Wrapper>
         {activeDashboard && hasMailingList ? (
           <Container>
@@ -129,8 +151,13 @@ export const SubscribeModal = ({
                 options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
                 inputProps={{ readOnly: isLoggedIn }}
               />
+              {isMutateError && (
+                <ErrorMessageText color="error">
+                  {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
+                </ErrorMessageText>
+              )}
               <ButtonGroup>
-                <Button variant="outlined" color="default" onClick={onClose}>
+                <Button variant="outlined" color="default" onClick={handleClose}>
                   Cancel
                 </Button>
                 <SubscribeButton type="submit" variant="contained" color="primary">
