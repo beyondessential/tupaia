@@ -113,7 +113,7 @@ export const ROUTES = [
         component: DashboardRelationsPage,
       },
       {
-        label: 'Dashboard MailingLists',
+        label: 'Dashboard Mailing Lists',
         to: '/dashboard-mailing-lists',
         component: DashboardMailingListsPage,
       },
