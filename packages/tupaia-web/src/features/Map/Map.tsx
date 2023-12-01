@@ -25,12 +25,17 @@ const MapContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+
+  .leaflet-container {
+    min-height: 15rem;
+  }
 `;
 
 const StyledMap = styled(LeafletMap)`
   height: 100%;
   width: 100%;
   flex: 1;
+
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
@@ -106,9 +111,11 @@ const getAutoTileset = () => {
     return openStreets;
   } else {
     const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
-    return ((window as unknown) as Window & {
-      loadTime: number;
-    })?.loadTime < SLOW_LOAD_TIME_THRESHOLD
+    return (
+      window as unknown as Window & {
+        loadTime: number;
+      }
+    )?.loadTime < SLOW_LOAD_TIME_THRESHOLD
       ? satellite
       : openStreets;
   }
@@ -128,7 +135,7 @@ export const Map = () => {
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
   const onTileSetChange = (tileSetKey: string) => {
-    setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
+    setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as (typeof TILE_SETS)[0]);
   };
 
   return (
