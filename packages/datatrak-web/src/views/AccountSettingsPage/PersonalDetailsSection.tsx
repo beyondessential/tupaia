@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { TextField } from '@tupaia/ui-components';
 import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
@@ -48,9 +48,11 @@ export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
 
   const {
-    formState: { isDirty, dirtyFields, isSubmitting },
+    formState,
+    formState: { isDirty, dirtyFields, isSubmitting, isSubmitSuccessful },
     handleSubmit,
     register,
+    reset,
   } = useForm<PersonalDetailsFormFields>({
     defaultValues: {
       firstName: user.firstName ?? '',
@@ -61,13 +63,30 @@ export const PersonalDetailsSection = () => {
     } as PersonalDetailsFormFields,
   });
 
-  function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
+  function onSubmit(
+    userDetails: PersonalDetailsFormFields,
+  ): SubmitHandler<PersonalDetailsFormFields> {
+    console.log('onSubmit');
     const updates: UserAccountDetails = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
 
     updateUser(updates);
   }
+
+  useEffect(() => {
+    console.log('useEffect');
+    console.log('isSubmitSuccessful', isSubmitSuccessful);
+    if (isSubmitSuccessful) {
+      reset({
+        firstName: user.firstName ?? '',
+        lastName: user.lastName ?? '',
+        mobileNumber: user.mobileNumber ?? '',
+        employer: user.employer ?? '',
+        position: user.position ?? '',
+      } as PersonalDetailsFormFields);
+    }
+  }, [formState, reset]);
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">
