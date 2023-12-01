@@ -88,7 +88,11 @@ export const RegisterModal = () => {
               required
               options={FORM_FIELD_VALIDATION.EMAIL}
             />
-            <TextField name="contactNumber" label="Contact number (optional)" />
+            <TextField
+              name="contactNumber"
+              label="Contact number (optional)"
+              options={FORM_FIELD_VALIDATION.CONTACT_NUMBER}
+            />
             <TextField
               name="password"
               label="Password"
