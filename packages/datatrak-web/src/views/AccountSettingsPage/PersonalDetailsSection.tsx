@@ -58,7 +58,7 @@ export const PersonalDetailsSection = () => {
       mobileNumber: user.mobileNumber ?? '',
       employer: user.employer ?? '',
       position: user.position ?? '',
-    },
+    } as PersonalDetailsFormFields,
   });
 
   function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
