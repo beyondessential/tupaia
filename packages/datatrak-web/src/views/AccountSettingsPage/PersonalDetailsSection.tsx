@@ -66,7 +66,6 @@ export const PersonalDetailsSection = () => {
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
-    console.log('onSubmit');
     const updates: UserAccountDetails = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
@@ -75,8 +74,6 @@ export const PersonalDetailsSection = () => {
   }
 
   useEffect(() => {
-    console.log('useEffect');
-    console.log('isSubmitSuccessful', isSubmitSuccessful);
     if (isSubmitSuccessful) {
       reset({
         firstName: user.firstName ?? '',
