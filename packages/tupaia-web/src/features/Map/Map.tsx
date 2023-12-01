@@ -26,12 +26,17 @@ const MapContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+
+  .leaflet-container {
+    min-height: 15rem;
+  }
 `;
 
 const StyledMap = styled(LeafletMap)`
   height: 100%;
   width: 100%;
   flex: 1;
+
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
