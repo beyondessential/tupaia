@@ -39,7 +39,7 @@ const Container = styled.div`
     text-transform: none;
   }
   .loading-screen {
-    background-color: ${props => props.theme.palette.background.default};
+    background-color: ${({ theme }) => theme.palette.background.paper};
     border: 0;
     button {
       padding: 0.5em 1.75em;
