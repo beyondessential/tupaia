@@ -21,7 +21,12 @@ function camelToSnakeCase(camelCaseString: string): string {
     .toLowerCase();
 }
 
-export const useEditUser = (onSuccess?: () => void) => {
+export const useEditUser = (options?: {
+  onMutate?: () => void;
+  onSettled?: () => void;
+  onSuccess?: () => void;
+}) => {
+  const { onMutate, onSettled, onSuccess } = options ?? {};
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, UserAccountDetails, unknown>(
@@ -36,6 +41,12 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', { data: updates });
     },
     {
+      onMutate: () => {
+        if (onMutate) onMutate();
+      },
+      onSettled: () => {
+        if (onSettled) onSettled();
+      },
       onSuccess: () => {
         queryClient.invalidateQueries('getUser');
         if (onSuccess) onSuccess();

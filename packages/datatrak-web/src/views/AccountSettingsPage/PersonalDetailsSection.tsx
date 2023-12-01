@@ -3,15 +3,16 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
+
 import { TextField } from '@tupaia/ui-components';
-import { AccountSettingsSection } from './AccountSettingsSection';
 import { Button } from '../../components';
 import { successToast } from '../../utils';
 import { useCurrentUser, useEditUser } from '../../api';
 import { UserAccountDetails } from '../../types';
+import { AccountSettingsSection } from './AccountSettingsSection';
 
 type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
@@ -47,14 +48,35 @@ const PersonalDetailsForm = styled.form`
 `;
 
 export const PersonalDetailsSection = () => {
-  const { mutate: updateUser } = useEditUser(() =>
-    successToast('Your personal details have been successfully updated'),
-  );
   const user = useCurrentUser();
 
+  const { mutate: updateUser } = useEditUser({
+    onMutate: () => {
+      console.log('[Personal Details]: onMutate');
+      reset(getValues() as PersonalDetailsFormFields);
+    },
+    onSettled: () => {
+      console.log(`[Personal Details]: onSettled (isSubmitSuccessful: ${isSubmitSuccessful})`);
+      // TODO: Figure out why isSubmitSuccessful is always false
+      if (isSubmitSuccessful) {
+        reset({
+          firstName: user.firstName ?? '',
+          lastName: user.lastName ?? '',
+          mobileNumber: user.mobileNumber ?? '',
+          employer: user.employer ?? '',
+          position: user.position ?? '',
+        } as PersonalDetailsFormFields);
+      }
+    },
+    onSuccess: () => {
+      console.log(`[Personal Details]: onSuccess`);
+      successToast('Your personal details have been successfully updated');
+    },
+  });
+
   const {
-    formState,
     formState: { isDirty, dirtyFields, isSubmitting, isSubmitSuccessful },
+    getValues,
     handleSubmit,
     register,
     reset,
@@ -78,17 +100,17 @@ export const PersonalDetailsSection = () => {
     updateUser(updates);
   }
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({
-        firstName: user.firstName ?? '',
-        lastName: user.lastName ?? '',
-        mobileNumber: user.mobileNumber ?? '',
-        employer: user.employer ?? '',
-        position: user.position ?? '',
-      } as PersonalDetailsFormFields);
-    }
-  }, [formState, reset]);
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) {
+  //     reset({
+  //       firstName: user.firstName ?? '',
+  //       lastName: user.lastName ?? '',
+  //       mobileNumber: user.mobileNumber ?? '',
+  //       employer: user.employer ?? '',
+  //       position: user.position ?? '',
+  //     } as PersonalDetailsFormFields);
+  //   }
+  // }, [formState, reset]);
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">

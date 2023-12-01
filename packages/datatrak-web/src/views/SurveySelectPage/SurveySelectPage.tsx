@@ -77,7 +77,7 @@ const HeaderWrapper = styled.div`
     > div {
       width: auto;
     }
-  } ;
+  }
 `;
 
 const Subheader = styled(Typography).attrs({
@@ -112,7 +112,9 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = () => {
     navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
   };
-  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser({
+    onSuccess: navigateToSurvey,
+  });
   const user = useCurrentUser();
 
   const { data: surveys, isLoading } = useSurveys(selectedCountry?.name, user.projectId);

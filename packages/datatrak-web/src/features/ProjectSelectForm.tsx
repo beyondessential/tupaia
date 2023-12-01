@@ -59,7 +59,7 @@ export const ProjectSelectForm = ({
     successToast('Project changed successfully');
   };
 
-  const { mutate, isLoading: isConfirming } = useEditUser(onSuccessfulUserUpdate);
+  const { mutate, isLoading: isConfirming } = useEditUser({ onSuccess: onSuccessfulUserUpdate });
 
   const onConfirm = () => {
     mutate({ projectId: selectedProjectId! });
