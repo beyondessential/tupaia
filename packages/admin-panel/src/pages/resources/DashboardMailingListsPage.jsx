@@ -38,17 +38,17 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
   entity_code: {
     Header: 'Entity code',
     source: 'entity.code',
-    editConfig: {
-      sourceKey: 'entity_id',
-      optionsEndpoint: 'entities',
-      optionLabelKey: 'code',
-      optionValueKey: 'id',
-      secondaryLabel: 'Select the entity this dashboard mailing list should be for',
-    },
   },
   entity_name: {
     Header: 'Entity name',
     source: 'entity.name',
+    editConfig: {
+      sourceKey: 'entity_id',
+      optionsEndpoint: 'entities',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      secondaryLabel: 'Select the entity this dashboard mailing list should be for',
+    },
   },
 };
 

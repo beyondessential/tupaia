@@ -7,7 +7,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useCurrentUserSurveyResponses } from '../../api';
+import { useCurrentUser, useCurrentUserSurveyResponses } from '../../api';
 import { SurveyTickIcon, Tile } from '../../components';
 import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
@@ -36,7 +36,7 @@ const ScrollBody = styled.div`
 
 export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
-
+const {project } = useCurrentUser()
   return (
     <Container>
       <SectionHeading>Submission history</SectionHeading>
@@ -66,7 +66,7 @@ export const SurveyResponsesSection = () => {
             )
           ) : (
             <Typography variant="body2" color="textSecondary">
-              No recent surveys responses to display
+              No recent surveys responses to display for {project?.name || 'project'}
             </Typography>
           )}
         </ScrollBody>
