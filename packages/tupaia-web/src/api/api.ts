@@ -32,7 +32,7 @@ const getRequestOptions = (options?: RequestParametersWithMethod) => {
 const getErrorMessage = (error: any) => {
   const { data } = error.response;
 
-  let message;
+  let message = error.message;
 
   // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
   if (data.details) {
