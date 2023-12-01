@@ -39,6 +39,11 @@ const PersonalDetailsForm = styled.form`
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
+
+  .MuiInputLabel-outlined {
+    // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
+    z-index: auto;
+  }
 `;
 
 export const PersonalDetailsSection = () => {
