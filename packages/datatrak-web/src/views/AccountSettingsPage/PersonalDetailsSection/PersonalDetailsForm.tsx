@@ -25,7 +25,10 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const StyledForm = styled(Form)``;
+const StyledForm = styled(Form)`
+  max-width: 44.25rem;
+  width: 100%;
+`;
 
 const StyledFieldset = styled.fieldset`
   border: none;
@@ -34,8 +37,7 @@ const StyledFieldset = styled.fieldset`
 
   display: grid;
   gap: 1.56rem 1.25rem;
-  max-width: 44.25rem;
-  width: 100%;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template-columns: repeat(2, 1fr);
   }
