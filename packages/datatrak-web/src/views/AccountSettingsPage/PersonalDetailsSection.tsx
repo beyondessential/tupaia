@@ -50,7 +50,11 @@ const PersonalDetailsForm = styled.form`
 export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
 
-  const { mutate: updateUser } = useEditUser({
+  const {
+    isLoading,
+    isSuccess,
+    mutateAsync: updateUserAsync,
+  } = useEditUser({
     onMutate: () => {
       console.log('[Personal Details]: onMutate');
       reset(getValues() as PersonalDetailsFormFields);
@@ -177,10 +181,10 @@ export const PersonalDetailsSection = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting || isLoading}
             fullWidth
           >
-            Save changes
+            {isLoading ? 'Saving…' : 'Save changes'}
           </Button>
         </ButtonWrapper>
       </PersonalDetailsForm>
