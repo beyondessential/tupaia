@@ -25,7 +25,13 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const StyledForm = styled(Form)`
+const StyledForm = styled(Form)``;
+
+const StyledFieldset = styled.fieldset`
+  border: none;
+  margin: 0;
+  padding: 0;
+
   display: grid;
   gap: 1.56rem 1.25rem;
   max-width: 44.25rem;
@@ -82,75 +88,77 @@ export const PersonalDetailsForm = () => {
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)} formContext={formContext}>
-      <FormInput
-        autoComplete="given-name"
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'next' }}
-        label="First name"
-        name="firstName"
-        placeholder="First name"
-        required
-      />
-      <FormInput
-        autoComplete="family-name"
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'next' }}
-        label="Last name"
-        name="lastName"
-        placeholder="Last name"
-        required
-      />
-      <FormInput
-        autoComplete="email"
-        disabled
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
-        label="Email"
-        name="email"
-        placeholder="Email"
-        required
-        tooltip="You cannot change your email address"
-        type="email"
-        value={user.email}
-      />
-      <FormInput
-        autoComplete="tel"
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-        label="Contact number (optional)"
-        name="mobileNumber"
-        placeholder="Contact number"
-        type="tel"
-      />
-      <FormInput
-        autoComplete="organization"
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'next' }}
-        label="Employer"
-        name="employer"
-        placeholder="Employer"
-        required
-      />
-      <FormInput
-        autoComplete="organization-title"
-        Input={StyledTextField}
-        inputProps={{ enterKeyHint: 'done' }}
-        label="Position"
-        name="position"
-        placeholder="Position"
-        required
-      />
-      <ButtonWrapper>
-        {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
-        <Button
-          type="submit"
-          tooltip={isDirty ? null : 'Change details to save changes'}
-          disabled={!isDirty || isSubmitting || isLoading}
-          fullWidth
-        >
-          {isLoading ? 'Saving…' : 'Save changes'}
-        </Button>
-      </ButtonWrapper>
+      <StyledFieldset disabled={isSubmitting || isLoading}>
+        <FormInput
+          autoComplete="given-name"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next' }}
+          label="First name"
+          name="firstName"
+          placeholder="First name"
+          required
+        />
+        <FormInput
+          autoComplete="family-name"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next' }}
+          label="Last name"
+          name="lastName"
+          placeholder="Last name"
+          required
+        />
+        <FormInput
+          autoComplete="email"
+          disabled
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
+          label="Email"
+          name="email"
+          placeholder="Email"
+          required
+          tooltip="You cannot change your email address"
+          type="email"
+          value={user.email}
+        />
+        <FormInput
+          autoComplete="tel"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
+          label="Contact number (optional)"
+          name="mobileNumber"
+          placeholder="Contact number"
+          type="tel"
+        />
+        <FormInput
+          autoComplete="organization"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next' }}
+          label="Employer"
+          name="employer"
+          placeholder="Employer"
+          required
+        />
+        <FormInput
+          autoComplete="organization-title"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'done' }}
+          label="Position"
+          name="position"
+          placeholder="Position"
+          required
+        />
+        <ButtonWrapper>
+          {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
+          <Button
+            type="submit"
+            tooltip={isDirty ? null : 'Change details to save changes'}
+            disabled={!isDirty || isSubmitting || isLoading}
+            fullWidth
+          >
+            {isLoading ? 'Saving…' : 'Save changes'}
+          </Button>
+        </ButtonWrapper>
+      </StyledFieldset>
     </StyledForm>
   );
 };
