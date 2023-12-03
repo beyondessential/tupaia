@@ -37,8 +37,8 @@ export const useEditUser = (onSuccess?: () => void) => {
     },
     {
       onSuccess: () => {
-        if (onSuccess) onSuccess();
         queryClient.invalidateQueries('getUser');
+        if (onSuccess) onSuccess();
       },
     },
   );
