@@ -56,8 +56,8 @@ export const PersonalDetailsSection = () => {
     mutateAsync: updateUserAsync,
   } = useEditUser({
     onMutate: () => {
-      console.log('[Personal Details]: onMutate');
-      reset(getValues() as PersonalDetailsFormFields);
+      // console.log('[Personal Details]: onMutate');
+      // reset(getValues() as PersonalDetailsFormFields);
     },
     onSettled: () => {
       console.log(`[Personal Details]: onSettled (isSubmitSuccessful: ${isSubmitSuccessful})`);
@@ -74,6 +74,7 @@ export const PersonalDetailsSection = () => {
     },
     onSuccess: () => {
       console.log(`[Personal Details]: onSuccess`);
+      reset(getValues() as PersonalDetailsFormFields);
       successToast('Your personal details have been successfully updated');
     },
   });
@@ -94,14 +95,14 @@ export const PersonalDetailsSection = () => {
     } as PersonalDetailsFormFields,
   });
 
-  function onSubmit(
+  async function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
     const updates: UserAccountDetails = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
 
-    updateUser(updates);
+    await updateUserAsync(updates);
   }
 
   // useEffect(() => {

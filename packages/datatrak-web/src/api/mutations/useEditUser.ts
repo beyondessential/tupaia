@@ -47,8 +47,8 @@ export const useEditUser = (options?: {
       onSettled: () => {
         if (onSettled) onSettled();
       },
-      onSuccess: () => {
-        queryClient.invalidateQueries('getUser');
+      onSuccess: async () => {
+        await queryClient.invalidateQueries('getUser');
         if (onSuccess) onSuccess();
       },
     },
