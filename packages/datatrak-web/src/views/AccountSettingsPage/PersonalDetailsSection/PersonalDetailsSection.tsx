@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { AccountSettingsSection } from './AccountSettingsSection';
+import { AccountSettingsSection } from '../AccountSettingsSection';
 import { PersonalDetailsForm } from './PersonalDetailsForm';
 
 export const PersonalDetailsSection = () => {

@@ -6,12 +6,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button } from '../../components';
+import { Button } from '../../../components';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useCurrentUser, useEditUser } from '../../api';
-import { successToast } from '../../utils';
+import { useCurrentUser, useEditUser } from '../../../api';
+import { successToast } from '../../../utils';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { UserAccountDetails } from '../../types';
+import { UserAccountDetails } from '../../../types';
 
 export type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
