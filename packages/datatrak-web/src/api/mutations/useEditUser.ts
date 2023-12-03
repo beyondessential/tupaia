@@ -36,9 +36,9 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', { data: updates });
     },
     {
-      onSuccess: async () => {
+      onSuccess: () => {
         if (onSuccess) onSuccess();
-        await queryClient.invalidateQueries('getUser');
+        queryClient.invalidateQueries('getUser');
       },
     },
   );
