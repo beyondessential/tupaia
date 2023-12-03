@@ -15,8 +15,7 @@ const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   top: 0;
   left: 0;
   right: 0;
-  padding-top: 0.3125rem;
-  padding-left: 0.625rem;
+  padding: 0.3125rem 0 2.5rem 0.625rem;
   z-index: 1;
   font-size: 0.8rem;
   line-height: 1.2rem;
