@@ -50,37 +50,13 @@ const PersonalDetailsForm = styled.form`
 export const PersonalDetailsSection = () => {
   const user = useCurrentUser();
 
-  const {
-    isLoading,
-    isSuccess,
-    mutateAsync: updateUserAsync,
-  } = useEditUser({
-    onMutate: () => {
-      // console.log('[Personal Details]: onMutate');
-      // reset(getValues() as PersonalDetailsFormFields);
-    },
-    onSettled: () => {
-      console.log(`[Personal Details]: onSettled (isSubmitSuccessful: ${isSubmitSuccessful})`);
-      // TODO: Figure out why isSubmitSuccessful is always false
-      if (isSubmitSuccessful) {
-        reset({
-          firstName: user.firstName ?? '',
-          lastName: user.lastName ?? '',
-          mobileNumber: user.mobileNumber ?? '',
-          employer: user.employer ?? '',
-          position: user.position ?? '',
-        } as PersonalDetailsFormFields);
-      }
-    },
-    onSuccess: () => {
-      console.log(`[Personal Details]: onSuccess`);
-      reset(getValues() as PersonalDetailsFormFields);
-      successToast('Your personal details have been successfully updated');
-    },
+  const { isLoading, mutate: updateUser } = useEditUser(() => {
+    reset(getValues() as PersonalDetailsFormFields);
+    successToast('Your personal details have been successfully updated');
   });
 
   const {
-    formState: { isDirty, dirtyFields, isSubmitting, isSubmitSuccessful },
+    formState: { isDirty, dirtyFields, isSubmitting },
     getValues,
     handleSubmit,
     register,
@@ -95,27 +71,15 @@ export const PersonalDetailsSection = () => {
     } as PersonalDetailsFormFields,
   });
 
-  async function onSubmit(
+  function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
     const updates: UserAccountDetails = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
 
-    await updateUserAsync(updates);
+    updateUser(updates);
   }
-
-  // useEffect(() => {
-  //   if (isSubmitSuccessful) {
-  //     reset({
-  //       firstName: user.firstName ?? '',
-  //       lastName: user.lastName ?? '',
-  //       mobileNumber: user.mobileNumber ?? '',
-  //       employer: user.employer ?? '',
-  //       position: user.position ?? '',
-  //     } as PersonalDetailsFormFields);
-  //   }
-  // }, [formState, reset]);
 
   return (
     <AccountSettingsSection title="Personal details" description="Edit your personal details">

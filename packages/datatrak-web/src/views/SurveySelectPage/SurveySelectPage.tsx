@@ -112,9 +112,7 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = () => {
     navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
   };
-  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser({
-    onSuccess: navigateToSurvey,
-  });
+  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
   const user = useCurrentUser();
 
   const { data: surveys, isLoading } = useSurveys(selectedCountry?.name, user.projectId);
