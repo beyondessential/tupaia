@@ -106,7 +106,7 @@ export const AutocompleteQuestion = ({
   ) => option.value === selectedOption?.value;
 
   const getOptions = () => {
-    let options = data || [];
+    const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
     if (!createNew || !inputValue || options.find(option => option.value === inputValue))
       return options;
