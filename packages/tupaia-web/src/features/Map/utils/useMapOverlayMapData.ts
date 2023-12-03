@@ -39,6 +39,7 @@ const useNavigationEntities = (
     { enabled: !!rootEntityCode },
   );
 
+  // if display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
   if (displayOnLevel) return [];
 
   // Don't show nav entities for the selected measure level
