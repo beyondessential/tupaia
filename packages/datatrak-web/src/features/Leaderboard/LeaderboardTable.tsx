@@ -122,7 +122,7 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
                 <Cell $isActiveUser={isActiveUser}>
                   {firstName} {lastName}
                 </Cell>
-                <Cell $isActiveUser={isActiveUser}>{coconuts}</Cell>
+                <Cell $isActiveUser={isActiveUser}>{coconuts.toLocaleString()}</Cell>
               </Row>
             );
           })}
