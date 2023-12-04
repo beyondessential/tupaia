@@ -166,7 +166,11 @@ export const AutocompleteQuestion = ({
     ];
   };
 
-  const options = getOptions();
+  const options = getOptions().sort((a, b) => {
+    const aLabel = a.label || a.value;
+    const bLabel = b.label || b.value;
+    return aLabel.localeCompare(bLabel);
+  });
 
   const handleSelectOption = (option: Option) => {
     if (!option) return onChange(null);
