@@ -12,14 +12,14 @@ import { DashboardItem } from '../../../types';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width 100%;
+  width: 100%;
 `;
 
 const PrimaryContext = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  width 100%;
+  width: 100%;
   align-items: start;
 `;
 
@@ -51,6 +51,27 @@ interface ListItem extends ListItemProps {
   code: string;
 }
 
+const getIsSupported = (config: DashboardItem['config']) => {
+  if (config?.type === 'chart') {
+    return true;
+  }
+  if (config?.type === 'view' && config?.viewType) {
+    const SUPPORTED_VIEW_TYPES = [
+      'singleValue',
+      'singleDate',
+      // 'singleDownloadLink',
+      'multiValue',
+      'multiValueRow',
+      // 'dataDownload',
+      // 'filesDownload',
+      'qrCodeVisual',
+      'multiPhotograph',
+    ];
+    return SUPPORTED_VIEW_TYPES.includes(config.viewType);
+  }
+  return false;
+};
+
 export const SelectVisualisation = ({
   onNext,
   onClose,
@@ -59,12 +80,15 @@ export const SelectVisualisation = ({
 }: ExportDashboardProps) => {
   const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
 
-  const list = dashboardItems.map(({ config, code }) => ({
-    name: config?.name,
-    code,
-    disabled: config?.type !== 'chart',
-    tooltip: config?.type !== 'chart' ? 'PDF export coming soon' : undefined,
-  }));
+  const list = dashboardItems.map(({ config, code }) => {
+    const isSupported = getIsSupported(config);
+    return {
+      name: config?.name,
+      code,
+      disabled: !isSupported,
+      tooltip: !isSupported ? 'PDF export coming soon' : undefined,
+    };
+  });
 
   const onChange = (newItems: ListItem[]) => {
     setSelectedItems(newItems);
