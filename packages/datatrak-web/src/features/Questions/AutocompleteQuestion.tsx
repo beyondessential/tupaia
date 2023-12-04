@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { Check } from '@material-ui/icons';
+import { createFilterOptions } from '@material-ui/lab';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
@@ -218,6 +219,9 @@ export const AutocompleteQuestion = ({
           freeSolo: !!createNew,
           getOptionDisabled: option => getOptionSelected(option, selectedValue?.value),
           renderOption: (option, state) => <DisplayOption option={option} state={state} />,
+          filterOptions: createFilterOptions({
+            matchFrom: 'start',
+          }),
         }}
       />
       {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
