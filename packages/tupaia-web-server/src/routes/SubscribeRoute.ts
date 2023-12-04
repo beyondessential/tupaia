@@ -66,11 +66,6 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
     });
 
     if (entryResult) {
-      // TODO: Ensure unsubscribed records with unauthenticatable accounts (non-tupaia accounts) are removed, rather than edited
-      if (!session) {
-        // This message is not strictly true at the moment because unauthenticatable records are not deleted when unsubscribed
-        throw new Error(`This email is from a Tupaia account. Please log in to resubscribe.`);
-      }
       await ctx.services.central.updateResource(
         `dashboardMailingListEntries/${entryResult.id}`,
         {},
