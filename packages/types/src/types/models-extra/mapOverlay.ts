@@ -24,7 +24,7 @@ export type MapOverlayConfig = {
   hideFromPopup?: boolean;
   icon?: IconKey;
   info?: {
-    reference: {
+    reference?: {
       link?: string;
       name?: string;
       text?: string;

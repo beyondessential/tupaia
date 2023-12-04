@@ -26156,10 +26156,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"
@@ -54821,10 +54818,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55329,10 +55323,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55831,10 +55822,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -68543,10 +68531,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"
