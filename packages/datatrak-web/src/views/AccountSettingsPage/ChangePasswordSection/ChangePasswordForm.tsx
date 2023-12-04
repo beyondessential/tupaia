@@ -8,11 +8,8 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
-
-interface ChangePasswordFormFields {
-  password: string;
-  passwordConfirm: string;
-}
+import { ResetPasswordParams, useResetPassword } from '../../../api';
+import { errorToast, successToast } from '../../../utils';
 
 const StyledForm = styled(Form)`
   max-width: 44.25rem;
@@ -60,8 +57,14 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
+const StyledButton = styled(Button)``;
+
 export const ChangePasswordForm = () => {
-  // const user = useCurrentUser();
+  const emptyFormState: ResetPasswordParams = {
+    oldPassword: '',
+    newPassword: '',
+    newPasswordConfirm: '',
+  };
 
   const formContext = useForm<ResetPasswordParams>({
     defaultValues: emptyFormState,
@@ -70,11 +73,17 @@ export const ChangePasswordForm = () => {
   const {
     formState: { isSubmitting, isValid, isValidating },
     handleSubmit,
-    // reset,
+    reset,
   } = formContext;
 
+  const { mutate: attemptPasswordChange } = useResetPassword({
+    onError: () => errorToast('Could not update your password'),
+    onSettled: () => reset(emptyFormState),
+    onSuccess: () => successToast('Your password has been successfully updated'),
+  });
+
   return (
-    <StyledForm onSubmit={handleSubmit()} formContext={formContext}>
+    <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
       <StyledFieldset>
         <TextFieldWrapper>
           <FormInput
@@ -82,7 +91,7 @@ export const ChangePasswordForm = () => {
             Input={StyledTextField}
             inputProps={{ enterKeyHint: 'next' }}
             label="Current password"
-            name="currentPassword"
+            name="oldPassword"
             placeholder="Current password"
             required
             type="password"
@@ -115,16 +124,14 @@ export const ChangePasswordForm = () => {
             type="password"
           />
         </TextFieldWrapper>
-        <Button
+        <StyledButton
           type="submit"
-          tooltip={false ? null : 'Change password to save changes'}
-          disabled={!true || isSubmitting}
           // tooltip={false ? null : 'Change password to save changes'}
           disabled={isValidating || !isValid || isSubmitting}
           fullWidth
         >
           {isSubmitting ? 'Changing…' : 'Change password'}
-        </Button>
+        </StyledButton>
       </StyledFieldset>
     </StyledForm>
   );
