@@ -56,6 +56,8 @@ const COLUMNS = [
       editEndpoint: DATA_TABLES_ENDPOINT,
       fields: FIELDS,
       FieldsComponent: DataTableEditFields,
+      displayUsedBy: true,
+      recordType: 'dataTable',
       extraDialogProps: {
         fullWidth: true,
         maxWidth: 'xl',
@@ -85,6 +87,8 @@ const CREATE_CONFIG = {
   },
 };
 
+const EDITOR_CONFIG = { displayUsedBy: true };
+
 export const DataTablesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data-Tables"
@@ -93,6 +97,7 @@ export const DataTablesPage = ({ getHeaderEl }) => (
     getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={onProcessDataForSave}
+    editorConfig={EDITOR_CONFIG}
   />
 );
 

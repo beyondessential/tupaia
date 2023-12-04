@@ -17,7 +17,6 @@ interface processMeasureDataProps {
   entitiesData: Entity[];
   serieses: Series[];
   hiddenValues: LegendProps['hiddenValues'];
-  isLoading: boolean;
 }
 
 export const processMeasureData = ({
@@ -25,12 +24,7 @@ export const processMeasureData = ({
   entitiesData,
   serieses = [],
   hiddenValues,
-  isLoading,
 }: processMeasureDataProps) => {
-  if (!isLoading && (!measureData.length || !serieses.length)) {
-    return [];
-  }
-
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   const entityMeasureData = entitiesData?.map((entity: Entity) => {
@@ -40,7 +34,7 @@ export const processMeasureData = ({
       ) || ({} as MeasureData);
 
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-      measure!,
+      measure,
       serieses || [],
       hiddenValues,
       radiusScaleFactor,

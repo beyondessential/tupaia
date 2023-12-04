@@ -24,6 +24,10 @@ const MultiSingleValueWrapper = styled.div`
     margin-top: 1rem;
     text-align: center;
   }
+
+  .MuiTypography-root {
+    font-size: 1.25rem;
+  }
 `;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */

@@ -8,16 +8,18 @@ import { get } from '..';
 
 export const useDownloadRawData = downloadUrl => {
   return useMutation<any, Error, string[], unknown>(
-    async (surveyCodes: string[]) => {
-      const response = await get(downloadUrl, {
+    async (surveyCodes: string[] | string) => {
+      const surveyCodesForDownload = Array.isArray(surveyCodes)
+        ? surveyCodes.join(',')
+        : surveyCodes;
+      const { headers, data } = await get(downloadUrl, {
         responseType: 'blob',
         returnHeaders: true,
         params: {
-          surveyCodes: surveyCodes.join(','),
+          surveyCodes: surveyCodesForDownload,
         },
       });
       // before returning the data, parse it if it's json, so that we can access the emailTimeoutHit property
-      const { headers, data } = response;
       const { 'content-type': contentType, 'content-disposition': contentDisposition } = headers;
       if (contentType?.includes('application/json')) {
         return JSON.parse(await data.text());

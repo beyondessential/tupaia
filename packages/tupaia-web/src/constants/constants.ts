@@ -21,6 +21,12 @@ export const FORM_FIELD_VALIDATION = {
   PASSWORD: {
     minLength: { value: 9, message: 'Must be over 8 characters long' },
   },
+  CONTACT_NUMBER: {
+    pattern: {
+      value: /^[0-9-+() ]*$/,
+      message: 'Invalid contact number',
+    },
+  },
 };
 
 export const MOBILE_BREAKPOINT = '900px';
