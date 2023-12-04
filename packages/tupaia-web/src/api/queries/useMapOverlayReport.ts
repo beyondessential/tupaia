@@ -70,6 +70,7 @@ export const useMapOverlayReport = (
     startDate?: string;
     endDate?: string;
   },
+  keepPreviousData?: boolean,
 ) => {
   // convert moment dates to date strings for the endpoint to use
   const startDate = params?.startDate ? momentToDateString(params.startDate) : undefined;
@@ -96,7 +97,7 @@ export const useMapOverlayReport = (
     },
     {
       enabled,
-      keepPreviousData: false,
+      keepPreviousData,
     },
   );
 };

@@ -41,7 +41,7 @@ export const useEntities = (
 
     {
       enabled,
-      keepPreviousData: false, // this needs to be false, otherwise when we change the entity code, the previous data will be returned for a while
+      keepPreviousData: !!queryOptions?.keepPreviousData, // this needs to be false unless otherwise set, otherwise when we change the entity code, the previous data will be returned for a while
     },
   );
 };
@@ -75,7 +75,7 @@ export const useEntitiesWithLocation = (
       },
     },
     {
+      keepPreviousData: false, // this needs to be false by default, unless otherwise set, otherwise when we change the entity code, the previous data will be returned for a while
       ...queryOptions,
-      keepPreviousData: false, // this needs to be false, otherwise when we change the entity code, the previous data will be returned for a while
     },
   );

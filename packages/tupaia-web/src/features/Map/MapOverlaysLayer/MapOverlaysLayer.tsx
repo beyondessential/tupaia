@@ -7,12 +7,13 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useMap } from 'react-leaflet';
 import { LegendProps } from '@tupaia/ui-map-components';
+import { useEntity } from '../../../api/queries';
 import { useMapOverlayMapData } from '../utils';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
-import { useEntity } from '../../../api/queries';
 
 const POINT_ZOOM_LEVEL = 15;
+
 // When entity is selected, zoom to entity
 const useZoomToEntity = () => {
   const { projectCode, entityCode } = useParams();
@@ -42,13 +43,14 @@ export const MapOverlaysLayer = ({
 }: {
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
-  const { serieses, measureData, isLoading } = useMapOverlayMapData(hiddenValues);
+  const { serieses, measureData, isLoading, isLoadingInitialData } =
+    useMapOverlayMapData(hiddenValues);
   useZoomToEntity();
 
   return (
     <>
       <PolygonLayer measureData={measureData} serieses={serieses} isLoading={isLoading} />
-      {isLoading ? null : <MarkerLayer measureData={measureData} serieses={serieses} />}
+      {!isLoadingInitialData && <MarkerLayer measureData={measureData} serieses={serieses} />}
     </>
   );
 };

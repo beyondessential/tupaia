@@ -4,20 +4,36 @@
  */
 import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
-import { useEntitiesWithLocation, useEntity, useMapOverlayReport } from '../../../api/queries';
-import { processMeasureData } from './processMeasureData';
-import { useMapOverlays } from '../../../api/queries';
+import {
+  useEntitiesWithLocation,
+  useEntity,
+  useMapOverlayReport,
+  useMapOverlays,
+} from '../../../api/queries';
 import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
+import { processMeasureData } from './processMeasureData';
+import { useRef } from 'react';
 
 type EntityTypeParam = string | null | undefined;
+
+const useProjectCodeHasChanged = projectCode => {
+  const [previousProjectCode] = useRef([projectCode]).current;
+
+  const hasProjectCodeChanged = previousProjectCode !== projectCode;
+
+  if (hasProjectCodeChanged) return true;
+
+  return false;
+};
 
 const useMapOverlayEntities = (
   projectCode?: ProjectCode,
   rootEntityCode?: EntityCode,
   includeRootEntity?: boolean,
   measureLevel?: EntityTypeParam,
+  keepPreviousEntitiesData?: boolean,
 ) => {
   return useEntitiesWithLocation(
     projectCode,
@@ -30,7 +46,7 @@ const useMapOverlayEntities = (
         },
       },
     },
-    { enabled: !!measureLevel },
+    { enabled: !!measureLevel, keepPreviousData: keepPreviousEntitiesData },
   );
 };
 
@@ -58,14 +74,17 @@ export const useMapOverlayTableData = ({
     selectedOverlay?.measureLevel?.includes('Country') &&
     entity?.type !== 'project';
 
+  // we only want to keep the previous data if the project remains the same
+  const projectCodeHasChanged = useProjectCodeHasChanged(projectCode);
   const { data: entities } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
     includeRootEntity,
     selectedOverlay?.measureLevel,
+    !projectCodeHasChanged,
   );
 
-  const { data, isLoading, isFetched, isFetching, isIdle } = useMapOverlayReport(
+  const { data, isLoading, isFetched, isFetching, isIdle, isPreviousData } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -73,6 +92,7 @@ export const useMapOverlayTableData = ({
       startDate,
       endDate,
     },
+    !projectCodeHasChanged,
   );
 
   const measureData = processMeasureData({
@@ -88,6 +108,7 @@ export const useMapOverlayTableData = ({
 
   return {
     ...data,
+    isLoadingInitialData: !isPreviousData && loadingData,
     isLoading: loadingData,
     isFetched,
     serieses: data?.serieses,
