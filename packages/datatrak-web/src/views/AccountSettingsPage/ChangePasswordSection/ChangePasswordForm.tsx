@@ -63,9 +63,12 @@ const StyledTextField = styled(TextField)`
 export const ChangePasswordForm = () => {
   // const user = useCurrentUser();
 
-  const formContext = useForm<ChangePasswordFormFields>();
+  const formContext = useForm<ResetPasswordParams>({
+    defaultValues: emptyFormState,
+    mode: 'onChange',
+  });
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid, isValidating },
     handleSubmit,
     // reset,
   } = formContext;
@@ -90,6 +93,9 @@ export const ChangePasswordForm = () => {
             inputProps={{ enterKeyHint: 'next' }}
             label="New password"
             name="newPassword"
+            options={{
+              minLength: { value: 9, message: 'Must be over 8 characters long' },
+            }}
             placeholder="New password"
             required
             type="password"
@@ -100,6 +106,10 @@ export const ChangePasswordForm = () => {
             inputProps={{ enterKeyHint: 'done' }}
             label="Confirm new password"
             name="newPasswordConfirm"
+            options={{
+              validate: (value: string) =>
+                value === formContext.getValues('newPassword') || 'Passwords do not match',
+            }}
             placeholder="Confirm new password"
             required
             type="password"
@@ -109,6 +119,8 @@ export const ChangePasswordForm = () => {
           type="submit"
           tooltip={false ? null : 'Change password to save changes'}
           disabled={!true || isSubmitting}
+          // tooltip={false ? null : 'Change password to save changes'}
+          disabled={isValidating || !isValid || isSubmitting}
           fullWidth
         >
           {isSubmitting ? 'Changing…' : 'Change password'}
