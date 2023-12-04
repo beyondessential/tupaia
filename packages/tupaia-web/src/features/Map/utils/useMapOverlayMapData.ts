@@ -10,7 +10,7 @@ import {
   useEntityAncestors,
   useMapOverlays,
 } from '../../../api/queries';
-import { useMapOverlayTableData } from './useMapOverlayTableData.ts';
+import { useMapOverlayTableData } from './useMapOverlayTableData';
 import { Entity } from '../../../types';
 
 /*
@@ -25,25 +25,44 @@ const useNavigationEntities = (
 ) => {
   const rootEntityCode = activeEntity?.parentCode || activeEntity?.code;
 
-  const { data = [] } = useEntitiesWithLocation(
+  // Get siblings for the root entity
+  const { data: siblings = [] } = useEntitiesWithLocation(
     projectCode,
     rootEntityCode,
     {
       params: {
         includeRootEntity: false,
         filter: {
-          generational_distance: 2,
+          generational_distance: 1,
         },
       },
     },
     { enabled: !!rootEntityCode },
   );
 
-  // if display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
+  // Get immediate children for the selected entity
+  // If the root entity is the active entity, react-query will automatically de-dupe the requests
+  const { data: children = [] } = useEntitiesWithLocation(
+    projectCode,
+    activeEntity?.code,
+    {
+      params: {
+        includeRootEntity: false,
+        filter: {
+          generational_distance: 1,
+        },
+      },
+    },
+    { enabled: !!activeEntity?.code },
+  );
+
+  const entitiesData = [...siblings, ...children];
+
+  // If display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
   if (displayOnLevel) return [];
 
   // Don't show nav entities for the selected measure level
-  const filteredData = data?.filter(entity => {
+  const filteredData = entitiesData?.filter(entity => {
     if (!measureLevel) return true;
     // handle edge cases of array measure levels
     if (Array.isArray(measureLevel))
