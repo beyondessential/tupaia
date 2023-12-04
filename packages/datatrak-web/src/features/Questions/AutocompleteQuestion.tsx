@@ -157,14 +157,7 @@ export const AutocompleteQuestion = ({
           value: inputValue,
         },
       ];
-    // add an 'add' option to the list of options
-    return [
-      ...options,
-      {
-        label: `Add "${inputValue}"`,
-        value: inputValue,
-      },
-    ];
+    return options;
   };
 
   const options = getOptions().sort((a, b) => {
@@ -188,6 +181,10 @@ export const AutocompleteQuestion = ({
       onChange(option);
     }
   };
+
+  const filter = createFilterOptions({
+    matchFrom: 'start',
+  });
 
   return (
     <>
@@ -219,9 +216,19 @@ export const AutocompleteQuestion = ({
           freeSolo: !!createNew,
           getOptionDisabled: option => getOptionSelected(option, selectedValue?.value),
           renderOption: (option, state) => <DisplayOption option={option} state={state} />,
-          filterOptions: createFilterOptions({
-            matchFrom: 'start',
-          }),
+          filterOptions: (availableOptions, params) => {
+            const filtered = filter(availableOptions, params);
+
+            // Suggest the creation of a new value
+            if (params.inputValue !== '' && createNew) {
+              filtered.push({
+                value: params.inputValue,
+                label: `Add "${params.inputValue}"`,
+              });
+            }
+
+            return filtered;
+          },
         }}
       />
       {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
