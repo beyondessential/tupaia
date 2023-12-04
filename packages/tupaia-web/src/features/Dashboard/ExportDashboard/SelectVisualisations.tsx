@@ -59,11 +59,8 @@ const getIsSupported = (config: DashboardItem['config']) => {
     const SUPPORTED_VIEW_TYPES = [
       'singleValue',
       'singleDate',
-      // 'singleDownloadLink',
       'multiValue',
       'multiValueRow',
-      // 'dataDownload',
-      // 'filesDownload',
       'qrCodeVisual',
       'multiPhotograph',
     ];

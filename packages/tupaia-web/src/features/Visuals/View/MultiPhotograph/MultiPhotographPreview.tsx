@@ -31,8 +31,6 @@ const Thumbnail = styled.div<{
   }
 `;
 
-const ExportWrapper = styled.div``;
-
 const Image = styled.img`
   width: 48%;
   height: auto;
@@ -40,7 +38,7 @@ const Image = styled.img`
   background-image: url(${({ src }) => src});
   background-size: cover;
   background-repeat: no-repeat;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 
   &:nth-child(n) {
     margin-right: 1%;
@@ -64,7 +62,7 @@ export const MultiPhotographPreview = ({
   if (isExport) {
     const thumbnails = data.map(({ value }) => value);
     return (
-      <ExportWrapper>
+      <div>
         {thumbnails.map((thumbnail, i) => (
           <Image
             src={thumbnail}
@@ -72,7 +70,7 @@ export const MultiPhotographPreview = ({
             aria-label={`Thumbnail ${i + 1} for visualisation ${config?.name}`}
           />
         ))}
-      </ExportWrapper>
+      </div>
     );
   }
 
