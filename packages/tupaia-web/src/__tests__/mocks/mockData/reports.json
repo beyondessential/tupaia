@@ -54,6 +54,37 @@
       }
     ]
   },
+  "multiSingleValue": {
+    "data": [
+      {
+        "value": "Hunga"
+      },
+      {
+        "value": "Kapa"
+      },
+      {
+        "value": "Falevai"
+      },
+      {
+        "value": "'Otea"
+      },
+      {
+        "value": "Taunga"
+      },
+      {
+        "value": "Matamaka"
+      },
+      {
+        "value": "Noapapu"
+      },
+      {
+        "value": "Lape"
+      },
+      {
+        "value": "'Ovaka"
+      }
+    ]
+  },
   "multiValueRow": {
     "data": [
       {
@@ -97,12 +128,6 @@
     "data": [
       {
         "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527b8db2b519cdc22fd27ba.png"
-      },
-      {
-        "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527c5092b519cdc22fd27e4.png"
-      },
-      {
-        "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527c5092b519cdc22fd27e4.png"
       },
       {
         "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527c5092b519cdc22fd27e4.png"

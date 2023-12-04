@@ -6,7 +6,6 @@
     "rootEntityCode": "test",
     "items": [
       {
-        "id": "655ed7c58e116123fa030444",
         "code": "singleValue",
         "reportCode": "singleValue",
         "config": {
@@ -18,7 +17,6 @@
         "legacy": false
       },
       {
-        "id": "60de99cb61f76a1b83000406",
         "code": "singleDate",
         "reportCode": "singleDate",
         "config": {
@@ -29,7 +27,6 @@
         "legacy": false
       },
       {
-        "id": "60de99cb61f76a1b83000409",
         "code": "multiValue",
         "reportCode": "multiValue",
         "config": {
@@ -40,7 +37,17 @@
         "legacy": false
       },
       {
-        "id": "60de99cb61f76a1b83000409",
+        "code": "multiSingleValue",
+        "reportCode": "multiSingleValue",
+        "config": {
+          "name": "Multi single value",
+          "type": "view",
+          "viewType": "multiSingleValue"
+        },
+        "valueType": "text",
+        "legacy": false
+      },
+      {
         "code": "multiValueRow",
         "reportCode": "multiValueRow",
         "config": {
@@ -65,7 +72,6 @@
         "legacy": false
       },
       {
-        "id": "60de99cb61f76a1b83000409",
         "code": "qrCodeVisual",
         "reportCode": "qrCodeVisual",
         "config": {
@@ -76,7 +82,6 @@
         "legacy": false
       },
       {
-        "id": "60de99cb61f76a1b83000409",
         "code": "multiPhotograph",
         "reportCode": "multiPhotograph",
         "config": {
