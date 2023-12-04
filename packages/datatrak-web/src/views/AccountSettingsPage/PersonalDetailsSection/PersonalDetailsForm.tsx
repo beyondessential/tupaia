@@ -12,7 +12,7 @@ import { UserAccountDetails } from '../../../types';
 import { successToast } from '../../../utils';
 import { useCurrentUser, useEditUser } from '../../../api';
 
-export type PersonalDetailsFormFields = Pick<
+type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
   'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
 >;
