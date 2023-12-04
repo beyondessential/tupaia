@@ -14,7 +14,6 @@ import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
 import { ROUTES } from '../constants';
-import { successToast } from '../utils';
 
 const LoadingContainer = styled.div`
   display: flex;
