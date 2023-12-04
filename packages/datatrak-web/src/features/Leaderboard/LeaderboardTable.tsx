@@ -11,81 +11,67 @@ import {
   TableBody,
   TableCell,
   TableContainer as MuiTableContainer,
+  TableFooter,
   TableHead,
   TableRow,
-  TableFooter,
 } from '@material-ui/core';
 import { UserRewards } from '../../types';
 
 const TableContainer = styled(MuiTableContainer)`
-  padding: 0.2rem 1.6rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  font-variant-numeric: tabular-nums;
+  height: 100%;
+  padding: 1rem 1.6rem;
+
   table {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    height: 100%;
   }
-  thead,
-  tfoot {
-    display: flex;
+
+  table thead,
+  table tfoot {
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  }
+
+  table tr {
+    height: 8.33333333%;
+    min-height: fit-content;
+    vertical-align: baseline;
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem 1rem;
   }
 `;
 
-const Row = styled(TableRow)`
-  display: flex;
-  width: 100%;
-`;
-
-const HeaderRow = styled(Row)`
+const HeaderRow = styled(TableRow)`
   border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
-  padding: 0.4rem 0;
-  margin-bottom: 0.5rem;
-  @media screen and (min-height: 900px) {
-    padding: 0.6rem 0;
-  }
 `;
 
-const Body = styled(TableBody)<{
-  $rowCount?: number;
-}>`
-  display: flex;
-  flex-direction: column;
-  justify-content: ${({ $rowCount = 0 }) => ($rowCount < 10 ? 'flex-start' : 'space-between')};
-  width: 100%;
-  flex: 1;
-`;
-
-const FooterRow = styled(Row)`
+const FooterRow = styled(TableRow)`
   border-top: 1px solid ${({ theme }) => theme.palette.divider};
-  padding: 0.3rem 0;
-  margin-top: 0.3rem;
 `;
 
 const Cell = styled(TableCell)<{
   $isActiveUser?: boolean;
 }>`
-  padding-block: 0.3rem;
   border: none;
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-size: 0.875rem;
   font-weight: ${({ $isActiveUser, theme }) =>
     $isActiveUser ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular};
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.palette.text.primary};
-  width: 55%;
-  text-align: left;
+  text-align: start;
+
   &:first-child {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-    width: 20%;
+    text-align: end;
   }
+
   &:last-child {
-    text-align: right;
-    width: 25%;
+    text-align: end;
   }
 `;
 
 const HeaderCell = styled(Cell)`
-  padding-block: 0;
   line-height: 1.4;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
@@ -113,20 +99,20 @@ export const LeaderboardTable = ({ userRewards, user, leaderboard }: Leaderboard
             <HeaderCell>Score</HeaderCell>
           </HeaderRow>
         </TableHead>
-        <Body $rowCount={leaderboard?.length}>
+        <TableBody>
           {leaderboard?.map(({ userId, firstName, lastName, coconuts }, i) => {
             const isActiveUser = user && user.id === userId;
             return (
-              <Row key={userId}>
+              <TableRow key={userId}>
                 <Cell>{i + 1}</Cell>
                 <Cell $isActiveUser={isActiveUser}>
                   {firstName} {lastName}
                 </Cell>
                 <Cell $isActiveUser={isActiveUser}>{coconuts.toLocaleString()}</Cell>
-              </Row>
+              </TableRow>
             );
           })}
-        </Body>
+        </TableBody>
         <TableFooter>
           <FooterRow>
             <FooterCell>&mdash;</FooterCell>
