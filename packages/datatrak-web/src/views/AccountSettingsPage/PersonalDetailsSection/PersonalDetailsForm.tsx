@@ -73,10 +73,11 @@ export const PersonalDetailsForm = () => {
     reset,
   } = formContext;
 
-  const { isLoading, mutate: updateUser } = useEditUser(() => {
+  function handleSubmissionSuccess(): void {
     reset(getValues() as PersonalDetailsFormFields);
     successToast('Your personal details have been successfully updated');
-  });
+  }
+  const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
