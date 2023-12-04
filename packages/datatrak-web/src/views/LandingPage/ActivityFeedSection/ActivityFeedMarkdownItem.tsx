@@ -13,6 +13,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  > * {
+    font-size: 0.75rem;
+  }
 `;
 
 const Heading = styled(Typography)`
@@ -24,6 +27,7 @@ const Image = styled.img`
   max-height: 10rem;
   border-radius: 0.625rem;
   max-width: 100%;
+  margin-top: 0.75rem;
 `;
 
 const Header = styled.div`

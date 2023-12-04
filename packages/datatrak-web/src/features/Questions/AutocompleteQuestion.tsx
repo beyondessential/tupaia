@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
@@ -69,16 +70,55 @@ const StyledPaper = styled(Paper).attrs({
 })`
   border-color: ${({ theme }) => theme.palette.primary.main};
   .MuiAutocomplete-option {
+    padding: 0;
     &:hover,
     &[data-focus='true'] {
       background-color: ${({ theme }) => theme.palette.primaryHover};
     }
     &[aria-selected='true'] {
-      background-color: ${({ theme }) => theme.palette.primaryHover};
+      background-color: transparent;
+    }
+    &[aria-disabled='true'] {
       opacity: 1;
     }
   }
 `;
+
+const OptionWrapper = styled.div`
+  width: 100%;
+  padding: 0.2rem 0.875rem;
+  line-height: 1.2;
+  margin: 0.3rem 0;
+`;
+
+const SelectedOption = styled(OptionWrapper)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.425rem;
+  padding-right: 0.425rem;
+  margin-left: 0.45rem;
+  margin-right: 0.45rem;
+  border-radius: 3px;
+  border: 1px solid ${({ theme }) => theme.palette.primary.main};
+  .MuiSvgIcon-root {
+    font-size: 1.2rem;
+  }
+`;
+
+const DisplayOption = ({ option, state }) => {
+  const { selected } = state;
+  const label = typeof option === 'string' ? option : option.label || option.value;
+
+  if (selected)
+    return (
+      <SelectedOption>
+        {label}
+        <Check color="primary" />
+      </SelectedOption>
+    );
+  return <OptionWrapper>{label}</OptionWrapper>;
+};
 
 export const AutocompleteQuestion = ({
   id,
@@ -97,13 +137,10 @@ export const AutocompleteQuestion = ({
     attributes,
   );
 
-  const getOptionSelected = (
-    option: Option,
-    selectedOption?: {
-      label: string;
-      value: string;
-    } | null,
-  ) => option.value === selectedOption?.value;
+  const getOptionSelected = (option: Option, selectedOption?: string | null) => {
+    const value = typeof option === 'string' ? option : option?.value;
+    return value === selectedOption;
+  };
 
   const getOptions = () => {
     const options = data || [];
@@ -175,7 +212,8 @@ export const AutocompleteQuestion = ({
         muiProps={{
           PaperComponent: StyledPaper,
           freeSolo: !!createNew,
-          getOptionDisabled: option => getOptionSelected(option, selectedValue),
+          getOptionDisabled: option => getOptionSelected(option, selectedValue?.value),
+          renderOption: (option, state) => <DisplayOption option={option} state={state} />,
         }}
       />
       {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
