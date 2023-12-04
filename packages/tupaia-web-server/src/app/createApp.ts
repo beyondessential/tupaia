@@ -86,6 +86,10 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
       handleWith(routes.SubscribeRoute),
     )
+    .put<routes.UnsubscribeRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
+      handleWith(routes.UnsubscribeRoute),
+    )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

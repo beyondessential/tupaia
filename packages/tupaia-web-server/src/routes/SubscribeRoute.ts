@@ -19,6 +19,7 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
     const {
       ctx,
       params: { projectCode, entityCode, dashboardCode },
+      session,
     } = this.req;
 
     const [dashboard] = await ctx.services.central.fetchResources('dashboards', {
@@ -57,7 +58,33 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
       unsubscribed_time: null,
     };
 
-    const upsertedEntry = ctx.services.central.upsertResource(
+    const [entryResult] = await ctx.services.central.fetchResources('dashboardMailingListEntries', {
+      filter: {
+        dashboard_mailing_list_id: dashboardMailingList.id,
+        email: this.req.body.email,
+      },
+    });
+
+    if (entryResult) {
+      // TODO: Ensure unsubscribed records with unauthenticatable accounts (non-tupaia accounts) are removed, rather than edited
+      if (!session) {
+        // This message is not strictly true at the moment because unauthenticatable records are not deleted when unsubscribed
+        throw new Error(`This email is from a Tupaia account. Please log in to resubscribe.`);
+      }
+      await ctx.services.central.updateResource(
+        `dashboardMailingListEntries/${entryResult.id}`,
+        {},
+        dashboardMailingListEntry,
+      );
+    } else {
+      await ctx.services.central.createResource(
+        `dashboardMailingListEntries`,
+        {},
+        dashboardMailingListEntry,
+      );
+    }
+
+    const [upsertedEntry] = await await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {
@@ -65,9 +92,7 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
           email: this.req.body.email,
         },
       },
-      dashboardMailingListEntry,
     );
-
     return upsertedEntry;
   }
 }

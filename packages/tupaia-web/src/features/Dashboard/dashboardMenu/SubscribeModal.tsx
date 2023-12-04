@@ -6,20 +6,21 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { Button, Typography } from '@material-ui/core';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { useUser } from '../../../api/queries';
 import { Dashboard } from '../../../types';
-import { Modal } from '../../../components';
-import { Form } from '../../../components';
-import { useForm } from 'react-hook-form';
-import { TextField } from '../../../components';
-import { Title, ModalParagraph } from '../../../components';
-import { Button, Typography } from '@material-ui/core';
-import { FORM_FIELD_VALIDATION } from '../../../constants';
-import { MODAL_SUBSCRIBE_TEXT, MODAL_SUBSCRIBE_TITLE } from './constants';
-import { useSubscribe } from '../../../api/mutations';
-import { SpinningLoader } from '@tupaia/ui-components';
-import { MOBILE_BREAKPOINT } from '../../../constants';
-import { useMailingList } from './useMailingList'
+import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
+import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
+import { useSubscribe, useUnsubscribe } from '../../../api/mutations';
+import {
+  MODAL_SUBSCRIBE_TEXT,
+  MODAL_SUBSCRIBE_TITLE,
+  MODAL_UNSUBSCRIBE_TEXT,
+  MODAL_UNSUBSCRIBE_TITLE,
+} from './constants';
+import { useMailingList } from './useMailingList';
 
 const Wrapper = styled.div`
   width: 45rem;
@@ -50,6 +51,13 @@ const Container = styled.div`
   }
 `;
 
+export const ErrorMessageText = styled(Typography)`
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+`;
+
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
   width: 100%;
@@ -59,7 +67,7 @@ const ButtonGroup = styled.div`
 
 const SubscribeButton = styled(Button)`
   margin-left: 1.2rem;
-`
+`;
 
 const StyledTextField = styled(TextField)`
   width: 50%;
@@ -67,75 +75,104 @@ const StyledTextField = styled(TextField)`
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100%;
   }
-  
-`
+`;
 
 interface SubscribeModalProps {
   isOpen: boolean;
   onClose: () => void;
   activeDashboard?: Dashboard;
-  onSubscribe: () => void;
+  onToggleSubscription: () => void;
 }
 
-export const SubscribeModal = ({ isOpen, onClose, activeDashboard, onSubscribe }: SubscribeModalProps) => {
+export const SubscribeModal = ({
+  isOpen,
+  onClose,
+  activeDashboard,
+  onToggleSubscription,
+}: SubscribeModalProps) => {
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();
   const formContext = useForm({
     mode: 'onChange',
   });
-  const { mutateAsync: subscribe } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
+  const {
+    mutateAsync: subscribe,
+    error: subscribeError,
+    reset: resetSubscribe,
+  } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
+  const {
+    mutateAsync: unsubscribe,
+    error: unsubscribeError,
+    reset: resetUnsubscribe,
+  } = useUnsubscribe(projectCode, entityCode, activeDashboard?.code);
 
-  const { hasMailingList } = useMailingList(activeDashboard, entityCode)
+  const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
 
-  const handleSubmit = async (data) => {
-    await subscribe(data);
-    onSubscribe();
+  const handleSubmit = async data => {
+    if (isSubscribed) {
+      await unsubscribe(data);
+    } else {
+      await subscribe(data);
+    }
+    onToggleSubscription();
     onClose();
-  }
+  };
+
+  const handleClose = () => {
+    if (isSubscribed) {
+      resetUnsubscribe();
+    } else {
+      resetSubscribe();
+    }
+    onClose();
+  };
+
+  const isMutateError = !!subscribeError || !!unsubscribeError;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose}>
       <Wrapper>
-            {activeDashboard && hasMailingList? 
-              (<Container>
-                <Form formContext={formContext} onSubmit={handleSubmit}>
-                  <Title align="left" variant="h5">
-                    {MODAL_SUBSCRIBE_TITLE}
-                  </Title>
-                  <ModalParagraph align="left" gutterBottom>
-                    {MODAL_SUBSCRIBE_TEXT}
-                  </ModalParagraph >
-                  {isLoading && <SpinningLoader mt={5} />}
-                  <StyledTextField 
-                    name="email" 
-                    label="Email" 
-                    required
-                    defaultValue={isLoggedIn ? user.email : ''}
-                    type="email"
-                    options={{...FORM_FIELD_VALIDATION.EMAIL}}
-                    inputProps={{readOnly: isLoggedIn}}
-                  />
-                  <ButtonGroup>
-                    <Button variant="outlined" color="default" onClick={onClose}>
-                      Cancel
-                    </Button>
-                    <SubscribeButton
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                    >
-                      Subscribe
-                    </SubscribeButton>
-                  </ButtonGroup>
-                </Form>
-              </Container>)
-            :
-            (
-              <Container>
-                <Typography color="error" gutterBottom>Something went wrong.</Typography>
-              </Container>
-            )
-          }
+        {activeDashboard && hasMailingList ? (
+          <Container>
+            <Form formContext={formContext} onSubmit={handleSubmit}>
+              <Title align="left" variant="h5">
+                {isSubscribed ? MODAL_UNSUBSCRIBE_TITLE : MODAL_SUBSCRIBE_TITLE}
+              </Title>
+              <ModalParagraph align="left" gutterBottom>
+                {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
+              </ModalParagraph>
+              {isLoading && <SpinningLoader mt={5} />}
+              <StyledTextField
+                name="email"
+                label="Email"
+                required
+                defaultValue={isLoggedIn ? user.email : ''}
+                type="email"
+                options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
+                inputProps={{ readOnly: isLoggedIn }}
+              />
+              {isMutateError && (
+                <ErrorMessageText color="error">
+                  {isSubscribed ? unsubscribeError?.message : subscribeError?.message}
+                </ErrorMessageText>
+              )}
+              <ButtonGroup>
+                <Button variant="outlined" color="default" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <SubscribeButton type="submit" variant="contained" color="primary">
+                  {isSubscribed ? 'Remove' : 'Subscribe'}
+                </SubscribeButton>
+              </ButtonGroup>
+            </Form>
+          </Container>
+        ) : (
+          <Container>
+            <Typography color="error" gutterBottom>
+              Something went wrong.
+            </Typography>
+          </Container>
+        )}
       </Wrapper>
     </Modal>
   );
