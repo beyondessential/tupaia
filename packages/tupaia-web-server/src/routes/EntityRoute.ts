@@ -22,10 +22,15 @@ export class EntityRoute extends Route<EntityRequest> {
     const { params, query, ctx } = this.req;
     const { projectCode, entityCode } = params;
 
-    const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
-      fields: DEFAULT_FIELDS,
-      ...query,
-    })) as Entity;
+    const entity = (await ctx.services.entity.getEntity(
+      projectCode,
+      entityCode,
+      {
+        fields: DEFAULT_FIELDS,
+        ...query,
+      },
+      true,
+    )) as Entity;
 
     return camelcaseKeys(entity);
   }

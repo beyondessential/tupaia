@@ -123,9 +123,11 @@ export class EntityApi extends BaseApi {
       fields?: string[];
       filter?: any;
     },
+    isPublic = false,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}`, {
       ...this.stringifyQueryParameters(queryOptions),
+      isPublic: `${isPublic}`,
     });
   }
 
@@ -158,10 +160,12 @@ export class EntityApi extends BaseApi {
       filter?: any;
     },
     includeRootEntity = false,
+    isPublic = false,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
       ...this.stringifyQueryParameters(queryOptions),
       includeRootEntity: `${includeRootEntity}`,
+      isPublic: `${isPublic}`,
     });
   }
 
@@ -196,10 +200,12 @@ export class EntityApi extends BaseApi {
       filter?: any;
     },
     includeRootEntity = false,
+    isPublic = false,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/ancestors`, {
       ...this.stringifyQueryParameters(queryOptions),
       includeRootEntity: `${includeRootEntity}`,
+      isPublic: `${isPublic}`,
     });
   }
 

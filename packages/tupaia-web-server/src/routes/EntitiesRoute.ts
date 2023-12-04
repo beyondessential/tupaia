@@ -75,6 +75,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
         fields,
       },
       query.includeRootEntity || false,
+      true,
     );
 
     // The child_codes list won't have been filtered for frontendExcludedTypes

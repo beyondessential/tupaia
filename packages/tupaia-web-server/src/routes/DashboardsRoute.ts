@@ -70,6 +70,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       entityCode,
       {},
       true,
+      true,
     );
     const rootEntity = entities.find((e: Entity) => e.code === entityCode);
 
@@ -89,8 +90,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
-      {
+    const dashboardRelations: DashboardRelationType[] =
+      await this.req.models.dashboardRelation.find({
         // Attached to the given dashboards
         dashboard_id: dashboards.map((d: Dashboard) => d.id),
         // For the root entity type
@@ -103,8 +104,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparator: '@>',
           comparisonValue: [projectCode],
         },
-      },
-    );
+      });
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {

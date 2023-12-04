@@ -43,6 +43,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
         ...restOfQuery,
       },
       includeRootEntity,
+      true,
     );
 
     return camelcaseKeys(entities, { deep: true });
