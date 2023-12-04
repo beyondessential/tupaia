@@ -120,7 +120,7 @@ export const SurveySelectSection = () => (
       <ButtonWrapper>
         <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
         <ButtonLink to="#" variant="outlined">
-          Explore Data
+          Explore data
         </ButtonLink>
       </ButtonWrapper>
       <TextWrapper>
