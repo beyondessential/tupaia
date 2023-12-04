@@ -82,7 +82,7 @@ export const SurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
   const formContext = useFormContext();
   const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
-  const { setFormData, formData } = useSurveyForm();
+  const { setFormData } = useSurveyForm();
 
   const answers = surveyResponse?.answers || {};
   const subHeading = getSubHeadingText(surveyResponse);
