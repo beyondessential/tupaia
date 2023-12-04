@@ -82,6 +82,7 @@ export const ChangePasswordForm = () => {
             name="currentPassword"
             placeholder="Current password"
             required
+            type="password"
           />
           <FormInput
             autoComplete="new-password"
@@ -91,6 +92,7 @@ export const ChangePasswordForm = () => {
             name="newPassword"
             placeholder="New password"
             required
+            type="password"
           />
           <FormInput
             autoComplete="new-password"
@@ -100,6 +102,7 @@ export const ChangePasswordForm = () => {
             name="newPasswordConfirm"
             placeholder="Confirm new password"
             required
+            type="password"
           />
         </TextFieldWrapper>
         <Button
