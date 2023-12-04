@@ -58,8 +58,9 @@ const useNavigationEntities = (
 
   const entitiesData = [...siblings, ...children];
 
-  // If display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
-  if (displayOnLevel) return [];
+  // If display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix. Also, don't show child entities if the current entity is the same as 'displayAtLevel', because we would end up with extra entities on the map
+  if (displayOnLevel)
+    return activeEntity?.type?.replace('_', '') === displayOnLevel.toLowerCase() ? [] : children;
 
   // Don't show nav entities for the selected measure level
   const filteredData = entitiesData?.filter(entity => {
@@ -90,6 +91,7 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
   }
   const { parentCode, code, type } = entity;
 
+  // if displayAtLevel is set, look for the entity at that level
   if (displayOnLevel) {
     const measure = entityAncestors?.find(
       (entity: Entity) => entity.type.replace('_', '') === displayOnLevel?.toLowerCase(),
@@ -136,6 +138,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
+
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
     ?.filter(
