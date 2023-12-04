@@ -13,6 +13,7 @@ import { useSurveyResponse } from '../api/queries';
 import { SurveyReviewSection } from '../features/Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
 import { shortDate } from '../utils';
+import { useSurveyForm } from '../features';
 
 const Header = styled.div`
   display: flex;
@@ -81,12 +82,15 @@ export const SurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
   const formContext = useFormContext();
   const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
+  const { setFormData, formData } = useSurveyForm();
+
   const answers = surveyResponse?.answers || {};
   const subHeading = getSubHeadingText(surveyResponse);
 
   useEffect(() => {
     if (answers) {
       formContext.reset(answers);
+      setFormData(answers);
     }
   }, [JSON.stringify(answers)]);
 

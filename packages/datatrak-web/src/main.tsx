@@ -8,7 +8,7 @@ import { App } from './App';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = await import('./__tests__/mocks/browser');
-  worker.start();
+  worker.start({ onUnhandledRequest: 'bypass' });
 }
 
 renderReactApp(<App />, document.getElementById('root'));
