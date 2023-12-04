@@ -77,7 +77,7 @@ const HeaderWrapper = styled.div`
     > div {
       width: auto;
     }
-  } ;
+  }
 `;
 
 const Subheader = styled(Typography).attrs({

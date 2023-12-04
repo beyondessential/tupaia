@@ -5,13 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { TextField } from '@tupaia/ui-components';
-import { AccountSettingsSection } from './AccountSettingsSection';
-import { Button } from '../../components';
-import { successToast } from '../../utils';
-import { useCurrentUser, useEditUser } from '../../api';
-import { UserAccountDetails } from '../../types';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Form, FormInput, TextField } from '@tupaia/ui-components';
+import { Button } from '../../../components';
+import { UserAccountDetails } from '../../../types';
+import { successToast } from '../../../utils';
+import { useCurrentUser, useEditUser } from '../../../api';
 
 type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
@@ -26,11 +25,19 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const PersonalDetailsForm = styled.form`
-  display: grid;
-  gap: 1.56rem 1.25rem;
+const StyledForm = styled(Form)`
   max-width: 44.25rem;
   width: 100%;
+`;
+
+const StyledFieldset = styled.fieldset`
+  border: none;
+  margin: 0;
+  padding: 0;
+
+  display: grid;
+  gap: 1.56rem 1.25rem;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -39,29 +46,42 @@ const PersonalDetailsForm = styled.form`
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
+
+  .MuiInputLabel-outlined {
+    // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
+    z-index: auto;
+  }
 `;
 
-export const PersonalDetailsSection = () => {
-  const { mutate: updateUser } = useEditUser(() =>
-    successToast('Your personal details have been successfully updated'),
-  );
+export const PersonalDetailsForm = () => {
   const user = useCurrentUser();
 
-  const {
-    formState: { isDirty, dirtyFields, isSubmitting },
-    handleSubmit,
-    register,
-  } = useForm<PersonalDetailsFormFields>({
+  const formContext = useForm<PersonalDetailsFormFields>({
     defaultValues: {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       mobileNumber: user.mobileNumber ?? '',
       employer: user.employer ?? '',
       position: user.position ?? '',
-    },
+    } as PersonalDetailsFormFields,
   });
 
-  function onSubmit(userDetails): SubmitHandler<PersonalDetailsFormFields> {
+  const {
+    formState: { isDirty, dirtyFields, isSubmitting },
+    getValues,
+    handleSubmit,
+    reset,
+  } = formContext;
+
+  function handleSubmissionSuccess(): void {
+    reset(getValues() as PersonalDetailsFormFields);
+    successToast('Your personal details have been successfully updated');
+  }
+  const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
+
+  function onSubmit(
+    userDetails: PersonalDetailsFormFields,
+  ): SubmitHandler<PersonalDetailsFormFields> {
     const updates: UserAccountDetails = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
@@ -70,29 +90,30 @@ export const PersonalDetailsSection = () => {
   }
 
   return (
-    <AccountSettingsSection title="Personal details" description="Edit your personal details">
-      <PersonalDetailsForm onSubmit={handleSubmit(onSubmit)}>
-        <StyledTextField
+    <StyledForm onSubmit={handleSubmit(onSubmit)} formContext={formContext}>
+      <StyledFieldset disabled={isSubmitting || isLoading}>
+        <FormInput
           autoComplete="given-name"
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register({ required: true })}
           label="First name"
           name="firstName"
           placeholder="First name"
           required
         />
-        <StyledTextField
+        <FormInput
           autoComplete="family-name"
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register({ required: true })}
           label="Last name"
           name="lastName"
           placeholder="Last name"
           required
         />
-        <StyledTextField
+        <FormInput
           autoComplete="email"
           disabled
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
           label="Email"
           name="email"
@@ -102,28 +123,28 @@ export const PersonalDetailsSection = () => {
           type="email"
           value={user.email}
         />
-        <StyledTextField
+        <FormInput
           autoComplete="tel"
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
-          inputRef={register}
           label="Contact number (optional)"
           name="mobileNumber"
           placeholder="Contact number"
           type="tel"
         />
-        <StyledTextField
+        <FormInput
           autoComplete="organization"
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
-          inputRef={register({ required: true })}
           label="Employer"
           name="employer"
           placeholder="Employer"
           required
         />
-        <StyledTextField
+        <FormInput
           autoComplete="organization-title"
+          Input={StyledTextField}
           inputProps={{ enterKeyHint: 'done' }}
-          inputRef={register({ required: true })}
           label="Position"
           name="position"
           placeholder="Position"
@@ -134,13 +155,13 @@ export const PersonalDetailsSection = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty || isSubmitting}
+            disabled={!isDirty || isSubmitting || isLoading}
             fullWidth
           >
-            Save changes
+            {isLoading ? 'Saving…' : 'Save changes'}
           </Button>
         </ButtonWrapper>
-      </PersonalDetailsForm>
-    </AccountSettingsSection>
+      </StyledFieldset>
+    </StyledForm>
   );
 };
