@@ -70,16 +70,16 @@ export const RequestProjectAccessModal = () => {
     checkLogin();
   }, [isLoggedIn, isLoadingUser, isFetching, project]);
 
-  const { data: countries, isFetching: isLoadingCountryAccessList } =
-    useProjectCountryAccessList(projectCode);
+  const { data: countries = [], isFetching: isLoadingCountryAccessList } =
+    useProjectCountryAccessList(projectCode!);
 
-  const countriesWithAccess = countries.filter((c: CountryAccessListItem) => c.hasAccess);
+  const countriesWithAccess = countries?.filter((c: CountryAccessListItem) => c.hasAccess);
 
   // the countries that have already got a request
-  const requestedCountries = countries.filter((c: CountryAccessListItem) => c.hasPendingAccess);
+  const requestedCountries = countries?.filter((c: CountryAccessListItem) => c.hasPendingAccess);
 
   // the countries that are available to request
-  const availableCountries = countries.filter(
+  const availableCountries = countries?.filter(
     (c: CountryAccessListItem) => !c.hasAccess && !c.hasPendingAccess,
   );
 
@@ -100,7 +100,7 @@ export const RequestProjectAccessModal = () => {
           pathname: generatePath(ROUTE_STRUCTURE, {
             projectCode: project?.code,
             entityCode: project?.homeEntityCode,
-            dashboardCode: project?.dashboardGroupName,
+            dashboardCode: project?.dashboardGroupName as string | undefined,
           }),
         };
       else

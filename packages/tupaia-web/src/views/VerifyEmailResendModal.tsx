@@ -33,7 +33,7 @@ export const VerifyEmailResendModal = () => {
   const { mutate: submit, isSuccess, isLoading, isError, error } = useResendVerificationEmail();
 
   return (
-    <Modal isOpen>
+    <Modal isOpen onClose={closeModal}>
       <ModalBody
         title="Resend verification email"
         subtitle="Enter your email below to resend verification email"
