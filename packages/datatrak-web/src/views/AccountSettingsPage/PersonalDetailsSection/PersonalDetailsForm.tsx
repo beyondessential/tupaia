@@ -120,10 +120,10 @@ export const PersonalDetailsForm = () => {
           placeholder="Last name"
           required
         />
-        <FormInput
+        <StyledTextField
           autoComplete="email"
           disabled
-          Input={StyledTextField}
+          // Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
           label="Email"
           name="email"
