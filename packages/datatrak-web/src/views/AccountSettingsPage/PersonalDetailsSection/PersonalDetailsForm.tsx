@@ -86,10 +86,14 @@ export const PersonalDetailsForm = () => {
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
-    const updates: PersonalDetailsFormFields = Object.fromEntries(
-      Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
-    );
-
+    console.log(userDetails);
+    const updates: PersonalDetailsFormFields = Object.keys(dirtyFields)
+      .filter(field => dirtyFields[field])
+      .reduce(
+        (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
+        {} as PersonalDetailsFormFields,
+      );
+    console.log(updates);
     updateUser(updates as UserAccountDetails);
   }
 
