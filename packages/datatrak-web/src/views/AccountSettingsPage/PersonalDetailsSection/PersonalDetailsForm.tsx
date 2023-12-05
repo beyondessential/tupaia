@@ -161,7 +161,7 @@ export const PersonalDetailsForm = () => {
             disabled={!isDirty || isSubmitting || isLoading}
             fullWidth
           >
-            {isSubmitting || isLoading ? 'Saving…' : 'Save changes'}
+            {isSubmitting || isLoading ? 'Saving' : 'Save changes'}
           </Button>
         </ButtonWrapper>
       </StyledFieldset>
