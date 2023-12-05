@@ -17,10 +17,12 @@ import {THEME_COLOR_ONE, THEME_FONT_SIZE_ONE} from '../globalStyles';
 import {formatPlural} from '../utilities';
 import {requestWritePermission} from '../utilities/writePermission/permission';
 
+const filenameWithExtension = filename => `${filename}.png`;
+
 const shareQrCode = (qrCodeRef, filename) => {
   qrCodeRef.toDataURL(dataURL => {
     const shareOptions = {
-      filename,
+      filename: filenameWithExtension(filename),
       type: 'image/*',
       url: `data:image/png;base64,${dataURL}`,
     };
@@ -36,8 +38,7 @@ const downloadQrCode = async (qrCodeRef, filename, onSuccess, onFail) => {
   }
   qrCodeRef.toDataURL(async dataURL => {
     try {
-      const filenameWithExtension = `${filename}.png`;
-      const filePath = `${RNFS.DocumentDirectoryPath}/${filenameWithExtension}`;
+      const filePath = `${RNFS.DocumentDirectoryPath}/${filenameWithExtension(filename)}`;
       await RNFS.writeFile(filePath, dataURL, 'base64');
       await CameraRoll.save(filePath, {album: 'Tupaia MediTrak QR Codes'});
       onSuccess();
