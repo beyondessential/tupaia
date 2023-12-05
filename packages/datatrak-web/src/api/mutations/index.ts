@@ -12,6 +12,5 @@ export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurvey } from './useSubmitSurvey';
 export { useRequestResetPassword } from './useRequestResetPassword';
 export { useResetPassword } from './useResetPassword';
-export type { ResetPasswordParams } from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
 export { useOneTimeLogin } from './useOneTimeLogin';
