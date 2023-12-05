@@ -182,6 +182,11 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
               entry.subscribed,
           )
         : false,
+      isEmailAdmin: session
+        ? list.email_admin_permission_groups.some(permissionGroup =>
+            rootEntityPermissions.includes(permissionGroup),
+          )
+        : false,
     }));
 
     const dashboardsWithMetadata = dashboards.map(rawDashboard => {
@@ -197,9 +202,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           })),
         mailingLists: mailingLists
           .filter(list => list.dashboardId === dashboard.id)
-          .map(({ entityCode: mailingListEntityCode, isSubscribed }) => ({
+          .map(({ entityCode: mailingListEntityCode, isSubscribed, isEmailAdmin }) => ({
             entityCode: mailingListEntityCode,
             isSubscribed,
+            isEmailAdmin,
           })),
       };
     });

@@ -60210,11 +60210,15 @@ export const MailingListSchema = {
 		},
 		"isSubscribed": {
 			"type": "boolean"
+		},
+		"isEmailAdmin": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"entityCode",
+		"isEmailAdmin",
 		"isSubscribed"
 	]
 } 
@@ -68247,11 +68251,15 @@ export const DashboardWithMetadataSchema = {
 					},
 					"isSubscribed": {
 						"type": "boolean"
+					},
+					"isEmailAdmin": {
+						"type": "boolean"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"entityCode",
+					"isEmailAdmin",
 					"isSubscribed"
 				]
 			}
