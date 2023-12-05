@@ -15,7 +15,7 @@ import { useResetPassword } from '../../../api';
 const StyledForm = styled(Form)`
   width: 100%;
 
-  ${({ theme }) => theme.breakpoints.up('lg')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     max-width: 44.25rem;
   }
 `;
