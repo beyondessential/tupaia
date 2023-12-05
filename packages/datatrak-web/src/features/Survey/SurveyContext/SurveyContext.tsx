@@ -22,7 +22,6 @@ const defaultContext = {
   numberOfScreens: 0,
   screenNumber: 1,
   screenHeader: '',
-  surveyCode: '',
   surveyProjectCode: '',
   displayQuestions: [],
   sideMenuOpen: false,
@@ -81,7 +80,6 @@ export const SurveyContext = ({ children }) => {
     <SurveyFormContext.Provider
       value={{
         ...state,
-        surveyCode,
         surveyProjectCode: survey?.project?.code,
         activeScreen,
         screenNumber,

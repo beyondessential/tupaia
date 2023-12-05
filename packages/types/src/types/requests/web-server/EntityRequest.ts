@@ -13,6 +13,7 @@ export interface Params {
 export type ResBody = KeysToCamelCase<Entity>;
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
+  entityId?: string[];
   fields?: string[];
   filter?: Record<
     string,

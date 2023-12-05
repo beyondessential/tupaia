@@ -5,8 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, WebServerEntityRequest } from '@tupaia/types';
-import { camelcaseKeys } from '@tupaia/tsutils';
+import { WebServerEntityRequest } from '@tupaia/types';
 
 export type SingleEntityRequest = Request<
   WebServerEntityRequest.Params,
@@ -15,17 +14,25 @@ export type SingleEntityRequest = Request<
   WebServerEntityRequest.ReqQuery
 >;
 
+const DEFAULT_FIELDS = ['id', 'parent_id', 'code', 'name', 'type'];
+
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
     const { params, query, models } = this.req;
     const { entityCode } = params;
+    const { fields = DEFAULT_FIELDS, entityId } = query;
+    let record;
 
-    const { id, type, name, code } = await models.entity.findOne(
-      { code: entityCode },
-      // @ts-ignore - server-boilerplate types don't include columns
-      { columns: ['id', 'type', 'code', 'name'] },
-    );
+    if (entityId) {
+      // @ts-ignore
+      record = await models.entity.findById(entityId, { columns: fields });
+    } else {
+      // @ts-ignore
+      record = await models.entity.findOne({ code: entityCode }, { columns: fields });
+    }
 
-    return { id, name, type, code };
+    const { id, type, name, code, parent_id: parentId } = record;
+
+    return { id, name, type, code, parentId };
   }
 }

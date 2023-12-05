@@ -9,7 +9,7 @@ import { useFormContext } from 'react-hook-form';
 import { FormHelperText } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntity } from '../../../api';
+import { useEntities, useEntityById } from '../../../api';
 import { useDebounce } from '../../../utils';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
@@ -52,7 +52,7 @@ export const EntityQuestion = ({
   const [searchValue, setSearchValue] = useState('');
 
   // Display a previously selected value
-  useEntity(value, {
+  useEntityById(value, {
     staleTime: 0, // Needs to be 0 to make sure the entity is fetched on first render
     enabled: !!value && !searchValue,
     onSuccess: entityData => {

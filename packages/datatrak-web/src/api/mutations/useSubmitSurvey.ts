@@ -6,7 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { Coconut } from '../../components';
-import { post, useCountry, useCurrentUser } from '../../api';
+import { post, useCurrentUser, useEntityByCode } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -29,7 +29,7 @@ export const useSurveyResponseData = () => {
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: country } = useCountry(countryCode);
+  const { data: country } = useEntityByCode(countryCode!);
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
