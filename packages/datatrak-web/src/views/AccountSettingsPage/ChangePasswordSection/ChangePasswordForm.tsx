@@ -26,10 +26,10 @@ const StyledFieldset = styled.fieldset`
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
+  justify-items: stretch;
 
   & > * {
     flex: 1;
-    width: 100%;
   }
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
@@ -51,7 +51,6 @@ const TextFieldWrapper = styled.div`
   display: block flex;
   flex-direction: column;
   gap: 1.56rem;
-  width: 100%;
 `;
 
 const StyledTextField = styled(TextField)`
