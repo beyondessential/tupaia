@@ -23,17 +23,11 @@ const StyledFieldset = styled.fieldset`
   padding: 0;
 
   align-items: end;
-  display: block flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  justify-items: stretch;
-
-  & > * {
-    flex: 1;
-  }
+  display: grid;
+  gap: 1.56rem 1.25rem;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    flex-direction: row;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .MuiFormLabel-root {
@@ -47,17 +41,13 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
-const TextFieldWrapper = styled.div`
-  display: block flex;
-  flex-direction: column;
-  gap: 1.56rem;
-`;
-
 const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const StyledButton = styled(Button)``;
+const StyledFormInput = styled(FormInput)`
+  grid-column: 1 / 2;
+`;
 
 export const ChangePasswordForm = () => {
   const emptyFormState: ResetPasswordParams = {
@@ -85,48 +75,46 @@ export const ChangePasswordForm = () => {
   return (
     <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
       <StyledFieldset>
-        <TextFieldWrapper>
-          <FormInput
-            autoComplete="password"
-            Input={StyledTextField}
-            inputProps={{ enterKeyHint: 'next' }}
-            label="Current password"
-            name="oldPassword"
-            placeholder="Current password"
-            required
-            type="password"
-          />
-          <FormInput
-            autoComplete="new-password"
-            Input={StyledTextField}
-            inputProps={{ enterKeyHint: 'next' }}
-            label="New password"
-            name="newPassword"
-            options={{
-              minLength: { value: 9, message: 'Must be over 8 characters long' },
-            }}
-            placeholder="New password"
-            required
-            type="password"
-          />
-          <FormInput
-            autoComplete="new-password"
-            Input={StyledTextField}
-            inputProps={{ enterKeyHint: 'done' }}
-            label="Confirm new password"
-            name="newPasswordConfirm"
-            options={{
-              validate: (value: string) =>
-                value === formContext.getValues('newPassword') || 'Passwords do not match',
-            }}
-            placeholder="Confirm new password"
-            required
-            type="password"
-          />
-        </TextFieldWrapper>
-        <StyledButton type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
+        <StyledFormInput
+          autoComplete="password"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next' }}
+          label="Current password"
+          name="oldPassword"
+          placeholder="Current password"
+          required
+          type="password"
+        />
+        <StyledFormInput
+          autoComplete="new-password"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'next' }}
+          label="New password"
+          name="newPassword"
+          options={{
+            minLength: { value: 9, message: 'Must be over 8 characters long' },
+          }}
+          placeholder="New password"
+          required
+          type="password"
+        />
+        <StyledFormInput
+          autoComplete="new-password"
+          Input={StyledTextField}
+          inputProps={{ enterKeyHint: 'done' }}
+          label="Confirm new password"
+          name="newPasswordConfirm"
+          options={{
+            validate: (value: string) =>
+              value === formContext.getValues('newPassword') || 'Passwords do not match',
+          }}
+          placeholder="Confirm new password"
+          required
+          type="password"
+        />
+        <Button type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
           {isSubmitting ? 'Changing…' : 'Change password'}
-        </StyledButton>
+        </Button>
       </StyledFieldset>
     </StyledForm>
   );
