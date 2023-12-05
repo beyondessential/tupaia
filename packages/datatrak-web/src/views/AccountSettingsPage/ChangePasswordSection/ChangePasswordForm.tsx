@@ -49,6 +49,17 @@ const StyledFormInput = styled(FormInput)`
   grid-column: 1 / 2;
 `;
 
+const StyledButton = styled(Button)`
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    // HACK: Make button height match adjacent FormInput
+    .MuiButton-label {
+      border: 1px solid transparent;
+      height: 1.1876em;
+      padding: 1rem;
+    }
+  }
+`;
+
 export const ChangePasswordForm = () => {
   const emptyFormState: ResetPasswordParams = {
     oldPassword: '',
@@ -112,9 +123,9 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <Button type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
+        <StyledButton type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
           {isSubmitting ? 'Changing…' : 'Change password'}
-        </Button>
+        </StyledButton>
       </StyledFieldset>
     </StyledForm>
   );
