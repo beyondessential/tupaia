@@ -4,13 +4,13 @@
  */
 
 import { useQuery } from 'react-query';
-import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { DatatrakWebCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useCountryAccessList = () => {
   return useQuery(
     'countryAccessList',
-    (): Promise<TupaiaWebCountryAccessListRequest.ResBody> => get('me/countries'),
+    (): Promise<DatatrakWebCountryAccessListRequest.ResBody> => get('me/countries'),
     {
       placeholderData: [],
       staleTime: 0, // Disable cache so that if we go back to the request access view, the country list is up to date
