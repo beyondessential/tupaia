@@ -60163,34 +60163,6 @@ export const CamelCaseFeedItemSchema = {
 	]
 } 
 
-export const CountryAccessSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"hasAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const MailingListSchema = {
 	"type": "object",
 	"properties": {
@@ -68749,5 +68721,30 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
 } 
 

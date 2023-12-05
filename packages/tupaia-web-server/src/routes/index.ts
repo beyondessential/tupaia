@@ -23,7 +23,6 @@ export { UserRequest, UserRoute } from './UserRoute';
 export { ExportDashboardRequest, ExportDashboardRoute } from './ExportDashboardRoute';
 export { EmailDashboardRequest, EmailDashboardRoute } from './EmailDashboardRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
-export { CountryAccessListRequest, CountryAccessListRoute } from './CountryAccessListRoute';
 export {
   RequestCountryAccessRequest,
   RequestCountryAccessRoute,
