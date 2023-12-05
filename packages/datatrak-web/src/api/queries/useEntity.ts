@@ -5,14 +5,19 @@
 import { useQuery } from 'react-query';
 import { get } from '../api';
 
-export const useEntityById = (entityId: string, { enabled, onSuccess, staleTime }) => {
-  return useQuery(['entity', entityId], (): Promise<any> => get(`entity/${entityId}`), {
-    enabled,
-    onSuccess,
-    staleTime,
-  });
+export const useEntityByCode = (entityCode, options?) => {
+  return useQuery(['entity', entityCode], () => get(`entity/${entityCode}`), options);
 };
 
-export const useEntityByCode = (entityCode: string) => {
-  return useQuery(['entity', entityCode], (): Promise<any> => get(`entity/${entityCode}`));
+export const useEntityById = (entityId, options?) => {
+  return useQuery(
+    ['entities', entityId],
+    async () => {
+      const response = await get(`entities`, {
+        params: { filter: { id: entityId } },
+      });
+      return response[0];
+    },
+    options,
+  );
 };

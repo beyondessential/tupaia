@@ -14,25 +14,17 @@ export type SingleEntityRequest = Request<
   WebServerEntityRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['id', 'parent_id', 'code', 'name', 'type'];
-
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
     const { params, query, models } = this.req;
     const { entityCode } = params;
-    const { fields = DEFAULT_FIELDS, entityId } = query;
-    let record;
-
-    if (entityId) {
-      // @ts-ignore
-      record = await models.entity.findById(entityId, { columns: fields });
-    } else {
-      // @ts-ignore
-      record = await models.entity.findOne({ code: entityCode }, { columns: fields });
-    }
-
-    const { id, type, name, code, parent_id: parentId } = record;
-
+    const {
+      id,
+      type,
+      name,
+      code,
+      parent_id: parentId,
+    } = await models.entity.findOne({ code: entityCode });
     return { id, name, type, code, parentId };
   }
 }
