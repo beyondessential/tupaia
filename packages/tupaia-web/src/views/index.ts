@@ -8,7 +8,6 @@ export { ResetPasswordModal } from './ResetPasswordModal/ResetPasswordModal';
 export { ProjectPage } from './ProjectPage';
 export { RegisterModal } from './RegisterModal';
 export { ProjectsModal } from './ProjectsModal';
-export { RequestCountryAccessModal } from './RequestCountryAccessModal';
 export { RequestProjectAccessModal } from './RequestProjectAccessModal';
 export { ForgotPasswordModal } from './ForgotPasswordModal';
 export { EmailVerificationModal } from './EmailVerificationModal';

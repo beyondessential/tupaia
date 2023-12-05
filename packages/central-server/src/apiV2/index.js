@@ -179,7 +179,7 @@ apiV2.get('/downloadFiles', useRouteHandler(DownloadFiles));
 apiV2.get('/socialFeed', catchAsyncErrors(getSocialFeed));
 apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));
-apiV2.get('/me/countries', allowAnyone(getCountryAccessList));
+apiV2.get('/me/countries/:projectCode?', allowAnyone(getCountryAccessList));
 apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
 apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
 apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));

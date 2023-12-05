@@ -32,3 +32,7 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
+export {
+  ProjectCountryAccessListRequest,
+  ProjectCountryAccessListRoute,
+} from './ProjectCountryAccessListRoute';

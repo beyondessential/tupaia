@@ -6,7 +6,7 @@ import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes, useLocation } from 'react-router-dom';
 import { LandingPage, PDFExport, ProjectPage } from './views';
 import { Dashboard } from './features';
-import { MODAL_ROUTES, DEFAULT_URL } from './constants';
+import { MODAL_ROUTES, DEFAULT_URL, ROUTE_STRUCTURE } from './constants';
 import { useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
@@ -81,7 +81,7 @@ export const Routes = () => {
           <Route path="/:projectCode/:entityCode" element={<ProjectPageDashboardRedirect />} />
 
           {/* The Dashboard has to be rendered below the Map, otherwise the map will re-mount on route changes */}
-          <Route path="/:projectCode/:entityCode/:dashboardName" element={<Dashboard />} />
+          <Route path={ROUTE_STRUCTURE} element={<Dashboard />} />
         </Route>
       </Route>
     </RouterRoutes>

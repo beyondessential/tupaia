@@ -7,14 +7,14 @@ import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
+import { MODAL_ROUTES } from '../../constants';
 import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
-import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -105,7 +105,7 @@ export const UserMenu = () => {
         ViewProjects,
         HelpCentre,
         ChangePassword,
-        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
+        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
           Request country access
         </BaseMenuItem>,
         Logout,

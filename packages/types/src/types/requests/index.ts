@@ -21,7 +21,6 @@ export {
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
-  TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEmailDashboardRequest,
   TupaiaWebExportDashboardRequest,
@@ -35,5 +34,6 @@ export {
   TupaiaWebReportRequest,
   TupaiaWebRequestCountryAccessRequest,
   TupaiaWebUserRequest,
+  TupaiaWebProjectCountryAccessListRequest,
 } from './tupaia-web-server';
 export { WebServerProjectRequest, ProjectResponse, WebServerEntityRequest } from './web-server';

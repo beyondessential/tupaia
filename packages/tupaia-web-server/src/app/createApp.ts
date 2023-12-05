@@ -56,9 +56,9 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboards/:projectCode/:entityCode/:dashboardName/email',
       handleWith(routes.EmailDashboardRoute),
     )
-    .get<routes.CountryAccessListRequest>(
-      'countryAccessList',
-      handleWith(routes.CountryAccessListRoute),
+    .get<routes.ProjectCountryAccessListRequest>(
+      'countryAccessList/:projectCode',
+      handleWith(routes.ProjectCountryAccessListRoute),
     )
     .post<routes.RequestCountryAccessRequest>(
       'requestCountryAccess',

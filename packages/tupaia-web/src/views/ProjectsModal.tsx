@@ -24,8 +24,9 @@ import {
   ProjectLoginLink,
   ProjectPendingLink,
 } from '../layout';
-import { RouterButton } from '../components';
+import { Modal, RouterButton } from '../components';
 import { SingleProject } from '../types';
+import { useModal } from '../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -116,63 +117,66 @@ const Loader = styled.div`
  * This is the projects view that is shown when the projects modal is open
  */
 export const ProjectsModal = () => {
+  const { closeModal } = useModal();
   const { data, isFetching } = useProjects();
   const { isLoggedIn } = useUser();
   const location = useLocation();
 
   return (
-    <Wrapper>
-      <div>
-        <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
-        <TagLine>
-          Data aggregation, analysis, and visualisation for the most remote settings in the world.
-        </TagLine>
-      </div>
-      <div>
-        <ExploreButton>Explore tupaia.org</ExploreButton>
-        <Line />
-        <ProjectsTitle variant="h1">Projects</ProjectsTitle>
-        {isFetching ? (
-          <Loader>
-            <SpinningLoader />
-          </Loader>
-        ) : (
-          <ProjectsGrid>
-            <ProjectCardList
-              projects={data?.projects ?? []}
-              actions={{
-                [PROJECT_ACCESS_TYPES.ALLOWED]: ({
-                  project: { code, homeEntityCode, dashboardGroupName },
-                }: {
-                  project: SingleProject;
-                }) => (
-                  <ProjectAllowedLink
-                    url={`/${code}/${homeEntityCode}${
-                      dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
-                    }`}
-                  />
-                ),
-                [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
-                [PROJECT_ACCESS_TYPES.DENIED]: ({
-                  project: { code },
-                }: {
-                  project: SingleProject;
-                }) => {
-                  if (isLoggedIn) {
-                    return (
-                      <ProjectDeniedLink
-                        url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
-                      />
-                    );
-                  }
+    <Modal isOpen onClose={closeModal}>
+      <Wrapper>
+        <div>
+          <Logo src={TUPAIA_LIGHT_LOGO_SRC} alt="Tupaia logo" />
+          <TagLine>
+            Data aggregation, analysis, and visualisation for the most remote settings in the world.
+          </TagLine>
+        </div>
+        <div>
+          <ExploreButton>Explore tupaia.org</ExploreButton>
+          <Line />
+          <ProjectsTitle variant="h1">Projects</ProjectsTitle>
+          {isFetching ? (
+            <Loader>
+              <SpinningLoader />
+            </Loader>
+          ) : (
+            <ProjectsGrid>
+              <ProjectCardList
+                projects={data?.projects ?? []}
+                actions={{
+                  [PROJECT_ACCESS_TYPES.ALLOWED]: ({
+                    project: { code, homeEntityCode, dashboardGroupName },
+                  }: {
+                    project: SingleProject;
+                  }) => (
+                    <ProjectAllowedLink
+                      url={`/${code}/${homeEntityCode}${
+                        dashboardGroupName ? `/${encodeURIComponent(dashboardGroupName)}` : ''
+                      }`}
+                    />
+                  ),
+                  [PROJECT_ACCESS_TYPES.PENDING]: () => <ProjectPendingLink />,
+                  [PROJECT_ACCESS_TYPES.DENIED]: ({
+                    project: { code },
+                  }: {
+                    project: SingleProject;
+                  }) => {
+                    if (isLoggedIn) {
+                      return (
+                        <ProjectDeniedLink
+                          url={`?${URL_SEARCH_PARAMS.PROJECT}=${code}#${MODAL_ROUTES.REQUEST_PROJECT_ACCESS}`}
+                        />
+                      );
+                    }
 
-                  return <ProjectLoginLink routerState={{ referrer: location }} />;
-                },
-              }}
-            />
-          </ProjectsGrid>
-        )}
-      </div>
-    </Wrapper>
+                    return <ProjectLoginLink routerState={{ referrer: location }} />;
+                  },
+                }}
+              />
+            </ProjectsGrid>
+          )}
+        </div>
+      </Wrapper>
+    </Modal>
   );
 };

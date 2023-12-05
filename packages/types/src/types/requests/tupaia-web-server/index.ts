@@ -4,7 +4,6 @@
  */
 
 export * as TupaiaWebChangePasswordRequest from './ChangePasswordRequest';
-export * as TupaiaWebCountryAccessListRequest from './CountryAccessListRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
 export * as TupaiaWebEmailDashboardRequest from './EmailDashboardRequest';
 export * as TupaiaWebExportDashboardRequest from './ExportDashboardRequest';
@@ -18,3 +17,4 @@ export * as TupaiaWebProjectRequest from './ProjectRequest';
 export * as TupaiaWebReportRequest from './ReportRequest';
 export * as TupaiaWebRequestCountryAccessRequest from './RequestCountryAccessRequest';
 export * as TupaiaWebUserRequest from './UserRequest';
+export * as TupaiaWebProjectCountryAccessListRequest from './ProjectCountryAccessListRequest';

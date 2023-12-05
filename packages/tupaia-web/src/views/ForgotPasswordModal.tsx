@@ -13,9 +13,11 @@ import {
   RouterButton,
   RouterLink,
   TextField,
+  Modal,
 } from '../components';
 import { useRequestResetPassword } from '../api/mutations';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
+import { useModal } from '../utils';
 
 const ModalBody = styled(AuthModalBody)`
   width: 38rem;
@@ -61,6 +63,7 @@ const LinkText = styled(Typography)`
 
 export const ForgotPasswordModal = () => {
   const formContext = useForm();
+  const { closeModal } = useModal();
   const {
     mutate: requestResetPassword,
     isLoading,
@@ -77,32 +80,37 @@ export const ForgotPasswordModal = () => {
     HEADING_TEXT.subtitle = '';
   }
   return (
-    <ModalBody title={HEADING_TEXT.title} subtitle={HEADING_TEXT.subtitle}>
-      {isError && <Typography color="error">{error.message}</Typography>}
-      {isSuccess ? (
-        <CheckEmailMessage>
-          Please check your email for further information on how to reset your password
-        </CheckEmailMessage>
-      ) : (
-        <StyledForm onSubmit={requestResetPassword as SubmitHandler<any>} formContext={formContext}>
-          <TextField
-            name="emailAddress"
-            label="Email"
-            type="email"
-            required
-            options={FORM_FIELD_VALIDATION.EMAIL}
-            disabled={isLoading}
-          />
-          <AuthModalButton type="submit" isLoading={isLoading}>
-            Reset password
-          </AuthModalButton>
-          <CancelButton modal={MODAL_ROUTES.LOGIN}>Back to log in</CancelButton>
-          <LinkText align="center">
-            Don't have an account?{' '}
-            <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
-          </LinkText>
-        </StyledForm>
-      )}
-    </ModalBody>
+    <Modal isOpen onClose={closeModal}>
+      <ModalBody title={HEADING_TEXT.title} subtitle={HEADING_TEXT.subtitle}>
+        {isError && <Typography color="error">{error.message}</Typography>}
+        {isSuccess ? (
+          <CheckEmailMessage>
+            Please check your email for further information on how to reset your password
+          </CheckEmailMessage>
+        ) : (
+          <StyledForm
+            onSubmit={requestResetPassword as SubmitHandler<any>}
+            formContext={formContext}
+          >
+            <TextField
+              name="emailAddress"
+              label="Email"
+              type="email"
+              required
+              options={FORM_FIELD_VALIDATION.EMAIL}
+              disabled={isLoading}
+            />
+            <AuthModalButton type="submit" isLoading={isLoading}>
+              Reset password
+            </AuthModalButton>
+            <CancelButton modal={MODAL_ROUTES.LOGIN}>Back to log in</CancelButton>
+            <LinkText align="center">
+              Don't have an account?{' '}
+              <RouterLink modal={MODAL_ROUTES.REGISTER}>Register here</RouterLink>
+            </LinkText>
+          </StyledForm>
+        )}
+      </ModalBody>
+    </Modal>
   );
 };
