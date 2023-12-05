@@ -127,7 +127,7 @@ export const ChangePasswordForm = () => {
           type="password"
         />
         <StyledButton type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
-          {isSubmitting ? 'Changing…' : 'Change password'}
+          {isSubmitting ? 'Changing' : 'Change password'}
         </StyledButton>
       </StyledFieldset>
     </StyledForm>
