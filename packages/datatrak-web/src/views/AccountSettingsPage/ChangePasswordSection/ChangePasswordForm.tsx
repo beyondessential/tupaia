@@ -125,12 +125,7 @@ export const ChangePasswordForm = () => {
             type="password"
           />
         </TextFieldWrapper>
-        <StyledButton
-          type="submit"
-          // tooltip={false ? null : 'Change password to save changes'}
-          disabled={isValidating || !isValid || isSubmitting}
-          fullWidth
-        >
+        <StyledButton type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
           {isSubmitting ? 'Changing…' : 'Change password'}
         </StyledButton>
       </StyledFieldset>
