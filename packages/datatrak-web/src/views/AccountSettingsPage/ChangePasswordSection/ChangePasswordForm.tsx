@@ -75,7 +75,8 @@ export const ChangePasswordForm = () => {
     mode: 'onChange',
   });
   const {
-    formState: { isSubmitting, isValid, isValidating },
+    formState: { touched, isSubmitting, isValid, isValidating },
+    getValues,
     handleSubmit,
     reset,
   } = formContext;
@@ -107,6 +108,13 @@ export const ChangePasswordForm = () => {
           name="newPassword"
           options={{
             minLength: { value: 9, message: 'Must be over 8 characters long' },
+            validate: (value: string) => {
+              return (
+                !(touched as Partial<ResetPasswordParams>).newPasswordConfirm ||
+                value === getValues('newPasswordConfirm') ||
+                'Passwords do not match'
+              );
+            },
           }}
           placeholder="New password"
           required
@@ -120,7 +128,7 @@ export const ChangePasswordForm = () => {
           name="newPasswordConfirm"
           options={{
             validate: (value: string) =>
-              value === formContext.getValues('newPassword') || 'Passwords do not match',
+              value === getValues('newPassword') || 'Passwords do not match',
           }}
           placeholder="Confirm new password"
           required
