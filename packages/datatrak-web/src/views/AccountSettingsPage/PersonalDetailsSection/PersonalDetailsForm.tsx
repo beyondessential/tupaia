@@ -26,8 +26,11 @@ const StyledTextField = styled(TextField)`
 `;
 
 const StyledForm = styled(Form)`
-  max-width: 44.25rem;
   width: 100%;
+
+  ${({ theme }) => theme.breakpoints.up('md')} {
+    max-width: 44.25rem;
+  }
 `;
 
 const StyledFieldset = styled.fieldset`
@@ -158,7 +161,7 @@ export const PersonalDetailsForm = () => {
             disabled={!isDirty || isSubmitting || isLoading}
             fullWidth
           >
-            {isSubmitting || isLoading ? 'Saving…' : 'Save changes'}
+            {isSubmitting || isLoading ? 'Saving' : 'Save changes'}
           </Button>
         </ButtonWrapper>
       </StyledFieldset>
