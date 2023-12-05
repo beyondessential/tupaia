@@ -26,8 +26,11 @@ const StyledTextField = styled(TextField)`
 `;
 
 const StyledForm = styled(Form)`
-  max-width: 44.25rem;
   width: 100%;
+
+  ${({ theme }) => theme.breakpoints.up('lg')} {
+    max-width: 44.25rem;
+  }
 `;
 
 const StyledFieldset = styled.fieldset`
