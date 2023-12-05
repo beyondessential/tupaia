@@ -7,12 +7,7 @@ import { useMutation } from 'react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { post } from '../api';
 import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
-
-export type ResetPasswordParams = {
-  oldPassword: string;
-  newPassword: string;
-  newPasswordConfirm: string;
-};
+import { ResetPasswordParams } from '../../types';
 
 export const useResetPassword = (options?: {
   onError?: () => void;

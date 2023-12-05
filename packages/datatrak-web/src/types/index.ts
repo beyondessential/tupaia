@@ -10,6 +10,7 @@ export type {
   SurveyScreenComponent,
   SurveyScreen,
 } from './surveys';
-export * from './entity';
-export * from './userRewards';
 export * from './activityFeed';
+export * from './entity';
+export * from './resetPasswordParams';
+export * from './userRewards';
