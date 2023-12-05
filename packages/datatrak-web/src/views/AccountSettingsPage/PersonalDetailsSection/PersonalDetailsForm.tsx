@@ -67,10 +67,11 @@ export const PersonalDetailsForm = () => {
       employer: user.employer ?? '',
       position: user.position ?? '',
     } as PersonalDetailsFormFields,
+    mode: 'onBlur',
   });
 
   const {
-    formState: { isDirty, dirtyFields, isSubmitting },
+    formState: { dirtyFields, isDirty, isSubmitting, isValid, isValidating },
     getValues,
     handleSubmit,
     reset,
@@ -85,11 +86,11 @@ export const PersonalDetailsForm = () => {
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
-    const updates: UserAccountDetails = Object.fromEntries(
+    const updates: PersonalDetailsFormFields = Object.fromEntries(
       Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
     );
 
-    updateUser(updates);
+    updateUser(updates as UserAccountDetails);
   }
 
   return (
@@ -101,6 +102,9 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
           name="firstName"
+          options={{
+            validate: (value: string) => !!value.trim() || 'First name must not be empty',
+          }}
           placeholder="First name"
           required
         />
@@ -110,6 +114,9 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
           name="lastName"
+          options={{
+            validate: (value: string) => !!value.trim() || 'Last name must not be empty',
+          }}
           placeholder="Last name"
           required
         />
@@ -141,6 +148,9 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
           name="employer"
+          options={{
+            validate: (value: string) => !!value.trim() || 'Employer must not be empty',
+          }}
           placeholder="Employer"
           required
         />
@@ -150,6 +160,9 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
           name="position"
+          options={{
+            validate: (value: string) => !!value.trim() || 'Position must not be empty',
+          }}
           placeholder="Position"
           required
         />
@@ -158,7 +171,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty || isSubmitting || isLoading}
+            disabled={!isDirty || isValidating || !isValid || isSubmitting || isLoading}
             fullWidth
           >
             {isSubmitting || isLoading ? 'Saving' : 'Save changes'}
