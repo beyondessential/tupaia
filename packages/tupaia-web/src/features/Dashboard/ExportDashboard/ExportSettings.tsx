@@ -14,9 +14,9 @@ import { useDashboards, useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { useDashboardMailingList } from '../../../utils';
 import { ExportSettingLabel } from './ExportSettingLabel';
 import { ExportSettingsInstructions } from './ExportSettingsInstructions';
-import { useDashboardMailingList } from '../../../utils';
 import { MailingListButton } from './MailingListButton';
 
 const ButtonGroup = styled.div`
@@ -167,6 +167,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const mailingList = useDashboardMailingList();
+  const showMailingListButton = mailingList && mailingList.isEmailAdmin;
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
@@ -233,8 +234,8 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
                   />
                 </fieldset>
               </FormGroup>
-              {mailingList ? <Divider /> : null}
-              {mailingList ? (
+              {showMailingListButton ? <Divider /> : null}
+              {showMailingListButton ? (
                 <MailingListButton selectedDashboardItems={selectedDashboardItems} />
               ) : null}
             </ExportSetting>
