@@ -36,8 +36,10 @@ export const PDFExport = ({
   selectedDashboardItems: propsSelectedDashboardItems,
   isPreview = false,
 }: PDFExportProps) => {
-  // Hacky way to change default background color without touching root css.
-  document.body.style.backgroundColor = 'white';
+  // Hacky way to change default background color without touching root css. Only apply when generating the pdf, not when in preview mode as it changes the display
+  if (!isPreview) {
+    document.body.style.backgroundColor = 'white';
+  }
 
   const {
     projectCode: urlProjectCode,

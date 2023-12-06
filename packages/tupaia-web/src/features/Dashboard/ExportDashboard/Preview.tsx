@@ -247,7 +247,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                 entityCode={entityCode}
                 dashboardName={dashboardName}
                 selectedDashboardItems={[visualisationToPreview]}
-                isPreview={!isLoading}
+                isPreview={true}
               />
             </PreviewContainer>
           </PreviewPanelContainer>
