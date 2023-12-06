@@ -20,9 +20,9 @@ export const useResetPassword = (options?: {
   const oneTimeLoginToken = urlSearchParams.get(PASSWORD_RESET_TOKEN_PARAM);
 
   return useMutation<any, Error, ResetPasswordParams, unknown>(
-    (resetPasswordParams: ResetPasswordParams) => {
+    ({ oldPassword, newPassword, newPasswordConfirm }: ResetPasswordParams) => {
       return post('me/changePassword', {
-        data: { ...resetPasswordParams, oneTimeLoginToken },
+        data: { oldPassword, newPassword, newPasswordConfirm, oneTimeLoginToken },
       });
     },
     {
