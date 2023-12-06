@@ -1,6 +1,6 @@
 {
-  "baselineUrl": "https://e2e.tupaia.org",
-  "compareUrl": "https://release-2023-49-e2e.tupaia.org",
+  "baselineUrl": "https://release-2023-49-e2e.tupaia.org",
+  "compareUrl": "https://fixup-rewrite-e2e.tupaia.org",
   "dashboardReports": {
     "allowEmptyResponse": false,
     "snapshotTypes": ["responseData"],
