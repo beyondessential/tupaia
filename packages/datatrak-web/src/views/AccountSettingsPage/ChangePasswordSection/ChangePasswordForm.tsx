@@ -52,12 +52,12 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 const StyledButton = styled(Button)`
+  // HACK: Make button height match adjacent FormInput
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    // HACK: Make button height match adjacent FormInput
+    padding: 1rem;
     .MuiButton-label {
       border: 1px solid transparent;
       height: 1.1876em;
-      padding: 1rem;
     }
   }
 `;
