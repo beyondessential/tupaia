@@ -8,9 +8,9 @@ import { get } from '../api';
 
 export const useEntities = (projectCode?: string, params?: DatatrakWebEntitiesRequest.ReqBody) => {
   return useQuery(
-    ['entities', projectCode, params],
+    ['entityDescendants', projectCode, params],
     (): Promise<DatatrakWebEntitiesRequest.ResBody> =>
-      get('entities', { params: { filter: { ...params, projectCode } } }),
+      get('entityDescendants', { params: { filter: { ...params, projectCode } } }),
     { enabled: !!projectCode },
   );
 };

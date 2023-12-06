@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useCountry, useCurrentUser, useEditUser, useSurvey } from '../api';
+import { useCurrentUser, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
@@ -48,13 +48,8 @@ const SurveyScreenContainer = styled.div<{
 
 const SurveyPageInner = () => {
   const { screenNumber } = useParams<SurveyParams>();
-  const {
-    formData,
-    isSuccessScreen,
-    isResponseScreen,
-    cancelModalOpen,
-    closeCancelConfirmation,
-  } = useSurveyForm();
+  const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
+    useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -79,7 +74,7 @@ export const SurveyPage = () => {
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUser();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: surveyCountry } = useCountry(survey?.project?.code, countryCode);
+  const { data: surveyCountry } = useEntityByCode(countryCode!);
 
   // Update the user's preferred country if they start a survey in a different country
   useEffect(() => {
