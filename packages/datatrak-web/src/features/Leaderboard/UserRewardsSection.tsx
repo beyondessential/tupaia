@@ -43,11 +43,11 @@ export const UserRewardsSection = ({ pigs, coconuts }: UserRewards) => {
     <Wrapper>
       <UserRewardItem>
         <Pig />
-        <UserRewardCount>{pigs} Pigs</UserRewardCount>
+        <UserRewardCount>{pigs}&nbsp;pigs</UserRewardCount>
       </UserRewardItem>
       <UserRewardItem>
         <Coconut />
-        <UserRewardCount>{coconuts} Coconuts</UserRewardCount>
+        <UserRewardCount>{coconuts}&nbsp;coconuts</UserRewardCount>
       </UserRewardItem>
     </Wrapper>
   );
