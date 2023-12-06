@@ -46,6 +46,9 @@ const Container = styled.div`
       font-size: 1rem;
     }
   }
+  .loading-container {
+    width: 100%;
+  }
 `;
 
 const Title = styled(Typography).attrs({
