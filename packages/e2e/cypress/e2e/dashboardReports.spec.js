@@ -36,7 +36,7 @@ const urlToRouteRegex = url => {
     throw new Error(`'${url}' is not a valid report url: it must contain a 'report' query param`);
   }
 
-  return new RegExp(`report/.*\\?(.*&|)isExpanded=true&(.*&|)itemCode=${itemCode}(&|$)`);
+  return new RegExp(`(legacyDashboardReport|report)/.*\\?(.*&|)isExpanded=true&(.*&|)itemCode=${itemCode}(&|$)`);
 };
 
 describe('Dashboard reports', () => {
