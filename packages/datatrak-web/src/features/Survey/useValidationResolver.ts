@@ -22,7 +22,8 @@ const getBaseSchema = (type: QuestionType) => {
         .shape({
           value: yup.string(),
         })
-        .nullable(); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
+        .nullable()
+        .default(null); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
     case QuestionType.Date:
     case QuestionType.SubmissionDate:
     case QuestionType.DateOfData:
@@ -130,7 +131,6 @@ export const useValidationResolver = () => {
           errors: {},
         };
       } catch (errors: any) {
-        console.log(errors?.inner);
         return {
           values: {},
           errors: errors?.inner?.reduce((allErrors, currentError) => {

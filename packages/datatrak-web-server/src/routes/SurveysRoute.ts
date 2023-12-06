@@ -7,13 +7,14 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import sortBy from 'lodash.sortby';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest, Survey } from '@tupaia/types';
 
-type Survey = DatatrakWebSurveyRequest.ResBody;
+type SingleSurveyResponse = DatatrakWebSurveyRequest.ResBody;
 
+// Todo: consolidate types between SurveysRoute and SingleSurveyRoute
 export type SurveysRequest = Request<
   DatatrakWebSurveyRequest.Params,
-  Survey[],
+  SingleSurveyResponse[],
   DatatrakWebSurveyRequest.ReqBody,
   DatatrakWebSurveyRequest.ReqQuery
 >;
@@ -21,11 +22,17 @@ export type SurveysRequest = Request<
 export class SurveysRoute extends Route<SurveysRequest> {
   public async buildResponse() {
     const { ctx, query = {} } = this.req;
-    const { fields } = query;
+    const { fields = [], projectId } = query;
+
     const surveys = await ctx.services.central.fetchResources('surveys', {
+      ...query,
+      filter: {
+        project_id: projectId,
+      },
       columns: fields,
       pageSize: 'ALL', // Override default page size of 100
     });
+
     return sortBy(
       camelcaseKeys(surveys, {
         deep: true,

@@ -671,7 +671,7 @@ export interface Entity {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityCreate {
   'attributes'?: any | null;
@@ -684,7 +684,7 @@ export interface EntityCreate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityUpdate {
   'attributes'?: any | null;
@@ -698,7 +698,7 @@ export interface EntityUpdate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type'?: EntityType;
 }
 export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
@@ -1389,6 +1389,7 @@ export interface Survey {
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }
@@ -1401,6 +1402,7 @@ export interface SurveyCreate {
   'name': string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }
@@ -1414,6 +1416,7 @@ export interface SurveyUpdate {
   'name'?: string;
   'period_granularity'?: PeriodGranularity | null;
   'permission_group_id'?: string | null;
+  'project_id'?: string | null;
   'requires_approval'?: boolean | null;
   'survey_group_id'?: string | null;
 }

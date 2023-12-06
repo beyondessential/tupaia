@@ -26457,6 +26457,18 @@ export const IconKeySchema = {
 	"type": "string"
 } 
 
+export const ScaleTypeSchema = {
+	"enum": [
+		"gpi",
+		"neutral",
+		"neutralReverse",
+		"performance",
+		"performanceDesc",
+		"time"
+	],
+	"type": "string"
+} 
+
 export const MeasureTypeSchema = {
 	"enum": [
 		"color",
@@ -27771,6 +27783,36 @@ export const ClinicUpdateSchema = {
 		}
 	},
 	"additionalProperties": false
+} 
+
+export const CommentSchema = {
+	"type": "object",
+	"properties": {
+		"created_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"id": {
+			"type": "string"
+		},
+		"last_modified_time": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"text": {
+			"type": "string"
+		},
+		"user_id": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"created_time",
+		"id",
+		"last_modified_time",
+		"text"
+	]
 } 
 
 export const CommentCreateSchema = {
@@ -53499,7 +53541,8 @@ export const EntitySchema = {
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -53571,7 +53614,8 @@ export const EntityCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -57793,6 +57837,9 @@ export const SurveySchema = {
 		"permission_group_id": {
 			"type": "string"
 		},
+		"project_id": {
+			"type": "string"
+		},
 		"requires_approval": {
 			"type": "boolean"
 		},
@@ -57841,6 +57888,9 @@ export const SurveyCreateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
@@ -57893,6 +57943,9 @@ export const SurveyUpdateSchema = {
 			"type": "string"
 		},
 		"permission_group_id": {
+			"type": "string"
+		},
+		"project_id": {
 			"type": "string"
 		},
 		"requires_approval": {
@@ -59276,7 +59329,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"required": [
 					"code",
 					"id",
-					"name"
+					"name",
+					"type"
 				]
 			}
 		},
@@ -59365,27 +59419,8 @@ export const DataTablePreviewRequestSchema = {
 	]
 } 
 
-export const CamelCaseSchema = {
+export const ParamsSchema = {
 	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const CamelCasePartSchema = {
-	"type": "array",
-	"items": {
-		"type": "string"
-	}
-} 
-
-export const ObjectToCamelSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const KeysToCamelCaseSchema = {
 	"type": "object",
 	"additionalProperties": false
 } 
@@ -59534,7 +59569,8 @@ export const ResBodySchema = {
 		"required": [
 			"code",
 			"id",
-			"name"
+			"name",
+			"type"
 		]
 	}
 } 
@@ -59809,12 +59845,16 @@ export const RecentSurveySchema = {
 		"countryName": {
 			"type": "string"
 		},
+		"countryCode": {
+			"type": "string"
+		},
 		"countryId": {
 			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"countryCode",
 		"countryId",
 		"countryName",
 		"surveyCode",
@@ -68230,6 +68270,7 @@ export const DashboardWithMetadataSchema = {
 		"code",
 		"id",
 		"items",
+		"mailingLists",
 		"name",
 		"root_entity_code"
 	]
@@ -68713,5 +68754,86 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
+} 
+
+export const SubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const SubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email"
+	]
+} 
+
+export const UnsubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const UnsubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		},
+		"unsubscribeTime": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"unsubscribeTime"
+	]
 } 
 

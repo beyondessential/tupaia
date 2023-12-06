@@ -12,6 +12,7 @@ import {
 } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 import { SurveyScreenComponentConfig } from '../../models-extra';
+import { WebServerProjectRequest } from '../web-server';
 
 export type Params = Record<string, never>;
 
@@ -67,10 +68,12 @@ type SurveyResponse = KeysToCamelCase<Survey> & {
   surveyGroupName?: string | null;
   screens: SurveyScreen[];
   countryNames?: string[];
+  project?: WebServerProjectRequest.ProjectResponse | null;
 };
 
 export type ResBody = SurveyResponse;
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   fields?: string[];
+  projectId?: string;
 }

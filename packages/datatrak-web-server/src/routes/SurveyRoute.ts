@@ -6,7 +6,7 @@
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSurveyRequest } from '@tupaia/types';
+import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
 
 export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.Params,
@@ -15,7 +15,15 @@ export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['name', 'code', 'id', 'can_repeat', 'survey_group.name'];
+const DEFAULT_FIELDS = [
+  'name',
+  'code',
+  'id',
+  'can_repeat',
+  'survey_group.name',
+  'project_id',
+  'surveyQuestions',
+];
 
 const parseOption = (option: string) => {
   try {
@@ -80,6 +88,11 @@ export class SurveyRoute extends Route<SurveyRequest> {
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
+    const { projects } = await ctx.services.webConfig.fetchProjects();
+    const project = survey?.projectId
+      ? projects.find(({ id }: WebServerProjectRequest.ProjectResponse) => id === survey.projectId)
+      : null;
+
     const { surveyQuestions, ...restOfSurvey } = survey;
 
     const formattedScreens = surveyQuestions
@@ -97,6 +110,7 @@ export class SurveyRoute extends Route<SurveyRequest> {
     return {
       ...restOfSurvey,
       screens: formattedScreens,
+      project,
     };
   }
 }

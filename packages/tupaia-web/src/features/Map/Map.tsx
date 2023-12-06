@@ -3,26 +3,20 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import {
-  TileLayer,
-  LeafletMap,
-  ZoomControl,
-  TilePicker,
-  LeafletMapProps,
-} from '@tupaia/ui-map-components';
+import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
 import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
-import { useEntity } from '../../api/queries';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
 import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
+import { useProject } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -32,12 +26,17 @@ const MapContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+
+  .leaflet-container {
+    min-height: 15rem;
+  }
 `;
 
 const StyledMap = styled(LeafletMap)`
   height: 100%;
   width: 100%;
   flex: 1;
+
   .leaflet-pane {
     // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
     z-index: 0;
@@ -113,17 +112,57 @@ const getAutoTileset = () => {
     return openStreets;
   } else {
     const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
-    return ((window as unknown) as Window & {
-      loadTime: number;
-    })?.loadTime < SLOW_LOAD_TIME_THRESHOLD
+    return (
+      window as unknown as Window & {
+        loadTime: number;
+      }
+    )?.loadTime < SLOW_LOAD_TIME_THRESHOLD
       ? satellite
       : openStreets;
   }
 };
 
+const useTileSets = () => {
+  const { projectCode } = useParams();
+  const { data: project } = useProject(projectCode);
+  const initialTileSet = getAutoTileset();
+  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
+  const { tileSets = '' } = project?.config || {};
+  const customTilesetNames = tileSets?.split(',') || [];
+  const customTileSets = customTilesetNames
+    .map(tileset => TILE_SETS.find(({ key }) => key === tileset) as (typeof TILE_SETS)[0])
+    .filter(item => item);
+  const defaultTileSets = [openStreets, satellite];
+  const availableTileSets = [...defaultTileSets, ...customTileSets];
+
+  useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
+
+  const onTileSetChange = (tileSetKey: string) => {
+    const newActiveTileSet = availableTileSets.find(
+      ({ key }) => key === tileSetKey,
+    ) as (typeof TILE_SETS)[0];
+    setActiveTileSet(newActiveTileSet);
+  };
+
+  useEffect(() => {
+    if (
+      activeTileSet &&
+      availableTileSets.length &&
+      !availableTileSets.some(({ key }) => key === activeTileSet.key)
+    ) {
+      setActiveTileSet(initialTileSet);
+    }
+  }, [JSON.stringify(availableTileSets)]);
+
+  return {
+    availableTileSets,
+    activeTileSet,
+    onTileSetChange,
+  };
+};
+
 export const Map = () => {
   const { projectCode, entityCode } = useParams();
-  const { data: entity } = useEntity(projectCode, entityCode);
 
   useDefaultMapOverlay(projectCode, entityCode);
 
@@ -131,25 +170,12 @@ export const Map = () => {
   const { serieses } = useMapOverlayMapData();
   const { hiddenValues, setValueHidden } = useHiddenMapValues(serieses);
 
-  // Setup Tile Picker
-  const initialTileSet = getAutoTileset();
-  const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
-  useGAEffect('Map', 'Change Tile Set', activeTileSet.label);
-  const onTileSetChange = (tileSetKey: string) => {
-    setActiveTileSet(TILE_SETS.find(({ key }) => key === tileSetKey) as typeof TILE_SETS[0]);
-  };
-
-  const zoom = entity?.bounds ? undefined : 15;
+  const { availableTileSets, activeTileSet, onTileSetChange } = useTileSets();
 
   return (
     <MapContainer>
       <ErrorBoundary>
-        <StyledMap
-          center={entity?.point as LeafletMapProps['center']}
-          bounds={entity?.bounds as LeafletMapProps['bounds']}
-          zoom={zoom as LeafletMapProps['zoom']}
-          shouldSnapToPosition
-        >
+        <StyledMap shouldSnapToPosition>
           <TileLayer tileSetUrl={activeTileSet.url} showAttribution={false} />
           <MapOverlaysLayer hiddenValues={hiddenValues} />
           <DemoLand />
@@ -164,7 +190,7 @@ export const Map = () => {
           </MapControlColumn>
           <TilePickerWrapper>
             <TilePicker
-              tileSets={TILE_SETS}
+              tileSets={availableTileSets}
               activeTileSet={activeTileSet}
               onChange={onTileSetChange}
             />

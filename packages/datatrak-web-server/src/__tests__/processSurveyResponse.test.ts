@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { QuestionType } from '@tupaia/types';
+import { EntityType, QuestionType } from '@tupaia/types';
 import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
@@ -19,6 +19,7 @@ const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
+  type: 'facility' as EntityType,
 });
 
 jest.mock('@tupaia/database', () => ({
@@ -48,7 +49,6 @@ describe('processSurveyResponse', () => {
   };
 
   const processedResponseData = {
-    country_id: 'theCountryId',
     survey_id: 'theSurveyId',
     user_id: 'theUserId',
     start_time: 'theStartTime',
