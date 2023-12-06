@@ -12,5 +12,4 @@ export type {
 } from './surveys';
 export * from './activityFeed';
 export * from './entity';
-export * from './resetPasswordParams';
 export * from './userRewards';

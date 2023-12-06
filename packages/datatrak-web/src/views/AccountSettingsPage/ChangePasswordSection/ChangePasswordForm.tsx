@@ -9,8 +9,7 @@ import { useForm } from 'react-hook-form';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
-import { ResetPasswordParams } from '../../../types';
-import { useResetPassword } from '../../../api';
+import { ResetPasswordParams, useResetPassword } from '../../../api';
 
 const StyledForm = styled(Form)`
   width: 100%;
