@@ -82,7 +82,7 @@ export const ChangePasswordForm = () => {
   } = formContext;
 
   const { mutate: attemptPasswordChange } = useResetPassword({
-    onError: () => errorToast('Could not update your password'),
+    onError: () => errorToast('Couldn’t update your password'),
     onSettled: () => reset(emptyFormState),
     onSuccess: () => successToast('Your password has been successfully updated'),
   });
