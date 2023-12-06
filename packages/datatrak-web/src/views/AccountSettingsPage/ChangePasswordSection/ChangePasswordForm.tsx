@@ -86,6 +86,8 @@ export const ChangePasswordForm = () => {
     onSuccess: () => successToast('Your password has been successfully updated'),
   });
 
+  const submissionShouldBeDisabled: boolean = isValidating || !isValid || isSubmitting;
+
   return (
     <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
       <StyledFieldset>
@@ -133,7 +135,7 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledButton type="submit" disabled={isValidating || !isValid || isSubmitting} fullWidth>
+        <StyledButton type="submit" disabled={submissionShouldBeDisabled} fullWidth>
           {isSubmitting ? 'Changing' : 'Change password'}
         </StyledButton>
       </StyledFieldset>
