@@ -37,7 +37,7 @@ const urlToRouteRegex = url => {
 
   // Allows responses for both versions of the frontend
   return new RegExp(
-    `(legacyMapOverlayReport|measureData)\\?(.*&|)mapOverlayCode=${mapOverlayCode}(&|$)`,
+    `(measureData\\?(.*&|)mapOverlayCode=${mapOverlayCode}(&|$)|legacyMapOverlayReport/${mapOverlayCode})`,
   );
 };
 
