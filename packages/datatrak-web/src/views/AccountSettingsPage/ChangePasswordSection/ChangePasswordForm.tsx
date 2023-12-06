@@ -86,6 +86,15 @@ export const ChangePasswordForm = () => {
     onSuccess: () => successToast('Your password has been successfully updated'),
   });
 
+  const mismatchedPasswordMessage = 'Passwords do not match';
+  type PasswordValidator = (value: string) => true | typeof mismatchedPasswordMessage;
+  const validateNewPassword: PasswordValidator = value =>
+    !(touched as Partial<ResetPasswordParams>).newPasswordConfirm ||
+    value === getValues('newPasswordConfirm') ||
+    mismatchedPasswordMessage;
+  const validateNewPasswordConfirm: PasswordValidator = value =>
+    value === getValues('newPassword') || mismatchedPasswordMessage;
+
   const submissionShouldBeDisabled: boolean = isValidating || !isValid || isSubmitting;
 
   return (
@@ -109,13 +118,7 @@ export const ChangePasswordForm = () => {
           name="newPassword"
           options={{
             minLength: { value: 9, message: 'Must be over 8 characters long' },
-            validate: (value: string) => {
-              return (
-                !(touched as Partial<ResetPasswordParams>).newPasswordConfirm ||
-                value === getValues('newPasswordConfirm') ||
-                'Passwords do not match'
-              );
-            },
+            validate: value => validateNewPassword(value),
           }}
           placeholder="New password"
           required
@@ -127,10 +130,7 @@ export const ChangePasswordForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Confirm new password"
           name="newPasswordConfirm"
-          options={{
-            validate: (value: string) =>
-              value === getValues('newPassword') || 'Passwords do not match',
-          }}
+          options={{ validate: value => validateNewPasswordConfirm(value) }}
           placeholder="Confirm new password"
           required
           type="password"
