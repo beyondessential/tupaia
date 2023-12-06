@@ -64,9 +64,10 @@ export const getDisplayQuestions = (
 ) => {
   // If the first question is an instruction, don't render it since we always just
   // show the text of first questions as the heading. Format the questions with a question number to display
-  const displayQuestions = (activeScreen?.length && activeScreen?.[0].type === 'Instruction'
-    ? activeScreen?.slice(1)
-    : activeScreen
+  const displayQuestions = (
+    activeScreen?.length && activeScreen?.[0].type === 'Instruction'
+      ? activeScreen?.slice(1)
+      : activeScreen
   ).map(question => {
     const { questionId } = question;
     if (getIsDependentQuestion(screenComponents, questionId)) {
@@ -150,12 +151,13 @@ const resetInvisibleQuestions = (
   const updatedFormData = { ...oldFormData, ...updates };
   screenComponents?.forEach(component => {
     const { questionId, visibilityCriteria } = component;
+
     if (
       visibilityCriteria &&
       !getIsQuestionVisible(component, updatedFormData) &&
       updatedFormData.hasOwnProperty(questionId)
     ) {
-      delete updatedFormData[questionId];
+      updatedFormData[questionId] = undefined;
     }
   });
 

@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select as BaseSelect } from '@tupaia/ui-components';
+import { Country } from '@tupaia/types';
 import { Entity } from '../../types';
 
 const Select = styled(BaseSelect)`
@@ -40,7 +41,7 @@ const CountrySelectWrapper = styled.div`
 
 interface SurveyCountrySelectorProps {
   countries: Entity[];
-  selectedCountry?: Entity | null;
+  selectedCountry?: Country | null;
   onChangeCountry: (country: Entity | null) => void;
 }
 
@@ -55,11 +56,8 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
-      {/** @ts-ignore - TS is complaining about the type of the options, because we are creating them from Entities */}
       <Select
-        options={
-          countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []
-        }
+        options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
         value={selectedCountry?.code}
         onChange={updateSelectedCountry}
         inputProps={{ 'aria-label': 'Select a country' }}

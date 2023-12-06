@@ -16,7 +16,13 @@ import { Entity } from '../../../types';
 /*
  * This hook is used to get the sibling and immediate child entities for displaying navigation polygons on the map
  */
-const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, measureLevel) => {
+const useNavigationEntities = (
+  projectCode,
+  activeEntity,
+  isPolygonSerieses,
+  measureLevel,
+  displayOnLevel,
+) => {
   const rootEntityCode = activeEntity?.parentCode || activeEntity?.code;
 
   const { data = [] } = useEntitiesWithLocation(
@@ -32,6 +38,9 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, mea
     },
     { enabled: !!rootEntityCode },
   );
+
+  // if display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
+  if (displayOnLevel) return [];
 
   // Don't show nav entities for the selected measure level
   const filteredData = data?.filter(entity => {
@@ -54,7 +63,7 @@ const useNavigationEntities = (projectCode, activeEntity, isPolygonSerieses, mea
   );
 };
 
-const useRootEntityCode = (entity, measureLevel) => {
+const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
   const { projectCode, entityCode } = useParams();
   const { data: entityAncestors } = useEntityAncestors(projectCode, entityCode);
   if (!entity) {
@@ -62,6 +71,12 @@ const useRootEntityCode = (entity, measureLevel) => {
   }
   const { parentCode, code, type } = entity;
 
+  if (displayOnLevel) {
+    const measure = entityAncestors?.find(
+      (entity: Entity) => entity.type.replace('_', '') === displayOnLevel?.toLowerCase(),
+    ) as Entity;
+    return measure?.code;
+  }
   // If the active entity is a country we don't show visuals for neighbouring countries, so just make
   // the root entity the country
   if (type === 'country' || !parentCode) {
@@ -91,12 +106,17 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
     entity,
     isPolygonSerieses,
     selectedOverlay?.measureLevel,
+    selectedOverlay?.displayOnLevel,
   );
-  const rootEntityCode = useRootEntityCode(entity, selectedOverlay?.measureLevel);
+
+  const rootEntityCode = useRootEntityCode(
+    entity,
+    selectedOverlay?.measureLevel,
+    selectedOverlay?.displayOnLevel,
+  );
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
-
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
     ?.filter(
@@ -109,7 +129,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
         organisationUnitCode: entityRelative.code,
         coordinates: entityRelative.point,
         region: entityRelative.region,
-        permanentTooltip: !selectedOverlay,
+        permanentTooltip: !selectedOverlay || mapOverlayData?.isLoading,
       };
     });
 

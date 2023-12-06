@@ -41,6 +41,7 @@ import {
   DataElementDataServicesPage,
   DhisInstancesPage,
   SupersetInstancesPage,
+  DashboardMailingListsPage,
 } from './pages/resources';
 
 export const ROUTES = [
@@ -110,6 +111,11 @@ export const ROUTES = [
         label: 'Dashboard Relations',
         to: '/dashboard-relations',
         component: DashboardRelationsPage,
+      },
+      {
+        label: 'Dashboard Mailing Lists',
+        to: '/dashboard-mailing-lists',
+        component: DashboardMailingListsPage,
       },
       {
         label: 'Legacy Reports',

@@ -84,9 +84,11 @@ export const useMapOverlayTableData = ({
     hiddenValues: hiddenValues ? hiddenValues : {},
   }) as MeasureData[];
 
+  const loadingData = isLoading || isFetching || (!isFetched && !isIdle);
+
   return {
     ...data,
-    isLoading: isLoading || isFetching || (!isFetched && !isIdle),
+    isLoading: loadingData,
     isFetched,
     serieses: data?.serieses,
     measureData,
