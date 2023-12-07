@@ -314,17 +314,20 @@ export interface DashboardItemUpdate {
 }
 export interface DashboardMailingList {
   'dashboard_id': string;
+  'email_admin_permission_groups': string[];
   'entity_id': string;
   'id': string;
   'project_id': string;
 }
 export interface DashboardMailingListCreate {
   'dashboard_id': string;
+  'email_admin_permission_groups'?: string[];
   'entity_id': string;
   'project_id': string;
 }
 export interface DashboardMailingListUpdate {
   'dashboard_id'?: string;
+  'email_admin_permission_groups'?: string[];
   'entity_id'?: string;
   'id'?: string;
   'project_id'?: string;

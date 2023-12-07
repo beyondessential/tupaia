@@ -52024,6 +52024,12 @@ export const DashboardMailingListSchema = {
 		"dashboard_id": {
 			"type": "string"
 		},
+		"email_admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"entity_id": {
 			"type": "string"
 		},
@@ -52037,6 +52043,7 @@ export const DashboardMailingListSchema = {
 	"additionalProperties": false,
 	"required": [
 		"dashboard_id",
+		"email_admin_permission_groups",
 		"entity_id",
 		"id",
 		"project_id"
@@ -52048,6 +52055,12 @@ export const DashboardMailingListCreateSchema = {
 	"properties": {
 		"dashboard_id": {
 			"type": "string"
+		},
+		"email_admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		},
 		"entity_id": {
 			"type": "string"
@@ -52069,6 +52082,12 @@ export const DashboardMailingListUpdateSchema = {
 	"properties": {
 		"dashboard_id": {
 			"type": "string"
+		},
+		"email_admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		},
 		"entity_id": {
 			"type": "string"
