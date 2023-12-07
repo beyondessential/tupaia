@@ -31,3 +31,7 @@ GET {{host}}/projects HTTP/1.1
 content-type: {{contentType}}
 
  
+  
+### Get survey
+GET {{host}}/surveys/TAR HTTP/1.1
+content-type: {{contentType}}

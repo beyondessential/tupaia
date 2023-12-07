@@ -7,6 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebSurveyRequest, WebServerProjectRequest } from '@tupaia/types';
+import { PermissionsError } from '@tupaia/utils';
 
 export type SurveyRequest = Request<
   DatatrakWebSurveyRequest.Params,
@@ -78,13 +79,24 @@ export class SurveyRoute extends Route<SurveyRequest> {
       ctx,
       query = {},
       params: { surveyCode },
+      models,
     } = this.req;
     const { fields = DEFAULT_FIELDS } = query;
+    // check if survey exists in the database
+    const dbSurveyResults = await models.survey.find({ code: surveyCode });
+
+    if (!dbSurveyResults.length) throw new Error(`Survey with code ${surveyCode} not found`);
+
+    // check if user has access to survey
     const surveys = await ctx.services.central.fetchResources('surveys', {
       filter: { code: surveyCode },
       columns: fields,
     });
-    if (!surveys.length) throw new Error(`Survey with code ${surveyCode} not found`);
+
+    if (!surveys.length)
+      throw new PermissionsError(
+        'You do not have access to this survey. If you think this is a mistake, please contact your system administrator.',
+      );
 
     const survey = camelcaseKeys(surveys[0], { deep: true });
 
