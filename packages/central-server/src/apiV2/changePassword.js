@@ -40,11 +40,11 @@ export async function changePassword(req, res, next) {
       throw new FormValidationError('One time login is invalid');
     }
   } else if (!user.checkPassword(oldPassword)) {
-    throw new FormValidationError('Incorrect current password.', ['oldPassword']);
+    throw new FormValidationError('Incorrect current password', ['oldPassword']);
   }
 
   if (passwordParam !== passwordConfirmParam) {
-    throw new FormValidationError('Passwords do not match.', ['password', 'passwordConfirm']);
+    throw new FormValidationError('Passwords do not match', ['password', 'passwordConfirm']);
   }
 
   try {
