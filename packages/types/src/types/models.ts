@@ -671,7 +671,7 @@ export interface Entity {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityCreate {
   'attributes'?: any | null;
@@ -684,7 +684,7 @@ export interface EntityCreate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityUpdate {
   'attributes'?: any | null;
@@ -698,7 +698,7 @@ export interface EntityUpdate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type'?: EntityType;
 }
 export interface EntityHierarchy {
   'canonical_types'?: string[] | null;

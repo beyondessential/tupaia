@@ -24,6 +24,10 @@ const MultiSingleValueWrapper = styled.div`
     margin-top: 1rem;
     text-align: center;
   }
+
+  .MuiTypography-root {
+    font-size: 1.25rem;
+  }
 `;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
@@ -65,9 +69,11 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 };
 
 export const View = ({ customConfig, customReport }: ViewProps) => {
-  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
-    DashboardItemContext,
-  );
+  const {
+    config: originalConfig,
+    report: originalReport,
+    isEnlarged,
+  } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType

@@ -53541,7 +53541,8 @@ export const EntitySchema = {
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -53613,7 +53614,8 @@ export const EntityCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -59327,7 +59329,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"required": [
 					"code",
 					"id",
-					"name"
+					"name",
+					"type"
 				]
 			}
 		},
@@ -59566,7 +59569,8 @@ export const ResBodySchema = {
 		"required": [
 			"code",
 			"id",
-			"name"
+			"name",
+			"type"
 		]
 	}
 } 
@@ -68266,6 +68270,7 @@ export const DashboardWithMetadataSchema = {
 		"code",
 		"id",
 		"items",
+		"mailingLists",
 		"name",
 		"root_entity_code"
 	]
@@ -68749,5 +68754,86 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
+} 
+
+export const SubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const SubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email"
+	]
+} 
+
+export const UnsubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const UnsubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		},
+		"unsubscribeTime": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"unsubscribeTime"
+	]
 } 
 
