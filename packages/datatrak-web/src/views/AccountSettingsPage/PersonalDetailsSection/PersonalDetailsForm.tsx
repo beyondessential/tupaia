@@ -81,11 +81,15 @@ export const PersonalDetailsForm = () => {
     return !!value.trim() || 'Must not be empty';
   }
 
+  const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
+
+  const submissionShouldBeDisabled =
+    !isDirty || isValidating || !isValid || isSubmitting || isLoading;
+
   function handleSubmissionSuccess(): void {
     reset(getValues() as PersonalDetailsFormFields);
     successToast('Your personal details have been successfully updated');
   }
-  const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
@@ -168,7 +172,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty || isValidating || !isValid || isSubmitting || isLoading}
+            disabled={submissionShouldBeDisabled}
             fullWidth
           >
             {isSubmitting || isLoading ? 'Saving' : 'Save changes'}
