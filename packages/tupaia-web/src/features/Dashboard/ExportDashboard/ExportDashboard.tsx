@@ -21,11 +21,15 @@ const Wrapper = styled.div`
   width: 75rem;
   height: 45rem;
   max-width: 100%;
-  padding: 2.5rem 2.875rem 0rem 2.875rem;
+  padding: 2.5rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: start;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    padding: 2.5rem 2.875rem 0rem 2.875rem;
+  }
 `;
 
 const Container = styled.div`
@@ -45,6 +49,9 @@ const Container = styled.div`
       padding: 0.5em 1.75em;
       font-size: 1rem;
     }
+  }
+  .loading-container {
+    width: 100%;
   }
 `;
 
