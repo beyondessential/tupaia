@@ -33,8 +33,8 @@ export const useLogin = () => {
       onMutate: () => {
         gaEvent('login', 'Login', 'Attempt');
       },
-      onSuccess: ({ user }) => {
-        queryClient.invalidateQueries();
+      onSuccess: async ({ user }) => {
+        await queryClient.invalidateQueries();
         if (from) {
           navigate(from, {
             state: null,
