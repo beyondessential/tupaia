@@ -12302,6 +12302,7 @@ __metadata:
     "@tupaia/expression-parser": 1.0.0
     "@tupaia/types": 1.0.0
     "@tupaia/ui-components": 1.0.0
+    "@tupaia/ui-map-components": 1.0.0
     "@tupaia/utils": 1.0.0
     "@types/leaflet": ^1.7.1
     "@types/material-ui": ^0.21.12

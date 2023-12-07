@@ -9,6 +9,7 @@ import { Typography } from '@material-ui/core';
 import { OutlinedButton } from '@tupaia/ui-components';
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
+import { tileSets } from './constants';
 
 const Heading = styled(Typography).attrs({
   variant: 'h2',
@@ -18,12 +19,13 @@ const Heading = styled(Typography).attrs({
 `;
 
 const Container = styled.div`
+  width: 80vw;
+  max-width: 100%;
   ${({ theme }) => theme.breakpoints.down('sm')} {
     margin-top: -1rem;
   }
 
   ${({ theme }) => theme.breakpoints.up('md')} {
-    width: 80vw;
     max-width: 75rem;
     padding: 0 1.5rem;
   }
@@ -36,20 +38,47 @@ const ButtonGroup = styled.div`
   margin-top: 1.8rem;
   width: 100%;
 `;
+
+/** Utility function to determine whether tileSet should default to satellite
+ * or to osm, based on page load time. This will only run when determining the
+ * initial state of the map.
+ */
+const getAutoTileset = () => {
+  // default to osm in dev so that we don't pay for tiles when running locally
+  if (!import.meta.env.PROD) {
+    return tileSets.osm;
+  } else {
+    const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
+    return (
+      window as unknown as Window & {
+        loadTime: number;
+      }
+    )?.loadTime < SLOW_LOAD_TIME_THRESHOLD
+      ? tileSets.satellite
+      : tileSets.osm;
+  }
+};
+
 type Geolocation = {
   latitude?: LatLngLiteral['lat'];
   longitude?: LatLngLiteral['lng'];
 };
 
+interface MapModalProps {
+  geolocation: Geolocation;
+  setGeolocation: (geolocation: Geolocation) => void;
+  closeModal: () => void;
+  mapModalOpen: boolean;
+}
+
 export const MapModal = ({
   geolocation,
   setGeolocation,
   closeModal,
-}: {
-  geolocation: Geolocation;
-  setGeolocation: (geolocation: Geolocation) => void;
-  closeModal: () => void;
-}) => {
+  mapModalOpen,
+}: MapModalProps) => {
+  const initialTileSet = getAutoTileset();
+  const [selectedTileSet, setSelectedTileSet] = useState(initialTileSet);
   const [{ lat: currentLatitude, lng: currentLongitude }, setCoordinates] = useState({
     lat: geolocation?.latitude,
     lng: geolocation?.longitude,
@@ -64,14 +93,24 @@ export const MapModal = ({
     closeModal();
   };
 
+  const handleChangeTileSet = tileSetKey => {
+    setSelectedTileSet(tileSets[tileSetKey]);
+  };
+
   return (
-    <Modal open onClose={closeModal}>
+    <Modal open={mapModalOpen} onClose={closeModal}>
       <Container>
         <Heading>Drop pin on map</Heading>
         <Typography color="textSecondary">
           Click to drop the pin in a new position on the map and click 'Confirm'
         </Typography>
-        <Map lng={currentLongitude} lat={currentLatitude} setCoordinates={setCoordinates} />
+        <Map
+          lng={currentLongitude}
+          lat={currentLatitude}
+          setCoordinates={setCoordinates}
+          tileSet={selectedTileSet}
+          onChangeTileSet={handleChangeTileSet}
+        />
         <ButtonGroup>
           <OutlinedButton onClick={closeModal}>Cancel</OutlinedButton>
           <Button onClick={onSubmit}>Confirm</Button>

@@ -18,6 +18,7 @@
     "@testing-library/react-hooks": "^8.0.1",
     "@tupaia/expression-parser": "1.0.0",
     "@tupaia/ui-components": "1.0.0",
+    "@tupaia/ui-map-components": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "axios": "^1.4.0",
     "bson-objectid": "^1.2.2",

@@ -79,9 +79,12 @@ export const GeolocateQuestion = ({
           <MapIcon />
           <ButtonText>Drop pin on map</ButtonText>
         </ModalButton>
-        {mapModalOpen && (
-          <MapModal geolocation={value} setGeolocation={onChange} closeModal={toggleMapModal} />
-        )}
+        <MapModal
+          geolocation={value}
+          setGeolocation={onChange}
+          closeModal={toggleMapModal}
+          mapModalOpen={mapModalOpen}
+        />
       </Container>
     </Wrapper>
   );
