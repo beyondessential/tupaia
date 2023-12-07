@@ -7,10 +7,9 @@ import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
 import { Typography } from '@material-ui/core';
 import { OutlinedButton } from '@tupaia/ui-components';
-import { getAutoTileSet } from '@tupaia/ui-map-components';
+import { getAutoTileSet, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
-import { tileSets } from './constants';
 
 const Heading = styled(Typography).attrs({
   variant: 'h2',
@@ -76,7 +75,7 @@ export const MapModal = ({
   };
 
   const handleChangeTileSet = tileSetKey => {
-    setSelectedTileSet(tileSets[tileSetKey]);
+    setSelectedTileSet(DEFAULT_TILESETS[tileSetKey]);
   };
 
   return (
