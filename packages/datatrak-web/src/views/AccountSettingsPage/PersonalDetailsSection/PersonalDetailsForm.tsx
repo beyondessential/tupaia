@@ -77,6 +77,10 @@ export const PersonalDetailsForm = () => {
     reset,
   } = formContext;
 
+  function assertNotWhitespace(value: string) {
+    return !!value.trim() || 'Must not be empty';
+  }
+
   function handleSubmissionSuccess(): void {
     reset(getValues() as PersonalDetailsFormFields);
     successToast('Your personal details have been successfully updated');
@@ -106,9 +110,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
           name="firstName"
-          options={{
-            validate: (value: string) => !!value.trim() || 'First name must not be empty',
-          }}
+          options={{ validate: assertNotWhitespace }}
           placeholder="First name"
           required
         />
@@ -118,16 +120,13 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
           name="lastName"
-          options={{
-            validate: (value: string) => !!value.trim() || 'Last name must not be empty',
-          }}
+          options={{ validate: assertNotWhitespace }}
           placeholder="Last name"
           required
         />
         <StyledTextField
           autoComplete="email"
           disabled
-          // Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
           label="Email"
           name="email"
@@ -152,9 +151,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
           name="employer"
-          options={{
-            validate: (value: string) => !!value.trim() || 'Employer must not be empty',
-          }}
+          options={{ validate: assertNotWhitespace }}
           placeholder="Employer"
           required
         />
@@ -164,9 +161,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
           name="position"
-          options={{
-            validate: (value: string) => !!value.trim() || 'Position must not be empty',
-          }}
+          options={{ validate: assertNotWhitespace }}
           placeholder="Position"
           required
         />
