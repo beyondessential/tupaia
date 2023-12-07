@@ -1,0 +1,2307 @@
+[
+  {
+    "surveyName": "Incident - Full Incident Record PNG",
+    "surveyCode": "AT_IFIR_PG",
+    "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Incident - Report Incident PNG",
+    "surveyCode": "AT_IRI_PG",
+    "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Incident - Full Incident Record",
+    "surveyCode": "IFIR",
+    "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Incident - Response",
+    "surveyCode": "IR",
+    "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Incident - Report Incident",
+    "surveyCode": "IRI",
+    "projectCode": "aim_demo"
+  },
+  {
+    "surveyName": "Dispose or Revalue an Asset",
+    "surveyCode": "TADA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Biomedical Safety Test",
+    "surveyCode": "TABST",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Biomedical IPM",
+    "surveyCode": "TAI",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Maintain or Verify an Asset",
+    "surveyCode": "TASM",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Biomed IPM",
+    "surveyCode": "DABI",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Biomedical Safety Test",
+    "surveyCode": "DABST",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Disposal Assessment",
+    "surveyCode": "DADA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Disposal Decision",
+    "surveyCode": "DADD",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Registration",
+    "surveyCode": "DAR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Repair Completion",
+    "surveyCode": "DARC",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Repair Request",
+    "surveyCode": "DARR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Repair Status",
+    "surveyCode": "DARS",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "DL Asset Verification & Preventative Maintenance",
+    "surveyCode": "DASV",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Fiji Asset BOS",
+    "surveyCode": "FAB",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Fiji Asset Registration",
+    "surveyCode": "FAR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Fiji Asset Service Record",
+    "surveyCode": "FASR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Fiji Asset Status Verification",
+    "surveyCode": "FASV",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Add Photo of Facility",
+    "surveyCode": "AFP",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Add Photo of Asset",
+    "surveyCode": "APOA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Register an Asset in Demo Land",
+    "surveyCode": "RAAIDL",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Register a Test Asset",
+    "surveyCode": "RAAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Asset Type",
+    "surveyCode": "TACC",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Register an Asset",
+    "surveyCode": "TAR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Registration Details of Asset",
+    "surveyCode": "TARA",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Repair Request",
+    "surveyCode": "TARR",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Repair",
+    "surveyCode": "TARS",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Complete or Update a Transfer",
+    "surveyCode": "COUAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Initiate a Transfer",
+    "surveyCode": "IAT",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "Change Location of an Asset",
+    "surveyCode": "TALC",
+    "projectCode": "asset_management"
+  },
+  {
+    "surveyName": "C19 Test Adjustments",
+    "surveyCode": "C19_TA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "COVID-19 HSRA (National)",
+    "surveyCode": "C1HN",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Demo Land - Samoa COVID-19 Index Case - Contact Tracing",
+    "surveyCode": "DLSC1ICCT",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Demo Land - Samoa COVID-19 Quarantine Monitoring Follow Up Assessment",
+    "surveyCode": "DLSC1QMFUA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Demo Land - Samoa COVID-19 Quarantine Monitoring Initial Assessment",
+    "surveyCode": "DLSC1QMIA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Facility Assessment",
+    "surveyCode": "SC1FA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Index Case - Contact Tracing",
+    "surveyCode": "SC1ICCT",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Public Facility Assessment",
+    "surveyCode": "SC1PFA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Follow Up Quarantine Monitoring Assessment",
+    "surveyCode": "SC1QMFUA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Samoa COVID-19 Initial Quarantine Monitoring Assessment",
+    "surveyCode": "SC1QMIA",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "Vaccine campaign registration",
+    "surveyCode": "VCR",
+    "projectCode": "covid_samoa"
+  },
+  {
+    "surveyName": "BES Training Register",
+    "surveyCode": "BTR",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Basic Clinic Data",
+    "surveyCode": "BCD",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "WASH in Healthcare Facilities",
+    "surveyCode": "WIHF",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Child Immunization Dates",
+    "surveyCode": "MCSR_CID",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "GBV Form",
+    "surveyCode": "MCSR_GF",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "IUCD Inserted",
+    "surveyCode": "MCSR_II",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "IUCD Removed",
+    "surveyCode": "MCSR_IR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Jadelle Inserted",
+    "surveyCode": "MCSR_JI",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Jadelle Removed",
+    "surveyCode": "MCSR_JR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Malnutrition Register",
+    "surveyCode": "MCSR_MR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Rheumatic Heart Disease",
+    "surveyCode": "MCSR_RHD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Sections 1-3",
+    "surveyCode": "MCSR_S13",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 11 - Chronic Diseases",
+    "surveyCode": "MCSR_S1CD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 10 - Malnutrition",
+    "surveyCode": "MCSR_S1M",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 13 Morbidity Reporting",
+    "surveyCode": "MCSR_S1MR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 12 - Outbreak Reporting",
+    "surveyCode": "MCSR_S1OR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 4 - Immunisations",
+    "surveyCode": "MCSR_S4I",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 5 - Family Planning",
+    "surveyCode": "MCSR_S5FP",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 6 - Referrals",
+    "surveyCode": "MCSR_S6R",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 7 - Births",
+    "surveyCode": "MCSR_S7B",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 8 - Maternal Deaths",
+    "surveyCode": "MCSR_S8MD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Section 9 - Deaths",
+    "surveyCode": "MCSR_S9D",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Child Immunization Dates",
+    "surveyCode": "DLCID",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land GBV Form",
+    "surveyCode": "DLGF",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land IUCD Inserted",
+    "surveyCode": "DLII",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land IUCD Removed",
+    "surveyCode": "DLIR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Jadelle Inserted",
+    "surveyCode": "DLJI",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Jadelle Removed",
+    "surveyCode": "DLJR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Malnutrition Register",
+    "surveyCode": "DLMR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Rheumatic Heart Disease",
+    "surveyCode": "DLRHD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Sections 1-3",
+    "surveyCode": "DLS13",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 11 - Chronic Diseases",
+    "surveyCode": "DLS1CD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 10 - Malnutrition",
+    "surveyCode": "DLS1M",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 13 Morbidity Reporting",
+    "surveyCode": "DLS1MR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 12 - Outbreak Reporting",
+    "surveyCode": "DLS1OR",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 4 - Immunisations",
+    "surveyCode": "DLS4I",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 5 - Family Planning",
+    "surveyCode": "DLS5FP",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 6 - Referrals",
+    "surveyCode": "DLS6R",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 7 - Births",
+    "surveyCode": "DLS7B",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 8 - Maternal Deaths",
+    "surveyCode": "DLS8MD",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Demo Land Section 9 - Deaths",
+    "surveyCode": "DLS9D",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Basic Clinic Data Kiribati",
+    "surveyCode": "BCD_KI",
+    "projectCode": "ehealth_kiribati"
+  },
+  {
+    "surveyName": "Bakery Inspection",
+    "surveyCode": "EH_BI",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Registration of a Food Business",
+    "surveyCode": "EH_RFB",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Retail Inspection",
+    "surveyCode": "EH_RI",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Restaurant Inspection",
+    "surveyCode": "EH_RI1",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Seized Articles",
+    "surveyCode": "EH_SA",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "IEC Materials",
+    "surveyCode": "HP_IEC",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Basic Clinic Data Nauru",
+    "surveyCode": "BCD_NR",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Canteen Inspection",
+    "surveyCode": "N_CI",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Customer Satisfaction",
+    "surveyCode": "N_CS",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "School Lunchbox",
+    "surveyCode": "N_SL",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "School Inspection Report",
+    "surveyCode": "NR_SIR",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Nutrition School Lunchbox Inspection Form",
+    "surveyCode": "NR_SS03",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Nutrition School Canteen Assessment",
+    "surveyCode": "NSCA",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "School Breakfast Survey Questionnaire",
+    "surveyCode": "SBSQ",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "COVID Vaccine - Nauru",
+    "surveyCode": "COVIDVac_NR",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Maternal Health",
+    "surveyCode": "MH",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Nauru NCD Audit",
+    "surveyCode": "NNA",
+    "projectCode": "ehealth_nauru"
+  },
+  {
+    "surveyName": "Basic Clinic Data Samoa",
+    "surveyCode": "BCDS",
+    "projectCode": "ehealth_samoa"
+  },
+  {
+    "surveyName": "POST Disaster within 2 weeks",
+    "surveyCode": "DR_POST_2weeks",
+    "projectCode": "explore"
+  },
+  {
+    "surveyName": "POST Disaster 24-48 hours",
+    "surveyCode": "DR_POST_48hours",
+    "projectCode": "explore"
+  },
+  {
+    "surveyName": "Disaster Preparation",
+    "surveyCode": "DR_PRE",
+    "projectCode": "explore"
+  },
+  {
+    "surveyName": "C19 Test Registration",
+    "surveyCode": "C19T_Registration",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Test Results",
+    "surveyCode": "C19T_Results",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "COVID-19 Facility Assessment Tool",
+    "surveyCode": "C1FAT",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Aggregate Test",
+    "surveyCode": "CART",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Contact Follow Up",
+    "surveyCode": "CCFU",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Contact Listing Form",
+    "surveyCode": "CCLF",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Case Reporting Form",
+    "surveyCode": "CCRF",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Daily Recovered Cases",
+    "surveyCode": "CDDC",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Daily Hospital Admissions",
+    "surveyCode": "CDHA",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Follow Up Health Check",
+    "surveyCode": "FUHC_TO",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Initial Airport Screening",
+    "surveyCode": "IAS_TO",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Initial Hotel Screening",
+    "surveyCode": "IHS_TO",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "C19 Lab Request Form",
+    "surveyCode": "LRF_TO",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Quarantine Facility Status",
+    "surveyCode": "QFS",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH05 Building Record",
+    "surveyCode": "TO_EH05",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH06 Food Premises Inspection Form",
+    "surveyCode": "TO_EH06",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH07 Solid Waste Record Form",
+    "surveyCode": "TO_EH07",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH08a Complaint Form",
+    "surveyCode": "TO_EH08a",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH08b Complaint Form",
+    "surveyCode": "TO_EH08b",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH08c Complaint Form",
+    "surveyCode": "TO_EH08c",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH09a Water Sampling Form",
+    "surveyCode": "TO_EH09a",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH09b Water Reporting Form",
+    "surveyCode": "TO_EH09b",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH10 Water Supply Inspection Form",
+    "surveyCode": "TO_EH10",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Communicable Diseases",
+    "surveyCode": "PEHS_CD",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Diagnostic Services",
+    "surveyCode": "PEHS_DS",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "ENT & Audiology Services",
+    "surveyCode": "PEHS_EAS",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Gender Based Violence",
+    "surveyCode": "PEHS_GBV",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "General Clinical Services",
+    "surveyCode": "PEHS_GCS",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Maternal & Family Planning",
+    "surveyCode": "PEHS_MFP",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Mental Health & Rehabilitation",
+    "surveyCode": "PEHS_MHR",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "NCDs",
+    "surveyCode": "PEHS_NCD",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Oral Health Services",
+    "surveyCode": "PEHS_OHS",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Staff & Equipment",
+    "surveyCode": "PEHS_SE",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD1 - Notifiable Diseases (Excluding STIs, HIV, Hep B)",
+    "surveyCode": "CD1",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD2 - STIs, HIV and Hep B",
+    "surveyCode": "CD2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD3a - Contact Tracing - Index Case",
+    "surveyCode": "CD3a",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD3b - Contact Tracing - Contacts",
+    "surveyCode": "CD3b",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD4 - Isolation Ward Admissions",
+    "surveyCode": "CD4",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD5 - Monthly Health Promotion Sessions",
+    "surveyCode": "CD5",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD6 - Monthly Health Certificates Issued",
+    "surveyCode": "CD6",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD7 - Monthly Medical Certificates Issued",
+    "surveyCode": "CD7",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CD8 - Suspect Cases of Notifiable Diseases",
+    "surveyCode": "CD8",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH1 Annual NCD Screening and Diagnosis",
+    "surveyCode": "CH1",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH10 Daily National Diabetes Centre Clinic",
+    "surveyCode": "CH10",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH11 Monthly NCD Risk Factors",
+    "surveyCode": "CH11",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH12 Weekly OGTT and GDM",
+    "surveyCode": "CH12",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH2a Annual DM II & HTN Complications Screening",
+    "surveyCode": "CH2a",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH2b Monthly DM II & HTN Complications Screening Encounters",
+    "surveyCode": "CH2b",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH3 Annual DM II & HTN Medication Data",
+    "surveyCode": "CH3",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH4 Annual DM II & HTN Patient Risk Factor Data",
+    "surveyCode": "CH4",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH5 Monthly DM II & HTN Clinics",
+    "surveyCode": "CH5",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH6 Monthly Clinic Dressings and Other Services",
+    "surveyCode": "CH6",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH7 Monthly Outreach Program",
+    "surveyCode": "CH7",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH8 Monthly Number of Consultations",
+    "surveyCode": "CH8",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "CH9 Monthly Illness and Syndromic Surveillance",
+    "surveyCode": "CH9",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP01 Monthly Physical Activity",
+    "surveyCode": "HP01",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP02 NCD Risk Factors Screening Event",
+    "surveyCode": "HP02",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP03 Monthly TV and Radio Programs",
+    "surveyCode": "HP03",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP04 Monthly National Quitline",
+    "surveyCode": "HP04",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP05 Monthly IEC Distribution",
+    "surveyCode": "HP05",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP06 Monthly Tobacco Enforcement",
+    "surveyCode": "HP06",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP07 Monthly Training and Health Talks",
+    "surveyCode": "HP07",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP08 Monthly Nutrition Counselling",
+    "surveyCode": "HP08",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "HP09 Baseline Quitline Case Load",
+    "surveyCode": "HP09",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "FP01 Monthly Family Planning",
+    "surveyCode": "FP01",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "FP02 Family Planning Annual Contraceptives",
+    "surveyCode": "FP02",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "FP03 Family Planning TFHA Annual",
+    "surveyCode": "FP03",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "FP04 Baseline Family Planning Data Load",
+    "surveyCode": "FP04",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS01 Monthly School Immunization Services",
+    "surveyCode": "IMMS01",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS02 Annual Administrative School Data",
+    "surveyCode": "IMMS02",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS03 Monthly Childhood Immunization Services",
+    "surveyCode": "IMMS03",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS04 Monthly Maternal Immunization Services",
+    "surveyCode": "IMMS04",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS05 Monthly Other Immunizatiion Services",
+    "surveyCode": "IMMS05",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS06 Annual Childhood Immunization Coverage",
+    "surveyCode": "IMMS06",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS07 Annual Maternal Immunization Coverage",
+    "surveyCode": "IMMS07",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "IMMS08 Annual School Immunization Coverage",
+    "surveyCode": "IMMS08",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH01 Monthly High Risk Pregnancies",
+    "surveyCode": "MCH01",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH02 Annual Total Pregnancies",
+    "surveyCode": "MCH02",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH03 Monthly Home Visits",
+    "surveyCode": "MCH03",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH04 Monthly Clinic Visits",
+    "surveyCode": "MCH04",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH05 EBF Monthly",
+    "surveyCode": "MCH05",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH06 Monthly Deliveries",
+    "surveyCode": "MCH06",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH07 Monthly Health Promotion",
+    "surveyCode": "MCH07",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "MCH08 Annual Postnatal Clinic",
+    "surveyCode": "MCH08",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "POP01 Annual Population Breakdown",
+    "surveyCode": "POP01",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "POP02 Annual Maternal Abortion Perinatal Neonatal Death",
+    "surveyCode": "POP02",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "POP03 Annual General Mortality",
+    "surveyCode": "POP03",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "POP04 Annual Population Break17",
+    "surveyCode": "POP04",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia User Survey Tonga CH",
+    "surveyCode": "TUSTC",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia User Survey Tonga Com D",
+    "surveyCode": "TUSTCD",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia User Survey Tonga HP",
+    "surveyCode": "TUSTH",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia User Survey Tonga RH",
+    "surveyCode": "TUSTR",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Basic Clinic Data Tonga",
+    "surveyCode": "BCD_TO",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "EH01 Vessel Clearance",
+    "surveyCode": "TO_EH01",
+    "projectCode": "fanafana ola"
+  },
+  {
+    "surveyName": "EH02 Shipping Sanitation",
+    "surveyCode": "TO_EH02",
+    "projectCode": "fanafana ola"
+  },
+  {
+    "surveyName": "EH03 Building Registration Form",
+    "surveyCode": "TO_EH03",
+    "projectCode": "fanafana ola"
+  },
+  {
+    "surveyName": "EH04 Village Inspection Form",
+    "surveyCode": "TO_EH04",
+    "projectCode": "fanafana ola"
+  },
+  {
+    "surveyName": "EH11 Airport Screening Form",
+    "surveyCode": "TO_EH11",
+    "projectCode": "fanafana ola"
+  },
+  {
+    "surveyName": "FETP Existing Graduate Update",
+    "surveyCode": "FETP_EGU",
+    "projectCode": "fetp"
+  },
+  {
+    "surveyName": "FETP New Graduate Survey",
+    "surveyCode": "FETP_NGS",
+    "projectCode": "fetp"
+  },
+  {
+    "surveyName": "Patient Satisfaction Questionnaire",
+    "surveyCode": "FJ_ASPEN_PSQ",
+    "projectCode": "fj_aspen"
+  },
+  {
+    "surveyName": "IMPACT Health Facility Mapping",
+    "surveyCode": "IHFM",
+    "projectCode": "impact_health"
+  },
+  {
+    "surveyName": "IMPACT Health Facility Mapping_DL",
+    "surveyCode": "IHFM2",
+    "projectCode": "impact_health"
+  },
+  {
+    "surveyName": "Integrated Supervisory Checklist",
+    "surveyCode": "IMPACT_ISC",
+    "projectCode": "impact_health"
+  },
+  {
+    "surveyName": "Integrated Supervisory Checklist_DL",
+    "surveyCode": "IMPACT_ISC_DL",
+    "projectCode": "impact_health"
+  },
+  {
+    "surveyName": "OKE01 Farm Mapping",
+    "surveyCode": "OKE01",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "HB01 Hyperbaric Monthly Report",
+    "surveyCode": "PW_HB01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "RAD01 Radiology Monthly Report",
+    "surveyCode": "PW_RAD01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "Cold Chain - Palau",
+    "surveyCode": "CCP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "Disaster Preparation - Palau",
+    "surveyCode": "DPP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "Facility Fundamentals Palau",
+    "surveyCode": "FFP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "Health Supply Chain - Palau",
+    "surveyCode": "HSCP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "SARA Survey Palau",
+    "surveyCode": "SSP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "WASH Survey Palau",
+    "surveyCode": "WSP",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "BH01 Patient Encounter",
+    "surveyCode": "BH01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "CD1 Community Education",
+    "surveyCode": "PW_CD1",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "CD2 Lab Testing Monthly Summary",
+    "surveyCode": "PW_CD2",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "NCD Management in Community Health Centres",
+    "surveyCode": "PW_CHC_01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "HDF01 Health Declaration Form",
+    "surveyCode": "PW_HDF01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH01 Household Mapping",
+    "surveyCode": "PW_EH01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH02 Dengue Investigation",
+    "surveyCode": "PW_EH02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH03 Lepto Investigation",
+    "surveyCode": "PW_EH03",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH04 Health Inspection Report",
+    "surveyCode": "PW_EH04",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH05 Beauty and massage",
+    "surveyCode": "PW_EH05",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "EH06 Site Inspection Report",
+    "surveyCode": "PW_EH06",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "POP01 Census Data",
+    "surveyCode": "PW_POP01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "POP02 Annual Population",
+    "surveyCode": "PW_POP02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "ER01 Daily Ward Report",
+    "surveyCode": "PW_ER01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "ER02 Monthly Issues Arising",
+    "surveyCode": "PW_ER02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "HD01 Hemodialysis Ward Report",
+    "surveyCode": "PW_HD01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "MCH01 OB Ward Report",
+    "surveyCode": "PW_MCH01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "MW01 Medical Ward Report",
+    "surveyCode": "PW_MW01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "MW02 Medical Ward Daily Report",
+    "surveyCode": "PW_MW02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "OR01 Monthly OR Report",
+    "surveyCode": "PW_OR01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "SW01 Surgical Ward Report",
+    "surveyCode": "PW_SW01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "DEN01 School Screening Summary",
+    "surveyCode": "PW_DEN01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "REH02 CHC Diabetic Foot Exam",
+    "surveyCode": "REH02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "FHU01 Daily Encounter Summary",
+    "surveyCode": "PW_FHU01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "FHU02 Monthly Summary Report",
+    "surveyCode": "PW_FHU02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "HH01 Home Health Monthly Report",
+    "surveyCode": "PW_HH01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "HH02 Home Health Staff Time Monthly Report",
+    "surveyCode": "PW_HH02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "HH03 Home Health Daily Report",
+    "surveyCode": "PW_HH03",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "OPD01 Daily Ward Report",
+    "surveyCode": "PW_OPD01",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "OPD02 Monthly Supervisor Report",
+    "surveyCode": "PW_OPD02",
+    "projectCode": "olangch_palau"
+  },
+  {
+    "surveyName": "IR Bioassay 24h Mortality",
+    "surveyCode": "IB2M",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "IR Bioassay Setup and 60min Knockdown",
+    "surveyCode": "IBSA6K",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Product Bioefficacy 24h Mortality",
+    "surveyCode": "PB2M",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Product Bioefficacy Setup and 60min Knockdown",
+    "surveyCode": "PBSA6K",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 2 Mosquito Analysis",
+    "surveyCode": "MA",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 1 Trap Registration Kiribati",
+    "surveyCode": "S1TR",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 2 Mosquito Analysis Kiribati",
+    "surveyCode": "S2MA",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 1 Trap Registration Solomon Islands",
+    "surveyCode": "SS1TR",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 2 Mosquito Analysis Solomon Islands",
+    "surveyCode": "SS2MA",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 1 Trap Registration",
+    "surveyCode": "TR",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Ovitrap Survey & Egg Collection",
+    "surveyCode": "OSEC",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Ovitrap Survey & Egg Collection SB",
+    "surveyCode": "OSECS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Adult Mosquito Survey & Collection",
+    "surveyCode": "PAMC",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Adult Mosquito Collection PW",
+    "surveyCode": "PAMCP",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Field Station Mapping",
+    "surveyCode": "PFSM",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Larval Survey & Collection",
+    "surveyCode": "PLS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Larval Survey PW",
+    "surveyCode": "PLSP",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Mosquito Storage",
+    "surveyCode": "PMS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Ovitrap Analysis FJ",
+    "surveyCode": "POAF",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "PacMOSSI Project Metadata",
+    "surveyCode": "PPM",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Step 1 Larval Site Survey",
+    "surveyCode": "S1LSS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Samoa Adult Mosquito Collection",
+    "surveyCode": "SAMC",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Samoa Larval Survey",
+    "surveyCode": "SLS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "Tonga Adult Mosquito Survey",
+    "surveyCode": "TAMS",
+    "projectCode": "pacmossi"
+  },
+  {
+    "surveyName": "MDT Onboarding",
+    "surveyCode": "MO",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "HPS Monitoring - PS",
+    "surveyCode": "HP_MPS_WS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "HPS Monitoring - SS",
+    "surveyCode": "HP_MSS_WS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "NCD Nutritional Status - Samoa",
+    "surveyCode": "NCD_NS_WS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "Population School - Samoa",
+    "surveyCode": "population_sch_WS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "School Location - Samoa",
+    "surveyCode": "SL_WS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "School Nutrition Standards Survey",
+    "surveyCode": "SNSS",
+    "projectCode": "penfaa_samoa"
+  },
+  {
+    "surveyName": "PSSS Daily National Report",
+    "surveyCode": "PSSS_DNR",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "PSSS Daily Site Report",
+    "surveyCode": "PSSS_DSR",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "PSSS Alert",
+    "surveyCode": "PSSS_Alert",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "PSSS Confirmed Weekly National Report",
+    "surveyCode": "PSSS_Confirmed_WNR",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "PSSS Weekly National Report",
+    "surveyCode": "PSSS_WNR",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "PSSS Weekly Site Report",
+    "surveyCode": "PSSS_WSR",
+    "projectCode": "psss"
+  },
+  {
+    "surveyName": "STRIVE ARI Linelist",
+    "surveyCode": "SAL",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Case Report Form",
+    "surveyCode": "SCRF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Daily Summary Form",
+    "surveyCode": "SDSF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE RMA Existing RNO",
+    "surveyCode": "SRER",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE RMA Newly Recruited RNO",
+    "surveyCode": "SRNRR",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Weekly Tally Form",
+    "surveyCode": "SWTF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR BFV",
+    "surveyCode": "SPB",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR CHIKV",
+    "surveyCode": "SPC",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR DENV1",
+    "surveyCode": "SPD",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR DENV2",
+    "surveyCode": "SPD2",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR DENV3",
+    "surveyCode": "SPD3",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR DENV4",
+    "surveyCode": "SPD4",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR DENV3NC",
+    "surveyCode": "SPD5",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR JEV",
+    "surveyCode": "SPJ",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR MVEV",
+    "surveyCode": "SPM2",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR RRV",
+    "surveyCode": "SPR",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR WNV",
+    "surveyCode": "SPW",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR ZIKV",
+    "surveyCode": "SPZ",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Barcoding",
+    "surveyCode": "SBAR",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Flanking",
+    "surveyCode": "SFLA",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE Hrp",
+    "surveyCode": "SHRP",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE K13 C580Y",
+    "surveyCode": "SK13C",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR Pf",
+    "surveyCode": "SPF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR Pm",
+    "surveyCode": "SPM",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR Po",
+    "surveyCode": "SPO",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE PCR Pv",
+    "surveyCode": "SPV",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE QMAL",
+    "surveyCode": "SQMAL",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRVEC_LHS",
+    "surveyCode": "STRVEC_LHS",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "ICEMR Case Report Form",
+    "surveyCode": "ICRF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "IMRVEC_AN-IR",
+    "surveyCode": "II",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "IMRVEC_AE-IR",
+    "surveyCode": "II2",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "NATNAT Case Report Form",
+    "surveyCode": "NCRF",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRIVE RMA Health Facility Staf",
+    "surveyCode": "SRHFS",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRVEC_AE-AT",
+    "surveyCode": "STRVEC_AE-AT",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRVEC_AE-IR",
+    "surveyCode": "STRVEC_AE-IR",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "STRVEC_AN-IR",
+    "surveyCode": "STRVEC_AN-IR",
+    "projectCode": "strive"
+  },
+  {
+    "surveyName": "FJ COVID-19 HCF Preparedness",
+    "surveyCode": "FC1HP",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "FJ COVID-19 HCF Preparedness DL",
+    "surveyCode": "FC1HPD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "FJ COVID-19 Quick HF Assessment",
+    "surveyCode": "FC1QHA",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "FJ COVID-19 Quick HF Assess DL",
+    "surveyCode": "FC1QHAD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Disaster Preparation Fiji",
+    "surveyCode": "DPF",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Facility Fundamentals Fiji",
+    "surveyCode": "FFF",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Cold Chain Pre-deployment Site Checklist",
+    "surveyCode": "FJ_CCPDSC",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Fiji mSupply Site Assessment",
+    "surveyCode": "FMSA",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Health Supply Chain",
+    "surveyCode": "HSC",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Staff Attitudinal Survey Fiji",
+    "surveyCode": "SAS",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "SARA Survey Fiji",
+    "surveyCode": "SSF",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "SARA Survey Fiji DL",
+    "surveyCode": "SSFD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "UNICEF Cold Chain Fiji",
+    "surveyCode": "UCCF",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "mSupply Deployment Survey",
+    "surveyCode": "MDS",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "mSupply Predeployment Survey",
+    "surveyCode": "MPS",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Disaster Preparation Fiji DL",
+    "surveyCode": "DPFD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Facility Fundamentals Fiji DL",
+    "surveyCode": "FFFD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Health Supply Chain DL",
+    "surveyCode": "HSCD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "UNICEF Cold Chain Fiji DL",
+    "surveyCode": "UCCFD",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Population - Fiji",
+    "surveyCode": "population_FJ",
+    "projectCode": "supplychain_fiji"
+  },
+  {
+    "surveyName": "Pharmacy RH Spot Check Tool",
+    "surveyCode": "PRSCT",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Combined",
+    "surveyCode": "RHC",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Equipment",
+    "surveyCode": "RHE",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Facility Spot Check",
+    "surveyCode": "RHFSC",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Facility Spot Check - Solomon Islands",
+    "surveyCode": "RHFSC_SI",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Facility Spot Check Tool - Samoa",
+    "surveyCode": "RHFSC_WS",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Facility Spot Check - Kiribati",
+    "surveyCode": "RHFSCK",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health General",
+    "surveyCode": "RHG",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health MCH RH",
+    "surveyCode": "RHMR",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health RMNCH",
+    "surveyCode": "RHR",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Stock",
+    "surveyCode": "RHS",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Training - District",
+    "surveyCode": "RHT_D",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Training - Facility",
+    "surveyCode": "RHT_F",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Reproductive Health Training - Country",
+    "surveyCode": "RHT_N",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Training Unit Skill Gap Assessment",
+    "surveyCode": "TUSGA",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Capture Facility GPS Co-ordinates",
+    "surveyCode": "UNFPA_F_GPS",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "(Legacy) Reproductive Health Training",
+    "surveyCode": "UNFPA_RHT",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "YFSRH Services Assessment Tool",
+    "surveyCode": "YFSRH",
+    "projectCode": "unfpa"
+  },
+  {
+    "surveyName": "Appendix 1 - Water Quality Results",
+    "surveyCode": "DWSSP_A1",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Appendix 2A - Household RWC Sanitary Survey",
+    "surveyCode": "DWSSP_A2A",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Appendix 2B - Standpipes Sanitary Survey",
+    "surveyCode": "DWSSP_A2B",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Appendix 2C - VIP Toilet Sanitary Survey",
+    "surveyCode": "DWSSP_A2C",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Appendix 2D - Pour Flush Toilet Sanitary Survey",
+    "surveyCode": "DWSSP_A2D",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Appendix 2E - Septic Tank Toilet Sanitary Survey",
+    "surveyCode": "DWSSP_A2E",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Community Details",
+    "surveyCode": "DWSSP_CD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 1 - DWSSP Team",
+    "surveyCode": "DWSSP_S1",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 2 - Description of Current Supply",
+    "surveyCode": "DWSSP_S2",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 3A - Assessment (Water Access/Availability)",
+    "surveyCode": "DWSSP_S3A",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 3B - Assessment (Water Safety)",
+    "surveyCode": "DWSSP_S3B",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 3C - Assessment (Sanitation System)",
+    "surveyCode": "DWSSP_S3C",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 4 - Improvement Plan",
+    "surveyCode": "DWSSP_S4",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 5 - Operation, Monitoring and Maintenance",
+    "surveyCode": "DWSSP_S5",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Section 6 - Committee Actions",
+    "surveyCode": "DWSSP_S6",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Catchment Inspection and Community Assessment",
+    "surveyCode": "CIAC",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Householder Interview and Questionnaire",
+    "surveyCode": "HIAQ",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Household Observational Survey",
+    "surveyCode": "HOS",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "EWARS Alerts Demoland",
+    "surveyCode": "EAD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "2 - Government mapping",
+    "surveyCode": "WISH_2GM",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "2 - Government mapping methods",
+    "surveyCode": "WISH_2GMM",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "3 - Community mapping",
+    "surveyCode": "WISH_3CM",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4A - Agriculture",
+    "surveyCode": "WISH_4A",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4C - Endline Sanitation Observations",
+    "surveyCode": "WISH_4ESO",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4C - Endline Sanitation Questionnaire",
+    "surveyCode": "WISH_4ESQ",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4B - Fisheries and Aquaculture",
+    "surveyCode": "WISH_4FAA",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4D - Recreation",
+    "surveyCode": "WISH_4R",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4C - Sanitation Observations",
+    "surveyCode": "WISH_4SO",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "4C - Sanitation Questionnaire",
+    "surveyCode": "WISH_4SQ",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "5B Endline Household Interview Survey",
+    "surveyCode": "WISH_5EHIS",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "5A Endline Household Observational",
+    "surveyCode": "WISH_5EHO",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "5B Household Interview Survey",
+    "surveyCode": "WISH_5HIS",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "5A - Household Observational",
+    "surveyCode": "WISH_5HO",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "6 - Chemistry Test Data",
+    "surveyCode": "WISH_6CLD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "6 - Endline Microbiology and Physio Data",
+    "surveyCode": "WISH_6EMAPD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "6 - Microbiology Test Data",
+    "surveyCode": "WISH_6MTD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "6 - Physio Lab datasheet",
+    "surveyCode": "WISH_6PLD",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "7B Endline Community Health Worker",
+    "surveyCode": "WISH_7ECHW",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "7A Endline Village Head or Delegate",
+    "surveyCode": "WISH_7EVH",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "7B Midline Community Health Worker",
+    "surveyCode": "WISH_7MCHW",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "7C Midline Household Interview",
+    "surveyCode": "WISH_7MHI",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "7A Midline Village Head or Delegate",
+    "surveyCode": "WISH_7MVH",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "WISH Key Risk Factor",
+    "surveyCode": "WISH_KRF",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "WISH MACMON KI Survey",
+    "surveyCode": "WISH_WMKS",
+    "projectCode": "wish"
+  },
+  {
+    "surveyName": "Confirmed COVID-19 Pnt Survey",
+    "surveyCode": "CC1PS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Suspected COVID-19 Pnt Survey",
+    "surveyCode": "SC1PS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Monthly School Immunization Services",
+    "surveyCode": "MSIS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Environmental Cleaning Audit",
+    "surveyCode": "ECA",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Standard Precaution Audit",
+    "surveyCode": "SPA",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Friday Surveillance",
+    "surveyCode": "SURV_FR",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Monday Surveillance",
+    "surveyCode": "SURV_MO",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Saturday Surveillance",
+    "surveyCode": "SURV_SA",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Sunday Surveillance",
+    "surveyCode": "SURV_SU",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Thursday Surveillance",
+    "surveyCode": "SURV_TH",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Tuesday Surveillance",
+    "surveyCode": "SURV_TU",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Wednesday Surveillance",
+    "surveyCode": "SURV_WE",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Farm Monthly Survey",
+    "surveyCode": "FMS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Transaction",
+    "surveyCode": "T",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Additional Utilities",
+    "surveyCode": "AU",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Basic Health Services",
+    "surveyCode": "BHS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Equipment Audit",
+    "surveyCode": "EA",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Functional Space",
+    "surveyCode": "FS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Secondary Health Care Services",
+    "surveyCode": "SHCS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Staff Numbers",
+    "surveyCode": "SN",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "SRH Client Feedback Survey",
+    "surveyCode": "SCFS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "SRH Facility Checklist",
+    "surveyCode": "SRH_FJ_FC",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Staff Attitudinal Survey DL",
+    "surveyCode": "SASD",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "General Information",
+    "surveyCode": "VISV_GI",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Malaria Survey",
+    "surveyCode": "VISV_MS",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "TB Survey",
+    "surveyCode": "VISV_TB",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Basic Clinic Data Cook Islands",
+    "surveyCode": "BCD_CK",
+    "projectCode": "ehealth_cook_islands"
+  },
+  {
+    "surveyName": "Basic Clinic Data Demo Land",
+    "surveyCode": "BCD_DL",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "Basic Clinic Data Solomon Islands",
+    "surveyCode": "BCD_SB",
+    "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "Basic Clinic Data Tokelau",
+    "surveyCode": "BCD_TK",
+    "projectCode": "ehealth_tokelau"
+  },
+  {
+    "surveyName": "Basic Clinic Data Timor",
+    "surveyCode": "BCD_TL",
+    "projectCode": "ehealth_timor_leste"
+  },
+  {
+    "surveyName": "Basic Clinic Data Vanuatu",
+    "surveyCode": "BCD_VU",
+    "projectCode": "ehealth_vanuatu"
+  },
+  {
+    "surveyName": "IHR Indicators Solomon Islands",
+    "surveyCode": "IISI",
+    "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "Tupaia User Survey (Feedback)",
+    "surveyCode": "TUSF",
+    "projectCode": "dl_tamanu"
+  },
+  {
+    "surveyName": "UNICEF Cold Chain",
+    "surveyCode": "UCC",
+    "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "World Bank Service Delivery",
+    "surveyCode": "WBSDD",
+    "projectCode": "mhms_solomon"
+  },
+  {
+    "surveyName": "OKE02 Farmer Profile",
+    "surveyCode": "OKE02",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "OKE03 Farm Product Inventory",
+    "surveyCode": "OKE03",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "OKE00 Market Mapping",
+    "surveyCode": "OKE00",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "Product availability",
+    "surveyCode": "OKE04",
+    "projectCode": "Okeuid_palau"
+  },
+  {
+    "surveyName": "3 - Child Health & Immunisation",
+    "surveyCode": "PEHS_CHI_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "4 - NCDs",
+    "surveyCode": "PEHS_NCD_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "5 - Communicable Diseases",
+    "surveyCode": "PEHS_CDS_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "12 - Environmental Health",
+    "surveyCode": "PEHS_EMH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "13 - Health Promotion",
+    "surveyCode": "PEHS_HPM_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "10 - Eye & ENT (ENT & Audiology)",
+    "surveyCode": "PEHS_EEA_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "6 - Rehabilitation",
+    "surveyCode": "PEHS_RHB_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "7 - Mental Health",
+    "surveyCode": "PEHS_MTH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "1 - General Medical Services",
+    "surveyCode": "PEHS_GMS_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "2 - Maternal, Newborn & Family Planning",
+    "surveyCode": "PEHS_MNF_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "9 - Oral Health",
+    "surveyCode": "PEHS_ORH_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "11 - Diagnostics",
+    "surveyCode": "PEHS_DGT_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "8 - Gender Based Violence",
+    "surveyCode": "PEHS_GBV_V2",
+    "projectCode": "fanafana"
+  },
+  {
+    "surveyName": "Tupaia DataTrak Feedback",
+    "surveyCode": "TDF",
+    "projectCode": "dl_tamanu"
+  }
+]

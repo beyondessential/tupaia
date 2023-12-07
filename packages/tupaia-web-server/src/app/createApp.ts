@@ -12,9 +12,9 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
-import { attachAccessPolicy } from './middleware';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
+import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -82,6 +82,14 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.ExportSurveyResponsesRoute),
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
+    .post<routes.SubscribeRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
+      handleWith(routes.SubscribeRoute),
+    )
+    .put<routes.UnsubscribeRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
+      handleWith(routes.UnsubscribeRoute),
+    )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

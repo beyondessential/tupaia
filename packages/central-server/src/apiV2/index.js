@@ -191,6 +191,10 @@ apiV2.get(
 apiV2.get('/dashboardItems/:recordId?', useRouteHandler(GETDashboardItems));
 apiV2.get('/dashboardMailingLists/:recordId?', useRouteHandler(GETDashboardMailingLists));
 apiV2.get(
+  '/dashboardMailingLists/:parentRecordId/dashboardMailingListEntries',
+  useRouteHandler(GETDashboardMailingListEntries),
+);
+apiV2.get(
   '/dashboardMailingListEntries/:recordId?',
   useRouteHandler(GETDashboardMailingListEntries),
 );

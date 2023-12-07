@@ -129,7 +129,7 @@ export const SurveySelectSection = () => (
           <DesktopText>
             You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
             stories and information with the Tupaia community. To collect data offline, please
-            download our mobile app, Tupaia MediTrak from Google Play or the Apple App Store.
+            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
           </DesktopText>
         </Text>
       </TextWrapper>

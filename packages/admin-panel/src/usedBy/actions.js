@@ -10,6 +10,7 @@ const RECORD_TYPE_USED_BY_FN = {
   dataElement: async (api, recordId) => getDataSourceUsedBy(api, 'dataElement', recordId),
   dataGroup: async (api, recordId) => getDataSourceUsedBy(api, 'dataGroup', recordId),
   question: getQuestionUsedBy,
+  dataTable: async (api, recordId) => getDataSourceUsedBy(api, 'dataTable', recordId),
 };
 
 export const fetchUsedBy = (recordType, recordId) => async (dispatch, getState, { api }) => {

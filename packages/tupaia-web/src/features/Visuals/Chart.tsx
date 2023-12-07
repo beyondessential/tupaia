@@ -17,6 +17,12 @@ const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
 const TEXT_DARKGREY = '#414D55';
 
+const ScreenChartTable = styled(ChartTable)`
+  table {
+    table-layout: unset;
+  }
+`;
+
 const ExportingStyledTable = styled(ChartTable)`
   padding: 1.8rem 0;
   border-bottom: none;
@@ -142,7 +148,7 @@ const DISPLAY_TYPE_VIEWS = [
     value: 'table',
     Icon: GridOn,
     label: 'View table',
-    display: ChartTable,
+    display: ScreenChartTable,
   },
 ];
 
@@ -173,10 +179,10 @@ export const Chart = () => {
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   let availableDisplayTypes = showTable ? views : [views[0]];
 
-  const viewContent = ({
+  const viewContent = {
     ...report,
     ...config,
-  } as unknown) as ViewContent;
+  } as unknown as ViewContent;
 
   return (
     <ErrorBoundary>
