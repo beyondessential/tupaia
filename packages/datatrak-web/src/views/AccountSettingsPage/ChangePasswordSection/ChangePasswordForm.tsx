@@ -59,10 +59,10 @@ const StyledButton = styled(Button)`
     //                       ^~~~~~~~ line-height of .MuiFormLabel-root
 
     /* HACK: Make button height match adjacent FormInput */
-    padding: 1rem;
+    padding: 1rem; // padding of .MuiInputBase-input
     .MuiButton-label {
-      border: 1px solid transparent;
-      height: 1.1876em;
+      border: 1px solid transparent; // border-width of .MuiOutlinedInput-notchedOutline
+      height: 1.1876em; // height of .MuiInputBase-input
     }
   }
 `;
