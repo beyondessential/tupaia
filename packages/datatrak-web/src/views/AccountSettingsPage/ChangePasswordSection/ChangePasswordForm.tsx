@@ -24,7 +24,7 @@ const StyledFieldset = styled.fieldset`
   margin: 0;
   padding: 0;
 
-  align-items: end;
+  align-items: start;
   display: grid;
   gap: 1.56rem 1.25rem;
 
@@ -52,10 +52,14 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 const StyledButton = styled(Button)`
-  // HACK: Make button height match adjacent FormInput
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 1rem;
+    /* HACK: Align button with adjacent FormInput, even when FormInput in error state */
+    margin-block-start: calc(1.125rem + 3px);
+    //                                  ^~~ margin-bottom of .MuiFormLabel-root
+    //                       ^~~~~~~~ line-height of .MuiFormLabel-root
 
+    /* HACK: Make button height match adjacent FormInput */
+    padding: 1rem;
     .MuiButton-label {
       border: 1px solid transparent;
       height: 1.1876em;
