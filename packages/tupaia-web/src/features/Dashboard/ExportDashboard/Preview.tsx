@@ -231,26 +231,28 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
               </FormGroup>
             </ExportSetting>
           </ExportSettingsContainer>
-          <PreviewPanelContainer>
-            <PreviewHeaderContainer>
-              <PreviewTitle>Preview</PreviewTitle>
-              <PreviewPagination
-                size="small"
-                siblingCount={0}
-                count={selectedDashboardItems.length}
-                onChange={onPageChange}
-              />
-            </PreviewHeaderContainer>
-            <PreviewContainer>
-              <PDFExport
-                projectCode={projectCode}
-                entityCode={entityCode}
-                dashboardName={dashboardName}
-                selectedDashboardItems={[visualisationToPreview]}
-                isPreview={true}
-              />
-            </PreviewContainer>
-          </PreviewPanelContainer>
+          {!isLoading && (
+            <PreviewPanelContainer>
+              <PreviewHeaderContainer>
+                <PreviewTitle>Preview</PreviewTitle>
+                <PreviewPagination
+                  size="small"
+                  siblingCount={0}
+                  count={selectedDashboardItems.length}
+                  onChange={onPageChange}
+                />
+              </PreviewHeaderContainer>
+              <PreviewContainer>
+                <PDFExport
+                  projectCode={projectCode}
+                  entityCode={entityCode}
+                  dashboardName={dashboardName}
+                  selectedDashboardItems={[visualisationToPreview]}
+                  isPreview={true}
+                />
+              </PreviewContainer>
+            </PreviewPanelContainer>
+          )}
         </Container>
       </PrimaryContext>
       <ButtonGroup>
