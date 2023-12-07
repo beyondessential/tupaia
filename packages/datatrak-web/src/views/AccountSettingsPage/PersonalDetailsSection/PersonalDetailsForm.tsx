@@ -92,7 +92,6 @@ export const PersonalDetailsForm = () => {
         (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
         {} as PersonalDetailsFormFields,
       );
-    console.log(updates);
     updateUser(updates as UserAccountDetails);
   }
 
