@@ -5,16 +5,16 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebUnsubscribeRequest } from '@tupaia/types';
+import { TupaiaWebUnsubscribeDashboardRequest } from '@tupaia/types';
 
-export type UnsubscribeRequest = Request<
-  TupaiaWebUnsubscribeRequest.Params,
-  TupaiaWebUnsubscribeRequest.ResBody,
-  TupaiaWebUnsubscribeRequest.ReqBody,
-  TupaiaWebUnsubscribeRequest.ReqQuery
+export type UnsubscribeDashboardRequest = Request<
+  TupaiaWebUnsubscribeDashboardRequest.Params,
+  TupaiaWebUnsubscribeDashboardRequest.ResBody,
+  TupaiaWebUnsubscribeDashboardRequest.ReqBody,
+  TupaiaWebUnsubscribeDashboardRequest.ReqQuery
 >;
 
-export class UnsubscribeRoute extends Route<UnsubscribeRequest> {
+export class UnsubscribeDashboardRoute extends Route<UnsubscribeDashboardRequest> {
   public async buildResponse() {
     const {
       ctx,

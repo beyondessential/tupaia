@@ -13,7 +13,7 @@ import { useUser } from '../../../api/queries';
 import { Dashboard } from '../../../types';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
-import { useSubscribe, useUnsubscribe } from '../../../api/mutations';
+import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
 import { useDashboardMailingList } from '../../../utils';
 import {
   MODAL_SUBSCRIBE_TEXT,
@@ -101,12 +101,12 @@ export const SubscribeModal = ({
     mutateAsync: subscribe,
     error: subscribeError,
     reset: resetSubscribe,
-  } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
+  } = useSubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
   const {
     mutateAsync: unsubscribe,
     error: unsubscribeError,
     reset: resetUnsubscribe,
-  } = useUnsubscribe(projectCode, entityCode, activeDashboard?.code);
+  } = useUnsubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
 
   const handleSubmit = async data => {
     if (isSubscribed) {

@@ -5,21 +5,20 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebSubscribeRequest } from '@tupaia/types';
+import { TupaiaWebSubscribeDashboardRequest } from '@tupaia/types';
 
-export type SubscribeRequest = Request<
-  TupaiaWebSubscribeRequest.Params,
-  TupaiaWebSubscribeRequest.ResBody,
-  TupaiaWebSubscribeRequest.ReqBody,
-  TupaiaWebSubscribeRequest.ReqQuery
+export type SubscribeDashboardRequest = Request<
+  TupaiaWebSubscribeDashboardRequest.Params,
+  TupaiaWebSubscribeDashboardRequest.ResBody,
+  TupaiaWebSubscribeDashboardRequest.ReqBody,
+  TupaiaWebSubscribeDashboardRequest.ReqQuery
 >;
 
-export class SubscribeRoute extends Route<SubscribeRequest> {
+export class SubscribeDashboardRoute extends Route<SubscribeDashboardRequest> {
   public async buildResponse() {
     const {
       ctx,
       params: { projectCode, entityCode, dashboardCode },
-      session,
     } = this.req;
 
     const [dashboard] = await ctx.services.central.fetchResources('dashboards', {
