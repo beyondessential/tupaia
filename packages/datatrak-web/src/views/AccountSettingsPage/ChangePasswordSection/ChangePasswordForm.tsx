@@ -55,6 +55,7 @@ const StyledButton = styled(Button)`
   // HACK: Make button height match adjacent FormInput
   ${({ theme }) => theme.breakpoints.up('sm')} {
     padding: 1rem;
+
     .MuiButton-label {
       border: 1px solid transparent;
       height: 1.1876em;
@@ -74,7 +75,7 @@ export const ChangePasswordForm = () => {
     mode: 'onChange',
   });
   const {
-    formState: { touched, isSubmitting, isValid, isValidating },
+    formState: { isSubmitting, isValid, isValidating },
     getValues,
     handleSubmit,
     reset,
@@ -85,15 +86,6 @@ export const ChangePasswordForm = () => {
     onSettled: () => reset(emptyFormState),
     onSuccess: () => successToast('Your password has been successfully updated'),
   });
-
-  const mismatchedPasswordMessage = 'Passwords do not match';
-  type PasswordValidator = (value: string) => true | typeof mismatchedPasswordMessage;
-  const validateNewPassword: PasswordValidator = value =>
-    !(touched as Partial<ResetPasswordParams>).newPasswordConfirm ||
-    value === getValues('newPasswordConfirm') ||
-    mismatchedPasswordMessage;
-  const validateNewPasswordConfirm: PasswordValidator = value =>
-    value === getValues('newPassword') || mismatchedPasswordMessage;
 
   const submissionShouldBeDisabled: boolean = isValidating || !isValid || isSubmitting;
 
@@ -116,10 +108,7 @@ export const ChangePasswordForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="New password"
           name="newPassword"
-          options={{
-            minLength: { value: 9, message: 'Must be over 8 characters long' },
-            validate: value => validateNewPassword(value),
-          }}
+          options={{ minLength: { value: 9, message: 'Must be over 8 characters long' } }}
           placeholder="New password"
           required
           type="password"
@@ -130,7 +119,10 @@ export const ChangePasswordForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Confirm new password"
           name="newPasswordConfirm"
-          options={{ validate: value => validateNewPasswordConfirm(value) }}
+          options={{
+            validate: (value: string) =>
+              value === getValues('newPassword') || 'Passwords do not match',
+          }}
           placeholder="Confirm new password"
           required
           type="password"
