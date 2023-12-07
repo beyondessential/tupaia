@@ -37,3 +37,7 @@ export {
   UnsubscribeDashboardRoute,
   UnsubscribeDashboardRequest,
 } from './UnsubscribeDashboardRoute';
+export {
+  UnsubscribeDashboardMailingListRoute,
+  UnsubscribeDashboardMailingListRequest,
+} from './UnsubscribeDashboardMailingListRoute';
