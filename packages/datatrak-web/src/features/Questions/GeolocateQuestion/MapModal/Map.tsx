@@ -6,13 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
 import { MapContainer as BaseMapContainer, ZoomControl } from 'react-leaflet';
-import { TilePicker } from '@tupaia/ui-map-components';
-import {
-  DEFAULT_BOUNDS,
-  DEFAULT_ZOOM_LEVEL,
-  UNSET_LOCATION_ZOOM_LEVEL,
-  tileSets,
-} from './constants';
+import { TilePicker, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { DEFAULT_BOUNDS, DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL } from './constants';
 import { UserLocationMap } from './UserLocationMap';
 import { PinDrop } from './PinDrop';
 
@@ -51,7 +46,7 @@ interface MapProps {
   lng?: number;
   setCoordinates: (coordinates: LatLngLiteral) => void;
   onChangeTileSet: (tileSetKey: string) => void;
-  tileSet: typeof tileSets.osm;
+  tileSet: typeof DEFAULT_TILESETS.osm;
 }
 
 export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapProps) => {
@@ -81,7 +76,7 @@ export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapP
       />
       <TilePickerWrapper>
         <TilePicker
-          tileSets={[tileSets.osm, tileSets.satellite]}
+          tileSets={[DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite]}
           activeTileSet={tileSet}
           onChange={onChangeTileSet}
         />

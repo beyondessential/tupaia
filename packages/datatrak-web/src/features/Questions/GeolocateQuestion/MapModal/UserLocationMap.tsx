@@ -5,15 +5,15 @@
 import React, { useEffect } from 'react';
 import { LatLngLiteral } from 'leaflet';
 import { useMap } from 'react-leaflet';
-import { DEFAULT_BOUNDS, TileLayer } from '@tupaia/ui-map-components';
-import { DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL, tileSets } from './constants';
+import { DEFAULT_BOUNDS, TileLayer, DEFAULT_TILESETS } from '@tupaia/ui-map-components';
+import { DEFAULT_ZOOM_LEVEL, UNSET_LOCATION_ZOOM_LEVEL } from './constants';
 
 interface UserLocationMapProps {
   lat?: number;
   lng?: number;
   setCoordinates: (coordinates: LatLngLiteral) => void;
   coordinatesInvalid: boolean;
-  tileSet: typeof tileSets.osm;
+  tileSet: typeof DEFAULT_TILESETS.osm;
 }
 
 export const UserLocationMap = ({

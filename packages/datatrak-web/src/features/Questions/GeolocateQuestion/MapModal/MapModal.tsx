@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { LatLngLiteral } from 'leaflet';
 import { Typography } from '@material-ui/core';
 import { OutlinedButton } from '@tupaia/ui-components';
+import { getAutoTileSet } from '@tupaia/ui-map-components';
 import { Button, Modal } from '../../../../components';
 import { Map } from './Map';
 import { tileSets } from './constants';
@@ -39,26 +40,6 @@ const ButtonGroup = styled.div`
   width: 100%;
 `;
 
-/** Utility function to determine whether tileSet should default to satellite
- * or to osm, based on page load time. This will only run when determining the
- * initial state of the map.
- */
-const getAutoTileset = () => {
-  // default to osm in dev so that we don't pay for tiles when running locally
-  if (!import.meta.env.PROD) {
-    return tileSets.osm;
-  } else {
-    const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
-    return (
-      window as unknown as Window & {
-        loadTime: number;
-      }
-    )?.loadTime < SLOW_LOAD_TIME_THRESHOLD
-      ? tileSets.satellite
-      : tileSets.osm;
-  }
-};
-
 type Geolocation = {
   latitude?: LatLngLiteral['lat'];
   longitude?: LatLngLiteral['lng'];
@@ -77,7 +58,7 @@ export const MapModal = ({
   closeModal,
   mapModalOpen,
 }: MapModalProps) => {
-  const initialTileSet = getAutoTileset();
+  const initialTileSet = getAutoTileSet();
   // set this in this component instead of in the Map component so that the selected tileset remains if the modal is closed and reopened without changing pages
   const [selectedTileSet, setSelectedTileSet] = useState(initialTileSet);
   const [{ lat: currentLatitude, lng: currentLongitude }, setCoordinates] = useState({

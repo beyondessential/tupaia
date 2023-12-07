@@ -11,10 +11,6 @@ const makeMapboxStyleUrl = ({
   `https://api.mapbox.com/styles/v1/${username}/${styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${accessKey}`;
 
 const urls = {
-  osm: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-  satellite: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=${
-    import.meta.env.REACT_APP_MAPBOX_TOKEN
-  }`,
   waterways: makeMapboxStyleUrl({ styleId: 'ckglkjbtq02t919nytx6yaopk' }),
   roads: makeMapboxStyleUrl({ styleId: 'ckglkibqe02u019rsdszxsxrr' }),
   ethnicity: makeMapboxStyleUrl({ styleId: 'ckh14lmqg02v819nfa7y14xvy' }),
@@ -24,18 +20,6 @@ const urls = {
   unfpaPopulation: makeMapboxStyleUrl({ styleId: 'cl5w14no4001m14qyaermcomc' }),
 };
 
-export const openStreets = {
-  key: 'osm',
-  label: 'Open Streets',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/osm-tile-thumbnail.png',
-  url: urls.osm,
-};
-export const satellite = {
-  key: 'satellite',
-  label: 'Satellite',
-  thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/satellite-tile-thumbnail.png',
-  url: urls.satellite,
-};
 const waterways = {
   key: 'waterways',
   label: 'Waterways',
@@ -160,9 +144,7 @@ const unfpaPopulation = {
   url: urls.unfpaPopulation,
 };
 
-export const TILE_SETS = [
-  openStreets,
-  satellite,
+export const CUSTOM_TILE_SETS = [
   waterways,
   roads,
   ethnicity,
