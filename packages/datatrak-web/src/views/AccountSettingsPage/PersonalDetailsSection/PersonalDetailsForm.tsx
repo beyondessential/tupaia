@@ -90,12 +90,16 @@ export const PersonalDetailsForm = () => {
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
+    // Include in the API request...
     const updates: PersonalDetailsFormFields = Object.keys(dirtyFields)
+      // ...only fields which have actually been modified...
       .filter(field => dirtyFields[field])
+      // ...and trim leading/trailing whitespace.
       .reduce(
         (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
         {} as PersonalDetailsFormFields,
       );
+
     updateUser(updates as UserAccountDetails);
   }
 
