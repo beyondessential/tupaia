@@ -69,6 +69,7 @@ const TransparentShadedPolygon = styled(BasePolygon)<PolygonProps>`
 interface PolygonLayerProps {
   measureData: MeasureData[];
   serieses: Series[];
+  isLoading?: boolean;
 }
 
 const POLYGON_COMPONENTS = {
@@ -85,7 +86,7 @@ const DISPLAY_TYPES = {
   active: 'activePolygon',
 };
 
-export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerProps) => {
+export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: PolygonLayerProps) => {
   const { projectCode, entityCode: activeEntityCode } = useParams();
   const navigateToEntity = useNavigateToEntity();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
@@ -102,6 +103,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
       return isActive ? DISPLAY_TYPES.active : DISPLAY_TYPES.basic;
     }
     if (
+      !isLoading &&
       isPolygonSerieses &&
       overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
     ) {
@@ -125,7 +127,8 @@ export const PolygonLayer = ({ measureData = [], serieses = [] }: PolygonLayerPr
     <LayerGroup>
       {polygons.map((measure: MeasureData) => {
         const { region, code, color, name, permanentTooltip = false } = measure;
-        const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color;
+
+        const shade = BREWER_PALETTE[color as keyof typeof BREWER_PALETTE] || color || '';
         const displayType = getDisplayType(measure);
         const PolygonComponent = POLYGON_COMPONENTS[displayType];
         const showDataOnTooltip = displayType === DISPLAY_TYPES.shaded;

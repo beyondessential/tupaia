@@ -20,25 +20,22 @@ interface processMeasureDataProps {
 }
 
 export const processMeasureData = ({
-  measureData,
+  measureData = [],
   entitiesData,
-  serieses,
+  serieses = [],
   hiddenValues,
 }: processMeasureDataProps) => {
-  if (!measureData || !serieses) {
-    return [];
-  }
-
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   const entityMeasureData = entitiesData?.map((entity: Entity) => {
-    const measure = measureData.find(
-      (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
-    );
+    const measure =
+      measureData.find(
+        (measureEntity: any) => measureEntity.organisationUnitCode === entity.code,
+      ) || ({} as MeasureData);
 
     const { color, icon, originalValue, isHidden, radius } = getMeasureDisplayInfo(
-      measure!,
-      serieses,
+      measure,
+      serieses || [],
       hiddenValues,
       radiusScaleFactor,
     );
