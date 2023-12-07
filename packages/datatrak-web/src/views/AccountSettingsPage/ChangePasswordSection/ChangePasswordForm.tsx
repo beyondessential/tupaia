@@ -91,7 +91,7 @@ export const ChangePasswordForm = () => {
     onSuccess: () => successToast('Your password has been successfully updated'),
   });
 
-  const submissionShouldBeDisabled: boolean = isValidating || !isValid || isSubmitting;
+  const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting;
 
   return (
     <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
