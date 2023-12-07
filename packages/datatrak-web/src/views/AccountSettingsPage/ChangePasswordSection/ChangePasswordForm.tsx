@@ -89,7 +89,7 @@ export const ChangePasswordForm = () => {
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t update your password. Please try again'),
     onSettled: () => reset(emptyFormState),
-    onSuccess: () => successToast('Your password has been successfully updated'),
+    onSuccess: response => successToast(response.message),
   });
 
   const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting;

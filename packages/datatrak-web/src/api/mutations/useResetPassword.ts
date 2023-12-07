@@ -17,7 +17,7 @@ export type ResetPasswordParams = {
 export const useResetPassword = (options?: {
   onError?: (error?: Error) => void;
   onSettled?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (response: { message: string }) => void;
 }) => {
   const [urlSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export const useResetPassword = (options?: {
       onSettled: () => {
         if (options?.onSettled) options.onSettled();
       },
-      onSuccess: () => {
+      onSuccess: (response?) => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
         urlSearchParams.delete(PASSWORD_RESET_TOKEN_PARAM);
         navigate({
@@ -45,7 +45,7 @@ export const useResetPassword = (options?: {
           search: urlSearchParams.toString(),
         });
 
-        if (options?.onSuccess) options.onSuccess();
+        if (options?.onSuccess) options.onSuccess(response);
       },
       meta: {
         applyCustomErrorHandling: true,
