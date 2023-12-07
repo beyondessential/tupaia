@@ -15,7 +15,7 @@ export type ResetPasswordParams = {
 };
 
 export const useResetPassword = (options?: {
-  onError?: () => void;
+  onError?: (error?: Error) => void;
   onSettled?: () => void;
   onSuccess?: () => void;
 }) => {
@@ -31,8 +31,8 @@ export const useResetPassword = (options?: {
       });
     },
     {
-      onError: () => {
-        if (options?.onError) options.onError();
+      onError: (error?) => {
+        if (options?.onError) options.onError(error);
       },
       onSettled: () => {
         if (options?.onSettled) options.onSettled();
