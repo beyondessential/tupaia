@@ -11,9 +11,9 @@ import { useEditUser } from '../../api/mutations';
 import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../../components';
 import { Survey } from '../../types';
 import { useSurveys, useCurrentUser } from '../../api';
+import { HEADER_HEIGHT } from '../../constants';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
 import { useUserCountries } from './useUserCountries';
-import { HEADER_HEIGHT } from '../../constants';
 
 const Container = styled(Paper).attrs({
   variant: 'outlined',

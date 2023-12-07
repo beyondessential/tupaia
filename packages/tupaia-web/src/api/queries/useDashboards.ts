@@ -19,8 +19,9 @@ export const useDashboards = (
   const enabled = !!entityCode && !!projectCode;
   const result = useQuery(
     ['dashboards', projectCode, entityCode],
-    (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
-      get(`dashboards/${projectCode}/${entityCode}`),
+    (): Promise<TupaiaWebDashboardsRequest.ResBody> => 
+      get(`dashboards/${projectCode}/${entityCode}`)
+      ,
     { enabled, keepPreviousData: false },
   );
 
