@@ -78,6 +78,7 @@ export const MapModal = ({
   mapModalOpen,
 }: MapModalProps) => {
   const initialTileSet = getAutoTileset();
+  // set this in this component instead of in the Map component so that the selected tileset remains if the modal is closed and reopened without changing pages
   const [selectedTileSet, setSelectedTileSet] = useState(initialTileSet);
   const [{ lat: currentLatitude, lng: currentLongitude }, setCoordinates] = useState({
     lat: geolocation?.latitude,

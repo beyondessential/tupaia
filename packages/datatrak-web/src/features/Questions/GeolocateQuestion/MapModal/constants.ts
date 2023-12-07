@@ -2,8 +2,6 @@ import { LatLngBoundsLiteral } from 'leaflet';
 
 export const tileSets = {
   osm: {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     key: 'osm',
     label: 'Open Streets',
     thumbnail: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/osm-tile-thumbnail.png',
