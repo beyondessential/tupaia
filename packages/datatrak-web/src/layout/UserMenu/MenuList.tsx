@@ -15,8 +15,6 @@ import { CancelConfirmModal } from '../../components';
 
 const Menu = styled.ul`
   list-style: none;
-  margin-block-start: 0;
-  margin-block-end: 0;
   padding-inline-start: 0;
   margin: 0.5rem 0;
 `;
@@ -84,7 +82,7 @@ export const MenuList = ({
         },
         helpCentre,
         {
-          label: 'Logout',
+          label: 'Log out',
           onClick: onClickLogout,
           component: 'button',
         },
