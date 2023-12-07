@@ -153,7 +153,7 @@ export const AutocompleteQuestion = ({
         id={id}
         label={label!}
         name={name!}
-        value={selectedValue?.value || null}
+        value={selectedValue?.value || selectedValue || null}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
         onInputChange={(_e, value) => setInputValue(value)}
         inputValue={inputValue}
