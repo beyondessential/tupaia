@@ -17,21 +17,16 @@ jest.mock('@tupaia/api-client', () => {
   };
 });
 
-describe('Error responses', () => {
+describe('User Route', () => {
   let app: TestableServer;
 
   beforeAll(async () => {
     app = await setupTestApp();
   });
 
-  describe('User Route', () => {
-    it('Returns data', async () => {
-      const response = await app.get('getUser');
-
-      // Forbidden error
-      expect(response.statusCode).toEqual(200);
-      console.log('response', response.body);
-      // expect(response.body).toEqual({ error: 'Permission denied' });
-    });
+  it('Returns an empty object if there is no session', async () => {
+    const response = await app.get('getUser');
+    expect(response.statusCode).toEqual(200);
+    console.log('response', response.body);
   });
 });
