@@ -12,17 +12,35 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Input: ComponentType<any>;
   required?: boolean;
+  nonWhitespace?: boolean;
+  validate?:
+    | ((value: string) => boolean | string)
+    | Record<string, (value: string) => boolean | string>;
 };
 export const FormInput = ({
   name,
   required,
+  nonWhitespace,
+  validate = {},
   options = {},
   Input,
   ...props
 }: HookFormInputWrapperProps) => {
   const { register, errors = {} } = useFormContext();
+
   const requiredConfig = required ? { required: 'Required' } : {};
-  const registerOptions = { ...options, ...requiredConfig };
+
+  const verifyIsNonwhitespace = (value: string) => !!value.trim() || 'Must not be empty';
+  const validateConfig =
+    typeof validate === 'function'
+      ? { validate: nonWhitespace ? { validate, verifyIsNonwhitespace } : { validate } }
+      : { validate: nonWhitespace ? { ...validate, verifyIsNonwhitespace } : { ...validate } };
+
+  const registerOptions = {
+    ...requiredConfig,
+    ...validateConfig,
+    ...options,
+  };
 
   return (
     <Input

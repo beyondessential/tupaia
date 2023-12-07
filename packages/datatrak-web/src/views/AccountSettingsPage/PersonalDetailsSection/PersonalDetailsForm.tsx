@@ -77,10 +77,6 @@ export const PersonalDetailsForm = () => {
     reset,
   } = formContext;
 
-  function assertNotWhitespace(value: string) {
-    return !!value.trim() || 'Must not be empty';
-  }
-
   const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
   const submissionShouldBeDisabled =
@@ -112,7 +108,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
           name="firstName"
-          options={{ validate: assertNotWhitespace }}
+          nonWhitespace
           placeholder="First name"
           required
         />
@@ -122,7 +118,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
           name="lastName"
-          options={{ validate: assertNotWhitespace }}
+          nonWhitespace
           placeholder="Last name"
           required
         />
@@ -153,7 +149,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
           name="employer"
-          options={{ validate: assertNotWhitespace }}
+          nonWhitespace
           placeholder="Employer"
           required
         />
@@ -163,7 +159,7 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
           name="position"
-          options={{ validate: assertNotWhitespace }}
+          nonWhitespace
           placeholder="Position"
           required
         />
