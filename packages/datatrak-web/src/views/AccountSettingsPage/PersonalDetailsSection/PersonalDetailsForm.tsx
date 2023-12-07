@@ -77,24 +77,22 @@ export const PersonalDetailsForm = () => {
     reset,
   } = formContext;
 
+  function handleSubmissionSuccess(): void {
+    reset(getValues() as PersonalDetailsFormFields);
+    successToast('Your personal details have been successfully updated');
+  }
   const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
   const submissionShouldBeDisabled =
     !isDirty || isValidating || !isValid || isSubmitting || isLoading;
 
-  function handleSubmissionSuccess(): void {
-    reset(getValues() as PersonalDetailsFormFields);
-    successToast('Your personal details have been successfully updated');
-  }
-
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
-    // Include in the API request...
     const updates: PersonalDetailsFormFields = Object.keys(dirtyFields)
-      // ...only fields which have actually been modified...
+      // Keep only user-modified fields...
       .filter(field => dirtyFields[field])
-      // ...and trim leading/trailing whitespace.
+      // ...and trim them
       .reduce(
         (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
         {} as PersonalDetailsFormFields,
