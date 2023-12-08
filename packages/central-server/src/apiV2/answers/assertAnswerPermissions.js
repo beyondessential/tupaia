@@ -91,7 +91,8 @@ export const createAnswerViaSurveyResponseDBFilter = async (
   // Add additional sorting when requesting via parent
   const dbOptions = {
     ...options,
-    sort: ['screen_number', 'component_number', ...options.sort],
+    // use the specified sort order first, so the the results get correctly sorted
+    sort: [...options.sort, 'screen_number', 'component_number'],
   };
 
   // Join other tables necessary for the additional sorting entries
