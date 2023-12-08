@@ -112,7 +112,7 @@ export const PersonalDetailsForm = () => {
           name="firstName"
           nonWhitespace
           placeholder="First name"
-          required
+          required="non-whitespace"
         />
         <FormInput
           autoComplete="family-name"
@@ -122,7 +122,7 @@ export const PersonalDetailsForm = () => {
           name="lastName"
           nonWhitespace
           placeholder="Last name"
-          required
+          required="non-whitespace"
         />
         <StyledTextField
           autoComplete="email"
@@ -153,7 +153,7 @@ export const PersonalDetailsForm = () => {
           name="employer"
           nonWhitespace
           placeholder="Employer"
-          required
+          required="non-whitespace"
         />
         <FormInput
           autoComplete="organization-title"

@@ -11,8 +11,8 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Input: ComponentType<any>;
-  required?: boolean;
-  nonWhitespace?: boolean;
+  required?: boolean | 'non-whitespace';
+  // nonWhitespace?: boolean;
   validate?:
     | ((value: string) => boolean | string)
     | Record<string, (value: string) => boolean | string>;
@@ -20,8 +20,8 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
 export const FormInput = ({
   name,
   required,
-  nonWhitespace,
-  validate = {},
+  // nonWhitespace,
+  validate,
   options = {},
   Input,
   ...props
@@ -30,11 +30,22 @@ export const FormInput = ({
 
   const requiredConfig = required ? { required: 'Required' } : {};
 
-  const verifyIsNonwhitespace = (value: string) => !!value.trim() || 'Must not be empty';
+  const verifyIsNonwhitespace = (value: string) => !!value.trim() || 'Required';
+
+  // prettier-ignore
   const validateConfig =
     typeof validate === 'function'
-      ? { validate: nonWhitespace ? { validate, verifyIsNonwhitespace } : { validate } }
-      : { validate: nonWhitespace ? { ...validate, verifyIsNonwhitespace } : { ...validate } };
+      ? {
+          validate:
+            required === 'non-whitespace'
+              ? { validate, verifyIsNonwhitespace }
+              : { validate },
+        }
+      : {
+          validate: required === 'non-whitespace'
+              ? { ...validate, verifyIsNonwhitespace }
+              : { ...validate },
+        };
 
   const registerOptions = {
     ...requiredConfig,
