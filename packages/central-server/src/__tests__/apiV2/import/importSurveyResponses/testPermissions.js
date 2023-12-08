@@ -21,7 +21,7 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-const TEST_DATA_FOLDER = 'src/tests/testData';
+const TEST_DATA_FOLDER = 'src/__tests__/testData';
 const SURVEY_NAME_1 = 'Test Import Survey Response 1';
 const SURVEY_NAME_2 = 'Test Import Survey Response 2';
 const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESP_1_test';

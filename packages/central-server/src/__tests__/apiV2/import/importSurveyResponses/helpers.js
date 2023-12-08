@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-const TEST_DATA_FOLDER = 'src/tests/testData';
+const TEST_DATA_FOLDER = 'src/__tests__/testData';
 
 export const importFile = (app, filename, surveyCodes = []) => {
   const queryParams = ['timeZone=UTC', ...surveyCodes.map(s => `surveyCodes=${s}`)];

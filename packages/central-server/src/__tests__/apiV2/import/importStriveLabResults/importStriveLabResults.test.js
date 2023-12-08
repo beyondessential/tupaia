@@ -72,7 +72,7 @@ const EXPECTED_ANSWERS_PER_LAB_RESULT = [
   ],
 ];
 const LAB_RESULTS = {
-  filePath: 'src/tests/testData/striveLabResults.xlsx',
+  filePath: 'src/__tests__/testData/striveLabResults.xlsx',
   count: EXPECTED_ANSWERS_PER_LAB_RESULT.length,
 };
 

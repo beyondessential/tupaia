@@ -26,7 +26,7 @@ const BES_ADMIN_POLICY = {
   LA: [BES_ADMIN_PERMISSION_GROUP],
 };
 
-const TEST_DATA_FOLDER = 'src/tests/testData';
+const TEST_DATA_FOLDER = 'src/__tests__/testData';
 
 describe('importEntities(): POST import/entities', () => {
   const app = new TestableApp();

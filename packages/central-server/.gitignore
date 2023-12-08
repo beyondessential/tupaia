@@ -2,5 +2,5 @@ uploads/*
 
 .vscode/tasks.json
 
-tests/testData/testSecrets.js
+__tests__/testData/testSecrets.js
 exports/*
