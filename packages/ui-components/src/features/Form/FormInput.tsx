@@ -36,14 +36,16 @@ export const FormInput = ({
   const validateConfig =
     typeof validate === 'function'
       ? {
-          validate: required === 'non-whitespace'
-            ? { validate, verifyIsNonwhitespace }
-            : { validate },
+          validate:
+            required === 'non-whitespace'
+              ? { validate, verifyIsNonwhitespace }
+              : { validate },
         }
       : {
-          validate: required === 'non-whitespace'
-            ? { ...validate, verifyIsNonwhitespace }
-            : { ...validate },
+          validate:
+            required === 'non-whitespace'
+              ? { ...validate, verifyIsNonwhitespace }
+              : { ...validate },
         };
 
   const registerOptions = {
