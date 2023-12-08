@@ -31,16 +31,16 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return SurveyResponseType;
   }
 
-  // TODO: remove the null check once we have migrated all surveys to have project ids and meditrak-app supports projects
   async getLeaderboard(projectId = '', rowCount = 10) {
     const bindings = projectId ? [projectId, rowCount] : [rowCount];
     return this.database.executeSql(
       `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
         FROM (
-          SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+          SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+          --              ^~~~~~~~~~~~~~~ FLOOR to force result to be returned as int, not string
           FROM survey_response
           JOIN survey on survey.id=survey_id
-          ${projectId ? 'WHERE (survey.project_id = ? OR survey.project_id IS NULL)' : ''}
+          ${projectId ? 'WHERE survey.project_id = ?' : ''}
           GROUP BY user_id
         ) r
         JOIN user_account on user_account.id = r.user_id

@@ -30,6 +30,7 @@ export { MapOverlayGroupRelationsPage } from './MapOverlayGroupRelationsPage';
 export { IndicatorsPage } from './IndicatorsPage';
 export { DashboardsPage } from './DashboardsPage';
 export { DashboardItemsPage } from './DashboardItemsPage';
+export { DashboardMailingListsPage } from './DashboardMailingListsPage';
 export { DashboardRelationsPage } from './DashboardRelationsPage';
 export { LegacyReportsPage } from './LegacyReportsPage';
 export { ProjectsPage } from './ProjectsPage';

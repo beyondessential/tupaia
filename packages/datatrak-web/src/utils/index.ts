@@ -9,3 +9,4 @@ export { useIsMobileMediaQuery as useIsMobile } from './useIsMobileMediaQuery';
 export { useFromLocation } from './useFromLocation';
 export * from './date';
 export * from './detectDevice';
+export { gaEvent } from './ga';

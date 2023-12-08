@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
@@ -15,11 +15,19 @@ import {
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
-import { A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4Page, A4PageContent, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
+
+const StyledA4Page = styled(A4Page)<{
+  $isPreview?: boolean;
+  $previewZoom?: number;
+}>`
+  ${({ $isPreview, $previewZoom = 0.25 }) =>
+    $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
+`;
 
 const Wrapper = styled.div`
   margin: 0 7.8rem;
@@ -88,11 +96,21 @@ export const PDFExportDashboardItem = ({
   dashboardItem,
   entityName,
   activeDashboard,
+  isPreview = false,
 }: {
   dashboardItem?: DashboardItem;
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
+  isPreview?: boolean;
 }) => {
+  const [width, setWidth] = useState(0);
+  const pageRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (pageRef.current) setWidth(pageRef.current.offsetWidth);
+  }, []);
+  const previewZoom = width / A4_PAGE_WIDTH_PX;
+
   const { projectCode, entityCode } = useParams();
   const { legacy, code, reportCode } = dashboardItem || ({} as DashboardItem);
   const { startDate, endDate } = getDefaultDates(dashboardItem?.config || {}) as {
@@ -128,9 +146,14 @@ export const PDFExportDashboardItem = ({
   const title = getTitle();
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
-  const data = isLoading ? undefined : (report as BaseReport).data;
+  const data = isLoading ? undefined : (report as BaseReport)?.data;
   return (
-    <A4Page key={dashboardItem?.code}>
+    <StyledA4Page
+      ref={pageRef}
+      key={dashboardItem?.code}
+      $isPreview={isPreview}
+      $previewZoom={previewZoom}
+    >
       <PDFExportHeader>{entityName}</PDFExportHeader>
       <A4PageContent>
         <DashboardTitleContainer>
@@ -164,6 +187,6 @@ export const PDFExportDashboardItem = ({
           </ExportContent>
         </Wrapper>
       </A4PageContent>
-    </A4Page>
+    </StyledA4Page>
   );
 };

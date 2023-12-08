@@ -1,0 +1,97 @@
+[
+  {
+    "oldSurveyCode": "IR",
+    "currentProjectCode": "aim_demo",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TADA",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TABST",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TAI",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TASM",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TACC",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TARA",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TARR",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TARS",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "COUAT",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "IAT",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "TALC",
+    "currentProjectCode": "asset_management",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "SC1FA",
+    "currentProjectCode": "covid_samoa",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "SC1PFA",
+    "currentProjectCode": "covid_samoa",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "PAMC",
+    "currentProjectCode": "pacmossi",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "PFSM",
+    "currentProjectCode": "pacmossi",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "PLS",
+    "currentProjectCode": "pacmossi",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "PPM",
+    "currentProjectCode": "pacmossi",
+    "newProjectCode": "dl_tamanu"
+  },
+  {
+    "oldSurveyCode": "PRSCT",
+    "currentProjectCode": "unfpa",
+    "newProjectCode": "dl_tamanu"
+  }
+]
