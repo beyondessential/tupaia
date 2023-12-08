@@ -35,10 +35,10 @@ export const useResetPassword = (options?: {
       });
     },
     {
-      onError: (error: Error): void => {
+      onError: (error: Error) => {
         if (options?.onError) options.onError(error);
       },
-      onSettled: (): void => {
+      onSettled: () => {
         if (options?.onSettled) options.onSettled();
       },
       onSuccess: (response: ResBody) => {
