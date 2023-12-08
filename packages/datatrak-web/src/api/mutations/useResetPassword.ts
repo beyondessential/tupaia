@@ -8,16 +8,20 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { post } from '../api';
 import { PASSWORD_RESET_TOKEN_PARAM } from '../../constants';
 
-export type ResetPasswordParams = {
+export interface ResetPasswordParams {
   oldPassword: string;
   newPassword: string;
   newPasswordConfirm: string;
-};
+}
+
+interface ResBody {
+  message: string;
+}
 
 export const useResetPassword = (options?: {
-  onError?: (error?: Error) => void;
+  onError?: (error: Error) => void;
   onSettled?: () => void;
-  onSuccess?: (response: { message: string }) => void;
+  onSuccess?: (response: ResBody) => void;
 }) => {
   const [urlSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -31,13 +35,13 @@ export const useResetPassword = (options?: {
       });
     },
     {
-      onError: (error?) => {
+      onError: (error: Error): void => {
         if (options?.onError) options.onError(error);
       },
-      onSettled: () => {
+      onSettled: (): void => {
         if (options?.onSettled) options.onSettled();
       },
-      onSuccess: (response?) => {
+      onSuccess: (response: ResBody) => {
         // manually navigate to the removed token - using setUrlParams seems to remove the hash as well in this one case
         urlSearchParams.delete(PASSWORD_RESET_TOKEN_PARAM);
         navigate({
