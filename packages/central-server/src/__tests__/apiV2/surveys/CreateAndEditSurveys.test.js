@@ -34,7 +34,7 @@ const BES_ADMIN_POLICY = {
   LA: [BES_ADMIN_PERMISSION_GROUP],
 };
 
-const TEST_DATA_FOLDER = 'src/tests/testData';
+const TEST_DATA_FOLDER = 'src/__tests__/testData';
 
 const EXISTING_TEST_SURVEY_CODE_1 = 'existing_survey_import_1_test';
 
