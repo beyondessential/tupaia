@@ -4,13 +4,12 @@
  */
 import React from 'react';
 import { UseMutationResult, QueryClient } from 'react-query';
-import { MemoryRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Routes as Router } from 'react-router-dom';
 import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 import { AppProviders } from '../../AppProviders';
-import { SurveyRoutes } from '../../routes';
-import { SurveyContext } from '../../features';
+import { Routes, SurveyRoutes } from '../../routes';
 
 export function renderComponent(children) {
   const queryClient = new QueryClient();
@@ -22,25 +21,21 @@ export function renderPage(activeUrl) {
   return render(
     <AppProviders queryClient={queryClient}>
       <MemoryRouter initialEntries={[activeUrl]}>
-        <Routes>
-          {/** Wrap the test routes in the context so surveys can be tested correctly */}
-          <Route
-            element={
-              <SurveyContext>
-                <Outlet />
-              </SurveyContext>
-            }
-          >
-            {SurveyRoutes}
-          </Route>
-        </Routes>
+        <Routes />
       </MemoryRouter>
     </AppProviders>,
   );
 }
 
 export function renderSurveyPage(activeUrl) {
-  return renderPage(activeUrl);
+  const queryClient = new QueryClient();
+  return render(
+    <AppProviders queryClient={queryClient}>
+      <MemoryRouter initialEntries={[activeUrl]}>
+        <Router>{SurveyRoutes}</Router>
+      </MemoryRouter>
+    </AppProviders>,
+  );
 }
 
 // Utility function to render a mutation hook with the AppProviders wrapper

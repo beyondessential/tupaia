@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import styled from 'styled-components';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { FORM_FIELD_VALIDATION } from '../../constants';

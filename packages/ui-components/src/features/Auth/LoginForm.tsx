@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { AuthViewWrapper } from './AuthViewWrapper';
@@ -82,7 +82,6 @@ export const LoginForm = ({
           label="Password"
           disabled={isLoading}
         />
-
         <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
           Forgot password?
         </ForgotPasswordText>

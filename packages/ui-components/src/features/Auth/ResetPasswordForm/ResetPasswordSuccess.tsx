@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import { Typography } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
 import { AuthViewWrapper } from '../AuthViewWrapper';

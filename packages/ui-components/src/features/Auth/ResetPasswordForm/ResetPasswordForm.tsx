@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Paper } from '@material-ui/core';
 import { AuthErrorMessage } from '../AuthErrorMessage';
