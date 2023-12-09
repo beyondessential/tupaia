@@ -13,25 +13,6 @@
       "protocol": "inspector"
     },
     {
-      "name": "mocha",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "stopOnEntry": false,
-      "args": [
-        "./src/__tests__/dataBuilderPercentagesByNominatedPair.test.js",
-        "--require babel-register",
-        "--require @babel/polyfill",
-        "--timeout 100000",
-        "--exit"
-      ], //you can specify paths to specific tests here
-      "cwd": "${workspaceRoot}",
-      "runtimeExecutable": null,
-      "env": {
-        "NODE_ENV": "testing"
-      }
-    },
-    {
       "type": "node",
       "request": "attach",
       "name": "Attach by Process ID",
