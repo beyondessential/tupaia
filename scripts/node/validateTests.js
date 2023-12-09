@@ -18,7 +18,7 @@ const { getLoggerInstance } = require('@tupaia/utils');
 
 const PACKAGE_ROOT = path.resolve(`${__dirname}/../../packages`);
 const TEST_PATHS_RELATIVE_TO_PACKAGE = ['src/tests', 'src/__tests__', 'tests', '__tests__'];
-const MOCHA_TEST_BLOCKS = ['it', 'describe', 'context', 'specify'];
+const TEST_BLOCKS = ['it', 'describe'];
 const STD_ERROR_CODE = 1;
 
 const executeCommand = async command => {
@@ -40,7 +40,7 @@ const findPossibleTestDirsForPackage = packageName =>
   );
 
 const findExclusiveTests = async testDirectory => {
-  const regexp = MOCHA_TEST_BLOCKS.map(testBlock => `${testBlock}.only`).join('\\|');
+  const regexp = TEST_BLOCKS.map(testBlock => `${testBlock}.only`).join('\\|');
   const grepOutput = await grep(regexp, testDirectory);
   return parseGrepOutput(grepOutput);
 };

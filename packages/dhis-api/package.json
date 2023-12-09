@@ -25,7 +25,6 @@
     "@tupaia/aggregator": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "chai-as-promised": "^7.1.1",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "moment": "^2.24.0",

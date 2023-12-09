@@ -36,21 +36,4 @@ module.exports = {
     'scripts/',
     '.eslintrc.js'
   ],
-  overrides: [
-    {
-      files: ['src/tests/**/*.js'],
-      env: {
-        mocha: true
-      },
-      rules: {
-        'import/no-extraneous-dependencies': [
-          'error',
-          {
-            devDependencies: true // allow importing from devDependencies for tests
-          }
-        ],
-        'no-undef': 0 // 'expect' global
-      }
-    }
-  ]
 };

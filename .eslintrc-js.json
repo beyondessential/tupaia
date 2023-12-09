@@ -17,6 +17,12 @@
       ],
       "extends": "@beyondessential/jest",
       "rules": {
+        "jest/expect-expect": [
+          "warn",
+          {
+            "assertFunctionNames": ["assert*", "expect*"]
+          }
+        ],
         "jest/valid-expect": [
           "error",
           {
@@ -34,10 +40,7 @@
       }
     },
     {
-      "files": [
-        "jest.setup.js",
-        "jest.config.js"
-      ],
+      "files": ["jest.setup.js", "jest.config.js"],
       "env": {
         "jest": true
       }
