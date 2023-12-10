@@ -10,8 +10,8 @@ import {
   useEntityAncestors,
   useMapOverlays,
 } from '../../../api/queries';
-import { useMapOverlayTableData } from './useMapOverlayTableData';
 import { Entity } from '../../../types';
+import { useMapOverlayTableData } from './useMapOverlayTableData';
 
 /*
  * This hook is used to get the sibling and immediate child entities for displaying navigation polygons on the map
@@ -19,7 +19,7 @@ import { Entity } from '../../../types';
 const useNavigationEntities = (
   projectCode,
   activeEntity,
-  isPolygonSerieses,
+  isPolygonOverlayData,
   measureLevel,
   displayOnLevel,
 ) => {
@@ -71,7 +71,7 @@ const useNavigationEntities = (
   });
 
   // For polygon overlays, show navigation polygons for sibling entities only
-  if (isPolygonSerieses) {
+  if (isPolygonOverlayData) {
     return filteredData?.filter(entity => entity.type === activeEntity.type);
   }
 
@@ -120,14 +120,7 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
 export const useMapOverlayMapData = (hiddenValues = {}) => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
-  const entityRelatives = useNavigationEntities(
-    projectCode,
-    entity,
-    isPolygonSerieses,
-    selectedOverlay?.measureLevel,
-    selectedOverlay?.displayOnLevel,
-  );
+  const { selectedOverlay } = useMapOverlays(projectCode, entityCode);
 
   const rootEntityCode = useRootEntityCode(
     entity,
@@ -137,6 +130,18 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
+
+  // Check if the data is all polygon data. Default to true if there is no data
+  const isPolygonOverlayData =
+    mapOverlayData?.measureData?.every(measure => !!measure.region) ?? true;
+
+  const entityRelatives = useNavigationEntities(
+    projectCode,
+    entity,
+    isPolygonOverlayData,
+    selectedOverlay?.measureLevel,
+    selectedOverlay?.displayOnLevel,
+  );
 
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
