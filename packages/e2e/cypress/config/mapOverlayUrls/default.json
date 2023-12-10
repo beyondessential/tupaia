@@ -45,11 +45,6 @@
     "orgUnit": "TO"
   },
   {
-    "id": "COVID_AU_State_Total_Number_Confirmed_Cases",
-    "project": "covidau",
-    "orgUnit": "AU"
-  },
-  {
     "id": "COVID_Facility_Commodities_Soap",
     "project": "explore",
     "orgUnit": "TO"

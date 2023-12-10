@@ -37,7 +37,8 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
     return this.database.executeSql(
       `SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
         FROM (
-          SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+          SELECT user_id, FLOOR(COUNT(*)) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+          --              ^~~~~~~~~~~~~~~ FLOOR to force result to be returned as int, not string
           FROM survey_response
           JOIN survey on survey.id=survey_id
           ${projectId ? 'WHERE survey.project_id = ?' : ''}
