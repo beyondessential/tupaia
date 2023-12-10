@@ -68,7 +68,7 @@ def create_tupaia_instance_from_image(
 ):
     deployment_type = 'tupaia'
     tupaia_server_iam_role_arn = 'arn:aws:iam::843218180240:instance-profile/TupaiaServerRole'
-    tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis', 'meditrak-api', 'data-table-api', 'tupaia-web-api', 'tupaia-web-rewrite', 'datatrak-web-api', 'datatrak'] if setup_gateway else None
+    tupaia_subdomains = ['','admin','admin-api','api','config','export','mobile','psss','report-api','psss-api','entity-api','lesmis-api','lesmis', 'meditrak-api', 'data-table-api', 'tupaia-web-api', 'datatrak-web-api', 'datatrak'] if setup_gateway else None
     tupaia_volume_size = 20 # 20GB
     startup_script = Path('./resources/startup.sh').read_text()
 
