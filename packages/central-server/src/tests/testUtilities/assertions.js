@@ -7,12 +7,21 @@ import { expect } from 'chai';
 
 const getMatch = input => (typeof input === 'string' ? new RegExp(input) : input);
 
-export const expectError = (response, expectedError, expectedStatus = 500) => {
+export const expectError = (
+  response,
+  expectedError,
+  expectedStatus = 500,
+  regexErrorMessage = true,
+) => {
   const { body, status } = response;
 
   expect(status).to.equal(expectedStatus);
   expect(body).to.have.property('error');
-  expect(body.error).to.match(getMatch(expectedError));
+  if (regexErrorMessage) {
+    expect(body.error).to.match(getMatch(expectedError));
+  } else {
+    expect(body.error).to.equal(expectedError);
+  }
 };
 
 export const expectErrors = (response, expectedError, expectedStatus = 500) => {

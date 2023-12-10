@@ -10,7 +10,7 @@ import {
   useEntityAncestors,
   useMapOverlays,
 } from '../../../api/queries';
-import { useMapOverlayTableData } from './useMapOverlayTableData.ts';
+import { useMapOverlayTableData } from './useMapOverlayTableData';
 import { Entity } from '../../../types';
 
 /*
@@ -25,25 +25,44 @@ const useNavigationEntities = (
 ) => {
   const rootEntityCode = activeEntity?.parentCode || activeEntity?.code;
 
-  const { data = [] } = useEntitiesWithLocation(
+  // Get siblings for the root entity
+  const { data: siblings = [] } = useEntitiesWithLocation(
     projectCode,
     rootEntityCode,
     {
       params: {
         includeRootEntity: false,
         filter: {
-          generational_distance: 2,
+          generational_distance: 1,
         },
       },
     },
     { enabled: !!rootEntityCode },
   );
 
-  // if display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix
-  if (displayOnLevel) return [];
+  // Get immediate children for the selected entity
+  const { data: children = [] } = useEntitiesWithLocation(
+    projectCode,
+    activeEntity?.code,
+    {
+      params: {
+        includeRootEntity: false,
+        filter: {
+          generational_distance: 1,
+        },
+      },
+    },
+    { enabled: !!activeEntity?.code && activeEntity?.code !== rootEntityCode },
+  );
+
+  const entitiesData = [...siblings, ...children];
+
+  // If display on level is set, we don't want to show the sibling entities because this would cause slow load times, which displayOnLevel is aiming to fix. Also, don't show child entities if the current entity is the same as 'displayAtLevel', because we would end up with extra entities on the map
+  if (displayOnLevel)
+    return activeEntity?.type?.replace('_', '') === displayOnLevel.toLowerCase() ? [] : children;
 
   // Don't show nav entities for the selected measure level
-  const filteredData = data?.filter(entity => {
+  const filteredData = entitiesData?.filter(entity => {
     if (!measureLevel) return true;
     // handle edge cases of array measure levels
     if (Array.isArray(measureLevel))
@@ -71,6 +90,7 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
   }
   const { parentCode, code, type } = entity;
 
+  // if displayAtLevel is set, look for the entity at that level
   if (displayOnLevel) {
     const measure = entityAncestors?.find(
       (entity: Entity) => entity.type.replace('_', '') === displayOnLevel?.toLowerCase(),
@@ -117,6 +137,7 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
 
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
+
   // Get the relatives (siblings and immediate children) of the active entity for displaying navigation polygons
   const relativesMeasureData = entityRelatives
     ?.filter(

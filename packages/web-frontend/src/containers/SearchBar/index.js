@@ -195,7 +195,7 @@ export class SearchBar extends PureComponent {
           onControlBlur={() => onSearchBlur(isExpanded, isSafeToCloseResults)}
           isExpanded={isExpanded}
           onExpandClick={() => onExpandClick()}
-          hintText="Search Location"
+          hintText="Search location"
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
