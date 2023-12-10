@@ -27,9 +27,11 @@ const StyledFieldset = styled.fieldset`
   align-items: start;
   display: grid;
   gap: 1.56rem 1.25rem;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, auto);
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template: repeat(3, auto) / repeat(2, 1fr);
   }
 
   .MuiFormLabel-root {
@@ -47,12 +49,10 @@ const StyledTextField = styled(TextField)`
   margin: 0; // Use gap on parent to control spacing
 `;
 
-const StyledFormInput = styled(FormInput)`
-  grid-column: 1 / 2;
-`;
-
 const StyledButton = styled(Button)`
   ${({ theme }) => theme.breakpoints.up('sm')} {
+    grid-row: -2 / -1;
+
     /* HACK: Align button with adjacent FormInput, even when FormInput in error state */
     margin-block-start: calc(1.125rem + 3px);
     //                                  ^~~ margin-bottom of .MuiFormLabel-root
@@ -97,7 +97,7 @@ export const ChangePasswordForm = () => {
   return (
     <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
       <StyledFieldset>
-        <StyledFormInput
+        <FormInput
           autoComplete="password"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
@@ -107,7 +107,7 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledFormInput
+        <FormInput
           autoComplete="new-password"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
@@ -118,7 +118,7 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledFormInput
+        <FormInput
           autoComplete="new-password"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'done' }}
