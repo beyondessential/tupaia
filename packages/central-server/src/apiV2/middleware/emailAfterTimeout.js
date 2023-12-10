@@ -31,8 +31,8 @@ const setupEmailResponse = async (req, res, constructEmailFromResponse) => {
 
   // override the respond function so that when the endpoint handler finishes (or throws an error),
   // the response is sent via email
-  res.overrideRespond = responseBody => {
-    const { subject, message, attachments } = constructEmailFromResponse(responseBody);
+  res.overrideRespond = async responseBody => {
+    const { subject, message, attachments } = await constructEmailFromResponse(responseBody, req);
     sendResponseAsEmail(user, subject, message, attachments);
   };
 };
