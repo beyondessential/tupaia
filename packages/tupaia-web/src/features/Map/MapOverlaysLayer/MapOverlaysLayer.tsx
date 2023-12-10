@@ -22,9 +22,14 @@ const useZoomToEntity = () => {
 
   // This is a replacement for the map positioning being handled in the ui-map-components LeafletMap file. We are doing this because we need access to the user's current zoom level, and are also slowly moving away from class based components to use hooks instead.
   useEffect(() => {
-    if (!entity || !map || (!entity.point && !entity.bounds)) return;
+    if (!entity || !map || (!entity.point && !entity.bounds && !entity.region)) return;
+
     if (entity.bounds) {
       map.flyToBounds(entity.bounds, {
+        animate: false, // don't animate, as it can slow things down a bit
+      });
+    } else if (entity.region) {
+      map.flyToBounds(entity.region, {
         animate: false, // don't animate, as it can slow things down a bit
       });
     } else {

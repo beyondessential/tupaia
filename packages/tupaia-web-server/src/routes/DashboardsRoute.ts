@@ -5,14 +5,30 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, DashboardItem, Dashboard, TupaiaWebDashboardsRequest } from '@tupaia/types';
+import {
+  Entity,
+  DashboardItem,
+  Dashboard,
+  TupaiaWebDashboardsRequest,
+  DashboardMailingList,
+  DashboardMailingListEntry,
+} from '@tupaia/types';
 import { orderBy } from '@tupaia/utils';
 import { camelcaseKeys } from '@tupaia/tsutils';
-
 import { DashboardRelationType } from '../models/DashboardRelation';
 
-interface DashboardWithItems extends Dashboard {
+interface MailingList {
+  isSubscribed: boolean;
+  entityCode: string;
+}
+
+interface DashboardWithMetadata extends Dashboard {
   items: DashboardItem[];
+  mailingLists: MailingList[];
+}
+
+interface DashboardMailingListWithEntityCode extends DashboardMailingList {
+  'entity.code': string;
 }
 
 export type DashboardsRequest = Request<
@@ -53,6 +69,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
               config,
             },
           ],
+          mailingLists: [],
         },
       ],
       {
@@ -61,7 +78,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     );
   };
   public async buildResponse() {
-    const { params, ctx, accessPolicy } = this.req;
+    const { params, ctx, accessPolicy, session } = this.req;
     const { projectCode, entityCode } = params;
 
     // We're including the root entity in this request, so we don't need to double up fetching it
@@ -89,8 +106,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     }
 
     // Fetch all dashboard relations
-    const dashboardRelations: DashboardRelationType[] = await this.req.models.dashboardRelation.find(
-      {
+    const dashboardRelations: DashboardRelationType[] =
+      await this.req.models.dashboardRelation.find({
         // Attached to the given dashboards
         dashboard_id: dashboards.map((d: Dashboard) => d.id),
         // For the root entity type
@@ -103,8 +120,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           comparator: '@>',
           comparisonValue: [projectCode],
         },
-      },
-    );
+      });
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems = await ctx.services.central.fetchResources('dashboardItems', {
@@ -140,7 +156,46 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       ],
     );
 
-    const dashboardsWithItems = dashboards.map((rawDashboard: Dashboard) => {
+    const dashboardMailingLists: DashboardMailingListWithEntityCode[] =
+      await ctx.services.central.fetchResources('dashboardMailingLists', {
+        filter: {
+          dashboard_id: {
+            comparator: 'IN',
+            comparisonValue: dashboards.map((d: Dashboard) => d.id),
+          },
+        },
+        columns: ['id', 'entity.code', 'dashboard_id'],
+        // Override the default limit of 100 records
+        pageSize: DEFAULT_PAGE_SIZE,
+      });
+
+    const dashboardMailingListEntries: DashboardMailingListEntry[] = session
+      ? await ctx.services.central.fetchResources('dashboardMailingListEntries', {
+          filter: {
+            dashboard_mailing_list_id: {
+              comparator: 'IN',
+              comparisonValue: dashboardMailingLists.map((dml: DashboardMailingList) => dml.id),
+            },
+          },
+          // Override the default limit of 100 records
+          pageSize: DEFAULT_PAGE_SIZE,
+        })
+      : [];
+
+    const mailingLists = dashboardMailingLists.map((list: DashboardMailingListWithEntityCode) => ({
+      dashboardId: list.dashboard_id,
+      entityCode: list['entity.code'],
+      isSubscribed: session
+        ? dashboardMailingListEntries.some(
+            (entry: DashboardMailingListEntry) =>
+              entry.dashboard_mailing_list_id === list.id &&
+              entry.email === session.email &&
+              entry.subscribed,
+          )
+        : false,
+    }));
+
+    const dashboardsWithMetadata = dashboards.map((rawDashboard: Dashboard) => {
       // @ts-ignore model causes a circular loop in camelcase
       // but we can't strip it because typescript doesn't know about it
       const { model, ...dashboard } = rawDashboard;
@@ -155,11 +210,18 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           .map(({ item }: { item: DashboardItem }) => ({
             ...item,
           })),
+        mailingLists: mailingLists
+
+          .filter(list => list.dashboardId === dashboard.id)
+          .map(({ entityCode: mailingListEntityCode, isSubscribed }) => ({
+            entityCode: mailingListEntityCode,
+            isSubscribed,
+          })),
       };
     });
 
-    const response = dashboardsWithItems.filter(
-      (dashboard: DashboardWithItems) => dashboard.items.length > 0,
+    const response = dashboardsWithMetadata.filter(
+      (dashboard: DashboardWithMetadata) => dashboard.items.length > 0,
     );
 
     if (!response.length) {
