@@ -30,6 +30,7 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.13"
+    "@types/nodemailer": "^6.4.13",
+    "@types/sha256": "^0.2.2"
   }
 }

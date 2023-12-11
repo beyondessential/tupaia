@@ -64,7 +64,6 @@
     "@beyondessential/eslint-config-jest": "^1.0.0",
     "@beyondessential/eslint-config-js": "^1.1.1",
     "@beyondessential/eslint-config-ts": "^2.0.0",
-    "@types/sha256": "^0.2.2",
     "@vitejs/plugin-react": "^4.0.4",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^27.0.6",
