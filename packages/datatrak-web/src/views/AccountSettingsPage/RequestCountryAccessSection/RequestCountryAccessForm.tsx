@@ -122,8 +122,9 @@ export const RequestCountryAccessForm = () => {
           <CountryList>
             {countryAccessList?.map(country => (
               <StyledCheckbox
+                defaultValue={false}
                 color="primary"
-                disabled={!!country.accessRequests}
+                disabled={!!country.accessRequests.length}
                 key={country.id}
                 name={country.name}
                 label={country.name}
@@ -134,6 +135,7 @@ export const RequestCountryAccessForm = () => {
         </CountryListWrapper>
         <StyledBox>
           <StyledFormInput
+            defaultValue=""
             fullWidth
             Input={TextField}
             inputProps={{
