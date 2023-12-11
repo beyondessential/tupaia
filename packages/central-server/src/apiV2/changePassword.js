@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { respond, FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
+import { DatabaseError, FormValidationError, isValidPassword, respond } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { allowNoPermissions } from '../permissions';
 
@@ -40,11 +40,11 @@ export async function changePassword(req, res, next) {
       throw new FormValidationError('One time login is invalid');
     }
   } else if (!user.checkPassword(oldPassword)) {
-    throw new FormValidationError('Incorrect current password.', ['oldPassword']);
+    throw new FormValidationError('Incorrect current password', ['oldPassword']);
   }
 
   if (passwordParam !== passwordConfirmParam) {
-    throw new FormValidationError('Passwords do not match.', ['password', 'passwordConfirm']);
+    throw new FormValidationError('Passwords do not match', ['password', 'passwordConfirm']);
   }
 
   try {
@@ -57,5 +57,5 @@ export async function changePassword(req, res, next) {
     ...hashAndSaltPassword(passwordParam),
   });
 
-  respond(res, { message: 'Successfully updated password' });
+  respond(res, { message: 'Password successfully updated' });
 }
