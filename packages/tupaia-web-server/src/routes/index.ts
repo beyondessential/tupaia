@@ -35,3 +35,5 @@ export {
   ProjectCountryAccessListRequest,
   ProjectCountryAccessListRoute,
 } from './ProjectCountryAccessListRoute';
+export { SubscribeRoute, SubscribeRequest } from './SubscribeRoute';
+export { UnsubscribeRoute, UnsubscribeRequest } from './UnsubscribeRoute';

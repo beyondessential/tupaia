@@ -90,7 +90,7 @@ export const LoginForm = ({
           Log in
         </AuthSubmitButton>
         <AuthLink>
-          Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
+          Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
         </AuthLink>
       </StyledForm>
     </Wrapper>

@@ -83,7 +83,7 @@ export const ForgotPasswordForm = ({
             Back to log in
           </AuthSubmitButton>
           <AuthLink align="center">
-            Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
+            Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
           </AuthLink>
         </StyledForm>
       )}

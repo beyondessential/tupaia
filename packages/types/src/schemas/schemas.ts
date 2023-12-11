@@ -53541,7 +53541,8 @@ export const EntitySchema = {
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -53613,7 +53614,8 @@ export const EntityCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -59327,7 +59329,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"required": [
 					"code",
 					"id",
-					"name"
+					"name",
+					"type"
 				]
 			}
 		},
@@ -59566,7 +59569,8 @@ export const ResBodySchema = {
 		"required": [
 			"code",
 			"id",
-			"name"
+			"name",
+			"type"
 		]
 	}
 } 
@@ -68266,6 +68270,7 @@ export const DashboardWithMetadataSchema = {
 		"code",
 		"id",
 		"items",
+		"mailingLists",
 		"name",
 		"root_entity_code"
 	]

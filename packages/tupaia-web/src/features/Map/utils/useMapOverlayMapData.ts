@@ -41,7 +41,6 @@ const useNavigationEntities = (
   );
 
   // Get immediate children for the selected entity
-  // If the root entity is the active entity, react-query will automatically de-dupe the requests
   const { data: children = [] } = useEntitiesWithLocation(
     projectCode,
     activeEntity?.code,
@@ -53,7 +52,7 @@ const useNavigationEntities = (
         },
       },
     },
-    { enabled: !!activeEntity?.code },
+    { enabled: !!activeEntity?.code && activeEntity?.code !== rootEntityCode },
   );
 
   const entitiesData = [...siblings, ...children];

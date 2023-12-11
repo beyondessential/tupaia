@@ -17,7 +17,7 @@ interface MailingList {
 
 interface DashboardWithMetadata extends Dashboard {
   items: DashboardItem[];
-  mailingLists?: MailingList[];
+  mailingLists: MailingList[];
 }
 export type ResBody = KeysToCamelCase<DashboardWithMetadata>[];
 export type ReqBody = Record<string, never>;
