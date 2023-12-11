@@ -57,11 +57,10 @@ const StyledFormLabel = styled(FormLabel)`
 `;
 
 const CountryList = styled.fieldset`
-  border: none;
   margin: 0;
 
   border-radius: 0.1875rem;
-  border: 1px solid ${props => props.theme.palette.divider};
+  border: 1px solid ${props => props.theme.palette.grey[400]};
   overflow-y: scroll;
   padding: 0 0.87rem;
 `;
