@@ -82,15 +82,20 @@ const StyledBox = styled(Box)`
   gap: ${gridAndFlexGap};
 `;
 
+/** The usage of this component below has inline styling. See there for explanation */
 const StyledFormInput = styled(FormInput)`
   flex-grow: 1;
   margin: 0;
-  //height: 100%;
-  //.MuiTextField-root,
-  //.MuiInputBase-input,
-  //.MuiInputBase-inputMultiline {
-  //  height: 100%;
-  //}
+
+  .MuiInputBase-root {
+    align-items: start;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .MuiInputBase-input {
+    box-sizing: border-box;
+  }
 `;
 
 export const RequestCountryAccessForm = () => {
@@ -120,14 +125,18 @@ export const RequestCountryAccessForm = () => {
           <StyledFormInput
             fullWidth
             Input={TextField}
-            inputProps={{ enterKeyHint: 'done' }}
+            inputProps={{
+              enterKeyHint: 'done',
+              // MUI uses inline styling (element.style) to dynamically resize <textarea> to fit
+              // content, so we must do the same to override it. This makes it scroll upon overflow.
+              style: { height: '100%' },
+            }}
             label="Reason for access"
             margin="none"
-            maxRows={11}
-            minRows={11}
             multiline
             name="reasonForAccess"
             size="medium"
+            // sx={{ height: 100 }}
           />
           <Button>Request access</Button>
         </StyledBox>
