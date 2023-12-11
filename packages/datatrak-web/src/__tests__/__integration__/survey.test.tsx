@@ -13,9 +13,12 @@ const server = setupServer(
   rest.get('*/v1/getUser', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ name: 'John Smith', email: 'john@gmail.com' }));
   }),
+  rest.get('*/v1/*', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json([]));
+  }),
 );
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
+beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 

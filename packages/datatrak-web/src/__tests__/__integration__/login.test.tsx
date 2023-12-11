@@ -26,14 +26,14 @@ const mockUserRequest = (userData = {}) => {
 const server = setupServer(
   ...handlers,
   mockUserRequest(),
-  rest.get('*/v1/projects', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json([]));
-  }),
   rest.post('*/v1/login', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ user: {} }));
   }),
+  rest.get('*/v1/*', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json([]));
+  }),
 );
-beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
+beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
