@@ -46,10 +46,13 @@ const CountryListWrapper = styled(Box)`
   display: block flex;
   flex-direction: column;
   height: 20.125rem;
+`;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
-    //grid-row: 1 / -1;
-  }
+/** Match styling of .MuiFormLabel-root in ui-components TextField */
+const StyledFormLabel = styled(FormLabel)`
+  font-size: 0.9375rem;
+  line-height: 1.125rem;
+  margin-bottom: 3px;
 `;
 
 const CountryList = styled.fieldset`
@@ -105,7 +108,7 @@ export const RequestCountryAccessForm = () => {
     <StyledForm formContext={formContext}>
       <StyledFieldset>
         <CountryListWrapper>
-          <FormLabel>Select countries</FormLabel>
+          <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
             {[
               'foo',
