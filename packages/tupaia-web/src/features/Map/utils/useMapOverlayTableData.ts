@@ -18,18 +18,20 @@ import { processMeasureData } from './processMeasureData';
 
 type EntityTypeParam = string | null | undefined;
 
-const usePrevious = projectCode => {
+const usePrevious = value => {
   const ref = useRef();
   useEffect(() => {
-    ref.current = projectCode; //assign the value of ref to the argument
-  }, [projectCode]); //this code will run when the value of 'value' changes
+    ref.current = value; //assign the value of ref to the argument
+  }, [value]); //this code will run when the value of 'value' changes
   return ref.current; //in the end, return the current ref value.
 };
 
-const useProjectCodeHasChanged = projectCode => {
+const useKeepPreviousData = (projectCode, measureLevel) => {
   const previousProjectCode = usePrevious(projectCode);
-
-  return previousProjectCode !== projectCode;
+  const previousMeasureLevel = usePrevious(measureLevel);
+  // we only want to keep the previous data if the project remains the same
+  // and the measure level remains the same
+  return previousProjectCode === projectCode && previousMeasureLevel === measureLevel;
 };
 
 const useMapOverlayEntities = (
@@ -64,6 +66,7 @@ export const useMapOverlayTableData = ({
 }: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
   const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
+  const keepPreviousData = useKeepPreviousData(projectCode, selectedOverlay?.measureLevel);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
     selectedOverlay,
@@ -78,14 +81,12 @@ export const useMapOverlayTableData = ({
     selectedOverlay?.measureLevel?.includes('Country') &&
     entity?.type !== 'project';
 
-  // we only want to keep the previous data if the project remains the same
-  const projectCodeHasChanged = useProjectCodeHasChanged(projectCode);
   const { data: entities } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
     includeRootEntity,
     selectedOverlay?.measureLevel,
-    projectCodeHasChanged,
+    keepPreviousData,
   );
 
   const { data, isLoading, isFetched, isFetching, isIdle, isPreviousData } = useMapOverlayReport(
@@ -96,7 +97,7 @@ export const useMapOverlayTableData = ({
       startDate,
       endDate,
     },
-    !projectCodeHasChanged,
+    keepPreviousData,
   );
 
   const measureData = processMeasureData({
@@ -110,9 +111,12 @@ export const useMapOverlayTableData = ({
 
   const loadingData = isLoading || isFetching || (!isFetched && !isIdle);
 
+  const isLoadingDifferentMeasureLevel =
+    (!isPreviousData || data?.measureLevel !== selectedOverlay?.measureLevel) && loadingData;
+
   return {
     ...data,
-    isLoadingInitialData: !isPreviousData && loadingData,
+    isLoadingDifferentMeasureLevel,
     isLoading: loadingData,
     isFetched,
     serieses: data?.serieses,

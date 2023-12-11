@@ -16,9 +16,10 @@ import { useNavigateToEntity } from '../utils';
 interface MarkerLayerProps {
   measureData: MeasureData[];
   serieses: Series[];
+  isLoading?: boolean;
 }
 
-export const MarkerLayer = ({ measureData = [], serieses = [] }: MarkerLayerProps) => {
+export const MarkerLayer = ({ measureData = [], serieses = [], isLoading }: MarkerLayerProps) => {
   const navigateToEntity = useNavigateToEntity();
   const markerMeasures = measureData.filter(m => !!m.point && !m.isHidden);
 
@@ -30,7 +31,7 @@ export const MarkerLayer = ({ measureData = [], serieses = [] }: MarkerLayerProp
           <MeasureMarker key={entity} {...(measure as MeasureData)}>
             <MeasurePopup
               markerData={measure as MeasureData}
-              serieses={serieses}
+              serieses={isLoading ? [] : serieses}
               onSeeOrgUnitDashboard={() => navigateToEntity(entity)}
             />
           </MeasureMarker>
