@@ -20,14 +20,8 @@
     "lint:fix": "yarn lint --fix",
     "start": "yarn package:start:vite --port 3000",
     "start-dev": "yarn start",
-    "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
-    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
-    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
-    "start-report-server": "yarn workspace @tupaia/report-server start-dev",
-    "start-admin-panel-server": "yarn workspace @tupaia/admin-panel-server start-dev",
-    "start-data-table-server": "yarn workspace @tupaia/data-table-server start-dev",
-    "test": "echo No tests",
-    "start-servers": "npm-run-all -c -l -p start-central-server start-entity-server start-report-server start-admin-panel-server start-data-table-server"
+    "start-fullstack": "yarn package:start-stack admin-panel",
+    "test": "echo No tests"
   },
   "browserslist": [
     "defaults"

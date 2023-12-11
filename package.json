@@ -23,7 +23,7 @@
     "build:non-internal-dependencies": "./scripts/bash/buildNonInternalDependencies.sh",
     "build:admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build:web-frontend": "yarn workspace @tupaia/web-frontend build",
-    "start-dev": "scripts/bash/pm2startInline.sh",
+    "start-dev": "echo Starting default stack tupaia-web && scripts/bash/pm2startInline.sh tupaia-web",
     "download-env-vars": "./scripts/bash/downloadEnvironmentVariables.sh",
     "dump-database": "yarn workspace @tupaia/database dump-database --target ../../",
     "migrate": "yarn workspace @tupaia/database migrate",
@@ -43,7 +43,8 @@
     "package:test": "cd $INIT_CWD && jest --maxWorkers=50%",
     "package:test:withdb": "cd $INIT_CWD && yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test jest  --runInBand",
     "package:start:backend-start-dev": "cd $INIT_CWD && LOG_LEVEL=debug ../../scripts/bash/backendStartDev.sh",
-    "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\""
+    "package:start:vite": "cd $INIT_CWD && vite --config \"../../vite.config.js\"",
+    "package:start-stack": "scripts/bash/pm2startInline.sh"
   },
   "resolutions": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
