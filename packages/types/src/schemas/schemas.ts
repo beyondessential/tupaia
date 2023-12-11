@@ -26156,10 +26156,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"
@@ -52021,6 +52018,12 @@ export const DashboardItemUpdateSchema = {
 export const DashboardMailingListSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -52036,6 +52039,7 @@ export const DashboardMailingListSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"admin_permission_groups",
 		"dashboard_id",
 		"entity_id",
 		"id",
@@ -52046,6 +52050,12 @@ export const DashboardMailingListSchema = {
 export const DashboardMailingListCreateSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -52067,6 +52077,12 @@ export const DashboardMailingListCreateSchema = {
 export const DashboardMailingListUpdateSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -54802,10 +54818,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55310,10 +55323,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55812,10 +55822,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -60203,11 +60210,15 @@ export const MailingListSchema = {
 		},
 		"isSubscribed": {
 			"type": "boolean"
+		},
+		"isAdmin": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"entityCode",
+		"isAdmin",
 		"isSubscribed"
 	]
 } 
@@ -68240,11 +68251,15 @@ export const DashboardWithMetadataSchema = {
 					},
 					"isSubscribed": {
 						"type": "boolean"
+					},
+					"isAdmin": {
+						"type": "boolean"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"entityCode",
+					"isAdmin",
 					"isSubscribed"
 				]
 			}
@@ -68524,10 +68539,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"

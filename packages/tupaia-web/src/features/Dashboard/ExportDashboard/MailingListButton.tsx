@@ -85,7 +85,11 @@ export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboa
     setSuccessMessage(result.message);
   };
 
-  const { mutate: requestEmailDashboard, isLoading, error } = useEmailDashboard({
+  const {
+    mutate: requestEmailDashboard,
+    isLoading,
+    error,
+  } = useEmailDashboard({
     onSuccess: handleEmailSuccess,
   });
 
