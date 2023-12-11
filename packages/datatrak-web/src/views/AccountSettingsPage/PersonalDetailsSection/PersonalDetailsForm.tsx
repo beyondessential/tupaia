@@ -17,6 +17,10 @@ type PersonalDetailsFormFields = Pick<
   'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
 >;
 
+/**
+ * Guarantees grid placement of the form submission button. The tooltip attribute on the button
+ * wraps it in a flexbox, which nullifies the effect of grid-column.
+ */
 const ButtonWrapper = styled.div`
   grid-column: -2;
 `;
@@ -68,7 +72,6 @@ export const PersonalDetailsForm = () => {
       position: user.position ?? '',
     } as PersonalDetailsFormFields,
   });
-
   const {
     formState: { isDirty, dirtyFields, isSubmitting },
     getValues,
@@ -97,6 +100,7 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
+          id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
@@ -106,6 +110,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="family-name"
+          id="lastName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
@@ -116,6 +121,7 @@ export const PersonalDetailsForm = () => {
         <FormInput
           autoComplete="email"
           disabled
+          id="email"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
           label="Email"
@@ -128,6 +134,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="tel"
+          id="mobileNumber"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
           label="Contact number (optional)"
@@ -137,6 +144,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="organization"
+          id="employer"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
@@ -146,6 +154,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="organization-title"
+          id="position"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
@@ -154,7 +163,6 @@ export const PersonalDetailsForm = () => {
           required
         />
         <ButtonWrapper>
-          {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
