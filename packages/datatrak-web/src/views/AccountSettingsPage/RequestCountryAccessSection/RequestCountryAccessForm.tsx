@@ -8,7 +8,8 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel } from '@material-ui/core';
 import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useCountryAccessList, useRequestProjectAccess } from '../../../api';
+import { Country } from '@tupaia/types';
+import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 
 const gridAndFlexGap = '1.25rem';
 
@@ -62,7 +63,8 @@ const CountryList = styled.fieldset`
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.grey[400]};
   overflow-y: scroll;
-  padding: 0 0.87rem;
+  padding-block: 0;
+  padding-inline: 0.87rem;
 `;
 
 const StyledCheckbox = styled(Checkbox)`
@@ -102,17 +104,23 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 export const RequestCountryAccessForm = () => {
+  const user = useCurrentUser();
+  console.log('projectCode', user.projectId);
+  console.log('projectName', user.projectId?.name);
   const { data: countryAccessList, isLoading } = useCountryAccessList();
-  const { mutate: submitAccessRequest } = useRequestProjectAccess();
+  const { mutate: requestCountryAccess } = useRequestProjectAccess();
 
   const formContext = useForm();
   const {
     formState: { isSubmitting },
     handleSubmit,
-    reset,
+    // reset,
   } = formContext;
 
-  function onSubmit() {}
+  function onSubmit() {
+    const countryIds: Country[] = [];
+    requestCountryAccess({ entityIds: countryIds, message: '', projectCode: user.projectId });
+  }
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
@@ -120,15 +128,15 @@ export const RequestCountryAccessForm = () => {
         <CountryListWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
-            {countryAccessList?.map(country => (
+            {countryAccessList?.map(({ id, name, accessRequests }) => (
               <StyledCheckbox
-                defaultValue={false}
                 color="primary"
-                disabled={!!country.accessRequests.length}
-                key={country.id}
-                name={country.name}
-                label={country.name}
-                tooltip={country.accessRequests.length ? 'Approval in progress' : undefined}
+                disabled={!!accessRequests.length}
+                id={name}
+                key={id}
+                label={name}
+                name={name}
+                tooltip={accessRequests.length ? 'Approval in progress' : undefined}
               />
             ))}
           </CountryList>
