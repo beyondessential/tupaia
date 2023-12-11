@@ -4,7 +4,7 @@
  *
  */
 
-export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
+export { MeditrakSurveyResponseRequest, CountryAccessResponse } from './central-server';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
 export {
   DatatrakWebEntitiesRequest,

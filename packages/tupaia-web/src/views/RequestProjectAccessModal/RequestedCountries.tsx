@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { CountryAccessListItem } from '../../types';
-import { Link, Typography } from '@material-ui/core';
+import { Location } from 'react-router';
+import { Link, Typography, List } from '@material-ui/core';
 import styled from 'styled-components';
-import { List } from '@material-ui/core';
 import { AuthModalButton, RouterButton } from '../../components';
-import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
+import { MODAL_ROUTES } from '../../constants';
+import { CountryAccessListItem } from '../../types';
 
 const Text = styled(Typography)`
   margin-bottom: 1rem;
@@ -32,6 +32,7 @@ interface RequestedCountriesProps {
   onShowForm: () => void;
   hasAdditionalCountries: boolean;
   isLandingPage?: boolean;
+  baseCloseLocation: Location;
 }
 export const RequestedCountries = ({
   requestedCountries,
@@ -39,7 +40,12 @@ export const RequestedCountries = ({
   onShowForm,
   hasAdditionalCountries,
   isLandingPage,
+  baseCloseLocation,
 }: RequestedCountriesProps) => {
+  const onCloseLocation = {
+    ...baseCloseLocation,
+    hash: MODAL_ROUTES.PROJECTS,
+  };
   return (
     <div>
       <Text>
@@ -70,11 +76,7 @@ export const RequestedCountries = ({
         </AuthModalButton>
       )}
       {!isLandingPage && (
-        <AuthModalButton
-          component={RouterButton}
-          modal={MODAL_ROUTES.PROJECTS}
-          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-        >
+        <AuthModalButton component={RouterButton} to={onCloseLocation}>
           Back to projects
         </AuthModalButton>
       )}

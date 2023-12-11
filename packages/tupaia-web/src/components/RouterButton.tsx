@@ -29,9 +29,9 @@ export const RouterButton = ({
   ...props
 }: RouterButtonProps) => {
   const location = useLocation();
-  const link = (modal
-    ? { ...location, hash: modal, search: removeUrlSearchParams(searchParamsToRemove) }
-    : to) as LinkProps['to'];
+  const link = (
+    modal ? { ...location, hash: modal, search: removeUrlSearchParams(searchParamsToRemove) } : to
+  ) as LinkProps['to'];
 
   return (
     <Button to={link} component={Link} state={routerState} {...props}>

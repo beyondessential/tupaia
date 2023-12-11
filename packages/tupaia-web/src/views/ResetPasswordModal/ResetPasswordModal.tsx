@@ -28,12 +28,8 @@ export const ResetPasswordModal = () => {
     });
   };
 
-  const onCloseModal = () => {
-    closeModal([URL_SEARCH_PARAMS.PASSWORD_RESET_TOKEN]);
-  };
-
   return (
-    <Modal isOpen onClose={onCloseModal}>
+    <Modal isOpen onClose={closeModal}>
       <ModalBody title="Change password">
         <LoadingScreen isLoading={isLoading} />
         {token && !isSuccess ? (

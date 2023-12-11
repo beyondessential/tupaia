@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import {
+  Location,
   generatePath,
   useLocation,
   useNavigate,
@@ -91,7 +92,7 @@ export const RequestProjectAccessModal = () => {
   // Show the requested countries if there are any, and the user has not opted to request additional countries
   const showRequestedCountries = requestedCountries?.length > 0 && !requestAdditionalCountries;
 
-  const getOnCloseURI = () => {
+  const getBaseCloseLocation = () => {
     // if the user has accessed a forbidden entity directly, either direct them to the home entity if they have any access, or to the default URL + projects modal if they don't have project access
     if (!altProjectCode || altProjectCode === params?.projectCode) {
       if (project?.hasAccess)
@@ -112,19 +113,27 @@ export const RequestProjectAccessModal = () => {
     }
     return location;
   };
+
+  const getCloseLocation = () => {
+    const baseCloseLocation = getBaseCloseLocation();
+    // return the base close location with the project search param removed
+    return {
+      ...baseCloseLocation,
+      search: removeUrlSearchParams([URL_SEARCH_PARAMS.PROJECT]),
+    } as Location;
+  };
+
+  const closeLocation = getCloseLocation();
+
   const onCloseModal = () => {
     gaEvent('User', 'Close Dialog');
-    const onCloseUri = getOnCloseURI();
-    navigate({
-      ...onCloseUri,
-      search: removeUrlSearchParams([URL_SEARCH_PARAMS.PROJECT]),
-    });
+    navigate(closeLocation);
   };
   return (
     <Modal isOpen onClose={onCloseModal}>
       <ModalBody>
         <LoadingScreen isLoading={isLoading} />
-        <ModalHeader isLandingPage={isLandingPage} />
+        <ModalHeader isLandingPage={isLandingPage} baseCloseLocation={closeLocation} />
         <ProjectHero project={project} />
         <ProjectDetails project={project} />
         {isLoadingCountryAccessList ? (
@@ -138,6 +147,7 @@ export const RequestProjectAccessModal = () => {
                 hasAdditionalCountries={availableCountries.length > 0}
                 onShowForm={() => setRequestAdditionalCountries(true)}
                 isLandingPage={isLandingPage}
+                baseCloseLocation={closeLocation}
               />
             )}
             {showForm && (
