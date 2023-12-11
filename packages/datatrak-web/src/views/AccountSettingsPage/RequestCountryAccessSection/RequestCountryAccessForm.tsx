@@ -37,8 +37,8 @@ const StyledFieldset = styled.fieldset`
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
 
+  // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
   .MuiInputLabel-outlined {
-    // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
     z-index: auto;
   }
 `;
@@ -49,7 +49,7 @@ const CountryListWrapper = styled(Box)`
   height: 20.125rem;
 `;
 
-/** Match styling of .MuiFormLabel-root in ui-components TextField */
+/** Matches styling of .MuiFormLabel-root in ui-components TextField */
 const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
@@ -85,7 +85,7 @@ const StyledBox = styled(Box)`
   gap: ${gridAndFlexGap};
 `;
 
-/** The usage of this component below has inline styling. See there for explanation */
+// Usage of this component below has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput)`
   flex-grow: 1;
   margin: 0;
@@ -140,8 +140,8 @@ export const RequestCountryAccessForm = () => {
             Input={TextField}
             inputProps={{
               enterKeyHint: 'done',
-              // MUI uses inline styling (element.style) to dynamically resize <textarea> to fit
-              // content, so we must do the same to override it. This makes it scroll upon overflow.
+              // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
+              // dynamically resize it to fit content, so we must do the same to override it.
               style: { height: '100%' },
             }}
             label="Reason for access"
