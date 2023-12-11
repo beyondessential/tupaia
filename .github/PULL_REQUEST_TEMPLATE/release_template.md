@@ -22,7 +22,7 @@
 
 # Instructions
 
-Name this PR `Release <year>-<iso week number>` (e.g. `Release 2023-7`). See https://www.calendar-365.com/week-number.html for the current week number.
+Name this PR `Release <year>-<week number>` (e.g. `Release 2023-7`). See https://www.calendar-365.com/week-number.html for the current week number.
 
 Release process documentation: https://beyond-essential.slab.com/posts/release-process-j4ersmrg
 
