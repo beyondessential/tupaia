@@ -127,7 +127,7 @@ export const RequestCountryAccessForm = () => {
                 key={country.id}
                 name={country.name}
                 label={country.name}
-                tooltip={country.accessRequests ? 'Approval in progress' : null}
+                tooltip={country.accessRequests.length ? 'Approval in progress' : null}
               />
             ))}
           </CountryList>
