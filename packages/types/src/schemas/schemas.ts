@@ -59375,6 +59375,35 @@ export const MeditrakSurveyResponseRequestSchema = {
 	]
 } 
 
+export const CountryAccessResponseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"accessRequests": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"accessRequests",
+		"hasAccess",
+		"id",
+		"name"
+	]
+} 
+
 export const DataTablePreviewRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -68778,6 +68807,87 @@ export const CountryAccessObjectSchema = {
 		"hasPendingAccess",
 		"id",
 		"name"
+	]
+} 
+
+export const SubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const SubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email"
+	]
+} 
+
+export const UnsubscribeResponseSchema = {
+	"type": "object",
+	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"projectCode": {
+			"type": "boolean"
+		},
+		"dashboardCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"dashboardCode",
+		"email",
+		"entityCode",
+		"projectCode"
+	]
+} 
+
+export const UnsubscribeRequestSchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		},
+		"unsubscribeTime": {
+			"type": "string",
+			"format": "date-time"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"unsubscribeTime"
 	]
 } 
 
