@@ -102,10 +102,11 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
   const formContext = useForm({
     mode: 'onChange',
   });
-  const { register } = formContext;
+  const {
+    formState: { isValid },
+    register,
+  } = formContext;
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
-
-  const { isValid } = formContext.formState;
 
   // the countries that are applicable to this project
   const projectCountries = countries?.filter((c: any) => project?.names?.includes(c.name));
@@ -155,15 +156,15 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
             const hasRequestedAccess = country.accessRequests.includes(projectCode);
             return (
               <Checkbox
+                id={country.id}
                 inputRef={register({
-                  validate: v => {
-                    return v.length > 0;
-                  },
+                  validate: v => v.length > 0,
                 })}
+                disabled={hasRequestedAccess}
+                key={country.id}
                 label={country.name}
                 name="entityIds"
                 value={country.id}
-                disabled={hasRequestedAccess}
                 tooltip={
                   hasRequestedAccess
                     ? 'You have already requested access to this country'
@@ -182,9 +183,9 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
         <Button
           type="submit"
           disabled={!isValid}
-          tooltip={!isValid ? 'Please select one or more countries to proceed' : ''}
+          tooltip={!isValid ? 'Please select one or more countries to proceed' : undefined}
         >
-          Request Access
+          Request access
         </Button>
       </DialogActions>
     </Form>
