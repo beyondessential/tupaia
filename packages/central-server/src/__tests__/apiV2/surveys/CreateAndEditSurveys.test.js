@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertSurvey,
   findOrCreateDummyRecord,
@@ -58,7 +57,7 @@ describe('Create and Edit Surveys', () => {
 
   let project;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
     adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
@@ -113,8 +112,8 @@ describe('Create and Edit Surveys', () => {
     app.revokeAccess();
   });
 
-  describe('Permissions', async () => {
-    describe('Edit existing surveys', async () => {
+  describe('Permissions', () => {
+    describe('Edit existing surveys', () => {
       it('Sufficient permissions - Should pass permissions check if user has the survey permission group access to all of the survey countries', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
@@ -127,7 +126,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Sufficient permissions - Should pass permissions check if new countries are specified and user has the survey permission group access to the new countries', async () => {
@@ -149,7 +148,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Sufficient permissions - Should pass permissions check if users have BES Admin access to any countries', async () => {
@@ -164,7 +163,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Sufficient permissions - Should pass permissions check if users have both [survey permission group] - [Tupaia Admin Panel] access to all of the survey countries', async () => {
@@ -179,7 +178,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Insufficient permissions - Should not pass permissions check if users do not have the survey permission group access to all of the survey countries', async () => {
@@ -247,7 +246,7 @@ describe('Create and Edit Surveys', () => {
       });
     });
 
-    describe('New surveys', async () => {
+    describe('New surveys', () => {
       it('Sufficient permissions - Should pass permissions user have Tupaia Admin Panel access to the specified countries of the new survey', async () => {
         await app.grantAccess(DEFAULT_POLICY);
 
@@ -265,7 +264,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Sufficient permissions - Should pass permissions check if user has BES Admin access to any countries', async () => {
@@ -285,7 +284,7 @@ describe('Create and Edit Surveys', () => {
 
         const { statusCode } = response;
 
-        expect(statusCode).to.equal(200);
+        expect(statusCode).toBe(200);
       });
 
       it('Insufficient permissions - Should not pass permissions check if users do not have BES Admin or Tupaia Admin Panel access to the specified countries', async () => {
@@ -336,11 +335,11 @@ describe('Create and Edit Surveys', () => {
       });
       const { statusCode } = response;
 
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
 
       const survey = await models.survey.findOne({ code: 'new_survey_import_1_test' });
       const surveyScreenComponents = await survey.surveyScreenComponents();
-      expect(surveyScreenComponents.length).to.equal(2);
+      expect(surveyScreenComponents.length).toBe(2);
     });
 
     it('Updates survey properties', async () => {
@@ -356,10 +355,10 @@ describe('Create and Edit Surveys', () => {
 
       const { statusCode } = response;
 
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
 
       const survey = await models.survey.findById(survey1_id);
-      expect(survey.period_granularity).to.equal('weekly');
+      expect(survey.period_granularity).toBe('weekly');
     });
 
     it('Throws an error if a project is removed from a survey', async () => {
@@ -373,8 +372,8 @@ describe('Create and Edit Surveys', () => {
           project_id: null,
         },
       });
-      expect(response.statusCode).to.equal(500);
-      expect(response.body.error).to.equal('Internal server error: Surveys must have a project');
+      expect(response.statusCode).toBe(500);
+      expect(response.body.error).toBe('Internal server error: Surveys must have a project');
     });
   });
 });

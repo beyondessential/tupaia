@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -15,7 +14,7 @@ import {
 } from '../../../permissions';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
 
-describe('Permissions checker for DeleteDashboardMailingList', async () => {
+describe('Permissions checker for DeleteDashboardMailingList', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -31,7 +30,7 @@ describe('Permissions checker for DeleteDashboardMailingList', async () => {
   let nationalDashboard1MailingList;
   let nationalDashboard2MailingList;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -66,23 +65,23 @@ describe('Permissions checker for DeleteDashboardMailingList', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('DELETE /dashboardMailingLists/:id', async () => {
-    describe('Insufficient permission', async () => {
+  describe('DELETE /dashboardMailingLists/:id', () => {
+    describe('Insufficient permission', () => {
       it('Throw an exception when trying to delete a dashboard mailing list we do not have access to', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.delete(
           `dashboardMailingLists/${nationalDashboard2MailingList.id}`,
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow deleting of a dashboard mailing list for a dashboard we have edit permission for', async () => {
         await app.grantAccess({
           DL: ['Public'],
@@ -93,7 +92,7 @@ describe('Permissions checker for DeleteDashboardMailingList', async () => {
           id: nationalDashboard1MailingList.id,
         });
 
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
       });
 
       it('Allow deleting of a dashboard mailing list by Tupaia Admin user', async () => {
@@ -103,7 +102,7 @@ describe('Permissions checker for DeleteDashboardMailingList', async () => {
           id: nationalDashboard2MailingList.id,
         });
 
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
       });
     });
   });

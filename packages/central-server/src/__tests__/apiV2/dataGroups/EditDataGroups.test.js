@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditDataGroups', async () => {
+describe('Permissions checker for EditDataGroups', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -30,7 +29,7 @@ describe('Permissions checker for EditDataGroups', async () => {
   let publicGroup;
   let adminGroup;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -103,7 +102,7 @@ describe('Permissions checker for EditDataGroups', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /dataGroups/:id', async () => {
+  describe('PUT /dataGroups/:id', () => {
     it('Insufficient permissions: Throw an error if the user does not have BES Admin or Tupaia Admin Panel access', async () => {
       const policy = {
         DL: ['Public'],
@@ -113,7 +112,7 @@ describe('Permissions checker for EditDataGroups', async () => {
         body: { code: 'no_access' },
       });
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Throw an error if the user does not have full access to all of the data elements within a data group', async () => {
@@ -122,7 +121,7 @@ describe('Permissions checker for EditDataGroups', async () => {
         body: { code: 'no_lesmis_admin' },
       });
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Sufficient permissions: Edit a data group we have permission to', async () => {
@@ -133,7 +132,7 @@ describe('Permissions checker for EditDataGroups', async () => {
       });
       const result = await models.dataGroup.findById(publicGroup.id);
 
-      expect(result.code).to.equal(newCode);
+      expect(result.code).toBe(newCode);
     });
 
     it('Sufficient permissions: Edit a data group if we are a BES Admin', async () => {
@@ -144,7 +143,7 @@ describe('Permissions checker for EditDataGroups', async () => {
       });
       const result = await models.dataGroup.findById(adminGroup.id);
 
-      expect(result.code).to.equal(newCode);
+      expect(result.code).toBe(newCode);
     });
   });
 });

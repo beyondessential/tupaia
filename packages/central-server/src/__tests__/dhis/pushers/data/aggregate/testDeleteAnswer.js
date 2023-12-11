@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { setupDummySyncQueue } from '../../../../testUtilities';
@@ -28,9 +27,9 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
   it('should mark as successful if the answer never successfully synced', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
@@ -39,9 +38,9 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
   it('should delete if the answer previously synced successfully', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
@@ -50,9 +49,9 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE_DIMENSIONS,
       { serverName: SERVER_NAME },
@@ -89,9 +88,9 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     // run the delete push
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE_DIMENSIONS,
       { serverName: SERVER_NAME },
@@ -99,6 +98,6 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted
     const additionalChangeAfter = await syncQueue.getChange(nextMostRecentAnswer.id);
-    expect(additionalChangeAfter).to.have.property('type', 'update');
+    expect(additionalChangeAfter).toHaveProperty('type', 'update');
   });
 };

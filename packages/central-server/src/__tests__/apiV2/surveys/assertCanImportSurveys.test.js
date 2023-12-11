@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   buildAndInsertSurvey,
@@ -22,17 +21,21 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', async () => {
+describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', () => {
   let vanuatuCountry;
   let kiribatiCountry;
   let testSurvey1;
   const models = getModels();
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
 
+    await findOrCreateDummyCountryEntity(models, {
+      code: 'LA',
+      name: 'Laos',
+    });
     ({ country: vanuatuCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
       name: 'Vanuatu',
@@ -51,12 +54,12 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
     }));
   });
 
-  describe('Sufficient permissions when importing existing surveys', async () => {
+  describe('Sufficient permissions when importing existing surveys', () => {
     const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
     it('Should allow importing an existing survey if users have Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
       const result = await assertCanImportSurvey(accessPolicy, models, testSurvey1.id); // Existing survey, already inserted
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
 
     it('Should allow import an existing survey and update countryIds if users have Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
@@ -68,11 +71,11 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
         newCountryIds,
       );
 
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
   });
 
-  describe('Sufficient permissions when importing new surveys', async () => {
+  describe('Sufficient permissions when importing new surveys', () => {
     const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
     it('Should allow importing a new survey with countries specified if users have Tupaia Admin Panel to the countries', async () => {
@@ -84,7 +87,7 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
         newCountryIds,
       );
 
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
 
     it('Should allow importing a new survey with no countries are specified when users have Tupaia Admin Panel access to all countries', async () => {
@@ -100,11 +103,11 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
         null, // New survey
       );
 
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
   });
 
-  describe('Insufficient permissions when importing existing surveys', async () => {
+  describe('Insufficient permissions when importing existing surveys', () => {
     it('Should not allow importing an existing survey if users do not have Tupaia Admin Panel access to the country of that survey', async () => {
       const policy = {
         DL: ['Public'],
@@ -114,13 +117,13 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
         LA: ['Admin'],
       };
       const accessPolicy = new AccessPolicy(policy);
-      expect(() =>
+      await expect(
         assertCanImportSurvey(
           accessPolicy,
           models,
           testSurvey1.id, // Existing survey
         ),
-      ).to.throw;
+      ).toBeRejectedWith();
     });
 
     it('Should not allow importing an existing survey if users do not have the permission group access to the country of that survey', async () => {
@@ -132,13 +135,13 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
         LA: ['Admin'],
       };
       const accessPolicy = new AccessPolicy(policy);
-      expect(() =>
+      await expect(
         assertCanImportSurvey(
           accessPolicy,
           models,
           testSurvey1.id, // Existing survey
         ),
-      ).to.throw;
+      ).toBeRejectedWith();
     });
 
     it('Should not allow importing an existing survey with new countryIds if users do not have Tupaia Admin Panel access to those countries', async () => {
@@ -152,18 +155,18 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
       const accessPolicy = new AccessPolicy(policy);
       const newCountryIds = [kiribatiCountry.id];
 
-      expect(() =>
+      await expect(
         assertCanImportSurvey(
           accessPolicy,
           models,
           testSurvey1.id, // Existing survey
           newCountryIds,
         ),
-      ).to.throw;
+      ).toBeRejectedWith();
     });
   });
 
-  describe('Insufficient permissions when importing new surveys', async () => {
+  describe('Insufficient permissions when importing new surveys', () => {
     it('Should not allow importing a new survey with countries specified if users do not have Tupaia Admin Panel to the countries', async () => {
       const policy = {
         DL: ['Public'],
@@ -175,25 +178,25 @@ describe('assertCanImportSurvey(): Permissions checker for Importing Surveys', a
       const accessPolicy = new AccessPolicy(policy);
       const newCountryIds = [vanuatuCountry.id];
 
-      expect(() =>
+      await expect(
         assertCanImportSurvey(
           accessPolicy,
           models,
           null, // New survey
           newCountryIds,
         ),
-      ).to.throw;
+      ).toBeRejectedWith();
     });
 
     it('Should not allow importing a new survey with no countries are specified when users have Tupaia Admin Panel access to all countries', async () => {
       const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
-      expect(() =>
+      await expect(
         assertCanImportSurvey(
           accessPolicy,
           models,
           null, // New survey
         ),
-      ).to.throw;
+      ).toBeRejectedWith();
     });
   });
 });

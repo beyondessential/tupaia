@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for GETUserAccounts', async () => {
+describe('Permissions checker for GETUserAccounts', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -33,7 +32,7 @@ describe('Permissions checker for GETUserAccounts', async () => {
   let userAccountIds;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -118,19 +117,19 @@ describe('Permissions checker for GETUserAccounts', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /users/:id', async () => {
+  describe('GET /users/:id', () => {
     it('Sufficient permissions: Return a requested user account if we have access to all the countries the user has access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`users/${userAccount2.id}`);
 
-      expect(result.id).to.equal(userAccount2.id);
+      expect(result.id).toBe(userAccount2.id);
     });
 
     it('Sufficient permissions: Return a requested user account if we have BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`users/${userAccount2.id}`);
 
-      expect(result.id).to.equal(userAccount2.id);
+      expect(result.id).toBe(userAccount2.id);
     });
 
     it('Insufficient permissions: Throw an exception if we do not have access to same countries as the user', async () => {
@@ -140,23 +139,23 @@ describe('Permissions checker for GETUserAccounts', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`users/${userAccount2.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /users', async () => {
+  describe('GET /users', () => {
     it('Sufficient permissions: Return only the list of user accounts we have permissions for', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`users?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([userAccount1.id, userAccount2.id]);
+      expect(results.map(r => r.id)).toIncludeSameMembers([userAccount1.id, userAccount2.id]);
     });
 
     it('Sufficient permissions: Return the full list of user accounts if we have BES Admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`users?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members(userAccountIds);
+      expect(results.map(r => r.id)).toIncludeSameMembers(userAccountIds);
     });
 
     it('Insufficient permissions: Throws a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
@@ -166,7 +165,7 @@ describe('Permissions checker for GETUserAccounts', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`users?${filterString}`);
 
-      expect(results).have.keys('error');
+      expect(results).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Return an empty array if we have permissions to no user accounts', async () => {
@@ -176,7 +175,7 @@ describe('Permissions checker for GETUserAccounts', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`users?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

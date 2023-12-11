@@ -50,13 +50,13 @@ describe('GET dashboard visualisations', () => {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
     await app.grantAccess(policy);
     await setupTest(models, TEST_SETUP);
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 

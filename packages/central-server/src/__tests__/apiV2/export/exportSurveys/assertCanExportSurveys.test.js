@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
@@ -22,13 +21,13 @@ const DEFAULT_POLICY = {
   LA: ['Admin'],
 };
 
-describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', async () => {
+describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', () => {
   const models = getModels();
   let survey1;
   let survey2;
   let survey3;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -70,14 +69,14 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
     const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
     const result = await assertCanExportSurveys(accessPolicy, models, [survey1]);
 
-    expect(result).to.true;
+    expect(result).toBe(true);
   });
 
   it('Sufficient permissions: Should allow exporting multiple existing survey if users have Tupaia Admin Panel and survey permission group access to the country of those surveys', async () => {
     const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
     const result = await assertCanExportSurveys(accessPolicy, models, [survey1, survey2, survey3]);
 
-    expect(result).to.true;
+    expect(result).toBe(true);
   });
 
   it('Insufficient permissions: Should not allow exporting an existing survey if users do not have survey permission group access to the country of that survey', async () => {
@@ -90,7 +89,7 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
-    expect(() => assertCanExportSurveys(accessPolicy, models, [survey1])).to.throw;
+    await expect(assertCanExportSurveys(accessPolicy, models, [survey1])).toBeRejectedWith();
   });
 
   it('Insufficient permissions: Should not allow exporting an existing survey if users do not have Tupaia Admin Panel access to the country of that survey', async () => {
@@ -103,7 +102,7 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
       LA: ['Admin'],
     };
     const accessPolicy = new AccessPolicy(policy);
-    expect(() => assertCanExportSurveys(accessPolicy, models, [survey1])).to.throw;
+    await expect(assertCanExportSurveys(accessPolicy, models, [survey1])).toBeRejectedWith();
   });
 
   it('Insufficient permissions: Should not allow exporting multiple existing surveys if users do not have survey permission group access to the country of any of the surveys', async () => {
@@ -117,8 +116,9 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
     };
     const accessPolicy = new AccessPolicy(policy);
 
-    expect(() => assertCanExportSurveys(accessPolicy, models, [survey1, survey2, survey3])).to
-      .throw;
+    await expect(
+      assertCanExportSurveys(accessPolicy, models, [survey1, survey2, survey3]),
+    ).toBeRejectedWith();
   });
 
   it('Insufficient permissions: Should not allow exporting multiple existing surveys if users do not have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP access to the country of any of the surveys', async () => {
@@ -132,7 +132,8 @@ describe('assertCanExportSurveys(): Permissions checker for Exporting Surveys', 
     };
     const accessPolicy = new AccessPolicy(policy);
 
-    expect(() => assertCanExportSurveys(accessPolicy, models, [survey1, survey2, survey3])).to
-      .throw;
+    await expect(
+      assertCanExportSurveys(accessPolicy, models, [survey1, survey2, survey3]),
+    ).toBeRejectedWith();
   });
 });

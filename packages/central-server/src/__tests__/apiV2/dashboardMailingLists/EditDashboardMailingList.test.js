@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -15,7 +14,7 @@ import {
 } from '../../../permissions';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
 
-describe('Permissions checker for EditDashboardMailingList', async () => {
+describe('Permissions checker for EditDashboardMailingList', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -35,7 +34,7 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
   let nationalDashboard1MailingList;
   let nationalDashboard2MailingList;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -70,12 +69,12 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('PUT /dashboardMailingLists/:id', async () => {
-    describe('Insufficient permission', async () => {
+  describe('PUT /dashboardMailingLists/:id', () => {
+    describe('Insufficient permission', () => {
       it('Throw an exception when trying to edit a dashboard mailing list we do not have access to', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(
@@ -87,7 +86,7 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit a dashboard mailing list to a different dashboard we do not have edit access to', async () => {
@@ -101,11 +100,11 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow editing a dashboard mailing list for a dashboard we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const newEntityId = entities.find(({ code }) => code === 'SB').id;
@@ -116,7 +115,7 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
         });
         const result = await models.dashboardMailingList.findById(nationalDashboard1MailingList.id);
 
-        expect(result.entity_id).to.equal(newEntityId);
+        expect(result.entity_id).toBe(newEntityId);
       });
 
       it('Allow editing of a dashboard mailing list by Tupaia Admin user', async () => {
@@ -129,7 +128,7 @@ describe('Permissions checker for EditDashboardMailingList', async () => {
         });
         const result = await models.dashboardMailingList.findById(nationalDashboard2MailingList.id);
 
-        expect(result.entity_id).to.equal(newEntityId);
+        expect(result.entity_id).toBe(newEntityId);
       });
     });
   });

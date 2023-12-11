@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for DeleteDataElements', async () => {
+describe('Permissions checker for DeleteDataElements', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -30,7 +29,7 @@ describe('Permissions checker for DeleteDataElements', async () => {
   let adminElement;
   let publicElement;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -66,7 +65,7 @@ describe('Permissions checker for DeleteDataElements', async () => {
     app.revokeAccess();
   });
 
-  describe('DELETE /dataElements/:id', async () => {
+  describe('DELETE /dataElements/:id', () => {
     it('Insufficient permissions: Throw an error if user does not have BES Admin or Tupaia Admin Panel access', async () => {
       const policy = {
         DL: ['Public'],
@@ -74,14 +73,14 @@ describe('Permissions checker for DeleteDataElements', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.delete(`dataElements/${adminElement.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Throw an error if the user does not have access to all of the permission groups for a data element', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.delete(`dataElements/${adminElement.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Sufficient permissions: Delete a data element we have permission to', async () => {
@@ -90,8 +89,8 @@ describe('Permissions checker for DeleteDataElements', async () => {
       await app.delete(`dataElements/${publicElement.id}`);
       const result = await models.dataElement.findById(publicElement.id);
 
-      expect(preDelete).to.exist;
-      expect(result).to.not.exist;
+      expect(preDelete).toBeDefined();
+      expect(result).toBe(null);
     });
 
     it('Sufficient permissions: Delete a data element if we are a BES Admin', async () => {
@@ -100,8 +99,8 @@ describe('Permissions checker for DeleteDataElements', async () => {
       await app.delete(`dataElements/${adminElement.id}`);
       const result = await models.dataElement.findById(adminElement.id);
 
-      expect(preDelete).to.exist;
-      expect(result).to.not.exist;
+      expect(preDelete).toBeDefined();
+      expect(result).toBe(null);
     });
   });
 });

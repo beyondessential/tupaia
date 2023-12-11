@@ -3,9 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
-
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
 import { Pusher } from '../../../../dhis/pushers/Pusher';
@@ -26,11 +23,11 @@ const CODE_ATTRIBUTE_ID = 'codeAttributeId';
 const DEFAULT_DHIS_API_STUB_PROPS = {
   entityType: { id: ENTITY_TYPE_ID, displayName: 'Type' },
   organisationUnit: { id: ORGANISATION_UNIT_ID, code: ORGANISATION_UNIT_CODE },
-  updateRecord: {
+  updateRecordResponse: {
     references: [DHIS_TRACKED_ENTITY_ID],
     wasSuccessful: true,
   },
-  deleteRecordById: {
+  deleteRecordByIdResponse: {
     wasSuccessful: true,
   },
 };
@@ -53,24 +50,25 @@ const getDhisApiStub = () => createDhisApiStub(DEFAULT_DHIS_API_STUB_PROPS);
 
 describe('TrackedEntityPusher', () => {
   describe('push()', () => {
-    before(() => {
-      sinon.stub(Pusher.prototype, 'logResults');
+    beforeAll(() => {
+      jest.spyOn(Pusher.prototype, 'logResults').mockImplementation();
     });
 
-    after(() => {
-      Pusher.prototype.logResults.restore();
+    afterAll(() => {
+      Pusher.prototype.logResults.mockRestore();
     });
 
     afterEach(() => {
-      Pusher.prototype.logResults.resetHistory();
+      Pusher.prototype.logResults.mockReset();
     });
 
     describe('create/update an entity', () => {
       it('should log an error and return false if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});
-        await expect(pusher.push()).to.eventually.be.false;
-        return expect(pusher.logResults).to.have.been.calledWithMatch(
-          sinon.match({ errors: [sinon.match(/entity .*not found/i)] }),
+        const result = await pusher.push();
+        expect(result).toBe(false);
+        expect(pusher.logResults).toHaveBeenCalledWith(
+          expect.objectContaining({ errors: [expect.objectContaining(/entity .*not found/i)] }),
         );
       });
 
@@ -81,15 +79,13 @@ describe('TrackedEntityPusher', () => {
         const pusher = new TrackedEntityPusher(models, getChange(), dhisApiStub);
 
         const result = await pusher.push();
-        expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(TRACKED_ENTITY_INSTANCE, {
+        expect(dhisApiStub.updateRecord).toHaveBeenCalledOnceWith(TRACKED_ENTITY_INSTANCE, {
           trackedEntityType: ENTITY_TYPE_ID,
           orgUnit: ORGANISATION_UNIT_ID,
           attributes: [],
         });
-        expect(entity.setDhisTrackedEntityId).to.always.have.been.calledWith(
-          DHIS_TRACKED_ENTITY_ID,
-        );
-        expect(result).to.equal(true);
+        expect(entity.setDhisTrackedEntityId).toHaveBeenCalledWith(DHIS_TRACKED_ENTITY_ID);
+        expect(result).toBe(true);
       });
 
       it('should update a DHIS tracked entity when a DB entity is updated', async () => {
@@ -99,14 +95,14 @@ describe('TrackedEntityPusher', () => {
         const pusher = new TrackedEntityPusher(models, getChange(), dhisApiStub);
 
         const result = await pusher.push();
-        expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(TRACKED_ENTITY_INSTANCE, {
+        expect(dhisApiStub.updateRecord).toHaveBeenCalledOnceWith(TRACKED_ENTITY_INSTANCE, {
           id: DHIS_TRACKED_ENTITY_ID,
           trackedEntityType: ENTITY_TYPE_ID,
           orgUnit: ORGANISATION_UNIT_ID,
           attributes: [],
         });
-        expect(entity.setDhisTrackedEntityId).to.have.callCount(0);
-        expect(result).to.equal(true);
+        expect(entity.setDhisTrackedEntityId).toHaveBeenCalledTimes(0);
+        expect(result).toBe(true);
       });
 
       it('should use name and code attributes when they are provided', async () => {
@@ -127,12 +123,14 @@ describe('TrackedEntityPusher', () => {
         const pusher = new TrackedEntityPusher(models, getChange(), dhisApiStub);
 
         await pusher.push();
-        expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(
+        expect(dhisApiStub.updateRecord).toHaveBeenCalledOnceWith(
           TRACKED_ENTITY_INSTANCE,
-          sinon.match.has('attributes', [
-            { attribute: NAME_ATTRIBUTE_ID, value: ENTITY_NAME },
-            { attribute: CODE_ATTRIBUTE_ID, value: ENTITY_CODE },
-          ]),
+          expect.objectContaining({
+            attributes: [
+              { attribute: NAME_ATTRIBUTE_ID, value: ENTITY_NAME },
+              { attribute: CODE_ATTRIBUTE_ID, value: ENTITY_CODE },
+            ],
+          }),
         );
       });
 
@@ -141,7 +139,7 @@ describe('TrackedEntityPusher', () => {
         const models = createModelsStub({ entityRecords: [entity] });
         const pusher = new TrackedEntityPusher(models, getChange(), {});
         await pusher.push();
-        return expect(pusher.logResults).to.have.been.calledWithExactly({
+        expect(pusher.logResults).toHaveBeenCalledWith({
           errors: ['Tracked entity type is required'],
         });
       });
@@ -159,11 +157,11 @@ describe('TrackedEntityPusher', () => {
         const pusher = new TrackedEntityPusher(modelsStub, change, dhisApiStub);
 
         const result = await pusher.push();
-        expect(dhisApiStub.deleteRecordById).to.have.been.calledOnceWith(
+        expect(dhisApiStub.deleteRecordById).toHaveBeenCalledOnceWith(
           TRACKED_ENTITY_INSTANCE,
           DHIS_TRACKED_ENTITY_ID,
         );
-        expect(result).to.equal(true);
+        expect(result).toBe(true);
       });
 
       it('should throw an error if the deletable entity has not been synced', async () => {
@@ -171,8 +169,8 @@ describe('TrackedEntityPusher', () => {
         const pusher = new TrackedEntityPusher(modelsStub, change, getDhisApiStub());
         await pusher.push();
 
-        return expect(pusher.logResults).to.have.been.calledWithMatch(
-          sinon.match({ errors: [sinon.match(/sync log .*not found/i)] }),
+        expect(pusher.logResults).toHaveBeenCalledWith(
+          expect.objectContaining({ errors: [expect.objectContaining(/sync log .*not found/i)] }),
         );
       });
     });

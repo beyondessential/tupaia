@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -20,7 +19,7 @@ import {
   setupDashboardTestData,
 } from '../../testUtilities';
 
-describe('Permissions checker for EditDashboardMailingListEntry', async () => {
+describe('Permissions checker for EditDashboardMailingListEntry', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: ['Admin'],
@@ -39,7 +38,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
   let mailingListEntryDiffUser;
   let mailingListEntryBesAdminUser;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -102,12 +101,12 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('PUT /dashboardMailingListEntries/:id', async () => {
-    describe('Insufficient permission', async () => {
+  describe('PUT /dashboardMailingListEntries/:id', () => {
+    describe('Insufficient permission', () => {
       it('Throw an exception when trying to edit a dashboard mailing list entry to a dashboard we do not have access to', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(
@@ -119,7 +118,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit a dashboard mailing list entry to a different dashboard we do not have read access to', async () => {
@@ -133,11 +132,11 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow editing a dashboard mailing list entry for a dashboard we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`dashboardMailingListEntries/${mailingListEntryWithAccess.id}`, {
@@ -150,7 +149,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           email: TEST_USER_EMAIL,
         });
 
-        expect(result[0].subscribed).to.equal(false);
+        expect(result[0].subscribed).toBe(false);
       });
 
       it('Allow unsubscribing a dashboard mailing list entry for a dashboard we do not have permission for if its our own email', async () => {
@@ -165,7 +164,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           email: TEST_USER_EMAIL,
         });
 
-        expect(result[0].subscribed).to.equal(false);
+        expect(result[0].subscribed).toBe(false);
       });
 
       it('Allow editing of a dashboard mailing list entry for a dashboard we have edit permission for with a different users email', async () => {
@@ -183,7 +182,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           email: 'not.my.email@domain.com',
         });
 
-        expect(result[0].subscribed).to.equal(false);
+        expect(result[0].subscribed).toBe(false);
       });
 
       it('Allow editing of a dashboard mailing list entry for Tupaia Admin user', async () => {
@@ -198,7 +197,7 @@ describe('Permissions checker for EditDashboardMailingListEntry', async () => {
           email: 'bes-admin-editme@domain.com',
         });
 
-        expect(result[0].subscribed).to.equal(false);
+        expect(result[0].subscribed).toBe(false);
       });
     });
   });

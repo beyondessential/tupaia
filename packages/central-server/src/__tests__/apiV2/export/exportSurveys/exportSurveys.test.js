@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import xlsx from 'xlsx';
 import {
   buildAndInsertSurveys,
@@ -26,14 +24,14 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
   const app = new TestableApp();
   const { models } = app;
 
-  describe('Test permissions when exporting surveys', async () => {
+  describe('Test permissions when exporting surveys', () => {
     let adminPermissionGroup;
     let vanuatuCountry;
     let survey1;
 
-    before(async () => {
-      sinon.stub(xlsx.utils, 'json_to_sheet');
-      sinon.stub(xlsx.utils, 'aoa_to_sheet');
+    beforeAll(async () => {
+      jest.spyOn(xlsx.utils, 'json_to_sheet').mockImplementation();
+      jest.spyOn(xlsx.utils, 'aoa_to_sheet').mockImplementation();
 
       adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
         name: 'Admin',
@@ -53,14 +51,8 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
       ]);
     });
 
-    after(() => {
-      xlsx.utils.json_to_sheet.restore();
-      xlsx.utils.aoa_to_sheet.restore();
-    });
-
     afterEach(() => {
       app.revokeAccess();
-      xlsx.utils.json_to_sheet.resetHistory();
     });
 
     it('Sufficient permissions: Should allow exporting an existing survey if users have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
@@ -68,7 +60,7 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
       await app.get(`export/surveys/${survey1.id}`);
 
       // json_to_sheet is called when putting exportData into excel sheet
-      expect(xlsx.utils.json_to_sheet).to.have.been.calledOnce;
+      expect(xlsx.utils.json_to_sheet).toHaveBeenCalledTimes(1);
     });
 
     it('Sufficient permissions: Should allow exporting an existing survey if users have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
@@ -76,7 +68,7 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
       await app.get(`export/surveys?surveyCode=${survey1.code}`);
 
       // json_to_sheet is called when putting exportData into excel sheet
-      expect(xlsx.utils.json_to_sheet).to.have.been.calledOnce;
+      expect(xlsx.utils.json_to_sheet).toHaveBeenCalledTimes(1);
     });
 
     it('Insufficient permissions: Should not allow exporting an existing survey if users do not have both Tupaia Admin Panel and survey permission group access to the country of that survey', async () => {
@@ -92,7 +84,7 @@ describe('exportSurveys(): GET export/surveys, GET export/surveys/:surveyId', ()
       await app.get(`export/surveys?surveyCode=${survey1.code}`);
 
       // json_to_sheet is called when putting exportData into excel sheet
-      expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnceWithExactly([
+      expect(xlsx.utils.aoa_to_sheet).toHaveBeenCalledOnceWith([
         [
           `One of the following conditions need to be satisfied:\nNeed BES Admin access\nNeed ${adminPermissionGroup.name} access to ${vanuatuCountry.name} to export the survey ${survey1.name}\n`,
         ],

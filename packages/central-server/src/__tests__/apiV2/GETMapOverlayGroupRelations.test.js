@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
 
-describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
+describe('Permissions checker for GETMapOverlayGroupRelations', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -28,7 +27,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
   let projectLevelMapOverlayGroupRelation1;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
     await addBaselineTestCountries(models);
 
@@ -52,14 +51,14 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /mapOverlayGroupRelations/:id', async () => {
+  describe('GET /mapOverlayGroupRelations/:id', () => {
     it('Sufficient permissions: Should return a requested map overlay group relation that users have access to the child map overlay item', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(
         `mapOverlayGroupRelations/${nationalMapOverlayGroupRelation1.id}`,
       );
 
-      expect(result.id).to.equal(nationalMapOverlayGroupRelation1.id);
+      expect(result.id).toBe(nationalMapOverlayGroupRelation1.id);
     });
 
     it('Sufficient permissions: Should return a requested project level map overlay group relation that users have access to the child map overlay item', async () => {
@@ -68,7 +67,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
         `mapOverlayGroupRelations/${projectLevelMapOverlayGroupRelation1.id}`,
       );
 
-      expect(result.id).to.equal(projectLevelMapOverlayGroupRelation1.id);
+      expect(result.id).toBe(projectLevelMapOverlayGroupRelation1.id);
     });
 
     it('Insufficient permissions: Should throw an error if requesting map overlay group relation that users do not have access to the child map overlay item', async () => {
@@ -80,7 +79,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
         `mapOverlayGroupRelations/${nationalMapOverlayGroupRelation1.id}`,
       );
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error if requesting project level map overlay group relation that users do not have access to the child map overlay item', async () => {
@@ -92,12 +91,12 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
         `mapOverlayGroupRelations/${projectLevelMapOverlayGroupRelation1.id}`,
       );
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /mapOverlayGroupRelations', async () => {
-    before(() => {
+  describe('GET /mapOverlayGroupRelations', () => {
+    beforeAll(() => {
       const mapOverlayGroupRelationIds = [
         nationalMapOverlayGroupRelation1.id,
         nationalMapOverlayGroupRelation2.id,
@@ -120,7 +119,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroupRelations?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalMapOverlayGroupRelation1.id,
         projectLevelMapOverlayGroupRelation1.id,
       ]);
@@ -130,7 +129,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
       app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`mapOverlayGroupRelations?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalMapOverlayGroupRelation1.id,
         nationalMapOverlayGroupRelation2.id,
         projectLevelMapOverlayGroupRelation1.id,
@@ -144,7 +143,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', async () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroupRelations?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

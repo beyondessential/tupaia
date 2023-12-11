@@ -2,14 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+
 import { findOrCreateDummyRecord } from '@tupaia/database';
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
-describe('Creating a landing page', async () => {
+describe('Creating a landing page', () => {
   let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
@@ -40,8 +39,10 @@ describe('Creating a landing page', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(() => {
-    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
+  beforeAll(() => {
+    uploadImageStub = jest
+      .spyOn(UploadImage, 'uploadImage')
+      .mockResolvedValue(EXAMPLE_UPLOADED_IMAGE_URL);
   });
 
   beforeEach(async () => {
@@ -54,12 +55,12 @@ describe('Creating a landing page', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
-    uploadImageStub.restore();
+  afterAll(async () => {
+    uploadImageStub.mockRestore();
   });
 
-  describe('POST /landingPages', async () => {
-    describe('Record creation', async () => {
+  describe('POST /landingPages', () => {
+    describe('Record creation', () => {
       it('creates a valid landing page record', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
@@ -72,8 +73,8 @@ describe('Creating a landing page', async () => {
         const result = await models.landingPage.find({
           url_segment: TEST_LANDING_PAGE_INPUT.url_segment,
         });
-        expect(result.length).to.equal(1);
-        expect(result[0].url_segment).to.equal(TEST_LANDING_PAGE_INPUT.url_segment);
+        expect(result.length).toBe(1);
+        expect(result[0].url_segment).toBe(TEST_LANDING_PAGE_INPUT.url_segment);
       });
 
       it('uploads the value of image_url', async () => {
@@ -89,8 +90,8 @@ describe('Creating a landing page', async () => {
         const result = await models.landingPage.find({
           url_segment: TEST_LANDING_PAGE_INPUT.url_segment,
         });
-        expect(result.length).to.equal(1);
-        expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+        expect(result.length).toBe(1);
+        expect(result[0].image_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
       });
 
       it('uploads the value of logo_url', async () => {
@@ -106,8 +107,8 @@ describe('Creating a landing page', async () => {
         const result = await models.landingPage.find({
           url_segment: TEST_LANDING_PAGE_INPUT.url_segment,
         });
-        expect(result.length).to.equal(1);
-        expect(result[0].logo_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+        expect(result.length).toBe(1);
+        expect(result[0].logo_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
       });
     });
   });

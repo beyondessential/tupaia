@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { setupDummySyncQueue } from '../../../../testUtilities';
@@ -27,9 +25,9 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should mark as successful if the survey response never successfully synced', async () => {
@@ -39,9 +37,9 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
 
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should delete if the survey response previously synced successfully', async () => {
@@ -51,9 +49,9 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       {
         code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
         type: pusher.dataSourceTypes.DATA_ELEMENT,
@@ -64,21 +62,21 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   });
   it('should delete the data set complete registration if one exists', async () => {
     try {
-      dhisApi.getDataSetByCode = sinon.stub().returns(DATA_SET); // change to return valid data set
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(DATA_SET); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
       change.type = 'delete';
       await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
       const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
-      expect(result).to.be.true;
-      expect(dhisApi.getDataSetByCode).to.have.been.calledOnceWith(SURVEY.code);
-      expect(dhisApi.postDataSetCompletion).not.to.have.been.called;
-      expect(dhisApi.deleteDataSetCompletion).to.have.been.calledOnceWith(
+      expect(result).toBe(true);
+      expect(dhisApi.getDataSetByCode).toHaveBeenCalledOnceWith(SURVEY.code);
+      expect(dhisApi.postDataSetCompletion).not.toHaveBeenCalled();
+      expect(dhisApi.deleteDataSetCompletion).toHaveBeenCalledOnceWith(
         DATA_SET_COMPLETION_DIMENSIONS,
       );
     } finally {
-      dhisApi.getDataSetByCode = sinon.stub().returns(null); // switch back to returning null
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(null); // switch back to returning null
     }
   });
   it('should not delete the data set complete registration if no data set matches', async () => {
@@ -88,10 +86,10 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dhisApi.getDataSetByCode).to.have.been.calledOnceWith(SURVEY.code);
-    expect(dhisApi.postDataSetCompletion).not.to.have.been.called;
-    expect(dhisApi.deleteDataSetCompletion).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dhisApi.getDataSetByCode).toHaveBeenCalledOnceWith(SURVEY.code);
+    expect(dhisApi.postDataSetCompletion).not.toHaveBeenCalled();
+    expect(dhisApi.deleteDataSetCompletion).not.toHaveBeenCalled();
   });
   it('should add "next most recent" records to sync queue', async () => {
     // create an survey response that should be pushed to dhis2 if the current one is deleted
@@ -114,9 +112,9 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     // run the delete push
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       {
         code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
         type: pusher.dataSourceTypes.DATA_ELEMENT,
@@ -127,6 +125,6 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted
     const additionalChangeAfter = await syncQueue.getChange(nextMostRecentSurveyResponse.id);
-    expect(additionalChangeAfter).to.have.property('type', 'update');
+    expect(additionalChangeAfter).toHaveProperty('type', 'update');
   });
 };

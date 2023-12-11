@@ -4,8 +4,6 @@
  */
 
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
@@ -21,7 +19,7 @@ const rollbackRecords = async (models, projectCode) => {
   await models.entityHierarchy.delete({ name: projectCode });
 };
 
-describe('Creating a project', async () => {
+describe('Creating a project', () => {
   let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
@@ -51,7 +49,7 @@ describe('Creating a project', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await models.country.delete({ code: 'DL' });
     await models.mapOverlay.delete({ code: '126' });
     await findOrCreateDummyRecord(models.entity, { code: 'World' });
@@ -61,7 +59,9 @@ describe('Creating a project', async () => {
     await findOrCreateDummyRecord(models.project, { code: 'test_project' });
     await findOrCreateDummyRecord(models.permissionGroup, { name: 'test_group1' });
     await findOrCreateDummyRecord(models.mapOverlay, { id: TEST_MAP_OVERLAY_ID, code: '126' });
-    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
+    uploadImageStub = jest
+      .spyOn(UploadImage, 'uploadImage')
+      .mockResolvedValue(EXAMPLE_UPLOADED_IMAGE_URL);
   });
 
   afterEach(async () => {
@@ -69,12 +69,12 @@ describe('Creating a project', async () => {
     app.revokeAccess();
   });
 
-  after(() => {
-    uploadImageStub.restore();
+  afterAll(() => {
+    uploadImageStub.mockRestore();
   });
 
-  describe('POST /projects', async () => {
-    describe('New record validation', async () => {
+  describe('POST /projects', () => {
+    describe('New record validation', () => {
       it('Throws an error when the project code already exists', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
         const code = 'test_project';
@@ -86,7 +86,7 @@ describe('Creating a project', async () => {
           },
         });
 
-        expect(result).to.deep.equal({
+        expect(result).toStrictEqual({
           error: `Invalid content for field "code" causing message "Another project record already exists with with code: ${code}"`,
         });
       });
@@ -102,7 +102,7 @@ describe('Creating a project', async () => {
           },
         });
 
-        expect(result).to.deep.equal({
+        expect(result).toStrictEqual({
           error:
             'Invalid content for field "countries" causing message "One or more provided countries do not exist"',
         });
@@ -117,7 +117,7 @@ describe('Creating a project', async () => {
           },
         });
 
-        expect(result).to.deep.equal({
+        expect(result).toStrictEqual({
           error:
             'Invalid content for field "permission_groups" causing message "Some provided permission groups do not exist"',
         });
@@ -132,14 +132,14 @@ describe('Creating a project', async () => {
           },
         });
 
-        expect(result).to.deep.equal({
+        expect(result).toStrictEqual({
           error:
             'Invalid content for field "entityTypes" causing message "Some provided entity types do not exist"',
         });
       });
     });
 
-    describe('Record creation', async () => {
+    describe('Record creation', () => {
       it('creates a valid project record', async () => {
         await app.grantAccess(BES_ADMIN_POLICY);
 
@@ -150,8 +150,8 @@ describe('Creating a project', async () => {
         });
 
         const result = await models.project.find({ code: TEST_PROJECT_INPUT.code });
-        expect(result.length).to.equal(1);
-        expect(result[0].description).to.equal(TEST_PROJECT_INPUT.description);
+        expect(result.length).toBe(1);
+        expect(result[0].description).toBe(TEST_PROJECT_INPUT.description);
       });
 
       it('creates a valid entity record', async () => {
@@ -164,8 +164,8 @@ describe('Creating a project', async () => {
         });
 
         const result = await models.entity.find({ name: TEST_PROJECT_INPUT.name, type: 'project' });
-        expect(result.length).to.equal(1);
-        expect(result[0].code).to.equal(TEST_PROJECT_INPUT.code);
+        expect(result.length).toBe(1);
+        expect(result[0].code).toBe(TEST_PROJECT_INPUT.code);
       });
 
       it('creates a valid entity hierarchy record', async () => {
@@ -178,8 +178,8 @@ describe('Creating a project', async () => {
         });
 
         const result = await models.entityHierarchy.find({ name: TEST_PROJECT_INPUT.code });
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(TEST_PROJECT_INPUT.code);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(TEST_PROJECT_INPUT.code);
       });
     });
 
@@ -194,8 +194,8 @@ describe('Creating a project', async () => {
       });
 
       const result = await models.project.find({ code: TEST_PROJECT_INPUT.code });
-      expect(result.length).to.equal(1);
-      expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+      expect(result.length).toBe(1);
+      expect(result[0].image_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
     it('uploads the value of logo_url', async () => {
@@ -209,8 +209,8 @@ describe('Creating a project', async () => {
       });
 
       const result = await models.project.find({ code: TEST_PROJECT_INPUT.code });
-      expect(result.length).to.equal(1);
-      expect(result[0].logo_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+      expect(result.length).toBe(1);
+      expect(result[0].logo_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
     });
   });
 });

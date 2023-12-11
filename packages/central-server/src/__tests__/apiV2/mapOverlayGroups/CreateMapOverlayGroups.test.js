@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for CreateDashboards', async () => {
+describe('Permissions checker for CreateDashboards', () => {
   const SUFFICIENT_TUPAIA_ADMIN_PANEL_PERMISSION_GROUP_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
@@ -32,8 +31,8 @@ describe('Permissions checker for CreateDashboards', async () => {
     app.revokeAccess();
   });
 
-  describe('POST /mapOverlayGroups', async () => {
-    describe('Insufficient permission', async () => {
+  describe('POST /mapOverlayGroups', () => {
+    describe('Insufficient permission', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         await app.grantAccess(INSUFFICIENT_POLICY);
         const { body: result } = await app.post(`mapOverlayGroups`, {
@@ -43,10 +42,10 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
-      describe('Sufficient permission', async () => {
+      describe('Sufficient permission', () => {
         it('Allow creation of a mapOverlayGroups if we have BES admin permission', async () => {
           await app.grantAccess(SUFFICIENT_BES_ADMIN_POLICY);
           const code = 'sufficient_permissions';
@@ -61,8 +60,8 @@ describe('Permissions checker for CreateDashboards', async () => {
             code,
           });
 
-          expect(result.length).to.equal(1);
-          expect(result[0].name).to.equal(name);
+          expect(result.length).toBe(1);
+          expect(result[0].name).toBe(name);
         });
 
         it('Allow creation of a mapOverlayGroups if we have Tupaia Admin panel permission', async () => {
@@ -79,12 +78,12 @@ describe('Permissions checker for CreateDashboards', async () => {
             code,
           });
 
-          expect(result.length).to.equal(1);
-          expect(result[0].name).to.equal(name);
+          expect(result.length).toBe(1);
+          expect(result[0].name).toBe(name);
         });
       });
 
-      describe('Invalid input', async () => {
+      describe('Invalid input', () => {
         it('Throw a input validation error if we do not have code', async () => {
           await app.grantAccess(SUFFICIENT_BES_ADMIN_POLICY);
           const { body: result } = await app.post(`mapOverlayGroups`, {
@@ -93,7 +92,7 @@ describe('Permissions checker for CreateDashboards', async () => {
             },
           });
 
-          expect(result).to.have.keys('error');
+          expect(result).toHaveProperty('error');
         });
 
         it('Throw a input validation error if we do not have name', async () => {
@@ -104,7 +103,7 @@ describe('Permissions checker for CreateDashboards', async () => {
             },
           });
 
-          expect(result).to.have.keys('error');
+          expect(result).toHaveProperty('error');
         });
 
         it('Throw a input validation error if mapOverlayGroups with the same code already exists', async () => {
@@ -121,8 +120,8 @@ describe('Permissions checker for CreateDashboards', async () => {
             code,
           });
 
-          expect(result.length).to.equal(1);
-          expect(result[0].name).to.equal(firstName);
+          expect(result.length).toBe(1);
+          expect(result[0].name).toBe(firstName);
 
           const { body: secondResult } = await app.post(`mapOverlayGroups`, {
             body: {
@@ -131,7 +130,7 @@ describe('Permissions checker for CreateDashboards', async () => {
             },
           });
 
-          expect(secondResult).to.have.keys('error');
+          expect(secondResult).toHaveProperty('error');
         });
       });
     });

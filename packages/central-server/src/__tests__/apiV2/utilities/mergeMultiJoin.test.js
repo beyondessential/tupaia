@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { mergeMultiJoin } from '../../../apiV2/utilities/mergeMultiJoin';
 
 describe('mergeMultiJoin', () => {
@@ -19,7 +17,7 @@ describe('mergeMultiJoin', () => {
         joinCondition: ['survey_screen.id', 'survey_screen_component.screen_id'],
       },
     ];
-    expect(mergeMultiJoin(baseMultiJoin)).to.equal(baseMultiJoin);
+    expect(mergeMultiJoin(baseMultiJoin)).toStrictEqual(baseMultiJoin);
   });
 
   it('returns all members of both multiJoins when no there is no overlap', () => {
@@ -61,7 +59,7 @@ describe('mergeMultiJoin', () => {
         joinCondition: ['survey_response.survey_id', 'survey.id'],
       },
     ];
-    expect(mergeMultiJoin(baseMultiJoin, multiJoinToMerge)).to.deep.equal(mergedMultiJoin);
+    expect(mergeMultiJoin(baseMultiJoin, multiJoinToMerge)).toStrictEqual(mergedMultiJoin);
   });
 
   it('returns only unique members, preferring baseMultiJoin, when there is overlap', () => {
@@ -99,6 +97,6 @@ describe('mergeMultiJoin', () => {
         joinCondition: ['survey.id', 'survey_screen.survey_id'],
       },
     ];
-    expect(mergeMultiJoin(baseMultiJoin, multiJoinToMerge)).to.deep.equal(mergedMultiJoin);
+    expect(mergeMultiJoin(baseMultiJoin, multiJoinToMerge)).toStrictEqual(mergedMultiJoin);
   });
 });

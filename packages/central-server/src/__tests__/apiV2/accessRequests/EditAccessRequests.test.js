@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditAccessRequests', async () => {
+describe('Permissions checker for EditAccessRequests', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -33,7 +32,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
   let laosEntityId;
   let besPermissionGroupId;
 
-  before(async () => {
+  beforeAll(async () => {
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
       code: 'VU',
     });
@@ -77,8 +76,8 @@ describe('Permissions checker for EditAccessRequests', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /accessRequests/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('PUT /accessRequests/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -88,7 +87,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
           body: { approved: true },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception if we do not have admin panel access to the entity of the access request are editing', async () => {
@@ -97,7 +96,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
           body: { approved: true },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit an access request to point to an entity we lack permission for', async () => {
@@ -109,7 +108,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to approve a BES Admin request as a non BES Admin user', async () => {
@@ -120,7 +119,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit an access request to point to BES Admin permission group', async () => {
@@ -132,11 +131,11 @@ describe('Permissions checker for EditAccessRequests', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Edit an access request if we have admin panel access to the entity the request is for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`accessRequests/${vanuatuPublicRequest.id}`, {
@@ -144,7 +143,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
         });
         const result = await models.accessRequest.findById(vanuatuPublicRequest.id);
 
-        expect(result.approved).to.true;
+        expect(result.approved).toBe(true);
       });
 
       it('Edit any access request as BES Admin', async () => {
@@ -154,11 +153,11 @@ describe('Permissions checker for EditAccessRequests', async () => {
         });
         const result = await models.accessRequest.findById(kiribatiBESRequest.id);
 
-        expect(result.approved).to.true;
+        expect(result.approved).toBe(true);
       });
     });
 
-    describe('Restricted actions', async () => {
+    describe('Restricted actions', () => {
       it('Throw an exception when editing an access request that has already been processed', async () => {
         // Exactly the same as the sufficient permissions check
         // Most of the time, this is still approved from the previous check
@@ -172,7 +171,7 @@ describe('Permissions checker for EditAccessRequests', async () => {
           body: { approved: true },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
   });

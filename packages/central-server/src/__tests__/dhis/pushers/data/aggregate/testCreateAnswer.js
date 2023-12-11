@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
@@ -18,9 +17,10 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
-    await expect(pusher.push()).to.eventually.equal(false);
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    const result = await pusher.push();
+    expect(result).toBe(false);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should create a data value representing this answer', async () => {
@@ -28,12 +28,12 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should respond true without posting data if there is existing, more recent data for the same period', async () => {
@@ -54,8 +54,8 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 };

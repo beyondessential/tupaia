@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   findOrCreateDummyRecord,
   addBaselineTestCountries,
@@ -15,7 +14,7 @@ import {
 } from '../../../permissions';
 import { TestableApp, setupDashboardTestData } from '../../testUtilities';
 
-describe('Permissions checker for GETDashboardItems', async () => {
+describe('Permissions checker for GETDashboardItems', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -37,7 +36,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
   let nationalDashboardItem3;
   let projectDashboardItem1;
 
-  before(async () => {
+  beforeAll(async () => {
     // Still create these existing entities just in case test database for some reason does not have these records.
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_Phoenix Islands',
@@ -68,12 +67,12 @@ describe('Permissions checker for GETDashboardItems', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /dashboardItems/:id', async () => {
+  describe('GET /dashboardItems/:id', () => {
     it('Sufficient permissions: Should return requested dashboard item connected to a SUB NATIONAL dashboard that users have access to any of their relations', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardItems/${districtDashboardItem1.id}`);
 
-      expect(result.id).to.equal(districtDashboardItem1.id);
+      expect(result.id).toBe(districtDashboardItem1.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard item connected to a NATIONAL dashboard that users have access to any of their relations', async () => {
@@ -89,14 +88,14 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardItems/${nationalDashboardItem3.id}`);
 
-      expect(result.id).to.equal(nationalDashboardItem3.id);
+      expect(result.id).toBe(nationalDashboardItem3.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard item connected to a project level dashboard that users have access to any of the project child countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardItems/${projectDashboardItem1.id}`);
 
-      expect(result.id).to.equal(projectDashboardItem1.id);
+      expect(result.id).toBe(projectDashboardItem1.id);
     });
 
     it('Insufficient permissions: Should throw an error when requesting a dashboard item connected to a SUB NATIONAL dashboard that users do not have access to their relations', async () => {
@@ -112,7 +111,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardItems/${districtDashboardItem1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error when requesting a dashboard item connected to a NATIONAL dashboard that users do not have access to their relations', async () => {
@@ -128,7 +127,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardItems/${nationalDashboardItem3.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error when requesting a dashboard item connected to a project level dashboard that users have access to any of the project child countries', async () => {
@@ -144,14 +143,14 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardItems/${projectDashboardItem1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /dashboardItems', async () => {
+  describe('GET /dashboardItems', () => {
     let filterString;
 
-    before(async () => {
+    beforeAll(async () => {
       const dashboardItemIds = [
         districtDashboardItem1.id,
         nationalDashboardItem1.id,
@@ -168,7 +167,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dashboardItems?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         districtDashboardItem1.id,
         nationalDashboardItem1.id,
         nationalDashboardItem2.id,
@@ -181,7 +180,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dashboardItems?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         districtDashboardItem1.id,
         nationalDashboardItem1.id,
         nationalDashboardItem2.id,
@@ -197,7 +196,7 @@ describe('Permissions checker for GETDashboardItems', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardItems?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditDataElements', async () => {
+describe('Permissions checker for EditDataElements', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -30,7 +29,7 @@ describe('Permissions checker for EditDataElements', async () => {
   let adminElement;
   let publicElement;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -66,7 +65,7 @@ describe('Permissions checker for EditDataElements', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /dataElements/:id', async () => {
+  describe('PUT /dataElements/:id', () => {
     it('Insufficient permissions: Throw an error if user does not have BES Admin or Tupaia Admin Panel access', async () => {
       const policy = {
         DL: ['Public'],
@@ -76,7 +75,7 @@ describe('Permissions checker for EditDataElements', async () => {
         body: { code: 'no_access' },
       });
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Throw an error if the user does not have access to all of the permission groups for a data element', async () => {
@@ -85,7 +84,7 @@ describe('Permissions checker for EditDataElements', async () => {
         body: { code: 'no_lesmis_admin' },
       });
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Sufficient permissions: Edit a data element we have permission to', async () => {
@@ -96,7 +95,7 @@ describe('Permissions checker for EditDataElements', async () => {
       });
       const result = await models.dataElement.findById(publicElement.id);
 
-      expect(result.code).to.equal(newCode);
+      expect(result.code).toBe(newCode);
     });
 
     it('Sufficient permissions: Edit a data element if we are a BES Admin', async () => {
@@ -107,7 +106,7 @@ describe('Permissions checker for EditDataElements', async () => {
       });
       const result = await models.dataElement.findById(adminElement.id);
 
-      expect(result.code).to.equal(newCode);
+      expect(result.code).toBe(newCode);
     });
   });
 });

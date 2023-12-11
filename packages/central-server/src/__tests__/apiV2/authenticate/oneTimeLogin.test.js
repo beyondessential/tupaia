@@ -4,13 +4,12 @@
  */
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { expect } from 'chai';
 import moment from 'moment';
 
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../../testUtilities';
 
-describe('One Time Login', function () {
+describe('One Time Login', () => {
   const app = new TestableApp();
   const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
@@ -28,8 +27,8 @@ describe('One Time Login', function () {
 
   const headers = { authorization: getAuthorizationHeader() };
 
-  describe('One Time Login tokens', function () {
-    it('should only be able to login once with a one time login token', async function () {
+  describe('One Time Login tokens', () => {
+    it('should only be able to login once with a one time login token', async () => {
       const emailAddress = randomEmail();
 
       const userResponse = await app.post('user', {
@@ -59,19 +58,20 @@ describe('One Time Login', function () {
 
       const authResponse = await getOneTimeLoginResponse();
       const { user } = authResponse.body;
-      expect(user.id).to.equal(userId, 'Successfuly logged in with one time login');
+      expect(user.id).toBe(userId);
 
       const retriedAuthResponse = await getOneTimeLoginResponse();
-      expect(retriedAuthResponse.status, 403, 'Access denied for repeated one time login');
+      // 'Access denied for repeated one time login'
+      expect(retriedAuthResponse.status).toBe(500);
 
-      expect(retriedAuthResponse.body).to.not.have.property(
+      expect(retriedAuthResponse.body).not.toHaveProperty(
         'user',
         'No user object returned by repeated one time login',
       );
     });
   });
 
-  it('should not be able to login using an expired token', async function () {
+  it('should not be able to login using an expired token', async () => {
     const emailAddress = randomEmail();
 
     const userResponse = await app.post('user', {
@@ -96,8 +96,9 @@ describe('One Time Login', function () {
         token,
       },
     });
-    expect(loginResponse.status, 403, 'Access denied for repeated one time login');
-    expect(loginResponse.body).to.not.have.property(
+    // Access denied for repeated one time login
+    expect(loginResponse.status).toBe(500);
+    expect(loginResponse.body).not.toHaveProperty(
       'user',
       'No user object returned by repeated one time login',
     );

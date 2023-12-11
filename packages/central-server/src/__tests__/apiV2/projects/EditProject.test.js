@@ -4,8 +4,6 @@
  */
 
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
@@ -21,7 +19,7 @@ const rollbackRecords = async (models, projectCode) => {
   await models.entityHierarchy.delete({ name: projectCode });
 };
 
-describe('Editing a project', async () => {
+describe('Editing a project', () => {
   let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
@@ -42,8 +40,10 @@ describe('Editing a project', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(() => {
-    uploadImageStub = sinon.stub(UploadImage, 'uploadImage').resolves(EXAMPLE_UPLOADED_IMAGE_URL);
+  beforeAll(() => {
+    uploadImageStub = jest
+      .spyOn(UploadImage, 'uploadImage')
+      .mockResolvedValue(EXAMPLE_UPLOADED_IMAGE_URL);
   });
 
   beforeEach(async () => {
@@ -55,11 +55,11 @@ describe('Editing a project', async () => {
     app.revokeAccess();
   });
 
-  after(() => {
-    uploadImageStub.restore();
+  afterAll(() => {
+    uploadImageStub.mockRestore();
   });
 
-  describe('PUT /projects', async () => {
+  describe('PUT /projects', () => {
     it('updates a project record', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
 
@@ -73,8 +73,8 @@ describe('Editing a project', async () => {
       const result = await models.project.find({
         id: TEST_PROJECT_INPUT.id,
       });
-      expect(result.length).to.equal(1);
-      expect(result[0].description).to.equal('the updated description');
+      expect(result.length).toBe(1);
+      expect(result[0].description).toBe('the updated description');
     });
 
     it('uploads the value of image_url if it has changed', async () => {
@@ -91,8 +91,8 @@ describe('Editing a project', async () => {
         id: TEST_PROJECT_INPUT.id,
       });
 
-      expect(result.length).to.equal(1);
-      expect(result[0].image_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+      expect(result.length).toBe(1);
+      expect(result[0].image_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
     it('uploads the value of logo_url if it has changed', async () => {
@@ -109,8 +109,8 @@ describe('Editing a project', async () => {
         id: TEST_PROJECT_INPUT.id,
       });
 
-      expect(result.length).to.equal(1);
-      expect(result[0].logo_url).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+      expect(result.length).toBe(1);
+      expect(result[0].logo_url).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
     });
 
     it('does not upload a new image_url or logo_url if they have not changed', async () => {
@@ -128,9 +128,9 @@ describe('Editing a project', async () => {
         id: TEST_PROJECT_INPUT.id,
       });
 
-      expect(result.length).to.equal(1);
-      expect(result[0].image_url).to.equal(TEST_PROJECT_INPUT.image_url);
-      expect(result[0].logo_url).to.equal(TEST_PROJECT_INPUT.logo_url);
+      expect(result.length).toBe(1);
+      expect(result[0].image_url).toBe(TEST_PROJECT_INPUT.image_url);
+      expect(result[0].logo_url).toBe(TEST_PROJECT_INPUT.logo_url);
     });
   });
 });

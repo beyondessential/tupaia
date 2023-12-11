@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
@@ -53,7 +51,7 @@ describe('Question hooks', () => {
     return spy;
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await app.authenticate();
     await app.grantFullAccess();
 
@@ -114,8 +112,8 @@ describe('Question hooks', () => {
       await database.waitForAllChangeHandlers();
 
       // expect the hook to have been called
-      expect(spy.called).to.be.true;
-      expect(spy.params.surveyResponse.entity_id).to.equal(ENTITY_ID);
+      expect(spy.called).toBe(true);
+      expect(spy.params.surveyResponse.entity_id).toBe(ENTITY_ID);
     });
 
     it('Should have access to the whole survey response', async () => {
@@ -139,9 +137,9 @@ describe('Question hooks', () => {
 
       await database.waitForAllChangeHandlers();
 
-      expect(answerValues.length).to.equal(2);
-      expect(answerValues.some(x => x === 'Answer A')).to.be.true;
-      expect(answerValues.some(x => x === 'Answer B')).to.be.true;
+      expect(answerValues.length).toBe(2);
+      expect(answerValues.some(x => x === 'Answer A')).toBe(true);
+      expect(answerValues.some(x => x === 'Answer B')).toBe(true);
     });
 
     describe('Backdating', () => {
@@ -161,7 +159,7 @@ describe('Question hooks', () => {
 
         await database.waitForAllChangeHandlers();
 
-        expect(spy.called).to.be.true;
+        expect(spy.called).toBe(true);
 
         const spy2 = createHookSpy('backdateTestHook');
 
@@ -178,7 +176,7 @@ describe('Question hooks', () => {
 
         await database.waitForAllChangeHandlers();
 
-        expect(spy2.called).to.be.true;
+        expect(spy2.called).toBe(true);
       });
 
       it('Should not run a hook for a backdated value', async () => {
@@ -197,7 +195,7 @@ describe('Question hooks', () => {
 
         await database.waitForAllChangeHandlers();
 
-        expect(spy.called).to.be.true;
+        expect(spy.called).toBe(true);
 
         const spy2 = createHookSpy('backdateTestHook');
 
@@ -214,7 +212,7 @@ describe('Question hooks', () => {
 
         await database.waitForAllChangeHandlers();
 
-        expect(spy2.called).to.be.false;
+        expect(spy2.called).toBe(false);
       });
     });
   });
@@ -222,8 +220,8 @@ describe('Question hooks', () => {
   describe('Specific hooks', () => {
     it("Should update an entity's coordinates", async () => {
       const beforeEntity = await models.entity.findById(ENTITY_ID);
-      expect(beforeEntity.point).to.be.null;
-      expect(beforeEntity.bounds).to.be.null;
+      expect(beforeEntity.point).toBe(null);
+      expect(beforeEntity.bounds).toBe(null);
 
       // submit a survey response
       await app.post('surveyResponse', {
@@ -244,15 +242,15 @@ describe('Question hooks', () => {
 
       // expect the hook to have been called
       const entity = await models.entity.findById(ENTITY_ID);
-      expect(entity.point).to.not.be.null;
-      expect(entity.bounds).to.not.be.null;
+      expect(entity.point).not.toBe(null);
+      expect(entity.bounds).not.toBe(null);
     });
 
     it("Should update an entity's photo", async () => {
       const TEST_URL = 'https://facilities.com/update-an-entitys-photo/the-photo.jpg';
 
       const beforeEntity = await models.entity.findById(ENTITY_ID);
-      expect(beforeEntity.image_url).to.not.equal(TEST_URL);
+      expect(beforeEntity.image_url).not.toBe(TEST_URL);
 
       // submit a survey response
       await app.post('surveyResponse', {
@@ -269,12 +267,12 @@ describe('Question hooks', () => {
       await database.waitForAllChangeHandlers();
 
       const entity = await models.entity.findById(ENTITY_ID);
-      expect(entity.image_url).to.equal(TEST_URL);
+      expect(entity.image_url).toBe(TEST_URL);
 
       // should be otherwise unchanged
       const { image_url: beforeImageUrl, ...beforeData } = await beforeEntity.getData();
       const { image_url: afterImageUrl, ...afterData } = await entity.getData();
-      expect(beforeData).to.deep.equal(afterData);
+      expect(beforeData).toStrictEqual(afterData);
     });
 
     describe('Adding an entity attribute', () => {
@@ -282,7 +280,7 @@ describe('Question hooks', () => {
         const TEST_BANANA_POPULATION_VALUE = '1000';
 
         const beforeEntity = await models.entity.findById(ENTITY_ID);
-        expect(beforeEntity.attributes).to.be.an('object');
+        expect(beforeEntity.attributes).toBeInstanceOf(Object);
 
         // submit a survey response
         await app.post('surveyResponse', {
@@ -300,19 +298,19 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY_ID);
-        expect(entity.attributes).to.deep.equal(newValue);
+        expect(entity.attributes).toStrictEqual(newValue);
 
         // should be otherwise unchanged
         const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
         const { attributes: afterAttributes, ...afterData } = await entity.getData();
-        expect(beforeData).to.deep.equal(afterData);
+        expect(beforeData).toStrictEqual(afterData);
       });
 
       it("Should overwrite an existing attribute's value with the new value", async () => {
         const AFTER_BANANA_POPULATION_VALUE = '5000';
 
         const beforeEntity = await models.entity.findById(ENTITY3_ID);
-        expect(beforeEntity.attributes).to.deep.equal({ banana_population: '1000' });
+        expect(beforeEntity.attributes).toStrictEqual({ banana_population: '1000' });
 
         // submit a survey response
         await app.post('surveyResponse', {
@@ -332,19 +330,19 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY3_ID);
-        expect(entity.attributes).to.deep.equal(newValue);
+        expect(entity.attributes).toStrictEqual(newValue);
 
         // should be otherwise unchanged
         const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
         const { attributes: afterAttributes, ...afterData } = await entity.getData();
-        expect(beforeData).to.deep.equal(afterData);
+        expect(beforeData).toStrictEqual(afterData);
       });
 
       it("Should add custom attribute to entity's attributes when there are existing attributes", async () => {
         const TEST_BANANA_POPULATION_VALUE = '2000';
 
         const beforeEntity = await models.entity.findById(ENTITY2_ID);
-        expect(beforeEntity.attributes).to.deep.equal({ test_attribute: 'test_value' });
+        expect(beforeEntity.attributes).toStrictEqual({ test_attribute: 'test_value' });
 
         // submit a survey response
         await app.post('surveyResponse', {
@@ -365,12 +363,12 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findById(ENTITY2_ID);
-        expect(entity.attributes).to.deep.equal(newValue);
+        expect(entity.attributes).toStrictEqual(newValue);
 
         // should be otherwise unchanged
         const { attributes: beforeAttributes, ...beforeData } = await beforeEntity.getData();
         const { attributes: afterAttributes, ...afterData } = await entity.getData();
-        expect(beforeData).to.deep.equal(afterData);
+        expect(beforeData).toStrictEqual(afterData);
       });
     });
 
@@ -378,7 +376,7 @@ describe('Question hooks', () => {
       it('Should create an entity', async () => {
         const TEST_URL = 'https://facilities.com/test-dynamic.jpg';
         const beforeEntity = await models.entity.findOne({ code: 'test_code' });
-        expect(beforeEntity).to.be.null;
+        expect(beforeEntity).toBe(null);
 
         // submit a survey response
         await app.post('surveyResponse', {
@@ -398,18 +396,18 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findOne({ code: 'test_code' });
-        expect(entity).to.not.be.null;
-        expect(entity.parent_id).to.equal(ENTITY_ID);
-        expect(entity.name).to.equal('Test Dynamic Entity');
-        expect(entity.image_url).to.equal(TEST_URL);
-        expect(entity.type).to.equal('disaster');
+        expect(entity).not.toBe(null);
+        expect(entity.parent_id).toBe(ENTITY_ID);
+        expect(entity.name).toBe('Test Dynamic Entity');
+        expect(entity.image_url).toBe(TEST_URL);
+        expect(entity.type).toBe('disaster');
       });
 
       it('Should not create a duplicate entity', async () => {
         const DUP_CODE = 'test_dup_code';
         const TEST_URL = 'https://facilities.com/test-dupe.jpg';
         const beforeEntity = await models.entity.findOne({ code: DUP_CODE });
-        expect(beforeEntity).to.be.null;
+        expect(beforeEntity).toBe(null);
 
         // submit a survey response
         await app.post('surveyResponse', {
@@ -429,10 +427,10 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const midEntity = await models.entity.findOne({ code: DUP_CODE });
-        expect(midEntity).to.not.be.null;
-        expect(midEntity.name).to.equal('Dupe Entity');
-        expect(midEntity.type).to.equal('disaster');
-        expect(midEntity.image_url).to.equal(TEST_URL);
+        expect(midEntity).not.toBe(null);
+        expect(midEntity.name).toBe('Dupe Entity');
+        expect(midEntity.type).toBe('disaster');
+        expect(midEntity.image_url).toBe(TEST_URL);
 
         // submit a second survey response with slightly different data
         await app.post('surveyResponse', {
@@ -451,10 +449,10 @@ describe('Question hooks', () => {
         await database.waitForAllChangeHandlers();
 
         const entity = await models.entity.findOne({ code: DUP_CODE });
-        expect(entity).to.not.be.null;
-        expect(entity.name).to.equal('Dupe Entity 2');
-        expect(entity.type).to.equal('facility');
-        expect(entity.image_url).to.equal(TEST_URL);
+        expect(entity).not.toBe(null);
+        expect(entity.name).toBe('Dupe Entity 2');
+        expect(entity.type).toBe('facility');
+        expect(entity.image_url).toBe(TEST_URL);
       });
     });
   });

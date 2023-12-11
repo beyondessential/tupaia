@@ -4,7 +4,6 @@
  */
 
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
 
 import { expectError, expectSuccess, resetTestData, TestableApp } from '../../testUtilities';
 import { findTestRecordByCode, TEST_SETUP } from './mapOverlayVisualisations.fixtures';
@@ -44,7 +43,7 @@ describe('GET map overlay visualisations', () => {
       app.revokeAccess();
       await app.grantAccess(publicPolicy);
       const { body } = await app.get('mapOverlayVisualisations/invalid_id');
-      expect(body.error).to.equal(
+      expect(body.error).toBe(
         'You require Tupaia Admin Panel or BES Admin permission to fetch visualisations.',
       );
     });

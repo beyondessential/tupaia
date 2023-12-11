@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -12,7 +11,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditDashboardItems', async () => {
+describe('Permissions checker for EditDashboardItems', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -41,7 +40,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
   let dashboardItemDLPublicSBAdmin;
   let dashboardItemKIAdmin;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -161,8 +160,8 @@ describe('Permissions checker for EditDashboardItems', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /dashboardItems/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('PUT /dashboardItems/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw an exception if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -172,7 +171,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
           body: { code: 'no_access' },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception if we do not have admin panel access to any of the root entities', async () => {
@@ -184,7 +183,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception if we do not have sufficient access to any of the root entities', async () => {
@@ -196,11 +195,11 @@ describe('Permissions checker for EditDashboardItems', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Allow editing of dashboard items if we have admin panel access to all the countries the user we are editing has access to', async () => {
         const newName = 'My all time favourite pokemon';
         await app.grantAccess(DEFAULT_POLICY);
@@ -209,7 +208,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
         });
         const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
 
-        expect(result.config.name).to.equal(newName);
+        expect(result.config.name).toBe(newName);
       });
 
       it('Allow editing of a dashboard item if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
@@ -220,7 +219,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
         });
         const result = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
 
-        expect(result.config.name).to.equal(newName);
+        expect(result.config.name).toBe(newName);
       });
 
       it('Does not allow editing of a dashboard item if we have Viz Builder User access in any country, and where the user we are editing does not have access to that country', async () => {
@@ -233,7 +232,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Does not allow editing of a dashboard item if user has Viz Builder User access in the requested country but not BES Admin or the dashboard specific permission', async () => {
@@ -246,7 +245,7 @@ describe('Permissions checker for EditDashboardItems', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
   });

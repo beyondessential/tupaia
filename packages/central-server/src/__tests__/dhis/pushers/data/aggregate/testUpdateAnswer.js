@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
@@ -23,12 +21,12 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       { ...ANSWER_DATA_VALUE, value: '4' },
     );
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
   it('should delete the previously synced data values, and post new values if the period has changed', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
@@ -39,12 +37,12 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       {
         ...ANSWER_DATA_VALUE_DIMENSIONS,
@@ -62,12 +60,12 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       {
         ...ANSWER_DATA_VALUE_DIMENSIONS,

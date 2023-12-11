@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditUserAccounts', async () => {
+describe('Permissions checker for EditUserAccounts', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -30,7 +29,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
   let userAccount1;
   let userAccount2;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -90,8 +89,8 @@ describe('Permissions checker for EditUserAccounts', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /users/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('PUT /users/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -101,7 +100,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
           body: { email: 'barry.allen@ccpd.gov' },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception if we do not have admin panel access to all the countries the user we are editing has access to', async () => {
@@ -110,11 +109,11 @@ describe('Permissions checker for EditUserAccounts', async () => {
           body: { email: 'hal.jordan@lantern.corp' },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Allow editing of user information if we have admin panel access to all the countries the user we are editing has access to', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`users/${userAccount1.id}`, {
@@ -122,7 +121,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount1.id);
 
-        expect(result.email).to.deep.equal('barry.allen@ccpd.gov');
+        expect(result.email).toStrictEqual('barry.allen@ccpd.gov');
       });
 
       it('Allow editing of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
@@ -132,7 +131,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         });
         const result = await models.user.findById(userAccount2.id);
 
-        expect(result.email).to.deep.equal('hal.jordan@lantern.corp');
+        expect(result.email).toStrictEqual('hal.jordan@lantern.corp');
       });
 
       it('Allow editing of user preferences by key', async () => {
@@ -141,13 +140,13 @@ describe('Permissions checker for EditUserAccounts', async () => {
           body: { project_id: '123456' },
         });
         const result = await models.user.findById(userAccount1.id);
-        expect(result.preferences).to.deep.equal({ project_id: '123456' });
+        expect(result.preferences).toStrictEqual({ project_id: '123456' });
 
         await app.put(`users/${userAccount1.id}`, {
           body: { country_id: '987654' },
         });
         const newResult = await models.user.findById(userAccount1.id);
-        expect(newResult.preferences).to.deep.equal({ project_id: '123456', country_id: '987654' });
+        expect(newResult.preferences).toStrictEqual({ project_id: '123456', country_id: '987654' });
       });
 
       it('Throw an exception if preferences request is incorrectly formatted', async () => {
@@ -155,7 +154,7 @@ describe('Permissions checker for EditUserAccounts', async () => {
         const { body: result } = await app.put(`users/${userAccount1.id}`, {
           body: { preferences: { project_id: '123456' } },
         });
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
   });

@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { processArithmeticConfig } from '../../../../../apiV2/import/importSurveys/ConfigImporter/processArithmeticConfig';
 import { convertCellToJson } from '../../../../../apiV2/import/importSurveys/utilities';
 import { assertCanProcessAndBuild, cellBuilderModelsStub } from './utilities';
@@ -127,6 +125,6 @@ describe('ArithmeticConfigCellBuilder', () => {
       cellBuilderModelsStub(QUESTIONS),
       convertCellToJson(config),
     );
-    expect(processedConfig.formula).to.equal(expectedProcessedFormula);
+    expect(processedConfig.formula).toBe(expectedProcessedFormula);
   });
 });

@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { AccessPolicy } from '@tupaia/access-policy';
 import {
   findOrCreateDummyRecord,
@@ -29,13 +28,13 @@ const SURVEY_NAME_2 = 'Test Survey Response Permission Survey 2';
 const SURVEY_CODE_1 = 'TEST_PERMISSION_SURVEY_1';
 const SURVEY_CODE_2 = 'TEST_PERMISSION_SURVEY_2';
 
-describe('assertCanImportSurveyResponses(): Permissions checker for Importing Survey Responses', async () => {
+describe('assertCanImportSurveyResponses(): Permissions checker for Importing Survey Responses', () => {
   const models = getModels();
   const defaultAccessPolicy = new AccessPolicy(DEFAULT_POLICY);
   let vanuatuCountry;
   let kiribatiCountry;
 
-  before(async () => {
+  beforeAll(async () => {
     await addBaselineTestCountries(models);
 
     await findOrCreateDummyRecord(models.entity, { code: 'KI_1_test', country_code: 'KI' });
@@ -102,7 +101,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       entitiesBySurveyCode,
     );
 
-    expect(result).to.true;
+    expect(result).toBe(true);
   });
 
   it('Sufficient permissions: Should allow importing survey responses when users have permission group access to the countries of the survey (multiple surveys)', async () => {
@@ -117,7 +116,7 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       entitiesBySurveyCode,
     );
 
-    expect(result).to.true;
+    expect(result).toBe(true);
   });
 
   it('Insufficient permissions: Should not allow importing survey responses against entities that do not belong to any survey countries', async () => {
@@ -126,8 +125,9 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['LA_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(defaultAccessPolicy, models, entitiesBySurveyCode))
-      .to.throw;
+    await expect(
+      assertCanImportSurveyResponses(defaultAccessPolicy, models, entitiesBySurveyCode),
+    ).toBeRejectedWith();
   });
 
   it('Insufficient permissions: Should not allow importing survey responses when users do not have permission group access to the countries of the survey (single survey)', async () => {
@@ -145,8 +145,9 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
-      .throw;
+    await expect(
+      assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode),
+    ).toBeRejectedWith();
   });
 
   it('Insufficient permissions: Should not allow importing survey responses when users do not have permission group access to the countries of the survey (multiple surveys)', async () => {
@@ -165,7 +166,8 @@ describe('assertCanImportSurveyResponses(): Permissions checker for Importing Su
       [SURVEY_CODE_2]: ['VU_1_test', 'VU_2_test', 'VU_3_test'],
     };
 
-    expect(() => assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode)).to
-      .throw;
+    await expect(
+      assertCanImportSurveyResponses(accessPolicy, models, entitiesBySurveyCode),
+    ).toBeRejectedWith();
   });
 });

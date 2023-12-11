@@ -5,7 +5,6 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import supertest from 'supertest';
 import autobind from 'react-autobind';
-import sinon from 'sinon';
 
 import { Authenticator } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
@@ -46,13 +45,13 @@ export class TestableApp {
     return this.grantAccess(policy);
   }
 
-  async grantAccess(policy) {
-    sinon.stub(Authenticator.prototype, 'getAccessPolicyForUser').resolves(policy);
+  async grantAccess(mockPolicy) {
+    jest.spyOn(Authenticator.prototype, 'getAccessPolicyForUser').mockResolvedValue(mockPolicy);
     return this.authenticate();
   }
 
   revokeAccess() {
-    Authenticator.prototype.getAccessPolicyForUser.restore();
+    jest.spyOn(Authenticator.prototype, 'getAccessPolicyForUser').mockRestore();
   }
 
   async authenticate() {

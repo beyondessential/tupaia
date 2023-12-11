@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TEST_USER_EMAIL, TestableApp } from '../testUtilities';
 
@@ -36,11 +35,11 @@ describe('Access Requests', () => {
     });
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess(); // We're not testing permissions here
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 
@@ -54,8 +53,8 @@ describe('Access Requests', () => {
       );
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
-      expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.statusCode).toBe(200);
+      expect(response1.body).toStrictEqual({ message: 'Country access requested.' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
@@ -64,8 +63,8 @@ describe('Access Requests', () => {
       const response2 = await app.put(`accessRequests/${accessRequestId}`, {
         body: { approved: true, approval_note: 'Marurung!' },
       });
-      expect(response2.statusCode).to.equal(200);
-      expect(response2.body).to.deep.equal({ message: 'Successfully updated accessRequests' });
+      expect(response2.statusCode).toBe(200);
+      expect(response2.body).toStrictEqual({ message: 'Successfully updated accessRequests' });
 
       await models.database.waitForAllChangeHandlers();
 
@@ -74,8 +73,8 @@ describe('Access Requests', () => {
         entity_id: entityId,
         permission_group_id: permissionGroupId,
       });
-      expect(permission).to.not.equal(null);
-      expect(permission).to.be.an('object');
+      expect(permission).not.toBe(null);
+      expect(permission).toBeInstanceOf(Object);
     });
 
     it('does not create permission when rejected', async () => {
@@ -87,8 +86,8 @@ describe('Access Requests', () => {
       );
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
-      expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.statusCode).toBe(200);
+      expect(response1.body).toStrictEqual({ message: 'Country access requested.' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
@@ -97,8 +96,8 @@ describe('Access Requests', () => {
       const response2 = await app.put(`accessRequests/${accessRequestId}`, {
         body: { approved: false },
       });
-      expect(response2.statusCode).to.equal(200);
-      expect(response2.body).to.deep.equal({ message: 'Successfully updated accessRequests' });
+      expect(response2.statusCode).toBe(200);
+      expect(response2.body).toStrictEqual({ message: 'Successfully updated accessRequests' });
 
       await models.database.waitForAllChangeHandlers();
 
@@ -107,7 +106,7 @@ describe('Access Requests', () => {
         entity_id: entityId,
         permission_group_id: permissionGroupId,
       });
-      expect(permission).to.equal(null);
+      expect(permission).toBe(null);
     });
   });
 });

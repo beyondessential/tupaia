@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
 
-describe('Permissions checker for GETMapOverlays', async () => {
+describe('Permissions checker for GETMapOverlays', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -28,7 +27,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
   let projectLevelMapOverlay1;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
     await addBaselineTestCountries(models);
 
@@ -52,19 +51,19 @@ describe('Permissions checker for GETMapOverlays', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /mapOverlays/:id', async () => {
+  describe('GET /mapOverlays/:id', () => {
     it('Sufficient permissions: Should return a requested map overlay that users have access to their countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
 
-      expect(result.id).to.equal(nationalMapOverlay1.id);
+      expect(result.id).toBe(nationalMapOverlay1.id);
     });
 
     it('Sufficient permissions: Should return a requested project level map overlay that users have access to any of their child countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
 
-      expect(result.id).to.equal(projectLevelMapOverlay1.id);
+      expect(result.id).toBe(projectLevelMapOverlay1.id);
     });
 
     it('Insufficient permissions: Should throw an error if requesting map overlay that users do not have access to their countries', async () => {
@@ -74,7 +73,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       app.grantAccess(policy);
       const { body: result } = await app.get(`mapOverlays/${nationalMapOverlay1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error if requesting project level map overlays that users do not have access to any of their child countries', async () => {
@@ -84,12 +83,12 @@ describe('Permissions checker for GETMapOverlays', async () => {
       app.grantAccess(policy);
       const { body: result } = await app.get(`mapOverlays/${projectLevelMapOverlay1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /mapOverlays', async () => {
-    before(() => {
+  describe('GET /mapOverlays', () => {
+    beforeAll(() => {
       const mapOverlayIds = [
         nationalMapOverlay1.id,
         nationalMapOverlay2.id,
@@ -113,7 +112,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalMapOverlay1.id,
         projectLevelMapOverlay1.id,
       ]);
@@ -123,7 +122,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalMapOverlay1.id,
         nationalMapOverlay2.id,
         projectLevelMapOverlay1.id,
@@ -137,7 +136,7 @@ describe('Permissions checker for GETMapOverlays', async () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

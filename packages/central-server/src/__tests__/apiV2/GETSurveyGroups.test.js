@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { buildAndInsertSurveys, findOrCreateDummyRecord } from '@tupaia/database';
 import { resetTestData, TestableApp } from '../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 
-describe('Permissions checker for GETSurveyGroups', async () => {
+describe('Permissions checker for GETSurveyGroups', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -27,7 +26,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   let surveyGroup2;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     // Set up the survey groups and their surveys
@@ -87,12 +86,12 @@ describe('Permissions checker for GETSurveyGroups', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /surveyGroups/:id', async () => {
+  describe('GET /surveyGroups/:id', () => {
     it('Sufficient permissions: Should return a requested survey group that users have access to any of the surveys within the groups', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
 
-      expect(result.id).to.equal(surveyGroup1.id);
+      expect(result.id).toBe(surveyGroup1.id);
     });
 
     it('Insufficient permissions: Should throw an error if requesting survey group that users do not have access to any of the surveys within the group', async () => {
@@ -107,16 +106,16 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`surveyGroups/${surveyGroup1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /surveyGroups', async () => {
+  describe('GET /surveyGroups', () => {
     it('Sufficient permissions: Should return all survey groups the user has permission to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
+      expect(results.map(r => r.id)).toStrictEqual([surveyGroup1.id, surveyGroup2.id]);
     });
 
     it('Sufficient permissions: Should filter survey groups if user only has some permissions', async () => {
@@ -131,14 +130,14 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup2.id]);
+      expect(results.map(r => r.id)).toStrictEqual([surveyGroup2.id]);
     });
 
     it('Sufficient permissions: Should return all survey groups if the user has BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([surveyGroup1.id, surveyGroup2.id]);
+      expect(results.map(r => r.id)).toStrictEqual([surveyGroup1.id, surveyGroup2.id]);
     });
 
     it('Insufficient permissions: Should return an empty array if users do not have access to any survey groups', async () => {
@@ -148,7 +147,7 @@ describe('Permissions checker for GETSurveyGroups', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

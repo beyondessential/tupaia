@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
@@ -21,9 +19,10 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
-    await expect(pusher.push()).to.eventually.equal(false);
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    const result = await pusher.push();
+    expect(result).toBe(false);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should create a data value against the SurveyDate data element', async () => {
@@ -31,12 +30,12 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should respond true without posting data if there is existing, more recent data for the same period', async () => {
@@ -49,23 +48,23 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).not.to.have.been.called;
-    expect(dataBroker.delete).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dataBroker.push).not.toHaveBeenCalled();
+    expect(dataBroker.delete).not.toHaveBeenCalled();
   });
 
   it('should create a data set complete registration if survey has a matching set', async () => {
     try {
-      dhisApi.getDataSetByCode = sinon.stub().returns(DATA_SET); // change to return valid data set
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(DATA_SET); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
       const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
-      expect(result).to.be.true;
-      expect(dhisApi.getDataSetByCode).to.have.been.calledOnceWith(SURVEY.code);
-      expect(dhisApi.postDataSetCompletion).to.have.been.calledOnceWith(DATA_SET_COMPLETION);
+      expect(result).toBe(true);
+      expect(dhisApi.getDataSetByCode).toHaveBeenCalledOnceWith(SURVEY.code);
+      expect(dhisApi.postDataSetCompletion).toHaveBeenCalledOnceWith(DATA_SET_COMPLETION);
     } finally {
-      dhisApi.getDataSetByCode = sinon.stub().returns(null); // switch back to returning null
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(null); // switch back to returning null
     }
   });
 
@@ -74,8 +73,8 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dhisApi.getDataSetByCode).to.have.been.calledOnceWith(SURVEY.code);
-    expect(dhisApi.postDataSetCompletion).not.to.have.been.called;
+    expect(result).toBe(true);
+    expect(dhisApi.getDataSetByCode).toHaveBeenCalledOnceWith(SURVEY.code);
+    expect(dhisApi.postDataSetCompletion).not.toHaveBeenCalled();
   });
 };

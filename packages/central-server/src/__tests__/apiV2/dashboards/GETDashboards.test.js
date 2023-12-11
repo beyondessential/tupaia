@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
 
-describe('Permissions checker for GETDashboards', async () => {
+describe('Permissions checker for GETDashboards', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -32,7 +31,7 @@ describe('Permissions checker for GETDashboards', async () => {
   let nationalDashboard2;
   let projectDashboard1;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     await buildAndInsertProjectsAndHierarchies(models, [
@@ -49,31 +48,27 @@ describe('Permissions checker for GETDashboards', async () => {
       },
     ]);
 
-    ({
-      districtDashboard1,
-      nationalDashboard1,
-      nationalDashboard2,
-      projectDashboard1,
-    } = await setupDashboardTestData(models));
+    ({ districtDashboard1, nationalDashboard1, nationalDashboard2, projectDashboard1 } =
+      await setupDashboardTestData(models));
   });
 
   afterEach(() => {
     app.revokeAccess();
   });
 
-  describe('GET /dashboards/:id', async () => {
+  describe('GET /dashboards/:id', () => {
     it('Sufficient permissions: Should return a requested dashboard if users have access to any of the inner dashboard relations', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboards/${nationalDashboard1.id}`);
 
-      expect(result.id).to.equal(nationalDashboard1.id);
+      expect(result.id).toBe(nationalDashboard1.id);
     });
 
     it('Sufficient permissions: Should return a requested project level dashboard if users have access to any inner relations and the project child countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboards/${projectDashboard1.id}`);
 
-      expect(result.id).to.equal(projectDashboard1.id);
+      expect(result.id).toBe(projectDashboard1.id);
     });
 
     it('Insufficient permissions: Should throw an exception if users do not have access to any of the inner dashboard relations', async () => {
@@ -89,7 +84,7 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboards/${districtDashboard1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an exception if dashboards are project level and users do not have access to any of their child countries', async () => {
@@ -105,13 +100,14 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboards/${projectDashboard1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /dashboards', async () => {
+  describe('GET /dashboards', () => {
     let filterString;
-    before(() => {
+
+    beforeAll(() => {
       const dashboardIds = [
         districtDashboard1.id,
         nationalDashboard1.id,
@@ -135,7 +131,7 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboards?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboard1.id,
         nationalDashboard2.id,
         projectDashboard1.id,
@@ -146,7 +142,7 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dashboards?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         districtDashboard1.id,
         nationalDashboard1.id,
         nationalDashboard2.id,
@@ -161,7 +157,7 @@ describe('Permissions checker for GETDashboards', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboards?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(Object.keys(results)).toHaveLength(0);
     });
   });
 });

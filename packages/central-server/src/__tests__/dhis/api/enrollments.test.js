@@ -3,10 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
+import { when } from 'jest-when';
 
-import { DhisApi } from '@tupaia/dhis-api';
+import { createJestMockInstance } from '@tupaia/utils';
 import {
   enrollTrackedEntityInProgram,
   enrollTrackedEntityInProgramIfNotEnrolled,
@@ -21,21 +20,23 @@ const TRACKED_ENTITY_ID = 'testTrackedEntityId';
 const enrollments = [{ program: PROGRAM_ID }];
 
 const getDhisApi = () => {
-  const getRecordsStub = sinon.stub();
-  getRecordsStub.returns([]);
-  getRecordsStub
-    .withArgs({
-      type: 'enrollments',
-      filter: {
-        ou: ORG_UNIT_ID,
-        trackedEntityInstance: TRACKED_ENTITY_ID,
-        program: PROGRAM_ID,
-      },
-    })
-    .returns(enrollments);
+  const mockGetRecords = jest.fn().mockResolvedValue([]);
+  when(mockGetRecords)
+    .defaultResolvedValue([])
+    .calledWith(
+      expect.objectContaining({
+        type: 'enrollments',
+        filter: {
+          ou: ORG_UNIT_ID,
+          trackedEntityInstance: TRACKED_ENTITY_ID,
+          program: PROGRAM_ID,
+        },
+      }),
+    )
+    .mockResolvedValue(enrollments);
 
-  return sinon.createStubInstance(DhisApi, {
-    getRecords: getRecordsStub,
+  return createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
+    getRecords: mockGetRecords,
     post: args => args,
   });
 };
@@ -44,7 +45,7 @@ const assertCorrectInvocationOfEnrollmentCreationApi = (
   api,
   { trackedEntityId, programId, orgUnitId },
 ) => {
-  expect(api.post).to.have.been.calledOnceWithExactly('enrollments', {
+  expect(api.post).toHaveBeenCalledOnceWith('enrollments', {
     trackedEntityInstance: trackedEntityId,
     program: programId,
     orgUnit: orgUnitId,
@@ -113,7 +114,7 @@ describe('enrollments', () => {
       };
 
       await enrollTrackedEntityInProgramIfNotEnrolled(dhisApi, params);
-      expect(dhisApi.post).to.have.callCount(0);
+      expect(dhisApi.post).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -124,7 +125,7 @@ describe('enrollments', () => {
         programId: PROGRAM_ID,
         orgUnitId: ORG_UNIT_ID,
       });
-      expect(result).to.be.true;
+      expect(result).toBe(true);
     });
 
     it('should return false if the tracked entity is not enrolled', async () => {
@@ -133,7 +134,7 @@ describe('enrollments', () => {
         programId: 'notEnrolledProgramId',
         orgUnitId: ORG_UNIT_ID,
       });
-      expect(result).to.be.false;
+      expect(result).toBe(false);
     });
   });
 
@@ -144,7 +145,7 @@ describe('enrollments', () => {
         programId: PROGRAM_ID,
         orgUnitId: ORG_UNIT_ID,
       });
-      expect(result).to.deep.equal(enrollments);
+      expect(result).toStrictEqual(enrollments);
     });
   });
 });

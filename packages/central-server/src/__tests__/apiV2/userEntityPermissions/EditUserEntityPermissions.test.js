@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditUserEntityPermissions', async () => {
+describe('Permissions checker for EditUserEntityPermissions', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -33,7 +32,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
   let besPermissionGroupId;
   let userAccountId2;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -85,8 +84,8 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /userEntityPermissions/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('PUT /userEntityPermissions/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -98,7 +97,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when editing a user entity permission when we do not have permissions for the specific entity', async () => {
@@ -109,7 +108,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit a user entity permission to point to an entity we lack permission for', async () => {
@@ -123,7 +122,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit a user entity permission that contains the BES Admin permission group', async () => {
@@ -137,7 +136,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to edit a user entity permission to point to BES Admin permission group', async () => {
@@ -151,11 +150,11 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
           },
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Edit a user entity permission we have access to the entity of', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.put(`userEntityPermissions/${vanuatuPublicPermission.id}`, {
@@ -165,7 +164,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
         });
         const result = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
 
-        expect(result.user_id).to.equal(userAccountId2);
+        expect(result.user_id).toBe(userAccountId2);
       });
 
       it('Edit any user entity permission as BES Admin', async () => {
@@ -177,7 +176,7 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
         });
         const result = await models.userEntityPermission.findById(kiribatiBESPermission.id);
 
-        expect(result.user_id).to.equal(userAccountId2);
+        expect(result.user_id).toBe(userAccountId2);
       });
     });
   });

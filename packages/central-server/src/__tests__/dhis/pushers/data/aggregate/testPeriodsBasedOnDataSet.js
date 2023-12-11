@@ -4,8 +4,6 @@
  */
 
 import moment from 'moment';
-import sinon from 'sinon';
-import { expect } from 'chai';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   ANSWER_CHANGE,
@@ -20,20 +18,20 @@ import {
 export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
   const testPeriodType = async (dataSet, format) => {
     try {
-      dhisApi.getDataSetByCode = sinon.stub().returns(dataSet); // change to return valid data set
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(dataSet); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
       const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
-      expect(result).to.be.true;
+      expect(result).toBe(true);
       const expectedPeriod = moment(SURVEY_RESPONSE.data_time).format(format);
-      expect(dataBroker.push).to.have.been.calledOnceWith(
+      expect(dataBroker.push).toHaveBeenCalledOnceWith(
         { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
         { ...ANSWER_DATA_VALUE, period: expectedPeriod },
       );
-      expect(dataBroker.delete).not.to.have.been.called;
+      expect(dataBroker.delete).not.toHaveBeenCalled();
     } finally {
-      dhisApi.getDataSetByCode = sinon.stub().returns(null); // switch back to returning null
+      dhisApi.getDataSetByCode = jest.fn().mockReturnValue(null); // switch back to returning null
     }
   };
 

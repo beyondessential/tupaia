@@ -3,7 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { expect, assert } from 'chai';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   generateTestId,
@@ -69,12 +68,12 @@ const BUCKET_URL = 'https://s3-ap-southeast-2.amazonaws.com';
 
 function expectEqualStrings(a, b, key = '?') {
   try {
-    return expect(a.toString()).to.equal(b.toString(), `Failed expectEqualStrings with "${key}"`);
+    // TODO use custom assertion message when jest-expect-message is re-enabled
+    const message = `Failed expectEqualStrings with "${key}"`;
+    expect(a.toString()).toBe(b.toString());
   } catch (e) {
     // Errors are thrown by the toString() method.
-    return assert.fail(
-      a,
-      b,
+    throw new Error(
       `${a} was not equal to ${b}, exception thrown probably because one or both are not strings. Key: "${key}"`,
     );
   }
@@ -82,17 +81,17 @@ function expectEqualStrings(a, b, key = '?') {
 
 const mockS3Bucket = {};
 
-describe('POST /surveyResponse', async () => {
+describe('POST /surveyResponse', () => {
   const app = new TestableApp();
   const { models } = app;
   const syncQueue = setupDummySyncQueue(models);
 
-  before(async () => {
+  beforeAll(async () => {
     defaultTimezone = (await models.database.getTimezone()).TimeZone;
   });
 
   describe('SubmitSurveyResponse', () => {
-    before(async () => {
+    beforeAll(async () => {
       await app.grantAccess({ DL: ['TEST_PERMISSION_GROUP'] });
 
       await findOrCreateDummyCountryEntity(models, {
@@ -123,7 +122,7 @@ describe('POST /surveyResponse', async () => {
       userId = user.id;
     });
 
-    after(() => {
+    afterAll(() => {
       app.revokeAccess();
     });
 
@@ -137,7 +136,7 @@ describe('POST /surveyResponse', async () => {
 
       const surveyResponseObjects = [];
 
-      before(async () => {
+      beforeAll(async () => {
         for (let i = 0; i < numberOfSurveyResponsesToAdd; i++) {
           const surveyResponseObject = generateDummySurveyResponse();
           for (let j = 0; j < numberOfAnswersInEachSurvey; j++) {
@@ -153,20 +152,20 @@ describe('POST /surveyResponse', async () => {
       });
 
       it('should respond with a successful http status', () => {
-        expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).toBe(200);
       });
 
       it('should have added the correct number of survey responses', async () => {
         const postNumberOfSurveyResponses = await models.surveyResponse.count();
         const numberOfSurveyResponsesAdded =
           postNumberOfSurveyResponses - previousNumberOfSurveyResponses;
-        expect(numberOfSurveyResponsesAdded).to.equal(numberOfSurveyResponsesToAdd);
+        expect(numberOfSurveyResponsesAdded).toBe(numberOfSurveyResponsesToAdd);
       });
 
       it('should have added the correct number of answers', async () => {
         const postNumberOfAnswers = await models.answer.count();
         const numberOfAnswersAdded = postNumberOfAnswers - previousNumberOfAnswers;
-        expect(numberOfAnswersAdded).to.equal(
+        expect(numberOfAnswersAdded).toBe(
           numberOfAnswersInEachSurvey * numberOfSurveyResponsesToAdd,
         );
       });
@@ -176,7 +175,7 @@ describe('POST /surveyResponse', async () => {
         const firstSurveyResponse = await models.surveyResponse.findById(
           firstSurveyResponseObject.id,
         );
-        expect(firstSurveyResponse).to.exist;
+        expect(firstSurveyResponse).toBeDefined();
         Object.entries(firstSurveyResponseObject).forEach(([key, value]) => {
           // Other than 'answers' and 'entities_upserted', all values in the original object should match the database
           if (!['answers', 'entities_upserted', 'timestamp'].includes(key)) {
@@ -189,7 +188,7 @@ describe('POST /surveyResponse', async () => {
         const firstSurveyResponseObject = surveyResponseObjects[0];
         const firstAnswerObject = firstSurveyResponseObject.answers[0];
         const firstAnswer = await models.answer.findById(firstAnswerObject.id);
-        expect(firstAnswer).to.exist;
+        expect(firstAnswer).toBeDefined();
         Object.entries(firstAnswerObject).forEach(([key, value]) => {
           // Other than 'body', all values in the original object should match the database
           let translatedKey = key;
@@ -201,13 +200,11 @@ describe('POST /surveyResponse', async () => {
         expectEqualStrings(firstAnswer.survey_response_id, firstSurveyResponseObject.id);
       });
 
-      it('adds the survey response to the sync queue after it is submitted', async function () {
+      it('adds the survey response to the sync queue after it is submitted', async () => {
         this.retries(10);
         await oneSecondSleep(1000);
-        expect(syncQueue.count(TYPES.SURVEY_RESPONSE), 'survey responses added').to.equal(
-          numberOfSurveyResponsesToAdd,
-        );
-        expect(syncQueue.count(TYPES.ANSWER), 'answers added').to.equal(
+        expect(syncQueue.count(TYPES.SURVEY_RESPONSE)).toBe(numberOfSurveyResponsesToAdd);
+        expect(syncQueue.count(TYPES.ANSWER)).toBe(
           numberOfAnswersInEachSurvey * numberOfSurveyResponsesToAdd,
         );
       });
@@ -219,14 +216,14 @@ describe('POST /surveyResponse', async () => {
         const response = await app.post('surveyResponse', {
           body: [badlyFormattedSurveyResponse],
         });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when fields are missing from the answer', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push({ id: generateTestId() });
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when fields are empty in the answer', async () => {
@@ -235,7 +232,7 @@ describe('POST /surveyResponse', async () => {
         surveyResponseObject.answers[0].type = '';
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when ids in a survey response are in the wrong format', async () => {
@@ -244,7 +241,7 @@ describe('POST /surveyResponse', async () => {
         surveyResponseObject.entity_id = 'wrongFormatId';
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when ids in an answer are in the wrong format', async () => {
@@ -253,7 +250,7 @@ describe('POST /surveyResponse', async () => {
         surveyResponseObject.answers[0].question_id = 'wrongFormatId';
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when dates are in the wrong format', async () => {
@@ -262,7 +259,7 @@ describe('POST /surveyResponse', async () => {
         surveyResponseObject.start_time = 'Wrong format for date';
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when question_id is empty', async () => {
@@ -273,7 +270,7 @@ describe('POST /surveyResponse', async () => {
         const surveyResponseObject = generateDummySurveyResponse([answerObject]);
         const response = await app.post('changes', { body: [surveyResponseObject] });
 
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('returns an error when survey_id is empty', async () => {
@@ -285,7 +282,7 @@ describe('POST /surveyResponse', async () => {
 
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
 
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
     });
 
@@ -299,9 +296,9 @@ describe('POST /surveyResponse', async () => {
         const numberOfSurveyResponsesAdded =
           (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
         const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
-        expect(response.statusCode).to.equal(200);
-        expect(numberOfSurveyResponsesAdded).to.equal(1);
-        expect(numberOfAnswersAdded).to.equal(0);
+        expect(response.statusCode).toBe(200);
+        expect(numberOfSurveyResponsesAdded).toBe(1);
+        expect(numberOfAnswersAdded).toBe(0);
       });
     });
 
@@ -327,11 +324,11 @@ describe('POST /surveyResponse', async () => {
     //     const numberOfSurveyResponsesAdded =
     //       (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
     //     const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
-    //     expect(surveyPostResponse.statusCode).to.equal(200);
-    //     expect(numberOfSurveyResponsesAdded).to.equal(1);
-    //     expect(numberOfAnswersAdded).to.equal(1);
+    //     expect(surveyPostResponse.statusCode).toBe(200);
+    //     expect(numberOfSurveyResponsesAdded).toBe(1);
+    //     expect(numberOfAnswersAdded).toBe(1);
     //     const answer = await models.answer.findById(imageAnswerObject.id);
-    //     expect(answer.text).to.equal(IMAGE_URL);
+    //     expect(answer.text).toBe(IMAGE_URL);
     //   });
     //
     //   it('correctly adds survey responses containing image base64 String', async () => {
@@ -349,11 +346,11 @@ describe('POST /surveyResponse', async () => {
     //     const numberOfSurveyResponsesAdded =
     //       (await models.surveyResponse.count()) - previousNumberOfSurveyResponses;
     //     const numberOfAnswersAdded = (await models.answer.count()) - previousNumberOfAnswers;
-    //     expect(surveyPostResponse.statusCode).to.equal(200);
-    //     expect(numberOfSurveyResponsesAdded).to.equal(1);
-    //     expect(numberOfAnswersAdded).to.equal(1);
+    //     expect(surveyPostResponse.statusCode).toBe(200);
+    //     expect(numberOfSurveyResponsesAdded).toBe(1);
+    //     expect(numberOfAnswersAdded).toBe(1);
     //     const answer = await models.answer.findById(imageAnswerObject.id);
-    //     expect(answer.text).to.exist;
+    //     expect(answer.text).toBeDefined();
     //   });
     // });
 
@@ -365,10 +362,10 @@ describe('POST /surveyResponse', async () => {
         });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(syncResponse.statusCode).to.equal(200);
+        expect(syncResponse.statusCode).toBe(200);
 
         const entities = await models.entity.find({ id: entitiesUpserted.map(e => e.id) });
-        expect(entities.length).to.equal(entitiesUpserted.length);
+        expect(entities.length).toBe(entitiesUpserted.length);
       });
 
       it('can use a created entity as the primary entity of the same response', async () => {
@@ -380,10 +377,10 @@ describe('POST /surveyResponse', async () => {
         });
 
         const syncResponse = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(syncResponse.statusCode).to.equal(200);
+        expect(syncResponse.statusCode).toBe(200);
 
         const surveyResponse = await models.surveyResponse.findById(surveyResponseObject.id);
-        expect(surveyResponse.entity_id).to.equal(primaryEntityId);
+        expect(surveyResponse.entity_id).toBe(primaryEntityId);
       });
 
       it('can use a created entity as the primary entity of a different response in the same batch', async () => {
@@ -399,24 +396,24 @@ describe('POST /surveyResponse', async () => {
         const syncResponse = await app.post('surveyResponse', {
           body: [surveyResponseObjectOne, surveyResponseObjectTwo],
         });
-        expect(syncResponse.statusCode).to.equal(200);
+        expect(syncResponse.statusCode).toBe(200);
 
         const surveyResponseOne = await models.surveyResponse.findById(surveyResponseObjectOne.id);
-        expect(surveyResponseOne.entity_id).to.equal(entityId);
+        expect(surveyResponseOne.entity_id).toBe(entityId);
 
         const surveyResponseTwo = await models.surveyResponse.findById(surveyResponseObjectTwo.id);
-        expect(surveyResponseTwo.entity_id).to.equal(primaryEntityId);
+        expect(surveyResponseTwo.entity_id).toBe(primaryEntityId);
       });
     });
 
-    describe('Backwards compatibility for time fields', async () => {
+    describe('Backwards compatibility for time fields', () => {
       it('Auto fill in assessor_name when it is empty in the survey responses', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.answers.push(generateDummyAnswer());
 
         surveyResponseObject.assessor_name = '';
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).toBe(200);
       });
 
       it('Auto fill in start_time when it is empty in the survey responses', async () => {
@@ -424,8 +421,8 @@ describe('POST /surveyResponse', async () => {
         delete surveyResponseObject.start_time;
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(response.statusCode).to.equal(200);
-        expect(surveyResponse.start_time).to.exist;
+        expect(response.statusCode).toBe(200);
+        expect(surveyResponse.start_time).toBeDefined();
       });
 
       it('Auto fill in end_time when it is empty in the survey responses', async () => {
@@ -433,30 +430,30 @@ describe('POST /surveyResponse', async () => {
         delete surveyResponseObject.end_time;
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
         const surveyResponse = await models.surveyResponse.findOne({ id: surveyResponseObject.id });
-        expect(response.statusCode).to.equal(200);
-        expect(surveyResponse.end_time).to.exist;
+        expect(response.statusCode).toBe(200);
+        expect(surveyResponse.end_time).toBeDefined();
       });
 
       it('Error if wrong format of start_time', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.start_time = '123';
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
 
       it('Error if wrong format of end_time', async () => {
         const surveyResponseObject = generateDummySurveyResponse();
         surveyResponseObject.end_time = '123';
         const response = await app.post('surveyResponse', { body: [surveyResponseObject] });
-        expect(response.statusCode).to.equal(400);
+        expect(response.statusCode).toBe(400);
       });
     });
   });
 
-  describe('Unsupported change actions', function () {
-    it('returns an error for unsupported change actions', async function () {
+  describe('Unsupported change actions', () => {
+    it('returns an error for unsupported change actions', async () => {
       const response = await app.post('surveyResponse', { body: [{ some: 'data' }] });
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).toBe(400);
     });
   });
 });

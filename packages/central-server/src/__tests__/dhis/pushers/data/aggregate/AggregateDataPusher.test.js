@@ -3,13 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import sinon from 'sinon';
-
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
 import { getModels, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
 import { BASELINE_TEST_DATA, QUESTION, SURVEY } from './AggregateDataPusher.fixtures';
-import { createDhisApiStub, resetDhisApiStubHistory } from './createDhisApiStub';
+import { createDhisApiStub } from './createDhisApiStub';
 import { testCreateAnswer } from './testCreateAnswer';
 import { testCreateSurveyResponse } from './testCreateSurveyResponse';
 import { testDeleteAnswer } from './testDeleteAnswer';
@@ -17,7 +15,7 @@ import { testDeleteSurveyResponse } from './testDeleteSurveyResponse';
 import { testUpdateAnswer } from './testUpdateAnswer';
 import { testUpdateSurveyResponse } from './testUpdateSurveyResponse';
 import { testPeriodsBasedOnDataSet } from './testPeriodsBasedOnDataSet';
-import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
+import { createDataBrokerStub } from './createDataBrokerStub';
 
 describe('AggregateDataPusher', () => {
   const models = getModels();
@@ -25,12 +23,12 @@ describe('AggregateDataPusher', () => {
   const dataBroker = createDataBrokerStub();
 
   describe('push()', () => {
-    before(async () => {
-      sinon.stub(Pusher.prototype, 'logResults');
+    beforeAll(() => {
+      jest.spyOn(Pusher.prototype, 'logResults').mockClear().mockImplementation();
     });
 
-    after(() => {
-      Pusher.prototype.logResults.restore();
+    afterAll(() => {
+      Pusher.prototype.logResults.mockRestore();
     });
 
     beforeEach(async () => {
@@ -40,11 +38,6 @@ describe('AggregateDataPusher', () => {
     });
 
     afterEach(async () => {
-      // reset spy calls after each test case
-      resetDhisApiStubHistory(dhisApi);
-      resetDataBrokerStubHistory(dataBroker);
-
-      // clear test data
       await resetTestData();
     });
 
