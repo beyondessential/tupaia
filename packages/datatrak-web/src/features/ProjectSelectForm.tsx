@@ -118,7 +118,7 @@ export const ProjectSelectForm = ({
 
   return (
     <>
-      <Typography variant="h1">Select project</Typography>
+      <Typography variant="h1">Select a project</Typography>
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
@@ -127,7 +127,7 @@ export const ProjectSelectForm = ({
         <ListWrapper $variant={variant}>
           <SelectList
             items={projectOptions}
-            label="Select a project from the list below. You can change the project at any time"
+            label="You can change project at any time"
             onSelect={onSelect}
           />
         </ListWrapper>
@@ -144,7 +144,7 @@ export const ProjectSelectForm = ({
           color="primary"
           isLoading={isConfirming}
           disabled={!selectedProjectId}
-          tooltip={selectedProjectId ? '' : 'Select project to proceed'}
+          tooltip={selectedProjectId ? undefined : 'Select a project to proceed'}
         >
           Confirm
         </Button>
