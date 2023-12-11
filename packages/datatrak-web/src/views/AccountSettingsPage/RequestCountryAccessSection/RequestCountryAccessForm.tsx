@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel } from '@material-ui/core';
 import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useCountryAccessList } from '../../../api';
+import { useCountryAccessList, useRequestProjectAccess } from '../../../api';
 
 const gridAndFlexGap = '1.25rem';
 
@@ -103,11 +103,22 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 export const RequestCountryAccessForm = () => {
+  const { data: countryAccessList, isLoading } = useCountryAccessList();
+  const { mutate: submitAccessRequest } = useRequestProjectAccess();
+
   const formContext = useForm();
-  const { data: countryAccessList } = useCountryAccessList();
+  const {
+    formState: { isSubmitting },
+    handleSubmit,
+    reset,
+  } = formContext;
+
+  const submissionShouldBeDisabled = isSubmitting || isLoading;
+
+  function onSubmit() {}
 
   return (
-    <StyledForm formContext={formContext}>
+    <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
       <StyledFieldset>
         <CountryListWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
@@ -140,7 +151,9 @@ export const RequestCountryAccessForm = () => {
             name="reasonForAccess"
             size="medium"
           />
-          <Button>Request access</Button>
+          <Button disabled={submissionShouldBeDisabled} type="submit">
+            Request access
+          </Button>
         </StyledBox>
       </StyledFieldset>
     </StyledForm>
