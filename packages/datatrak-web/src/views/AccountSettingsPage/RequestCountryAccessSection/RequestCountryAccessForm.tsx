@@ -106,8 +106,6 @@ export const RequestCountryAccessForm = () => {
   const formContext = useForm();
   const { data: countryAccessList } = useCountryAccessList();
 
-  console.log(countryAccessList);
-
   return (
     <StyledForm formContext={formContext}>
       <StyledFieldset>
