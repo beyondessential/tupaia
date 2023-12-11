@@ -5,8 +5,8 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { renderSurveyPage } from './helpers/render';
-import { handlers } from './mocks/handlers';
+import { renderSurveyPage } from '../helpers/render';
+import { handlers } from '../mocks/handlers';
 
 const server = setupServer(
   ...handlers,
@@ -15,7 +15,7 @@ const server = setupServer(
   }),
 );
 
-beforeAll(() => server.listen());
+beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
