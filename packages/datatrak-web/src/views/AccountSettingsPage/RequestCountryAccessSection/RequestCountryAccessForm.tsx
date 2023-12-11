@@ -5,9 +5,11 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Form } from '@tupaia/ui-components';
+import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useForm } from 'react-hook-form';
-import { Box } from '@material-ui/core';
+import { Box, FormLabel } from '@material-ui/core';
+
+const gridAndFlexGap = '1.25rem';
 
 const StyledForm = styled(Form)`
   width: 100%;
@@ -20,25 +22,75 @@ const StyledFieldset = styled.fieldset`
   border: none;
   margin: 0;
   padding: 0;
-  align-items: end;
+
   display: grid;
-  gap: 1.56rem 1.25rem;
+  gap: ${gridAndFlexGap};
+  grid-auto-flow: column;
+
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template: auto / 1fr 1fr;
   }
+
   .MuiFormLabel-root {
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
+
   .MuiInputLabel-outlined {
     // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
     z-index: auto;
   }
 `;
 
-const CountryList = styled(Box)`
+const CountryListWrapper = styled(Box)`
+  display: block flex;
+  flex-direction: column;
+  height: 20.125rem;
+
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    //grid-row: 1 / -1;
+  }
+`;
+
+const CountryList = styled.fieldset`
+  border: none;
+  margin: 0;
+
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.divider};
+  overflow-y: scroll;
+  padding: 0 0.87rem;
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  margin-block: 0;
+
+  .MuiFormControlLabel-root {
+    width: 100%;
+  }
+
+  .MuiFormControlLabel-label {
+    font-size: 0.875rem;
+    line-height: 1.125rem;
+    width: 100%;
+  }
+`;
+
+const StyledBox = styled(Box)`
+  display: block flex;
+  flex-direction: column;
+  gap: ${gridAndFlexGap};
+`;
+
+const StyledFormInput = styled(FormInput)`
+  flex-grow: 1;
+  margin: 0;
+  //height: 100%;
+  //.MuiTextField-root,
+  //.MuiInputBase-input,
+  //.MuiInputBase-inputMultiline {
+  //  height: 100%;
+  //}
 `;
 
 export const RequestCountryAccessForm = () => {
@@ -46,7 +98,40 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext}>
-      <StyledFieldset></StyledFieldset>
+      <StyledFieldset>
+        <CountryListWrapper>
+          <FormLabel>Select countries</FormLabel>
+          <CountryList>
+            {[
+              'foo',
+              'bar what happens if you have a really outrageously ludicrously long multiline label?',
+              'baz',
+              'foo',
+              'bar',
+              'baz',
+              'foo',
+              'bar',
+            ].map(country => (
+              <StyledCheckbox color="primary" name={country} label={country} />
+            ))}
+          </CountryList>
+        </CountryListWrapper>
+        <StyledBox>
+          <StyledFormInput
+            fullWidth
+            Input={TextField}
+            inputProps={{ enterKeyHint: 'done' }}
+            label="Reason for access"
+            margin="none"
+            maxRows={11}
+            minRows={11}
+            multiline
+            name="reasonForAccess"
+            size="medium"
+          />
+          <Button>Request access</Button>
+        </StyledBox>
+      </StyledFieldset>
     </StyledForm>
   );
 };
