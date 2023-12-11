@@ -167,7 +167,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const mailingList = useDashboardMailingList();
-  const showMailingListButton = mailingList && mailingList.isEmailAdmin;
+  const showMailingListButton = mailingList && mailingList.isAdmin;
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];

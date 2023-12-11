@@ -313,21 +313,21 @@ export interface DashboardItemUpdate {
   'report_code'?: string | null;
 }
 export interface DashboardMailingList {
+  'admin_permission_groups': string[];
   'dashboard_id': string;
-  'email_admin_permission_groups': string[];
   'entity_id': string;
   'id': string;
   'project_id': string;
 }
 export interface DashboardMailingListCreate {
+  'admin_permission_groups'?: string[];
   'dashboard_id': string;
-  'email_admin_permission_groups'?: string[];
   'entity_id': string;
   'project_id': string;
 }
 export interface DashboardMailingListUpdate {
+  'admin_permission_groups'?: string[];
   'dashboard_id'?: string;
-  'email_admin_permission_groups'?: string[];
   'entity_id'?: string;
   'id'?: string;
   'project_id'?: string;

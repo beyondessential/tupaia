@@ -52018,14 +52018,14 @@ export const DashboardItemUpdateSchema = {
 export const DashboardMailingListSchema = {
 	"type": "object",
 	"properties": {
-		"dashboard_id": {
-			"type": "string"
-		},
-		"email_admin_permission_groups": {
+		"admin_permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
+		},
+		"dashboard_id": {
+			"type": "string"
 		},
 		"entity_id": {
 			"type": "string"
@@ -52039,8 +52039,8 @@ export const DashboardMailingListSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"admin_permission_groups",
 		"dashboard_id",
-		"email_admin_permission_groups",
 		"entity_id",
 		"id",
 		"project_id"
@@ -52050,14 +52050,14 @@ export const DashboardMailingListSchema = {
 export const DashboardMailingListCreateSchema = {
 	"type": "object",
 	"properties": {
-		"dashboard_id": {
-			"type": "string"
-		},
-		"email_admin_permission_groups": {
+		"admin_permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
+		},
+		"dashboard_id": {
+			"type": "string"
 		},
 		"entity_id": {
 			"type": "string"
@@ -52077,14 +52077,14 @@ export const DashboardMailingListCreateSchema = {
 export const DashboardMailingListUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"dashboard_id": {
-			"type": "string"
-		},
-		"email_admin_permission_groups": {
+		"admin_permission_groups": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
+		},
+		"dashboard_id": {
+			"type": "string"
 		},
 		"entity_id": {
 			"type": "string"
@@ -60211,14 +60211,14 @@ export const MailingListSchema = {
 		"isSubscribed": {
 			"type": "boolean"
 		},
-		"isEmailAdmin": {
+		"isAdmin": {
 			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"entityCode",
-		"isEmailAdmin",
+		"isAdmin",
 		"isSubscribed"
 	]
 } 
@@ -68252,14 +68252,14 @@ export const DashboardWithMetadataSchema = {
 					"isSubscribed": {
 						"type": "boolean"
 					},
-					"isEmailAdmin": {
+					"isAdmin": {
 						"type": "boolean"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"entityCode",
-					"isEmailAdmin",
+					"isAdmin",
 					"isSubscribed"
 				]
 			}

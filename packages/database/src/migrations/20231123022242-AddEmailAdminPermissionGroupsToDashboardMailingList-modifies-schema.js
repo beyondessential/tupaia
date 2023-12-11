@@ -16,13 +16,13 @@ exports.setup = function (options, seedLink) {
 
 exports.up = async function (db) {
   await db.runSql(`
-    ALTER TABLE dashboard_mailing_list ADD COLUMN email_admin_permission_groups TEXT[] NOT NULL DEFAULT '{}';
+    ALTER TABLE dashboard_mailing_list ADD COLUMN admin_permission_groups TEXT[] NOT NULL DEFAULT '{}';
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-  ALTER TABLE survey DROP COLUMN email_admin_permission_groups;
+  ALTER TABLE survey DROP COLUMN admin_permission_groups;
 `);
 };
 

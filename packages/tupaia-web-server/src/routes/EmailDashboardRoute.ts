@@ -70,9 +70,9 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
           project_id: project.id,
           entity_id: entity.id,
         },
-        columns: ['id', 'email_admin_permission_groups'],
+        columns: ['id', 'admin_permission_groups'],
       },
-    )) as Pick<DashboardMailingList, 'id' | 'email_admin_permission_groups'>[];
+    )) as Pick<DashboardMailingList, 'id' | 'admin_permission_groups'>[];
 
     if (!mailingList) {
       throw new Error(
@@ -81,7 +81,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     }
 
     if (
-      !mailingList.email_admin_permission_groups.some(permissionGroup =>
+      !mailingList.admin_permission_groups.some(permissionGroup =>
         entityPermissions.includes(permissionGroup),
       )
     ) {

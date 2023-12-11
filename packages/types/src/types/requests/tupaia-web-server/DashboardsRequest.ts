@@ -13,7 +13,7 @@ export interface Params {
 interface MailingList {
   entityCode: string;
   isSubscribed: boolean;
-  isEmailAdmin: boolean;
+  isAdmin: boolean;
 }
 
 interface DashboardWithMetadata extends Dashboard {

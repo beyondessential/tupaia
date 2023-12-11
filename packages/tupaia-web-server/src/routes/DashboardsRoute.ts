@@ -153,7 +153,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
             comparisonValue: dashboards.map(d => d.id),
           },
         },
-        columns: ['id', 'entity.code', 'dashboard_id', 'email_admin_permission_groups'],
+        columns: ['id', 'entity.code', 'dashboard_id', 'admin_permission_groups'],
         // Override the default limit of 100 records
         pageSize: DEFAULT_PAGE_SIZE,
       });
@@ -182,8 +182,8 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
               entry.subscribed,
           )
         : false,
-      isEmailAdmin: session
-        ? list.email_admin_permission_groups.some(permissionGroup =>
+      isAdmin: session
+        ? list.admin_permission_groups.some(permissionGroup =>
             rootEntityPermissions.includes(permissionGroup),
           )
         : false,
@@ -202,10 +202,10 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
           })),
         mailingLists: mailingLists
           .filter(list => list.dashboardId === dashboard.id)
-          .map(({ entityCode: mailingListEntityCode, isSubscribed, isEmailAdmin }) => ({
+          .map(({ entityCode: mailingListEntityCode, isSubscribed, isAdmin }) => ({
             entityCode: mailingListEntityCode,
             isSubscribed,
-            isEmailAdmin,
+            isAdmin,
           })),
       };
     });
