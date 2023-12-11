@@ -1,4 +1,4 @@
-### Manual Release Steps
+## Manual release steps
 
 ## Features ⭐
 
