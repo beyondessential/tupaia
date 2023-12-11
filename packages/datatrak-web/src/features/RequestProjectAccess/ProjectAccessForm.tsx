@@ -95,7 +95,8 @@ const LoaderWrapper = styled.div`
 /** Fixes janky spacing changes when 'Request access' button is enabled or disabled */
 const StyledDialogActions = styled(DialogActions)`
   gap: 1rem;
-  .MuiButtonBase-root {
+
+  & > :not(:first-child) {
     margin-left: 0;
   }
 `;
