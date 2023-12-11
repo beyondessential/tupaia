@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { LinkProps } from 'react-router-dom';
+import { LinkProps } from 'react-router-dom-v6';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { AuthViewWrapper } from './AuthViewWrapper';
@@ -65,6 +65,7 @@ export const LoginForm = ({
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
+          id="email"
           name="email"
           type="email"
           options={FORM_FIELD_VALIDATION.EMAIL}
@@ -74,6 +75,7 @@ export const LoginForm = ({
           disabled={isLoading}
         />
         <FormInput
+          id="password"
           name="password"
           type="password"
           options={FORM_FIELD_VALIDATION.PASSWORD}
@@ -82,7 +84,6 @@ export const LoginForm = ({
           label="Password"
           disabled={isLoading}
         />
-
         <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
           Forgot password?
         </ForgotPasswordText>
