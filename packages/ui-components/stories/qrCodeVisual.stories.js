@@ -6,11 +6,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { QrCodeVisual } from '../src/components';
+import { QrCodeImage } from '../src/components';
 
 export default {
   title: 'QrCodeVisual',
-  component: QrCodeVisual,
+  component: QrCodeImage,
 };
 
 const Container = styled(MuiBox)`
@@ -18,89 +18,17 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
-export const noData = () => (
-  <Container>
-    <QrCodeVisual
-      data={[]}
-      downloadImages={() => {}}
-      config={{
-        type: 'qrCode',
-      }}
-      isLoading={false}
-      onClose={() => {}}
-      className="qr-code-visual"
-      error={null}
-    />
-  </Container>
-);
-
-export const error = () => (
-  <Container>
-    <QrCodeVisual
-      data={[
-        {
-          name: 'item 1',
-          value: 'item1',
-        },
-      ]}
-      downloadImages={() => {}}
-      config={{
-        type: 'qrCode',
-      }}
-      isLoading={false}
-      onClose={() => {}}
-      className="qr-code-visual"
-      error={'some error'}
-    />
-  </Container>
-);
-
 export const singleQrCode = () => (
   <Container>
-    <QrCodeVisual
-      data={[
-        {
-          name: 'item 1',
-          value: 'item1',
-        },
-      ]}
-      downloadImages={() => {}}
-      config={{
-        type: 'qrCode',
-      }}
-      isLoading={false}
-      onClose={() => {}}
-      className="qr-code-visual"
-      error={null}
-    />
+    <QrCodeImage humanReadableId="xyz-123-45" qrCodeContents="qr-code-visual" />
   </Container>
 );
 
 export const multiQrCode = () => (
   <Container>
-    <QrCodeVisual
-      data={[
-        {
-          name: 'item 1',
-          value: 'item1',
-        },
-        {
-          name: 'item 2',
-          value: 'item2',
-        },
-        {
-          name: 'item 3',
-          value: 'item3',
-        },
-      ]}
-      downloadImages={() => {}}
-      config={{
-        type: 'qrCode',
-      }}
-      isLoading={false}
-      onClose={() => {}}
-      className="qr-code-visual"
-      error={null}
-    />
+    <QrCodeImage humanReadableId="xxx-111-45" qrCodeContents="qr-code" />
+    <QrCodeImage humanReadableId="yyy-2245" qrCodeContents="code-visual" />
+    <QrCodeImage humanReadableId="zzz-333-89" qrCodeContents="qr-code-visual" />
+    <QrCodeImage humanReadableId="aaa-1-45" qrCodeContents="qr-code-visual-1" />
   </Container>
 );
