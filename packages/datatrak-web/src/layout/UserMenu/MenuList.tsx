@@ -63,7 +63,6 @@ export const MenuList = ({
     label: 'Account settings',
     to: ROUTES.ACCOUNT_SETTINGS,
   };
-
   // The help centre link is the same for both logged-in and logged-out users
   const helpCentreItem = {
     label: 'Help centre',
@@ -71,7 +70,6 @@ export const MenuList = ({
     isExternal: true,
     component: Link,
   };
-
   const logOutItem = {
     label: 'Log out',
     onClick: () => {
@@ -81,25 +79,21 @@ export const MenuList = ({
     component: 'button',
   };
 
-  const menuItems = () => {
-    const hasProjectSelected = !!projectId;
-    const items: MenuItem[] = [];
+  const hasProjectSelected = !!projectId;
 
-    if (isLoggedIn && hasProjectSelected) {
-      items.push(accountSettingsItem);
-    }
-    items.push(helpCentreItem);
-    if (isLoggedIn) {
-      items.push(logOutItem);
-    }
-
-    return items;
-  };
+  const menuItems: MenuItem[] = [];
+  if (isLoggedIn && hasProjectSelected) {
+    menuItems.push(accountSettingsItem);
+  }
+  menuItems.push(helpCentreItem);
+  if (isLoggedIn) {
+    menuItems.push(logOutItem);
+  }
 
   return (
     <Menu>
       {children}
-      {menuItems().map(({ label, to, href, isExternal, onClick, component }) => (
+      {menuItems.map(({ label, to, href, isExternal, onClick, component }) => (
         <MenuListItem key={label} button>
           <MenuButton
             component={component || RouterLink}
