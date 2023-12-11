@@ -92,6 +92,14 @@ const LoaderWrapper = styled.div`
   padding: 1rem 0 2rem 0;
 `;
 
+/** Fixes janky spacing changes when 'Request access' button is enabled or disabled */
+const StyledDialogActions = styled(DialogActions)`
+  gap: 1rem;
+  .MuiButtonBase-root {
+    margin-left: 0;
+  }
+`;
+
 interface ProjectAccessFormProps {
   project: any;
   onClose?: () => void;
@@ -176,7 +184,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
         </FormGroup>
       </FormControl>
       <FormInput Input={TextArea} name="message" />
-      <DialogActions>
+      <StyledDialogActions>
         <Button variant="outlined" onClick={onClose}>
           Back
         </Button>
@@ -187,7 +195,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
         >
           Request access
         </Button>
-      </DialogActions>
+      </StyledDialogActions>
     </Form>
   );
 };
