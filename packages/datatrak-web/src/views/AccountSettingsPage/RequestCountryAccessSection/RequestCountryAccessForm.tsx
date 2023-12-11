@@ -113,8 +113,6 @@ export const RequestCountryAccessForm = () => {
     reset,
   } = formContext;
 
-  const submissionShouldBeDisabled = isSubmitting || isLoading;
-
   function onSubmit() {}
 
   return (
@@ -151,7 +149,7 @@ export const RequestCountryAccessForm = () => {
             name="reasonForAccess"
             size="medium"
           />
-          <Button disabled={submissionShouldBeDisabled} type="submit">
+          <Button disabled={isSubmitting || isLoading} type="submit">
             Request access
           </Button>
         </StyledBox>
