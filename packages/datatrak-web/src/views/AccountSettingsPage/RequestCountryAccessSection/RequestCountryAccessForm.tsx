@@ -5,9 +5,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel } from '@material-ui/core';
+import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
+import { useCountryAccessList } from '../../../api';
 
 const gridAndFlexGap = '1.25rem';
 
@@ -103,6 +104,9 @@ const StyledFormInput = styled(FormInput)`
 
 export const RequestCountryAccessForm = () => {
   const formContext = useForm();
+  const { data: countryAccessList } = useCountryAccessList();
+
+  console.log(countryAccessList);
 
   return (
     <StyledForm formContext={formContext}>
@@ -110,17 +114,15 @@ export const RequestCountryAccessForm = () => {
         <CountryListWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
-            {[
-              'foo',
-              'bar what happens if you have a really outrageously ludicrously long multiline label?',
-              'baz',
-              'foo',
-              'bar',
-              'baz',
-              'foo',
-              'bar',
-            ].map(country => (
-              <StyledCheckbox color="primary" name={country} label={country} />
+            {countryAccessList?.map(country => (
+              <StyledCheckbox
+                color="primary"
+                disabled={!!country.accessRequests}
+                key={country.id}
+                name={country.name}
+                label={country.name}
+                tooltip={country.accessRequests ? 'Approval in progress' : null}
+              />
             ))}
           </CountryList>
         </CountryListWrapper>
