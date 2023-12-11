@@ -57,7 +57,7 @@ export const UserMenu = () => {
   return (
     <Wrapper>
       <UserInfo openProjectModal={openProjectModal} />
-      <MenuButton onClick={toggleUserMenu} id="user-menu-button">
+      <MenuButton onClick={toggleUserMenu} id="user-menu-button" aria-label="user-menu-button">
         <MenuIcon />
       </MenuButton>
       <PopoverMenu menuOpen={menuOpen} onCloseMenu={onCloseMenu} />

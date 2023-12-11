@@ -88,7 +88,7 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) =
           </IconWrapper>
         )}
         <Message color={variant === 'error' ? 'error' : 'textPrimary'}>{message}</Message>
-        <CloseButton onClick={() => closeSnackbar(id)} $variant={variant}>
+        <CloseButton onClick={() => closeSnackbar(id)} $variant={variant} aria-label="close">
           <Close />
         </CloseButton>
       </Container>
