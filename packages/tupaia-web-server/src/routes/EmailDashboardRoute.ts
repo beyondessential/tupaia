@@ -6,8 +6,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { sendEmail } from '@tupaia/server-utils';
-import { PermissionsError } from '@tupaia/utils';
+import { generateUnsubscribeToken, sendEmail } from '@tupaia/server-utils';
 import {
   Dashboard,
   DashboardMailingList,
@@ -16,6 +15,7 @@ import {
   Project,
   TupaiaWebEmailDashboardRequest,
 } from '@tupaia/types';
+import { PermissionsError, stringifyQuery } from '@tupaia/utils';
 import { downloadDashboardAsPdf } from '../utils';
 
 export type EmailDashboardRequest = Request<
@@ -86,7 +86,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       )
     ) {
       throw new PermissionsError(
-        `User must belong to one of the mailing list's email admin permission groups in order to send the email export`,
+        `User must belong to one of the mailing list's admin permission groups in order to send the email export`,
       );
     }
 
@@ -117,13 +117,23 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
 
     const emails = mailingListEntries.map(({ email }) => email);
     const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboard.name}`;
-    const text = `Latest data for the ${dashboard.name} dashboard in ${entity.name}.`;
+    const infoHtml = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
     const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
-    sendEmail(emails, {
-      subject,
-      text,
-      attachments: [{ filename, content: buffer }],
+    emails.forEach(email => {
+      const unsubscribeToken = generateUnsubscribeToken(email);
+      const unsubscribeUrl = stringifyQuery(baseUrl, 'unsubscribe', {
+        email,
+        token: unsubscribeToken,
+        mailingListId: mailingList.id,
+      });
+      const unsubscribeHtml = `Didn't intend to subscribe to these emails? <a href='${unsubscribeUrl}'>Unsubscribe</a>`;
+      const html = `${infoHtml}<br>${unsubscribeHtml}`;
+      return sendEmail(email, {
+        subject,
+        html,
+        attachments: [{ filename, content: buffer }],
+      });
     });
 
     return { message: 'Export successfully sent!' };

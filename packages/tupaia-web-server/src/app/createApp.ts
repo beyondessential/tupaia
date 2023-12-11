@@ -82,13 +82,17 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.ExportSurveyResponsesRoute),
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
-    .post<routes.SubscribeRequest>(
+    .post<routes.SubscribeDashboardRequest>(
       'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
-      handleWith(routes.SubscribeRoute),
+      handleWith(routes.SubscribeDashboardRoute),
     )
-    .put<routes.UnsubscribeRequest>(
+    .put<routes.UnsubscribeDashboardRequest>(
       'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
-      handleWith(routes.UnsubscribeRoute),
+      handleWith(routes.UnsubscribeDashboardRoute),
+    )
+    .put<routes.UnsubscribeDashboardMailingListRequest>(
+      'dashboardMailingList/:mailingListId/unsubscribe',
+      handleWith(routes.UnsubscribeDashboardMailingListRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
