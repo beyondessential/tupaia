@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { useEffect, useRef } from 'react';
 import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
 import {
@@ -14,18 +15,21 @@ import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 import { processMeasureData } from './processMeasureData';
-import { useRef } from 'react';
 
 type EntityTypeParam = string | null | undefined;
 
+const usePrevious = projectCode => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = projectCode; //assign the value of ref to the argument
+  }, [projectCode]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+};
+
 const useProjectCodeHasChanged = projectCode => {
-  const [previousProjectCode] = useRef([projectCode]).current;
+  const previousProjectCode = usePrevious(projectCode);
 
-  const hasProjectCodeChanged = previousProjectCode !== projectCode;
-
-  if (hasProjectCodeChanged) return true;
-
-  return false;
+  return previousProjectCode !== projectCode;
 };
 
 const useMapOverlayEntities = (
@@ -81,7 +85,7 @@ export const useMapOverlayTableData = ({
     rootEntityCode,
     includeRootEntity,
     selectedOverlay?.measureLevel,
-    !projectCodeHasChanged,
+    projectCodeHasChanged,
   );
 
   const { data, isLoading, isFetched, isFetching, isIdle, isPreviousData } = useMapOverlayReport(
