@@ -139,7 +139,6 @@ export const RequestCountryAccessForm = () => {
             multiline
             name="reasonForAccess"
             size="medium"
-            // sx={{ height: 100 }}
           />
           <Button>Request access</Button>
         </StyledBox>
