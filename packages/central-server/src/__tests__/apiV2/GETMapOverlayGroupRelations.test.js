@@ -143,7 +143,7 @@ describe('Permissions checker for GETMapOverlayGroupRelations', () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroupRelations?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

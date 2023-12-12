@@ -181,7 +181,7 @@ describe('Permissions checker for GETLegacyReports', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`legacyReports?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

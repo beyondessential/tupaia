@@ -6,7 +6,12 @@
 import { generateId, findOrCreateDummyRecord } from '@tupaia/database';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
-import * as UploadImage from '../../../apiV2/utilities/uploadImage';
+
+const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
+
+jest.mock('../../../apiV2/utilities/uploadImage', () => ({
+  uploadImage: async () => EXAMPLE_UPLOADED_IMAGE_URL,
+}));
 
 const rollbackRecords = async (models, projectCode) => {
   await models.project.delete({ code: projectCode });
@@ -20,12 +25,9 @@ const rollbackRecords = async (models, projectCode) => {
 };
 
 describe('Editing a project', () => {
-  let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
-
-  const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
 
   const TEST_PROJECT_INPUT = {
     id: generateId(),
@@ -40,12 +42,6 @@ describe('Editing a project', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  beforeAll(() => {
-    uploadImageStub = jest
-      .spyOn(UploadImage, 'uploadImage')
-      .mockResolvedValue(EXAMPLE_UPLOADED_IMAGE_URL);
-  });
-
   beforeEach(async () => {
     await findOrCreateDummyRecord(models.project, TEST_PROJECT_INPUT);
   });
@@ -53,10 +49,6 @@ describe('Editing a project', () => {
   afterEach(async () => {
     await rollbackRecords(models, TEST_PROJECT_INPUT.code);
     app.revokeAccess();
-  });
-
-  afterAll(() => {
-    uploadImageStub.mockRestore();
   });
 
   describe('PUT /projects', () => {

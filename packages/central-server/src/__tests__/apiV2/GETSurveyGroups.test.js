@@ -147,7 +147,7 @@ describe('Permissions checker for GETSurveyGroups', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyGroups?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

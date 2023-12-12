@@ -329,7 +329,7 @@ describe('surveyResponse endpoint', () => {
     const { body } = response;
     expect(body.results).toHaveLength(1);
     expect(body.results[0].surveyResponseId).toBeDefined();
-    expect(body.results[0].answerIds).toHaveLength(0);
+    expect(body.results[0].answerIds).toStrictEqual([]);
   });
 
   it('Should throw if a survey has an answer with no content', async () => {

@@ -181,6 +181,6 @@ describe('resubmit surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = await app.get(`surveyResponses/${surveyResponse.surveyResponse.id}/answers`);
-    expect(body).toHaveLength(0);
+    expect(body).toStrictEqual([]);
   });
 });

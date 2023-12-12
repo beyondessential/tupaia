@@ -105,7 +105,7 @@ describe('Permissions checker for GETDashboardRelations', () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardRelations/${districtDashboardRelation1.id}`);
 
-      expect(result.toHaveProperty('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error when requesting dashboard relation connected to NATIONAL dashboard that users do not have access', async () => {
@@ -195,7 +195,7 @@ describe('Permissions checker for GETDashboardRelations', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 

@@ -38,7 +38,6 @@ describe('EventBuilder', () => {
   beforeAll(async () => {
     enrollmentSpy = jest
       .spyOn(Enrollments, 'enrollTrackedEntityInProgramIfNotEnrolled')
-      .mockClear()
       .mockImplementation();
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
     const entities = Object.values(ENTITIES);
@@ -57,14 +56,6 @@ describe('EventBuilder', () => {
         });
       }
     }
-  });
-
-  beforeEach(() => {
-    enrollmentSpy.mockReset();
-  });
-
-  afterAll(() => {
-    Enrollments.enrollTrackedEntityInProgramIfNotEnrolled.mockRestore();
   });
 
   describe('Event building', () => {

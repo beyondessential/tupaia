@@ -102,7 +102,7 @@ describe('Permissions checker for GETAccessRequests', () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results.map(r => r.id)).toIncludeAllMembers([accessRequest1.id, accessRequest2.id]);
+      expect(results.map(r => r.id)).toIncludeSameMembers([accessRequest1.id, accessRequest2.id]);
     });
 
     it('Sufficient permissions: Return the full list of access requests if we have BES Admin access', async () => {
@@ -129,7 +129,7 @@ describe('Permissions checker for GETAccessRequests', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

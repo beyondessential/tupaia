@@ -175,7 +175,7 @@ describe('Permissions checker for GETUserAccounts', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`users?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

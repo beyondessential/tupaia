@@ -112,7 +112,7 @@ describe('Permissions checker for GETDisasters', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
 
     it('Insufficient permissions: throws an error if user does not have admin panel access anywhere', async () => {

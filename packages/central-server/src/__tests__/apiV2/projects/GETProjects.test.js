@@ -164,7 +164,7 @@ describe('Permissions checker for GETProjects', () => {
       await app.grantAccess(PUBLIC_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

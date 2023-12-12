@@ -180,7 +180,7 @@ describe('Permissions checker for GETSurveyResponses', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
 
     it('Joins completed: Return all survey responses with a country name attached to the response', async () => {
@@ -206,7 +206,7 @@ describe('Permissions checker for GETSurveyResponses', () => {
       const userId = results[0].user_id;
       const rewards = await getRewardsForUser(app.database, userId);
 
-      expect(rewards.coconuts).toStrictEqual('4');
+      expect(rewards.coconuts).toBe('4');
     });
 
     it('gets rewards with a project_id', async () => {
@@ -218,7 +218,7 @@ describe('Permissions checker for GETSurveyResponses', () => {
       const projectId = 'testId';
       // The test data doesn't have project ids, but still want to make sure that it handles the param and returns the correct rewards
       const rewards = await getRewardsForUser(app.database, userId, projectId);
-      expect(rewards.coconuts).toStrictEqual(0);
+      expect(rewards.coconuts).toBe(0);
     });
   });
 });

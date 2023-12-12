@@ -132,7 +132,7 @@ describe('Permissions checker for GETSurveys', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveys?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 
@@ -161,7 +161,7 @@ describe('Permissions checker for GETSurveys', () => {
         `countries/${tongaCountryId}/surveys?${filterString}`,
       );
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

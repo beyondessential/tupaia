@@ -121,7 +121,7 @@ describe('Permissions checker for EditUserAccounts', () => {
         });
         const result = await models.user.findById(userAccount1.id);
 
-        expect(result.email).toStrictEqual('barry.allen@ccpd.gov');
+        expect(result.email).toBe('barry.allen@ccpd.gov');
       });
 
       it('Allow editing of user information if we have BES admin access in any country, even if the user we are editing does not have access to that country', async () => {
@@ -131,7 +131,7 @@ describe('Permissions checker for EditUserAccounts', () => {
         });
         const result = await models.user.findById(userAccount2.id);
 
-        expect(result.email).toStrictEqual('hal.jordan@lantern.corp');
+        expect(result.email).toBe('hal.jordan@lantern.corp');
       });
 
       it('Allow editing of user preferences by key', async () => {

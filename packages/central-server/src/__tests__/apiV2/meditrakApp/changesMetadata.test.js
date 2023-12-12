@@ -80,8 +80,8 @@ describe('GET /changes/metadata', () => {
     expect(response.statusCode).toBe(200);
     const { changeCount, countries, permissionGroups } = response.body;
     expect(typeof changeCount).toBe('number');
-    expect(countries).toIncludeAllMembers(Object.keys(basicAccess));
-    expect(permissionGroups).toIncludeAllMembers(Object.values(basicAccess).flat());
+    expect(countries).toIncludeSameMembers(Object.keys(basicAccess));
+    expect(permissionGroups).toIncludeSameMembers(Object.values(basicAccess).flat());
   });
 
   describe('permissions based syncing', () => {
@@ -98,8 +98,8 @@ describe('GET /changes/metadata', () => {
 
         const { changeCount, countries, permissionGroups } = response.body;
         expect(changeCount).toBe(20);
-        expect(countries).toIncludeAllMembers([PERM_SYNC_COUNTRY_1.code]);
-        expect(permissionGroups).toIncludeAllMembers([PERM_SYNC_PG_PUBLIC.name]);
+        expect(countries).toIncludeSameMembers([PERM_SYNC_COUNTRY_1.code]);
+        expect(permissionGroups).toIncludeSameMembers([PERM_SYNC_PG_PUBLIC.name]);
       });
 
       it('should return the number of changes for a user with full access', async () => {
@@ -117,8 +117,11 @@ describe('GET /changes/metadata', () => {
 
         const { changeCount, countries, permissionGroups } = response.body;
         expect(changeCount).toBe(29);
-        expect(countries).toIncludeAllMembers([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
-        expect(permissionGroups).toIncludeAllMembers([
+        expect(countries).toIncludeSameMembers([
+          PERM_SYNC_COUNTRY_1.code,
+          PERM_SYNC_COUNTRY_2.code,
+        ]);
+        expect(permissionGroups).toIncludeSameMembers([
           PERM_SYNC_PG_ADMIN.name,
           PERM_SYNC_PG_PUBLIC.name,
         ]);
@@ -143,7 +146,10 @@ describe('GET /changes/metadata', () => {
 
         const { changeCount, countries } = response.body;
         expect(changeCount).toBe(10);
-        expect(countries).toIncludeAllMembers([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
+        expect(countries).toIncludeSameMembers([
+          PERM_SYNC_COUNTRY_1.code,
+          PERM_SYNC_COUNTRY_2.code,
+        ]);
       });
 
       it('should sync previously unsynced data when given access to a new permission group', async () => {
@@ -163,7 +169,7 @@ describe('GET /changes/metadata', () => {
 
         const { changeCount, permissionGroups } = response.body;
         expect(changeCount).toBe(5);
-        expect(permissionGroups).toIncludeAllMembers([
+        expect(permissionGroups).toIncludeSameMembers([
           PERM_SYNC_PG_ADMIN.name,
           PERM_SYNC_PG_PUBLIC.name,
         ]);

@@ -6,15 +6,18 @@
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
-import * as UploadImage from '../../../apiV2/utilities/uploadImage';
+
+const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
+
+jest.mock('../../../apiV2/utilities/uploadImage', () => ({
+  uploadImage: async () => EXAMPLE_UPLOADED_IMAGE_URL,
+}));
 
 describe('Creating a landing page', () => {
-  let uploadImageStub;
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP],
   };
 
-  const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
   const TEST_PROJECT_CODE = 'explore';
 
   const ENCODED_IMAGE =
@@ -39,12 +42,6 @@ describe('Creating a landing page', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  beforeAll(() => {
-    uploadImageStub = jest
-      .spyOn(UploadImage, 'uploadImage')
-      .mockResolvedValue(EXAMPLE_UPLOADED_IMAGE_URL);
-  });
-
   beforeEach(async () => {
     await findOrCreateDummyRecord(models.project, { code: TEST_PROJECT_CODE });
   });
@@ -53,10 +50,6 @@ describe('Creating a landing page', () => {
     await models.landingPage.delete({ url_segment: TEST_LANDING_PAGE_INPUT.url_segment });
     await models.project.delete({ code: TEST_PROJECT_CODE });
     app.revokeAccess();
-  });
-
-  afterAll(async () => {
-    uploadImageStub.mockRestore();
   });
 
   describe('POST /landingPages', () => {

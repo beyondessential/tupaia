@@ -50,7 +50,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
     beforeAll(async () => {
       await resetTestData();
 
-      jest.spyOn(xlsx.utils, 'aoa_to_sheet').mockClear().mockImplementation();
+      jest.spyOn(xlsx.utils, 'aoa_to_sheet').mockImplementation();
 
       const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
         name: 'Admin',

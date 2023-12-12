@@ -177,7 +177,7 @@ describe('Permissions checker for GETDashboardMailingListEntries', () => {
         `dashboardMailingLists/${nationalDashboard2MailingList.id}/dashboardMailingListEntries`,
       );
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

@@ -4,7 +4,7 @@
  */
 
 import { clearAllTestData } from '@tupaia/database';
-import { getModels, resetTestData } from './src/__tests__/testUtilities';
+import { getModels, resetTestData } from './src/__tests__/testUtilities/database';
 
 jest.mock('@tupaia/server-utils', () => ({
   sendEmail: jest.fn(),

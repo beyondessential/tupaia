@@ -118,7 +118,7 @@ describe('Permissions checker for GETUserEntityPermissions', () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
-      expect(results.map(r => r.id)).toIncludeAllMembers([
+      expect(results.map(r => r.id)).toIncludeSameMembers([
         userEntityPermission1.id,
         userEntityPermission2.id,
       ]);
@@ -128,7 +128,7 @@ describe('Permissions checker for GETUserEntityPermissions', () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
-      expect(results.map(r => r.id)).toIncludeAllMembers(userEntityPermissionIds);
+      expect(results.map(r => r.id)).toIncludeSameMembers(userEntityPermissionIds);
     });
 
     it('Insufficient permissions: Throws a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
@@ -148,7 +148,7 @@ describe('Permissions checker for GETUserEntityPermissions', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`userEntityPermissions?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

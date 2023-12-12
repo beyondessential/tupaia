@@ -157,7 +157,7 @@ describe('Permissions checker for GETDashboards', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboards?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

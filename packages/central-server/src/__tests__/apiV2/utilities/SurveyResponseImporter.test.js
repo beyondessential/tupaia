@@ -40,7 +40,7 @@ const RESULTS_BY_SURVEY_ID = {
   ],
 };
 const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));
-const TIMESTAMP = 1570000000;
+const TIMESTAMP = 1570000000000;
 const USER_ID = 'userId';
 
 const createModelsStub = () => {
@@ -62,18 +62,12 @@ const createResponseExtractors = () => {
 
 describe('SurveyResponseImporter', () => {
   beforeAll(() => {
-    jest.useFakeTimers().setSystemTime({ now: TIMESTAMP, toFake: ['Date'] });
+    jest.useFakeTimers().setSystemTime(TIMESTAMP);
     jest
       .spyOn(SurveyResponse, 'submitResponses')
-      .mockClear()
       .mockImplementation(
         (models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id],
       );
-  });
-
-  afterAll(() => {
-    SurveyResponse.submitResponses.mockRestore();
-    jest.useRealTimers();
   });
 
   describe('import()', () => {
@@ -87,13 +81,13 @@ describe('SurveyResponseImporter', () => {
       importer = new SurveyResponseImporter(modelsStub, extractors);
     });
 
-    beforeEach(() => {
-      SurveyResponse.submitResponses.mockReset();
-    });
-
     it('should use the provided user id for the survey submissions', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
-      expect(SurveyResponse.submitResponses).toHaveBeenCalledWith(expect.anything(), USER_ID);
+      expect(SurveyResponse.submitResponses).toHaveBeenCalledWith(
+        expect.anything(),
+        USER_ID,
+        expect.anything(),
+      );
     });
 
     it('should use the provided response data as survey responses', async () => {
@@ -138,7 +132,9 @@ describe('SurveyResponseImporter', () => {
       );
     });
 
-    it('should return the resulting response ids and answers', () =>
-      expect(importer.import(ROWS_BY_SURVEY, USER_ID)).toStrictEqual(ALL_RESULTS));
+    it('should return the resulting response ids and answers', async () => {
+      const results = await importer.import(ROWS_BY_SURVEY, USER_ID);
+      expect(results).toStrictEqual(ALL_RESULTS);
+    });
   });
 });

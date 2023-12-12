@@ -40,11 +40,8 @@ describe('Permissions checker for GETMapOverlays', () => {
     ]);
 
     // Set up the map overlays
-    ({
-      nationalMapOverlay1,
-      nationalMapOverlay2,
-      projectLevelMapOverlay1,
-    } = await setupMapOverlayTestData(models));
+    ({ nationalMapOverlay1, nationalMapOverlay2, projectLevelMapOverlay1 } =
+      await setupMapOverlayTestData(models));
   });
 
   afterEach(() => {
@@ -136,7 +133,7 @@ describe('Permissions checker for GETMapOverlays', () => {
       app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlays?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

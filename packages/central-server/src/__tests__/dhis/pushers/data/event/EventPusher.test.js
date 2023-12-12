@@ -27,7 +27,7 @@ describe('EventPusher', () => {
 
   describe('push()', () => {
     beforeAll(async () => {
-      jest.spyOn(Pusher.prototype, 'logResults').mockClear().mockImplementation();
+      jest.spyOn(Pusher.prototype, 'logResults').mockImplementation();
     });
 
     beforeEach(async () => {

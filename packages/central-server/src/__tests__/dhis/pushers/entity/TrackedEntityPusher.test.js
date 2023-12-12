@@ -54,14 +54,6 @@ describe('TrackedEntityPusher', () => {
       jest.spyOn(Pusher.prototype, 'logResults').mockImplementation();
     });
 
-    afterAll(() => {
-      Pusher.prototype.logResults.mockRestore();
-    });
-
-    afterEach(() => {
-      Pusher.prototype.logResults.mockReset();
-    });
-
     describe('create/update an entity', () => {
       it('should log an error and return false if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});

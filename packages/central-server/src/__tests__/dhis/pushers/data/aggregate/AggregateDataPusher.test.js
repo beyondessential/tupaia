@@ -24,11 +24,7 @@ describe('AggregateDataPusher', () => {
 
   describe('push()', () => {
     beforeAll(() => {
-      jest.spyOn(Pusher.prototype, 'logResults').mockClear().mockImplementation();
-    });
-
-    afterAll(() => {
-      Pusher.prototype.logResults.mockRestore();
+      jest.spyOn(Pusher.prototype, 'logResults').mockImplementation();
     });
 
     beforeEach(async () => {

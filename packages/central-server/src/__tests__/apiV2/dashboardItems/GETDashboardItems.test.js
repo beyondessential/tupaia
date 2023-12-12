@@ -196,7 +196,7 @@ describe('Permissions checker for GETDashboardItems', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardItems?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 });

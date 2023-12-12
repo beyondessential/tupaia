@@ -143,7 +143,7 @@ describe('POST /import/striveLabResults', () => {
       }),
     );
 
-    expect(answersPerLabResult).toIncludeAllMembers(EXPECTED_ANSWERS_PER_LAB_RESULT);
+    expect(answersPerLabResult).toIncludeSameMembers(EXPECTED_ANSWERS_PER_LAB_RESULT);
   });
 
   it('should include the survey response count in the response', () => {
@@ -160,6 +160,6 @@ describe('POST /import/striveLabResults', () => {
     );
 
     expect(response).toHaveProperty('body.results');
-    expect(response.body.results).toIncludeAllMembers(expectedResults);
+    expect(response.body.results).toIncludeSameMembers(expectedResults);
   });
 });

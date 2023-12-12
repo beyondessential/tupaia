@@ -138,7 +138,7 @@ describe('Permissions checker for GETAnswers', () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`answers?${filterString}`);
 
-      expect(Object.keys(results)).toHaveLength(0);
+      expect(results).toStrictEqual([]);
     });
   });
 
