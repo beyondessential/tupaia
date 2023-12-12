@@ -17,3 +17,4 @@ export { SmallModal } from './SmallModal';
 export { CancelConfirmModal } from './CancelConfirmModal';
 export { ErrorDisplay } from './ErrorDisplay';
 export { PageTitleBar } from './PageTitleBar';
+export { Autocomplete } from './Autocomplete';

@@ -87,6 +87,7 @@ interface RadioGroupProps {
   inputRef?: React.Ref<HTMLInputElement>;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   required?: boolean;
+  radioGroupProps?: RadioProps;
 }
 
 export const RadioGroup = ({
@@ -105,11 +106,12 @@ export const RadioGroup = ({
   inputRef,
   inputProps,
   required,
+  radioGroupProps,
 }: RadioGroupProps) => (
   <FormControl component="fieldset" className={className} color="primary" id={id}>
     <InputLabel as={Legend} label={label} tooltip={tooltip} />
     {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
-    <StyledRadioGroup name={name} value={value} onChange={onChange}>
+    <StyledRadioGroup name={name} value={value} onChange={onChange} {...radioGroupProps}>
       {options.map((option, i) => (
         <FormControlLabel
           control={
