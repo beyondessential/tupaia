@@ -188,7 +188,7 @@ export const RequestCountryAccessForm = () => {
             size="medium"
           />
           <Button disabled={submissionShouldBeDisabled} type="submit">
-            Request access
+            {isSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
         </StyledBox>
       </StyledFieldset>
