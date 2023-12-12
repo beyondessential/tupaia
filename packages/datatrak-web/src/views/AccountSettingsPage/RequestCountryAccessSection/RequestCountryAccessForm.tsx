@@ -159,7 +159,7 @@ export const RequestCountryAccessForm = () => {
                   color="primary"
                   disabled={hasAccess || hasRequestedAccess}
                   id="countryIds"
-                  inputRef={register({ validate: value => !!value.length })}
+                  inputRef={register({ validate: (value: Country['id'][]) => !!value.length })}
                   key={id}
                   label={name}
                   name="countryIds"
