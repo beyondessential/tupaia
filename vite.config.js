@@ -4,6 +4,7 @@
  */
 
 import { defineConfig, loadEnv } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -34,6 +35,12 @@ export default defineConfig(({ command, mode }) => {
 
     // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
+      VitePWA({
+        registerType: 'autoUpdate',
+        devOptions: {
+          enabled: true,
+        },
+      }),
       ViteEjsPlugin(),
       react({
         jsxRuntime: 'classic',
