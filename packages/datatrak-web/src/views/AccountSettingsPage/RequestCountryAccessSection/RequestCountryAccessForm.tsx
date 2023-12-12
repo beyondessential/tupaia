@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
 import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 
@@ -106,8 +105,8 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 export const RequestCountryAccessForm = () => {
-  const user = useCurrentUser();
-  const { data: countryAccessList, isLoading } = useCountryAccessList();
+  const { project } = useCurrentUser();
+  const { data: countries, isLoading } = useCountryAccessList();
   const { mutate: requestCountryAccess } = useRequestProjectAccess();
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -118,9 +117,12 @@ export const RequestCountryAccessForm = () => {
     // reset,
   } = formContext;
 
+  const applicableCountries = countries?.filter((c: any) => project?.names.includes(c.name));
+  console.log(applicableCountries);
+
   function onSubmit() {
-    const countryIds: Country[] = [];
-    requestCountryAccess({ entityIds: countryIds, message: '', projectCode: user.projectId });
+    // const countryIds: Country[] = [];
+    // requestCountryAccess({ entityIds: countryIds, message: '', projectCode: project?.code });
   }
 
   return (
@@ -129,17 +131,25 @@ export const RequestCountryAccessForm = () => {
         <CountryListWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
-            {countryAccessList?.map(({ id, name, accessRequests }) => (
-              <StyledCheckbox
-                color="primary"
-                disabled={!!accessRequests.length}
-                id={name}
-                key={id}
-                label={name}
-                name={name}
-                tooltip={accessRequests.length ? 'Approval in progress' : undefined}
-              />
-            ))}
+            {countries?.map(({ id, name, hasAccess, accessRequests }) => {
+              const hasRequestedAccess = accessRequests.includes(project!.code); // HACK: Avoid non-null assertion operator
+              const getTooltip = () => {
+                if (hasAccess) return 'You already have access';
+                if (hasRequestedAccess) return 'Approval in progress';
+              };
+
+              return (
+                <StyledCheckbox
+                  color="primary"
+                  disabled={hasAccess || hasRequestedAccess}
+                  id={name}
+                  key={id}
+                  label={name}
+                  name={name}
+                  tooltip={getTooltip()}
+                />
+              );
+            })}
           </CountryList>
         </CountryListWrapper>
         <StyledBox>
