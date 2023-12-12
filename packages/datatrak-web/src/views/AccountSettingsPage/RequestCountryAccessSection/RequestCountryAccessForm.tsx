@@ -40,7 +40,7 @@ const StyledFieldset = styled.fieldset`
     font-weight: ${theme.typography.fontWeightMedium};
   }
 
-  // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
+  // Fix labels appearing over hamburger menu drawer
   .MuiInputLabel-outlined {
     z-index: auto;
   }
@@ -61,12 +61,12 @@ const StyledFormLabel = styled(FormLabel)`
 
 const CountryList = styled.fieldset`
   margin: 0;
+  padding-block: 0;
 
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.grey[400]};
   height: 100%;
   overflow-y: scroll;
-  padding-block: 0;
   padding-inline: 0.87rem;
 `;
 
@@ -90,7 +90,7 @@ const StyledBox = styled(Box)`
   gap: ${gridAndFlexGap};
 `;
 
-// Usage of this component below has inline styling. See there for explanation.
+// Usage of this component has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput)`
   flex-grow: 1;
   margin: 0;
