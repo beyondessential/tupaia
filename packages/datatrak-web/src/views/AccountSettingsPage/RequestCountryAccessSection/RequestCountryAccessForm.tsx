@@ -132,10 +132,8 @@ export const RequestCountryAccessForm = () => {
   const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting || isLoading;
 
   function onSubmit(formData: RequestCountryAccessFormFields) {
-    console.log(formData);
-    const countryIds: Country['id'][] = [];
     requestCountryAccess({
-      entityIds: countryIds,
+      entityIds: formData.countryIds,
       message: formData.reasonForAccess,
       projectCode: project.code,
     });
