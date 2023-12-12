@@ -16,7 +16,7 @@ const gridAndFlexGap = '1.25rem';
 
 const StyledForm = styled(Form)`
   width: 100%;
-  ${({ theme }) => theme.breakpoints.up('md')} {
+  ${theme.breakpoints.up('md')} {
     max-width: 44.25rem;
   }
 `;
@@ -31,13 +31,13 @@ const StyledFieldset = styled.fieldset`
   grid-auto-flow: column;
   grid-template: auto auto / auto;
 
-  ${({ theme }) => theme.breakpoints.up('sm')} {
+  ${theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
   }
 
   .MuiFormLabel-root {
     color: ${props => props.theme.palette.text.primary};
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    font-weight: ${theme.typography.fontWeightMedium};
   }
 
   // Fix labels appearing over hamburger menu drawer (in md and sm size classes)
