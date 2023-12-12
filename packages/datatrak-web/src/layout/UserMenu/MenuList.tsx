@@ -81,14 +81,15 @@ export const MenuList = ({
 
   const hasProjectSelected = !!projectId;
 
-  const menuItems: MenuItem[] = [];
-  if (isLoggedIn && hasProjectSelected) {
-    menuItems.push(accountSettingsItem);
-  }
-  menuItems.push(helpCentreItem);
-  if (isLoggedIn) {
-    menuItems.push(logOutItem);
-  }
+  const getMenuItems = () => {
+    const items: MenuItem[] = [];
+    if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
+    items.push(helpCentreItem);
+    if (isLoggedIn) items.push(logOutItem);
+
+    return items;
+  };
+  const menuItems = getMenuItems();
 
   return (
     <Menu>
