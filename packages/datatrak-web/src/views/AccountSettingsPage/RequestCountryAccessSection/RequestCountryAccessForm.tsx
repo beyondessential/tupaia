@@ -117,16 +117,19 @@ export const RequestCountryAccessForm = () => {
   const { mutate: requestCountryAccess } = useRequestProjectAccess();
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const formContext = useForm<RequestCountryAccessFormFields>();
+  const formContext = useForm<RequestCountryAccessFormFields>({ mode: 'onChange' });
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValidating, isValid },
     handleSubmit,
+    register,
     // reset,
   } = formContext;
 
   const applicableCountries = countries?.filter((country: Country) =>
     project?.names.includes(country.name),
   );
+
+  const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting || isLoading;
 
   function onSubmit(formData: RequestCountryAccessFormFields) {
     console.log(formData);
@@ -155,11 +158,13 @@ export const RequestCountryAccessForm = () => {
                 <StyledCheckbox
                   color="primary"
                   disabled={hasAccess || hasRequestedAccess}
-                  id={name}
+                  id="countryIds"
+                  inputRef={register({ validate: value => !!value.length })}
                   key={id}
                   label={name}
-                  name={name}
+                  name="countryIds"
                   tooltip={getTooltip()}
+                  value={id}
                 />
               );
             })}
@@ -182,7 +187,7 @@ export const RequestCountryAccessForm = () => {
             name="reasonForAccess"
             size="medium"
           />
-          <Button disabled={isSubmitting || isLoading} type="submit">
+          <Button disabled={submissionShouldBeDisabled} type="submit">
             Request access
           </Button>
         </StyledBox>
