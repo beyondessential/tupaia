@@ -9,7 +9,7 @@ export { SurveyRequest, SurveyRoute } from './SurveyRoute';
 export { SurveyResponsesRequest, SurveyResponsesRoute } from './SurveyResponsesRoute';
 export { ProjectsRequest, ProjectsRoute } from './ProjectsRoute';
 export { SingleEntityRequest, SingleEntityRoute } from './SingleEntityRoute';
-export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
+export { EntityDescendantsRequest, EntityDescendantsRoute } from './EntityDescendantsRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { SubmitSurveyRequest, SubmitSurveyRoute } from './SubmitSurvey/SubmitSurveyRoute';
 export { RecentSurveysRequest, RecentSurveysRoute } from './RecentSurveysRoute';
@@ -19,3 +19,4 @@ export {
 } from './SingleSurveyResponseRoute';
 export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
+export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';

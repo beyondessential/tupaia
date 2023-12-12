@@ -6,8 +6,7 @@ import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
-import { FullPageLoader } from '@tupaia/ui-components';
-import { useCountry, useCurrentUser, useEditUser, useSurvey } from '../api';
+import { useCurrentUser, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
@@ -48,16 +47,11 @@ const SurveyScreenContainer = styled.div<{
 `;
 
 const SurveyPageInner = () => {
-  const { surveyCode, screenNumber } = useParams<SurveyParams>();
-  const { isLoading } = useSurvey(surveyCode);
+  const { screenNumber } = useParams<SurveyParams>();
   const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
     useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
-
-  if (isLoading) {
-    return <FullPageLoader />;
-  }
 
   return (
     <PageWrapper>
@@ -79,13 +73,12 @@ export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUser();
-  const { data: surveyCountry } = useCountry(user.project?.code, countryCode);
   const { data: survey } = useSurvey(surveyCode);
+  const { data: surveyCountry } = useEntityByCode(countryCode!);
 
   // Update the user's preferred country if they start a survey in a different country
-  // Todo: add check for project code once project_ids are added to the survey table
   useEffect(() => {
-    if (!surveyCountry?.code) {
+    if (!surveyCountry?.code || !user.isLoggedIn) {
       return;
     }
     if (user.country?.code !== countryCode) {
@@ -98,8 +91,11 @@ export const SurveyPage = () => {
     }
   }, [surveyCountry?.code]);
 
+  // Update the user's preferred project if they start a survey in a different project to the saved project
   useEffect(() => {
-    if (!survey) return;
+    if (!survey?.projectId || !user.isLoggedIn) {
+      return;
+    }
     const { projectId } = survey;
     if (user.isLoggedIn && projectId && user?.projectId !== projectId) {
       // Update the user's preferred project if they start a survey in a different project to the saved project. Tell the user this has been done, so that they understand why their landing page will be changed

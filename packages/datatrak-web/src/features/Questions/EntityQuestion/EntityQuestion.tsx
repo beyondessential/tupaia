@@ -9,12 +9,13 @@ import { useFormContext } from 'react-hook-form';
 import { FormHelperText, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntity, useCurrentUser } from '../../../api';
+import { useEntities, useEntityById } from '../../../api';
 import { useDebounce } from '../../../utils';
 import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters, useAttributeFilter } from './utils';
+import { useSurveyForm } from '../../Survey';
 
 const Container = styled.div`
   width: 100%;
@@ -33,13 +34,12 @@ const Label = styled(Typography).attrs({
 `;
 
 const useSearchResults = (searchValue, config) => {
-  const user = useCurrentUser();
-  const projectCode = user.project?.code;
   const filters = useEntityBaseFilters(config);
+  const { surveyProjectCode } = useSurveyForm();
   const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
-  const query = useEntities(projectCode, { searchString: debouncedSearch, ...filters });
+  const query = useEntities(surveyProjectCode, { searchString: debouncedSearch, ...filters });
   let entities = query?.data;
   if (attributeFilter) {
     entities = entities?.filter(attributeFilter);
@@ -61,7 +61,7 @@ export const EntityQuestion = ({
   const [searchValue, setSearchValue] = useState('');
 
   // Display a previously selected value
-  useEntity(value, {
+  useEntityById(value, {
     staleTime: 0, // Needs to be 0 to make sure the entity is fetched on first render
     enabled: !!value && !searchValue,
     onSuccess: entityData => {
