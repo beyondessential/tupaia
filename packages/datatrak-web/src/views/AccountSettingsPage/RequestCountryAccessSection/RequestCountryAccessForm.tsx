@@ -6,9 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Box, FormLabel } from '@material-ui/core';
+import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
 import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Country } from '@tupaia/types';
+import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 
 const gridAndFlexGap = '1.25rem';
@@ -28,6 +29,7 @@ const StyledFieldset = styled.fieldset`
   display: grid;
   gap: ${gridAndFlexGap};
   grid-auto-flow: column;
+  grid-template: auto auto / auto;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
@@ -105,10 +107,9 @@ const StyledFormInput = styled(FormInput)`
 
 export const RequestCountryAccessForm = () => {
   const user = useCurrentUser();
-  console.log('projectCode', user.projectId);
-  console.log('projectName', user.projectId?.name);
   const { data: countryAccessList, isLoading } = useCountryAccessList();
   const { mutate: requestCountryAccess } = useRequestProjectAccess();
+  const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
   const formContext = useForm();
   const {
@@ -150,7 +151,7 @@ export const RequestCountryAccessForm = () => {
               enterKeyHint: 'done',
               // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
               // dynamically resize it to fit content, so we must do the same to override it.
-              style: { height: '100%' },
+              style: sizeClassIsMdOrLarger ? { height: '100%' } : {},
             }}
             label="Reason for access"
             margin="none"
