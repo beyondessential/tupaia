@@ -28,7 +28,7 @@ Release process documentation: https://beyond-essential.slab.com/posts/release-p
 
 # Example entries
 
-- RN-977: Allow downloading the generated QR code in Meditrak App
+- RN-977: Allow downloading the generated QR code in MediTrak app
 - (no issue) #4695
 
 -->
