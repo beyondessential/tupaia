@@ -15,6 +15,7 @@ export interface ResBody {
   projectId?: string;
   country?: Country | null;
   deleteAccountRequested?: boolean;
+  hasAdminPanelAccess?: boolean;
 }
 export type ReqBody = Record<string, never>;
 export type ReqQuery = Record<string, never>;

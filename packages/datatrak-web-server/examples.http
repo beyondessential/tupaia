@@ -30,4 +30,8 @@ content-type: {{contentType}}
 GET {{host}}/projects HTTP/1.1
 content-type: {{contentType}}
 
+### Get user
+GET {{host}}/getUser HTTP/1.1
+content-type: {{contentType}}
+
  

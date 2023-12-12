@@ -23,12 +23,14 @@ import {
   ResetPasswordPage,
   AccountSettingsPage,
   SurveyResponsePage,
+  ReportsPage,
 } from '../views';
-import { useCurrentUser, useSurvey } from '../api';
+import { useCurrentUser, useSurvey, useUser } from '../api';
 import { ROUTES } from '../constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { PrivateRoute } from './PrivateRoute';
+import { FullPageLoader } from '@tupaia/ui-components';
 
 /**
  * If the user is logged in and tries to access the login page, redirect to the home page
@@ -97,6 +99,17 @@ export const SurveyPageRoutes = (
   </Route>
 );
 
+const ReportsRedirect = () => {
+  const { isLoading, data } = useUser();
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
+  if (!data?.hasAdminAccess) {
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+  }
+  return <ReportsPage />;
+};
+
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
@@ -151,6 +164,14 @@ export const Routes = () => {
           element={
             <PrivateRoute>
               <AccountSettingsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={ROUTES.REPORTS}
+          element={
+            <PrivateRoute>
+              <ReportsRedirect />
             </PrivateRoute>
           }
         />
