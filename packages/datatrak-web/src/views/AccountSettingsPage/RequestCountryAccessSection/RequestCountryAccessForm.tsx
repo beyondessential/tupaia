@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
 import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
+import { Country } from '@tupaia/types';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 
@@ -105,25 +106,36 @@ const StyledFormInput = styled(FormInput)`
   }
 `;
 
+interface RequestCountryAccessFormFields {
+  countryIds: Country['id'][];
+  reasonForAccess?: string;
+}
+
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
   const { data: countries, isLoading } = useCountryAccessList();
   const { mutate: requestCountryAccess } = useRequestProjectAccess();
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const formContext = useForm();
+  const formContext = useForm<RequestCountryAccessFormFields>();
   const {
     formState: { isSubmitting },
     handleSubmit,
     // reset,
   } = formContext;
 
-  const applicableCountries = countries?.filter((c: any) => project?.names.includes(c.name));
-  console.log(applicableCountries);
+  const applicableCountries = countries?.filter((country: Country) =>
+    project?.names.includes(country.name),
+  );
 
-  function onSubmit() {
-    // const countryIds: Country[] = [];
-    // requestCountryAccess({ entityIds: countryIds, message: '', projectCode: project?.code });
+  function onSubmit(formData: RequestCountryAccessFormFields) {
+    console.log(formData);
+    const countryIds: Country['id'][] = [];
+    requestCountryAccess({
+      entityIds: countryIds,
+      message: formData.reasonForAccess,
+      projectCode: project.code,
+    });
   }
 
   return (
@@ -132,7 +144,7 @@ export const RequestCountryAccessForm = () => {
         <CountryListWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
-            {countries?.map(({ id, name, hasAccess, accessRequests }) => {
+            {applicableCountries?.map(({ id, name, hasAccess, accessRequests }) => {
               const hasRequestedAccess = accessRequests.includes(project!.code); // HACK: Avoid non-null assertion operator
               const getTooltip = () => {
                 if (hasAccess) return 'You already have access';
