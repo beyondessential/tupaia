@@ -56,12 +56,17 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu: () => void;
 }) => {
-  const { isLoggedIn, projectId } = useCurrentUser();
+  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUser();
   const { mutate: logout } = useLogout();
 
   const accountSettingsItem = {
     label: 'Account settings',
     to: ROUTES.ACCOUNT_SETTINGS,
+  };
+
+  const reportsItem = {
+    label: 'Reports',
+    to: ROUTES.REPORTS,
   };
   // The help centre link is the same for both logged-in and logged-out users
   const helpCentreItem = {
@@ -81,15 +86,18 @@ export const MenuList = ({
 
   const hasProjectSelected = !!projectId;
 
-  const getMenuItems = () => {
+  const getLoggedInMenuItems = () => {
     const items: MenuItem[] = [];
-    if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
-    items.push(helpCentreItem);
-    if (isLoggedIn) items.push(logOutItem);
-
-    return items;
+    if (hasProjectSelected) items.push(accountSettingsItem);
+    if (hasAdminPanelAccess) items.push(reportsItem);
+    return [...items, helpCentreItem, logOutItem];
   };
-  const menuItems = getMenuItems();
+  const getMenuItems = () => {
+    if (isLoggedIn) return getLoggedInMenuItems();
+
+    return [helpCentreItem];
+  };
+  const menuItems = getMenuItems() as MenuItem[];
 
   return (
     <Menu>

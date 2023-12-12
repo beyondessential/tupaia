@@ -19,3 +19,4 @@ export { useCurrentUserRecentSurveys, useRecentSurveys } from './useRecentSurvey
 export { useLeaderboard } from './useLeaderboard';
 export { useUserRewards } from './useUserRewards';
 export { useActivityFeed } from './useActivityFeed';
+export { useProjectSurveys } from './useProjectSurveys';

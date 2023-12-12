@@ -100,11 +100,11 @@ export const SurveyPageRoutes = (
 );
 
 const ReportsRedirect = () => {
-  const { isLoading, data } = useUser();
+  const { isLoading, data: user } = useUser();
   if (isLoading) {
     return <FullPageLoader />;
   }
-  if (!data?.hasAdminAccess) {
+  if (!user?.hasAdminPanelAccess) {
     return <Navigate to={ROUTES.HOME} replace={true} />;
   }
   return <ReportsPage />;
