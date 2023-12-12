@@ -47,7 +47,7 @@ const StyledFieldset = styled.fieldset`
 const CountryListWrapper = styled(Box)`
   display: block flex;
   flex-direction: column;
-  height: 20.125rem;
+  height: 18.625rem;
 `;
 
 /** Matches styling of .MuiFormLabel-root in ui-components TextField */
