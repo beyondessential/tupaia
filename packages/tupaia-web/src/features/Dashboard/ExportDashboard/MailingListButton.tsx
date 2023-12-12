@@ -31,12 +31,14 @@ const ButtonContainer = styled.div`
 const SuccessMessage = styled(ExportSettingsInstructions)`
   display: flex;
   align-items: center;
+  line-height: normal;
 `;
 
 const ErrorMessage = styled(ExportSettingsInstructions)`
   margin-left: 0.9rem;
   display: flex;
   align-items: center;
+  line-height: normal;
 `;
 
 const SuccessIcon = styled(BaseSuccessIcon)`
