@@ -63,6 +63,7 @@ const CountryList = styled.fieldset`
 
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.grey[400]};
+  height: 100%;
   overflow-y: scroll;
   padding-block: 0;
   padding-inline: 0.87rem;
