@@ -13,8 +13,15 @@ const Container = styled(FlexCenter)`
   align-self: center;
 `;
 
-export const SpinningLoader = (props: BoxProps) => (
-  <Container {...props}>
-    <CircularProgress size={50} />
-  </Container>
-);
+interface SpinningLoaderProps extends BoxProps {
+  spinnerSize?: number | string;
+}
+
+export const SpinningLoader = (props: SpinningLoaderProps) => {
+  const { spinnerSize = 50, ...restOfProps } = props;
+  return (
+    <Container {...restOfProps}>
+      <CircularProgress size={spinnerSize} />
+    </Container>
+  );
+};

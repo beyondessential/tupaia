@@ -12722,9 +12722,11 @@ __metadata:
     "@aws-sdk/lib-storage": ^3.348.0
     "@tupaia/utils": 1.0.0
     "@types/nodemailer": ^6.4.13
+    "@types/sha256": ^0.2.2
     cookie: ^0.5.0
     nodemailer: ^6.9.7
     puppeteer: ^15.4.0
+    sha256: ^0.2.0
   languageName: unknown
   linkType: soft
 
@@ -14430,6 +14432,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 8c0ded364c5a53598dc58f6c668d6fdbefa3bb78fcb1181202b92f4d8495ca33b4317f54ac0fe42824278e789d730ee5cbd2f7f864466e708589ff4eab2bf457
+  languageName: node
+  linkType: hard
+
+"@types/sha256@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@types/sha256@npm:0.2.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 7701b9dc105e7b877090c9bb9b02e10953831737b599bfc7658635ae35d2b21927f77028f8090d50ea0281058ee975f190d664e5351c5aaf5535a1c26ba01f1f
   languageName: node
   linkType: hard
 
