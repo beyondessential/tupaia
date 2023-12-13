@@ -73,6 +73,10 @@ export class EditUserAccounts extends EditHandler {
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         return { ...obj, [key]: value };
       }, preferences);
+      // If we change the selected project, we clear out the recent entities
+      if (updatedPreferenceFields.project_id) {
+        updatedPreferenceFields.recentEntities = {};
+      }
 
       updatedFields = {
         preferences: updatedPreferenceFields,

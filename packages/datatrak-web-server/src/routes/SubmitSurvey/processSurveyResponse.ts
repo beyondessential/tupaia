@@ -31,6 +31,7 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
   findEntityById: (id: string) => Promise<Entity>,
+  addRecentEntity: (userId: string, entityId: string) => Promise<void>,
 ) => {
   const {
     userId,
@@ -68,22 +69,25 @@ export const processSurveyResponse = async (
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
-    // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
     if (
-      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
-      isUpsertEntityQuestion(config)
+      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)
     ) {
-      const entityObj = (await buildUpsertEntity(
-        config,
-        questionId,
-        answers,
-        countryId,
-        findEntityById,
-      )) as Entity;
-      if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
-      answer = entityObj?.id;
-      if (config.entity?.generateQrCode) {
-        surveyResponse.qr_codes_to_create?.push(entityObj);
+      // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
+      if (isUpsertEntityQuestion(config)) {
+        const entityObj = (await buildUpsertEntity(
+          config,
+          questionId,
+          answers,
+          countryId,
+          findEntityById,
+        )) as Entity;
+        if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
+        answer = entityObj?.id;
+        if (config.entity?.generateQrCode) {
+          surveyResponse.qr_codes_to_create?.push(entityObj);
+        }
+      } else {
+        await addRecentEntity(userId, answer as string);
       }
     }
     if (answer === undefined || answer === null || answer === '') {

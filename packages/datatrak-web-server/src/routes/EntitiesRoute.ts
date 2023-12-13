@@ -30,13 +30,19 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
+    const { query, ctx, models, session } = this.req;
     const { services } = ctx;
+    let recentEntities: string[] = [];
 
     const {
       filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
       fields = DEFAULT_FIELDS,
     } = query;
+
+    if (!!session) {
+      const currentUser = await models.user.findOne({ email: session.email });
+      recentEntities = currentUser.preferences.recentEntities[countryCode][type];
+    }
 
     const filter = {
       generational_distance: {},
@@ -78,7 +84,9 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
 
     const sortedEntities = searchString
       ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
-      : entities;
+      // Put recent entities first
+      : [...entities.filter((e: any) =>  recentEntities.includes(e.id)),
+         ...entities.filter((e: any) => !recentEntities.includes(e.id))];
 
     return camelcaseKeys(sortedEntities, { deep: true });
   }
