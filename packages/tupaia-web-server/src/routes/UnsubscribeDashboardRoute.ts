@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebUnsubscribeDashboardRequest } from '@tupaia/types';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 
 export type UnsubscribeDashboardRequest = Request<
   TupaiaWebUnsubscribeDashboardRequest.Params,
@@ -55,12 +56,16 @@ export class UnsubscribeDashboardRoute extends Route<UnsubscribeDashboardRequest
       );
     }
 
+    const { email, unsubscribeTime } = this.req.body;
+    assertIsNotNullish(email);
+    assertIsNotNullish(unsubscribeTime);
+
     const [dashboardMailingListEntry] = await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {
           dashboard_mailing_list_id: dashboardMailingList.id,
-          email: this.req.body.email,
+          email,
         },
       },
     );
@@ -76,7 +81,7 @@ export class UnsubscribeDashboardRoute extends Route<UnsubscribeDashboardRequest
       {},
       {
         subscribed: false,
-        unsubscribed_time: this.req.body.unsubscribeTime,
+        unsubscribed_time: unsubscribeTime,
       },
     );
 

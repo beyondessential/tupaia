@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import { TupaiaWebUnsubscribeDashboardMailingListRequest } from '@tupaia/types';
 import { verifyUnsubscribeToken } from '@tupaia/server-utils';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 
 export type UnsubscribeDashboardMailingListRequest = Request<
   TupaiaWebUnsubscribeDashboardMailingListRequest.Params,
@@ -22,6 +23,8 @@ export class UnsubscribeDashboardMailingListRoute extends Route<UnsubscribeDashb
       query: { email, token },
       models,
     } = this.req;
+    assertIsNotNullish(email);
+    assertIsNotNullish(token);
 
     verifyUnsubscribeToken(token, email);
 
