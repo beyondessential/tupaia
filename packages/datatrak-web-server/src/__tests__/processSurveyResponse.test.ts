@@ -22,6 +22,8 @@ const mockFindEntityById = async (id: string) => ({
   type: 'facility' as EntityType,
 });
 
+const mockAddRecentEntity = async () => {};
+
 jest.mock('@tupaia/database', () => ({
   generateId: jest.fn(() => 'theEntityId'),
 }));
@@ -88,6 +90,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -125,6 +128,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -152,6 +156,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -179,6 +184,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -211,6 +217,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -254,6 +261,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -286,6 +294,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -329,6 +338,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -379,6 +389,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -433,6 +444,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
@@ -468,6 +480,7 @@ describe('processSurveyResponse', () => {
         },
       },
       mockFindEntityById,
+      mockAddRecentEntity,
     );
 
     expect(result).toEqual({
