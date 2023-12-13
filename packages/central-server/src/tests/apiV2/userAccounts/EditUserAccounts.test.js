@@ -141,15 +141,16 @@ describe('Permissions checker for EditUserAccounts', async () => {
           body: { project_id: '123456' },
         });
         const result = await models.user.findById(userAccount1.id);
-        expect(result.preferences).toMatchObject({ project_id: '123456' });
+        expect(result.preferences).to.deep.equal({ project_id: '123456', recentEntities: {} });
 
         await app.put(`users/${userAccount1.id}`, {
           body: { country_id: '987654' },
         });
         const newResult = await models.user.findById(userAccount1.id);
-        expect(newResult.preferences).toMatchObject({
+        expect(newResult.preferences).to.deep.equal({
           project_id: '123456',
           country_id: '987654',
+          recentEntities: {},
         });
       });
 
