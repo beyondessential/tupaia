@@ -48,6 +48,7 @@ export const CancelConfirmModal = ({
   bodyText = "If you exit, you will lose the progress you've made on the current survey",
   confirmText = 'Exit survey',
   cancelText = 'Continue survey',
+  confirmLink = '/',
 }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -55,7 +56,7 @@ export const CancelConfirmModal = ({
         <Heading>{headingText}</Heading>
         <Typography align="center">{bodyText}</Typography>
         <ButtonWrapper>
-          <ModalButton variant="outlined" to="/" onClick={onClose}>
+          <ModalButton variant="outlined" to={confirmLink} onClick={onClose}>
             {confirmText}
           </ModalButton>
           <ModalButton onClick={onClose}>{cancelText}</ModalButton>
