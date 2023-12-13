@@ -105,6 +105,7 @@
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
     />
+    <link rel="manifest" href="/manifest.json">
     <title>Tupaia</title>
   </head>
   <style>
@@ -150,5 +151,24 @@
       <div id="tupaia-spinner"></div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/service-worker.js').then(
+            function (registration) {
+              // Registration was successful
+              console.log(
+                'ServiceWorker registration successful with scope: ',
+                registration.scope,
+              )
+            },
+            function (err) {
+              // registration failed :(
+              console.log('ServiceWorker registration failed: ', err)
+            },
+          )
+        })
+      }
+    </script>
   </body>
 </html>
