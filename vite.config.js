@@ -36,9 +36,62 @@ export default defineConfig(({ command, mode }) => {
     // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
     plugins: [
       VitePWA({
-        registerType: 'autoUpdate',
+        workbox: {
+          maximumFileSizeToCacheInBytes: 4000000,
+          globPatterns: ['**/*.{jsx,js,css,html,ico,png,svg,webmanifest,svg}'],
+          runtimeCaching: [
+            {
+              urlPattern: ({ url }) => url.pathname.startsWith('/v1/'),
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'api-cache',
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+          ],
+        },
         devOptions: {
           enabled: true,
+          type: 'module',
+        },
+        manifest: {
+          short_name: 'DataTrak',
+          name: 'DataTrak',
+          id: '/?home=true',
+          start_url: '/?home=true',
+          background_color: '#3367D6',
+          display: 'standalone',
+          scope: '/',
+          theme_color: '#3367D6',
+          description: 'Data collection and analysis for the most remote places on earth.',
+          icons: [
+            {
+              src: 'icons/manifest-icon-192.maskable.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: 'icons/manifest-icon-192.maskable.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+            {
+              src: 'icons/manifest-icon-512.maskable.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: 'icons/manifest-icon-512.maskable.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
+            },
+          ],
         },
       }),
       ViteEjsPlugin(),
