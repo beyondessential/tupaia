@@ -127,8 +127,8 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
         token: unsubscribeToken,
         mailingListId: mailingList.id,
       });
-      const unsubscribeHtml = `Didn't intend to subscribe to these emails? <a href='${unsubscribeUrl}'>Unsubscribe</a>`;
-      const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px">${unsubscribeHtml}</p>`;
+      const unsubscribeHtml = `If you wish to unsubscribe from these emails please click <a href='${unsubscribeUrl}'>here</a>`;
+      const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px; text-align: center;">${unsubscribeHtml}</p>`;
       return sendEmail(email, {
         subject,
         html,
