@@ -5,32 +5,23 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Paper, Typography, Link } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
-import { Form as BaseForm, RadioGroup as BaseRadioGroup } from '@tupaia/ui-components';
-import { useSurveys } from '../../api';
-import { Autocomplete as BaseAutocomplete } from '../../components';
+import { DialogActions } from '@material-ui/core';
+import { Alert, Form as BaseForm, SpinningLoader } from '@tupaia/ui-components';
+import { Button } from '../../components';
+import { useExportSurveyResponses, ExportSurveyResponsesParams } from '../../api/mutations';
+import { EntitySelectorInput, DateRangePicker, SurveysInput, EntityLevelInput } from './Inputs';
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
 `;
 
-const Container = styled(Paper).attrs({
-  elevation: 0,
-})`
-  width: 100%;
-  max-width: 38rem;
-  padding: 1.81rem 3.12rem;
-`;
-
-const InlineLink = styled(Link)`
-  text-decoration: underline;
-`;
-
-const Form = styled(BaseForm)`
+const Form = styled(BaseForm)<{
+  $isLoading: boolean;
+}>`
   margin-top: 1.88rem;
+  // if we display:none here, the fields remount after loading has finished, which means that if an error is hit the fields are reset
+  visibility: ${({ $isLoading }) => ($isLoading ? 'hidden' : 'visible')};
   .MuiFormLabel-root,
   legend {
     color: inherit;
@@ -40,92 +31,116 @@ const Form = styled(BaseForm)`
   }
 `;
 
-const Autocomplete = styled(BaseAutocomplete)`
-  .MuiAutocomplete-input {
-    font-size: 0.875rem;
-  }
-  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.primary.main};
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border-color: ${({ theme }) => theme.palette.divider};
-  }
-`;
-
-const RadioGroup = styled(BaseRadioGroup)`
-  margin-top: 1.88rem;
-  .MuiFormGroup-root {
-    width: 100%;
-    justify-content: space-between;
-    border: none;
-  }
-  .MuiFormControlLabel-label {
-    font-size: 0.875rem;
-  }
-  .MuiFormControlLabel-root {
-    width: 48%;
-    border: 1px solid ${({ theme }) => theme.palette.divider};
-    background: transparent;
-    border-radius: 0.3rem;
-    &:last-child {
-      border-right: 1px solid ${({ theme }) => theme.palette.divider}; // override styling in ui components
-    }
-    &:has(.Mui-checked) {
-      background-color: ${({ theme }) => theme.palette.primary.main}33;
-      border-color: ${({ theme }) => theme.palette.primary.main};
+const ButtonGroup = styled(DialogActions)`
+  padding: 0;
+  ${({ theme }) => theme.breakpoints.down('xs')} {
+    flex-direction: column;
+    align-items: stretch;
+    .MuiButtonBase-root {
+      margin-left: 0;
+      margin-bottom: 1rem;
     }
   }
 `;
 
+const SubmitButton = styled(Button)`
+  padding: 0.5rem 3.44rem;
+`;
+
+const EmailDownloadAlert = styled(Alert).attrs({
+  severity: 'info',
+})`
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+`;
+
+const LoadingContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  z-index: 2;
+`;
+
+const DEFAULT_FORM_VALUES = {
+  entityLevel: 'country',
+  startDate: null,
+  endDate: null,
+  surveys: [],
+  country: null,
+  entity: [],
+};
 export const ReportsForm = () => {
-  const formContext = useForm();
-  const { register } = formContext;
-  const { data: surveys } = useSurveys();
+  const {
+    mutate: exportSurveyResponses,
+    data: responseData,
+    isLoading,
+  } = useExportSurveyResponses();
+
+  const formContext = useForm({
+    defaultValues: DEFAULT_FORM_VALUES,
+  });
+
+  const { reset, handleSubmit } = formContext;
+
+  const onReset = () => {
+    reset(DEFAULT_FORM_VALUES);
+  };
+
+  const onSubmit = (data: {
+    surveys: { value: string }[];
+    entityLevel: 'country' | 'entity';
+    country: { code: string };
+    entity: { value: string }[];
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const { surveys, entityLevel, country, entity, startDate, endDate } = data;
+
+    const surveyCodes = surveys.map(({ value }: { value: string }) => value).join(',');
+
+    const params = {
+      surveyCodes,
+      startDate,
+      endDate,
+    } as ExportSurveyResponsesParams;
+    if (entityLevel === 'country') {
+      params.countryCode = country.code;
+    } else {
+      params.entityIds = entity.map(({ value }: { value: string }) => value).join(',');
+    }
+    exportSurveyResponses(params);
+  };
 
   return (
     <Wrapper>
-      <Container>
-        <Typography>
-          Download a raw data excel file to complete your own analysis. If the desired report is not
-          available, please contact{' '}
-          <InlineLink href="mailto:support@tupaia.org" color="textPrimary">
-            support@tupaia.org
-          </InlineLink>
-          .
-        </Typography>
-        <Form onSubmit={() => {}} formContext={formContext}>
-          <Autocomplete
-            label="Survey"
-            options={surveys?.map(({ code, name }) => ({ value: code, label: name })) ?? []}
-            name="survey"
-            required
-            getOptionLabel={option => option.label}
-            placeholder="Select survey..."
-            muiProps={{
-              disablePortal: true,
-            }}
-            inputRef={register({
-              required: 'Required',
-            })}
-          />
-          <RadioGroup
-            label="Entity level *"
-            name="entityLevel"
-            options={[
-              { label: 'Country', value: 'country' },
-              { label: 'Entity', value: 'Entity' },
-            ]}
-            required
-            inputRef={register({
-              required: 'Required',
-            })}
-            radioGroupProps={{
-              row: true,
-              defaultValue: 'country',
-            }}
-          />
-        </Form>
-      </Container>
+      {isLoading && (
+        <LoadingContainer>
+          <SpinningLoader />
+        </LoadingContainer>
+      )}
+      <Form onSubmit={handleSubmit(onSubmit)} formContext={formContext} $isLoading={isLoading}>
+        {responseData?.emailTimeoutHit && (
+          <EmailDownloadAlert>
+            This export is taking a while, and will continue in the background. You will be emailed
+            when the export process completes.
+          </EmailDownloadAlert>
+        )}
+        <SurveysInput />
+        <EntityLevelInput />
+        {/** Render both of these, and then handle hiding with isActive prop. This means that when we change entityLevel we don't get weird rendering of selected values from the wrong entity type */}
+        <EntitySelectorInput entityLevel="country" />
+        <EntitySelectorInput entityLevel="entity" />
+        <DateRangePicker />
+        <ButtonGroup>
+          <Button variant="text" color="primary" onClick={onReset}>
+            Clear fields
+          </Button>
+          <SubmitButton type="submit">Export</SubmitButton>
+        </ButtonGroup>
+      </Form>
     </Wrapper>
   );
 };

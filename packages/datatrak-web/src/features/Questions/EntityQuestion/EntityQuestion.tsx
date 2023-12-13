@@ -9,13 +9,12 @@ import { useFormContext } from 'react-hook-form';
 import { FormHelperText, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntityById } from '../../../api';
+import { useProjectEntities, useEntityById } from '../../../api';
 import { useDebounce } from '../../../utils';
 import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters, useAttributeFilter } from './utils';
-import { useSurveyForm } from '../../Survey';
 
 const Container = styled.div`
   width: 100%;
@@ -39,7 +38,10 @@ const useSearchResults = (searchValue, config) => {
   const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
-  const query = useEntities(surveyProjectCode, { searchString: debouncedSearch, ...filters });
+  const query = useProjectEntities(surveyProjectCode, {
+    searchString: debouncedSearch,
+    ...filters,
+  });
   let entities = query?.data;
   if (attributeFilter) {
     entities = entities?.filter(attributeFilter);

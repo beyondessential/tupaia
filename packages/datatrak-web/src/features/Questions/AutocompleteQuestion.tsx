@@ -10,8 +10,7 @@ import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { Autocomplete as BaseAutocomplete } from '../../components';
-import { QuestionHelperText } from './QuestionHelperText';
+import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: calc(100% - 3.5rem);
@@ -144,7 +143,7 @@ export const AutocompleteQuestion = ({
         helperText={detailLabel as string}
         textFieldProps={{
           FormHelperTextProps: {
-            component: QuestionHelperText,
+            component: InputHelperText,
           },
         }}
         placeholder="Search..."
@@ -166,7 +165,7 @@ export const AutocompleteQuestion = ({
           },
         }}
       />
-      {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
+      {error && <InputHelperText error>{(error as Error).message}</InputHelperText>}
     </>
   );
 };

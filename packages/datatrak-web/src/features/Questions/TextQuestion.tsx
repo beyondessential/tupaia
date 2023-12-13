@@ -4,12 +4,11 @@
  */
 
 import React from 'react';
-import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
-import { TextInput } from '../../components';
+import { SurveyQuestionInputProps } from '../../types';
+import { TextInput, InputHelperText } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
-import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -63,7 +62,7 @@ export const TextQuestion = ({
         value={value}
         textInputProps={{
           ['aria-describedby']: `question_number_${id}`,
-          type: FIELD_TYPES[(type as unknown) as FIELD_TYPES],
+          type: FIELD_TYPES[type as unknown as FIELD_TYPES],
           placeholder,
           error: invalid,
           required,
@@ -72,7 +71,7 @@ export const TextQuestion = ({
           multiline: type === 'FreeText',
           helperText: detailLabel,
           FormHelperTextProps: {
-            component: QuestionHelperText,
+            component: InputHelperText,
           },
         }}
       />

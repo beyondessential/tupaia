@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { ImageUploadField } from '@tupaia/ui-components';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
 
 const Wrapper = styled.div`
   .file_upload_label {
@@ -52,7 +52,7 @@ export const PhotoQuestion = ({
         required={required}
         avatarVariant="square"
         deleteModal={null}
-        FormHelperTextComponent={QuestionHelperText}
+        FormHelperTextComponent={InputHelperText}
         invalid={invalid}
       />
     </Wrapper>

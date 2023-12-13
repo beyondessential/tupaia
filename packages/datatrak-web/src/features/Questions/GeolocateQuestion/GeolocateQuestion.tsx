@@ -6,11 +6,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
+import { SurveyQuestionInputProps } from '../../../types';
+import { Button, InputHelperText } from '../../../components';
 import { MapModal } from './MapModal';
 import { LatLongFields } from './LatLongFields';
-import { SurveyQuestionInputProps } from '../../../types';
-import { Button } from '../../../components';
-import { QuestionHelperText } from '../QuestionHelperText';
 
 const Container = styled.div`
   display: flex;
@@ -65,7 +64,7 @@ export const GeolocateQuestion = ({
   return (
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
-      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+      {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <Container>
         <LatLongFields
           geolocation={value}
