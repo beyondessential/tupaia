@@ -31,12 +31,12 @@ export async function addRecentEntity(models: DatatrakWebServerModelRegistry, us
 
   const recentEntities = allRecentEntities[countryCode][entityType];
   // If the recent entities already contains this value exit early
-  if (recentEntities.contains(entityId)) {
+  if (recentEntities.includes(entityId)) {
     return;
   }
 
   // Add the latest entity to front of array, cycle out the last entity if we are over the max
-  const updatedEntities = [entityId, recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
+  const updatedEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
   allRecentEntities[countryCode][entityType] = updatedEntities;
 
   return models.user.updateById(userId, { preferences: { ...user.preferences, recentEntities: allRecentEntities } });

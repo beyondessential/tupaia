@@ -41,7 +41,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
 
     if (!!session) {
       const currentUser = await models.user.findOne({ email: session.email });
-      recentEntities = currentUser.preferences.recentEntities[countryCode][type];
+      recentEntities = currentUser.preferences.recentEntities?.[countryCode]?.[type] || [];
     }
 
     const filter = {
