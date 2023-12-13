@@ -72,6 +72,7 @@ export const useSubmitSurvey = () => {
         queryClient.invalidateQueries('recentSurveys');
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
+        queryClient.invalidateQueries('entities'); // Refresh recent entities
         resetForm();
         successToast("Congratulations! You've earned a coconut", Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes
