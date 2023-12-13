@@ -28,7 +28,7 @@ const ButtonContainer = styled.div`
   align-items: center;
 `;
 
-const SuccessMessage = styled(ExportSettingsInstructions)`
+const ResponseMessage = styled(ExportSettingsInstructions)`
   display: flex;
   align-items: center;
   line-height: normal;
@@ -81,10 +81,13 @@ interface ExportDashboardProps {
 export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
-  const handleEmailSuccess = (result: { message: string }) => {
-    setSuccessMessage(result.message);
+  // lazy assumption that the success message contains the word 'success', probably will be fine
+  const isSuccessfulExport = responseMessage !== null && responseMessage.includes('success');
+
+  const handleEmailComplete = (result: { message: string }) => {
+    setResponseMessage(result.message);
   };
 
   const {
@@ -92,7 +95,7 @@ export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboa
     isLoading,
     error,
   } = useEmailDashboard({
-    onSuccess: handleEmailSuccess,
+    onSuccess: handleEmailComplete,
   });
 
   const handleEmail = () =>
@@ -111,11 +114,11 @@ export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboa
           Send export to users who are subscribed to this dashboard.
         </ExportSettingsInstructions>
         <ButtonContainer>
-          {successMessage ? (
-            <SuccessMessage>
-              <SuccessIcon />
-              {successMessage}
-            </SuccessMessage>
+          {responseMessage ? (
+            <ResponseMessage>
+              {isSuccessfulExport ? <SuccessIcon /> : null}
+              {responseMessage}
+            </ResponseMessage>
           ) : (
             <>
               <SendExportButton
