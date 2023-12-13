@@ -117,12 +117,18 @@ export const RequestCountryAccessForm = () => {
   const { mutate: requestCountryAccess } = useRequestProjectAccess();
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const formContext = useForm<RequestCountryAccessFormFields>({ mode: 'onChange' });
+  const formContext = useForm<RequestCountryAccessFormFields>({
+    defaultValues: {
+      countryIds: [],
+      reasonForAccess: '',
+    } as RequestCountryAccessFormFields,
+    mode: 'onChange',
+  });
   const {
     formState: { isSubmitting, isValidating, isValid },
     handleSubmit,
     register,
-    // reset,
+    reset,
   } = formContext;
 
   const applicableCountries = countries?.filter((country: Country) =>
@@ -137,6 +143,8 @@ export const RequestCountryAccessForm = () => {
       message: formData.reasonForAccess,
       projectCode: project.code,
     });
+
+    reset();
   }
 
   return (
@@ -155,6 +163,7 @@ export const RequestCountryAccessForm = () => {
               return (
                 <StyledCheckbox
                   color="primary"
+                  // defaultChecked={false}
                   disabled={hasAccess || hasRequestedAccess}
                   id="countryIds"
                   inputRef={register({ validate: (value: Country['id'][]) => !!value.length })}
@@ -170,7 +179,7 @@ export const RequestCountryAccessForm = () => {
         </CountryListWrapper>
         <StyledBox>
           <StyledFormInput
-            defaultValue=""
+            // defaultValue=""
             fullWidth
             Input={TextField}
             inputProps={{
