@@ -69,11 +69,19 @@ const SubscribeButton = styled(Button)`
   margin-left: 1.2rem;
 `;
 
-const StyledTextField = styled(TextField)`
+const EmailInput = styled(TextField)`
   width: 50%;
   margin: auto;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100%;
+  }
+
+  .Mui-disabled {
+    color: ${props => props.theme.palette.text.secondary};
+  }
+
+  .Mui-disabled:before {
+    border-bottom-style: outset;
   }
 `;
 
@@ -142,7 +150,7 @@ export const SubscribeModal = ({
                 {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
               </ModalParagraph>
               {isLoading && <SpinningLoader mt={5} />}
-              <StyledTextField
+              <EmailInput
                 name="email"
                 label="Email"
                 required
@@ -150,6 +158,7 @@ export const SubscribeModal = ({
                 type="email"
                 options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
                 inputProps={{ readOnly: isLoggedIn }}
+                disabled={isLoggedIn}
               />
               {isMutateError && (
                 <ErrorMessageText color="error">
