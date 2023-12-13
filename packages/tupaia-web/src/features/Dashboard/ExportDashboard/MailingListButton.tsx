@@ -109,7 +109,7 @@ export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboa
   return (
     <fieldset>
       <Container>
-        <MailingListLabel>Mailing List</MailingListLabel>
+        <MailingListLabel>Mailing list</MailingListLabel>
         <ExportSettingsInstructions>
           Send export to users who are subscribed to this dashboard.
         </ExportSettingsInstructions>
