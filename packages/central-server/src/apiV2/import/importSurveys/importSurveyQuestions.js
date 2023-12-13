@@ -104,7 +104,7 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   let currentScreen;
   let currentSurveyScreenComponent;
   let hasSeenDateOfDataQuestion = false;
-  const questionCodes = []; // An array to hold all qustion codes, allowing duplicate checking
+  const questionCodes = []; // An array to hold all question codes, allowing duplicate checking
   const configImporter = new ConfigImporter(models, rows);
   const objectValidator = new ObjectValidator(constructQuestionValidators(models));
   let hasPrimaryEntityQuestion = false;

@@ -34,20 +34,6 @@ const ImagePreview = row => {
 
 const FIELDS = [
   {
-    Header: 'Country',
-    source: 'country.name',
-    editConfig: {
-      optionsEndpoint: 'countries',
-    },
-  },
-  {
-    Header: 'Permission Group',
-    source: 'permission_group.name',
-    editConfig: {
-      optionsEndpoint: 'permissionGroups',
-    },
-  },
-  {
     Header: 'Creation date',
     source: 'creation_date',
     type: 'tooltip',

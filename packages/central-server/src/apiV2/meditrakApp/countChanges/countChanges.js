@@ -8,6 +8,8 @@ import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 import { allowNoPermissions } from '../../../permissions';
 import { buildMeditrakSyncQuery } from '../meditrakSync';
 
+// TODO: Tidy this up as part of RN-502
+
 const handleNonLegacyRequest = async (req, res) => {
   const { models } = req;
   const { query } = await buildMeditrakSyncQuery(req, { select: 'count(*)' });

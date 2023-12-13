@@ -35,7 +35,11 @@ export const PopoverMenu = ({
 }: PopoverMenuProps) => {
   return (
     <Popover
-      PaperProps={{ style: { backgroundColor: primaryColor } }}
+      PaperProps={{
+        style: {
+          backgroundColor: primaryColor,
+        },
+      }}
       open={menuOpen}
       anchorEl={() => document.getElementById('user-menu-button') as HTMLElement}
       onClose={onCloseMenu}

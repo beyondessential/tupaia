@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  translateQuestionDependentNestedFields,
-  replaceNestedQuestionCodesWithIds,
-} from '../../../utilities';
+import { nestConfig, translateQuestionCodeToId } from '../../../utilities';
 import { isYes } from '../utilities';
 
-const OPTION_JSON_FIELD_LIST = ['attributes'];
+const valueTranslators = {
+  createNew: value => isYes(value),
+};
 
 /**
  * Convert config of Autocomplete Questions.
@@ -22,17 +21,26 @@ const OPTION_JSON_FIELD_LIST = ['attributes'];
  *    parent_project: { questionId: "${questionId}" }
  * }
  */
-export const processAutocompleteConfig = async (models, config) => {
-  const { createNew } = config;
-  const optionJsonFields = translateQuestionDependentNestedFields(config, OPTION_JSON_FIELD_LIST);
-  const translatedOptionJsonFields = await replaceNestedQuestionCodesWithIds(
-    models,
-    optionJsonFields,
-    OPTION_JSON_FIELD_LIST,
+const translateValues = async (config, models) => {
+  const translatedValuesWithFields = await Promise.all(
+    Object.entries(config).map(async ([field, value]) => {
+      if (valueTranslators[field]) {
+        const translatedValue = await valueTranslators[field](value, models);
+        return [field, translatedValue];
+      }
+      if (field.startsWith('attributes')) {
+        const translatedValue = await translateQuestionCodeToId(models.question, value);
+        return [field, translatedValue];
+      }
+      return [field, value];
+    }),
   );
+  return Object.fromEntries(translatedValuesWithFields);
+};
 
-  return {
-    createNew: isYes(createNew),
-    ...translatedOptionJsonFields,
-  };
+export const processAutocompleteConfig = async (models, config) => {
+  const configWithTranslatedValues = await translateValues(config, models);
+  const configWithNestedFields = nestConfig(configWithTranslatedValues);
+
+  return configWithNestedFields;
 };

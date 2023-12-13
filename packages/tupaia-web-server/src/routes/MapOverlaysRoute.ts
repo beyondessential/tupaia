@@ -11,9 +11,10 @@ import {
   MapOverlayGroupRelation,
   TupaiaWebMapOverlaysRequest,
 } from '@tupaia/types';
+import { orderBy } from '@tupaia/utils';
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
-import sortBy from 'lodash.sortby';
+import isEqual from 'lodash.isequal';
 
 export type MapOverlaysRequest = Request<
   TupaiaWebMapOverlaysRequest.Params,
@@ -29,28 +30,77 @@ type OverlayChild = TupaiaWebMapOverlaysRequest.OverlayChild;
 const ROOT_MAP_OVERLAY_CODE = 'Root';
 const MAP_OVERLAY_CHILD_TYPE = 'mapOverlay';
 
+const DEFAULT_PAGE_SIZE = 'ALL';
+
+// This function checks if all the map overlay items have the same reference and if they do, it
+// removes the reference from the children and adds it to the info object of the parent
+const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
+  const getReference = (mapOverlayItem: OverlayChild) => {
+    if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
+    return undefined;
+  };
+
+  const firstReference = children[0] && getReference(children[0]);
+
+  const referencesAreTheSame =
+    firstReference &&
+    children.every(
+      mapOverlayItem =>
+        getReference(mapOverlayItem) && isEqual(getReference(mapOverlayItem), firstReference),
+    );
+
+  if (!referencesAreTheSame) {
+    return {
+      children,
+    };
+  }
+
+  // Delete all the same references
+  const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+    const { info, ...restValues } = mapOverlayItem;
+    delete info!.reference;
+    return { ...restValues, info };
+  });
+
+  return {
+    children: noReferenceMapOverlayItems,
+    info: { reference: firstReference },
+  };
+};
+
 export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
   public async buildResponse() {
-    const { query, params, ctx } = this.req;
+    const { query, params, ctx, accessPolicy } = this.req;
     const { projectCode, entityCode } = params;
     const { pageSize } = query;
 
     const entity = await ctx.services.entity.getEntity(projectCode, entityCode);
+    const rootEntityCode = entity.country_code || entity.code;
+
     // Do the initial overlay fetch from the central server, since that enforces permissions
-    const mapOverlays = await ctx.services.central.fetchResources('mapOverlays', {
-      filter: {
-        country_codes: {
-          comparator: '@>',
-          // Project entities do not have a country_code
-          comparisonValue: [entity.country_code || entity.code],
+    const mapOverlays = (
+      await ctx.services.central.fetchResources('mapOverlays', {
+        filter: {
+          country_codes: {
+            comparator: '@>',
+            // Project entities do not have a country_code
+            comparisonValue: [rootEntityCode],
+          },
+          project_codes: {
+            comparator: '@>',
+            comparisonValue: [projectCode],
+          },
         },
-        project_codes: {
-          comparator: '@>',
-          comparisonValue: [projectCode],
-        },
-      },
-      pageSize,
-    });
+        pageSize: pageSize || DEFAULT_PAGE_SIZE,
+      })
+    ).filter(
+      // Central returns overlays you can view in at least one of its countries
+      // We run an additional filter here to narrow down to the specific country we're requesting for
+      (overlay: MapOverlay) =>
+        entity.type === 'project' || // Don't worry about projects, we don't give permissions against them
+        !overlay.permission_group || // No permission group means publicly accessible
+        accessPolicy.getPermissionGroups([rootEntityCode]).includes(overlay.permission_group), // Filter by country/permission pair
+    );
 
     if (mapOverlays.length === 0) {
       return {
@@ -63,18 +113,19 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
 
     // Breaking orchestration server convention and accessing the db directly
     const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
-      mapOverlays.map((overlay: MapOverlay) => overlay.id),
+      mapOverlays
+        .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
+        .map((overlay: MapOverlay) => overlay.id),
     );
 
     // Fetch all the groups we've used
-    const mapOverlayGroups = await ctx.services.central.fetchResources('mapOverlayGroups', {
-      filter: {
-        id: mapOverlayRelations.map(
-          (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
-        ),
-      },
+    const overlayGroupIds: string[] = mapOverlayRelations.map(
+      (relation: MapOverlayGroupRelation) => relation.map_overlay_group_id,
+    );
+    const uniqueGroupIds: string[] = [...new Set(overlayGroupIds)];
+    const mapOverlayGroups = await this.req.models.mapOverlayGroup.find({
+      id: uniqueGroupIds,
     });
-
     // Convert our multiple flat lists into a single nested object
     const nestOverlayGroups = (
       relationsByParentId: Record<string, MapOverlayGroupRelation[]>,
@@ -108,10 +159,18 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
           };
         },
       );
+
       // Translate Map Overlay Group
+      const { children, info } = integrateMapOverlayItemsReference(nestedChildren);
+
       return {
         name: parentEntry.name,
-        children: sortBy(nestedChildren, ['sortOrder', 'name']).map((child: OverlayChild) => {
+        info,
+        children: orderBy(children, [
+          (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
+          'sortOrder',
+          'name',
+        ]).map((child: OverlayChild) => {
           // We only needed the sortOrder for sorting, strip it before we return
           const { sortOrder, ...restOfChild } = child;
           return restOfChild;
@@ -126,19 +185,16 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
       (group: MapOverlayGroup) => group.code === ROOT_MAP_OVERLAY_CODE,
     );
 
-    const nestedGroups = nestOverlayGroups(
-      relationsByParentId,
-      groupsById,
-      overlaysById,
-      rootOverlayGroup,
-    );
+    const nestedGroups =
+      rootOverlayGroup &&
+      nestOverlayGroups(relationsByParentId, groupsById, overlaysById, rootOverlayGroup);
 
     return {
       name: entity.name,
       entityCode: entity.code,
       entityType: entity.type,
       // Map overlays always exist beneath a group, so we know the first layer is only groups
-      mapOverlays: nestedGroups.children as TranslatedMapOverlayGroup[],
+      mapOverlays: (nestedGroups?.children as TranslatedMapOverlayGroup[]) || [],
     };
   }
 }

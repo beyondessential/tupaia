@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class DashboardType extends DatabaseType {
+export class DashboardType extends DatabaseType {
   static databaseType = TYPES.DASHBOARD;
 }
 

@@ -26,7 +26,7 @@ const Container = styled.div`
   }
 `;
 
-export const SignupComplete = () => {
+export const SignUpComplete = () => {
   return (
     <Container>
       <Typography>

@@ -31,7 +31,7 @@ describe('entitySearch', () => {
       );
     });
 
-    it('group entities that start with the string first', async () => {
+    it('sort entities searchString -> hierarchy -> alphabetical', async () => {
       const { body: entities } = await app.get('hierarchy/goldsilver/entitySearch/la', {
         query: { fields: 'code,name' },
       });
@@ -39,9 +39,9 @@ describe('entitySearch', () => {
       expect(entities).toBeArray();
       expect(entities).toEqual(
         getEntitiesWithFields(
-          // 'La'vender Radio Tower, 'La'vender Town, B'la'ckthorn City,
+          // 'La'vender Town, 'La'vender Radio Tower, B'la'ckthorn City,
           // Ce'la'don City, Ce'la'don Game Corner
-          ['LAVENDER_RADIO_TOWER', 'LAVENDER', 'BLACKTHORN', 'CELADON', 'CELADON_GAME'],
+          ['LAVENDER', 'LAVENDER_RADIO_TOWER', 'BLACKTHORN', 'CELADON', 'CELADON_GAME'],
           ['code', 'name'],
         ),
       );
@@ -55,8 +55,8 @@ describe('entitySearch', () => {
       expect(entities).toBeArray();
       expect(entities).toEqual(
         getEntitiesWithFields(
-          // 'La'vender Radio Tower, 'La'vender Town
-          ['LAVENDER_RADIO_TOWER', 'LAVENDER'],
+          // 'La'vender Town, 'La'vender Radio Tower
+          ['LAVENDER', 'LAVENDER_RADIO_TOWER'],
           ['code', 'name'],
         ),
       );

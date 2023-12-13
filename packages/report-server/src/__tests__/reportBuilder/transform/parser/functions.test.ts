@@ -35,6 +35,17 @@ describe('functions', () => {
         expect(() => new TransformParser().evaluate('=last(1)')).toThrowError());
     });
 
+    describe('unique', () => {
+      it('returns the unique values of an array', () =>
+        expect(new TransformParser().evaluate("=unique(['cat', 'cat', 'dog', 'dog'])")).toEqual([
+          'cat',
+          'dog',
+        ]));
+
+      it('throws an error when not passed an array', () =>
+        expect(() => new TransformParser().evaluate('=unique(1)')).toThrowError());
+    });
+
     describe('eq', () => {
       it('returns true when equal values are passed', () =>
         expect(new TransformParser().evaluate('=eq(1, 1)')).toBe(true));

@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class OptionSetType extends DatabaseType {
+export class OptionSetType extends DatabaseType {
   static databaseType = TYPES.OPTION_SET;
 
   async getSurveyIds() {

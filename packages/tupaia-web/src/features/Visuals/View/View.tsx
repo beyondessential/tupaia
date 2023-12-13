@@ -3,19 +3,32 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { ViewConfig } from '@tupaia/types';
-import { ViewReport, DashboardItemReport, DashboardItemConfig } from '../../../types';
+import styled from 'styled-components';
+import { ViewConfig, ViewReport } from '@tupaia/types';
+import { formatDataValueByType } from '@tupaia/utils';
+import { DashboardItemReport, DashboardItemConfig } from '../../../types';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
 import { MultiValue } from './MultiValue';
-import { formatDataValueByType } from '@tupaia/utils';
 import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
 import { DashboardItemContext } from '../../DashboardItem';
+import { DashboardInfoHover } from '../../DashboardItem';
+import { MultiPhotograph } from './MultiPhotograph';
 
+const MultiSingleValueWrapper = styled.div`
+  & + & {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .MuiTypography-root {
+    font-size: 1.25rem;
+  }
+`;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
   customReport?: DashboardItemReport;
@@ -31,14 +44,15 @@ const VIEWS = {
   dataDownload: DataDownload,
   filesDownload: DownloadFiles,
   qrCodeVisual: QRCode,
+  multiPhotograph: MultiPhotograph,
 };
 
 const formatData = (data: ViewReport['data'], config: ViewConfig) => {
-  const { valueType, value_metadata: valueMetadata } = config;
+  const { valueType } = config;
   return data?.map(datum => {
-    const { value } = datum;
+    const { value, value_metadata: valueMetadata } = datum;
     const metadata = {
-      ...(valueMetadata || config[`${datum.name}_metadata` as any] || {}),
+      ...(valueMetadata || config[`${datum.name}_metadata` as any] || config || {}),
       ...datum,
     };
     return {
@@ -55,9 +69,11 @@ const formatData = (data: ViewReport['data'], config: ViewConfig) => {
 };
 
 export const View = ({ customConfig, customReport }: ViewProps) => {
-  const { config: originalConfig, report: originalReport, isEnlarged } = useContext(
-    DashboardItemContext,
-  );
+  const {
+    config: originalConfig,
+    report: originalReport,
+    isEnlarged,
+  } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
   // cast the config to a ViewConfig so we can access the viewType
@@ -70,19 +86,22 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     return (
       <>
         {data?.map((datum, i) => (
-          <View
-            customReport={{
-              ...report,
-              data: [datum],
-            }}
-            customConfig={
-              {
-                ...config,
-                viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
-              } as ViewConfig
-            }
-            key={i}
-          />
+          <MultiSingleValueWrapper key={i}>
+            <View
+              customReport={
+                {
+                  ...report,
+                  data: [datum],
+                } as ViewReport
+              }
+              customConfig={
+                {
+                  ...config,
+                  viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
+                } as ViewConfig
+              }
+            />
+          </MultiSingleValueWrapper>
         ))}
       </>
     );
@@ -94,14 +113,23 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   if (!Component) return null;
 
   const formattedData = formatData(data, viewConfig);
+
+  // Only show the hover effect if the view is not enlarged and there is no period granularity, because this means that the view is not expandable
+  const showHoverEffect = !isEnlarged && !config?.periodGranularity;
   return (
-    <Component
-      report={{
-        ...report,
-        data: formattedData,
-      }}
-      config={viewConfig}
-      isEnlarged={isEnlarged}
-    />
+    <>
+      <Component
+        report={
+          {
+            ...report,
+            data: formattedData,
+          } as ViewReport
+        }
+        config={viewConfig}
+        isEnlarged={isEnlarged}
+        isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
+      />
+      {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}
+    </>
   );
 };

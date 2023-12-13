@@ -4,7 +4,7 @@
  */
 
 import { encryptPassword } from '@tupaia/auth';
-import { sendEmail } from '../../utilities';
+import { sendEmail } from '@tupaia/server-utils';
 
 const { TUPAIA_FRONT_END_URL, LESMIS_FRONT_END_URL } = process.env;
 
@@ -33,7 +33,7 @@ export const sendEmailVerification = async user => {
   const platform = user.primary_platform ? user.primary_platform : 'tupaia';
   const { subject, body, signOff } = EMAILS[platform];
 
-  return sendEmail(user.email, subject, body(token), null, signOff);
+  return sendEmail(user.email, { subject, text: body(token), signOff });
 };
 
 export const verifyEmailHelper = async (models, searchCondition, token) => {

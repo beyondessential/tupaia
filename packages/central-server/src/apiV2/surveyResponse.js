@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { AnalyticsRefresher } from '@tupaia/database';
 import {
   ValidationError,
   MultiValidationError,
@@ -12,6 +13,7 @@ import {
   constructRecordExistsWithCode,
   constructIsEmptyOr,
   takesIdForm,
+  constructIsNotPresentOr,
   takesDateForm,
 } from '@tupaia/utils';
 import { constructAnswerValidator } from './utilities/constructAnswerValidator';
@@ -28,7 +30,6 @@ const createSurveyResponseValidator = models =>
     survey_id: [hasContent, constructRecordExistsWithId(models.survey)],
     start_time: [constructIsEmptyOr(takesDateForm)],
     end_time: [constructIsEmptyOr(takesDateForm)],
-    timestamp: [hasContent],
   });
 
 async function validateResponse(models, body) {
@@ -135,12 +136,17 @@ export async function surveyResponse(req, res) {
     );
 
     results = await saveResponsesToDatabase(transactingModels, userId, responses);
+
+    if (req.query.waitForAnalyticsRebuild) {
+      const { database } = transactingModels;
+      await AnalyticsRefresher.refreshAnalytics(database);
+    }
   });
   res.send({ count: responses.length, results });
 }
 
 const constructAnswerValidators = models => ({
-  id: [hasContent, takesIdForm],
+  id: [constructIsNotPresentOr(takesIdForm)],
   type: [hasContent],
   question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
   body: [hasContent],

@@ -13,6 +13,8 @@ import { CommentModel } from './Comment';
 import { CountryModel } from './Country';
 import { DashboardModel } from './Dashboard';
 import { DashboardItemModel } from './DashboardItem';
+import { DashboardMailingListModel } from './DashboardMailingList';
+import { DashboardMailingListEntryModel } from './DashboardMailingListEntry';
 import { DashboardRelationModel } from './DashboardRelation';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataElementModel } from './DataElement';
@@ -72,6 +74,8 @@ export const modelClasses = {
   Country: CountryModel,
   Dashboard: DashboardModel,
   DashboardItem: DashboardItemModel,
+  DashboardMailingList: DashboardMailingListModel,
+  DashboardMailingListEntry: DashboardMailingListEntryModel,
   DashboardRelation: DashboardRelationModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataElementDataService: DataElementDataServiceModel,
@@ -150,6 +154,7 @@ export {
   MapOverlayGroupRelationModel,
   MapOverlayGroupRelationType,
 } from './MapOverlayGroupRelation';
+export { MapOverlayGroupModel, MapOverlayGroupType } from './MapOverlayGroup';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
@@ -158,7 +163,7 @@ export { PermissionGroupModel } from './PermissionGroup';
 export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
-export { SurveyModel } from './Survey';
+export { SurveyModel, SurveyType } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
@@ -166,3 +171,11 @@ export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
+export { DashboardType, DashboardModel } from './Dashboard';
+export { DashboardItemType, DashboardItemModel } from './DashboardItem';
+export { DashboardMailingListType, DashboardMailingListModel } from './DashboardMailingList';
+export {
+  DashboardMailingListEntryType,
+  DashboardMailingListEntryModel,
+} from './DashboardMailingListEntry';
+export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';

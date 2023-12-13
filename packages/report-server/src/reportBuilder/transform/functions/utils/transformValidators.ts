@@ -89,3 +89,5 @@ export const expressionOrArrayValidator = yupTsUtils.describableLazy(
   },
   [yup.string().required(), yup.array(fieldValueValidator).required()],
 );
+
+export const ascOrDescValidator = yup.mixed<'asc' | 'desc'>().oneOf(['asc', 'desc']);

@@ -14,7 +14,7 @@ import {
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
 import { TestModelRegistry } from '../types';
-import { setupTestApp, setupTestUser } from '../utilities';
+import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../utilities';
 import { CAT_QUESTION, CAT_SURVEY, CAT_USER_SESSION } from './fixtures';
 
 describe('me/rewards', () => {
@@ -34,6 +34,7 @@ describe('me/rewards', () => {
         apiClientUserId: undefined,
       }),
     );
+    grantUserAccess(user.id);
 
     const models = getTestModels() as TestModelRegistry;
     await buildAndInsertSurveys(models, [CAT_SURVEY]);
@@ -49,6 +50,7 @@ describe('me/rewards', () => {
   });
 
   afterAll(async () => {
+    revokeAccess();
     await clearTestData(getTestDatabase());
   });
 

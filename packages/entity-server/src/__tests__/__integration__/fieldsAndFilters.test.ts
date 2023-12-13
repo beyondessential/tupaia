@@ -37,6 +37,7 @@ describe('fieldsAndFilters', () => {
       bounds: null,
       location_type: 'no-coordinates',
       parent_code: 'redblue',
+      parent_name: 'Pokemon Red/Blue',
       child_codes: [
         'LAVENDER',
         'VERMILLION',

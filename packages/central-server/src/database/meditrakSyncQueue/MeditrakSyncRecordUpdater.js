@@ -3,18 +3,24 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import { getSyncQueueChangeTime } from '@tupaia/tsutils';
+
+// TODO: Tidy this up as part of RN-502
+
 const arraysAreSame = (arr1, arr2) =>
   arr1.length === arr2.length && arr1.every(item => arr2.includes(item));
 
 export class MeditrakSyncRecordUpdater {
   constructor(models) {
     this.models = models;
+    this.changeIndex = 0;
   }
 
   /**
    * @public
    */
   async updateSyncRecords(changes) {
+    this.changeIndex = 0;
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       await this.processChange(change);
@@ -84,7 +90,12 @@ export class MeditrakSyncRecordUpdater {
       ...optionChanges,
     ];
 
-    return Promise.all(allChanges.map(change => this.addToSyncQueue(change)));
+    const addedChanges = [];
+    for (let i = 0; i < allChanges.length; i++) {
+      const change = allChanges[i];
+      addedChanges.push(await this.addToSyncQueue(change));
+    }
+    return addedChanges;
   }
 
   /**
@@ -108,7 +119,7 @@ export class MeditrakSyncRecordUpdater {
       },
       {
         ...change,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        change_time: getSyncQueueChangeTime(this.changeIndex++),
       },
     );
   }

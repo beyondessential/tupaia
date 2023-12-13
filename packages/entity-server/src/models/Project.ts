@@ -13,6 +13,7 @@ type ProjectFields = Readonly<{
   name: string;
   entity_id: string;
   entity_hierarchy_id: string;
+  permission_groups: string[];
 }>;
 
 interface ProjectType extends ProjectFields, Omit<BaseProjectType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here

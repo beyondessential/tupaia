@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { MultiValueRowViewConfig, ViewConfig } from '@tupaia/types';
+import { MultiValueRowViewConfig, ViewConfig, ViewDataItem, ViewReport } from '@tupaia/types';
 import {
   Table,
   TableCell as MuiTableCell,
@@ -12,7 +12,6 @@ import {
   TableBody,
   TableHead,
 } from '@material-ui/core';
-import { ViewDataItem, ViewReport } from '../../../types';
 
 interface MultiValueRowProps {
   report: ViewReport;

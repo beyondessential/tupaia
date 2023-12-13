@@ -13,11 +13,10 @@ import {
   ReferenceArea,
   ResponsiveContainer,
   Tooltip,
-  Brush,
   LegendProps,
 } from 'recharts';
 import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
-import { CHART_BLUES, DEFAULT_DATA_KEY } from '../constants';
+import { DEFAULT_DATA_KEY } from '../constants';
 import { ChartType, ViewContent, LegendPosition } from '../types';
 import {
   BarChart as BarChartComponent,
@@ -283,14 +282,6 @@ export const CartesianChart = ({
             });
           })}
         {ReferenceLines({ viewContent: viewContent as ViewContent, isExporting, isEnlarged })}
-        {defaultChartType === Bar && data.length > 20 && !isExporting && isEnlarged && (
-          <Brush
-            dataKey="name"
-            height={20}
-            stroke={CHART_BLUES['blue1']}
-            fill={CHART_BLUES['blue2']}
-          />
-        )}
       </ChartContainer>
     </ResponsiveContainer>
   );

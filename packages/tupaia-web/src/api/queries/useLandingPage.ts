@@ -5,20 +5,24 @@
  */
 
 import { useQuery } from 'react-query';
+import { useParams } from 'react-router';
 import { get } from '../api';
 import { SingleLandingPage } from '../../types';
 
-export const useLandingPage = (urlSegment?: string) => {
+export const useLandingPage = () => {
+  const { landingPageUrlSegment } = useParams();
+
   const landingPageResponse = useQuery(
-    ['landingPage', urlSegment],
-    () => get(`landingPage/${urlSegment}`, {}),
+    ['landingPage', landingPageUrlSegment],
+    () => get(`landingPage/${landingPageUrlSegment}`, {}),
     {
-      enabled: !!urlSegment,
+      enabled: !!landingPageUrlSegment,
     },
   );
   // handle default landing page value as empty object
   return {
     ...landingPageResponse,
+    landingPageUrlSegment,
     isLandingPage: !!landingPageResponse.data,
     landingPage: (landingPageResponse.data || {}) as SingleLandingPage,
   };

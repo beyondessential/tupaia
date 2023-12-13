@@ -47,19 +47,12 @@ interface DataTableProps {
 
 export const DataTable = ({
   columns,
-  data,
+  data = [],
   className = '',
   rowLimit = 0,
   total = 0,
 }: DataTableProps) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    columns: columnsData,
-  } = useTable(
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } = useTable(
     {
       columns,
       data,
@@ -83,12 +76,12 @@ export const DataTable = ({
 
   return (
     <TableContainer className={className}>
-      <StyledTable {...getTableProps()} style={{ minWidth: columnsData.length * 140 + 250 }}>
+      <StyledTable {...getTableProps()}>
         <TableHead>
-          {headerGroups.map(({ getHeaderGroupProps, headers }, i) => (
+          {headerGroups.map(({ getHeaderGroupProps, headers }) => (
             <TableRow {...getHeaderGroupProps()}>
               {headers.map(
-                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }) => (
+                ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }, i) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <TableCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
                     <FlexStart>

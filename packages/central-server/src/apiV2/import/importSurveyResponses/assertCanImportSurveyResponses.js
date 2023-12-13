@@ -61,7 +61,7 @@ export const assertCanImportSurveyResponses = async (
   return true;
 };
 
-const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesCreated) => {
+const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, entitiesUpserted) => {
   // There are three valid ways to refer to the entity in a batch change:
   // entity_code, entity_id, clinic_id
   if (surveyResponse.entity_code) {
@@ -70,7 +70,7 @@ const getEntityCodeFromSurveyResponseChange = async (models, surveyResponse, ent
   if (surveyResponse.entity_id) {
     // If we're submitting a response against a new entity, it won't yet have a valid entity_code in
     // the server db. Instead, check our permissions against the new entity's parent
-    const newEntity = entitiesCreated.find(e => e.id === surveyResponse.entity_id);
+    const newEntity = entitiesUpserted.find(e => e.id === surveyResponse.entity_id);
     if (newEntity) {
       const parentEntity = await models.entity.findById(newEntity.parent_id);
       return parentEntity.code;
@@ -95,16 +95,16 @@ export const assertCanSubmitSurveyResponses = async (accessPolicy, models, surve
   const surveys = await models.survey.findManyById(surveyIds);
   const surveyCodesById = reduceToDictionary(surveys, 'id', 'code');
 
-  const entitiesCreated = surveyResponses
-    .filter(sr => !!sr.entities_created)
-    .map(sr => sr.entities_created)
+  const entitiesUpserted = surveyResponses
+    .filter(sr => !!sr.entities_upserted)
+    .map(sr => sr.entities_upserted)
     .flat();
 
   for (const response of surveyResponses) {
     const entityCode = await getEntityCodeFromSurveyResponseChange(
       models,
       response,
-      entitiesCreated,
+      entitiesUpserted,
     );
     const surveyCode = surveyCodesById[response.survey_id];
 

@@ -42,6 +42,6 @@ export class MockTupaiaApiClient {
     this.dataTable = dataTable;
     this.entity = entity;
     this.report = report;
-    this.webConfig = webConfig
+    this.webConfig = webConfig;
   }
 }

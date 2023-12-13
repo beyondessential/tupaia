@@ -8,7 +8,7 @@ import { findOrCreateDummyRecord } from './upsertDummyRecord';
 const buildAndInsertQuestion = async (
   models,
   surveyScreen,
-  { code, ...questionFields },
+  { code, surveyScreenComponent: surveyScreenComponentFields, ...questionFields },
   dataSourceFields,
 ) => {
   const dataElement = await buildAndInsertDataElement(models, { code, ...dataSourceFields });
@@ -23,7 +23,7 @@ const buildAndInsertQuestion = async (
       screen_id: surveyScreen.id,
       question_id: question.id,
     },
-    {},
+    { ...surveyScreenComponentFields },
   );
   return { question, dataElement, surveyScreenComponent };
 };

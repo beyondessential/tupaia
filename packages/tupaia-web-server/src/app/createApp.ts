@@ -13,34 +13,8 @@ import {
   forwardRequest,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
-import {
-  DashboardsRoute,
-  DashboardsRequest,
-  EntitiesRoute,
-  EntitiesRequest,
-  EntityAncestorsRoute,
-  EntityAncestorsRequest,
-  ReportRoute,
-  ReportRequest,
-  LegacyDashboardReportRoute,
-  LegacyDashboardReportRequest,
-  LegacyMapOverlayReportRoute,
-  LegacyMapOverlayReportRequest,
-  MapOverlaysRoute,
-  MapOverlaysRequest,
-  UserRoute,
-  UserRequest,
-  ProjectRoute,
-  ProjectRequest,
-  CountryAccessListRoute,
-  CountryAccessListRequest,
-  RequestCountryAccessRoute,
-  EntitySearchRoute,
-  EntitySearchRequest,
-  RequestCountryAccessRequest,
-  EntityRoute,
-  EntityRequest,
-} from '../routes';
+import * as routes from '../routes';
+import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -49,35 +23,72 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'tupaia-web', { attachModels: true })
+export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
+  const app = new OrchestratorApiBuilder(db, 'tupaia-web', { attachModels: true })
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
-    .get<ReportRequest>('report/:reportCode', handleWith(ReportRoute))
-    .get<LegacyDashboardReportRequest>(
+    .use('*', attachAccessPolicy)
+    .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
+    .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',
-      handleWith(LegacyDashboardReportRoute),
+      handleWith(routes.LegacyDashboardReportRoute),
     )
-    .get<LegacyMapOverlayReportRequest>(
+    .get<routes.LegacyMapOverlayReportRequest>(
       'legacyMapOverlayReport/:mapOverlayCode',
-      handleWith(LegacyMapOverlayReportRoute),
+      handleWith(routes.LegacyMapOverlayReportRoute),
     )
-    .get<MapOverlaysRequest>('mapOverlays/:projectCode/:entityCode', handleWith(MapOverlaysRoute))
-    .get<ProjectRequest>('project/:projectCode', handleWith(ProjectRoute))
-    .get<UserRequest>('getUser', handleWith(UserRoute))
-    .get<DashboardsRequest>('dashboards/:projectCode/:entityCode', handleWith(DashboardsRoute))
-    .get<CountryAccessListRequest>('countryAccessList', handleWith(CountryAccessListRoute))
-    .post<RequestCountryAccessRequest>(
+    .get<routes.MapOverlaysRequest>(
+      'mapOverlays/:projectCode/:entityCode',
+      handleWith(routes.MapOverlaysRoute),
+    )
+    .get<routes.ProjectRequest>('project/:projectCode', handleWith(routes.ProjectRoute))
+    .get<routes.UserRequest>('getUser', handleWith(routes.UserRoute))
+    .get<routes.DashboardsRequest>(
+      'dashboards/:projectCode/:entityCode',
+      handleWith(routes.DashboardsRoute),
+    )
+    .post<routes.ExportDashboardRequest>(
+      'dashboards/:projectCode/:entityCode/:dashboardName/export',
+      handleWith(routes.ExportDashboardRoute),
+    )
+    .post<routes.EmailDashboardRequest>(
+      'dashboards/:projectCode/:entityCode/:dashboardName/email',
+      handleWith(routes.EmailDashboardRoute),
+    )
+    .get<routes.CountryAccessListRequest>(
+      'countryAccessList',
+      handleWith(routes.CountryAccessListRoute),
+    )
+    .post<routes.RequestCountryAccessRequest>(
       'requestCountryAccess',
-      handleWith(RequestCountryAccessRoute),
+      handleWith(routes.RequestCountryAccessRoute),
     )
-    .get<EntityRequest>('entity/:projectCode/:entityCode', handleWith(EntityRoute))
-    .get<EntitiesRequest>('entities/:projectCode/:rootEntityCode', handleWith(EntitiesRoute))
-    .get<EntitySearchRequest>('entitySearch/:projectCode', handleWith(EntitySearchRoute))
-    .get<EntityAncestorsRequest>(
+    .get<routes.EntityRequest>('entity/:projectCode/:entityCode', handleWith(routes.EntityRoute))
+    .get<routes.EntitiesRequest>(
+      'entities/:projectCode/:rootEntityCode',
+      handleWith(routes.EntitiesRoute),
+    )
+    .get<routes.EntitySearchRequest>(
+      'entitySearch/:projectCode',
+      handleWith(routes.EntitySearchRoute),
+    )
+    .get<routes.EntityAncestorsRequest>(
       'entityAncestors/:projectCode/:rootEntityCode',
-      handleWith(EntityAncestorsRoute),
+      handleWith(routes.EntityAncestorsRoute),
+    )
+    .get<routes.ExportSurveyResponsesRequest>(
+      'export/surveyResponses',
+      handleWith(routes.ExportSurveyResponsesRoute),
+    )
+    .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
+    .post<routes.SubscribeRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
+      handleWith(routes.SubscribeRoute),
+    )
+    .put<routes.UnsubscribeRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
+      handleWith(routes.UnsubscribeRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi

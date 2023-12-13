@@ -7,3 +7,6 @@ export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value 
 
 export const isNotNullish = <T>(val: T): val is Exclude<T, undefined | null> =>
   val !== undefined && val !== null;
+
+export const isObject = (val: unknown): val is Record<string, unknown> =>
+  typeof val === 'object' && val !== null && !Array.isArray(val);

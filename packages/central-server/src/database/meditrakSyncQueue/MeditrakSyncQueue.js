@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+// TODO: Tidy this up as part of RN-502
+
 import winston from 'winston';
 import { ChangeHandler } from '@tupaia/database';
 import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';

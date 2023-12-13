@@ -33,6 +33,14 @@ export const last = (values: FieldValue[]): FieldValue => {
   return values[values.length - 1];
 };
 
+export const unique = (values: FieldValue[]): FieldValue[] => {
+  if (!Array.isArray(values)) {
+    throw new Error(`Function 'unique' expected an array, but got: ${values}`);
+  }
+
+  return values.filter((val, index) => index === values.indexOf(val));
+};
+
 export const eq = (val1: any, val2: any): boolean => {
   return val1 === val2;
 };

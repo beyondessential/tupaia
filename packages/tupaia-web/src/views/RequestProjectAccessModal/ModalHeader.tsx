@@ -31,6 +31,7 @@ const HeaderContainer = styled.div`
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     & + & {
       margin-left: 2rem;
+      width: 50%;
     }
   }
 `;
@@ -59,7 +60,7 @@ const ProjectsButton = styled(RouterButton).attrs({
   }
 `;
 
-export const ModalHeader = () => {
+export const ModalHeader = ({ isLandingPage }: { isLandingPage: boolean }) => {
   return (
     <Header>
       <HeaderContainer>
@@ -69,13 +70,15 @@ export const ModalHeader = () => {
         </TagLine>
       </HeaderContainer>
       <HeaderContainer>
-        <ProjectsButton
-          modal={MODAL_ROUTES.PROJECTS}
-          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-        >
-          <ExploreIcon />
-          View other projects
-        </ProjectsButton>
+        {!isLandingPage && (
+          <ProjectsButton
+            modal={MODAL_ROUTES.PROJECTS}
+            searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+          >
+            <ExploreIcon />
+            View other projects
+          </ProjectsButton>
+        )}
       </HeaderContainer>
     </Header>
   );

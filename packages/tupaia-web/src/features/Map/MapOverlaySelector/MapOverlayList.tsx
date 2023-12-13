@@ -3,8 +3,11 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { ReferenceTooltip } from '@tupaia/ui-components';
 import {
   Accordion,
   AccordionDetails,
@@ -14,9 +17,7 @@ import {
   RadioGroup,
 } from '@material-ui/core';
 import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
-import { useSearchParams } from 'react-router-dom';
 import { KeyboardArrowRight } from '@material-ui/icons';
-import styled from 'styled-components';
 import { useMapOverlays } from '../../../api/queries';
 import { DEFAULT_PERIOD_PARAM_STRING, URL_SEARCH_PARAMS } from '../../../constants';
 
@@ -30,14 +31,25 @@ const AccordionWrapper = styled(Accordion)`
     margin: 0;
   }
 `;
+
 const AccordionHeader = styled(AccordionSummary)`
+  display: flex;
+  align-items: center;
+  border-radius: 3px;
+
+  .MuiAccordionSummary-content .MuiSvgIcon-root {
+    margin: 0 0 0 0.2rem;
+  }
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
   &.MuiAccordionSummary-root {
     min-height: unset;
     padding: 0;
     flex-direction: row-reverse;
   }
   .MuiAccordionSummary-expandIcon {
-    padding: 0rem;
+    padding: 0;
     &.Mui-expanded {
       transform: rotate(90deg);
     }
@@ -47,6 +59,11 @@ const AccordionHeader = styled(AccordionSummary)`
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     font-size: 1rem;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const AccordionContent = styled(AccordionDetails)`
@@ -70,10 +87,22 @@ const AccordionContent = styled(AccordionDetails)`
   }
 `;
 
+const FormLabel = styled(FormControlLabel)`
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(153, 153, 153, 0.2);
+  }
+`;
+
 /**
  * This is a recursive component that renders a list of map overlays in an accordion
  */
-const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup }) => {
+const MapOverlayAccordion = ({
+  mapOverlayGroup,
+}: {
+  mapOverlayGroup: TupaiaWebMapOverlaysRequest.TranslatedMapOverlayGroup;
+}) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -81,19 +110,35 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMa
 
   return (
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
-      <AccordionHeader expandIcon={<KeyboardArrowRight />}>{mapOverlayGroup.name}</AccordionHeader>
+      <AccordionHeader expandIcon={<KeyboardArrowRight />}>
+        {mapOverlayGroup.name}
+        {mapOverlayGroup.info && mapOverlayGroup.info.reference && (
+          <ReferenceTooltip
+            reference={mapOverlayGroup.info.reference}
+            iconStyleOption="mayOverlay"
+          />
+        )}
+      </AccordionHeader>
       <AccordionContent>
         {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
         {mapOverlayGroup.children.map(mapOverlay =>
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
           ) : (
-            <FormControlLabel
-              value={mapOverlay.code}
-              control={<Radio />}
-              label={mapOverlay.name}
-              key={mapOverlay.code}
-            />
+            <Wrapper>
+              <FormLabel
+                value={mapOverlay.code}
+                control={<Radio />}
+                label={mapOverlay.name}
+                key={mapOverlay.code}
+              />
+              {mapOverlay.info && mapOverlay.info.reference && (
+                <ReferenceTooltip
+                  reference={mapOverlay.info.reference}
+                  iconStyleOption="mayOverlay"
+                />
+              )}
+            </Wrapper>
           ),
         )}
       </AccordionContent>
@@ -101,23 +146,79 @@ const MapOverlayAccordion = ({ mapOverlayGroup }: { mapOverlayGroup: TupaiaWebMa
   );
 };
 
+const RadioGroupContainer = styled(RadioGroup)`
+  // Use display block to prevent the menu buttons moving around when opening the accordion
+  display: block;
+`;
+
+/**
+ * A utility that saves selected map overlay date ranges in state, so that it can be retrieved if the user navigates back to them
+ */
+const useSavedMapOverlayDates = () => {
+  const [datesByMapOverlay, setDatesByMapOverlay] = useState({});
+  const [urlSearchParams] = useSearchParams();
+
+  const saveMapOverlayDateRange = (code: string, dateRange: string) => {
+    setDatesByMapOverlay({
+      ...datesByMapOverlay,
+      [code]: dateRange,
+    });
+  };
+
+  const mapOverlayCode = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY);
+  const mapOverlayPeriod = urlSearchParams.get(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD);
+
+  useEffect(() => {
+    if (mapOverlayCode && mapOverlayPeriod) {
+      saveMapOverlayDateRange(mapOverlayCode, mapOverlayPeriod);
+    }
+  }, [mapOverlayCode, mapOverlayPeriod]);
+
+  const getMapOverlayDateRange = (code: string) => datesByMapOverlay[code];
+
+  const getSavedMapOverlayDateRange = (code: string) => {
+    if (code) {
+      const savedDateRange = getMapOverlayDateRange(code);
+      if (savedDateRange) {
+        return savedDateRange;
+      }
+    }
+    return DEFAULT_PERIOD_PARAM_STRING;
+  };
+
+  return { getSavedMapOverlayDateRange };
+};
+
 /**
  * This is the parent list of all the map overlays available to pick from
  */
-export const MapOverlayList = () => {
+export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
-  const { mapOverlayGroups = [], selectedOverlayCode } = useMapOverlays(projectCode, entityCode);
+  const { getSavedMapOverlayDateRange } = useSavedMapOverlayDates();
+  const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
+    projectCode,
+    entityCode,
+  );
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, e.target.value);
-    // when overlay changes, reset period to default
-    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, DEFAULT_PERIOD_PARAM_STRING);
+    const selectedCode = e.target.value;
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY, selectedCode);
+
+    // when overlay changes, reset update the date period, using the saved date range if it exists
+    const newDateRange = getSavedMapOverlayDateRange(selectedCode);
+    urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, newDateRange);
     setUrlParams(urlSearchParams);
+
+    if (toggleOverlayLibrary) {
+      toggleOverlayLibrary();
+    }
   };
 
+  if (isLoadingMapOverlays) return null;
+
   return (
-    <RadioGroup
+    <RadioGroupContainer
       aria-label="Map overlays"
       name="map-overlays"
       value={selectedOverlayCode}
@@ -128,6 +229,6 @@ export const MapOverlayList = () => {
         .map(group => (
           <MapOverlayAccordion mapOverlayGroup={group} key={group.name} />
         ))}
-    </RadioGroup>
+    </RadioGroupContainer>
   );
 };

@@ -4,4 +4,4 @@
  */
 
 export { attachCommonEntityContext } from './attachCommonEntityContext';
-export { attachSingleEntityContext, attachMultiEntityContext } from './attachEntityContext';
+export { attachSingleEntityContext, attachMultiEntityContext, attachEntityFilterContext } from './attachEntityContext';

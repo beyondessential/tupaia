@@ -5,7 +5,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { downloadPageAsPDF } from '@tupaia/tsutils';
+import { downloadPageAsPDF } from '@tupaia/server-utils';
 
 type Body = {
   pdfPageUrl: string;

@@ -70,7 +70,7 @@ const StyledCopyrightIcon = styled(CopyrightIcon)`
 `;
 
 const Divider = styled.div`
-  height: 0px;
+  height: 0;
   border: 1px solid black;
   opacity: 0.3;
 `;

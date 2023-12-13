@@ -4,25 +4,12 @@
  */
 
 import { NextFunction, Request, Response } from 'express';
-import { getAjv } from '@tupaia/tsutils';
-import { generateId } from '@tupaia/database';
+import { ajvValidate } from '@tupaia/tsutils';
 import { DataTablePreviewRequestSchema } from '@tupaia/types';
 import type { DataTablePreviewRequest } from '@tupaia/types';
 
 import { getDataTableService } from '../dataTableService';
 import { validatePermissions } from './helpers';
-
-const validateDataTableFields = (dataTableFields: any): DataTablePreviewRequest => {
-  const ajv = getAjv();
-  const dataTableValidator = ajv.compile(DataTablePreviewRequestSchema);
-  // Add random id to meet validation requirement
-  const validate = dataTableValidator({ id: generateId(), ...dataTableFields });
-  if (!validate && dataTableValidator.errors) {
-    throw new Error(dataTableValidator.errors[0].message);
-  }
-
-  return dataTableFields;
-};
 
 /**
  * Finds the requested dataTable and attaches it to the context
@@ -35,7 +22,10 @@ export const attachDataTableFromPreviewToContext = async (
 ) => {
   try {
     const { models, body } = req;
-    const dataTableFields = validateDataTableFields(body);
+    const dataTableFields = ajvValidate<DataTablePreviewRequest>(
+      DataTablePreviewRequestSchema,
+      body,
+    );
     const dataTable = await models.dataTable.generateInstance(dataTableFields);
 
     validatePermissions(dataTable, req);

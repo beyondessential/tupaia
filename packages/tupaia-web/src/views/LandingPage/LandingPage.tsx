@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container as MuiContainer } from '@material-ui/core';
 import { useLandingPage, useUser } from '../../api/queries';
@@ -12,6 +12,7 @@ import { SingleProjectLandingPage } from './SingleProjectLandingPage';
 import { LandingPageFooter } from './LandingPageFooter';
 import { SingleLandingPage } from '../../types';
 import { MultiProjectLandingPage } from './MultiProjectLandingPage';
+import { DEFAULT_URL } from '../../constants';
 
 const DEFAULT_LANDING_IMAGE_URL = '/images/custom-landing-page-default.png';
 
@@ -68,14 +69,14 @@ const ProjectScreen = ({
 };
 
 export const LandingPage = () => {
-  const { landingPageUrlSegment } = useParams();
-  const { landingPage, isLoading } = useLandingPage(landingPageUrlSegment!);
-  const { imageUrl } = landingPage;
-
   const { isLoggedIn } = useUser();
-
   // use the landingPageUrlSegment to query for the landing page.
   // If found, render landing page. If not, render a default landing page
+  const { landingPage, isLoading, isLandingPage } = useLandingPage();
+  if (!isLandingPage && !isLoading) return <Navigate to={DEFAULT_URL} replace />;
+
+  const { imageUrl } = landingPage;
+
   return (
     <Wrapper $backgroundImage={imageUrl || DEFAULT_LANDING_IMAGE_URL}>
       <Container maxWidth={false}>

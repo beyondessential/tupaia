@@ -3,7 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export type { ReportConfig, StandardReportConfig, CustomReportConfig } from './report';
+export type {
+  ReportConfig,
+  StandardReportConfig,
+  CustomReportConfig,
+  MatrixReportRow,
+  MatrixReportColumn,
+  MatrixReport,
+  BaseReport,
+  ViewDataItem,
+  ViewReport,
+} from './report';
 export type {
   DashboardItemConfig,
   BarChartConfig,
@@ -40,3 +50,18 @@ export {
   ScaleType,
   MeasureColorScheme,
 } from './mapOverlay';
+export {
+  SurveyScreenComponentConfig,
+  CodeGeneratorQuestionConfig,
+  AutocompleteQuestionConfig,
+  EntityQuestionConfig,
+  ConditionQuestionConfig,
+  ArithmeticQuestionConfig,
+} from './survey';
+export { LeaderboardItem } from './leaderboard';
+export {
+  FeedItemTemplateVariables,
+  FeedItemTypes,
+  SurveyResponseTemplateVariables,
+  MarkdownTemplateVariables,
+} from './feedItem';

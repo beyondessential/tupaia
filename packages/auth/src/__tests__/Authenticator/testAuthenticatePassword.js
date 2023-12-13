@@ -17,7 +17,7 @@ export const testAuthenticatePassword = () => {
 
   describe('throws an error with invalid arguments', () => {
     const testData = [
-      ['undefined', undefined, "Cannot read property 'emailAddress' of undefined"],
+      ['undefined', undefined, "Cannot read properties of undefined (reading 'emailAddress')"],
       ['empty', {}, 'Please supply emailAddress, password and deviceName in the request body'],
       [
         'no emailAddress',

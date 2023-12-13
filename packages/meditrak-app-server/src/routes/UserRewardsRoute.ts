@@ -30,7 +30,7 @@ export class UserRewardsRoute extends Route<UserRewardsRequest> {
         WHERE user_id = ?
         GROUP BY user_id;
         `,
-      userId,
+      [userId],
     );
 
     return { coconuts, pigs };

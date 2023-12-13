@@ -16,12 +16,12 @@ import {
   TooltipProps,
   LegendProps,
 } from 'recharts';
+import { PieChartConfig } from '@tupaia/types';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
 import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
-import { PieChartConfig } from '@tupaia/types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -119,7 +119,7 @@ export const PieChart = ({
   const [activeIndex, setActiveIndex] = useState(-1);
   const { presentationOptions, data } = viewContent;
   // eslint-disable-next-line no-unused-vars
-  const [_, setLoaded] = useState(false);
+  const [, setLoaded] = useState(false);
 
   const isMobileSize = isMobile(isExporting);
 
@@ -146,7 +146,10 @@ export const PieChart = ({
 
   const getValidData = () =>
     data
-      .filter(element => element.value > 0)
+      .filter(({ value }) => {
+        if (typeof value === 'number') return value > 0;
+        return parseFloat(value) > 0;
+      })
       .map(item => {
         const { name, ...otherKeyValues } = item;
         // Map names to labels if available

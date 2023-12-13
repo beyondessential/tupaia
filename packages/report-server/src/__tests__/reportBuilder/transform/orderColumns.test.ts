@@ -76,6 +76,64 @@ describe('orderColumns', () => {
       ).toThrow('sortBy must be one of the following values:');
     });
 
+    describe('direction', () => {
+      it('throws error for unknown direction', () => {
+        expect(() =>
+          buildTestTransform([
+            {
+              transform: 'orderColumns',
+              sortBy: 'alphabetic',
+              direction: 'not_a_real_direction',
+            },
+          ]),
+        ).toThrow('direction must be one of the following values: asc, desc');
+      });
+
+      it('defaults to sorting ascending', async () => {
+        const transform = buildTestTransform([
+          {
+            transform: 'orderColumns',
+            sortBy: 'alphabetic',
+          },
+        ]);
+        expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+          TransformTable.fromRows([
+            { dataElement: 'BCD1', organisationUnit: 'TO', period: '20200101', value: 4 },
+          ]),
+        );
+      });
+
+      it('can sort ascending', async () => {
+        const transform = buildTestTransform([
+          {
+            transform: 'orderColumns',
+            sortBy: 'alphabetic',
+            direction: 'asc',
+          },
+        ]);
+        expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+          TransformTable.fromRows([
+            { dataElement: 'BCD1', organisationUnit: 'TO', period: '20200101', value: 4 },
+          ]),
+        );
+      });
+
+      it('can sort descending', async () => {
+        const transform = buildTestTransform([
+          {
+            transform: 'orderColumns',
+            sortBy: 'alphabetic',
+            direction: 'desc',
+          },
+        ]);
+        expect(await transform(TransformTable.fromRows(SINGLE_ANALYTIC))).toEqual(
+          TransformTable.fromRows([
+            { value: 4, period: '20200101', organisationUnit: 'TO', dataElement: 'BCD1' },
+          ]),
+        );
+      });
+    });
+
     describe('alphabetic', () => {
       it('can sort columns alphabetically', async () => {
         const transform = buildTestTransform([

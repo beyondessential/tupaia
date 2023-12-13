@@ -1,6 +1,6 @@
 import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
-import { stripTimezoneFromDate } from '@tupaia/utils';
+import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
 import keyBy from 'lodash.keyby';
 import { upsertAnswers } from '../../dataAccessors';
 
@@ -53,21 +53,34 @@ function buildResponseRecord(user, entitiesByCode, body) {
     id,
     entity_id: entityId,
     entity_code: entityCode,
-    timestamp,
     survey_id: surveyId,
     start_time: inputStartTime,
     end_time: inputEndTime,
     data_time: inputDataTime,
     approval_status: approvalStatus,
+    timestamp,
     timezone,
   } = body;
 
-  const time = new Date(timestamp).toISOString();
-  const startTime = inputStartTime ? new Date(inputStartTime).toISOString() : time;
-  const endTime = inputEndTime ? new Date(inputEndTime).toISOString() : time;
-  const dataTime = inputDataTime
-    ? stripTimezoneFromDate(new Date(inputDataTime).toISOString())
-    : stripTimezoneFromDate(time);
+  /**
+   * We use timestamp as a fallback for all the time related fields (start_time, end_time, data_time, timezone)
+   * If all of those fields are present, we don't need a value for timestamp
+   * But if any of them are missing, and we don't have a value for timestamp, we throw an error
+   */
+  if (!timezone && !timestamp) {
+    throw new ValidationError(`Must provide timezone or timestamp`);
+  }
+
+  const defaultToTimestampOrThrow = (value, parameterName) => {
+    if (value) return new Date(value).toISOString();
+    if (timestamp) return new Date(timestamp).toISOString();
+
+    throw new ValidationError(`Must provide ${parameterName} or timestamp`);
+  };
+
+  const startTime = defaultToTimestampOrThrow(inputStartTime, 'start_time');
+  const endTime = defaultToTimestampOrThrow(inputEndTime, 'end_time');
+  const dataTime = stripTimezoneFromDate(defaultToTimestampOrThrow(inputDataTime, 'data_time'));
 
   return {
     id: id || generateId(),

@@ -57,17 +57,18 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
       const { offsetWidth } = tableEl?.current;
       // 200px is the max width of a column that we want to show
       const usableWidth = offsetWidth - 200; // the max size of the first column (row title)
-      const maxColumns = Math.floor(usableWidth / 200);
+      const updatedMaxCols = Math.floor(usableWidth / 200) || 1;
 
       const flattenedColumns = getFlattenedColumns(columns);
       dispatch({
         type: ACTION_TYPES.SET_MAX_COLUMNS,
-        payload: Math.min(maxColumns, flattenedColumns.length),
+        payload: Math.min(updatedMaxCols, flattenedColumns.length),
       });
     };
 
     updateMaxColumns();
   }, [tableEl?.current?.offsetWidth, columns]);
+
   return (
     <Wrapper>
       <MatrixContext.Provider
@@ -89,7 +90,8 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
             <MatrixHeader />
             <TableBody>
               {rows.map(row => (
-                <MatrixRow row={row} key={row.title} parents={[]} />
+                // add a random key to avoid bugs with re-rendering
+                <MatrixRow row={row} key={`${row.title}_${Math.random() * 1000}`} parents={[]} />
               ))}
             </TableBody>
           </Table>

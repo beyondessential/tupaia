@@ -4,16 +4,12 @@
  */
 
 import { expect } from 'chai';
-import {
-  findOrCreateDummyRecord,
-  buildAndInsertProjectsAndHierarchies,
-  addBaselineTestCountries,
-} from '@tupaia/database';
+import { buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp, setupDashboardTestData } from '../../testUtilities';
+import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
 
 describe('Permissions checker for GETDashboards', async () => {
   const DEFAULT_POLICY = {
@@ -37,20 +33,19 @@ describe('Permissions checker for GETDashboards', async () => {
   let projectDashboard1;
 
   before(async () => {
-    // Still create these existing entities just in case test database for some reasons do not have these records.
-    await findOrCreateDummyRecord(models.entity, {
-      code: 'KI_Phoenix Islands',
-      type: 'district',
-      country_code: 'KI',
-    });
-
-    await addBaselineTestCountries(models);
+    await resetTestData();
 
     await buildAndInsertProjectsAndHierarchies(models, [
       {
         code: 'test_project',
         name: 'Test Project',
-        entities: [{ code: 'KI' }, { code: 'VU' }, { code: 'TO' }, { code: 'SB' }],
+        entities: [
+          { code: 'KI', country_code: 'KI' },
+          { code: 'VU', country_code: 'VU' },
+          { code: 'TO', country_code: 'TO' },
+          { code: 'SB', country_code: 'SB' },
+          { code: 'LA', country_code: 'LA' },
+        ],
       },
     ]);
 

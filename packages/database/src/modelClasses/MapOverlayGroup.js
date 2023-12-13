@@ -10,7 +10,7 @@ import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
-class MapOverlayGroupType extends DatabaseType {
+export class MapOverlayGroupType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP;
 }
 

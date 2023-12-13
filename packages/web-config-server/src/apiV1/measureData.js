@@ -4,6 +4,7 @@
  */
 
 import assert from 'assert';
+import { snake } from 'case';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -21,15 +22,6 @@ const binaryOptionSet = [
   { name: 'Yes', value: 1 },
   { name: 'No', value: 0 },
 ];
-
-const cannotFindCountryLevelInHierarchy = {
-  type: 'Permission Error',
-  responseStatus: 404,
-  responseText: {
-    status: 'Not Found',
-    details: 'Cannot find country level in hierarchy',
-  },
-};
 
 const accessDeniedForMeasure = {
   type: 'Permission Error',
@@ -81,7 +73,7 @@ const accessDeniedForMeasure = {
  *   requested: '201901;201902;201903...',
  * }
  */
-const buildMeasureData = (overlays, resultData) => {
+const buildMeasureData = (overlays = [], resultData) => {
   const measureDataResponsesByMeasureCode = resultData.reduce((dataResponse, current) => ({
     ...dataResponse,
     ...current,
@@ -89,7 +81,7 @@ const buildMeasureData = (overlays, resultData) => {
   const measureDataResponses = overlays.map(
     ({ code, data_builder_config: measureBuilderConfig }) => {
       const { dataElementCode = 'value' } = measureBuilderConfig ?? {};
-      const { data } = measureDataResponsesByMeasureCode[code];
+      const { data = [] } = measureDataResponsesByMeasureCode[code];
 
       // Rename the the value field from the dataElementCode to the measureCode
       return data.map(obj => {
@@ -197,6 +189,7 @@ export default class extends DataAggregatingRouteHandler {
     const responseData = await Promise.all(
       measures.map(o => this.fetchMeasureData(o, shouldFetchSiblings)),
     );
+
     const { period, measureData } = buildMeasureData(measures, responseData);
     const measureOptions = await this.fetchMeasureOptions(measures, measureData, mapOverlayCode);
 
@@ -320,22 +313,30 @@ export default class extends DataAggregatingRouteHandler {
     return dataElement.options;
   }
 
-  async getCountryLevelOrgUnitCode() {
-    const country = await this.entity.countryEntity();
+  async getDisplayOnLevelOrgUnitCode(mapOverlay) {
+    const level = snake(mapOverlay.config?.displayOnLevel || 'country'); // Display at country level by default
+    const hierarchyId = await this.fetchHierarchyId();
+    const displayOnLevelEntity = await this.entity.getAncestorOfType(hierarchyId, level);
 
-    if (!country) {
-      throw new CustomError(cannotFindCountryLevelInHierarchy);
+    if (!displayOnLevelEntity) {
+      return null;
     }
 
-    return country.code;
+    return displayOnLevelEntity.code;
   }
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
     const { code, legacy, data_services: dataServices } = mapOverlay;
 
     const entityCode = shouldFetchSiblings
-      ? await this.getCountryLevelOrgUnitCode()
+      ? await this.getDisplayOnLevelOrgUnitCode(mapOverlay)
       : this.entity.code;
+
+    if (!entityCode) {
+      // Exit early with no data if no ancestor org unit at displayOnLevel
+      return { [code]: [] };
+    }
+
     const entity = await this.models.entity.findOne({ code: entityCode });
     const dhisApi = getDhisApiInstance({
       entityCode: this.entity.code,
@@ -343,13 +344,11 @@ export default class extends DataAggregatingRouteHandler {
     });
 
     if (legacy) {
-      const {
-        data_builder: measureBuilder,
-        data_builder_config: measureBuilderConfig,
-      } = mapOverlay;
+      const { data_builder: measureBuilder, data_builder_config: measureBuilderConfig } =
+        mapOverlay;
       assert.ok(
         measureBuilderConfig,
-        `No data_builder_config for leagacy overlay ${mapOverlay.code}`,
+        `No data_builder_config for legacy overlay ${mapOverlay.code}`,
       );
       const { dataElementCode = 'value' } = measureBuilderConfig;
       dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);

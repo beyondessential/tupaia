@@ -56,7 +56,7 @@ const processAndBuildConfig = async (questions, questionCode, config) => {
   await configValidator.validate(questionIndex); // Validate acceptable config
   const parsedConfig = configImporter.parse(config); // Parse from string to json
   const input = await configImporter.process(parsedConfig, questionType); // Convert from excel to db format
-  const output = await questionConfigCellBuilder.build(input, questionType); // Convert from db format to excel
+  const output = await questionConfigCellBuilder.build(questionType, input); // Convert from db format to excel
 
   return output;
 };

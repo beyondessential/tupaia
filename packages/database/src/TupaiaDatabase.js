@@ -246,6 +246,14 @@ export class TupaiaDatabase {
     return buildQuery(this.connection, ...args);
   }
 
+  /**
+   *
+   * @param {string} recordType
+   * @param {Record<string, unknown>} [where]
+   * @param {Record<string, unknown>} [options]
+   * @param {string} [queryMethod]
+   * @returns
+   */
   find(recordType, where = {}, options = {}, queryMethod) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
@@ -458,6 +466,8 @@ export class TupaiaDatabase {
    *
    * Use only for situations in which Knex is not able to assemble a query.
    *
+   * @param {string} sqlString
+   * @param {any[]} [parametersToBind]
    * @template Result
    * @returns {Promise<Result>} execution result
    */

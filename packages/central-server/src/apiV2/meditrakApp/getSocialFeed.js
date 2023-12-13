@@ -5,10 +5,24 @@
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { respond } from '@tupaia/utils';
-import { getLeaderboard } from '../../social';
 import { allowNoPermissions } from '../../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
+
+const USERS_EXCLUDED_FROM_LEADER_BOARD = [
+  "'edmofro@gmail.com'", // Edwin
+  "'kahlinda.mahoney@gmail.com'", // Kahlinda
+  "'lparish1980@gmail.com'", // Lewis
+  "'sus.lake@gmail.com'", // Susie
+  "'michaelnunan@hotmail.com'", // Michael
+  "'vanbeekandrew@gmail.com'", // Andrew
+  "'gerardckelly@gmail.com'", // Gerry K
+  "'geoffreyfisher@hotmail.com'", // Geoff F
+  "'josh@sussol.net'", // mSupply API Client
+  "'unicef.laos.edu@gmail.com'", // Laos Schools Data Collector
+  "'tamanu-server@tupaia.org'", // Tamanu Server
+];
+const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
 // TODO: Remove as part of RN-502
 export const getSocialFeed = async (req, res) => {
@@ -83,6 +97,24 @@ const intersperseDynamicFeedItems = async (feedItems, countryId, page, models) =
     const leaderboardItem = await getLeaderboardFeedItem(models);
     feedItems.splice(2, 0, leaderboardItem);
   }
+};
+
+// TODO: remove when we use the SurveyResponseModel fom database package
+const getLeaderboard = async models => {
+  return models.database.executeSql(
+    ` SELECT r.user_id, user_account.first_name, user_account.last_name, r.coconuts, r.pigs
+      FROM (
+        SELECT user_id, COUNT(*) as coconuts, FLOOR(COUNT(*) / 100) as pigs
+        FROM survey_response
+        GROUP BY user_id
+      ) r
+      JOIN user_account on user_account.id = r.user_id
+      WHERE ${INTERNAL_EMAIL.map(email => `email NOT LIKE '%${email}'`).join(' AND ')}
+      AND email NOT IN (${USERS_EXCLUDED_FROM_LEADER_BOARD.join(',')})
+      ORDER BY coconuts DESC
+      LIMIT 10;
+    `,
+  );
 };
 
 const getLeaderboardFeedItem = async models => {

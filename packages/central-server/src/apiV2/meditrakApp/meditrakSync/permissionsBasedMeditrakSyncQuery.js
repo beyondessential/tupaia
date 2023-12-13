@@ -20,6 +20,8 @@ import {
 const recordTypesToAlwaysSync = ['country', 'permission_group'];
 const entityTypesToAlwaysSync = ['world', 'country'];
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * Since all countries, permission_groups, and country entities regardless of permissions
  */

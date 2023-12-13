@@ -3,6 +3,9 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+// Exact copy of: @tupaia/meditrak-app-server/src/sync/createPermissionsBasedMeditrakSyncQueue.js
+// TODO: Tidy this up as part of RN-502
+
 import { SqlQuery } from '@tupaia/database';
 
 const groupToArrayOrNull = field =>

@@ -23,6 +23,9 @@ import { processColumns } from '../GETHandler/helpers';
  * - /countries/id/surveys
  */
 
+const SURVEY_QUESTIONS_COLUMN = 'surveyQuestions';
+const COUNTRY_NAMES_COLUMN = 'countryNames';
+
 export class GETSurveys extends GETHandler {
   permissionsFilteredInternally = true;
 
@@ -91,18 +94,26 @@ export class GETSurveys extends GETHandler {
     const { columns: columnsString } = this.req.query;
 
     if (!columnsString) {
+      // Always include these by default
+      this.includeQuestions = true;
+      this.includeCountryNames = true;
       return super.getProcessedColumns();
     }
 
-    const unprocessedColumns =
-      columnsString &&
-      JSON.parse(columnsString).filter(col => !['surveyQuestions', 'countryNames'].includes(col));
+    const parsedColumns = columnsString && JSON.parse(columnsString);
+    // If we've requested specific columns, we allow skipping these fields by not requesting them
+    this.includeQuestions = parsedColumns.includes(SURVEY_QUESTIONS_COLUMN);
+    this.includeCountryNames = parsedColumns.includes(COUNTRY_NAMES_COLUMN);
+
+    const unprocessedColumns = parsedColumns.filter(
+      col => ![SURVEY_QUESTIONS_COLUMN, COUNTRY_NAMES_COLUMN].includes(col),
+    );
     return processColumns(this.models, unprocessedColumns, this.recordType);
   }
 
   async getSurveyQuestionsValues(surveyIds) {
     // See README.md
-    if (surveyIds.length === 0) return {};
+    if (surveyIds.length === 0 || !this.includeQuestions) return {};
     const rows = await this.database.executeSql(
       `
     SELECT 
@@ -112,11 +123,17 @@ export class GETSurveys extends GETHandler {
       ssc.id as survey_screen_component_id,
       ssc.component_number as component_number,
       ssc.visibility_criteria as visibility_criteria,
+      ssc.validation_criteria as validation_criteria,
+      ssc.config as config,
+      ssc.question_label as question_label,
       q.id as question_id,
       q.name as question_name,
       q.type as question_type,
       q.code as question_code,
-      q.text as question_text
+      q.text as question_text,
+      q.options as question_options,
+      q.option_set_id as question_option_set_id,
+      q.detail as question_detail
     FROM survey s
     LEFT JOIN survey_screen ss on s.id = ss.survey_id
     LEFT JOIN survey_screen_component ssc on ss.id = ssc.screen_id
@@ -132,7 +149,7 @@ export class GETSurveys extends GETHandler {
   }
 
   async getSurveyCountryNames(surveyIds) {
-    if (surveyIds.length === 0) return {};
+    if (surveyIds.length === 0 || !this.includeCountryNames) return {};
     const rows = await this.database.executeSql(
       `
     SELECT survey.id, array_agg(country.name) as country_names
@@ -178,11 +195,17 @@ const getAggregatedQuestions = rawResults => {
       survey_screen_component_id,
       component_number,
       visibility_criteria,
+      validation_criteria,
+      config,
       question_id,
       question_name,
       question_type,
       question_code,
       question_text,
+      question_label,
+      question_options,
+      question_option_set_id,
+      question_detail,
     } = rawResults[i];
 
     const screenIndex = surveyQuestions[survey_id]
@@ -193,12 +216,18 @@ const getAggregatedQuestions = rawResults => {
       id: survey_screen_component_id,
       visibility_criteria,
       component_number,
+      validation_criteria,
+      config,
       question: {
         id: question_id,
         name: question_name,
         type: question_type,
         code: question_code,
         text: question_text,
+        label: question_label,
+        options: question_options,
+        option_set_id: question_option_set_id,
+        detail: question_detail,
       },
     });
   }

@@ -14,6 +14,10 @@ export const upsertUserEntityPermission = async (models: TestModelRegistry, data
   return upsertDummyRecord(models.userEntityPermission, data);
 };
 
+export const upsertCountry = async (models: TestModelRegistry, data = {}) => {
+  return upsertDummyRecord(models.country, data);
+};
+
 export const upsertFacility = async (models: TestModelRegistry, data = {}) => {
   return upsertDummyRecord(models.facility, data);
 };

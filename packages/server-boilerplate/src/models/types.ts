@@ -6,7 +6,7 @@
 import { DatabaseModel, DatabaseType } from '@tupaia/database';
 import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 
-type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in';
+type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
 type ComparisonTypes = 'where' | 'whereBetween' | 'whereIn' | 'orWhere';
 
 export type AdvancedFilterValue<T> = {
@@ -81,6 +81,7 @@ export type QueryOptions = {
 type BaseModelOverrides<Fields = unknown, Type = unknown> = {
   find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
   findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
+  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<Type>;
 };
 
 export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<

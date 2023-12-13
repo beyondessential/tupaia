@@ -12,7 +12,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   display: flex;
   width: 100%;
   margin-bottom: 0.7rem;
-
   .MuiFormLabel-root.MuiInputLabel-root {
     color: ${FORM_COLORS.BORDER};
     font-size: 0.875rem;

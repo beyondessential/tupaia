@@ -4,10 +4,15 @@
  */
 
 import semverCompare from 'semver-compare';
+import { MeditrakAppServerModelRegistry } from '../types';
+import { translateSurveyScreenComponentForSync } from './syncRecordTranslators';
 
 const appSupportedModels = {
   country: { minVersion: '0.0.1' },
-  entity: { minVersion: '1.7.102', unsupportedFields: ['region', 'bounds'] },
+  entity: {
+    minVersion: '1.7.102',
+    unsupportedFields: ['region', 'bounds'],
+  },
   facility: { minVersion: '0.0.1' },
   geographicalArea: { minVersion: '0.0.23' },
   option: { minVersion: '1.7.92' },
@@ -17,7 +22,10 @@ const appSupportedModels = {
   survey: { minVersion: '0.0.1' },
   surveyGroup: { minVersion: '1.6.69' },
   surveyScreen: { minVersion: '0.0.1' },
-  surveyScreenComponent: { minVersion: '0.0.1' },
+  surveyScreenComponent: {
+    minVersion: '0.0.1',
+    translateRecordForSync: translateSurveyScreenComponentForSync,
+  },
 };
 
 /**
@@ -26,14 +34,22 @@ const appSupportedModels = {
  */
 export const getSupportedModels = (appVersion?: string) => {
   if (!appVersion) {
-    return Object.keys(appSupportedModels);
+    return Object.keys(appSupportedModels) as (keyof typeof appSupportedModels)[];
   }
 
   return Object.entries(appSupportedModels)
     .filter(
       ([, { minVersion: modelMinVersion }]) => semverCompare(appVersion, modelMinVersion) >= 0,
     )
-    .map(([modelName]) => modelName);
+    .map(([modelName]) => modelName) as (keyof typeof appSupportedModels)[];
+};
+
+export const getSupportedDatabaseTypes = (
+  models: MeditrakAppServerModelRegistry,
+  appVersion?: string,
+) => {
+  const supportedModels = getSupportedModels(appVersion);
+  return supportedModels.map(modelName => models[modelName].databaseType as string);
 };
 
 const isSupportedModel = (modelName: string): modelName is keyof typeof appSupportedModels =>
@@ -50,4 +66,17 @@ export const getUnsupportedModelFields = (modelName: string) => {
   }
 
   return [];
+};
+
+export const getSyncRecordTranslator = (modelName: string) => {
+  if (!isSupportedModel(modelName)) {
+    throw new Error(`Model ${modelName} is not supported by meditrak`);
+  }
+
+  const modelConfig = appSupportedModels[modelName];
+  if ('translateRecordForSync' in modelConfig) {
+    return modelConfig.translateRecordForSync;
+  }
+
+  return undefined;
 };

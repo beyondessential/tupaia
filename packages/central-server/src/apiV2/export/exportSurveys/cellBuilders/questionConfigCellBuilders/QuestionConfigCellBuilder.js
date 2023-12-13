@@ -33,7 +33,7 @@ export class QuestionConfigCellBuilder {
     };
   }
 
-  async build(config, questionType) {
+  async build(questionType, config) {
     const builder = this.configCellBuilders[questionType];
     return builder ? builder.build(config) : '';
   }

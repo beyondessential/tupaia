@@ -33,7 +33,7 @@ export const QrCodeImage = ({ className, qrCodeContents, humanReadableId }: QrCo
 
   return (
     <StyledBox className={className}>
-      <StyledCanvas ref={ref} aria-label={`QRCode for ${humanReadableId}`} />
+      <StyledCanvas ref={ref} aria-label={`QRCode for ${humanReadableId || qrCodeContents}`} />
     </StyledBox>
   );
 };

@@ -8,15 +8,19 @@ import styled from 'styled-components';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { FlexCenter } from './Layout';
 
+export const ENV_BANNER_HEIGHT = 40;
+
 const StyledBanner = styled(FlexCenter)<{
   $color: CSSStyleDeclaration['color'];
 }>`
   background: ${props => props.$color};
+  box-sizing: border-box;
   color: white;
   font-size: 13px;
   font-weight: 500;
   padding: 12px;
   text-align: center;
+  height: ${ENV_BANNER_HEIGHT}px;
 
   .MuiSvgIcon-root {
     font-size: 16px;

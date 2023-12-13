@@ -68,30 +68,20 @@ const useReport = (entity, reportName, options, enabled) =>
     },
   );
 
-const useSchoolReport = entity =>
-  useReport(
-    entity,
-    'LESMIS_school_vitals',
-    { params: { endDate: utcMoment().format(endDateFormat) } },
-    entity?.type === 'school',
-  );
+const vitalsReports = {
+  country: 'lesmis_ctry_vitals',
+  district: 'lesmis_prov_vitals',
+  sub_district: 'lesmis_dist_vitals',
+  school: 'lesmis_sch_vitals',
+};
 
 const useEntityReport = entity =>
   useReport(
     entity,
-    'LESMIS_entity_vitals',
+    vitalsReports[entity?.type],
     { params: { endDate: utcMoment().format(endDateFormat) } },
-    entity !== undefined && entity?.type !== 'school',
+    entity !== undefined,
   );
-
-const useSchoolVitals = entity => {
-  const { data: results, isLoading } = useSchoolReport(entity);
-
-  return {
-    data: results?.[0],
-    isLoading,
-  };
-};
 
 const useEntityVitals = entity => {
   const { data: results, isLoading } = useEntityReport(entity);
@@ -115,14 +105,12 @@ export const useVitalsData = entityCode => {
   const { data: entityData } = useEntityData(entityCode);
   const parentEntityData = getParentEntity(entities, entityData);
 
-  const { data: schoolVitals, isLoading: schoolVitalsLoading } = useSchoolVitals(entityData);
   const { data: entityVitals, isLoading: entityVitalsLoading } = useEntityVitals(entityData);
   const { data: parentVitals, isLoading: parentVitalsLoading } = useEntityVitals(parentEntityData);
 
   const vitalsData = {
     ...entitiesQuery,
     ...entityData,
-    ...schoolVitals,
     ...entityVitals,
     parentVitals: {
       ...parentEntityData,
@@ -134,6 +122,6 @@ export const useVitalsData = entityCode => {
 
   return {
     data: { ...vitalsData, partners },
-    isLoading: schoolVitalsLoading || entityVitalsLoading || parentVitalsLoading,
+    isLoading: entityVitalsLoading || parentVitalsLoading,
   };
 };

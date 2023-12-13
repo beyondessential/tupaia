@@ -5,6 +5,7 @@
 
 export interface Params {
   mapOverlayCode: string;
+  legacy: string;
 }
 export interface ResBody {
   mapOverlayCode: string;

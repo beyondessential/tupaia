@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+export * from './DataGrid';
 export * from './DataTable';
 export * from './DateRangePicker';
 export * from './DownloadFilesVisual';
@@ -31,7 +32,7 @@ export * from './FetchLoader';
 export * from './HomeButton';
 export * from './IconButton';
 export * from './NavBar';
-export * from './QrCode'
+export * from './QrCode';
 export * from './PasswordStrengthBar';
 export * from './ProfileButton';
 export * from './ReferenceTooltip';

@@ -37,19 +37,34 @@ const assertCanProcessAndBuildEntity = config =>
 
 describe('EntityConfigCellBuilder', () => {
   it('minimal', async () => {
-    await assertCanProcessAndBuildEntity('type: facility');
+    await assertCanProcessAndBuildEntity('filter.type: facility');
   });
 
   it('can point to another question', async () => {
-    await assertCanProcessAndBuildEntity('type: facility\r\nparent: question_1_code');
+    await assertCanProcessAndBuildEntity('filter.type: facility\r\nfilter.parent: question_1_code');
   });
 
   it('supports attributes.type', async () => {
-    await assertCanProcessAndBuildEntity('type: school\r\nattributes.type: question_2_code');
+    await assertCanProcessAndBuildEntity(
+      'filter.type: school\r\nfilter.attributes.type: question_2_code',
+    );
   });
 
-  // TODO: Fix this test
-  // it('supports renaming an existing entity', async () => {
-  //   await assertCanProcessAndBuildEntity('createNew: No\r\nfields.name: question_3_code');
-  // });
+  it('supports renaming an existing entity', async () => {
+    await assertCanProcessAndBuildEntity(
+      'createNew: No\r\nfilter.type: school\r\nfields.name: question_3_code',
+    );
+  });
+
+  it('supports validating presence of fields.name, fields.code AND fields.type when createNew is true', async () => {
+    await assertCanProcessAndBuildEntity(
+      'createNew: Yes\r\nfields.name: question_3_code\r\nfields.code: question_3_code\r\nfields.type: school',
+    );
+  });
+
+  it('supports validating filter.type as multiple entities', async () => {
+    await assertCanProcessAndBuildEntity(
+      'createNew: No\r\nfilter.type: school,facility\r\nfields.name: question_3_code',
+    );
+  });
 });

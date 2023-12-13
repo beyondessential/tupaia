@@ -7,6 +7,8 @@ import { respond } from '@tupaia/utils';
 import { buildPermissionsBasedMeditrakSyncQuery } from './meditrakSync';
 import { allowNoPermissions } from '../../permissions';
 
+// TODO: Tidy this up as part of RN-502
+
 /**
  * Permissions based sync metadata
  * {

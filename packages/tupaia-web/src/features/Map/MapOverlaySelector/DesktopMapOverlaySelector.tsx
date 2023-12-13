@@ -15,10 +15,11 @@ import { MapTableModal } from './MapTableModal';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
-import { useMapOverlayData } from '../utils';
+import { useMapOverlayMapData } from '../utils';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { useGAEffect } from '../../../utils';
 
 const MapTableButton = styled(IconButton)`
   margin: -0.625rem -0.625rem -0.625rem 0;
@@ -163,9 +164,11 @@ export const DesktopMapOverlaySelector = ({
   toggleOverlayLibrary,
 }: DesktopMapOverlaySelectorProps) => {
   const { projectCode, entityCode } = useParams();
-  const { hasMapOverlays } = useMapOverlays(projectCode, entityCode);
-  const { measureData, period } = useMapOverlayData();
+  const { hasMapOverlays, selectedOverlay } = useMapOverlays(projectCode, entityCode);
+  const { period } = useMapOverlayMapData();
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  // This only fires when the selected overlay changes. Because this is always rendered, as is the mobile overlay selector, we only need this in one place
+  useGAEffect('MapOverlays', 'Change', selectedOverlay?.name);
   const toggleMapTableModal = () => {
     setMapModalOpen(!mapModalOpen);
   };
@@ -176,7 +179,7 @@ export const DesktopMapOverlaySelector = ({
       <Wrapper>
         <Header>
           <Heading>Map Overlays</Heading>
-          {measureData && (
+          {selectedOverlay && (
             <MapTableButton onClick={toggleMapTableModal}>
               <Tooltip arrow interactive placement="top" title="Generate Report">
                 <TableAssignmentIcon />
@@ -205,7 +208,8 @@ export const DesktopMapOverlaySelector = ({
               </OverlayLibraryHeader>
               <OverlayLibraryContentWrapper>
                 <OverlayLibraryContentContainer>
-                  <MapOverlayList />
+                  {/* Use the entity code as a key so that the local state of the MapOverlayList resets between entities */}
+                  <MapOverlayList key={entityCode} />
                 </OverlayLibraryContentContainer>
               </OverlayLibraryContentWrapper>
             </OverlayLibraryAccordion>

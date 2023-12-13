@@ -4,7 +4,7 @@
  */
 
 import winston from 'winston';
-import { S3Client, S3 } from '@tupaia/utils';
+import { S3Client, S3 } from '@tupaia/server-utils';
 
 // Upload a surveyImage to s3
 export const addSurveyImage = async (models, { id, data }) => {

@@ -16,11 +16,10 @@ import {
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
-import winston from 'winston';
 
 import { handleWith, handleError, emptyMiddleware } from '../../utils';
 import { TestRoute } from '../../routes';
-import { LoginRoute, LoginRequest, LogoutRoute } from '../routes';
+import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { sessionCookie } from './sessionCookie';
@@ -39,7 +38,7 @@ export class ApiBuilder {
 
   private attachSession: RequestHandler;
   private logApiRequestMiddleware: RequestHandler;
-  private attachVerifyLogin: (req: LoginRequest, res: Response, next: NextFunction) => void;
+  private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
   private version: number;
 
@@ -82,12 +81,9 @@ export class ApiBuilder {
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (options.attachModels) {
-        winston.warn(
-          "Best practices say orchestrator servers shouldn't access the db directly, are you sure you need req.models?",
-        );
         req.models = this.models;
       }
-      const context = {}; // context is shared between request and response
+      const context = { apiName: this.apiName }; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
 
@@ -169,7 +165,7 @@ export class ApiBuilder {
   }
 
   public verifyLogin(verify: (accessPolicy: AccessPolicy) => void) {
-    this.attachVerifyLogin = (req: LoginRequest, res: Response, next: NextFunction) => {
+    this.attachVerifyLogin = (req: Request, res: Response, next: NextFunction) => {
       req.ctx.verifyLogin = verify;
       next();
     };
@@ -259,6 +255,12 @@ export class ApiBuilder {
       handleWith(LoginRoute),
     );
     this.app.post(this.formatPath('logout'), this.logApiRequestMiddleware, handleWith(LogoutRoute));
+    this.app.post(
+      this.formatPath('login/oneTimeLogin'),
+      this.attachVerifyLogin,
+      this.logApiRequestMiddleware,
+      handleWith(OneTimeLoginRoute),
+    );
 
     this.handlers.forEach(handler => handler.add());
 

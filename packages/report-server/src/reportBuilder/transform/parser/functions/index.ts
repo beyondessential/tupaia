@@ -3,7 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { value, first, last, eq, notEq, exists, notExists, gt, length, any, all } from './basic';
+import {
+  value,
+  first,
+  last,
+  unique,
+  eq,
+  notEq,
+  exists,
+  notExists,
+  gt,
+  length,
+  any,
+  all,
+} from './basic';
 import { orgUnitCodeToName } from './context';
 import {
   convertToPeriod,
@@ -22,6 +35,7 @@ export const customFunctions = {
   value,
   first,
   last,
+  unique,
   eq,
   notEq,
   gt,

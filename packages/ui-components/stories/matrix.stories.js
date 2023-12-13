@@ -37,8 +37,10 @@ const groupedRows = [
     children: [
       {
         title: 'Sub item 1',
+        Col1: 0,
+        Col2: '0',
+        Col3: 43.4,
         Col4: 59.5,
-        Col2: 43.4,
       },
       {
         title: 'Sub item 2',
@@ -483,6 +485,61 @@ const Template = args => <Matrix {...args} />;
 export const Simple = Template.bind({});
 Simple.args = {
   rows: basicRows,
+  columns: basicColumns,
+};
+
+export const Dots = Template.bind({});
+Dots.args = {
+  rows: [
+    {
+      title: 'Data item 1',
+      Col1: 0,
+      Col2: '0',
+      Col3: 6,
+      Col4: 6.1,
+    },
+    {
+      title: 'Data item 2',
+      Col1: 6.76,
+      Col2: 'isBlue',
+      Col4: 74.2,
+      Col3: 44.998,
+    },
+  ],
+  presentationOptions: {
+    type: 'condition',
+    conditions: [
+      {
+        key: 'red',
+        color: '#b71c1c',
+        label: 'Secondary header',
+        condition: 0,
+      },
+      {
+        key: 'orange',
+        color: '#EE9A30',
+        label: '',
+        condition: {
+          '<=': 6,
+          '>': 0,
+        },
+      },
+      {
+        key: 'green',
+        color: '#33691e',
+        label: '',
+        condition: {
+          '>': 6,
+        },
+      },
+      {
+        key: 'blue',
+        color: '#3498db',
+        label: '',
+        condition: 'isBlue',
+      },
+    ],
+  },
   columns: basicColumns,
 };
 

@@ -62,6 +62,12 @@ function validate_migrations(){
 current_branch_name=$(get_branch_name)
 origin_branch_name="master"
 
+# Skip validation if current branch name is master
+if [[ "$current_branch_name" == "$origin_branch_name" ]]; then
+  echo "Skipping validation step while current branch is the same as origin"
+  exit 0
+fi
+
 # Prevent error The authenticity of host 'github.com' can't be established.
 # Long version: the git origin copied from codeship is using ssh, but the container doesn't have ssh setup. The quick way is to swith to https. 
 git remote remove origin

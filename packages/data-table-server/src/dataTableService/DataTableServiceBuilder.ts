@@ -14,6 +14,7 @@ import {
   EntityRelationsDataTableService,
   EventsDataTableService,
   SqlDataTableService,
+  SurveyResponseDataTableService,
 } from './services';
 
 /**
@@ -58,6 +59,7 @@ const dataTablesServiceBuilders = {
   entity_relations: () => new DataTableServiceBuilderForType(EntityRelationsDataTableService),
   sql: () => new DataTableServiceBuilderForType(SqlDataTableService),
   entity_attributes: () => new DataTableServiceBuilderForType(EntityAttributesDataTableService),
+  survey_responses: () => new DataTableServiceBuilderForType(SurveyResponseDataTableService),
 };
 
 const isValidServiceType = (

@@ -15,11 +15,17 @@ export const FORM_FIELD_VALIDATION = {
   EMAIL: {
     pattern: {
       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'Invalid email',
+      message: 'Invalid email address',
     },
   },
   PASSWORD: {
     minLength: { value: 9, message: 'Must be over 8 characters long' },
+  },
+  CONTACT_NUMBER: {
+    pattern: {
+      value: /^[0-9-+() ]*$/,
+      message: 'Invalid contact number',
+    },
   },
 };
 

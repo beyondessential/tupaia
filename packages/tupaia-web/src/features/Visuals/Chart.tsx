@@ -9,7 +9,7 @@ import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
 import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
-import { A4Page } from '@tupaia/ui-components';
+import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItemContext } from '../DashboardItem';
 
@@ -17,14 +17,17 @@ const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
 const TEXT_DARKGREY = '#414D55';
 
+const ScreenChartTable = styled(ChartTable)`
+  table {
+    table-layout: unset;
+  }
+`;
+
 const ExportingStyledTable = styled(ChartTable)`
   padding: 1.8rem 0;
   border-bottom: none;
   overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
-  .MuiTableContainer-root {
-    overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
-  }
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
@@ -70,9 +73,7 @@ const Wrapper = styled.div`
     min-width: 0px;
     height: 100%;
   }
-  .recharts-wrapper {
-    font-size: 1rem !important; // this is to make sure the labels on the charts are relative to the base font size
-  }
+
   li.recharts-legend-item {
     white-space: nowrap; // ensure there are no line breaks on the export legends
   }
@@ -121,16 +122,18 @@ const ContentWrapper = styled.div<{
 }>`
   pointer-events: ${({ $isExporting }) => ($isExporting ? 'none' : 'initial')};
   padding: ${({ $isEnlarged }) => ($isEnlarged ? '1rem 0' : 'initial')};
-  height: 15rem; // to stop charts from shrinking to nothing at mobile size
+  height: ${({ $isExporting }) =>
+    $isExporting ? 'auto' : '15rem'}; // to stop charts from shrinking to nothing at mobile size
   min-height: ${({ $isEnlarged }) =>
     $isEnlarged
       ? '24rem'
       : '0'}; // so that the chart table doesn't shrink the modal size when opened, of doesn't have much data
   ${A4Page} & {
     padding: 0;
+    height: auto;
   }
   @media (min-width: ${MOBILE_BREAKPOINT}) {
-    height: 100%;
+    height: ${({ $isExporting }) => ($isExporting ? 'auto' : '100%')};
   }
 `;
 
@@ -145,7 +148,7 @@ const DISPLAY_TYPE_VIEWS = [
     value: 'table',
     Icon: GridOn,
     label: 'View table',
-    display: ChartTable,
+    display: ScreenChartTable,
   },
 ];
 
@@ -176,40 +179,46 @@ export const Chart = () => {
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   let availableDisplayTypes = showTable ? views : [views[0]];
 
-  const viewContent = ({
+  const viewContent = {
     ...report,
     ...config,
-  } as unknown) as ViewContent;
+  } as unknown as ViewContent;
 
   return (
-    <Wrapper>
-      <TabContext value={displayType}>
-        {shouldUseTabs && (
-          <TabsWrapper>
-            <TabsGroup
-              value={displayType}
-              onChange={handleChangeDisplayType}
-              variant="standard"
-              aria-label="Toggle display type"
+    <ErrorBoundary>
+      <Wrapper>
+        <TabContext value={displayType}>
+          {shouldUseTabs && (
+            <TabsWrapper>
+              <TabsGroup
+                value={displayType}
+                onChange={handleChangeDisplayType}
+                variant="standard"
+                aria-label="Toggle display type"
+              >
+                {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
+                  <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
+                ))}
+              </TabsGroup>
+            </TabsWrapper>
+          )}
+          {availableDisplayTypes.map(({ value, display: Content }) => (
+            <ContentWrapper
+              key={value}
+              value={value}
+              as={shouldUseTabs ? TabPanel : 'div'}
+              $isEnlarged={isEnlarged}
+              $isExporting={isExport}
             >
-              {DISPLAY_TYPE_VIEWS.map(({ value, Icon, label }) => (
-                <TabButton key={value} value={value} icon={<Icon />} aria-label={label} />
-              ))}
-            </TabsGroup>
-          </TabsWrapper>
-        )}
-        {availableDisplayTypes.map(({ value, display: Content }) => (
-          <ContentWrapper
-            key={value}
-            value={value}
-            as={shouldUseTabs ? TabPanel : 'div'}
-            $isEnlarged={isEnlarged}
-            $isExporting={isExport}
-          >
-            <Content viewContent={viewContent} isEnlarged={!!isEnlarged} isExporting={!!isExport} />
-          </ContentWrapper>
-        ))}
-      </TabContext>
-    </Wrapper>
+              <Content
+                viewContent={viewContent}
+                isEnlarged={!!isEnlarged}
+                isExporting={!!isExport}
+              />
+            </ContentWrapper>
+          ))}
+        </TabContext>
+      </Wrapper>
+    </ErrorBoundary>
   );
 };

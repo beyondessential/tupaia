@@ -28,13 +28,17 @@ const AccessRequestList = styled(List)`
 
 interface RequestedCountriesProps {
   requestedCountries: CountryAccessListItem[];
+  countriesWithAccess: CountryAccessListItem[];
   onShowForm: () => void;
   hasAdditionalCountries: boolean;
+  isLandingPage?: boolean;
 }
 export const RequestedCountries = ({
   requestedCountries,
+  countriesWithAccess,
   onShowForm,
   hasAdditionalCountries,
+  isLandingPage,
 }: RequestedCountriesProps) => {
   return (
     <div>
@@ -44,6 +48,12 @@ export const RequestedCountries = ({
       <SubHeading variant="h3">Countries requested for this project:</SubHeading>
       <AccessRequestList>
         {requestedCountries.map(({ name }) => (
+          <li key={name}>{name}</li>
+        ))}
+      </AccessRequestList>
+      <SubHeading variant="h3">Countries with approved access for this project:</SubHeading>
+      <AccessRequestList>
+        {countriesWithAccess.map(({ name }) => (
           <li key={name}>{name}</li>
         ))}
       </AccessRequestList>
@@ -59,13 +69,15 @@ export const RequestedCountries = ({
           Request additional countries
         </AuthModalButton>
       )}
-      <AuthModalButton
-        component={RouterButton}
-        modal={MODAL_ROUTES.PROJECTS}
-        searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-      >
-        Back to projects
-      </AuthModalButton>
+      {!isLandingPage && (
+        <AuthModalButton
+          component={RouterButton}
+          modal={MODAL_ROUTES.PROJECTS}
+          searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+        >
+          Back to projects
+        </AuthModalButton>
+      )}
     </div>
   );
 };

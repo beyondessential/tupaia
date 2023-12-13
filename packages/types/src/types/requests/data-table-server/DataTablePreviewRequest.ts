@@ -9,7 +9,7 @@
  */
 import { DataTable } from '../../models';
 
-export interface DataTablePreviewRequest extends DataTable {
+export interface DataTablePreviewRequest extends Omit<DataTable, 'id'> {
   /**
    * @additionalProperties true
    */

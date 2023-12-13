@@ -8,11 +8,14 @@ interface FrontEndExcludedConfig {
 }
 
 // In the db project.config.frontendExcluded is an array with one entry for some reason
-export function generateFrontendExcludedFilter({
-  frontendExcluded,
-}: {
-  frontendExcluded: FrontEndExcludedConfig[] | undefined;
-}) {
+export function generateFrontendExcludedFilter(
+  {
+    frontendExcluded,
+  }: {
+    frontendExcluded: FrontEndExcludedConfig[] | undefined;
+  },
+  defaultFrontendExcludedFields: string[] = [],
+) {
   return frontendExcluded
     ? {
         type: {
@@ -20,5 +23,10 @@ export function generateFrontendExcludedFilter({
           comparisonValue: frontendExcluded[0].types,
         },
       }
-    : {};
+    : {
+        type: {
+          comparator: '!=',
+          comparisonValue: defaultFrontendExcludedFields,
+        },
+      };
 }

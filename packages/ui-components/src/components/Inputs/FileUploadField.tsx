@@ -12,12 +12,7 @@ import { SaveAlt } from '../Icons';
 import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
+  display: none; // Hide the input element without applying other styles - setting it to be small and position absolute causes the form to crash when the input is clicked
 `;
 
 const FileNameAndFileSize = styled.span`
@@ -44,13 +39,15 @@ interface FileUploadFieldProps {
   ) => void;
   name: string;
   fileName: string;
-  multiple: boolean;
-  textOnButton: string;
+  multiple?: boolean;
+  textOnButton?: string;
   label?: string;
   tooltip?: string;
   helperText?: string;
   showFileSize?: boolean;
   maxSizeInBytes?: number;
+  FormHelperTextComponent?: React.ElementType;
+  required?: boolean;
 }
 
 export const FileUploadField = ({
@@ -64,6 +61,8 @@ export const FileUploadField = ({
   helperText,
   showFileSize = false,
   maxSizeInBytes,
+  FormHelperTextComponent = 'p',
+  required,
 }: FileUploadFieldProps) => {
   const inputEl = useRef<HTMLInputElement | null>(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
@@ -89,9 +88,9 @@ export const FileUploadField = ({
         if (newSizeInBytes > maxSizeInBytes) {
           setSizeInBytes(null);
           setError(
-            `Error: file is too large: ${humanFileSize(newSizeInBytes)}. Max file size: ${humanFileSize(
-              maxSizeInBytes,
-            )}`,
+            `Error: file is too large: ${humanFileSize(
+              newSizeInBytes,
+            )}. Max file size: ${humanFileSize(maxSizeInBytes)}`,
           );
           onChange(event, undefined, null);
           return;
@@ -122,14 +121,21 @@ export const FileUploadField = ({
           onChange={handleChange}
           value=""
           multiple={multiple}
+          required={required}
         />
         <GreyButton component="span" startIcon={<SaveAlt />}>
           {text}
         </GreyButton>
-        {fileName && <FileNameAndFileSize>{fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}</FileNameAndFileSize>}
+        {fileName && (
+          <FileNameAndFileSize>
+            {fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}
+          </FileNameAndFileSize>
+        )}
       </FileUploadContainer>
       {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
-      {helperText && <MuiFormHelperText>{helperText}</MuiFormHelperText>}
+      {helperText && (
+        <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
+      )}
     </FileUploadWrapper>
   );
 };

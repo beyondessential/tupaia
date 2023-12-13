@@ -43,6 +43,13 @@ export const findOrCreateLegacyDashboardItem = async (models, code) => {
 };
 
 export const setupDashboardTestData = async models => {
+  // Still create these existing entities just in case test database for some reasons do not have these records.
+  await findOrCreateDummyRecord(models.entity, {
+    code: 'KI_Phoenix Islands',
+    type: 'district',
+    country_code: 'KI',
+  });
+
   // Set up legacy reports
   const [districtLegacyReport1, districtDashboardItem1] = await findOrCreateLegacyDashboardItem(
     models,

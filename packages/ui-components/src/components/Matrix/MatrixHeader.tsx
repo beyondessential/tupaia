@@ -49,11 +49,13 @@ export const MatrixHeader = () => {
   // If there are parents, then there should be two rows: 1 for the column group headings, and one for the column headings
   const hasParents = displayedColumnGroups.length > 0;
 
-  const RowHeaderColumn = () => (
+  const RowHeaderColumn = (
     <HeaderCell rowSpan={hasParents ? 2 : 1}>{rowHeaderColumnTitle}</HeaderCell>
   );
   return (
-    /** If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.*/
+    /**
+     * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
+     * */
     <>
       <ColGroup />
       {hasParents ? (
@@ -68,7 +70,7 @@ export const MatrixHeader = () => {
       <TableHead>
         {hasParents && (
           <TableRow>
-            <RowHeaderColumn />
+            {RowHeaderColumn}
             {displayedColumnGroups.map(({ title, children = [] }) => (
               <HeaderCell key={title} colSpan={children.length}>
                 {title}
@@ -78,7 +80,7 @@ export const MatrixHeader = () => {
         )}
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
-          {!hasParents && <RowHeaderColumn />}
+          {!hasParents && RowHeaderColumn}
           {displayedColumns.map(({ title, key }) => (
             <HeaderCell key={key} aria-label={hideColumnTitles ? title : ''}>
               {!hideColumnTitles && title}

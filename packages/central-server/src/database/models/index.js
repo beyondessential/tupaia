@@ -25,4 +25,5 @@ export { SurveyGroupModel as SurveyGroup } from './SurveyGroup';
 export { SurveyResponseModel as SurveyResponse } from './SurveyResponse';
 export { SurveyScreenComponentModel as SurveyScreenComponent } from './SurveyScreenComponent';
 export { SurveyScreenModel as SurveyScreen } from './SurveyScreen';
+export { UserModel as User } from './User';
 export { UserEntityPermissionModel as UserEntityPermission } from './UserEntityPermission';

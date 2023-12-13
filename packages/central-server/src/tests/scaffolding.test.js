@@ -6,13 +6,14 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
-import { getIsProductionEnvironment } from '@tupaia/utils';
-import { getModels, resetTestData } from './testUtilities';
-import * as SendEmail from '../utilities/sendEmail';
 import { clearAllTestData } from '@tupaia/database';
+import { getIsProductionEnvironment } from '@tupaia/utils';
+import * as ServerUtils from '@tupaia/server-utils';
+import { getModels, resetTestData } from './testUtilities';
 
 // These setup tasks need to be performed before any test, so we
 // do them in this file outside of any describe block.
+let sendEmailStub;
 
 before(async () => {
   const isProductionEnvironment = getIsProductionEnvironment();
@@ -21,7 +22,7 @@ before(async () => {
     throw new Error('Never run the test suite on the production server, it messes with data!');
   }
 
-  sinon.stub(SendEmail, 'sendEmail');
+  sendEmailStub = sinon.stub(ServerUtils, 'sendEmail');
 
   await resetTestData();
 
@@ -39,7 +40,7 @@ before(async () => {
 
 after(async () => {
   const models = getModels();
-  SendEmail.sendEmail.restore();
+  sendEmailStub.restore();
   await clearAllTestData(models.database);
   await models.database.closeConnections();
 });

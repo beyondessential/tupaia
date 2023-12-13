@@ -40,6 +40,23 @@ export {
   MeasureType,
   ScaleType,
   MeasureColorScheme,
+  BaseReport,
+  ViewDataItem,
+  ViewReport,
+  MatrixReportRow,
+  MatrixReportColumn,
+  MatrixReport,
+  SurveyScreenComponentConfig,
+  CodeGeneratorQuestionConfig,
+  AutocompleteQuestionConfig,
+  EntityQuestionConfig,
+  ConditionQuestionConfig,
+  ArithmeticQuestionConfig,
+  LeaderboardItem,
+  FeedItemTemplateVariables,
+  SurveyResponseTemplateVariables,
+  MarkdownTemplateVariables,
+  FeedItemTypes,
 } from './models-extra';
 export * from './requests';
 export * from './css';

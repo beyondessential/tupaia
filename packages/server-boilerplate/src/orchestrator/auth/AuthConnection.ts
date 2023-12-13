@@ -6,8 +6,10 @@
 
 import { createBasicHeader } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
-import { Credentials } from '../types';
+import { Credentials, OneTimeCredentials } from '../types';
 import { ApiConnection } from '../../connections';
+
+const DEFAULT_NAME = 'TUPAIA-SERVER';
 
 const basicAuthHandler = {
   getAuthHeader: async () => {
@@ -32,11 +34,26 @@ export class AuthConnection extends ApiConnection {
     super(basicAuthHandler);
   }
 
-  public async login({ emailAddress, password, deviceName }: Credentials) {
+  public async login(
+    { emailAddress, password, deviceName }: Credentials,
+    serverName: string = DEFAULT_NAME,
+  ) {
     const response = await this.post(
       'auth',
       { grantType: 'password' },
-      { emailAddress, password, deviceName: `TUPAIA-SERVER: ${deviceName}` },
+      { emailAddress, password, deviceName: `${serverName}: ${deviceName}` },
+    );
+    return this.parseAuthResponse(response);
+  }
+
+  public async oneTimeLogin(
+    { token, deviceName }: OneTimeCredentials,
+    serverName: string = DEFAULT_NAME,
+  ) {
+    const response = await this.post(
+      'auth',
+      { grantType: 'one_time_login' },
+      { token, deviceName: `${serverName}: ${deviceName}` },
     );
     return this.parseAuthResponse(response);
   }

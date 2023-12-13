@@ -5,6 +5,7 @@
 
 import { generateId } from '@tupaia/database';
 import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
+import { Entity, Survey } from '@tupaia/types';
 import { ApiConnection } from './ApiConnection';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
@@ -16,14 +17,7 @@ type SurveyResponseObject = {
   id: string;
 };
 
-type AnswerObject = {
-  'question.code': string;
-  type: string;
-  id: string;
-};
-
 type Answer = {
-  type: string;
   code: string;
   value: string | number;
 };
@@ -84,10 +78,24 @@ export class CentralConnection extends ApiConnection {
     });
   }
 
-  private async findAnswers(surveyResponseId: string) {
-    return (await this.get(`surveyResponses/${surveyResponseId}/answers`, {
-      columns: `["question.code","type","id"]`,
-    })) as AnswerObject[];
+  private async findSurvey(surveyCode: string): Promise<Pick<Survey, 'code' | 'id'> | undefined> {
+    const surveys = await this.get(`surveys`, {
+      filter: JSON.stringify({
+        code: { comparisonValue: surveyCode },
+      }),
+      columns: `["code","id"]`,
+    });
+    return surveys.length > 0 ? surveys[0] : undefined;
+  }
+
+  private async findEntity(entityCode: string): Promise<Pick<Entity, 'code' | 'id'> | undefined> {
+    const entities = await this.get(`entities`, {
+      filter: JSON.stringify({
+        code: { comparisonValue: entityCode },
+      }),
+      columns: `["code","id"]`,
+    });
+    return entities.length > 0 ? entities[0] : undefined;
   }
 
   public async updateSurveyResponse(
@@ -112,38 +120,20 @@ export class CentralConnection extends ApiConnection {
     surveyResponse: SurveyResponseObject,
     answers: Answer[],
   ) {
-    const existingAnswers = await this.findAnswers(surveyResponse.id);
-    const newAnswers = existingAnswers
-      .map(existingAnswer => {
-        const questionCode = existingAnswer['question.code'];
-        const answer = answers.find(a => a.code === questionCode);
-        return {
-          id: existingAnswer.id,
-          type: existingAnswer.type,
-          question_code: questionCode,
-          body: answer?.value,
-        };
-      })
-      .filter(a => a.body !== undefined);
-
+    const newAnswers = Object.fromEntries(answers.map(({ code, value }) => [code, value]));
     const currentDate = new Date().toISOString();
 
-    return this.post(`changes`, {}, [
+    return this.post(
+      `surveyResponse/${surveyResponse.id}/resubmit`,
       {
-        action: 'SubmitSurveyResponse',
-        waitForAnalyticsRebuild: true,
-        payload: {
-          id: surveyResponse.id,
-          data_time: surveyResponse.data_time,
-          entity_code: surveyResponse['entity.code'],
-          survey_code: surveyResponse['survey.code'],
-          user_email: this.authHandler.email,
-          start_time: currentDate,
-          end_time: currentDate,
-          answers: newAnswers,
-        },
+        waitForAnalyticsRebuild: 'true',
       },
-    ]);
+      {
+        start_time: currentDate,
+        end_time: currentDate,
+        answers: newAnswers,
+      },
+    );
   }
 
   public async createSurveyResponse(
@@ -154,31 +144,33 @@ export class CentralConnection extends ApiConnection {
   ) {
     const [, endDate] = convertPeriodStringToDateRange(period);
 
-    const newAnswers = answers.map(({ type, code, value }) => ({
-      id: generateId(),
-      type,
-      question_code: code,
-      body: value,
-    }));
+    const newAnswers = Object.fromEntries(answers.map(({ code, value }) => [code, value]));
+
+    const survey = await this.findSurvey(surveyCode);
+    const entity = await this.findEntity(organisationUnitCode);
 
     const date = new Date().toISOString();
     const surveyResponseId = generateId();
-    const response = await this.post(`changes`, {}, [
+    const response = await this.post(
+      `surveyResponse`,
       {
-        action: 'SubmitSurveyResponse',
-        waitForAnalyticsRebuild: true,
-        payload: {
+        waitForAnalyticsRebuild: 'true',
+      },
+      [
+        {
           id: surveyResponseId,
           data_time: stripTimezoneFromDate(new Date(endDate).toISOString()),
-          survey_code: surveyCode,
+          survey_id: survey?.id,
           entity_code: organisationUnitCode,
+          entity_id: entity?.id,
           user_email: this.authHandler.email,
           start_time: date,
           end_time: date,
+          timestamp: date,
           answers: newAnswers,
         },
-      },
-    ]);
+      ],
+    );
 
     return { surveyResponseId, ...response };
   }

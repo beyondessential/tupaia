@@ -23,7 +23,7 @@ export class AutocompleteConfigCellBuilder extends KeyValueCellBuilder {
    * Since it's not a one to one relationship we can't run it through the generic handlers
    *
    * Input:
-   * attibutes: {
+   * attributes: {
    *   parent_project: {
    *    questionId: <guid>
    *   }

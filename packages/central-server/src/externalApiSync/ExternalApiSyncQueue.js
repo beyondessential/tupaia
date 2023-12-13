@@ -4,6 +4,7 @@
  */
 import autobind from 'react-autobind';
 import { getIsProductionEnvironment } from '@tupaia/utils';
+import { getSyncQueueChangeTime } from '@tupaia/tsutils';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
@@ -21,6 +22,7 @@ export class ExternalApiSyncQueue {
     syncQueueKey,
   ) {
     autobind(this);
+    this.changeIndex = 0;
     this.models = models;
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
@@ -42,27 +44,26 @@ export class ExternalApiSyncQueue {
   };
 
   async persistToSyncQueue(changes, changeDetails) {
-    await Promise.all(
-      changes.map(async (change, i) => {
-        const changeRecord = {
-          ...change,
-          // Reset defaults in case this has already been on the sync queue for a while
-          is_deleted: false,
-          is_dead_letter: false,
-          priority: 1,
-          change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
-        };
-        if (changeDetails) {
-          changeRecord.details = changeDetails[i];
-        }
-        await this.syncQueueModel.updateOrCreate(
-          {
-            record_id: change.record_id,
-          },
-          changeRecord,
-        );
-      }),
-    );
+    for (let i = 0; i < changes.length; i++) {
+      const change = changes[i];
+      const changeRecord = {
+        ...change,
+        // Reset defaults in case this has already been on the sync queue for a while
+        is_deleted: false,
+        is_dead_letter: false,
+        priority: 1,
+        change_time: getSyncQueueChangeTime(this.changeIndex++),
+      };
+      if (changeDetails) {
+        changeRecord.details = changeDetails[i];
+      }
+      await this.syncQueueModel.updateOrCreate(
+        {
+          record_id: change.record_id,
+        },
+        changeRecord,
+      );
+    }
   }
 
   triggerSideEffects = async changes => {
@@ -109,6 +110,7 @@ export class ExternalApiSyncQueue {
       this.processChangesIntoDb();
     } else {
       this.isProcessing = false;
+      this.changeIndex = 0;
     }
   };
 

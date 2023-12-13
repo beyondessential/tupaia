@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { BaseConfig, ExportPresentationOptions } from './common';
+import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 import { CssColor } from '../../css';
 
 /**
@@ -31,6 +31,10 @@ export type MatrixConfig = BaseConfig & {
    * @description Category header rows can have values just like real rows, this is how you style them
    */
   categoryPresentationOptions?: PresentationOptions;
+  /**
+   * @description Specify the valueType for formatting of the value in the matrix
+   */
+  valueType?: ValueType;
 };
 
 export type ConditionalPresentationOptions = {

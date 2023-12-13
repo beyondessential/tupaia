@@ -8,12 +8,14 @@ import { post } from '../api';
 import { useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { CountryAccessListItem } from '../../types';
+import { useLandingPage } from '../queries';
 
 type RequestCountryAccessParams = {
   entityIds: CountryAccessListItem['id'][];
   message?: string;
 };
 export const useRequestCountryAccess = () => {
+  const { isLandingPage, landingPageUrlSegment } = useLandingPage();
   const queryClient = useQueryClient();
   const [urlSearchParams] = useSearchParams();
   const projectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
@@ -29,6 +31,11 @@ export const useRequestCountryAccess = () => {
     },
     {
       onSuccess: () => {
+        if (isLandingPage) {
+          queryClient.invalidateQueries({
+            queryKey: ['landingPage', landingPageUrlSegment],
+          });
+        }
         queryClient.invalidateQueries({
           queryKey: ['projects'],
         });

@@ -15,13 +15,17 @@ const SemiCircle = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.panel.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   min-height: 60px;
   min-width: 30px;
   border-top-left-radius: 60px;
   border-bottom-left-radius: 60px;
   cursor: pointer;
   padding: 0;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+  }
 `;
 
 const CloseArrowIcon = styled(KeyboardArrowRight)`

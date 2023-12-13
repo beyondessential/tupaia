@@ -1,6 +1,8 @@
 import React from 'react';
 import { addDecorator } from '@storybook/react';
 import { AppProviders } from '../helpers/AppProviders';
+import ReactHookFormDecorator from './ReactHookFormDecorator';
+import ReactRouterDecorator from './ReactRouterDecorator';
 
 export const parameters = {
   backgrounds: {
@@ -21,3 +23,6 @@ export const parameters = {
 addDecorator((story, context) => (
   <AppProviders params={context.parameters}>{story()}</AppProviders>
 ));
+
+addDecorator(ReactHookFormDecorator);
+addDecorator(ReactRouterDecorator);

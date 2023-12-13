@@ -48,7 +48,7 @@ export default defineConfig(({ command, mode }) => {
     envPrefix: 'REACT_APP_', // to allow any existing REACT_APP_ env variables to be used;
     resolve: {
       preserveSymlinks: true, // use the yarn workspace symlinks
-      dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
+      dedupe: ['@material-ui/core', 'react', 'react-dom', 'styled-components', 'react-router-dom'], // deduplicate these packages to avoid duplicate copies of them in the bundle, which might happen and cause errors with ui component packages
       alias: {
         http: path.resolve(__dirname, 'moduleMock.js'),
         winston: path.resolve(__dirname, 'moduleMock.js'),

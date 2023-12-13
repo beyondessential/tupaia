@@ -7,7 +7,7 @@ import { Moment } from 'moment';
 import { GRANULARITIES, displayStringToMoment } from '@tupaia/utils';
 import type { Meta } from '@storybook/react';
 import { DateRangePicker } from '../../src/components/DateRangePicker';
-import { ValueOf } from '../types';
+import { ValueOf } from '../../src/types';
 
 const meta: Meta<typeof DateRangePicker> = {
   title: 'components/DateRangePicker',

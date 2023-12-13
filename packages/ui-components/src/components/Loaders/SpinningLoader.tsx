@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { CircularProgress, BoxProps } from '@material-ui/core';
 import { FlexCenter } from '../Layout';
 
 const Container = styled(FlexCenter)`
@@ -13,8 +13,8 @@ const Container = styled(FlexCenter)`
   align-self: center;
 `;
 
-export const SpinningLoader = () => (
-  <Container>
+export const SpinningLoader = (props: BoxProps) => (
+  <Container {...props}>
     <CircularProgress size={50} />
   </Container>
 );

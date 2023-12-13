@@ -178,7 +178,8 @@ export const extractFilterFromQuery = (
   }
 
   const filterClauses = queryFilter.split(CLAUSE_DELIMITER).map(toFilterClause);
-  const filter: Writable<NotNullValues<Record<string, unknown>>> = {};
+  //TODO: Stop using any here in favour of validating against the entity filter schema
+  const filter: Writable<NotNullValues<Record<string, any>>> = {};
 
   filterClauses.forEach(([field, operator, value]) => {
     const formattedField = isNestedField(field) ? toJsonBKey(field) : field;

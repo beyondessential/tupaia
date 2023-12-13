@@ -20,7 +20,7 @@ const StyledPolygon = styled(Polygon)<PolygonProps>`
   stroke: ${props => props.shade || POLYGON_HIGHLIGHT};
   opacity: 1;
   fill: ${props => props.shade || 'none'};
-  pointer-events: ${props => (props.hasChildren ? 'none !important' : 'auto')} 
+  pointer-events: ${props => (props.hasChildren ? 'none !important' : 'auto')};
   stroke-width: ${props => {
     let weight = 2;
     if (props.hasShadedChildren) weight = 0;

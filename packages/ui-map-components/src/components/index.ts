@@ -12,6 +12,7 @@ export {
   GeoJSON,
   Polygon,
 } from 'react-leaflet';
+export type { GeoJSONProps } from 'react-leaflet';
 export * from './ActivePolygon';
 export * from './AreaTooltip';
 export * from './Legend';

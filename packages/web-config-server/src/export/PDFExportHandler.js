@@ -1,4 +1,4 @@
-import { downloadPageAsPDF } from '@tupaia/tsutils';
+import { downloadPageAsPDF } from '@tupaia/server-utils';
 
 export const PDFExportHandler = async (req, res) => {
   const { pdfPageUrl, cookieDomain } = req.body;

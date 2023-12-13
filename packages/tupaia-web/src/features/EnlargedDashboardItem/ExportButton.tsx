@@ -21,14 +21,9 @@ const Button = styled(IconButton).attrs({
   title: 'Export visualisation',
 })`
   position: absolute;
-  top: 0.3rem;
-  right: 3.5rem;
+  top: 0.2rem;
+  right: 2.7rem;
   z-index: 1;
-`;
-
-const ExportIcon = styled(GetApp)`
-  width: 1.8rem;
-  height: auto;
 `;
 
 export const ExportButton = () => {
@@ -51,7 +46,7 @@ export const ExportButton = () => {
 
   return (
     <Button onClick={onClickExportButton}>
-      <ExportIcon />
+      <GetApp />
     </Button>
   );
 };

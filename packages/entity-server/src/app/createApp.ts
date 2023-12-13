@@ -33,6 +33,7 @@ import {
   attachCommonEntityContext,
   attachSingleEntityContext,
   attachMultiEntityContext,
+  attachEntityFilterContext,
 } from '../routes/hierarchy/middleware';
 import { attachRelationshipsContext } from '../routes/hierarchy/relationships/middleware';
 import { HierarchyRequest, HierarchyRoute } from '../routes/hierarchies';
@@ -84,6 +85,7 @@ export function createApp(db = new TupaiaDatabase()) {
       .get<EntitySearchRequest>(
         'hierarchy/:hierarchyName/entitySearch/:searchString',
         attachCommonEntityContext,
+        attachEntityFilterContext,
         handleWith(EntitySearchRoute),
       )
 

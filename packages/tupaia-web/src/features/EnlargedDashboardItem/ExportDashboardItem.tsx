@@ -38,11 +38,17 @@ const Container = styled.div`
 const ExportContentContainer = styled(Container)`
   flex-grow: 1;
   display: flex;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 const LeftColumn = styled.div`
   width: 30%;
   text-align: left;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+  }
 `;
 
 const Title = styled(Typography).attrs({
@@ -51,7 +57,7 @@ const Title = styled(Typography).attrs({
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   text-align: center;
-  margin: 0.3rem 0 2rem 0;
+  margin: 0.3rem 0 0.8rem 0;
   line-height: 1.4;
 `;
 
@@ -107,8 +113,12 @@ const Checkbox = styled(BaseCheckbox)`
 const RightColumn = styled.div`
   flex-grow: 1;
   width: 70%;
-  padding-left: 2rem;
-  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+    margin-top: 1rem;
+  }
 `;
 
 const ScrollableContent = styled.div`
@@ -135,7 +145,6 @@ const PreviewContainer = styled.div`
   min-width: 50rem; // the size of the a4 page
   width: max-content;
   padding: 1rem;
-  height: 100%;
   h2 {
     color: ${({ theme }) => theme.palette.common.black};
   }
