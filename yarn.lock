@@ -18370,29 +18370,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bunyan@npm:^1.8.12":
-  version: 1.8.14
-  resolution: "bunyan@npm:1.8.14"
-  dependencies:
-    dtrace-provider: ~0.8
-    moment: ^2.19.3
-    mv: ~2
-    safe-json-stringify: ~1
-  dependenciesMeta:
-    dtrace-provider:
-      optional: true
-    moment:
-      optional: true
-    mv:
-      optional: true
-    safe-json-stringify:
-      optional: true
-  bin:
-    bunyan: bin/bunyan
-  checksum: d042df82f5e05cf8ab83ef292a4f2a06d98b992be6be6df8da080d467facc6aeb95e5a9a39e5dd7313ec7a8b49e1d577d822686ad1e52af83893fcff68e0fefd
-  languageName: node
-  linkType: hard
-
 "busboy@npm:^0.2.11":
   version: 0.2.14
   resolution: "busboy@npm:0.2.14"
@@ -22536,16 +22513,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dtrace-provider@npm:~0.8":
-  version: 0.8.8
-  resolution: "dtrace-provider@npm:0.8.8"
-  dependencies:
-    nan: ^2.14.0
-    node-gyp: latest
-  checksum: f2dc89df6a9c443dc9bae3b53496e0685b5da89142951d451c1ce062c75d96698ffc0b3d90f621a59a6a18578be552378ad4e08210759038910ff2080be556b9
-  languageName: node
-  linkType: hard
-
 "duplexer3@npm:^0.1.4":
   version: 0.1.4
   resolution: "duplexer3@npm:0.1.4"
@@ -24608,7 +24575,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@npm:^24.1.0, expect@npm:^24.8.0":
+"expect@npm:^24.1.0":
   version: 24.9.0
   resolution: "expect@npm:24.9.0"
   dependencies:
@@ -26451,19 +26418,6 @@ __metadata:
   bin:
     glob: dist/cjs/src/bin.js
   checksum: 29190d3291f422da0cb40b77a72fc8d2c51a36524e99b8bf412548b7676a6627489528b57250429612b6eec2e6fe7826d328451d3e694a9d15e575389308ec53
-  languageName: node
-  linkType: hard
-
-"glob@npm:^6.0.1":
-  version: 6.0.4
-  resolution: "glob@npm:6.0.4"
-  dependencies:
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: 2 || 3
-    once: ^1.3.0
-    path-is-absolute: ^1.0.0
-  checksum: c4946c3d015ac81f704d185f2b3a55eb670100693c2cf7bc833d0efd970ec727d860d4839a5178e46a7e594b34a34661bae2f4c3405727c9fd189f84954ca3c0
   languageName: node
   linkType: hard
 
@@ -31325,13 +31279,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-when@npm:^2.7.2":
-  version: 2.7.2
-  resolution: "jest-when@npm:2.7.2"
-  dependencies:
-    bunyan: ^1.8.12
-    expect: ^24.8.0
-  checksum: 5389f474f8edd415d6f94b2b6407e5c7329d15b299dcc602eef04f111387667a63003dce0d6b754ebe37db4a04f424c16cc9e9b40f684061f324ee1e58e3ce4b
+"jest-when@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "jest-when@npm:3.6.0"
+  peerDependencies:
+    jest: ">= 25"
+  checksum: ed32ed84e5802bb6fec98966cdf862ce59677551be33d3795e6ac7a6207acf467ed559573d671c8d94c59f7fc0780cf358d2d165d81cdc7d9611250d975ee024
   languageName: node
   linkType: hard
 
@@ -34974,7 +34927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.19.3, moment@npm:^2.29.1":
+"moment@npm:^2.29.1":
   version: 2.29.1
   resolution: "moment@npm:2.29.1"
   checksum: 1e14d5f422a2687996be11dd2d50c8de3bd577c4a4ca79ba5d02c397242a933e5b941655de6c8cb90ac18f01cc4127e55b4a12ae3c527a6c0a274e455979345e
@@ -35165,32 +35118,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mv@npm:~2":
-  version: 2.1.1
-  resolution: "mv@npm:2.1.1"
-  dependencies:
-    mkdirp: ~0.5.1
-    ncp: ~2.0.0
-    rimraf: ~2.4.0
-  checksum: 59d4b5ebff6c265b452d6630ae8873d573c82e36fdc1ed9c34c7901a0bf2d3d357022f49db8e9bded127b743f709c7ef7befec249a2b3967578d649a8029aa06
-  languageName: node
-  linkType: hard
-
 "nan@npm:^2.12.1":
   version: 2.14.0
   resolution: "nan@npm:2.14.0"
   dependencies:
     node-gyp: latest
   checksum: 6dfd00d9bf71769898dfab21ef9d2ef278b392c586147616a718b995d6a582f5caa7f2ca0f83ce956fb0def698aca813b2b6fd4598125cd16bdc85924c34a37d
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.14.0":
-  version: 2.14.1
-  resolution: "nan@npm:2.14.1"
-  dependencies:
-    node-gyp: latest
-  checksum: b6692edb0a37a7e85f14a2cdb71ef467c00df17e56d8738746984c0219f36494d0d826094aaa1c58ef971ea63e58e2019b6af72cb03b986d38b9821779878824
   languageName: node
   linkType: hard
 
@@ -35299,15 +35232,6 @@ __metadata:
   bin:
     ncp: ./bin/ncp
   checksum: 18d7cd61486068e7ac51c42e3d898516356166061d1db337b57d8bc9b6d6ec9c63e6b722b9640832d65aa894743d4716a13d41136ab20116cebca765868cd64a
-  languageName: node
-  linkType: hard
-
-"ncp@npm:~2.0.0":
-  version: 2.0.0
-  resolution: "ncp@npm:2.0.0"
-  bin:
-    ncp: ./bin/ncp
-  checksum: ea9b19221da1d1c5529bdb9f8e85c9d191d156bcaae408cce5e415b7fbfd8744c288e792bd7faf1fe3b70fd44c74e22f0d43c39b209bc7ac1fb8016f70793a16
   languageName: node
   linkType: hard
 
@@ -42529,17 +42453,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:~2.4.0":
-  version: 2.4.5
-  resolution: "rimraf@npm:2.4.5"
-  dependencies:
-    glob: ^6.0.1
-  bin:
-    rimraf: ./bin.js
-  checksum: 036793b4055d65344ad7bea73c3f4095640af7455478fe56c19783619463e6bb4374ab3556b9e6d4d6d3dd210eb677b0955ece38813e734c294fd2687201151d
-  languageName: node
-  linkType: hard
-
 "rimraf@npm:~2.6.2":
   version: 2.6.3
   resolution: "rimraf@npm:2.6.3"
@@ -42758,13 +42671,6 @@ __metadata:
   version: 5.2.0
   resolution: "safe-buffer@npm:5.2.0"
   checksum: 91d50127aeaee9b8cb1ee12c810d719e29813d1ab1ce6d1b4704cd9ca0e0bfa47455e02cf1bb238be90f2db764447f058fbaef1a1018ae8387c692615d72f86c
-  languageName: node
-  linkType: hard
-
-"safe-json-stringify@npm:~1":
-  version: 1.2.0
-  resolution: "safe-json-stringify@npm:1.2.0"
-  checksum: 5bb32db6d6a3ceb3752df51f4043a412419cd3d4fcd5680a865dfa34cd7e575ba659c077d13f52981ced084061df9c75c7fb12e391584d4264e6914c1cd3d216
   languageName: node
   linkType: hard
 
@@ -46175,7 +46081,7 @@ __metadata:
     eslint-plugin-module-resolver: ^1.5.0
     jest: ^27.0.6
     jest-extended: ^0.11.5
-    jest-when: ^2.7.2
+    jest-when: ^3.6.0
     nodemon: ^2.0.4
     npm-package-json-lint: 5.1.0
     ts-jest: ^27.1.3
