@@ -69,20 +69,26 @@ const SubscribeButton = styled(Button)`
   margin-left: 1.2rem;
 `;
 
-const EmailInput = styled(TextField)`
+const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
   width: 50%;
   margin: auto;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100%;
   }
 
-  .Mui-disabled {
-    color: ${props => props.theme.palette.text.secondary};
-  }
+  ${({ $disabled, theme }) =>
+    $disabled
+      ? `
 
-  .Mui-disabled:before {
-    border-bottom-style: outset;
-  }
+      .MuiInput-input {
+        color: ${theme.palette.text.secondary}; 
+      }
+        
+      .MuiInput-underline:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); transition: none;  }
+      .MuiInput-underline:hover:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); }
+      .MuiInput-underline:after { border-bottom-style: none; }  
+      `
+      : ''};
 `;
 
 interface SubscribeModalProps {
@@ -102,8 +108,12 @@ export const SubscribeModal = ({
   const { data: user, isLoggedIn, isLoading } = useUser();
   const mailingList = useDashboardMailingList();
   const isSubscribed = mailingList ? mailingList.isSubscribed : false;
+  const defaultEmail = isLoggedIn ? user.email : '';
   const formContext = useForm({
     mode: 'onChange',
+    defaultValues: {
+      email: defaultEmail,
+    },
   });
   const {
     mutateAsync: subscribe,
@@ -154,11 +164,11 @@ export const SubscribeModal = ({
                 name="email"
                 label="Email"
                 required
-                defaultValue={isLoggedIn ? user.email : ''}
+                defaultValue={defaultEmail}
                 type="email"
                 options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
                 inputProps={{ readOnly: isLoggedIn }}
-                disabled={isLoggedIn}
+                $disabled={isLoggedIn}
               />
               {isMutateError && (
                 <ErrorMessageText color="error">
