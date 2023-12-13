@@ -6,13 +6,14 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useSurveys } from '../../../api';
+import { InputHelperText } from '../../../components';
 import { Autocomplete } from './Autocomplete';
 import { InputWrapper } from './InputWrapper';
-import { InputHelperText } from '../../../components';
 
 export const SurveysInput = () => {
   const { errors } = useFormContext();
   const { data: surveys } = useSurveys();
+  console.log('surveys', surveys);
 
   return (
     <InputWrapper>

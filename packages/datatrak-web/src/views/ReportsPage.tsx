@@ -5,8 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Paper, Typography, Link } from '@material-ui/core';
-import { PageContainer, PageTitleBar, ReportsIcon } from '../../components';
-import { ReportsForm } from './ReportsForm';
+import { PageContainer, PageTitleBar, ReportsIcon } from '../components';
+import { Reports } from '../features';
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ export const ReportsPage = () => {
             </InlineLink>
             .
           </Typography>
-          <ReportsForm />
+          <Reports />
         </Container>
       </Wrapper>
     </PageContainer>

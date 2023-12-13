@@ -72,7 +72,7 @@ const DEFAULT_FORM_VALUES = {
   country: null,
   entity: [],
 };
-export const ReportsForm = () => {
+export const Reports = () => {
   const {
     mutate: exportSurveyResponses,
     data: responseData,

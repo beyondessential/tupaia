@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiRadio, { RadioProps } from '@material-ui/core/Radio';
-import MuiRadioGroup from '@material-ui/core/RadioGroup';
+import MuiRadioGroup, { RadioGroupProps as MuiRadioGroupProps } from '@material-ui/core/RadioGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl';
@@ -72,7 +72,7 @@ const Radio = styled(MuiRadio)<
 `;
 
 interface RadioGroupProps {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: MuiRadioGroupProps['onChange'];
   value: string | boolean;
   name: string;
   options: Record<string, any>[];
@@ -87,7 +87,7 @@ interface RadioGroupProps {
   inputRef?: React.Ref<HTMLInputElement>;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   required?: boolean;
-  radioGroupProps?: RadioProps;
+  radioGroupProps?: MuiRadioGroupProps;
 }
 
 export const RadioGroup = ({
