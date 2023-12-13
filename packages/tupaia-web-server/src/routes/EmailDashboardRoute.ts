@@ -117,7 +117,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
 
     const emails = mailingListEntries.map(({ email }) => email);
     const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboard.name}`;
-    const infoHtml = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
+    const html = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
     const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
     emails.forEach(email => {
@@ -128,10 +128,11 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
         mailingListId: mailingList.id,
       });
       const unsubscribeHtml = `Didn't intend to subscribe to these emails? <a href='${unsubscribeUrl}'>Unsubscribe</a>`;
-      const html = `${infoHtml}<br>${unsubscribeHtml}`;
+      const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px">${unsubscribeHtml}</p>`;
       return sendEmail(email, {
         subject,
         html,
+        signOff,
         attachments: [{ filename, content: buffer }],
       });
     });
