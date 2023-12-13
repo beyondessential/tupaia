@@ -3,8 +3,9 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import styled from 'styled-components';
 import {
-  ActionsMenu as UIActionsMenu,
+  ActionsMenu as BaseActionsMenu,
   ExportIcon,
   ActionsMenuOptionType,
 } from '@tupaia/ui-components';
@@ -12,6 +13,18 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Dashboard } from '../../../types';
 import { useDashboardMailingList } from '../../../utils';
+
+const StyledExportIcon = styled(ExportIcon)`
+  height: 0.9rem;
+`;
+
+const StyledAddCircleOutlineIcon = styled(AddCircleOutlineIcon)`
+  height: 1.2rem;
+`;
+
+const StyledCheckCircleIcon = styled(CheckCircleIcon)`
+  height: 1.2rem;
+`;
 
 interface ActionsMenuProps {
   setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +48,7 @@ export const ActionsMenu = ({
     label: 'Export',
     action: () => setExportModalOpen(true),
     // eslint-disable-next-line react/display-name
-    ActionIcon: () => <ExportIcon fill="white" />,
+    ActionIcon: () => <StyledExportIcon fill="white" />,
     toolTipTitle: 'Export dashboard',
   };
   menuOptions.push(exportOption);
@@ -44,7 +57,7 @@ export const ActionsMenu = ({
     if (mailingList.isSubscribed) {
       menuOptions.push({
         label: 'Subscribed',
-        ActionIcon: CheckCircleIcon,
+        ActionIcon: StyledCheckCircleIcon,
         color: 'primary',
         toolTipTitle: 'Remove yourself from email updates',
         action: () => setSubscribeModalOpen(true),
@@ -53,11 +66,23 @@ export const ActionsMenu = ({
       menuOptions.push({
         label: 'Subscribe',
         action: () => setSubscribeModalOpen(true),
-        ActionIcon: AddCircleOutlineIcon,
+        ActionIcon: StyledAddCircleOutlineIcon,
         toolTipTitle: 'Subscribe to receive dashboard email updates',
       });
     }
   }
 
-  return <UIActionsMenu options={menuOptions} includesIcons={true} />;
+  const styledMenuOptions: ActionsMenuOptionType[] = menuOptions.map(menuOption => ({
+    ...menuOption,
+    style: { fontSize: '0.9rem' },
+    iconStyle: { minWidth: '2rem' },
+  }));
+
+  return (
+    <BaseActionsMenu
+      options={styledMenuOptions}
+      includesIcons={true}
+      anchorOrigin={{ horizontal: 'right' }}
+    />
+  );
 };
