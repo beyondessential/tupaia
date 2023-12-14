@@ -19,11 +19,13 @@ type PersonalDetailsFormFields = Pick<
 >;
 
 /**
- * Guarantees grid placement of the form submission button. The tooltip attribute on the button
+ * Guarantees right-alignment of button in grid. Necessary because tooltip attribute on the button
  * wraps it in a flexbox, which nullifies the effect of grid-column.
  */
 const ButtonWrapper = styled(Box)`
-  grid-column: -2;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    grid-column: -2 / -1;
+  }
 `;
 
 const StyledTextField = styled(TextField)`
