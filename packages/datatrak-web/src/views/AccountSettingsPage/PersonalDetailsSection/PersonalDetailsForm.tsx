@@ -174,15 +174,6 @@ export const PersonalDetailsForm = () => {
           placeholder="Position"
           required
         />
-        <FormInput
-          id={'foobar'}
-          Input={StyledTextField}
-          label="foobar"
-          name="foobar"
-          placeholder="foobar"
-          type="password"
-          required
-        />
         <ButtonWrapper>
           <Button
             type="submit"

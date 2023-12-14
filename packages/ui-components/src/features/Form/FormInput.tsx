@@ -54,7 +54,6 @@ export const FormInput = ({
       required={!!required}
       error={!!errors[name]}
       helperText={errors[name]?.message}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       inputRef={register(registerOptions)}
       {...props}
     />
