@@ -116,36 +116,20 @@ export const MenuList = ({
     <>
       <Menu>
         {children}
-        {menuItems.map(
-          ({
-            label,
-            to,
-            href,
-            isExternal,
-            onClick,
-            component,
-          }: {
-            label: string;
-            to?: string;
-            href?: string;
-            isExternal?: boolean;
-            onClick?: (e?: any) => void;
-            component?: ComponentType<any> | string;
-          }) => (
-            <MenuListItem key={label} button>
-              <MenuButton
-                component={component || RouterLink}
-                underline="none"
-                target={isExternal ? '_blank' : null}
-                onClick={onClick || onCloseMenu}
-                to={to}
-                href={href}
-              >
-                {label}
-              </MenuButton>
-            </MenuListItem>
-          ),
-        )}
+        {menuItems.map(({ label, to, href, isExternal, onClick, component }: MenuItem) => (
+          <MenuListItem key={label} button>
+            <MenuButton
+              component={component || RouterLink}
+              underline="none"
+              target={isExternal ? '_blank' : null}
+              onClick={onClick || onCloseMenu}
+              to={to}
+              href={href}
+            >
+              {label}
+            </MenuButton>
+          </MenuListItem>
+        ))}
       </Menu>
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}

@@ -59,6 +59,7 @@ export const EntityLevelInput = () => {
               { label: 'Country', value: 'country' },
               { label: 'Entity', value: 'entity' },
             ]}
+            id="entityLevel"
             required
             onChange={onChange}
             value={value}

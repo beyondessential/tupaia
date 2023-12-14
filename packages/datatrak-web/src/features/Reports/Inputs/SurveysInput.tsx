@@ -13,7 +13,6 @@ import { InputWrapper } from './InputWrapper';
 export const SurveysInput = () => {
   const { errors } = useFormContext();
   const { data: surveys } = useSurveys();
-  console.log('surveys', surveys);
 
   return (
     <InputWrapper>
@@ -25,11 +24,13 @@ export const SurveysInput = () => {
             <Autocomplete
               label="Survey"
               error={invalid}
+              id="surveys"
               options={surveys?.map(({ code, name }) => ({ value: code, label: name })) ?? []}
               name="surveys"
               required
               getOptionLabel={option => option.label}
               placeholder="Select survey..."
+              getOptionSelected={(option, selected) => option.value === selected.value}
               onChange={(_, newValue) => {
                 // the onChange function expected by react-hook-form and mui are different
                 onChange(newValue);
@@ -39,12 +40,15 @@ export const SurveysInput = () => {
               muiProps={{
                 multiple: true,
               }}
+              aria-describedby={invalid ? 'surveys-error-text' : undefined}
             />
           );
         }}
       />
       {errors.surveys && (
-        <InputHelperText error>{(errors.surveys as Error).message}</InputHelperText>
+        <InputHelperText error id="surveys-error-text">
+          {(errors.surveys as Error).message}
+        </InputHelperText>
       )}
     </InputWrapper>
   );

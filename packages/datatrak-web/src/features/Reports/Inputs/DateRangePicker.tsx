@@ -76,12 +76,14 @@ export const DateRangePicker = () => {
           render={({ ref, onChange, value, name }) => (
             <DateTimePicker
               name={name}
-              label="Start Date"
+              label="Start date"
+              id="startDate"
               inputVariant="outlined"
               onChange={onChange}
               value={value}
               inputRef={ref}
               error={!!errorMessage}
+              aria-describedby={errorMessage ? 'date-error-message' : undefined}
             />
           )}
         />
@@ -100,17 +102,23 @@ export const DateRangePicker = () => {
           render={({ ref, onChange, value, name }) => (
             <DateTimePicker
               name={name}
-              label="End Date"
+              label="End date"
               inputVariant="outlined"
               onChange={onChange}
               value={value}
+              id="endDate"
               inputRef={ref}
               error={!!errorMessage}
+              aria-describedby={errorMessage ? 'date-error-message' : undefined}
             />
           )}
         />
       </Container>
-      {errorMessage && <InputHelperText error>{errorMessage}</InputHelperText>}
+      {errorMessage && (
+        <InputHelperText error id="date-error-message">
+          {errorMessage}
+        </InputHelperText>
+      )}
     </InputWrapper>
   );
 };

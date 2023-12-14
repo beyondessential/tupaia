@@ -61,6 +61,8 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
             label={label}
             loading={isLoading}
             error={invalid}
+            id={entityLevel}
+            getOptionSelected={(option, selected) => option.value === selected.value}
             options={
               entities?.map(({ name: entityName, id, code, type: entityType }) => ({
                 label: entityName,
@@ -86,11 +88,14 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
               onChange(newValue);
             }}
             value={value}
+            aria-describedby={invalid ? 'entities-error-message' : undefined}
           />
         )}
       />
       {errors[entityLevel] && (
-        <InputHelperText error>{(errors[entityLevel] as Error).message}</InputHelperText>
+        <InputHelperText error id="entities-error-message">
+          {(errors[entityLevel] as Error).message}
+        </InputHelperText>
       )}
     </InputWrapper>
   );

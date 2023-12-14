@@ -5,41 +5,10 @@
 import React from 'react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderComponent } from '../../helpers/render';
 import { Reports } from '../../../features/Reports';
-import { screen } from '@testing-library/react';
-
-jest.mock('react-hook-form', () => {
-  const actual = jest.requireActual('react-hook-form');
-  return {
-    ...actual,
-    useFormContext: jest.fn().mockReturnValue({ errors: {} }),
-  };
-});
-
-// const entitiesData = [
-//   {
-//     id: '5d3f8844bf6b4031bfff591b',
-//     parentName: 'Demo Land',
-//     code: 'DL_South West',
-//     name: 'South West',
-//     type: 'district',
-//   },
-//   {
-//     id: '5d3f8844df283d31bfd08fc3',
-//     parentName: 'Demo Land',
-//     code: 'DL_North',
-//     name: 'North',
-//     type: 'district',
-//   },
-//   {
-//     id: '5d3f88448ec12f31bf9c694e',
-//     parentName: 'Demo Land',
-//     code: 'DL_South East',
-//     name: 'South East',
-//     type: 'district',
-//   },
-// ];
 
 const countriesData = [
   {
@@ -98,7 +67,128 @@ describe('Reports', () => {
 
   it('renders the surveys input', async () => {
     renderComponent(<Reports />);
-    const surveysInput = await screen.findByText(/Survey/);
+    const surveysInput = await screen.findByPlaceholderText('Select survey...');
     expect(surveysInput).toBeInTheDocument();
+  });
+
+  it('renders the entity level radio options', async () => {
+    renderComponent(<Reports />);
+    const radioButtons = await screen.findAllByRole('radio');
+    expect(radioButtons).toHaveLength(2);
+    expect(radioButtons[0]).toHaveAttribute('value', 'country');
+    expect(radioButtons[1]).toHaveAttribute('value', 'entity');
+  });
+
+  it('renders the country autocomplete input if entity level is country', async () => {
+    renderComponent(<Reports />);
+    const radioButtons = await screen.findAllByRole('radio');
+    await userEvent.click(radioButtons[0]);
+    expect(screen.getByPlaceholderText('Select country...')).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Select entities...')).not.toBeInTheDocument();
+  });
+
+  it('renders the entity autocomplete input if entity level is entity', async () => {
+    renderComponent(<Reports />);
+    const radioButtons = await screen.findAllByRole('radio');
+    await userEvent.click(radioButtons[1]);
+    expect(screen.getByPlaceholderText('Select entities...')).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Select country...')).not.toBeInTheDocument();
+  });
+
+  it('renders the start date input', async () => {
+    renderComponent(<Reports />);
+    const startDateInput = await screen.findByLabelText('Start date');
+    expect(startDateInput).toBeInTheDocument();
+  });
+
+  it('renders the end date input', async () => {
+    renderComponent(<Reports />);
+    const endDateInput = await screen.findByLabelText('End date');
+    expect(endDateInput).toBeInTheDocument();
+  });
+
+  it('Does not show an error message when form is submitted with startDate that is before endDate', async () => {
+    renderComponent(<Reports />);
+    const startDateInput = await screen.findByLabelText('Start date');
+    const endDateInput = await screen.findByLabelText('End date');
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.type(startDateInput, '2021-01-01');
+    await userEvent.type(endDateInput, '2022-01-01');
+    await userEvent.click(submitButton);
+    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+  });
+
+  it('Does not show an error message when form is submitted with startDate and not an endDate', async () => {
+    renderComponent(<Reports />);
+    const startDateInput = await screen.findByLabelText('Start date');
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.type(startDateInput, '2021-01-01');
+    await userEvent.click(submitButton);
+    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+  });
+
+  it('Does not show an error message when form is submitted with endDate and not a startDate', async () => {
+    renderComponent(<Reports />);
+    const endDateInput = await screen.findByLabelText('End date');
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.type(endDateInput, '2021-01-01');
+    await userEvent.click(submitButton);
+    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+  });
+
+  it('Shows an error message when form is submitted with startDate that is after endDate', async () => {
+    renderComponent(<Reports />);
+
+    const startDateInput = await screen.findByLabelText('Start date');
+    const endDateInput = await screen.findByLabelText('End date');
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.type(startDateInput, '2021-01-01');
+    await userEvent.type(endDateInput, '2020-01-01');
+    await userEvent.click(submitButton);
+    const errorMessage = await screen.findByText('Start date must be before end date');
+    expect(errorMessage).toBeInTheDocument();
+  });
+
+  it('Shows an error message when form is submitted without required fields filled in', async () => {
+    renderComponent(<Reports />);
+
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.click(submitButton);
+    const errorMessage = await screen.findAllByText('Required');
+    expect(errorMessage).toHaveLength(2);
+  });
+
+  it.only('Shows a message when the email timeout is hit in the request', async () => {
+    const blob = new Blob([`'{"emailTimeoutHit": true}'`], {
+      type: 'application/json',
+    });
+
+    console.log(blob);
+
+    server.use(
+      rest.get('*/v1/export/surveyResponses', (_, res, ctx) => {
+        return res(ctx.status(202), ctx.set('Content-Type', 'application/json'), ctx.body(blob));
+      }),
+    );
+    renderComponent(<Reports />);
+    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByLabelText('Country'));
+    await userEvent.click(screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(screen.getByText('Demo Land'));
+
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.click(submitButton);
+    expect(
+      await screen.findByText(
+        'This export is taking a while, and will continue in the background. You will be emailed when the export process completes.',
+      ),
+    ).toBeInTheDocument();
   });
 });

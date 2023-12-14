@@ -24,21 +24,10 @@ export type ExportSurveyResponsesParams = {
   endDate?: string;
 };
 
-const interpretError = blob => {
-  const fileReader = new FileReader();
-
-  return new Promise((resolve, reject) => {
-    fileReader.onerror = () => {
-      fileReader.abort();
-      reject(new Error('Problem parsing file'));
-    };
-
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    };
-
-    fileReader.readAsText(blob);
-  });
+const getParsedBlob = async data => {
+  console.log('data', data);
+  const decodedBlob = await data.text();
+  return JSON.parse(decodedBlob);
 };
 
 export const useExportSurveyResponses = () => {
@@ -60,8 +49,9 @@ export const useExportSurveyResponses = () => {
 
         // before returning the data, parse it if it's json, so that we can access the emailTimeoutHit property
         const { 'content-type': contentType, 'content-disposition': contentDisposition } = headers;
+
         if (contentType?.includes('application/json')) {
-          return JSON.parse(await data.text());
+          return await getParsedBlob(data);
         }
         // Extract the filename from the content-disposition header
         const regex = /filename="(?<filename>.*)"/; // Find the value between quotes after filename=
@@ -79,9 +69,7 @@ export const useExportSurveyResponses = () => {
           const { data } = e.response;
 
           // Read the blob - because we have to set responseType: 'blob' in the axios config, the data is a blob even when it's an error object
-          const decodedBlob = await interpretError(data);
-
-          const { error: message } = JSON.parse(decodedBlob as string);
+          const { error: message } = await getParsedBlob(data);
 
           // Parse content and retrieve 'message'
           throw new FetchError(message, e.response.status);
@@ -90,6 +78,8 @@ export const useExportSurveyResponses = () => {
     },
     {
       onSuccess: async (response: ExportSurveyResponsesResponse) => {
+        console.log('response', response);
+        if (!response) return;
         const { filePath, blob, contentType } = response;
         if (!filePath) return;
         downloadJs(blob, filePath, contentType);
