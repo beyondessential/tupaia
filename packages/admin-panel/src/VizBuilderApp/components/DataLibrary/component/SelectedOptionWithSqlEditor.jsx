@@ -1,0 +1,69 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ */
+
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { SqlEditor } from '@tupaia/ui-components';
+import { SelectedOption } from './SelectedOption';
+
+const SqlEditorPanel = styled.div`
+  flex: 1;
+  display: flex;
+  width: 100%;
+
+  .ace_editor {
+    width: 100%;
+  }
+`;
+
+export const SelectedOptionWithSqlEditor = ({
+  option, // **************************************************
+  basicOption, // Option panel configs (title, description etc)
+  supportsTitleEditing,
+  onRemove, // ************************************************
+  setIsDragDisabled,
+  currentValue,
+  onChange,
+}) => {
+  const onSqlChange = newValue => onChange({ ...currentValue, sql: newValue });
+
+  const Editor = (
+    <SqlEditorPanel
+      onMouseOver={() => setIsDragDisabled(true)}
+      onMouseLeave={() => setIsDragDisabled(false)}
+    >
+      <SqlEditor onChange={onSqlChange} value={currentValue.sql} tables={['transform_table']} />
+    </SqlEditorPanel>
+  );
+
+  return (
+    <SelectedOption
+      option={option}
+      basicOption={basicOption}
+      supportsTitleEditing={supportsTitleEditing}
+      onRemove={onRemove}
+      onChange={onChange}
+      editor={Editor}
+    />
+  );
+};
+
+SelectedOptionWithSqlEditor.defaultProps = { supportsTitleEditing: false };
+
+SelectedOptionWithSqlEditor.propTypes = {
+  option: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired,
+    config: PropTypes.object,
+    isDisabled: PropTypes.bool,
+  }).isRequired,
+  onRemove: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  supportsTitleEditing: PropTypes.bool,
+  setIsDragDisabled: PropTypes.func.isRequired,
+  basicOption: PropTypes.object.isRequired,
+  currentValue: PropTypes.object.isRequired,
+};
