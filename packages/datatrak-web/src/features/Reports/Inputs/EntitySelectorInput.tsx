@@ -8,7 +8,7 @@ import throttle from 'lodash.throttle';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useEntities } from '../../../api';
 import { InputHelperText } from '../../../components';
-import { Autocomplete } from './Autocomplete';
+import { ReportAutocomplete } from './ReportAutocomplete';
 import { InputWrapper } from './InputWrapper';
 
 interface AsyncAutocompleteProps {
@@ -57,7 +57,7 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
         name={entityLevel}
         rules={{ required: 'Required' }}
         render={({ ref, onChange, value, name }, { invalid }) => (
-          <Autocomplete
+          <ReportAutocomplete
             label={label}
             loading={isLoading}
             error={invalid}

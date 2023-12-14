@@ -7,9 +7,9 @@ type WindowWithGa = Window & {
   gtag: (...args: any[]) => void;
 };
 
-const gtag = ((window as unknown) as WindowWithGa).gtag || (() => {});
+const gtag = (window as unknown as WindowWithGa).gtag || (() => {});
 
-if (!((window as unknown) as WindowWithGa).gtag) {
+if (!(window as unknown as WindowWithGa).gtag && process?.env?.NODE_ENV !== 'test') {
   // eslint-disable-next-line no-console
   console.warn('Google Analytics library not found');
 }

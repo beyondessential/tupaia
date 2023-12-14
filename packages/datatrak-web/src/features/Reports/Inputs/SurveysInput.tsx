@@ -7,7 +7,7 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useSurveys } from '../../../api';
 import { InputHelperText } from '../../../components';
-import { Autocomplete } from './Autocomplete';
+import { ReportAutocomplete } from './ReportAutocomplete';
 import { InputWrapper } from './InputWrapper';
 
 export const SurveysInput = () => {
@@ -21,7 +21,7 @@ export const SurveysInput = () => {
         rules={{ required: 'Required', validate: value => (value.length > 0 ? true : 'Required') }}
         render={({ ref, onChange, value }, { invalid }) => {
           return (
-            <Autocomplete
+            <ReportAutocomplete
               label="Survey"
               error={invalid}
               id="surveys"

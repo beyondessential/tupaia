@@ -5,10 +5,13 @@
 import React from 'react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import downloadjs from 'downloadjs';
 import { renderComponent } from '../../helpers/render';
 import { Reports } from '../../../features/Reports';
+
+jest.mock('downloadjs', () => jest.fn());
 
 const countriesData = [
   {
@@ -116,7 +119,9 @@ describe('Reports', () => {
     await userEvent.type(startDateInput, '2021-01-01');
     await userEvent.type(endDateInput, '2022-01-01');
     await userEvent.click(submitButton);
-    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument(),
+    );
   });
 
   it('Does not show an error message when form is submitted with startDate and not an endDate', async () => {
@@ -126,7 +131,9 @@ describe('Reports', () => {
 
     await userEvent.type(startDateInput, '2021-01-01');
     await userEvent.click(submitButton);
-    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument(),
+    );
   });
 
   it('Does not show an error message when form is submitted with endDate and not a startDate', async () => {
@@ -136,7 +143,9 @@ describe('Reports', () => {
 
     await userEvent.type(endDateInput, '2021-01-01');
     await userEvent.click(submitButton);
-    expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText('Start date must be before end date')).not.toBeInTheDocument(),
+    );
   });
 
   it('Shows an error message when form is submitted with startDate that is after endDate', async () => {
@@ -149,8 +158,9 @@ describe('Reports', () => {
     await userEvent.type(startDateInput, '2021-01-01');
     await userEvent.type(endDateInput, '2020-01-01');
     await userEvent.click(submitButton);
-    const errorMessage = await screen.findByText('Start date must be before end date');
-    expect(errorMessage).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText('Start date must be before end date')).toBeInTheDocument(),
+    );
   });
 
   it('Shows an error message when form is submitted without required fields filled in', async () => {
@@ -159,20 +169,50 @@ describe('Reports', () => {
     const submitButton = await screen.findByRole('button', { name: 'Export' });
 
     await userEvent.click(submitButton);
-    const errorMessage = await screen.findAllByText('Required');
-    expect(errorMessage).toHaveLength(2);
+    await waitFor(() => expect(screen.getAllByText('Required')).toHaveLength(2));
   });
 
-  it.only('Shows a message when the email timeout is hit in the request', async () => {
-    const blob = new Blob([`'{"emailTimeoutHit": true}'`], {
-      type: 'application/json',
-    });
-
-    console.log(blob);
-
+  it('Shows a message when the email timeout is hit in the request', async () => {
     server.use(
       rest.get('*/v1/export/surveyResponses', (_, res, ctx) => {
-        return res(ctx.status(202), ctx.set('Content-Type', 'application/json'), ctx.body(blob));
+        return res(
+          ctx.status(202),
+          // mock the response from the server to be a json object with the key emailTimeoutHit
+          ctx.json({ emailTimeoutHit: true }),
+        );
+      }),
+    );
+    renderComponent(<Reports />);
+    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByLabelText('Country'));
+    await userEvent.click(screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(screen.getByText('Demo Land'));
+
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.click(submitButton);
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'This export is taking a while, and will continue in the background. You will be emailed when the export process completes.',
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('Downloads the file when the response is a blob', async () => {
+    const file = new Blob(['test'], { type: 'text/csv' });
+    server.use(
+      rest.get('*/v1/export/surveyResponses', (_, res, ctx) => {
+        return res(
+          ctx.status(202),
+          ctx.set({
+            'Content-Type': 'text/csv',
+            'Content-Disposition': 'attachment; filename="surveyResponses.csv"',
+          }),
+          ctx.body(file),
+        );
       }),
     );
     renderComponent(<Reports />);
@@ -186,9 +226,40 @@ describe('Reports', () => {
 
     await userEvent.click(submitButton);
     expect(
-      await screen.findByText(
+      screen.queryByText(
         'This export is taking a while, and will continue in the background. You will be emailed when the export process completes.',
       ),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(downloadjs).toHaveBeenCalledWith(file, 'surveyResponses.csv', 'text/csv'),
+    );
+  });
+
+  it('Does not attempt to download the file if an error is caught', async () => {
+    server.use(
+      rest.get('*/v1/export/surveyResponses', (_, res, ctx) => {
+        return res(ctx.status(500), ctx.json({ error: 'Something went wrong' }));
+      }),
+    );
+    renderComponent(<Reports />);
+    await userEvent.click(await screen.findByPlaceholderText('Select survey...'));
+    await userEvent.click(screen.getByText('Basic clinic data - Demo Land'));
+    await userEvent.click(await screen.findByLabelText('Country'));
+    await userEvent.click(screen.getByPlaceholderText('Select country...'));
+    await userEvent.click(screen.getByText('Demo Land'));
+
+    const submitButton = await screen.findByRole('button', { name: 'Export' });
+
+    await userEvent.click(submitButton);
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          'This export is taking a while, and will continue in the background. You will be emailed when the export process completes.',
+        ),
+      ).not.toBeInTheDocument();
+
+      expect(downloadjs).not.toHaveBeenCalled();
+    });
   });
 });

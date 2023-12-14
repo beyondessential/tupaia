@@ -4,9 +4,9 @@
  */
 
 import styled from 'styled-components';
-import { Autocomplete as BaseAutocomplete } from '../../../components';
+import { Autocomplete } from '../../../components';
 
-export const Autocomplete = styled(BaseAutocomplete)`
+export const ReportAutocomplete = styled(Autocomplete)`
   margin: 0;
   .MuiAutocomplete-input {
     font-size: 0.875rem;

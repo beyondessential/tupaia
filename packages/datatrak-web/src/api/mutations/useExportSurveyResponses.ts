@@ -24,10 +24,20 @@ export type ExportSurveyResponsesParams = {
   endDate?: string;
 };
 
+const readBlob = (blob: Blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+    reader.onerror = reject;
+    reader.readAsText(blob);
+  });
+};
+
 const getParsedBlob = async data => {
-  console.log('data', data);
-  const decodedBlob = await data.text();
-  return JSON.parse(decodedBlob);
+  const blob = (await readBlob(data)) as string;
+  return JSON.parse(blob);
 };
 
 export const useExportSurveyResponses = () => {
@@ -78,8 +88,6 @@ export const useExportSurveyResponses = () => {
     },
     {
       onSuccess: async (response: ExportSurveyResponsesResponse) => {
-        console.log('response', response);
-        if (!response) return;
         const { filePath, blob, contentType } = response;
         if (!filePath) return;
         downloadJs(blob, filePath, contentType);
