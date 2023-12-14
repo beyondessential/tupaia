@@ -5,20 +5,27 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Box } from '@material-ui/core';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { UserAccountDetails } from '../../../types';
 import { successToast } from '../../../utils';
-import { useCurrentUser, useEditUser } from '../../../api';
+import { CurrentUserContextType, useCurrentUser, useEditUser } from '../../../api';
 
 type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
   'firstName' | 'lastName' | 'employer' | 'position' | 'mobileNumber'
 >;
 
-const ButtonWrapper = styled.div`
-  grid-column: -2;
+/**
+ * Guarantees right-alignment of button in grid. Necessary because tooltip attribute on the button
+ * wraps it in a flexbox, which nullifies the effect of grid-column.
+ */
+const ButtonWrapper = styled(Box)`
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    grid-column: -2 / -1;
+  }
 `;
 
 const StyledTextField = styled(TextField)`
@@ -57,7 +64,7 @@ const StyledFieldset = styled.fieldset`
 `;
 
 export const PersonalDetailsForm = () => {
-  const user = useCurrentUser();
+  const user: CurrentUserContextType = useCurrentUser();
 
   const formContext = useForm<PersonalDetailsFormFields>({
     defaultValues: {
@@ -67,10 +74,10 @@ export const PersonalDetailsForm = () => {
       employer: user.employer ?? '',
       position: user.position ?? '',
     } as PersonalDetailsFormFields,
+    mode: 'onBlur',
   });
-
   const {
-    formState: { isDirty, dirtyFields, isSubmitting },
+    formState: { dirtyFields, isDirty, isSubmitting, isValid, isValidating },
     getValues,
     handleSubmit,
     reset,
@@ -82,14 +89,22 @@ export const PersonalDetailsForm = () => {
   }
   const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
+  const submissionShouldBeDisabled =
+    !isDirty || isValidating || !isValid || isSubmitting || isLoading;
+
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
   ): SubmitHandler<PersonalDetailsFormFields> {
-    const updates: UserAccountDetails = Object.fromEntries(
-      Object.entries(userDetails).filter(([field]) => dirtyFields[field]),
-    );
+    const updates: PersonalDetailsFormFields = Object.keys(dirtyFields)
+      // Keep only user-modified fields...
+      .filter(field => dirtyFields[field])
+      // ...and trim them
+      .reduce(
+        (updatedFields, field) => ({ ...updatedFields, [field]: userDetails[field].trim() }),
+        {} as PersonalDetailsFormFields,
+      );
 
-    updateUser(updates);
+    updateUser(updates as UserAccountDetails);
   }
 
   return (
@@ -97,6 +112,8 @@ export const PersonalDetailsForm = () => {
       <StyledFieldset disabled={isSubmitting || isLoading}>
         <FormInput
           autoComplete="given-name"
+          autoFocus
+          id="firstName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
@@ -106,6 +123,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="family-name"
+          id="lastName"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
@@ -113,10 +131,10 @@ export const PersonalDetailsForm = () => {
           placeholder="Last name"
           required
         />
-        <FormInput
+        <StyledTextField
           autoComplete="email"
           disabled
-          Input={StyledTextField}
+          id="email"
           inputProps={{ enterKeyHint: 'next', inputMode: 'email' }}
           label="Email"
           name="email"
@@ -128,6 +146,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="tel"
+          id="mobileNumber"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next', inputMode: 'tel' }}
           label="Contact number (optional)"
@@ -137,6 +156,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="organization"
+          id="employer"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
@@ -146,6 +166,7 @@ export const PersonalDetailsForm = () => {
         />
         <FormInput
           autoComplete="organization-title"
+          id="position"
           Input={StyledTextField}
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
@@ -154,11 +175,10 @@ export const PersonalDetailsForm = () => {
           required
         />
         <ButtonWrapper>
-          {/* Wrapper needed to apply grid-column because tooltip attribute on <Button> wraps it in a flexbox */}
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={!isDirty || isSubmitting || isLoading}
+            disabled={submissionShouldBeDisabled}
             fullWidth
           >
             {isSubmitting || isLoading ? 'Saving' : 'Save changes'}

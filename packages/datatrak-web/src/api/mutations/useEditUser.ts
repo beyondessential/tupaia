@@ -28,6 +28,11 @@ export const useEditUser = (onSuccess?: () => void) => {
     async (userDetails: UserAccountDetails) => {
       if (!userDetails) return;
 
+      // mobile_number field in database is nullable; don't just store an empty string
+      if (!userDetails?.mobileNumber) {
+        userDetails.mobileNumber = null;
+      }
+
       const updates = Object.entries(userDetails).reduce(
         (obj, [key, value]) => ({ ...obj, [camelToSnakeCase(key)]: value }),
         {},
