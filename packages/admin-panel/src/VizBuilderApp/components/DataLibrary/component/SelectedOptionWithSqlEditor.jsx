@@ -35,7 +35,12 @@ export const SelectedOptionWithSqlEditor = ({
       onMouseOver={() => setIsDragDisabled(true)}
       onMouseLeave={() => setIsDragDisabled(false)}
     >
-      <SqlEditor onChange={onSqlChange} value={currentValue.sql} tables={['transform_table']} />
+      <SqlEditor
+        placeholder="SELECT * FROM transform_table"
+        onChange={onSqlChange}
+        value={currentValue.sql}
+        tables={['transform_table']}
+      />
     </SqlEditorPanel>
   );
 

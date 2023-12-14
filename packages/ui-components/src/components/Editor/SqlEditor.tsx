@@ -25,11 +25,12 @@ const AceEditor = styled(BaseAceEditor)`
 `;
 
 type SqlEditorProps = {
-  customKeywords: string[];
-  tables: string[];
-  mode: string;
+  customKeywords?: string[];
+  tables?: string[];
+  mode?: string;
   onChange: (newValue: string) => unknown;
-  value: string;
+  value?: string;
+  placeholder?: string;
 };
 
 export const SqlEditor = ({
@@ -38,6 +39,7 @@ export const SqlEditor = ({
   tables = [],
   mode = 'pgsql',
   value = '',
+  placeholder = 'Example: SELECT * FROM tablename',
 }: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
   const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
@@ -83,7 +85,7 @@ export const SqlEditor = ({
   return (
     <AceEditor
       name={editorName}
-      placeholder="Example: SELECT * FROM tablename"
+      placeholder={placeholder}
       mode={mode}
       theme="xcode"
       showPrintMargin={false}
