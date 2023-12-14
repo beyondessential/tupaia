@@ -4,13 +4,13 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import parser from 'js-sql-parser';
 import BaseAceEditor from 'react-ace';
 import styled from 'styled-components';
 import 'ace-builds/src-noconflict/mode-pgsql';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
+import { Ace } from 'ace-builds';
 
 const AceEditor = styled(BaseAceEditor)`
   .error-marker {
@@ -24,16 +24,30 @@ const AceEditor = styled(BaseAceEditor)`
   }
 `;
 
-export const SQLQueryEditor = props => {
+type SqlEditorProps = {
+  customKeywords: string[];
+  mode: string;
+  onChange: (newValue: string) => unknown;
+  value: string;
+};
+
+export const SqlEditor = ({
+  onChange,
+  customKeywords = [],
+  mode = 'pgsql',
+  value = '',
+}: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
-  const [annotations, setAnnotations] = useState({});
-  const validateQuery = query => {
+  const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
+  const validateQuery = (query: string) => {
     // need to do this to add nextline \n
-    const queryArray = query.replaceAll(':', '-').split('\n');
+    let cleanedQuery = query;
+    while (cleanedQuery.includes(':')) cleanedQuery = cleanedQuery.replace(':', '-');
+    const queryArray = cleanedQuery.split('\n');
     const sqlQuery = queryArray.join('\n');
     try {
       parser.parse(sqlQuery);
-      setAnnotations({});
+      setAnnotations({ text: '', type: '' });
     } catch (e) {
       // errors will be:
       // [
@@ -42,8 +56,8 @@ export const SQLQueryEditor = props => {
       //   "-----------------------^"
       //   "Expecting '(', 'NUMERIC', 'IDENTIFIER', 'STRING', 'EXPONENT_NU...",
       // ];
-      const errors = e.message.split('\n');
-      const rowNum = errors[0].split(' ')[4].replace(':', '');
+      const errors = (e as Error).message.split('\n');
+      const rowNum = parseInt(errors[0].split(' ')[4].replace(':', ''));
       if (errors[1].startsWith('...')) {
         errors[1] = errors[1].substring(3);
         errors[2] = errors[2].substring(3);
@@ -62,7 +76,6 @@ export const SQLQueryEditor = props => {
     }
   };
 
-  const { customKeywords, mode, onChange, value } = props;
   const editorName = 'sqlEditor';
 
   return (
@@ -84,6 +97,7 @@ export const SQLQueryEditor = props => {
       }}
       setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
       onLoad={editor => {
+        // @ts-ignore We're looking under the hood here
         const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
         setOriginalHighlightList(sqlKeywordList);
       }}
@@ -100,7 +114,7 @@ export const SQLQueryEditor = props => {
         }));
         const wordCompleter = {
           identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
-          getCompletions: (_editor, _session, _pos, _prefix, callback) => {
+          getCompletions: (_editor: any, _session: any, _pos: any, _prefix: any, callback: any) => {
             callback(null, [...sqlKeywordList, ...customKeywordList]);
           },
         };
@@ -111,26 +125,14 @@ export const SQLQueryEditor = props => {
       annotations={[annotations]}
       markers={[
         {
-          startRow: annotations.row,
-          endRow: annotations.row,
-          startCol: annotations.column,
-          endCol: annotations.column + 2,
+          type: 'text',
+          startRow: annotations.row || 0,
+          endRow: annotations.row || 0,
+          startCol: annotations.column || 0,
+          endCol: (annotations.column || 0) + 2,
           className: 'error-marker',
         },
       ]}
     />
   );
-};
-
-SQLQueryEditor.propTypes = {
-  customKeywords: PropTypes.array,
-  mode: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
-};
-
-SQLQueryEditor.defaultProps = {
-  customKeywords: [],
-  mode: 'pgsql',
-  value: '',
 };
