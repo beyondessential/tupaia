@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { prefetchTransformSchemas, useSearchTransformSchemas } from '../../api';
 import {
-  TransformSelectedOptionWithJsonEditor,
+  TransformSelectedOptionWithEditor,
   TransformSelectedOption,
   DataLibrary,
 } from './component';
@@ -87,7 +87,7 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
             onRemove={onRemove}
           />
         ) : (
-          <TransformSelectedOptionWithJsonEditor
+          <TransformSelectedOptionWithEditor
             option={option}
             optionMetaData={optionWithMetaData}
             onChange={newValue => onChangeInOption(newValue, option)}
