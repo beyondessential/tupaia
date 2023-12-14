@@ -11,10 +11,14 @@ const PROGRAM = { code: 'PROGRAM_CODE', id: 'program_dhisId' };
 const fetchStub = jest.fn();
 when(fetchStub)
   .mockResolvedValue({ programs: [] })
-  .calledWith('programs', {
-    fields: expect.arrayContaining(['id']),
-    filter: { code: PROGRAM.code },
-  })
+  .calledWith(
+    'programs',
+    {
+      fields: expect.arrayContaining(['id']),
+      filter: { code: PROGRAM.code },
+    },
+    undefined,
+  )
   .mockResolvedValue({ programs: [{ id: PROGRAM.id }] });
 
 const dhisApi = createDhisApi({ fetch: fetchStub });

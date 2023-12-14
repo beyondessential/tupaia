@@ -4,12 +4,12 @@
  */
 
 import { useMutation } from 'react-query';
-import { TupaiaWebUnsubscribeRequest } from '@tupaia/types';
+import { TupaiaWebUnsubscribeDashboardRequest } from '@tupaia/types';
 import { put } from '../api';
 
-export const useUnsubscribe = (projectCode, entityCode, dashboardCode) => {
-  return useMutation<any, Error, TupaiaWebUnsubscribeRequest.ReqBody, unknown>(
-    ({ email }: TupaiaWebUnsubscribeRequest.ReqBody) => {
+export const useUnsubscribeDashboard = (projectCode, entityCode, dashboardCode) => {
+  return useMutation<any, Error, TupaiaWebUnsubscribeDashboardRequest.ReqBody, unknown>(
+    ({ email }: TupaiaWebUnsubscribeDashboardRequest.ReqBody) => {
       return put(`dashboard/${projectCode}/${entityCode}/${dashboardCode}/unsubscribe`, {
         data: {
           email,
