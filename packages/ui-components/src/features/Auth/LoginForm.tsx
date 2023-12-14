@@ -76,7 +76,6 @@ export const LoginForm = ({
         <FormInput
           name="password"
           type="password"
-          options={FORM_FIELD_VALIDATION.PASSWORD}
           required
           Input={AuthFormTextField}
           label="Password"
