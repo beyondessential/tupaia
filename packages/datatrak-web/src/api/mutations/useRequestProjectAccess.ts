@@ -12,7 +12,11 @@ type RequestCountryAccessParams = {
   message?: string;
   projectCode?: string;
 };
-export const useRequestProjectAccess = () => {
+export const useRequestProjectAccess = (options?: {
+  onError?: (error: Error) => void;
+  onSettled?: () => void;
+  onSuccess?: () => void;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
@@ -26,10 +30,18 @@ export const useRequestProjectAccess = () => {
       });
     },
     {
+      onError: (error: Error) => {
+        if (options?.onError) options.onError(error);
+      },
+      onSettled: () => {
+        if (options?.onSettled) options.onSettled();
+      },
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ['projects'],
         });
+
+        if (options?.onSuccess) options.onSuccess();
       },
     },
   );
