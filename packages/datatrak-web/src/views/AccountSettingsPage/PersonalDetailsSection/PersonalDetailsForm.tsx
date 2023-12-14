@@ -118,9 +118,8 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="First name"
           name="firstName"
-          nonWhitespace
           placeholder="First name"
-          required="non-whitespace"
+          required
         />
         <FormInput
           autoComplete="family-name"
@@ -129,9 +128,8 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Last name"
           name="lastName"
-          nonWhitespace
           placeholder="Last name"
-          required="non-whitespace"
+          required
         />
         <StyledTextField
           autoComplete="email"
@@ -163,9 +161,8 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="Employer"
           name="employer"
-          nonWhitespace
           placeholder="Employer"
-          required="non-whitespace"
+          required
         />
         <FormInput
           autoComplete="organization-title"
@@ -174,8 +171,16 @@ export const PersonalDetailsForm = () => {
           inputProps={{ enterKeyHint: 'done' }}
           label="Position"
           name="position"
-          nonWhitespace
           placeholder="Position"
+          required
+        />
+        <FormInput
+          id={'foobar'}
+          Input={StyledTextField}
+          label="foobar"
+          name="foobar"
+          placeholder="foobar"
+          type="password"
           required
         />
         <ButtonWrapper>
