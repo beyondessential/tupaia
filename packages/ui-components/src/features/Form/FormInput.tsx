@@ -6,7 +6,6 @@ import React, { ComponentType } from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 type HookFormInputWrapperProps = Record<string, unknown> & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: RegisterOptions;
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
