@@ -15,7 +15,7 @@
     "preview": "vite preview",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "start-fullstack": "yarn package:start-stack lesmis",
+    "start-stack": "yarn package:start-stack lesmis",
     "test": "yarn package:test",
     "start": "yarn package:start:vite --port 3003",
     "start-dev": "yarn start"

@@ -20,7 +20,7 @@
     "lint:fix": "yarn lint --fix",
     "start": "yarn package:start:vite --port 3000",
     "start-dev": "yarn start",
-    "start-fullstack": "yarn package:start-stack admin-panel",
+    "start-stack": "yarn package:start-stack admin-panel",
     "test": "echo No tests"
   },
   "browserslist": [

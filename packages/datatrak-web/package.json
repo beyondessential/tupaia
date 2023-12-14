@@ -53,7 +53,7 @@
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
     "start-dev": "npm run --prefix ../../ package:start:vite",
-    "start-fullstack": "yarn package:start-stack datatrak",
+    "start-stack": "yarn package:start-stack datatrak",
     "test": "yarn test:jest",
     "test:jest": "yarn package:test --env=jsdom"
   },

@@ -16,7 +16,7 @@
     "lint:fix": "yarn lint --fix",
     "preview": "vite preview",
     "start-dev": "npm run --prefix ../../ package:start:vite --port=8088",
-    "start-fullstack": "yarn package:start-stack tupaia-web",
+    "start-stack": "yarn package:start-stack tupaia-web",
     "storybook": "storybook dev -p 6006",
     "test": "yarn package:test --env=jsdom",
     "build-storybook": "storybook build"
