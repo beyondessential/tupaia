@@ -1,0 +1,139 @@
+{
+  "singleValue": {
+    "data": [
+      {
+        "name": "sum",
+        "value": 123
+      }
+    ]
+  },
+  "singleDate": {
+    "data": [
+      {
+        "name": "Date last assessed",
+        "value": "2023-01-01"
+      }
+    ]
+  },
+  "multiValue": {
+    "data": [
+      {
+        "name": "Delivery and newborn care",
+        "value": 0,
+        "total": 10
+      },
+      {
+        "name": "Malaria treatment",
+        "value": 2,
+        "total": 10
+      },
+      {
+        "name": "Vaccination at facility",
+        "value": 10,
+        "total": 10
+      },
+      {
+        "name": "TB Treatment",
+        "value": 9,
+        "total": 10
+      },
+      {
+        "name": "Inpatient beds",
+        "value": 3,
+        "total": 10
+      },
+      {
+        "name": "X-Ray Machine",
+        "value": 4,
+        "total": 10
+      },
+      {
+        "name": "STI Treatment offered",
+        "value": 134,
+        "total": 221
+      }
+    ]
+  },
+  "multiSingleValue": {
+    "data": [
+      {
+        "value": "Hunga"
+      },
+      {
+        "value": "Kapa"
+      },
+      {
+        "value": "Falevai"
+      },
+      {
+        "value": "'Otea"
+      },
+      {
+        "value": "Taunga"
+      },
+      {
+        "value": "Matamaka"
+      },
+      {
+        "value": "Noapapu"
+      },
+      {
+        "value": "Lape"
+      },
+      {
+        "value": "'Ovaka"
+      }
+    ]
+  },
+  "multiValueRow": {
+    "data": [
+      {
+        "name": "Warangoi Rural Hospital",
+        "Assesment Date 1": "Jun 2022",
+        "Assesment Date 2": "Nov 2023"
+      },
+      {
+        "name": "Vunapope Mission District Hospital",
+        "Assesment Date 1": "Jun 2022",
+        "Assesment Date 2": "Nov 2023"
+      },
+      {
+        "name": "Vunapaka Health Centre",
+        "Assesment Date 1": "Jun 2022",
+        "Assesment Date 2": "Oct 2023"
+      },
+      {
+        "name": "Vatnabara Health Centre",
+        "Assesment Date 1": "Jun 2022",
+        "Assesment Date 2": "Oct 2023"
+      },
+      {
+        "name": "Uvol Health Centre",
+        "Assesment Date 1": "Jun 2022"
+      },
+      {
+        "name": "Utmei Community Health Post",
+        "Assesment Date 1": "Nov 2023"
+      }
+    ]
+  },
+  "qrCodeVisual": {
+    "data":[
+      {
+        "name":"MOH-NRG5-BT","value":"entity-651baac980b946253107b20"
+      }
+    ]
+  },
+  "multiPhotograph": {
+    "data": [
+      {
+        "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527b8db2b519cdc22fd27ba.png"
+      },
+      {
+        "value": "https://s3-ap-southeast-2.amazonaws.com/tupaia/uploads/images/6527c5092b519cdc22fd27e4.png"
+      }
+    ],
+    "startDate": "2015-01-01",
+    "endDate": "2023-11-30"
+  }
+}

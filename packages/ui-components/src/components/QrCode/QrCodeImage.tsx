@@ -5,18 +5,14 @@
 
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Box } from '@material-ui/core';
 import { generateQrCodeCanvas } from './utils';
 
 const StyledCanvas = styled.canvas`
+  //  Display Flex doesn't work well with exports on canvas so use display block to center the canvas
+  display: block;
   outline: 1px solid #dedede;
   width: 80%;
-`;
-
-const StyledBox = styled(Box)`
-  display: flex;
-  justify-content: center;
-  margin: auto;
+  margin: 0 auto;
 `;
 
 interface QrCodeImageProps {
@@ -32,8 +28,8 @@ export const QrCodeImage = ({ className, qrCodeContents, humanReadableId }: QrCo
   }, [ref.current]);
 
   return (
-    <StyledBox className={className}>
+    <div className={className}>
       <StyledCanvas ref={ref} aria-label={`QRCode for ${humanReadableId || qrCodeContents}`} />
-    </StyledBox>
+    </div>
   );
 };
