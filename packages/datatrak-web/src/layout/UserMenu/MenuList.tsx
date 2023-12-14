@@ -58,28 +58,35 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu: () => void;
 }) => {
+  const [confirmModalLink, setConfirmModalLink] = useState('');
   const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUser();
   const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const { mutate: logout } = useLogout();
 
-  const onClickInternalLink = e => {
+  const onClickInternalLink = (e: any, confirmLink: string) => {
     if (isSurveyScreen && !isSuccessScreen) {
       e.preventDefault();
       setIsOpen(true);
+      setConfirmModalLink(confirmLink);
+    } else {
+      onCloseMenu();
     }
   };
 
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+
   const reportsItem = {
     label: 'Reports',
-    to: ROUTES.REPORTS,
+    onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
+    to: shouldShowCancelModal ? null : ROUTES.REPORTS,
+    component: shouldShowCancelModal ? 'button' : RouterLink,
   };
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const accountSettingsItem = {
     label: 'Account settings',
-    onClick: onClickInternalLink,
+    onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
@@ -135,7 +142,7 @@ export const MenuList = ({
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}
         onClose={() => setIsOpen(false)}
-        confirmLink={ROUTES.ACCOUNT_SETTINGS}
+        confirmLink={confirmModalLink}
       />
     </>
   );
