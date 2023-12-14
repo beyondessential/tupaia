@@ -35,7 +35,7 @@ const DEFAULT_FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'code',
-      optionValueKey: 'id',
+      optionValueKey: 'code',
       sourceKey: 'default_measure',
     },
   },
