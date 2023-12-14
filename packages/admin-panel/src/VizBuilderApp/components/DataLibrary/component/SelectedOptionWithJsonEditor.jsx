@@ -3,18 +3,11 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import DownArrow from '@material-ui/icons/ArrowDropDown';
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { FlexSpaceBetween, Checkbox } from '@tupaia/ui-components';
-import { BaseSelectedOption, EditableSelectedOption } from './options';
 import { JsonEditor } from '../../../../widgets';
-
-const FlexBetweenPanel = styled(FlexSpaceBetween)`
-  width: 100%;
-`;
+import { SelectedOption } from './SelectedOption';
 
 const JsonEditorPanel = styled.div`
   flex: 1;
@@ -31,29 +24,6 @@ const JsonEditorPanel = styled.div`
   }
 `;
 
-const OptionPanelWithJsonEditor = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  align-items: flex-start;
-  height: auto;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-`;
-
-const DownArrowIconWrapper = styled.div`
-  display: flex;
-
-  .icon-wrapper {
-    cursor: pointer;
-  }
-  .MuiSvgIcon-root {
-    transition: transform 0.3s ease;
-    transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
-  }
-`;
-
 export const SelectedOptionWithJsonEditor = ({
   option, // **************************************************
   basicOption, // Option panel configs (title, description etc)
@@ -65,71 +35,36 @@ export const SelectedOptionWithJsonEditor = ({
   onInvalidChange, // *****************************************
   onChange,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleToggleExpanded = newIsExpanded => {
-    if (!newIsExpanded) {
-      // When collapsing, any invalid state is thrown away. To tell our parents
-      // this we have to trigger an onChange event
-      onChange(option);
-    }
-    setIsExpanded(newIsExpanded);
-  };
+  const Editor = (
+    <JsonEditorPanel
+      onMouseOver={() => setIsDragDisabled(true)}
+      onMouseLeave={() => setIsDragDisabled(false)}
+    >
+      <JsonEditor
+        value={currentValue}
+        mode="code"
+        mainMenuBar={false}
+        onChange={onChange}
+        schema={optionMetaData?.schema}
+        onInvalidChange={onInvalidChange}
+        onValidationError={err => {
+          if (err.length > 0) {
+            onInvalidChange(err[0].message);
+          }
+        }}
+      />
+    </JsonEditorPanel>
+  );
 
   return (
-    <OptionPanelWithJsonEditor>
-      <FlexBetweenPanel>
-        <Checkbox
-          checkedIcon={<CheckBoxOutlinedIcon />}
-          checked={!option.isDisabled}
-          onChange={() => {
-            const newOption = { ...option };
-            newOption.isDisabled = !option.isDisabled;
-            onChange(newOption);
-          }}
-          disableRipple
-          size="small"
-        />
-        <DownArrowIconWrapper
-          $expanded={isExpanded}
-          onClick={() => handleToggleExpanded(!isExpanded)}
-          className="icon-wrapper"
-        >
-          <DownArrow />
-        </DownArrowIconWrapper>
-        {supportsTitleEditing ? (
-          <EditableSelectedOption
-            option={basicOption}
-            onRemove={onRemove}
-            onTitleChange={title => {
-              onChange({ ...option, title });
-            }}
-          />
-        ) : (
-          <BaseSelectedOption option={basicOption} onRemove={onRemove} />
-        )}
-      </FlexBetweenPanel>
-      {isExpanded && (
-        <JsonEditorPanel
-          onMouseOver={() => setIsDragDisabled(true)}
-          onMouseLeave={() => setIsDragDisabled(false)}
-        >
-          <JsonEditor
-            value={currentValue}
-            mode="code"
-            mainMenuBar={false}
-            onChange={onChange}
-            schema={optionMetaData?.schema}
-            onInvalidChange={onInvalidChange}
-            onValidationError={err => {
-              if (err.length > 0) {
-                onInvalidChange(err[0].message);
-              }
-            }}
-          />
-        </JsonEditorPanel>
-      )}
-    </OptionPanelWithJsonEditor>
+    <SelectedOption
+      option={option}
+      basicOption={basicOption}
+      supportsTitleEditing={supportsTitleEditing}
+      onRemove={onRemove}
+      onChange={onChange}
+      editor={Editor}
+    />
   );
 };
 
