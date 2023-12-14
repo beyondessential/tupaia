@@ -22,7 +22,7 @@ const getDefaultValueByType = type => {
   }
 };
 
-export const TransformSelectedOptionWithJsonEditor = ({
+export const TransformSelectedOptionWithEditor = ({
   option,
   optionMetaData,
   onChange,
@@ -72,9 +72,9 @@ export const TransformSelectedOptionWithJsonEditor = ({
   );
 };
 
-TransformSelectedOptionWithJsonEditor.defaultProps = { optionMetaData: null };
+TransformSelectedOptionWithEditor.defaultProps = { optionMetaData: null };
 
-TransformSelectedOptionWithJsonEditor.propTypes = {
+TransformSelectedOptionWithEditor.propTypes = {
   option: PropTypes.shape({
     id: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
