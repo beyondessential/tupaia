@@ -12630,6 +12630,7 @@ __metadata:
     "@types/lodash.isplainobject": ^4.0.6
     "@types/lodash.keyby": ^4.6.6
     "@types/lodash.pick": ^4.4.0
+    alasql: ^4.2.3
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     cors: ^2.8.5
@@ -15431,6 +15432,18 @@ __metadata:
     require-from-string: ^2.0.2
     uri-js: ^4.2.2
   checksum: 4dc13714e316e67537c8b31bc063f99a1d9d9a497eb4bbd55191ac0dcd5e4985bbb71570352ad6f1e76684fb6d790928f96ba3b2d4fd6e10024be9612fe3f001
+  languageName: node
+  linkType: hard
+
+"alasql@npm:^4.2.3":
+  version: 4.2.6
+  resolution: "alasql@npm:4.2.6"
+  dependencies:
+    cross-fetch: 4
+    yargs: 16
+  bin:
+    alasql: bin/alasql-cli.js
+  checksum: 09e5933af4881e9d1231b8b60c5317d108ec9d341ff0d7dce57b28e7da61f1a6ed2b9944686d219a65aa9ce38d82332d046a51a7b4037aab5fb8bcb32d26f35d
   languageName: node
   linkType: hard
 
@@ -19949,6 +19962,15 @@ __metadata:
   dependencies:
     node-fetch: 2.6.7
   checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:4":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: ^2.6.12
+  checksum: ecca4f37ffa0e8283e7a8a590926b66713a7ef7892757aa36c2d20ffa27b0ac5c60dcf453119c809abe5923fc0bae3702a4d896bfb406ef1077b0d0018213e24
   languageName: node
   linkType: hard
 
@@ -33289,7 +33311,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
+"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -44797,7 +44819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:16.2.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
+"yargs@npm:16, yargs@npm:16.2.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
   version: 16.2.0
   resolution: "yargs@npm:16.2.0"
   dependencies:
