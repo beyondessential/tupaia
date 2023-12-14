@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Box } from '@material-ui/core';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
@@ -21,7 +22,7 @@ type PersonalDetailsFormFields = Pick<
  * Guarantees grid placement of the form submission button. The tooltip attribute on the button
  * wraps it in a flexbox, which nullifies the effect of grid-column.
  */
-const ButtonWrapper = styled.div`
+const ButtonWrapper = styled(Box)`
   grid-column: -2;
 `;
 
