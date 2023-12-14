@@ -69,6 +69,7 @@ export const ForgotPasswordForm = ({
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
             Input={AuthFormTextField}
+            id="emailAddress"
             name="emailAddress"
             label="Email"
             type="email"
