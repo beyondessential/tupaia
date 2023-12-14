@@ -6,6 +6,7 @@
 export * from './DataGrid';
 export * from './DataTable';
 export * from './DateRangePicker';
+export * from './Editor';
 export * from './DownloadFilesVisual';
 export * from './HorizontalTree';
 export * from './Icons';
