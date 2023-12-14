@@ -15,7 +15,7 @@ import { CancelConfirmModal } from '../../components';
 
 interface MenuItem {
   label: string;
-  to?: string;
+  to?: string | null;
   href?: string;
   isExternal?: boolean;
   onClick?: (e: any) => void;
