@@ -27,7 +27,8 @@
         "import/no-extraneous-dependencies": [
           "error",
           {
-            "devDependencies": ["src/__tests__/**/*.js"]
+            "devDependencies": ["src/__tests__/**/*.js"],
+            "packageDir": ["./", "../../"]
           }
         ]
       }

@@ -24,6 +24,7 @@ const createAggregatorStub = dataValues => {
       expect.anything(),
       expect.objectContaining({ dataServices }),
       expect.objectContaining(query),
+      expect.anything(),
     )
     .mockImplementation(dataElementCodes => ({
       results: Object.values(dataValues).filter(({ dataElement }) =>

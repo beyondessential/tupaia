@@ -59,7 +59,12 @@ describe('POST dashboard visualisations', () => {
   describe('POST /dashboardVisualisations/', () => {
     it('Throws if body not provided', async () => {
       const response = await app.post('dashboardVisualisations/', {});
-      expectError(response, "Internal server error: Cannot read property 'legacy' of undefined");
+      expectError(
+        response,
+        "Internal server error: Cannot read properties of undefined (reading 'legacy')",
+        undefined,
+        false,
+      );
     });
 
     it('Returns a successful response', async () => {
