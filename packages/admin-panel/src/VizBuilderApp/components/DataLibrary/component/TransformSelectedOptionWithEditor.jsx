@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SelectedOptionWithJsonEditor } from './SelectedOptionWithJsonEditor';
+import { SelectedOptionWithSqlEditor } from './SelectedOptionWithSqlEditor';
 
 const getDefaultValueByType = type => {
   switch (type) {
@@ -56,6 +57,20 @@ export const TransformSelectedOptionWithEditor = ({
     title: option.title,
     description: option.description || '',
   };
+
+  if (code === 'sql') {
+    return (
+      <SelectedOptionWithSqlEditor
+        option={option}
+        basicOption={basicOption}
+        supportsTitleEditing
+        onRemove={onRemove}
+        currentValue={currentValue}
+        setIsDragDisabled={setIsDragDisabled}
+        onChange={onChange}
+      />
+    );
+  }
 
   return (
     <SelectedOptionWithJsonEditor
