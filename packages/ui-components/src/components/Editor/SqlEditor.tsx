@@ -26,6 +26,7 @@ const AceEditor = styled(BaseAceEditor)`
 
 type SqlEditorProps = {
   customKeywords: string[];
+  tables: string[];
   mode: string;
   onChange: (newValue: string) => unknown;
   value: string;
@@ -34,6 +35,7 @@ type SqlEditorProps = {
 export const SqlEditor = ({
   onChange,
   customKeywords = [],
+  tables = [],
   mode = 'pgsql',
   value = '',
 }: SqlEditorProps) => {
@@ -85,7 +87,7 @@ export const SqlEditor = ({
       mode={mode}
       theme="xcode"
       showPrintMargin={false}
-      width="auto"
+      width="100%"
       value={value}
       onChange={newQuery => {
         validateQuery(newQuery);
@@ -112,10 +114,15 @@ export const SqlEditor = ({
           value: `${key}`,
           meta: 'keyword',
         }));
+        const tableList = tables.map(key => ({
+          caption: `${key}`,
+          value: `${key}`,
+          meta: 'table',
+        }));
         const wordCompleter = {
           identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
           getCompletions: (_editor: any, _session: any, _pos: any, _prefix: any, callback: any) => {
-            callback(null, [...sqlKeywordList, ...customKeywordList]);
+            callback(null, [...sqlKeywordList, ...customKeywordList, ...tableList]);
           },
         };
 
