@@ -3,20 +3,22 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ComponentType, ReactNode } from 'react';
+import React, { ComponentType, ReactNode, useState } from 'react';
 import styled from 'styled-components';
+import { useMatch } from 'react-router';
 import { Link, ListItem } from '@material-ui/core';
 import { Button, RouterLink } from '@tupaia/ui-components';
 import { useCurrentUser } from '../../api';
 import { useLogout } from '../../api/mutations';
 import { ROUTES } from '../../constants';
+import { CancelConfirmModal } from '../../components';
 
 interface MenuItem {
   label: string;
-  to?: string;
+  to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   component?: ComponentType<any> | string;
 }
 
@@ -56,12 +58,26 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu: () => void;
 }) => {
+  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
+  const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
+  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const { isLoggedIn, projectId } = useCurrentUser();
   const { mutate: logout } = useLogout();
 
+  const onClickInternalLink = e => {
+    if (isSurveyScreen && !isSuccessScreen) {
+      e.preventDefault();
+      setIsOpen(true);
+    }
+  };
+
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+
   const accountSettingsItem = {
     label: 'Account settings',
-    to: ROUTES.ACCOUNT_SETTINGS,
+    onClick: onClickInternalLink,
+    to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
+    component: shouldShowCancelModal ? 'button' : RouterLink,
   };
   // The help centre link is the same for both logged-in and logged-out users
   const helpCentreItem = {
@@ -76,7 +92,6 @@ export const MenuList = ({
       logout();
       onCloseMenu();
     },
-    component: 'button',
   };
 
   const hasProjectSelected = !!projectId;
@@ -92,22 +107,29 @@ export const MenuList = ({
   const menuItems = getMenuItems();
 
   return (
-    <Menu>
-      {children}
-      {menuItems.map(({ label, to, href, isExternal, onClick, component }) => (
-        <MenuListItem key={label} button>
-          <MenuButton
-            component={component || RouterLink}
-            underline="none"
-            target={isExternal ? '_blank' : null}
-            onClick={onClick || onCloseMenu}
-            to={to}
-            href={href}
-          >
-            {label}
-          </MenuButton>
-        </MenuListItem>
-      ))}
-    </Menu>
+    <>
+      <Menu>
+        {children}
+        {menuItems.map(({ label, to, href, isExternal, onClick, component }) => (
+          <MenuListItem key={label} button>
+            <MenuButton
+              component={component || 'button'}
+              underline="none"
+              target={isExternal ? '_blank' : null}
+              onClick={onClick || onCloseMenu}
+              to={to}
+              href={href}
+            >
+              {label}
+            </MenuButton>
+          </MenuListItem>
+        ))}
+      </Menu>
+      <CancelConfirmModal
+        isOpen={surveyCancelModalIsOpen}
+        onClose={() => setIsOpen(false)}
+        confirmLink={ROUTES.ACCOUNT_SETTINGS}
+      />
+    </>
   );
 };

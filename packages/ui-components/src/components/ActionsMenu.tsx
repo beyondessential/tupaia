@@ -29,13 +29,25 @@ const StyledMenuIcon = styled(MoreVertIcon)`
   }
 `;
 
+type ActionMenuProps = {
+  options: ActionsMenuOptionType[];
+  includesIcons?: boolean;
+  anchorOrigin?: {
+    vertical?: 'top' | 'bottom';
+    horizontal?: 'left' | 'right';
+  };
+  transformOrigin?: {
+    vertical?: 'top' | 'bottom';
+    horizontal?: 'left' | 'right';
+  };
+};
+
 export const ActionsMenu = ({
   options,
   includesIcons = false,
-}: {
-  options: ActionsMenuOptionType[];
-  includesIcons: boolean;
-}) => {
+  anchorOrigin = {},
+  transformOrigin = {},
+}: ActionMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLButtonElement) | null>(null);
   return (
     <>
@@ -52,11 +64,20 @@ export const ActionsMenu = ({
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
+          ...anchorOrigin,
         }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top', ...transformOrigin }}
       >
         {options.map(
-          ({ label, action, style, ActionIcon, toolTipTitle, color }: ActionsMenuOptionType) => (
+          ({
+            label,
+            action,
+            style,
+            iconStyle,
+            ActionIcon,
+            toolTipTitle,
+            color,
+          }: ActionsMenuOptionType) => (
             <StyledMenuItem
               role="button"
               key={label}
@@ -68,7 +89,7 @@ export const ActionsMenu = ({
             >
               {includesIcons && ActionIcon ? (
                 <>
-                  <ListItemIcon>
+                  <ListItemIcon style={iconStyle}>
                     <ActionIcon fontSize="small" color={color} />
                   </ListItemIcon>
                   <Tooltip title={toolTipTitle || ''} arrow>

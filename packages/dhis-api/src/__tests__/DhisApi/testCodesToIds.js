@@ -25,10 +25,14 @@ export const testCodesToIds = () => {
     const ids = DATA_ELEMENTS.map(({ id }) => id);
     const fetchStub = jest.fn();
     when(fetchStub)
-      .calledWith('dataElements', {
-        fields: expect.arrayContaining(['id']),
-        filter: { comparator: 'in', code: expect.toBeOneOf(['[POP01,POP02]', '[POP02,POP01]']) },
-      })
+      .calledWith(
+        'dataElements',
+        {
+          fields: expect.arrayContaining(['id']),
+          filter: { comparator: 'in', code: expect.toBeOneOf(['[POP01,POP02]', '[POP02,POP01]']) },
+        },
+        undefined,
+      )
       .mockResolvedValue({ dataElements: DATA_ELEMENTS.map(({ id, code }) => ({ id, code })) });
 
     const dhisApi = createDhisApi({ fetch: fetchStub });

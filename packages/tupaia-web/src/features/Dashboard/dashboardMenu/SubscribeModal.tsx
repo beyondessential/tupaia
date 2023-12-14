@@ -13,14 +13,14 @@ import { useUser } from '../../../api/queries';
 import { Dashboard } from '../../../types';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
-import { useSubscribe, useUnsubscribe } from '../../../api/mutations';
+import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
+import { useDashboardMailingList } from '../../../utils';
 import {
   MODAL_SUBSCRIBE_TEXT,
   MODAL_SUBSCRIBE_TITLE,
   MODAL_UNSUBSCRIBE_TEXT,
   MODAL_UNSUBSCRIBE_TITLE,
 } from './constants';
-import { useMailingList } from './useMailingList';
 
 const Wrapper = styled.div`
   width: 45rem;
@@ -69,12 +69,26 @@ const SubscribeButton = styled(Button)`
   margin-left: 1.2rem;
 `;
 
-const StyledTextField = styled(TextField)`
+const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
   width: 50%;
   margin: auto;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100%;
   }
+
+  ${({ $disabled, theme }) =>
+    $disabled
+      ? `
+
+      .MuiInput-input {
+        color: ${theme.palette.text.secondary}; 
+      }
+        
+      .MuiInput-underline:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); transition: none;  }
+      .MuiInput-underline:hover:before { border-bottom: 1px outset rgba(255, 255, 255, 0.7); }
+      .MuiInput-underline:after { border-bottom-style: none; }  
+      `
+      : ''};
 `;
 
 interface SubscribeModalProps {
@@ -92,21 +106,25 @@ export const SubscribeModal = ({
 }: SubscribeModalProps) => {
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();
+  const mailingList = useDashboardMailingList();
+  const isSubscribed = mailingList ? mailingList.isSubscribed : false;
+  const defaultEmail = isLoggedIn ? user.email : '';
   const formContext = useForm({
     mode: 'onChange',
+    defaultValues: {
+      email: defaultEmail,
+    },
   });
   const {
     mutateAsync: subscribe,
     error: subscribeError,
     reset: resetSubscribe,
-  } = useSubscribe(projectCode, entityCode, activeDashboard?.code);
+  } = useSubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
   const {
     mutateAsync: unsubscribe,
     error: unsubscribeError,
     reset: resetUnsubscribe,
-  } = useUnsubscribe(projectCode, entityCode, activeDashboard?.code);
-
-  const { hasMailingList, isSubscribed } = useMailingList(activeDashboard, entityCode);
+  } = useUnsubscribeDashboard(projectCode, entityCode, activeDashboard?.code);
 
   const handleSubmit = async data => {
     if (isSubscribed) {
@@ -132,7 +150,7 @@ export const SubscribeModal = ({
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
       <Wrapper>
-        {activeDashboard && hasMailingList ? (
+        {activeDashboard && mailingList ? (
           <Container>
             <Form formContext={formContext} onSubmit={handleSubmit}>
               <Title align="left" variant="h5">
@@ -142,14 +160,15 @@ export const SubscribeModal = ({
                 {isSubscribed ? MODAL_UNSUBSCRIBE_TEXT : MODAL_SUBSCRIBE_TEXT}
               </ModalParagraph>
               {isLoading && <SpinningLoader mt={5} />}
-              <StyledTextField
+              <EmailInput
                 name="email"
                 label="Email"
                 required
-                defaultValue={isLoggedIn ? user.email : ''}
+                defaultValue={defaultEmail}
                 type="email"
                 options={{ ...FORM_FIELD_VALIDATION.EMAIL }}
                 inputProps={{ readOnly: isLoggedIn }}
+                $disabled={isLoggedIn}
               />
               {isMutateError && (
                 <ErrorMessageText color="error">
