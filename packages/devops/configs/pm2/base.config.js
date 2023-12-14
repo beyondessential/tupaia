@@ -12,7 +12,7 @@ const baseConfig = {
 /**
  * Convenience fn
  */
-const serverStartDevConfig = (packageName) => ({
+const startDevConfig = (packageName) => ({
   "name"        : packageName,
   "script"      : `yarn workspace @tupaia/${packageName} start-dev`,
   ...baseConfig,
@@ -21,11 +21,11 @@ const serverStartDevConfig = (packageName) => ({
 /**
  * Convenience fn
  */
-const serverStartDevConfigs = (packageNames) =>
-  packageNames.map(packageName => serverStartDevConfig(packageName));
+const startDevConfigs = (packageNames) =>
+  packageNames.map(packageName => startDevConfig(packageName));
 
 module.exports = {
   baseConfig: baseConfig,
-  serverStartDevConfig,
-  serverStartDevConfigs,
+  startDevConfig,
+  startDevConfigs,
 }

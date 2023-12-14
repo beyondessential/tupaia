@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-const { serverStartDevConfigs } = require("./base.config");
+const { startDevConfigs } = require("./base.config");
 
 module.exports = {
-  apps: serverStartDevConfigs([
+  apps: startDevConfigs([
     "central-server",
     "entity-server",
     "report-server",
