@@ -6,12 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
-import { MapModal } from './MapModal';
-import { LatLongFields } from './LatLongFields';
 import { SurveyQuestionInputProps } from '../../../types';
 import { Button } from '../../../components';
 import { QuestionHelperText } from '../QuestionHelperText';
 import { useSurveyForm } from '../..';
+import { MapModal } from './MapModal';
+import { LatLongFields } from './LatLongFields';
 
 const Container = styled.div`
   display: flex;
