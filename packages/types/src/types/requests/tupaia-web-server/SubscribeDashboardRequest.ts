@@ -8,18 +8,17 @@ export interface Params {
   projectCode: string;
   dashboardCode: string;
 }
-export type UnsubscribeResponse = {
+export type SubscribeDashboardResponse = {
   entityCode: string;
   email: string;
   projectCode: boolean;
   dashboardCode: string;
 };
 
-export type UnsubscribeRequest = {
+export type SubscribeDashboardRequest = {
   email: string;
-  unsubscribeTime: Date;
 };
 
-export type ResBody = UnsubscribeResponse;
-export type ReqBody = UnsubscribeRequest;
+export type ResBody = SubscribeDashboardResponse;
+export type ReqBody = SubscribeDashboardRequest;
 export type ReqQuery = Record<string, never>;

@@ -73,6 +73,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
     config: originalConfig,
     report: originalReport,
     isEnlarged,
+    isExport,
   } = useContext(DashboardItemContext);
   const report = customReport || originalReport;
   const config = customConfig || originalConfig;
@@ -127,6 +128,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
         }
         config={viewConfig}
         isEnlarged={isEnlarged}
+        isExport={isExport}
         isMultiSingleValue={!!customReport} // if this is a multi single value, we need to pass this prop down to the SingleValue component
       />
       {showHoverEffect && <DashboardInfoHover infoText={viewConfig.description} />}

@@ -14,7 +14,6 @@ import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
 import { useProjects } from '../api/queries';
 import { ROUTES } from '../constants';
-import { successToast } from '../utils';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -54,12 +53,7 @@ export const ProjectSelectForm = ({
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
 
-  const onSuccessfulUserUpdate = () => {
-    if (onClose) onClose();
-    successToast('Project changed successfully');
-  };
-
-  const { mutate, isLoading: isConfirming } = useEditUser(onSuccessfulUserUpdate);
+  const { mutate, isLoading: isConfirming } = useEditUser(onClose);
 
   const onConfirm = () => {
     mutate({ projectId: selectedProjectId! });

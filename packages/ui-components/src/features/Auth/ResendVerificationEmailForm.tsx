@@ -58,6 +58,7 @@ export const ResendVerificationEmailForm = ({
       ) : (
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
+            id="email"
             name="email"
             label="Email"
             type="email"
