@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
   Entity,
@@ -39,8 +39,9 @@ export const processSurveyResponse = async (
     questions = [],
     answers = {},
     startTime,
+    timezone,
   } = surveyResponseData;
-  const timezone = getBrowserTimeZone();
+
   const today = new Date();
   const timestamp = today.toISOString();
   // Fields to be used in the survey response
