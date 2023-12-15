@@ -4,23 +4,30 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { Country } from '@tupaia/types';
+import { Country, Project } from '@tupaia/types';
 import { post } from '../api';
 
-type RequestCountryAccessParams = {
+interface RequestCountryAccessParams {
   entityIds: Country['id'][];
   message?: string;
-  projectCode?: string;
-};
+  projectCode?: Project['code'];
+}
+
+interface ResBody {
+  message: string;
+}
+
 export const useRequestProjectAccess = (options?: {
   onError?: (error: Error) => void;
+  onQueriesInvalidated?: () => void;
   onSettled?: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (response: ResBody) => void;
 }) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
     ({ entityIds, message, projectCode }: RequestCountryAccessParams) => {
+      console.log({ entityIds, message, projectCode });
       return post('me/requestCountryAccess', {
         data: {
           entityIds: Array.isArray(entityIds) ? entityIds : [entityIds], // Ensure entityIds is an array, as when there is only one option in a checkbox list, react-hook-form formats this as a single value string
@@ -36,12 +43,11 @@ export const useRequestProjectAccess = (options?: {
       onSettled: () => {
         if (options?.onSettled) options.onSettled();
       },
-      onSuccess: () => {
+      onSuccess: async (response: ResBody) => {
         queryClient.invalidateQueries({
           queryKey: ['projects'],
         });
-
-        if (options?.onSuccess) options.onSuccess();
+        if (options?.onSuccess) options.onSuccess(response);
       },
     },
   );

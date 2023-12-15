@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box as MuiBox, FormLabel as MuiFormLabel, useMediaQuery } from '@material-ui/core';
@@ -12,6 +12,7 @@ import { Country } from '@tupaia/types';
 import { Button } from '../../../components';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
+import { errorToast, successToast } from '../../../utils';
 
 const gridAndFlexGap = '1.25rem';
 
@@ -47,7 +48,7 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
-const CountryListWrapper = styled(MuiBox)`
+const CountryChecklistWrapper = styled(MuiBox)`
   display: block flex;
   flex-direction: column;
   height: 18.625rem;
@@ -60,14 +61,15 @@ const StyledFormLabel = styled(MuiFormLabel)`
   margin-bottom: 3px;
 `;
 
-const CountryList = styled.fieldset`
+const CountryChecklist = styled.fieldset`
   margin: 0;
   padding-block: 0;
 
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.grey[400]};
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: scroll; /* fallback */
+  overflow-block: scroll;
   padding-inline: 0.87rem;
 `;
 
@@ -114,8 +116,16 @@ interface RequestCountryAccessFormFields {
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
-  const { data: countries, isLoading } = useCountryAccessList();
-  const { mutate: requestCountryAccess } = useRequestProjectAccess();
+  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
+  const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
+    onError: error =>
+      errorToast(error?.message ?? 'Sorry, couldn’t submit your request. Please try again'),
+    onSettled: () => reset(),
+    onSuccess: response => {
+      successToast(response.message);
+      kickCountryChecklist(Date.now());
+    },
+  });
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
   const formContext = useForm<RequestCountryAccessFormFields>({
@@ -136,7 +146,8 @@ export const RequestCountryAccessForm = () => {
     project?.names.includes(country.name),
   );
 
-  const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting || isLoading;
+  const submissionShouldBeDisabled =
+    isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
 
   function onSubmit(formData: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -144,16 +155,16 @@ export const RequestCountryAccessForm = () => {
       message: formData.reasonForAccess,
       projectCode: project.code,
     });
-
-    reset();
   }
+
+  const [countryChecklistKey, kickCountryChecklist] = useState(Date.now());
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
       <StyledFieldset>
-        <CountryListWrapper>
+        <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          <CountryList>
+          <CountryChecklist key={countryChecklistKey}>
             {applicableCountries?.map(({ id, name, hasAccess, accessRequests }) => {
               const hasRequestedAccess = accessRequests.includes(project.code);
               const getTooltip = () => {
@@ -176,8 +187,8 @@ export const RequestCountryAccessForm = () => {
                 />
               );
             })}
-          </CountryList>
-        </CountryListWrapper>
+          </CountryChecklist>
+        </CountryChecklistWrapper>
         <StyledBox>
           <StyledFormInput
             // defaultValue=""
@@ -200,7 +211,7 @@ export const RequestCountryAccessForm = () => {
             tooltip={isValid ? undefined : 'Select countries to request access'}
             type="submit"
           >
-            {isSubmitting ? 'Submitting request' : 'Request access'}
+            {isSubmitting || requestIsLoading ? 'Submitting request' : 'Request access'}
           </Button>
         </StyledBox>
       </StyledFieldset>
