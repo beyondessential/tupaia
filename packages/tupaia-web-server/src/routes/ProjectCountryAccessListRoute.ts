@@ -26,8 +26,9 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
     }
     const { names } = project;
     const countryAccessList = await ctx.services.central.getCountryAccessList();
-    return names.reduce(
-      (result: TupaiaWebProjectCountryAccessListRequest.ResBody, name: string) => {
+    return names
+      .sort()
+      .reduce((result: TupaiaWebProjectCountryAccessListRequest.ResBody, name: string) => {
         const country = countryAccessList.find(
           ({ name: countryName }: CountryAccessResponse) => countryName === name,
         );
@@ -44,8 +45,6 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
             hasPendingAccess,
           },
         ];
-      },
-      [],
-    );
+      }, []);
   }
 }
