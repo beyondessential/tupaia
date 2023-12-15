@@ -69,7 +69,7 @@ export const requestCountryAccess = async (req, res) => {
   const { countryIds, entityIds, message = '', projectCode } = requestBody;
 
   if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
-    throw new ValidationError('Please select at least one country.');
+    throw new ValidationError('Please select at least one country');
   }
   const entities = await fetchEntities(models, entityIds, countryIds);
   const userId = requestUserId || params.userId;
@@ -87,5 +87,5 @@ export const requestCountryAccess = async (req, res) => {
   const countryNames = entities.map(e => e.name);
   await sendRequest(userInfo, countryNames, message, project);
 
-  respond(res, { message: 'Country access requested.' }, 200);
+  respond(res, { message: 'Country access requested' }, 200);
 };
