@@ -154,7 +154,7 @@ export const RequestCountryAccessForm = () => {
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryList>
             {applicableCountries?.map(({ id, name, hasAccess, accessRequests }) => {
-              const hasRequestedAccess = accessRequests.includes(project!.code); // HACK: Avoid non-null assertion operator
+              const hasRequestedAccess = accessRequests.includes(project.code);
               const getTooltip = () => {
                 if (hasAccess) return 'You already have access';
                 if (hasRequestedAccess) return 'Approval in progress';
