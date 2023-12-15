@@ -6,9 +6,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
-import { Button, Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
+import { Box as MuiBox, FormLabel as MuiFormLabel, useMediaQuery } from '@material-ui/core';
+import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Country } from '@tupaia/types';
+import { Button } from '../../../components';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 
@@ -46,14 +47,14 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
-const CountryListWrapper = styled(Box)`
+const CountryListWrapper = styled(MuiBox)`
   display: block flex;
   flex-direction: column;
   height: 18.625rem;
 `;
 
 /** Matches styling of .MuiFormLabel-root in ui-components TextField */
-const StyledFormLabel = styled(FormLabel)`
+const StyledFormLabel = styled(MuiFormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 3px;
@@ -84,7 +85,7 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `;
 
-const StyledBox = styled(Box)`
+const StyledBox = styled(MuiBox)`
   display: block flex;
   flex-direction: column;
   gap: ${gridAndFlexGap};
@@ -194,7 +195,11 @@ export const RequestCountryAccessForm = () => {
             name="reasonForAccess"
             size="medium"
           />
-          <Button disabled={submissionShouldBeDisabled} type="submit">
+          <Button
+            disabled={submissionShouldBeDisabled}
+            tooltip={isValid ? undefined : 'Select countries to request access'}
+            type="submit"
+          >
             {isSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
         </StyledBox>
