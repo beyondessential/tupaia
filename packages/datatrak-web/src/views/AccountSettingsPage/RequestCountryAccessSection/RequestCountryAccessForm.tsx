@@ -182,7 +182,6 @@ export const RequestCountryAccessForm = () => {
               return (
                 <StyledCheckbox
                   color="primary"
-                  // defaultChecked={false}
                   disabled={hasAccess || hasRequestedAccess}
                   id="countryIds"
                   inputRef={register({ validate: (value: Country['id'][]) => !!value.length })}
@@ -198,7 +197,6 @@ export const RequestCountryAccessForm = () => {
         </CountryChecklistWrapper>
         <StyledBox>
           <StyledFormInput
-            // defaultValue=""
             fullWidth
             Input={TextField}
             inputProps={{
