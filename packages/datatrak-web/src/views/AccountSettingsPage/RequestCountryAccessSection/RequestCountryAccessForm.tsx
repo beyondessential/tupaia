@@ -123,9 +123,18 @@ export const RequestCountryAccessForm = () => {
     onSettled: () => reset(),
     onSuccess: response => {
       successToast(response.message);
-      kickCountryChecklist(Date.now());
+      setCountryChecklistKey(Date.now()); // Force re-render
     },
   });
+
+  /**
+   * When React Hook Form resets the form state, boxes get correctly unchecked, but the MUI
+   * component fails to reflect this until its next render (usually when the user interacts with it,
+   * which makes the checkbox feel broken). setCountryCheckList serves merely as an "automatic
+   * kicking machine" to force a re-render.
+   */
+  const [countryChecklistKey, setCountryChecklistKey] = useState(Date.now());
+
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
   const formContext = useForm<RequestCountryAccessFormFields>({
@@ -156,8 +165,6 @@ export const RequestCountryAccessForm = () => {
       projectCode: project.code,
     });
   }
-
-  const [countryChecklistKey, kickCountryChecklist] = useState(Date.now());
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
