@@ -29,6 +29,7 @@ export type ActionsMenuOptionType = {
   label: string;
   action: () => void;
   style?: CSSProperties;
+  iconStyle?: CSSProperties;
   ActionIcon?:
     | OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>>
     | React.ElementType;

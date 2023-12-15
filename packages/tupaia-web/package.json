@@ -2,7 +2,6 @@
   "name": "@tupaia/tupaia-web",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "description": "Web app that integrates with and displays data from the Tupaia project",
   "repository": {
     "type": "git",
@@ -27,11 +26,11 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/types": "1.0.0",
-    "@tupaia/ui-chart-components": "1.0.0",
-    "@tupaia/ui-components": "1.0.0",
-    "@tupaia/ui-map-components": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/ui-chart-components": "workspace:*",
+    "@tupaia/ui-components": "workspace:*",
+    "@tupaia/ui-map-components": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "axios": "^1.4.0",
     "dom-to-image": "2.6.0",
     "downloadjs": "1.4.7",
@@ -56,16 +55,20 @@
     "@storybook/react": "^7.0.18",
     "@storybook/react-vite": "^7.0.18",
     "@storybook/testing-library": "^0.0.14-next.2",
-    "@tupaia/types": "1.0.0",
+    "@tupaia/types": "workspace:*",
     "@types/dom-to-image": "^2.6.4",
     "@types/downloadjs": "^1.4.3",
     "@types/mapbox__polyline": "^1.0.2",
     "@types/material-ui": "^0.21.12",
     "@types/react": "16.8.6",
     "@vitejs/plugin-react": "^4.0.0",
+    "msw": "^2.0.9",
     "npm-run-all": "^4.1.5",
     "storybook": "^7.0.18",
     "vite": "^4.3.2",
     "vite-plugin-html": "^3.2.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
