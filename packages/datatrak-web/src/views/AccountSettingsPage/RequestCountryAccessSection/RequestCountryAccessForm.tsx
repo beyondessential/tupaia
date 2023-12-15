@@ -17,9 +17,9 @@ import { errorToast, successToast } from '../../../utils';
 const gridAndFlexGap = '1.25rem';
 
 const StyledForm = styled(Form)`
-  width: 100%;
+  inline-size: 100%;
   ${theme.breakpoints.up('md')} {
-    max-width: 44.25rem;
+    max-inline-size: 44.25rem;
   }
 `;
 
@@ -67,7 +67,7 @@ const CountryChecklist = styled.fieldset`
 
   border-radius: 0.1875rem;
   border: 1px solid ${props => props.theme.palette.grey[400]};
-  height: 100%;
+  block-size: 100%;
   overflow-y: scroll; /* fallback */
   overflow-block: scroll;
   padding-inline: 0.87rem;
@@ -77,13 +77,13 @@ const StyledCheckbox = styled(Checkbox)`
   margin-block: 0;
 
   .MuiFormControlLabel-root {
-    width: 100%;
+    inline-size: 100%;
   }
 
   .MuiFormControlLabel-label {
     font-size: 0.875rem;
+    inline-size: 100%;
     line-height: 1.125rem;
-    width: 100%;
   }
 `;
 
@@ -100,8 +100,8 @@ const StyledFormInput = styled(FormInput)`
 
   .MuiInputBase-root {
     align-items: start;
-    height: 100%;
-    max-height: 100%;
+    block-size: 100%;
+    max-block-size: 100%;
   }
 
   .MuiInputBase-input {
@@ -168,7 +168,7 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset>
+      <StyledFieldset disabled={isSubmitting || requestIsLoading}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryChecklist key={countryChecklistKey}>
