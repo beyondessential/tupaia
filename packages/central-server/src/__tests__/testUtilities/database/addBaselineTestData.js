@@ -7,12 +7,9 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import { encryptPassword } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
-import { getModels } from './getModels';
 import { TEST_USER_EMAIL } from '../constants';
 
-const models = getModels();
-
-export async function addBaselineTestData() {
+export async function addBaselineTestData(models) {
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create
   // one with a test ID so it'll get cleaned up later
   await models.entity.findOrCreate(

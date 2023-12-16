@@ -9,5 +9,5 @@ import { getModels } from './getModels';
 export async function resetTestData() {
   const models = getModels();
   await clearAllTestData(models.database);
-  await addBaselineTestData();
+  await addBaselineTestData(models);
 }
