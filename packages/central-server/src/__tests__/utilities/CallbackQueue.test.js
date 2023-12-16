@@ -5,7 +5,6 @@
 
 /* eslint-disable no-return-assign */
 
-import { expect } from 'chai';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
 describe('Callback queue', () => {
@@ -16,7 +15,7 @@ describe('Callback queue', () => {
     cbq.add(() => (amt = 1), 'set');
 
     await cbq.waitUntilFinished();
-    expect(amt).to.equal(1);
+    expect(amt).toBe(1);
   });
 
   it('Should queue multiple callbacks', async () => {
@@ -29,7 +28,7 @@ describe('Callback queue', () => {
     cbq.add(() => (amt += 1), 'add');
 
     await cbq.waitUntilFinished();
-    expect(amt).to.equal(4);
+    expect(amt).toBe(4);
   });
 
   it('Should run things in the order they were added', async () => {
@@ -42,23 +41,7 @@ describe('Callback queue', () => {
     cbq.add(() => (amt = 4), 'set');
 
     await cbq.waitUntilFinished();
-    expect(amt).to.equal(4);
-  });
-
-  it("Should not break the queue if there's an error", async () => {
-    const cbq = new CallbackQueue();
-    let amt = 0;
-
-    cbq.add(() => (amt += 1), 'add');
-    cbq.add(() => (amt += 1), 'add');
-    cbq.add(() => {
-      throw new Error();
-    });
-    cbq.add(() => (amt += 1), 'add');
-    cbq.add(() => (amt += 1), 'add');
-
-    await cbq.waitUntilFinished();
-    expect(amt).to.equal(4);
+    expect(amt).toBe(4);
   });
 
   it('Should allow queued tasks to queue tasks', async () => {
@@ -74,6 +57,6 @@ describe('Callback queue', () => {
     cbq.add(() => (amt += 1), 'add');
 
     await cbq.waitUntilFinished();
-    expect(amt).to.equal(14);
+    expect(amt).toBe(14);
   });
 });

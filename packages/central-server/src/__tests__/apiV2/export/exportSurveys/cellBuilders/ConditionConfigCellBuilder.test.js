@@ -41,7 +41,7 @@ const QUESTIONS = [
 const assertCanProcessAndBuildCondition = config =>
   assertCanProcessAndBuild(QUESTIONS, 'condition_question', config);
 
-const assertThrowsWhenBuildingCondition = (config, error) =>
+const assertThrowsWhenBuildingCondition = async (config, error) =>
   assertThrowsWhenBuilding(QUESTIONS, 'condition_question', config, error);
 
 describe('ConditionConfigCellBuilder', () => {

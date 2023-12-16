@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -20,7 +19,7 @@ import {
   setupDashboardTestData,
 } from '../../testUtilities';
 
-describe('Permissions checker for DeleteDashboardMailingListEntry', async () => {
+describe('Permissions checker for DeleteDashboardMailingListEntry', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: ['Admin'],
@@ -37,7 +36,7 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
   let mailingListEntryDiffUser;
   let mailingListEntryBesAdminUser;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -106,23 +105,23 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('DELETE /dashboardMailingListEntries/:id', async () => {
-    describe('Insufficient permission', async () => {
+  describe('DELETE /dashboardMailingListEntries/:id', () => {
+    describe('Insufficient permission', () => {
       it('Throw an exception when trying to delete a dashboard mailing list entry for a different users email', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.delete(
           `dashboardMailingListEntries/${mailingListEntryDiffUser.id}`,
         );
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow deleting a dashboard mailing list entry for a dashboard for our own email', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.delete(`dashboardMailingListEntries/${mailingListEntryWithAccess.id}`);
@@ -131,7 +130,7 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
           email: TEST_USER_EMAIL,
         });
 
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
       });
 
       it('Allow deleting of a dashboard mailing list entry for a dashboard we have edit permission for with a different users email', async () => {
@@ -144,7 +143,7 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
           email: 'not.my.email@domain.com',
         });
 
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
       });
 
       it('Allow deleting of a dashboard mailing list entry for Tupaia Admin user', async () => {
@@ -154,7 +153,7 @@ describe('Permissions checker for DeleteDashboardMailingListEntry', async () => 
           email: 'bes-admin-deleteme@domain.com',
         });
 
-        expect(result.length).to.equal(0);
+        expect(result.length).toBe(0);
       });
     });
   });

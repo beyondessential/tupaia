@@ -3,8 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { oneSecondSleep } from '@tupaia/utils';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import { TestableApp } from '../../testUtilities';
@@ -17,7 +15,7 @@ import {
   PERM_SYNC_PG_PUBLIC,
 } from './permissionsBasedSync.fixtures';
 
-describe('GET /changes/metadata', async () => {
+describe('GET /changes/metadata', () => {
   const app = new TestableApp();
   const { models } = app;
   const meditrakSyncQueue = new MeditrakSyncQueue(models);
@@ -30,7 +28,7 @@ describe('GET /changes/metadata', async () => {
   let testStartTime;
   let dataImportedTime;
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantAccess(basicAccess);
 
     // Set up real sync queue for testing the /changes endpoint
@@ -44,19 +42,19 @@ describe('GET /changes/metadata', async () => {
     dataImportedTime = Date.now();
   });
 
-  after(() => {
+  afterAll(() => {
     meditrakSyncQueue.stopListeningForChanges();
     app.revokeAccess();
   });
 
-  it('should throw an error if no appVersion provided', async function () {
+  it('should throw an error if no appVersion provided', async () => {
     const response = await app.get('changes/metadata');
 
-    expect(response.statusCode).to.equal(500);
-    expect(response.body.error).to.match(/.*Must provide 'appVersion' url parameter/);
+    expect(response.statusCode).toBe(500);
+    expect(response.body.error).toMatch(/.*Must provide 'appVersion' url parameter/);
   });
 
-  it('should throw an error if appVersion lower than permissions based sync version', async function () {
+  it('should throw an error if appVersion lower than permissions based sync version', async () => {
     const olderVersion = '1.10.123';
     const response = await app.get('changes/metadata', {
       query: {
@@ -64,31 +62,31 @@ describe('GET /changes/metadata', async () => {
       },
     });
 
-    expect(response.statusCode).to.equal(500);
-    expect(response.body.error).to.match(
+    expect(response.statusCode).toBe(500);
+    expect(response.body.error).toMatch(
       new RegExp(
         `.*Permissions based sync is not supported for appVersion: ${olderVersion}, must be ${PERMISSIONS_BASED_SYNC_MIN_APP_VERSION} or higher`,
       ),
     );
   });
 
-  it('should return the changeCount, countries, and permissions in the sync', async function () {
+  it('should return the changeCount, countries, and permissions in the sync', async () => {
     const response = await app.get('changes/metadata', {
       query: {
         appVersion: PERMISSIONS_BASED_SYNC_MIN_APP_VERSION,
       },
     });
 
-    expect(response.statusCode).to.equal(200);
+    expect(response.statusCode).toBe(200);
     const { changeCount, countries, permissionGroups } = response.body;
-    expect(changeCount).to.be.a('number');
-    expect(countries.sort()).to.eql(Object.keys(basicAccess));
-    expect(permissionGroups.sort()).to.eql(Object.values(basicAccess).flat());
+    expect(typeof changeCount).toBe('number');
+    expect(countries).toIncludeSameMembers(Object.keys(basicAccess));
+    expect(permissionGroups).toIncludeSameMembers(Object.values(basicAccess).flat());
   });
 
   describe('permissions based syncing', () => {
     describe('initial sync', () => {
-      it('should return the number of changes for a user with limited access', async function () {
+      it('should return the number of changes for a user with limited access', async () => {
         app.revokeAccess();
         await app.grantAccess({ [PERM_SYNC_COUNTRY_1.code]: [PERM_SYNC_PG_PUBLIC.name] });
         const response = await app.get('changes/metadata', {
@@ -99,12 +97,12 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries, permissionGroups } = response.body;
-        expect(changeCount).to.equal(20);
-        expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code]);
-        expect(permissionGroups.sort()).to.eql([PERM_SYNC_PG_PUBLIC.name]);
+        expect(changeCount).toBe(20);
+        expect(countries).toIncludeSameMembers([PERM_SYNC_COUNTRY_1.code]);
+        expect(permissionGroups).toIncludeSameMembers([PERM_SYNC_PG_PUBLIC.name]);
       });
 
-      it('should return the number of changes for a user with full access', async function () {
+      it('should return the number of changes for a user with full access', async () => {
         app.revokeAccess();
         await app.grantAccess({
           [PERM_SYNC_COUNTRY_1.code]: [PERM_SYNC_PG_PUBLIC.name, PERM_SYNC_PG_ADMIN.name],
@@ -118,14 +116,20 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries, permissionGroups } = response.body;
-        expect(changeCount).to.equal(29);
-        expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
-        expect(permissionGroups.sort()).to.eql([PERM_SYNC_PG_ADMIN.name, PERM_SYNC_PG_PUBLIC.name]);
+        expect(changeCount).toBe(29);
+        expect(countries).toIncludeSameMembers([
+          PERM_SYNC_COUNTRY_1.code,
+          PERM_SYNC_COUNTRY_2.code,
+        ]);
+        expect(permissionGroups).toIncludeSameMembers([
+          PERM_SYNC_PG_ADMIN.name,
+          PERM_SYNC_PG_PUBLIC.name,
+        ]);
       });
     });
 
     describe('subsequent syncs', () => {
-      it('should sync previously unsynced data when given access to a new country', async function () {
+      it('should sync previously unsynced data when given access to a new country', async () => {
         app.revokeAccess();
         await app.grantAccess({
           [PERM_SYNC_COUNTRY_1.code]: [PERM_SYNC_PG_PUBLIC.name],
@@ -141,11 +145,14 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, countries } = response.body;
-        expect(changeCount).to.equal(10);
-        expect(countries.sort()).to.eql([PERM_SYNC_COUNTRY_1.code, PERM_SYNC_COUNTRY_2.code]);
+        expect(changeCount).toBe(10);
+        expect(countries).toIncludeSameMembers([
+          PERM_SYNC_COUNTRY_1.code,
+          PERM_SYNC_COUNTRY_2.code,
+        ]);
       });
 
-      it('should sync previously unsynced data when given access to a new permission group', async function () {
+      it('should sync previously unsynced data when given access to a new permission group', async () => {
         app.revokeAccess();
         await app.grantAccess({
           // Grant access to a previously unsynced permission group
@@ -161,11 +168,14 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount, permissionGroups } = response.body;
-        expect(changeCount).to.equal(5);
-        expect(permissionGroups.sort()).to.eql([PERM_SYNC_PG_ADMIN.name, PERM_SYNC_PG_PUBLIC.name]);
+        expect(changeCount).toBe(5);
+        expect(permissionGroups).toIncludeSameMembers([
+          PERM_SYNC_PG_ADMIN.name,
+          PERM_SYNC_PG_PUBLIC.name,
+        ]);
       });
 
-      it("should sync previously unsynced data when a survey's permission group changes", async function () {
+      it("should sync previously unsynced data when a survey's permission group changes", async () => {
         const startOfThisTest = Date.now();
 
         // Make survey4 have 'public' permissions
@@ -194,10 +204,10 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount } = response.body;
-        expect(changeCount).to.equal(4);
+        expect(changeCount).toBe(4);
       });
 
-      it("should sync previously unsynced data when a survey's countries changes", async function () {
+      it("should sync previously unsynced data when a survey's countries changes", async () => {
         const startOfThisTest = Date.now();
 
         // Make survey4 have 'public' permissions
@@ -224,7 +234,7 @@ describe('GET /changes/metadata', async () => {
         });
 
         const { changeCount } = response.body;
-        expect(changeCount).to.equal(6);
+        expect(changeCount).toBe(6);
       });
     });
   });

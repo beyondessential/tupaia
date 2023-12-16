@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../testUtilities';
 
-describe('Permissions checker for GETIndicators', async () => {
+describe('Permissions checker for GETIndicators', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -27,7 +26,7 @@ describe('Permissions checker for GETIndicators', async () => {
   let indicatorBId;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     const indicatorA = await findOrCreateDummyRecord(models.indicator, {
       code: 'TEST_A',
       builder: 'arithmetic',
@@ -49,35 +48,35 @@ describe('Permissions checker for GETIndicators', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /indicators/:id', async () => {
+  describe('GET /indicators/:id', () => {
     it('Sufficient permissions: Return requested indicator if user has BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`indicators/${indicatorAId}`);
 
-      expect(result.id).to.equal(indicatorAId);
+      expect(result.id).toBe(indicatorAId);
     });
 
     it('Insufficient permissions: Return an error message if user does not have BES admin access', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`indicators/${indicatorAId}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /indicators', async () => {
+  describe('GET /indicators', () => {
     it('Sufficient permissions: Return all indicators if user has BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`indicators?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([indicatorAId, indicatorBId]);
+      expect(results.map(r => r.id)).toIncludeSameMembers([indicatorAId, indicatorBId]);
     });
 
     it('Insufficient permissions: Return an error message if user does not have BES admin access', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`indicators?${filterString}`);
 
-      expect(results).to.have.keys('error');
+      expect(results).toHaveProperty('error');
     });
   });
 });

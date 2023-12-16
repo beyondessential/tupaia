@@ -4,12 +4,11 @@
  */
 
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../../permissions';
 import { TEST_SETUP, findTestRecordByCode } from './mapOverlayVisualisations.fixtures';
 
-describe('PUT map overlay visualisations', async () => {
+describe('PUT map overlay visualisations', () => {
   const app = new TestableApp();
   const { models } = app;
 
@@ -77,7 +76,7 @@ describe('PUT map overlay visualisations', async () => {
       const reportRecord = await models.report.findOne({
         code: modernReport.code,
       });
-      expect(reportRecord.config).to.deep.equal(modernVisualisation.report.config);
+      expect(reportRecord.config).toStrictEqual(modernVisualisation.report.config);
       expectSuccess(response);
     });
   });

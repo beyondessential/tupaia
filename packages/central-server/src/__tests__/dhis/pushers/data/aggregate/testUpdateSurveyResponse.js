@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
@@ -24,12 +23,12 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       {
         code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
         type: pusher.dataSourceTypes.DATA_ELEMENT,
@@ -50,12 +49,12 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
-    expect(result).to.be.true;
-    expect(dataBroker.push).to.have.been.calledOnceWith(
+    expect(result).toBe(true);
+    expect(dataBroker.push).toHaveBeenCalledOnceWith(
       { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
-    expect(dataBroker.delete).to.have.been.calledWith(
+    expect(dataBroker.delete).toHaveBeenCalledWith(
       {
         code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
         type: pusher.dataSourceTypes.DATA_ELEMENT,

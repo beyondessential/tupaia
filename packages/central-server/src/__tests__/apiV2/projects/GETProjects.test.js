@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, generateId } from '@tupaia/database';
 import { TestableApp } from '../../testUtilities';
 import {
@@ -52,7 +51,7 @@ const createTestData = async (models, projectCode, permissionGroup, countryEntit
   );
 };
 
-describe('Permissions checker for GETProjects', async () => {
+describe('Permissions checker for GETProjects', () => {
   const DEFAULT_POLICY = {
     DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -86,7 +85,7 @@ describe('Permissions checker for GETProjects', async () => {
   let projects;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     await findOrCreateDummyRecord(models.permissionGroup, {
       name: TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
     });
@@ -115,49 +114,49 @@ describe('Permissions checker for GETProjects', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await Promise.all(PROJECT_CODES.map(({ code }) => removeTestData(models, code)));
   });
 
-  describe('GET /projects/:id', async () => {
+  describe('GET /projects/:id', () => {
     it('Sufficient permissions: returns a requested project when user has BES admin permissions', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`projects/${projects[0].id}`);
-      expect(result.id).to.equal(projects[0].id);
+      expect(result.id).toBe(projects[0].id);
     });
 
     it('Sufficient permissions: returns a requested project when user has permissions', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`projects/${projects[0].id}`);
-      expect(result.id).to.equal(projects[0].id);
+      expect(result.id).toBe(projects[0].id);
     });
 
     it('Insufficient permissions: throws an error if requesting project when user does not have permissions', async () => {
       await app.grantAccess(PUBLIC_POLICY);
       const { body: result } = await app.get(`projects/${projects[0].id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /projects', async () => {
+  describe('GET /projects', () => {
     it('Sufficient permissions: returns all projects if the user has BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
-      expect(results.length).to.equal(projects.length);
+      expect(results.length).toBe(projects.length);
       const resultIds = results.map(r => r.id);
       projects.forEach(project => {
-        expect(resultIds.includes(project.id)).to.equal(true);
+        expect(resultIds).toContain(project.id);
       });
     });
 
     it('Sufficient permissions: returns projects when user has permissions', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
-      expect(results.length).to.equal(projects.length);
+      expect(results.length).toBe(projects.length);
       const resultIds = results.map(r => r.id);
       projects.forEach(project => {
-        expect(resultIds.includes(project.id)).to.equal(true);
+        expect(resultIds).toContain(project.id);
       });
     });
 
@@ -165,7 +164,7 @@ describe('Permissions checker for GETProjects', async () => {
       await app.grantAccess(PUBLIC_POLICY);
       const { body: results } = await app.get(`projects?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(results).toStrictEqual([]);
     });
   });
 });

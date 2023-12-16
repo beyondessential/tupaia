@@ -3,8 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import { generateTestId } from '@tupaia/database';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
@@ -19,12 +17,12 @@ import {
   upsertCountry,
 } from '../../testUtilities';
 
-describe('GET /changes/*', async () => {
+describe('GET /changes/*', () => {
   const app = new TestableApp();
   const { models } = app;
   const meditrakSyncQueue = new MeditrakSyncQueue(models);
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     // Set up real sync queue for testing the /changes endpoint
@@ -33,25 +31,25 @@ describe('GET /changes/*', async () => {
     meditrakSyncQueue.listenForChanges();
   });
 
-  after(() => {
+  afterAll(() => {
     meditrakSyncQueue.stopListeningForChanges();
     app.revokeAccess();
   });
 
-  describe('GET /changes/count', async () => {
-    it('should return a number under the key "changeCount"', async function () {
+  describe('GET /changes/count', () => {
+    it('should return a number under the key "changeCount"', async () => {
       const response = await app.get('changes/count');
-      expect(response.statusCode).to.equal(200);
-      expect(response.body.changeCount).to.be.a('number');
+      expect(response.statusCode).toBe(200);
+      expect(typeof response.body.changeCount).toBe('number');
     });
 
-    it('should return the total number of update changes with no "since"', async function () {
+    it('should return the total number of update changes with no "since"', async () => {
       const correctChangeCount = await models.meditrakSyncQueue.count({ type: 'update' });
       const response = await app.get('changes/count');
-      expect(response.body.changeCount).to.equal(correctChangeCount);
+      expect(response.body.changeCount).toBe(correctChangeCount);
     });
 
-    it('should return the correct number of changes since "since" if updates are made', async function () {
+    it('should return the correct number of changes since "since" if updates are made', async () => {
       const since = Date.now();
       const numberOfQuestionsToAdd = randomIntBetween(1, 20);
       const newQuestions = [];
@@ -64,10 +62,10 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const response = await app.get(`changes/count?since=${since}`);
-      expect(response.body.changeCount).to.equal(numberOfQuestionsToAdd);
+      expect(response.body.changeCount).toBe(numberOfQuestionsToAdd);
     });
 
-    it('should return the correct number of changes since "since" if updates and deletes are made', async function () {
+    it('should return the correct number of changes since "since" if updates and deletes are made', async () => {
       // Note: sync skips redundant deletes, i.e. any 'delete' records that reflect the deletion of a
       // record that the client has never seen are not synced to that client
 
@@ -142,12 +140,12 @@ describe('GET /changes/*', async () => {
         numberOfQuestionsToDeleteFromFirstUpdate + numberOfQuestionsToDeleteFromSecondUpdate;
       const netNewRecords = grossNewRecords - totalDeletes;
       let response = await app.get(`changes/count?since=${timestampBeforeFirstUpdate}`);
-      expect(response.body.changeCount).to.equal(netNewRecords);
+      expect(response.body.changeCount).toBe(netNewRecords);
 
       // If syncing from after both the updates but before the deletes, the changes needed will be all
       // of the deletes
       response = await app.get(`changes/count?since=${timestampBeforeFirstDelete}`);
-      expect(response.body.changeCount).to.equal(totalDeletes);
+      expect(response.body.changeCount).toBe(totalDeletes);
 
       // If syncing from after the first update, but before the second, need to sync all deletes for
       // records from the first update, plus the net number of records that need to be added from the
@@ -157,15 +155,15 @@ describe('GET /changes/*', async () => {
       const netChangesSinceBeforeSecondUpdate =
         numberOfQuestionsToDeleteFromFirstUpdate + netNewRecordsFromSecondUpdate;
       response = await app.get(`changes/count?since=${timestampBeforeSecondUpdate}`);
-      expect(response.body.changeCount).to.equal(netChangesSinceBeforeSecondUpdate);
+      expect(response.body.changeCount).toBe(netChangesSinceBeforeSecondUpdate);
 
       // If syncing from after the first delete but before the second, just need to sync all deletes
       // that happen in the second round of deletes
       response = await app.get(`changes/count?since=${timestampBeforeSecondDelete}`);
-      expect(response.body.changeCount).to.equal(numberOfQuestionsToDeleteFromSecondUpdate);
+      expect(response.body.changeCount).toBe(numberOfQuestionsToDeleteFromSecondUpdate);
     });
 
-    it('should return the correct number of changes based on appVersion', async function () {
+    it('should return the correct number of changes based on appVersion', async () => {
       const since = Date.now();
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
@@ -178,17 +176,17 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       let response = await app.get(`changes/count?since=${since}&appVersion=0.0.1`);
-      expect(response.body.changeCount).to.equal(1);
+      expect(response.body.changeCount).toBe(1);
 
       response = await app.get(`changes/count?since=${since}&appVersion=1.6.69`);
-      expect(response.body.changeCount).to.equal(2);
+      expect(response.body.changeCount).toBe(2);
 
       response = await app.get(`changes/count?since=${since}&appVersion=1.7.102`);
-      expect(response.body.changeCount).to.equal(3);
+      expect(response.body.changeCount).toBe(3);
     });
   });
 
-  describe('GET /changes/ - entity question config', async () => {
+  describe('GET /changes/ - entity question config', () => {
     const nonLegacyConfig = {
       entity: {
         createNew: true,
@@ -200,7 +198,7 @@ describe('GET /changes/*', async () => {
       },
     };
 
-    it('should return the correct format for entity config in survey_screen_component based on legacy appVersion', async function () {
+    it('should return the correct format for entity config in survey_screen_component based on legacy appVersion', async () => {
       const since = Date.now();
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
@@ -220,7 +218,7 @@ describe('GET /changes/*', async () => {
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.12.124`);
 
-      expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).to.deep.equal({
+      expect(JSON.parse(responseForLegacyVersion.body[5].record.config)).toStrictEqual({
         entity: {
           createNew: true,
           name: {
@@ -230,7 +228,7 @@ describe('GET /changes/*', async () => {
       });
     });
 
-    it('should return the non-legacy format for entity config in survey_screen_component based on compatible appVersion', async function () {
+    it('should return the non-legacy format for entity config in survey_screen_component based on compatible appVersion', async () => {
       const since = Date.now();
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
@@ -249,7 +247,7 @@ describe('GET /changes/*', async () => {
       // Wait for the triggers to have properly added the changes to the queue
       await models.database.waitForAllChangeHandlers();
       const responseForLegacyVersion = await app.get(`changes?since=${since}&appVersion=1.13.129`);
-      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).to.deep.equal(
+      expect(JSON.parse(responseForLegacyVersion.body[4].record.config)).toStrictEqual(
         nonLegacyConfig,
       );
     });

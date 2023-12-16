@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { getQueryOptionsForColumns } from '../../apiV2/GETHandler/helpers';
 
 describe('Request record types with standard joins', () => {
@@ -15,8 +14,8 @@ describe('Request record types with standard joins', () => {
       customJoinConditions,
       null,
     );
-    expect(results.sort).to.have.ordered.members(['survey_response.id', 'survey.id']);
-    expect(results.multiJoin).to.deep.equal([
+    expect(results.sort).toStrictEqual(['survey_response.id', 'survey.id']);
+    expect(results.multiJoin).toStrictEqual([
       {
         joinWith: 'survey',
         joinCondition: ['survey.id', 'survey_response.survey_id'],
@@ -24,6 +23,7 @@ describe('Request record types with standard joins', () => {
       },
     ]);
   });
+
   it('Returns two joins of tables that can join to the base record type', () => {
     const customJoinConditions = {};
     const results = getQueryOptionsForColumns(
@@ -32,12 +32,8 @@ describe('Request record types with standard joins', () => {
       customJoinConditions,
       null,
     );
-    expect(results.sort).to.have.ordered.members([
-      'survey_response.id',
-      'survey.id',
-      'user_account.id',
-    ]);
-    expect(results.multiJoin).to.deep.equal([
+    expect(results.sort).toStrictEqual(['survey_response.id', 'survey.id', 'user_account.id']);
+    expect(results.multiJoin).toStrictEqual([
       {
         joinWith: 'survey',
         joinCondition: ['survey.id', 'survey_response.survey_id'],
@@ -67,8 +63,8 @@ describe('Requests record types that require a through join', () => {
       customJoinConditions,
       null,
     );
-    expect(results.sort).to.have.ordered.members(['survey_response.id', 'entity.id', 'country.id']);
-    expect(results.multiJoin).to.deep.equal([
+    expect(results.sort).toStrictEqual(['survey_response.id', 'entity.id', 'country.id']);
+    expect(results.multiJoin).toStrictEqual([
       {
         joinWith: 'entity',
         joinCondition: ['entity.id', 'survey_response.entity_id'],
@@ -81,6 +77,7 @@ describe('Requests record types that require a through join', () => {
       },
     ]);
   });
+
   it('returns record types that require two through joins', () => {
     const customJoinConditions = {
       country: {
@@ -100,13 +97,13 @@ describe('Requests record types that require a through join', () => {
       customJoinConditions,
       null,
     );
-    expect(results.sort).to.have.ordered.members([
+    expect(results.sort).toStrictEqual([
       'survey_response.id',
       'entity.id',
       'country.id',
       'disaster.id',
     ]);
-    expect(results.multiJoin).to.deep.equal([
+    expect(results.multiJoin).toStrictEqual([
       {
         joinWith: 'entity',
         joinCondition: ['entity.id', 'survey_response.entity_id'],
@@ -129,7 +126,7 @@ describe('Requests record types that require a through join', () => {
 describe('Calling incorrect parameters to throw an error', () => {
   it('defines a column with "_" in front of it to trigger the validation error', () => {
     const err =
-      'Error: No columns start with "_", and conjunction operators are reserved for internal use only';
+      'No columns start with "_", and conjunction operators are reserved for internal use only';
     const customJoinConditions = {};
     expect(() =>
       getQueryOptionsForColumns(
@@ -137,8 +134,8 @@ describe('Calling incorrect parameters to throw an error', () => {
         'survey_response',
         customJoinConditions,
         null,
-      ).toThrow(err),
-    );
+      ),
+    ).toThrow(err);
   });
 
   it('defines the keys in customJoinConditions the wrong way around to trigger an error', () => {
@@ -156,22 +153,19 @@ describe('Calling incorrect parameters to throw an error', () => {
         'survey_response',
         customJoinConditions,
         null,
-      ).toThrow(err),
-    );
+      ),
+    ).toThrow(err);
   });
 
-  it('defines customJoinConditions in the retired format to trigger an error', () => {
+  it('defines customJoinConditions with missing fields to throw an error', () => {
     const err = 'Incorrect format for customJoinConditions: entity';
     const customJoinConditions = {
-      entity: ['entity.id', 'project.entity_id'],
+      entity: {
+        through: {},
+      },
     };
     expect(() =>
-      getQueryOptionsForColumns(
-        ['project.id', 'entity.id'],
-        'project',
-        customJoinConditions,
-        null,
-      ).toThrow(err),
-    );
+      getQueryOptionsForColumns(['project.id', 'entity.id'], 'project', customJoinConditions, null),
+    ).toThrow(err);
   });
 });

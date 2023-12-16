@@ -3,9 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { flatten } from 'lodash';
-import sinon from 'sinon';
 
 import { generateTestId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
@@ -42,7 +40,7 @@ const RESULTS_BY_SURVEY_ID = {
   ],
 };
 const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));
-const TIMESTAMP = 1570000000;
+const TIMESTAMP = 1570000000000;
 const USER_ID = 'userId';
 
 const createModelsStub = () => {
@@ -62,19 +60,14 @@ const createResponseExtractors = () => {
   return { [SHEET1]: responseExtractor, [SHEET2]: responseExtractor };
 };
 
-let clock;
-
 describe('SurveyResponseImporter', () => {
-  before(() => {
-    clock = sinon.useFakeTimers({ now: TIMESTAMP, toFake: ['Date'] });
-    sinon
-      .stub(SurveyResponse, 'submitResponses')
-      .callsFake((models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id]);
-  });
-
-  after(() => {
-    SurveyResponse.submitResponses.restore();
-    clock.restore();
+  beforeAll(() => {
+    jest.useFakeTimers().setSystemTime(TIMESTAMP);
+    jest
+      .spyOn(SurveyResponse, 'submitResponses')
+      .mockImplementation(
+        (models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id],
+      );
   });
 
   describe('import()', () => {
@@ -82,28 +75,28 @@ describe('SurveyResponseImporter', () => {
     let extractors;
     let importer;
 
-    before(() => {
+    beforeAll(() => {
       modelsStub = createModelsStub();
       extractors = createResponseExtractors();
       importer = new SurveyResponseImporter(modelsStub, extractors);
     });
 
-    beforeEach(() => {
-      SurveyResponse.submitResponses.resetHistory();
-    });
-
     it('should use the provided user id for the survey submissions', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
-      expect(SurveyResponse.submitResponses).to.have.been.calledWith(sinon.match.any, USER_ID);
+      expect(SurveyResponse.submitResponses).toHaveBeenCalledWith(
+        expect.anything(),
+        USER_ID,
+        expect.anything(),
+      );
     });
 
     it('should use the provided response data as survey responses', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
 
-      expect(SurveyResponse.submitResponses).to.have.been.calledTwice;
-      expect(SurveyResponse.submitResponses).to.have.been.calledWith(
-        sinon.match.any,
-        sinon.match.any,
+      expect(SurveyResponse.submitResponses).toHaveBeenCalledTimes(2);
+      expect(SurveyResponse.submitResponses).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
         [
           {
             entity_id: ENTITY_IDS['1989'],
@@ -119,9 +112,9 @@ describe('SurveyResponseImporter', () => {
           },
         ],
       );
-      expect(SurveyResponse.submitResponses).to.have.been.calledWith(
-        sinon.match.any,
-        sinon.match.any,
+      expect(SurveyResponse.submitResponses).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
         [
           {
             entity_id: ENTITY_IDS.September,
@@ -139,7 +132,9 @@ describe('SurveyResponseImporter', () => {
       );
     });
 
-    it('should return the resulting response ids and answers', () =>
-      expect(importer.import(ROWS_BY_SURVEY, USER_ID)).to.eventually.have.members(ALL_RESULTS));
+    it('should return the resulting response ids and answers', async () => {
+      const results = await importer.import(ROWS_BY_SURVEY, USER_ID);
+      expect(results).toStrictEqual(ALL_RESULTS);
+    });
   });
 });

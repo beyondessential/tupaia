@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { generateTestId } from '@tupaia/database';
 import {
   resetTestData,
@@ -48,11 +47,17 @@ const createComment = async ({ surveyResponseId, userId, text }) => {
   return comment;
 };
 
-xdescribe('Survey Response Comments CRUD', () => {
+describe('Survey Response Comments CRUD', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  beforeEach(app.authenticate);
+  beforeEach(async () => {
+    await app.authenticate();
+  });
+
+  afterEach(async () => {
+    await resetTestData();
+  });
 
   describe('Create: POST /surveyResponses/[id]/comments', () => {
     it("creates a survey response's comment", async () => {
@@ -64,17 +69,17 @@ xdescribe('Survey Response Comments CRUD', () => {
         body: { id, user_id: app.user.id, text },
       });
 
-      expect(statusCode).to.equal(200);
-      expect(body).to.deep.equal({ message: 'Successfully added comments' });
+      expect(statusCode).toBe(200);
+      expect(body).toStrictEqual({ message: 'Successfully added comments' });
 
       const comment = await models.comment.findById(id);
-      expect(comment).to.be.an('object');
-      expect(comment.user_id).to.equal(app.user.id);
-      expect(comment.text).to.equal(text);
+      expect(typeof comment).toBe('object');
+      expect(comment.user_id).toBe(app.user.id);
+      expect(comment.text).toBe(text);
       const surveyResponseCommentJoin = await models.surveyResponseComment.findOne({
         comment_id: id,
       });
-      expect(surveyResponseCommentJoin.survey_response_id).to.equal(surveyResponseId);
+      expect(surveyResponseCommentJoin.survey_response_id).toBe(surveyResponseId);
     });
   });
 
@@ -96,18 +101,18 @@ xdescribe('Survey Response Comments CRUD', () => {
       ];
 
       const { body: comments } = await app.get(`surveyResponses/${surveyResponseId}/comments`);
-      expect(comments.length).to.equal(2);
+      expect(comments).toHaveLength(2);
 
       for (const [index, comment] of createdData.entries()) {
-        expect(comment).to.have.property('id');
-        expect(comment).to.have.property('user_id');
-        expect(comment).to.have.property('created_time');
-        expect(comment).to.have.property('last_modified_time');
-        expect(comment).to.have.property('text');
+        expect(comment).toHaveProperty('id');
+        expect(comment).toHaveProperty('user_id');
+        expect(comment).toHaveProperty('created_time');
+        expect(comment).toHaveProperty('last_modified_time');
+        expect(comment).toHaveProperty('text');
 
-        expect(comment.id).to.equal(createdData[index].id);
-        expect(comment.user_id).to.equal(app.user.id);
-        expect(comment.text).to.equal(createdData[index].text);
+        expect(comment.id).toBe(createdData[index].id);
+        expect(comment.user_id).toBe(app.user.id);
+        expect(comment.text).toBe(createdData[index].text);
       }
     });
 
@@ -124,15 +129,15 @@ xdescribe('Survey Response Comments CRUD', () => {
         `surveyResponses/${surveyResponseId}/comments/${createdComment.id}`,
       );
 
-      expect(comment).to.have.property('id');
-      expect(comment).to.have.property('user_id');
-      expect(comment).to.have.property('created_time');
-      expect(comment).to.have.property('last_modified_time');
-      expect(comment).to.have.property('text');
+      expect(comment).toHaveProperty('id');
+      expect(comment).toHaveProperty('user_id');
+      expect(comment).toHaveProperty('created_time');
+      expect(comment).toHaveProperty('last_modified_time');
+      expect(comment).toHaveProperty('text');
 
-      expect(comment.id).to.equal(createdComment.id);
-      expect(comment.user_id).to.equal(createdComment.user_id);
-      expect(comment.text).to.equal(createdComment.text);
+      expect(comment.id).toBe(createdComment.id);
+      expect(comment.user_id).toBe(createdComment.user_id);
+      expect(comment.text).toBe(createdComment.text);
     });
   });
 
@@ -153,11 +158,11 @@ xdescribe('Survey Response Comments CRUD', () => {
         },
       );
 
-      expect(statusCode).to.equal(200);
-      expect(body).to.deep.equal({ message: 'Successfully updated comments' });
+      expect(statusCode).toBe(200);
+      expect(body).toStrictEqual({ message: 'Successfully updated comments' });
 
       const updatedComment = await models.comment.findById(createdComment.id);
-      expect(updatedComment.text).to.equal(newText);
+      expect(updatedComment.text).toBe(newText);
     });
   });
 
@@ -174,13 +179,11 @@ xdescribe('Survey Response Comments CRUD', () => {
         `surveyResponses/${surveyResponseId}/comments/${createdComment.id}`,
       );
 
-      expect(statusCode).to.equal(200);
-      expect(body).to.deep.equal({ message: 'Successfully deleted comment' });
+      expect(statusCode).toBe(200);
+      expect(body).toStrictEqual({ message: 'Successfully deleted comment' });
 
       const existingComments = await models.comment.all();
-      expect(existingComments.length).to.equal(0);
+      expect(existingComments.length).toBe(0);
     });
   });
-
-  afterEach(resetTestData);
 });

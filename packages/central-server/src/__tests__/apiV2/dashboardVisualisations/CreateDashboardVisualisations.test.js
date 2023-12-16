@@ -4,7 +4,6 @@
  */
 
 import { setupTest } from '@tupaia/database';
-import { expect } from 'chai';
 import { expectSuccess, expectError, resetTestData, TestableApp } from '../../testUtilities';
 import { TEST_SETUP } from './dashboardVisualisations.fixtures';
 import {
@@ -18,8 +17,6 @@ const clearRecords = async models => {
 };
 
 describe('POST dashboard visualisations', () => {
-  // const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
-
   const app = new TestableApp();
   const { models } = app;
 
@@ -79,7 +76,7 @@ describe('POST dashboard visualisations', () => {
         body: TEST_VISUALISATION,
       });
       const report = await models.report.findOne({ code: 'test_visualisation' });
-      expect(report.id).to.not.be.undefined;
+      expect(report.id).toBeDefined();
     });
 
     it('Successfully creates a dashboard item record', async () => {
@@ -87,7 +84,7 @@ describe('POST dashboard visualisations', () => {
         body: TEST_VISUALISATION,
       });
       const dashboardItem = await models.dashboardItem.findOne({ code: 'test_visualisation' });
-      expect(dashboardItem.id).to.not.be.undefined;
+      expect(dashboardItem.id).toBeDefined();
     });
 
     it('Posts successfully with BES Permissions only', async () => {

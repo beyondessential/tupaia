@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertProjectsAndHierarchies,
   clearTestData,
@@ -20,7 +19,7 @@ import {
   setupDashboardTestData,
 } from '../../testUtilities';
 
-describe('Permissions checker for CreateDashboardMailingListEntry', async () => {
+describe('Permissions checker for CreateDashboardMailingListEntry', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: ['Admin'],
@@ -35,7 +34,7 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
   let nationalDashboard1MailingList;
   let nationalDashboard2MailingList;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -69,12 +68,12 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('POST /dashboardMailingListEntries', async () => {
-    describe('Sufficient permission', async () => {
+  describe('POST /dashboardMailingListEntries', () => {
+    describe('Sufficient permission', () => {
       it('Allow creation of a dashboard mailing list entry for a dashboard we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.post(`dashboardMailingListEntries`, {
@@ -87,13 +86,13 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
           dashboard_mailing_list_id: nationalDashboard1MailingList.id,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].email).to.equal(TEST_USER_EMAIL);
+        expect(result.length).toBe(1);
+        expect(result[0].email).toBe(TEST_USER_EMAIL);
         await models.dashboardMailingListEntry.delete({ id: result[0].id }); // Clean up
       });
     });
 
-    describe('Invalid input', async () => {
+    describe('Invalid input', () => {
       it('Throw a input validation error if we do not have email', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.post(`dashboardMailingListEntries`, {
@@ -102,7 +101,7 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw a input validation error if we do not have dashboard_mailing_list_id', async () => {
@@ -113,7 +112,7 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
   });

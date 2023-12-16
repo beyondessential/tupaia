@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
@@ -29,7 +28,7 @@ describe('/user', () => {
     const emailAddress = randomEmail();
     let userId;
 
-    before(async () => {
+    beforeAll(async () => {
       const userResponse = await app.post('user', {
         headers,
         body: {
@@ -46,8 +45,9 @@ describe('/user', () => {
 
     it('should have created the user', async () => {
       const user = await models.user.findById(userId);
-      expect(user).to.exist;
-      return expect(user.getData()).to.eventually.include({
+      expect(user).toBeDefined();
+      const data = await user.getData();
+      expect(data).toMatchObject({
         first_name: dummyFields.firstName,
         last_name: dummyFields.lastName,
         employer: dummyFields.employer,
@@ -59,8 +59,8 @@ describe('/user', () => {
 
     it('should have only Demo Land UserEntityPermission model in database', async () => {
       const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
-      expect(userEntityPermissions.length).to.equal(1);
-      expect(userEntityPermissions[0].entity_code).to.equal('DL');
+      expect(userEntityPermissions.length).toBe(1);
+      expect(userEntityPermissions[0].entity_code).toBe('DL');
     });
   });
 });

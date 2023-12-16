@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for GETDataElements', async () => {
+describe('Permissions checker for GETDataElements', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -32,7 +31,7 @@ describe('Permissions checker for GETDataElements', async () => {
   let publicElement;
   let besAdminElement;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -91,39 +90,40 @@ describe('Permissions checker for GETDataElements', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /dataElements/:id', async () => {
+  describe('GET /dataElements/:id', () => {
     it('Sufficient permissions: Should return a requested data element if users have access to any of the permission groups', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dataElements/${adminElement.id}`);
 
-      expect(result.id).to.equal(adminElement.id);
+      expect(result.id).toBe(adminElement.id);
     });
 
     it('Sufficient permissions: Should always return a wildcard data element', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dataElements/${wildcardElement.id}`);
 
-      expect(result.id).to.equal(wildcardElement.id);
+      expect(result.id).toBe(wildcardElement.id);
     });
 
     it('Sufficient permissions: Should always return for a BES Admin', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`dataElements/${adminElement.id}`);
 
-      expect(result.id).to.equal(adminElement.id);
+      expect(result.id).toBe(adminElement.id);
     });
 
     it('Insufficient permissions: Should throw an exception if users do not have access to any of the data element permission groups', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dataElements/${besAdminElement.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /dataElements', async () => {
+  describe('GET /dataElements', () => {
     let filterString;
-    before(() => {
+
+    beforeAll(() => {
       // Set up a filter string to only request the test data we set up
       const elementIds = [
         wildcardElement.id,
@@ -140,7 +140,7 @@ describe('Permissions checker for GETDataElements', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dataElements?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         wildcardElement.id,
         adminElement.id,
         publicElement.id,
@@ -151,7 +151,7 @@ describe('Permissions checker for GETDataElements', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dataElements?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         wildcardElement.id,
         adminElement.id,
         publicElement.id,
@@ -166,7 +166,7 @@ describe('Permissions checker for GETDataElements', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dataElements?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([wildcardElement.id]);
+      expect(results.map(r => r.id)).toStrictEqual([wildcardElement.id]);
     });
   });
 });

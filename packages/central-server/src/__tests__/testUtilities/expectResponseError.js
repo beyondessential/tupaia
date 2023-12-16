@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 export const expectResponseError = (response, match, expectedStatusCode) => {
   const { body, statusCode } = response;
-  expect(statusCode).to.equal(expectedStatusCode);
-  expect(body).to.have.property('error');
-  expect(body.error).to.match(match);
+  expect(statusCode).toBe(expectedStatusCode);
+  expect(body).toHaveProperty('error');
+  expect(body.error).toMatch(match);
 };
 
 export const expectPermissionError = (response, match) => {

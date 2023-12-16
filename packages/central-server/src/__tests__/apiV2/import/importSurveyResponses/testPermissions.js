@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
@@ -27,7 +26,7 @@ const SURVEY_NAME_2 = 'Test Import Survey Response 2';
 const SURVEY_CODE_1 = 'TEST_IMPORT_SURVEY_RESP_1_test';
 const SURVEY_CODE_2 = 'TEST_IMPORT_SURVEY_RESP_2_test';
 
-export const testPermissions = async () => {
+export const testPermissions = () => {
   const app = new TestableApp();
   const { models } = app;
 
@@ -38,7 +37,7 @@ export const testPermissions = async () => {
       .attach('surveyResponses', `${TEST_DATA_FOLDER}/surveyResponses/${filename}`);
   };
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -160,7 +159,7 @@ export const testPermissions = async () => {
     const response = await importFile('importResponsesFromSingleSurvey.xlsx', [SURVEY_CODE_1]);
     const { statusCode } = response;
 
-    expect(statusCode).to.equal(200);
+    expect(statusCode).toBe(200);
   });
 
   it('Sufficient permissions: Should pass permissions check when importing survey responses from multiple surveys', async () => {
@@ -171,7 +170,7 @@ export const testPermissions = async () => {
     ]);
     const { statusCode } = response;
 
-    expect(statusCode).to.equal(200);
+    expect(statusCode).toBe(200);
   });
 
   it('Insufficient permissions: Should not pass permissions check when importing survey responses from 1 survey and users do not have access to the survey', async () => {

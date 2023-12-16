@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp } from '../testUtilities';
 
 const getFilterString = filter => `filter=${JSON.stringify(filter)}`;
 
-describe('Permissions checker for GETDisasters', async () => {
+describe('Permissions checker for GETDisasters', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -31,7 +30,7 @@ describe('Permissions checker for GETDisasters', async () => {
   let filter;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     // Set up test disasters in the database
     disaster1 = await findOrCreateDummyRecord(models.disaster, {
       name: 'Test disaster 1',
@@ -55,35 +54,35 @@ describe('Permissions checker for GETDisasters', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /disasters/:id', async () => {
+  describe('GET /disasters/:id', () => {
     it('Sufficient permissions: returns a requested disaster that user has access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster1.id}`);
 
-      expect(result.id).to.equal(disaster1.id);
+      expect(result.id).toBe(disaster1.id);
     });
 
     it('Insufficient permissions: throws an error if requesting disaster that user does not have access to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`disasters/${disaster3.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /disasters', async () => {
+  describe('GET /disasters', () => {
     it('Sufficient permissions: returns only disasters the user has permission to', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id]);
+      expect(results.map(r => r.id)).toStrictEqual([disaster1.id, disaster2.id]);
     });
 
     it('Sufficient permissions: returns all disasters if the user has BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([disaster1.id, disaster2.id, disaster3.id]);
+      expect(results.map(r => r.id)).toStrictEqual([disaster1.id, disaster2.id, disaster3.id]);
     });
 
     it('Returns disasters respecting single country code supplied', async () => {
@@ -93,7 +92,7 @@ describe('Permissions checker for GETDisasters', async () => {
         `disasters?${getFilterString(filterWithCountryCode)}`,
       );
 
-      expect(results.map(r => r.id)).to.deep.equal([disaster2.id]);
+      expect(results.map(r => r.id)).toStrictEqual([disaster2.id]);
     });
 
     it('Returns disasters respecting multiple country codes supplied', async () => {
@@ -103,7 +102,7 @@ describe('Permissions checker for GETDisasters', async () => {
         `disasters?${getFilterString(filterWithCountryCode)}`,
       );
 
-      expect(results.map(r => r.id)).to.deep.equal([disaster2.id, disaster3.id]);
+      expect(results.map(r => r.id)).toStrictEqual([disaster2.id, disaster3.id]);
     });
 
     it('Insufficient permissions: returns an empty array if users do not have access to any disaster', async () => {
@@ -113,7 +112,7 @@ describe('Permissions checker for GETDisasters', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`disasters?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(results).toStrictEqual([]);
     });
 
     it('Insufficient permissions: throws an error if user does not have admin panel access anywhere', async () => {
@@ -123,7 +122,7 @@ describe('Permissions checker for GETDisasters', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`disasters`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 });

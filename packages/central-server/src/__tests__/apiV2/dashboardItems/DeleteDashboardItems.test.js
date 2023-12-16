@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for DeleteDashboardItems', async () => {
+describe('Permissions checker for DeleteDashboardItems', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -36,7 +35,7 @@ describe('Permissions checker for DeleteDashboardItems', async () => {
   let dashboardItemDLPublicSBAdmin;
   let dashboardItemKIAdmin;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -156,25 +155,25 @@ describe('Permissions checker for DeleteDashboardItems', async () => {
     app.revokeAccess();
   });
 
-  describe('DELETE /dashboardItems/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('DELETE /dashboardItems/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw an exception if we do not have BES admin', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.delete(`dashboardItems/${dashboardItemDLPublic.id}`);
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Allow deleting of dashboard items if we have BES admin access in any country, regardless of country permissions', async () => {
         const preDelete = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
         await app.grantAccess(BES_ADMIN_POLICY);
         await app.delete(`dashboardItems/${dashboardItemDLPublicLAAdmin.id}`);
         const result = await models.dashboardItem.findById(dashboardItemDLPublicLAAdmin.id);
 
-        expect(preDelete).to.exist;
-        expect(result).to.not.exist;
+        expect(preDelete).toBeDefined();
+        expect(result).toBe(null);
       });
     });
   });

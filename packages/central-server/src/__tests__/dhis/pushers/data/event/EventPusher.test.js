@@ -1,17 +1,13 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { expect } from 'chai';
-import sinon from 'sinon';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
-import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
 import { getModels, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
-import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
+import { createDataBrokerStub } from './createDataBrokerStub';
 import {
   BASELINE_TEST_DATA,
   QUESTION,
@@ -21,6 +17,8 @@ import {
   SERVER_NAME,
 } from './EventPusher.fixtures';
 
+jest.mock('../../../../../dhis/pushers/data/event/EventBuilder');
+
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
 describe('EventPusher', () => {
   const models = getModels();
@@ -28,14 +26,8 @@ describe('EventPusher', () => {
   const dataBroker = createDataBrokerStub();
 
   describe('push()', () => {
-    before(async () => {
-      sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(EventBuilder.prototype, 'build');
-    });
-
-    after(() => {
-      Pusher.prototype.logResults.restore();
-      EventBuilder.prototype.build.restore();
+    beforeAll(async () => {
+      jest.spyOn(Pusher.prototype, 'logResults').mockImplementation();
     });
 
     beforeEach(async () => {
@@ -45,9 +37,6 @@ describe('EventPusher', () => {
     });
 
     afterEach(async () => {
-      // reset spy calls after each test case
-      resetDataBrokerStubHistory(dataBroker);
-
       // clear test data
       await resetTestData();
     });
@@ -57,12 +46,15 @@ describe('EventPusher', () => {
         const change = await models.dhisSyncQueue.findById(CHANGE.id);
         change.record_id = 'does_not_exist_xxxxxxxxx';
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
-        await expect(pusher.push()).to.eventually.be.false;
-        expect(pusher.logResults).to.have.been.calledWithMatch(
-          sinon.match({ errors: [sinon.match(/No survey response found/i)] }),
+        const result = await pusher.push();
+        expect(result).toBe(false);
+        expect(pusher.logResults).toHaveBeenCalledWith(
+          expect.objectContaining({
+            errors: [expect.objectContaining(/No survey response found/i)],
+          }),
         );
-        expect(dataBroker.push).not.to.have.been.called;
-        expect(dataBroker.delete).not.to.have.been.called;
+        expect(dataBroker.push).not.toHaveBeenCalled();
+        expect(dataBroker.delete).not.toHaveBeenCalled();
       });
 
       it('should post all the data values to a program', async () => {
@@ -70,9 +62,9 @@ describe('EventPusher', () => {
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
-        expect(result).to.be.true;
-        expect(dataBroker.push).to.have.been.calledOnce;
-        expect(dataBroker.delete).not.to.have.been.called;
+        expect(result).toBe(true);
+        expect(dataBroker.push).toHaveBeenCalledTimes(1);
+        expect(dataBroker.delete).not.toHaveBeenCalled();
       });
     });
 
@@ -94,8 +86,8 @@ describe('EventPusher', () => {
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
-        expect(result).to.be.true;
-        expect(dataBroker.delete).to.have.been.calledOnceWith(
+        expect(result).toBe(true);
+        expect(dataBroker.delete).toHaveBeenCalledOnceWith(
           {
             type: pusher.dataSourceTypes.DATA_GROUP,
             code: SURVEY.code,
@@ -103,7 +95,7 @@ describe('EventPusher', () => {
           { dhisReference: DHIS_REFERENCE },
           { serverName: SERVER_NAME },
         );
-        expect(dataBroker.push).to.have.been.calledOnce;
+        expect(dataBroker.push).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -126,8 +118,8 @@ describe('EventPusher', () => {
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
-        expect(result).to.be.true;
-        expect(dataBroker.delete).to.have.been.calledOnceWith(
+        expect(result).toBe(true);
+        expect(dataBroker.delete).toHaveBeenCalledOnceWith(
           {
             type: pusher.dataSourceTypes.DATA_GROUP,
             code: SURVEY.code,
@@ -135,7 +127,7 @@ describe('EventPusher', () => {
           { dhisReference: DHIS_REFERENCE },
           { serverName: SERVER_NAME },
         );
-        expect(dataBroker.push).not.to.have.been.called;
+        expect(dataBroker.push).not.toHaveBeenCalled();
       });
     });
   });

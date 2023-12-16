@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   findOrCreateDummyRecord,
   buildAndInsertProjectsAndHierarchies,
@@ -11,7 +10,7 @@ import {
 } from '@tupaia/database';
 import { TestableApp, resetTestData, setupDashboardTestData } from '../../testUtilities';
 
-describe('Permissions checker for GETDashboardMailingLists', async () => {
+describe('Permissions checker for GETDashboardMailingLists', () => {
   const NO_ACCESS_POLICY = {
     DL: ['Public'],
   };
@@ -23,7 +22,7 @@ describe('Permissions checker for GETDashboardMailingLists', async () => {
   let nationalDashboard1MailingList;
   let nationalDashboard2MailingList;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const [{ project, entities }] = await buildAndInsertProjectsAndHierarchies(models, [
@@ -59,27 +58,27 @@ describe('Permissions checker for GETDashboardMailingLists', async () => {
     app.revokeAccess();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await clearTestData(models.database);
   });
 
-  describe('GET /dashboardMailingLists/:id', async () => {
+  describe('GET /dashboardMailingLists/:id', () => {
     it('Sufficient permissions: Anyone can view a dashboard mailing list', async () => {
       await app.grantAccess(NO_ACCESS_POLICY);
       const { body: result } = await app.get(
         `dashboardMailingLists/${nationalDashboard1MailingList.id}`,
       );
 
-      expect(result.id).to.equal(nationalDashboard1MailingList.id);
+      expect(result.id).toBe(nationalDashboard1MailingList.id);
     });
   });
 
-  describe('GET /dashboardMailingLists', async () => {
+  describe('GET /dashboardMailingLists', () => {
     it('Sufficient permissions: Anyone can view all dashboard mailing lists', async () => {
       await app.grantAccess(NO_ACCESS_POLICY);
       const { body: results } = await app.get(`dashboardMailingLists`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboard1MailingList.id,
         nationalDashboard2MailingList.id,
       ]);

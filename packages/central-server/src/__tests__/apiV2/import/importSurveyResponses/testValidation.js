@@ -12,13 +12,13 @@ import { expectError as baseExpectError, TestableApp } from '../../../testUtilit
 import { importFile } from './helpers';
 import { VALIDATION_SURVEY } from './importSurveyResponses.fixtures';
 
-export const testValidation = async () => {
+export const testValidation = () => {
   const app = new TestableApp();
   const { models } = app;
 
   const expectError = (response, expectedError) => baseExpectError(response, expectedError, 400);
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     await buildAndInsertSurveys(models, [VALIDATION_SURVEY]);
@@ -28,7 +28,7 @@ export const testValidation = async () => {
     });
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 

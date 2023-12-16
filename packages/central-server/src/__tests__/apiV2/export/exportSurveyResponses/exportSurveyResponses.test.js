@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import xlsx from 'xlsx';
 import {
   findOrCreateDummyRecord,
@@ -30,12 +28,12 @@ const TEST_SURVEY_2_CODE = 'TEST_EXPORT_SURVEY_RESPONSES_2';
 const TEST_SURVEY_2_NAME = 'Export Survey SR 2';
 
 const expectAccessibleExportDataHeaderRow = exportData => {
-  expect(exportData.length).to.be.greaterThan(1);
+  expect(exportData.length).toBeGreaterThan(1);
   const headerRow = exportData[0];
 
   for (let i = 0; i < INFO_COLUMN_HEADERS.length; i++) {
     const headerCell = headerRow[i];
-    expect(headerCell).to.be.equal(INFO_COLUMN_HEADERS[i]);
+    expect(headerCell).toBe(INFO_COLUMN_HEADERS[i]);
   }
 };
 
@@ -43,16 +41,16 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  describe('Test permissions when exporting survey responses', async () => {
+  describe('Test permissions when exporting survey responses', () => {
     let vanuatuCountry;
     let kiribatiCountry;
     let survey1;
     let survey2;
 
-    before(async () => {
+    beforeAll(async () => {
       await resetTestData();
 
-      sinon.stub(xlsx.utils, 'aoa_to_sheet');
+      jest.spyOn(xlsx.utils, 'aoa_to_sheet').mockImplementation();
 
       const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
         name: 'Admin',
@@ -125,13 +123,8 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
       ]);
     });
 
-    after(() => {
-      xlsx.utils.aoa_to_sheet.restore();
-    });
-
     afterEach(() => {
       app.revokeAccess();
-      xlsx.utils.aoa_to_sheet.resetHistory();
     });
 
     describe('Should allow exporting a survey if users have Tupaia Admin Panel and survey permission group access to the corresponding countries', () => {
@@ -141,9 +134,9 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
         );
 
-        expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
+        expect(xlsx.utils.aoa_to_sheet).toHaveBeenCalledTimes(1);
 
-        const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
+        const exportData = xlsx.utils.aoa_to_sheet.mock.calls[0][0];
         expectAccessibleExportDataHeaderRow(exportData);
       });
 
@@ -154,10 +147,10 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
         );
 
         // Has access to both survey1 and survey2
-        expect(xlsx.utils.aoa_to_sheet).to.have.been.calledTwice;
+        expect(xlsx.utils.aoa_to_sheet).toHaveBeenCalledTimes(2);
 
         for (let i = 0; i < xlsx.utils.aoa_to_sheet.callCount; i++) {
-          const exportData = xlsx.utils.aoa_to_sheet.getCall(i).args[0];
+          const exportData = xlsx.utils.aoa_to_sheet.mock.calls[0][0];
           expectAccessibleExportDataHeaderRow(exportData);
         }
       });
@@ -178,11 +171,11 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           `export/surveyResponses?surveyCodes=${survey1.code}&countryCode=${vanuatuCountry.code}`,
         );
 
-        expect(xlsx.utils.aoa_to_sheet).to.have.been.calledOnce;
+        expect(xlsx.utils.aoa_to_sheet).toHaveBeenCalledTimes(1);
 
         // Check the permissions error message in survey1 sheet
-        const exportData = xlsx.utils.aoa_to_sheet.getCall(0).args[0];
-        expect(exportData).to.be.deep.equal([[`You do not have export access to ${survey1.name}`]]);
+        const exportData = xlsx.utils.aoa_to_sheet.mock.calls[0][0];
+        expect(exportData).toStrictEqual([[`You do not have export access to ${survey1.name}`]]);
       });
 
       it('multiple surveys', async () => {
@@ -199,12 +192,12 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           `export/surveyResponses?surveyCodes=${survey1.code}&surveyCodes=${survey2.code}&countryCode=${vanuatuCountry.code}`,
         );
 
-        expect(xlsx.utils.aoa_to_sheet).to.have.been.calledTwice;
+        expect(xlsx.utils.aoa_to_sheet).toHaveBeenCalledTimes(2);
 
         // Sheet order is non-deterministic
         const sheetExportData = [
-          xlsx.utils.aoa_to_sheet.getCall(0).args[0],
-          xlsx.utils.aoa_to_sheet.getCall(1).args[0],
+          xlsx.utils.aoa_to_sheet.mock.calls[0][0],
+          xlsx.utils.aoa_to_sheet.mock.calls[1][0],
         ];
 
         // Use length of response to make an informed guess which survey is in each sheet
@@ -214,7 +207,7 @@ describe('exportSurveyResponses(): GET export/surveysResponses', () => {
           sheetExportData[0].length > 1 ? sheetExportData[0] : sheetExportData[1];
 
         // Check the permissions error message in survey1 sheet
-        expect(survey1ExportData).to.be.deep.equal([
+        expect(survey1ExportData).toStrictEqual([
           [`You do not have export access to ${survey1.name}`],
         ]);
 

@@ -13,7 +13,7 @@ const clearRecords = async models => {
   await models.mapOverlay.delete({ code: 'new_visual' });
 };
 
-describe('POST map overlay visualisations', async () => {
+describe('POST map overlay visualisations', () => {
   const app = new TestableApp();
   const { models } = app;
 

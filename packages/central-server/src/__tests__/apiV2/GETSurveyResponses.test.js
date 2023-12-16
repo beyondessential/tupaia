@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   buildAndInsertSurveyResponses,
@@ -13,7 +12,7 @@ import { resetTestData, TestableApp } from '../testUtilities';
 import { getRewardsForUser } from '../../social/getRewardsForUser';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 
-describe('Permissions checker for GETSurveyResponses', async () => {
+describe('Permissions checker for GETSurveyResponses', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -36,7 +35,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
   let vanuatuCountry;
   let laosCountry;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -121,19 +120,19 @@ describe('Permissions checker for GETSurveyResponses', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /surveyResponses/:id', async () => {
+  describe('GET /surveyResponses/:id', () => {
     it("Sufficient permissions: Return a requested survey response if we have permission for the survey in the response's country", async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
 
-      expect(result.id).to.equal(vanuatuAdminResponseId);
+      expect(result.id).toBe(vanuatuAdminResponseId);
     });
 
     it('Sufficient permissions: Return a requested survey response if we have BES admin access anywhere', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`surveyResponses/${laosAdminResponseId}`);
 
-      expect(result.id).to.equal(laosAdminResponseId);
+      expect(result.id).toBe(laosAdminResponseId);
     });
 
     it("Insufficient permissions: Throw an error if we do not have permission for the survey in the response's country", async () => {
@@ -147,23 +146,26 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`surveyResponses/${vanuatuAdminResponseId}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /surveyResponses', async () => {
+  describe('GET /surveyResponses', () => {
     it('Sufficient permissions: Return only survey responses we have permissions to the survey in the response country', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([laosAdminResponseId, vanuatuAdminResponseId]);
+      expect(results.map(r => r.id)).toIncludeSameMembers([
+        laosAdminResponseId,
+        vanuatuAdminResponseId,
+      ]);
     });
 
     it('Sufficient permissions: Always return all survey responses if we have BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([
+      expect(results.map(r => r.id)).toIncludeSameMembers([
         laosAdminResponseId,
         laosDonorResponseId,
         vanuatuAdminResponseId,
@@ -178,7 +180,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`surveyResponses?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(results).toStrictEqual([]);
     });
 
     it('Joins completed: Return all survey responses with a country name attached to the response', async () => {
@@ -187,7 +189,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
         `surveyResponses?${filterString}&columns=["country.name"]`,
       );
 
-      expect(results.map(r => r['country.name'])).to.have.members([
+      expect(results.map(r => r['country.name'])).toIncludeSameMembers([
         // Duplicates of Vanuatu and Laos expected as four survey responses in test DB (two each from Vanuatu and Laos)
         vanuatuCountry.name,
         laosCountry.name,
@@ -204,7 +206,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const userId = results[0].user_id;
       const rewards = await getRewardsForUser(app.database, userId);
 
-      expect(rewards.coconuts).to.equal('4');
+      expect(rewards.coconuts).toBe('4');
     });
 
     it('gets rewards with a project_id', async () => {
@@ -216,7 +218,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const projectId = 'testId';
       // The test data doesn't have project ids, but still want to make sure that it handles the param and returns the correct rewards
       const rewards = await getRewardsForUser(app.database, userId, projectId);
-      expect(rewards.coconuts).to.equal(0);
+      expect(rewards.coconuts).toBe(0);
     });
   });
 });

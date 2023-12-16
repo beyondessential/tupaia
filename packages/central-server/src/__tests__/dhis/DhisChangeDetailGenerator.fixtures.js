@@ -1,4 +1,4 @@
-import sinon from 'sinon';
+import { when } from 'jest-when';
 
 export const REGIONAL_SURVEY_RESPONSE = {
   id: 'survey_response_is_regional',
@@ -49,6 +49,27 @@ const STUBBED_MODEL_DATA = {
 const stubFind = type => async ({ id: ids }) =>
   STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
 
+const mockDatabaseFind = jest.fn();
+when(mockDatabaseFind)
+  .calledWith(
+    'survey',
+    { 'survey.id': expect.any(Array) },
+    {
+      joinWith: 'data_group',
+      joinCondition: ['data_group.id', 'survey.data_group_id'],
+      columns: ['survey.id', 'data_group.config'],
+    },
+  )
+  .mockImplementation(async (_, where) =>
+    where['survey.id'].map(surveyId => {
+      const find = (type, targetId) => STUBBED_MODEL_DATA[type].find(({ id }) => id === targetId);
+
+      const survey = find('survey', surveyId);
+      const dataSource = find('data_group', survey.data_group_id);
+      return { id: survey.id, config: dataSource.config };
+    }),
+  );
+
 export const MODELS = {
   entity: {
     databaseType: 'entity',
@@ -65,22 +86,6 @@ export const MODELS = {
     find: stubFind('survey'),
   },
   database: {
-    find: sinon
-      .stub()
-      .withArgs('survey', sinon.match({ 'survey.id': sinon.match.array }), {
-        joinWith: 'data_group',
-        joinCondition: ['data_group.id', 'survey.data_group.id'],
-        columns: ['survey.id', 'data_group.config'],
-      })
-      .callsFake(async (t, { 'survey.id': surveyIds }) =>
-        surveyIds.map(surveyId => {
-          const find = (type, targetId) =>
-            STUBBED_MODEL_DATA[type].find(({ id }) => id === targetId);
-
-          const survey = find('survey', surveyId);
-          const dataSource = find('data_group', survey.data_group_id);
-          return { id: survey.id, config: dataSource.config };
-        }),
-      ),
+    find: mockDatabaseFind,
   },
 };

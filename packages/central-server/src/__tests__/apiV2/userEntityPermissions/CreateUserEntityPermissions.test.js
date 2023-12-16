@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for CreateUserEntityPermissions', async () => {
+describe('Permissions checker for CreateUserEntityPermissions', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -33,7 +32,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
   let vanuatuEntityId;
   let laosEntityId;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -64,8 +63,8 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
     app.revokeAccess();
   });
 
-  describe('POST /userEntityPermissions', async () => {
-    describe('Insufficient permission', async () => {
+  describe('POST /userEntityPermissions', () => {
+    describe('Insufficient permission', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -79,7 +78,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to create a user entity permission for an entity we do not have permissions for', async () => {
@@ -92,7 +91,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to create a user entity permission with BES admin access when we lack BES admin access', async () => {
@@ -105,11 +104,11 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow creation of user entity permission for entity we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.post(`userEntityPermissions`, {
@@ -125,7 +124,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
           entity_id: laosEntityId,
         });
 
-        expect(result).to.not.equal(null);
+        expect(result).not.toBe(null);
       });
 
       it('Allow creation of any user entity permission for BES admin user', async () => {
@@ -143,7 +142,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
           entity_id: vanuatuEntityId,
         });
 
-        expect(result).to.not.equal(null);
+        expect(result).not.toBe(null);
       });
     });
   });

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import moment from 'moment';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
@@ -44,7 +43,7 @@ describe('surveyResponse endpoint', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     const country = await upsertDummyRecord(models.country);
@@ -100,7 +99,7 @@ describe('surveyResponse endpoint', () => {
     surveyId = survey.id;
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 
@@ -119,8 +118,8 @@ describe('surveyResponse endpoint', () => {
     expectSuccess(response);
 
     const { body } = response;
-    expect(body.results).to.have.length(1);
-    expect(body.results[0].answerIds).to.have.length(1);
+    expect(body.results).toHaveLength(1);
+    expect(body.results[0].answerIds).toHaveLength(1);
   });
 
   it('Should accept multiple answers in a submission', async () => {
@@ -138,8 +137,8 @@ describe('surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = response;
-    expect(body.results).to.have.length(1);
-    expect(body.results[0].answerIds).to.have.length(2);
+    expect(body.results).toHaveLength(1);
+    expect(body.results[0].answerIds).toHaveLength(2);
   });
 
   it('Should pair a submission to a clinic where one exists', async () => {
@@ -157,14 +156,14 @@ describe('surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = response;
-    expect(body.results[0]).to.have.property('surveyResponseId');
+    expect(body.results[0]).toHaveProperty('surveyResponseId');
 
     const { surveyResponseId } = body.results[0];
 
     const dbResponse = await models.surveyResponse.findById(surveyResponseId);
     const entity = await models.entity.findById(dbResponse.entity_id);
     const clinic = await models.facility.findOne({ code: entity.code });
-    expect(clinic).to.not.be.null;
+    expect(clinic).not.toBe(null);
   });
 
   it("Should not pair a submission to a clinic if there isn't one", async () => {
@@ -183,16 +182,16 @@ describe('surveyResponse endpoint', () => {
     expectSuccess(response);
 
     const { body } = response;
-    expect(body.results[0]).to.have.property('surveyResponseId');
+    expect(body.results[0]).toHaveProperty('surveyResponseId');
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findById(surveyResponseId);
-    expect(dbResponse).to.not.be.null;
+    expect(dbResponse).not.toBe(null);
     const entity = await models.entity.findById(dbResponse.entity_id);
     const clinic = await models.facility.findOne({ code: entity.code });
-    expect(clinic).to.be.null;
+    expect(clinic).toBe(null);
 
-    expect(surveyResponseId).to.not.be.null;
+    expect(surveyResponseId).not.toBe(null);
   });
 
   it('Should accept multiple submissions', async () => {
@@ -221,9 +220,9 @@ describe('surveyResponse endpoint', () => {
     expectSuccess(response);
 
     const { body } = response;
-    expect(body.results).to.have.length(2);
-    expect(body.results[0].answerIds).to.have.length(1);
-    expect(body.results[1].answerIds).to.have.length(2);
+    expect(body.results).toHaveLength(2);
+    expect(body.results[0].answerIds).toHaveLength(1);
+    expect(body.results[1].answerIds).toHaveLength(2);
   });
 
   it('Should throw if a submission has an invalid survey id', async () => {
@@ -328,9 +327,9 @@ describe('surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = response;
-    expect(body.results).to.have.length(1);
-    expect(body.results[0].surveyResponseId).to.not.be.undefined;
-    expect(body.results[0].answerIds).to.have.length(0);
+    expect(body.results).toHaveLength(1);
+    expect(body.results[0].surveyResponseId).toBeDefined();
+    expect(body.results[0].answerIds).toStrictEqual([]);
   });
 
   it('Should throw if a survey has an answer with no content', async () => {
@@ -389,8 +388,8 @@ describe('surveyResponse endpoint', () => {
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(dbResponse.timezone).to.be.oneOf(timezones);
-    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+    expect(timezones).toContain(dbResponse.timezone);
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).toBe(
       '2019-07-30T17:48:00.000',
     );
   });
@@ -414,11 +413,11 @@ describe('surveyResponse endpoint', () => {
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).toBe(
       '2021-01-01T23:59:59.000',
     );
-    expect(moment(dbResponse.start_time).isSame('2021-02-01T23:59:59.000Z')).to.be.true;
-    expect(moment(dbResponse.end_time).isSame('2021-03-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.start_time).isSame('2021-02-01T23:59:59.000Z')).toBe(true);
+    expect(moment(dbResponse.end_time).isSame('2021-03-01T23:59:59.000Z')).toBe(true);
   });
 
   it('Should use timestamp as start and end times if not provided', async () => {
@@ -438,14 +437,14 @@ describe('surveyResponse endpoint', () => {
 
     const { surveyResponseId } = body.results[0];
     const dbResponse = await models.surveyResponse.findOne({ id: surveyResponseId });
-    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).to.equal(
+    expect(moment(dbResponse.data_time).format('YYYY-MM-DDTHH:mm:ss.SSS')).toBe(
       '2021-01-01T23:59:59.000',
     );
-    expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
-    expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).to.be.true;
+    expect(moment(dbResponse.start_time).isSame('2021-01-01T23:59:59.000Z')).toBe(true);
+    expect(moment(dbResponse.end_time).isSame('2021-01-01T23:59:59.000Z')).toBe(true);
   });
 
-  describe('Update entity for existing survey response', async function () {
+  describe('Update entity for existing survey response', () => {
     let syncQueue;
     let surveyResponseId;
     let previousNumberOfSurveyResponses = 0;
@@ -454,7 +453,7 @@ describe('surveyResponse endpoint', () => {
     let newEntityId;
     let numberOfAnswersInSurveyResponse;
 
-    before(async () => {
+    beforeAll(async () => {
       syncQueue = setupDummySyncQueue(models);
       syncQueue.clear();
       previousNumberOfSurveyResponses = await models.surveyResponse.count();
@@ -473,30 +472,29 @@ describe('surveyResponse endpoint', () => {
       });
     });
 
-    it('should respond with a successful http status', function () {
-      expect(response.statusCode).to.equal(200);
+    it('should respond with a successful http status', () => {
+      expect(response.statusCode).toBe(200);
     });
 
-    it('should have the same number of survey responses', async function () {
+    it('should have the same number of survey responses', async () => {
       const postNumberOfSurveyResponses = await models.surveyResponse.count();
-      expect(postNumberOfSurveyResponses).to.equal(previousNumberOfSurveyResponses);
+      expect(postNumberOfSurveyResponses).toBe(previousNumberOfSurveyResponses);
     });
 
-    it('should have the same number of answers', async function () {
+    it('should have the same number of answers', async () => {
       const postNumberOfAnswers = await models.answer.count();
-      expect(postNumberOfAnswers).to.equal(previousNumberOfAnswers);
+      expect(postNumberOfAnswers).toBe(previousNumberOfAnswers);
     });
 
-    it('should have changed the entity associated with the survey response to the new entity', async function () {
+    it('should have changed the entity associated with the survey response to the new entity', async () => {
       const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
-      expect(surveyResponse.entity_id).to.equal(newEntityId);
+      expect(surveyResponse.entity_id).toBe(newEntityId);
     });
 
-    it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
-      this.retries(10);
+    it('should add the survey response and all answers to the sync queue after it is submitted', async () => {
       await oneSecondSleep(1000);
-      expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);
-      expect(syncQueue.count(models.answer.databaseType)).to.equal(numberOfAnswersInSurveyResponse);
+      expect(syncQueue.count(models.surveyResponse.databaseType)).toBe(1);
+      expect(syncQueue.count(models.answer.databaseType)).toBe(numberOfAnswersInSurveyResponse);
     });
   });
 
@@ -524,7 +522,7 @@ describe('surveyResponse endpoint', () => {
         },
       });
 
-      expect(body).not.to.have.property('errors');
+      expect(body).not.toHaveProperty('errors');
     });
 
     const postTypeCheck = (type, value) =>

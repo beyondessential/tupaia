@@ -1,80 +1,69 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
-import sinonTest from 'sinon-test';
-import winston from 'winston';
-
+import { TYPES } from '@tupaia/database';
 import { pushChange } from '../../dhis/pushChange';
-import { AggregateDataPusher, EventPusher } from '../../dhis/pushers';
-import * as GetPusherForEntity from '../../dhis/pushers/entity/getPusherForEntity';
-import { TestableApp } from '../testUtilities';
 
-const test = sinonTest(sinon);
+const mockAggregateDataPusher = {
+  push: jest.fn(),
+};
+const mockEventPusher = {
+  push: jest.fn(),
+};
+const mockEntityPusher = {
+  push: jest.fn(),
+};
 
-const app = new TestableApp();
-const { models } = app;
-
-const ANSWER = models.answer.databaseType;
-const ENTITY = models.entity.databaseType;
-const SURVEY_RESPONSE = models.surveyResponse.databaseType;
+jest.mock('../../dhis/pushers', () => ({
+  AggregateDataPusher: () => mockAggregateDataPusher,
+  EventPusher: () => mockEventPusher,
+  getPusherForEntity: async () => () => mockEntityPusher,
+}));
 
 describe('pushChange()', () => {
+  const models = {
+    answer: {
+      databaseType: TYPES.ANSWER,
+    },
+    entity: {
+      databaseType: TYPES.ENTITY,
+    },
+    surveyResponse: {
+      databaseType: TYPES.SURVEY_RESPONSE,
+      checkIsEventBased: jest.fn(),
+    },
+  };
+
   describe('Push Handler selection', () => {
-    beforeEach(() => {
-      sinon.stub(AggregateDataPusher.prototype, 'push');
-      sinon.stub(EventPusher.prototype, 'push');
-      sinon.stub(GetPusherForEntity, 'getPusherForEntity');
+    it('should use an event push handler for an event based survey response', async () => {
+      models.surveyResponse.checkIsEventBased.mockResolvedValue(true);
+
+      await pushChange(models, { record_type: TYPES.SURVEY_RESPONSE });
+      expect(mockEventPusher.push).toHaveBeenCalledTimes(1);
     });
-
-    afterEach(() => {
-      AggregateDataPusher.prototype.push.restore();
-      EventPusher.prototype.push.restore();
-      GetPusherForEntity.getPusherForEntity.restore();
-    });
-
-    it(
-      'should use an event push handler for an event based survey response',
-      test(async function () {
-        this.stub(models.surveyResponse, 'checkIsEventBased').returns(true);
-
-        await pushChange(models, { record_type: SURVEY_RESPONSE });
-        expect(EventPusher.prototype.push).to.have.callCount(1);
-      }),
-    );
 
     it('should use an entity push handler for an entity', async () => {
-      await pushChange(models, { record_type: ENTITY });
-      expect(GetPusherForEntity.getPusherForEntity).to.have.callCount(1);
+      await pushChange(models, { record_type: TYPES.ENTITY });
+      expect(mockEntityPusher.push).toHaveBeenCalledTimes(1);
     });
 
-    it(
-      'should use a data value push handler for a non event based survey response',
-      test(async function () {
-        this.stub(models.surveyResponse, 'checkIsEventBased').returns(false);
+    it('should use a data value push handler for a non event based survey response', async () => {
+      models.surveyResponse.checkIsEventBased.mockResolvedValue(false);
 
-        await pushChange(models, { record_type: SURVEY_RESPONSE });
-        expect(AggregateDataPusher.prototype.push).to.have.callCount(1);
-      }),
-    );
+      await pushChange(models, { record_type: TYPES.SURVEY_RESPONSE });
+      expect(mockAggregateDataPusher.push).toHaveBeenCalledTimes(1);
+    });
 
     it('should use a data value push handler for an answer', async () => {
-      await pushChange(models, { record_type: ANSWER });
-      expect(AggregateDataPusher.prototype.push).to.have.callCount(1);
+      await pushChange(models, { record_type: TYPES.ANSWER });
+      expect(mockAggregateDataPusher.push).toHaveBeenCalledTimes(1);
     });
 
-    it(
-      'should return false and log an error if the record type is invalid',
-      test(async function () {
-        this.stub(winston, 'error').callsFake(error => error);
-
-        const result = await pushChange(models, { record_type: 'otherType' });
-        expect(result).to.be.false;
-        expect(winston.error).to.have.callCount(1);
-      }),
-    );
+    it('should return false if the record type is invalid', async () => {
+      const result = await pushChange(models, { record_type: 'otherType' });
+      expect(result).toBe(false);
+    });
   });
 });

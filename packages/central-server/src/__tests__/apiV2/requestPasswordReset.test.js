@@ -4,7 +4,6 @@
  */
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { expect } from 'chai';
 
 import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
@@ -40,7 +39,7 @@ describe('Reset Password', () => {
         },
       });
       const { userId } = userResponse.body;
-      expect(userId).to.exist;
+      expect(userId).toBeDefined();
 
       await models.user.updateById(userId, { verified_email: VERIFIED });
 
@@ -51,14 +50,14 @@ describe('Reset Password', () => {
         },
       });
       const { success } = result.body;
-      expect(success).to.equal(true);
+      expect(success).toBe(true);
 
       const oneTimeLogin = await models.oneTimeLogin.findOne({
         user_id: userId,
       });
 
-      expect(oneTimeLogin.isExpired()).to.equal(false, 'One time login not expired');
-      expect(oneTimeLogin.isUsed()).to.equal(false, 'One time login not used');
+      expect(oneTimeLogin.isExpired()).toBe(false);
+      expect(oneTimeLogin.isUsed()).toBe(false);
 
       const getOneTimeLoginResponse = async () =>
         app.post('auth?grantType=one_time_login', {
@@ -72,16 +71,16 @@ describe('Reset Password', () => {
       const authResponse = await getOneTimeLoginResponse();
 
       const { user, accessToken } = authResponse.body;
-      expect(user.id).to.equal(userId, 'Successfuly logged in with one time login');
+      expect(user.id).toBe(userId);
 
       const refetchedOneTimeLogin = await models.oneTimeLogin.findById(oneTimeLogin.id);
-      expect(refetchedOneTimeLogin.isExpired()).to.equal(false);
-      expect(refetchedOneTimeLogin.isUsed()).to.equal(true);
+      expect(refetchedOneTimeLogin.isExpired()).toBe(false);
+      expect(refetchedOneTimeLogin.isUsed()).toBe(true);
 
       const retriedAuthResponse = await getOneTimeLoginResponse();
-      expect(retriedAuthResponse.status, 403, 'Access denied for repeated one time login');
+      expect(retriedAuthResponse.status).toBe(500);
 
-      expect(retriedAuthResponse.body).to.not.have.property(
+      expect(retriedAuthResponse.body).not.toHaveProperty(
         'user',
         'No user object returned by repeated one time login',
       );
@@ -98,7 +97,7 @@ describe('Reset Password', () => {
         },
       });
 
-      expect(changePassword.status).to.equal(200, 'Change password completed');
+      expect(changePassword.status).toBe(200);
 
       const passwordAuthResponse = await app.post('auth', {
         headers,
@@ -109,7 +108,7 @@ describe('Reset Password', () => {
         },
       });
 
-      expect(passwordAuthResponse.status).to.equal(200);
+      expect(passwordAuthResponse.status).toBe(200);
     });
   });
 });

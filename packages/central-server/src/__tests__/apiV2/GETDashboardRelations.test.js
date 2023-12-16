@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import {
   findOrCreateDummyRecord,
   addBaselineTestCountries,
@@ -12,7 +11,7 @@ import {
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { TestableApp, setupDashboardTestData } from '../testUtilities';
 
-describe('Permissions checker for GETDashboardRelations', async () => {
+describe('Permissions checker for GETDashboardRelations', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -37,7 +36,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
   let nationalDashboardRelation3b;
   let projectDashboardRelation1;
 
-  before(async () => {
+  beforeAll(async () => {
     // Still create these existing entities just in case test database for some reasons do not have these records.
     await findOrCreateDummyRecord(models.entity, {
       code: 'KI_Phoenix Islands',
@@ -71,26 +70,26 @@ describe('Permissions checker for GETDashboardRelations', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /dashboardRelations/:id', async () => {
+  describe('GET /dashboardRelations/:id', () => {
     it('Sufficient permissions: Should return requested dashboard relation which connected to SUB NATIONAL dashboard that users have access to the country of dashboard root_entity_code', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardRelations/${districtDashboardRelation1.id}`);
 
-      expect(result.id).to.equal(districtDashboardRelation1.id);
+      expect(result.id).toBe(districtDashboardRelation1.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard relation connected to NATIONAL dashboard that users have access to dashboard root_entity_code', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardRelations/${nationalDashboardRelation1.id}`);
 
-      expect(result.id).to.equal(nationalDashboardRelation1.id);
+      expect(result.id).toBe(nationalDashboardRelation1.id);
     });
 
     it('Sufficient permissions: Should return requested dashboard relation connected to a project level dashboard that users have access to any of the project child countries', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dashboardRelations/${projectDashboardRelation1.id}`);
 
-      expect(result.id).to.equal(projectDashboardRelation1.id);
+      expect(result.id).toBe(projectDashboardRelation1.id);
     });
 
     it('Insufficient permissions: Should throw an error when requesting dashboard relation connected to SUB NATIONAL dashboard that users do not have access', async () => {
@@ -106,7 +105,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardRelations/${districtDashboardRelation1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error when requesting dashboard relation connected to NATIONAL dashboard that users do not have access', async () => {
@@ -124,7 +123,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         `dashboardRelations/${nationalDashboardRelation3a.id}`,
       );
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Should throw an error when requesting dashboard relation connected to a project level dashboard that users have access to any of the project child countries', async () => {
@@ -140,14 +139,14 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`dashboardRelations/${projectDashboardRelation1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /dashboardRelations', async () => {
+  describe('GET /dashboardRelations', () => {
     let filterString;
 
-    before(() => {
+    beforeAll(() => {
       const dashboardRelations = [
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
@@ -165,7 +164,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
@@ -179,7 +178,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
@@ -196,14 +195,14 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dashboardRelations?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(results).toStrictEqual([]);
     });
   });
 
-  describe('GET /dashboards/:id/dashboardRelations', async () => {
+  describe('GET /dashboards/:id/dashboardRelations', () => {
     let filterString;
 
-    before(() => {
+    beforeAll(() => {
       const dashboardRelations = [
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
@@ -223,7 +222,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
       );
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
         nationalDashboardRelation3a.id,
@@ -235,7 +234,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       const { body: results } = await app.get(
         `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
       );
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboardRelation1.id,
         nationalDashboardRelation2.id,
         nationalDashboardRelation3a.id,
@@ -251,14 +250,14 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         `dashboards/${nationalDashboard1.id}/dashboardRelations?${filterString}`,
       );
 
-      expect(results).to.have.keys('error');
+      expect(results).toHaveProperty('error');
     });
   });
 
-  describe('GET /dashboardItems/:id/dashboardRelations', async () => {
+  describe('GET /dashboardItems/:id/dashboardRelations', () => {
     let filterString;
 
-    before(() => {
+    beforeAll(() => {
       const dashboardRelations = [
         districtDashboardRelation1.id,
         nationalDashboardRelation1.id,
@@ -278,7 +277,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
       );
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboardRelation3a.id,
         nationalDashboardRelation3b.id,
       ]);
@@ -289,7 +288,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
       const { body: results } = await app.get(
         `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
       );
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         nationalDashboardRelation3a.id,
         nationalDashboardRelation3b.id,
       ]);
@@ -304,7 +303,7 @@ describe('Permissions checker for GETDashboardRelations', async () => {
         `dashboardItems/${nationalDashboardItem3.id}/dashboardRelations?${filterString}`,
       );
 
-      expect(results).to.have.keys('error');
+      expect(results).toHaveProperty('error');
     });
   });
 });

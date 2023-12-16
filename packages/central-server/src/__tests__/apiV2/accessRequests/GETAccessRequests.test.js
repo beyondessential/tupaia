@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { resetTestData, TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for GETAccessRequests', async () => {
+describe('Permissions checker for GETAccessRequests', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -33,7 +32,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
   let accessRequestIds;
   let filterString;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     const { entity: vanuatuEntity } = await findOrCreateDummyCountryEntity(models, {
@@ -72,19 +71,19 @@ describe('Permissions checker for GETAccessRequests', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /accessRequests/:id', async () => {
+  describe('GET /accessRequests/:id', () => {
     it('Sufficient permissions: Return a requested access request if we have admin panel access to the entity the access request is for', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
-      expect(result.id).to.equal(accessRequest1.id);
+      expect(result.id).toBe(accessRequest1.id);
     });
 
     it('Sufficient permissions: Return a requested access request if we have BES admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
-      expect(result.id).to.equal(accessRequest1.id);
+      expect(result.id).toBe(accessRequest1.id);
     });
 
     it('Insufficient permissions: Throw an exception if we do not have access to entity of the access request', async () => {
@@ -94,23 +93,23 @@ describe('Permissions checker for GETAccessRequests', async () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`accessRequests/${accessRequest1.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /accessRequests', async () => {
+  describe('GET /accessRequests', () => {
     it('Sufficient permissions: Return only the list of entries we have permissions for', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members([accessRequest1.id, accessRequest2.id]);
+      expect(results.map(r => r.id)).toIncludeSameMembers([accessRequest1.id, accessRequest2.id]);
     });
 
     it('Sufficient permissions: Return the full list of access requests if we have BES Admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results.map(r => r.id)).to.have.members(accessRequestIds);
+      expect(results.map(r => r.id)).toStrictEqual(accessRequestIds);
     });
 
     it('Insufficient permissions: Throws a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
@@ -120,7 +119,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results).to.have.keys('error');
+      expect(results).toHaveProperty('error');
     });
 
     it('Insufficient permissions: Return an empty array if we have permissions to no access requests', async () => {
@@ -130,7 +129,7 @@ describe('Permissions checker for GETAccessRequests', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`accessRequests?${filterString}`);
 
-      expect(results).to.be.empty;
+      expect(results).toStrictEqual([]);
     });
   });
 });

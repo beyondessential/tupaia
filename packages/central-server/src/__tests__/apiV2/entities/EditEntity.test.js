@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, generateId } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe("Editing an entity's name", async () => {
+describe("Editing an entity's name", () => {
   const BES_ADMIN_POLICY = {
     SB: [BES_ADMIN_PERMISSION_GROUP],
   };
@@ -28,7 +27,8 @@ describe("Editing an entity's name", async () => {
     id: generateId(),
     name: 'original_name',
   };
-  before(async () => {
+
+  beforeAll(async () => {
     await findOrCreateDummyRecord(models.entity, ENTITY);
   });
 
@@ -36,7 +36,7 @@ describe("Editing an entity's name", async () => {
     app.revokeAccess();
   });
 
-  describe('PUT /entities/:id', async () => {
+  describe('PUT /entities/:id', () => {
     it('Successfully changes the entity name', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       await app.put(`entities/${ENTITY.id}`, {
@@ -44,8 +44,8 @@ describe("Editing an entity's name", async () => {
       });
 
       const result = await models.entity.find({ id: ENTITY.id, name: 'new_name' });
-      expect(result.length).to.equal(1);
-      expect(result[0].name).to.equal('new_name');
+      expect(result.length).toBe(1);
+      expect(result[0].name).toBe('new_name');
     });
 
     it('Throws an exception if we do not have BES admin access', async () => {
@@ -54,7 +54,7 @@ describe("Editing an entity's name", async () => {
         body: { name: 'new_name' },
       });
 
-      expect(result).to.deep.equal({ error: 'Need BES Admin access' });
+      expect(result).toStrictEqual({ error: 'Need BES Admin access' });
     });
   });
 });

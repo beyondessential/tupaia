@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   generateTestId,
@@ -16,7 +15,7 @@ describe('resubmit surveyResponse endpoint', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     await upsertEntity({
@@ -50,7 +49,7 @@ describe('resubmit surveyResponse endpoint', () => {
     surveyId = survey.id;
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 
@@ -73,7 +72,7 @@ describe('resubmit surveyResponse endpoint', () => {
       },
     });
 
-    expect(response.body).to.have.keys('error');
+    expect(response.body).toHaveProperty('error');
   });
 
   it('Should return a successful response', async () => {
@@ -118,7 +117,7 @@ describe('resubmit surveyResponse endpoint', () => {
     const updatedSurveyResponse = await app.get(
       `surveyResponses/${surveyResponse.surveyResponse.id}`,
     );
-    expect(updatedSurveyResponse.body.assessor_name).to.equal('Bob');
+    expect(updatedSurveyResponse.body.assessor_name).toBe('Bob');
   });
 
   it('Should update an existing answer', async () => {
@@ -139,7 +138,7 @@ describe('resubmit surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = await app.get(`surveyResponses/${surveyResponse.surveyResponse.id}/answers`);
-    expect(body[0].text).to.equal('update test');
+    expect(body[0].text).toBe('update test');
   });
 
   it('Should create a new answer if doesnt exist', async () => {
@@ -160,8 +159,8 @@ describe('resubmit surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = await app.get(`surveyResponses/${surveyResponse.surveyResponse.id}/answers`);
-    expect(body).to.have.length(2);
-    expect(body.filter(answer => answer.text === 'hello world')).to.not.be.an('undefined');
+    expect(body).toHaveLength(2);
+    expect(body.filter(answer => answer.text === 'hello world').length).toBeGreaterThan(0);
   });
 
   it('Should delete an answer if it already exists and the update is null', async () => {
@@ -182,6 +181,6 @@ describe('resubmit surveyResponse endpoint', () => {
 
     expectSuccess(response);
     const { body } = await app.get(`surveyResponses/${surveyResponse.surveyResponse.id}/answers`);
-    expect(body).to.have.length(0);
+    expect(body).toStrictEqual([]);
   });
 });

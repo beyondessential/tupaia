@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { buildAndInsertProjectsAndHierarchies, findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp, resetTestData } from '../../testUtilities';
 
-describe('Permissions checker for CreateDashboards', async () => {
+describe('Permissions checker for CreateDashboards', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -28,7 +27,7 @@ describe('Permissions checker for CreateDashboards', async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await resetTestData();
 
     await buildAndInsertProjectsAndHierarchies(models, [
@@ -50,8 +49,8 @@ describe('Permissions checker for CreateDashboards', async () => {
     app.revokeAccess();
   });
 
-  describe('POST /dashboards', async () => {
-    describe('Insufficient permission', async () => {
+  describe('POST /dashboards', () => {
+    describe('Insufficient permission', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -65,7 +64,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to create a dashboard for an entity we do not have permissions for', async () => {
@@ -82,7 +81,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw an exception when trying to create a dashboard to an entity when we lack Tupaia Admin Panel access to that entity', async () => {
@@ -95,11 +94,11 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
     });
 
-    describe('Sufficient permission', async () => {
+    describe('Sufficient permission', () => {
       it('Allow creation of a dashboard for an entity we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const code = 'sufficient_permissions';
@@ -115,8 +114,8 @@ describe('Permissions checker for CreateDashboards', async () => {
           code,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(name);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
       });
 
       it('Allow creation of a dashboard for Tupaia Admin user', async () => {
@@ -134,12 +133,12 @@ describe('Permissions checker for CreateDashboards', async () => {
           code,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(name);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
       });
     });
 
-    describe('Invalid input', async () => {
+    describe('Invalid input', () => {
       it('Throw a input validation error if we do not have code', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.post(`dashboards`, {
@@ -149,7 +148,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw a input validation error if we do not have name', async () => {
@@ -161,7 +160,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw a input validation error if we do not have root_entity_code', async () => {
@@ -173,7 +172,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw a input validation error if sort_order is not a number', async () => {
@@ -187,7 +186,7 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(result).to.have.keys('error');
+        expect(result).toHaveProperty('error');
       });
 
       it('Throw a input validation error if dashboard with the same code already exists', async () => {
@@ -205,8 +204,8 @@ describe('Permissions checker for CreateDashboards', async () => {
           code,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(firstName);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(firstName);
 
         const { body: secondResult } = await app.post(`dashboards`, {
           body: {
@@ -216,11 +215,11 @@ describe('Permissions checker for CreateDashboards', async () => {
           },
         });
 
-        expect(secondResult).to.have.keys('error');
+        expect(secondResult).toHaveProperty('error');
       });
     });
 
-    describe('Valid input', async () => {
+    describe('Valid input', () => {
       it('Allow creation of a dashboard for an entity we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const code = 'valid_input';
@@ -237,9 +236,9 @@ describe('Permissions checker for CreateDashboards', async () => {
           code,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(name);
-        expect(result[0].root_entity_code).to.equal(rootEntityCode);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
+        expect(result[0].root_entity_code).toBe(rootEntityCode);
       });
 
       it('Allow creation of dashboard with sort order specified', async () => {
@@ -259,9 +258,9 @@ describe('Permissions checker for CreateDashboards', async () => {
           code,
         });
 
-        expect(result.length).to.equal(1);
-        expect(result[0].name).to.equal(name);
-        expect(result[0].sort_order).to.equal(sortOrder);
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
+        expect(result[0].sort_order).toBe(sortOrder);
       });
     });
   });

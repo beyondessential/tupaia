@@ -4,7 +4,6 @@
  */
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { expect } from 'chai';
 
 import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
@@ -22,8 +21,8 @@ const apiClientSecret = 'api';
 let userAccount;
 let apiClientUserAccount;
 
-describe('Authenticate', function () {
-  before(async () => {
+describe('Authenticate', () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -77,7 +76,7 @@ describe('Authenticate', function () {
     });
   });
 
-  it('should return user details with apiClient and access policy', async function () {
+  it('should return user details with apiClient and access policy', async () => {
     const authResponse = await app.post('auth?grantType=password', {
       headers: {
         authorization: createBasicHeader(apiClientUserAccount.email, apiClientSecret),
@@ -91,14 +90,14 @@ describe('Authenticate', function () {
 
     const { accessToken, refreshToken, user: userDetails } = authResponse.body;
 
-    expect(accessToken).to.be.a('string');
-    expect(refreshToken).to.be.a('string');
-    expect(userDetails.id).to.equal(userAccount.id);
-    expect(userDetails.email).to.equal(userAccount.email);
-    expect(userDetails.apiClient).to.equal(apiClientUserAccount.email);
-    expect(userDetails.accessPolicy).to.deep.equal({ DL: ['Public'], LA: ['Public'] });
+    expect(typeof accessToken).toBe('string');
+    expect(typeof refreshToken).toBe('string');
+    expect(userDetails.id).toBe(userAccount.id);
+    expect(userDetails.email).toBe(userAccount.email);
+    expect(userDetails.apiClient).toBe(apiClientUserAccount.email);
+    expect(userDetails.accessPolicy).toStrictEqual({ DL: ['Public'], LA: ['Public'] });
     const { userId, apiClientUserId } = getTokenClaims(accessToken);
-    expect(userId).to.equal(userAccount.id);
-    expect(apiClientUserId).to.equal(apiClientUserAccount.id);
+    expect(userId).toBe(userAccount.id);
+    expect(apiClientUserId).toBe(apiClientUserAccount.id);
   });
 });

@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
@@ -40,7 +38,7 @@ describe('GET entity relations', () => {
     };
   };
 
-  before(async () => {
+  beforeAll(async () => {
     exploreHierarchy = await findOrCreateDummyRecord(models.entityHierarchy, {
       name: 'explore',
     });
@@ -77,7 +75,7 @@ describe('GET entity relations', () => {
         child_id: exploreToFiji.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(result).toStrictEqual(expected);
     });
 
     it('Returns a record if relation id exists and user has permissions: country -> sub-country relation', async () => {
@@ -90,7 +88,7 @@ describe('GET entity relations', () => {
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(result).toStrictEqual(expected);
     });
 
     it('Always returns a record for a BES Admin', async () => {
@@ -103,14 +101,14 @@ describe('GET entity relations', () => {
         child_id: fijiToDistrict.child.id,
         entity_hierarchy_id: exploreHierarchy.id,
       };
-      expect(result).to.deep.equal(expected);
+      expect(result).toStrictEqual(expected);
     });
 
     it('Returns an error if resource id is invalid', async () => {
       await app.grantAccess(FIJI_POLICY);
       const { body: result } = await app.get(`entityRelations/invalid`);
 
-      expect(result.error).to.include('No entity relation exists');
+      expect(result.error).toContain('No entity relation exists');
     });
 
     it('Returns an error if user does not have access to a country child entity', async () => {
@@ -120,7 +118,7 @@ describe('GET entity relations', () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`entityRelations/${exploreToFiji.relation.id}`);
 
-      expect(result.error).to.include('You do not have permissions for this entity relation');
+      expect(result.error).toContain('You do not have permissions for this entity relation');
     });
 
     it('Returns an error if user does not have access to a sub-country child entity', async () => {
@@ -130,7 +128,7 @@ describe('GET entity relations', () => {
       await app.grantAccess(policy);
       const { body: result } = await app.get(`entityRelations/${fijiToDistrict.relation.id}`);
 
-      expect(result.error).to.include('You do not have permissions for this entity relation');
+      expect(result.error).toContain('You do not have permissions for this entity relation');
     });
   });
 
@@ -153,7 +151,7 @@ describe('GET entity relations', () => {
           entity_hierarchy_id: exploreHierarchy.id,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(result).toIncludeSameMembers(expected);
     });
 
     it('Returns an empty list if user has no permissions to the requested relations', async () => {
@@ -162,7 +160,7 @@ describe('GET entity relations', () => {
       });
       const { body: result } = await app.get('entityRelations');
 
-      expect(result).to.deep.equal([]);
+      expect(result).toStrictEqual([]);
     });
 
     it('Supports custom filters', async () => {
@@ -190,7 +188,7 @@ describe('GET entity relations', () => {
           entity_hierarchy_id: exploreHierarchy.id,
         },
       ];
-      expect(result).to.deep.equalInAnyOrder(expected);
+      expect(result).toIncludeSameMembers(expected);
     });
   });
 });

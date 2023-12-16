@@ -8,24 +8,23 @@ import {
   findOrCreateDummyCountryEntity,
   findOrCreateRecords,
 } from '@tupaia/database';
-import { expect } from 'chai';
 import { expectError, TestableApp } from '../../../testUtilities';
 import { importFile } from './helpers';
 import { BASIC_SURVEY_A, BASIC_SURVEY_B } from './importSurveyResponses.fixtures';
 
 const expectNumResponses = async (models, surveyId, expectedNumResponses) => {
   const surveyResponses = await models.surveyResponse.find({ survey_id: surveyId });
-  expect(surveyResponses.length).to.equal(expectedNumResponses);
+  expect(surveyResponses.length).toBe(expectedNumResponses);
 };
 
-export const testGeneral = async () => {
+export const testGeneral = () => {
   const app = new TestableApp();
   const { models } = app;
 
   let basicSurveyA;
   let basicSurveyB;
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
@@ -44,14 +43,14 @@ export const testGeneral = async () => {
     await models.surveyResponse.delete({ survey_id: [basicSurveyA.id, basicSurveyB.id] });
   });
 
-  after(async () => {
-    await app.revokeAccess();
+  afterAll(async () => {
+    app.revokeAccess();
   });
 
   describe('selecting tabs to import', () => {
     it('imports specified tab', async () => {
       const response = await importFile(app, `general/basic.xlsx`, ['Test_Basic_Survey_A']);
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
       await expectNumResponses(models, basicSurveyA.id, 1);
       await expectNumResponses(models, basicSurveyB.id, 0);
     });
@@ -61,7 +60,7 @@ export const testGeneral = async () => {
         'Test_Basic_Survey_A',
         'Test_Basic_Survey_B',
       ]);
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
       await expectNumResponses(models, basicSurveyA.id, 1);
       await expectNumResponses(models, basicSurveyB.id, 1);
     });
@@ -75,7 +74,7 @@ export const testGeneral = async () => {
 
     it('detects survey codes via tab names if not present in query', async () => {
       const response = await importFile(app, `general/basic.xlsx`, []); // surveyCodes empty
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
       await expectNumResponses(models, basicSurveyA.id, 1);
       await expectNumResponses(models, basicSurveyB.id, 1);
     });

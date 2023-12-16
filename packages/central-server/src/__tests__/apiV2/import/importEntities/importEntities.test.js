@@ -3,15 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { findOrCreateDummyRecord, addBaselineTestCountries } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../../permissions';
-import * as PopulateCoordinatesForCountry from '../../../../apiV2/import/importEntities/populateCoordinatesForCountry';
-import * as UpdateCountryEntities from '../../../../apiV2/import/importEntities/updateCountryEntities';
 import { expectPermissionError, TestableApp } from '../../../testUtilities';
 
 const DEFAULT_POLICY = {
@@ -28,11 +24,17 @@ const BES_ADMIN_POLICY = {
 
 const TEST_DATA_FOLDER = 'src/__tests__/testData';
 
+// Only test permissions part so mock these methods to avoid them being called
+jest.mock('../../../../apiV2/import/importEntities/updateCountryEntities', () => ({
+  updateCountryEntities: jest.fn().mockResolvedValue({ code: 'Dl' }),
+}));
+jest.mock('../../../../apiV2/import/importEntities/populateCoordinatesForCountry');
+
 describe('importEntities(): POST import/entities', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await findOrCreateDummyRecord(models.entity, {
       code: 'World',
       name: 'World',
@@ -42,20 +44,10 @@ describe('importEntities(): POST import/entities', () => {
 
     await addBaselineTestCountries(models);
   });
-  describe('Test permissions when importing entities', async () => {
+
+  describe('Test permissions when importing entities', () => {
     const importFile = filename =>
       app.post('import/entities').attach('entities', `${TEST_DATA_FOLDER}/entities/${filename}`);
-
-    before(() => {
-      // Only test permissions part so stub these methods to avoid them being called
-      sinon.stub(UpdateCountryEntities, 'updateCountryEntities').resolves({ code: 'DL' });
-      sinon.stub(PopulateCoordinatesForCountry, 'populateCoordinatesForCountry');
-    });
-
-    after(() => {
-      UpdateCountryEntities.updateCountryEntities.restore();
-      PopulateCoordinatesForCountry.populateCoordinatesForCountry.restore();
-    });
 
     afterEach(() => {
       app.revokeAccess();
@@ -66,7 +58,7 @@ describe('importEntities(): POST import/entities', () => {
       const response = await importFile('sufficientPermissionsImportEntities1Country.xlsx');
       const { statusCode } = response;
 
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
     });
 
     it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities within MULTIPLE countries if users have Tupaia Admin Panel access to all the countries of the entities', async () => {
@@ -76,7 +68,7 @@ describe('importEntities(): POST import/entities', () => {
       );
       const { statusCode } = response;
 
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
     });
 
     it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities if users have BES Admin access to any countries', async () => {
@@ -85,7 +77,7 @@ describe('importEntities(): POST import/entities', () => {
         'insufficientPermissionsImportEntitiesMultipleCountries.xlsx',
       );
       const { statusCode } = response;
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
     });
 
     it('Sufficient permissions: Should pass permissions check when importing a national entity successfully if users have BES Admin access to any countries', async () => {
@@ -93,7 +85,7 @@ describe('importEntities(): POST import/entities', () => {
       const response = await importFile('importNewCountryEntity.xlsx');
       const { statusCode } = response;
 
-      expect(statusCode).to.equal(200);
+      expect(statusCode).toBe(200);
     });
 
     it('Insufficient permissions: Should return an error when importing entities if users do not have Tupaia Admin Panel access to any country of the entities', async () => {

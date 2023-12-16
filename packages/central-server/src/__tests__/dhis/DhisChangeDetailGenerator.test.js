@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { generateTestId } from '@tupaia/database';
 import { DhisChangeDetailGenerator } from '../../dhis/DhisChangeDetailGenerator';
 
@@ -32,7 +31,7 @@ const assertCorrectDetailsGenerated = async testData => {
   const changes = testData.map(d => d.change);
   const expectedDetails = testData.map(d => JSON.stringify(d.expectedDetails));
   const details = await generator.generateDetails(changes);
-  expect(details).to.deep.equal(expectedDetails);
+  expect(details).toStrictEqual(expectedDetails);
 };
 
 describe('DhisChangeDetailGenerator', () => {

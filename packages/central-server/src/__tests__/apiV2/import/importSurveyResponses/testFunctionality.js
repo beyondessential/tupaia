@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import groupBy from 'lodash.groupby';
 import pick from 'lodash.pick';
 import moment from 'moment';
@@ -27,7 +26,7 @@ import {
 
 const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export const testFunctionality = async () => {
+export const testFunctionality = () => {
   const assertResponseAnswersAreCorrect = async (surveyResponseId, expectedData) => {
     const { answers, ...surveyResponseData } = expectedData;
 
@@ -35,9 +34,10 @@ export const testFunctionality = async () => {
     const foundAnswers = await surveyResponse.getAnswers();
     const foundAnswerObject = Object.fromEntries(foundAnswers.map(a => [a.question_id, a.text]));
     const fieldDescription = JSON.stringify(surveyResponseData, undefined, 2);
+    // TODO use custom assertion message when jest-expect-message is re-enabled
     const answerError = `Survey response with fields ${fieldDescription} has wrong answers`;
 
-    expect(foundAnswerObject).to.deep.equal(answers, answerError);
+    expect(foundAnswerObject).toStrictEqual(answers);
   };
 
   const buildUniqueResponseNotFoundError = async (responseData, responseFields, foundLength) => {
@@ -82,11 +82,14 @@ export const testFunctionality = async () => {
     let surveyResponse;
     if (id) {
       surveyResponse = await models.surveyResponse.findById(id);
-      expect(surveyResponse, `Expect to find a survey response with id '${id}'`).to.exist;
+      // TODO use custom assertion message when jest-expect-message is re-enabled
+      const errorMessage = `Expect to find a survey response with id '${id}'`;
+      expect(surveyResponse).toBeDefined();
       const foundFields = pick(surveyResponse, Object.keys(expectedFields));
-      expect(foundFields).to.deep.equal(expectedFields);
+      expect(foundFields).toStrictEqual(expectedFields);
     } else {
       const surveyResponses = await models.surveyResponse.find(expectedFields);
+      // TODO use custom assertion message when jest-expect-message is re-enabled
       const errorMessage =
         surveyResponses.length !== 1
           ? await buildUniqueResponseNotFoundError(
@@ -95,7 +98,7 @@ export const testFunctionality = async () => {
               surveyResponses.length,
             )
           : '';
-      expect(surveyResponses).to.have.length(1, errorMessage);
+      expect(surveyResponses).toHaveLength(1);
 
       [surveyResponse] = surveyResponses;
     }
@@ -106,7 +109,7 @@ export const testFunctionality = async () => {
   const app = new TestableApp();
   const { models } = app;
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
 
     await findOrCreateDummyCountryEntity(models, { code: 'DL', name: 'Demo Land' });
@@ -117,7 +120,7 @@ export const testFunctionality = async () => {
     await findOrCreateRecords(models, { entity: entities });
   });
 
-  after(async () => {
+  afterAll(async () => {
     await resetTestData(models.database);
     app.revokeAccess();
   });
@@ -125,7 +128,7 @@ export const testFunctionality = async () => {
   describe('non periodic surveys', () => {
     const surveys = [CLINIC_DATA_SURVEY, FACILITY_FUNDAMENTALS_SURVEY];
 
-    before(async () => {
+    beforeAll(async () => {
       await buildAndInsertSurveys(models, surveys);
       await createSurveyResponses(
         models,
@@ -154,7 +157,7 @@ export const testFunctionality = async () => {
     it('deletes the specified responses', async () => {
       for (const responseData of NON_PERIODIC_RESPONSES_AFTER_UPDATES.deleted) {
         const deletedResponse = await models.surveyResponse.findById(responseData.id);
-        expect(deletedResponse).to.not.exist;
+        expect(deletedResponse).toBe(null);
       }
     });
 
@@ -176,10 +179,9 @@ export const testFunctionality = async () => {
         await assertResponseAnswersAreCorrect(id, responseData);
 
         existingIds.forEach(existingId => {
-          expect(existingId).to.not.equal(
-            id,
-            `Expected a survey response to be created, but instead an existing id was used: ${existingId}`,
-          );
+          // TODO use custom assertion message when jest-expect-message is re-enabled
+          const message = `Expected a survey response to be created, but instead an existing id was used: ${existingId}`;
+          expect(existingId).not.toBe(id);
         });
       }
     });
@@ -190,14 +192,14 @@ export const testFunctionality = async () => {
       });
       const { deleted, ...nonDeletedResponses } = NON_PERIODIC_RESPONSES_AFTER_UPDATES;
       const expectedResponses = Object.values(nonDeletedResponses).flat();
-      expect(foundResponses).to.have.length(expectedResponses.length);
+      expect(foundResponses).toHaveLength(expectedResponses.length);
     });
   });
 
   describe('periodic surveys', () => {
     const surveys = [YEARLY_SURVEY, WEEKLY_SURVEY];
 
-    before(async () => {
+    beforeAll(async () => {
       await buildAndInsertSurveys(models, surveys);
       await createSurveyResponses(
         models,
@@ -226,7 +228,7 @@ export const testFunctionality = async () => {
     it('deletes the specified responses', async () => {
       for (const responseData of PERIODIC_RESPONSES_AFTER_UPDATES.deleted) {
         const deletedResponse = await models.surveyResponse.findById(responseData.id);
-        expect(deletedResponse).to.not.exist;
+        expect(deletedResponse).toBe(null);
       }
     });
 
@@ -248,10 +250,7 @@ export const testFunctionality = async () => {
         await assertResponseAnswersAreCorrect(id, responseData);
 
         existingIds.forEach(existingId => {
-          expect(existingId).to.not.equal(
-            id,
-            `Expected a survey response to be created, but instead an existing id was used: ${existingId}`,
-          );
+          expect(existingId).not.toBe(id);
         });
       }
     });
@@ -262,7 +261,7 @@ export const testFunctionality = async () => {
       });
       const { deleted, ...nonDeletedResponses } = PERIODIC_RESPONSES_AFTER_UPDATES;
       const expectedResponses = Object.values(nonDeletedResponses).flat();
-      expect(foundResponses).to.have.length(expectedResponses.length);
+      expect(foundResponses).toHaveLength(expectedResponses.length);
     });
   });
 };

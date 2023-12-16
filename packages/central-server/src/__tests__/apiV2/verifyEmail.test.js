@@ -4,7 +4,6 @@
  */
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { expect } from 'chai';
 
 import { encryptPassword } from '@tupaia/auth';
 import { randomEmail } from '@tupaia/utils';
@@ -62,20 +61,16 @@ describe('Verify Email', () => {
     return app.post('auth', { headers, body });
   };
 
-  const assertUserStatus = async userId => {
-    const user = await models.user.findById(userId);
-    return user.verified_email;
-  };
-
   describe('Create Login and test email verification', () => {
     it('Should not be able to login without first verifying email ', async () => {
       const emailAddress = randomEmail();
       const userId = await createUser(emailAddress);
 
       const response = await login(emailAddress);
-      expect(response.status).to.equal(403);
+      expect(response.status).toBe(403);
 
-      expect(await assertUserStatus(userId)).to.equal(NEW_USER);
+      const user = await models.user.findById(userId);
+      expect(user).toHaveProperty('verified_email', NEW_USER);
     });
 
     it('Should be able to verify email correctly', async () => {
@@ -83,9 +78,10 @@ describe('Verify Email', () => {
       const userId = await createUser(emailAddress);
 
       const response = await verifyEmail(userId);
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
 
-      expect(await assertUserStatus(userId)).to.equal(VERIFIED);
+      const user = await models.user.findById(userId);
+      expect(user).toHaveProperty('verified_email', VERIFIED);
     });
 
     it('Should be able to login after verifying email', async () => {
@@ -94,9 +90,10 @@ describe('Verify Email', () => {
       await verifyEmail(userId);
 
       const response = await login(emailAddress);
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
 
-      expect(await assertUserStatus(userId)).to.equal(VERIFIED);
+      const user = await models.user.findById(userId);
+      expect(user).toHaveProperty('verified_email', VERIFIED);
     });
 
     it('Existing users should be able to login with unverified status ', async () => {
@@ -104,10 +101,11 @@ describe('Verify Email', () => {
       const userId = await createUser(emailAddress);
 
       await models.user.updateById(userId, { verified_email: UNVERIFIED });
-      expect(await assertUserStatus(userId)).to.equal(UNVERIFIED);
+      const user = await models.user.findById(userId);
+      expect(user).toHaveProperty('verified_email', UNVERIFIED);
 
       const response = await login(emailAddress);
-      expect(response.status).to.equal(200);
+      expect(response.status).toBe(200);
     });
   });
 });

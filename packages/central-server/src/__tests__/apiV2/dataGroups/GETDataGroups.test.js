@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for GETDataGroups', async () => {
+describe('Permissions checker for GETDataGroups', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -31,7 +30,7 @@ describe('Permissions checker for GETDataGroups', async () => {
   let adminGroup;
   let besAdminGroup;
 
-  before(async () => {
+  beforeAll(async () => {
     const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -130,32 +129,33 @@ describe('Permissions checker for GETDataGroups', async () => {
     app.revokeAccess();
   });
 
-  describe('GET /dataGroups/:id', async () => {
+  describe('GET /dataGroups/:id', () => {
     it('Sufficient permissions: Should return a requested data group if the user has access to all data elements within', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dataGroups/${publicGroup.id}`);
 
-      expect(result.id).to.equal(publicGroup.id);
+      expect(result.id).toBe(publicGroup.id);
     });
 
     it('Sufficient permissions: Should always return for a BES Admin', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: result } = await app.get(`dataGroups/${adminGroup.id}`);
 
-      expect(result.id).to.equal(adminGroup.id);
+      expect(result.id).toBe(adminGroup.id);
     });
 
     it('Insufficient permissions: Should throw an error if the user does not have access to any of the data elements within the data group', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: result } = await app.get(`dataGroups/${besAdminGroup.id}`);
 
-      expect(result).to.have.keys('error');
+      expect(result).toHaveProperty('error');
     });
   });
 
-  describe('GET /dataGroups', async () => {
+  describe('GET /dataGroups', () => {
     let filterString;
-    before(() => {
+
+    beforeAll(() => {
       // Set up a filter string to only request the test data we set up
       const groupIds = [adminGroup.id, publicGroup.id, besAdminGroup.id];
       filterString = `filter={"id":{"comparator":"in","comparisonValue":["${groupIds.join(
@@ -167,14 +167,14 @@ describe('Permissions checker for GETDataGroups', async () => {
       await app.grantAccess(DEFAULT_POLICY);
       const { body: results } = await app.get(`dataGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([publicGroup.id, adminGroup.id]);
+      expect(results.map(r => r.id)).toStrictEqual([publicGroup.id, adminGroup.id]);
     });
 
     it('Sufficient permissions: Should return the full list of data groups if we have BES Admin access', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`dataGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([
+      expect(results.map(r => r.id)).toStrictEqual([
         publicGroup.id,
         adminGroup.id,
         besAdminGroup.id,
@@ -188,7 +188,7 @@ describe('Permissions checker for GETDataGroups', async () => {
       await app.grantAccess(policy);
       const { body: results } = await app.get(`dataGroups?${filterString}`);
 
-      expect(results.map(r => r.id)).to.deep.equal([]);
+      expect(results.map(r => r.id)).toStrictEqual([]);
     });
   });
 });

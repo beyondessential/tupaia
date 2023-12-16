@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
@@ -11,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for DeleteUserEntityPermissions', async () => {
+describe('Permissions checker for DeleteUserEntityPermissions', () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -30,7 +29,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
   let vanuatuPublicPermission;
   let laosPublicPermission;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Public',
     });
@@ -65,8 +64,8 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
     app.revokeAccess();
   });
 
-  describe('DELETE /userEntityPermissions/:id', async () => {
-    describe('Insufficient permissions', async () => {
+  describe('DELETE /userEntityPermissions/:id', () => {
+    describe('Insufficient permissions', () => {
       it('Throw a permissions gate error if we do not have BES admin or Tupaia Admin panel access anywhere', async () => {
         const policy = {
           DL: ['Public'],
@@ -77,8 +76,8 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         );
         const record = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
 
-        expect(result).have.to.keys('error');
-        expect(record).to.not.equal(null);
+        expect(result).toHaveProperty('error');
+        expect(record).not.toBe(null);
       });
 
       it('Throw an exception if we do not have permissions for the entity of the user entity permission', async () => {
@@ -88,18 +87,18 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         );
         const record = await models.userEntityPermission.findById(laosPublicPermission.id);
 
-        expect(result).to.have.keys('error');
-        expect(record).to.not.equal(null);
+        expect(result).toHaveProperty('error');
+        expect(record).not.toBe(null);
       });
     });
 
-    describe('Sufficient permissions', async () => {
+    describe('Sufficient permissions', () => {
       it('Delete a user entity permission if we have admin panel access to the specific entity', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         await app.delete(`userEntityPermissions/${vanuatuPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(vanuatuPublicPermission.id);
 
-        expect(result).to.equal(null);
+        expect(result).toBe(null);
       });
 
       it('BES Admin user can delete any user entity permission', async () => {
@@ -107,7 +106,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
         await app.delete(`userEntityPermissions/${laosPublicPermission.id}`);
         const result = await models.userEntityPermission.findById(laosPublicPermission.id);
 
-        expect(result).to.equal(null);
+        expect(result).toBe(null);
       });
     });
   });

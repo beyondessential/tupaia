@@ -5,8 +5,6 @@
 
 /* eslint-disable camelcase */
 
-import { expect } from 'chai';
-
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
@@ -58,8 +56,9 @@ export const testOutdatedStatusUpdate = () => {
       { survey_id: SURVEYS[surveyCode].id },
       { sort: ['id'] },
     );
+    // TODO use custom assertion message when jest-expect-message is re-enabled
     const wrongCountMessage = `Count of survey responses for survey "${surveyCode}" must match that of the provided outdated statuses`;
-    expect(surveyResponses).to.have.lengthOf(expectedOutdatedStatuses.length, wrongCountMessage);
+    expect(surveyResponses).toHaveLength(expectedOutdatedStatuses.length);
 
     for (let i = 0; i < surveyResponses.length; i++) {
       const surveyResponse = surveyResponses[i];
@@ -70,13 +69,13 @@ export const testOutdatedStatusUpdate = () => {
         entity_code: entity.code,
         data_time: surveyResponse.data_time,
       };
+      // TODO use custom assertion message when jest-expect-message is re-enabled
       const message = `Failed assertion for survey response ${JSON.stringify(srDescriptionFields)}`;
-
-      expect(surveyResponse).to.have.property('outdated', expectedOutdatedStatuses[i], message);
+      expect(surveyResponse).toHaveProperty('outdated', expectedOutdatedStatuses[i]);
     }
   };
 
-  before(async () => {
+  beforeAll(async () => {
     await app.grantFullAccess();
     await buildAndInsertSurveys(models, Object.values(SURVEYS));
     await findOrCreateDummyCountryEntity(models, { code: 'TO' });
@@ -92,7 +91,7 @@ export const testOutdatedStatusUpdate = () => {
     surveyResponseOutdater.stopListeningForChanges();
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 
@@ -103,7 +102,7 @@ export const testOutdatedStatusUpdate = () => {
       Object.values(SURVEYS).map(s => s.code),
     );
 
-    expect(response.statusCode).to.equal(200, response.error.text);
+    expect(response.statusCode).toBe(200);
 
     await models.database.waitForAllChangeHandlers();
     // Statuses listed in the same order as the corresponding survey responses in the import spreadsheet

@@ -4,7 +4,7 @@
  */
 
 // TODO: re-enable after S3Client is properly mocked after RN-982
-// describe('uploadImage', async () => {
+// describe('uploadImage', () => {
 //   let uploadImageStub;
 //   let deleteFileStub;
 //   const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
@@ -31,7 +31,7 @@
 //
 //   it('uploads the image and returns the result if is a base64 encoded image', async () => {
 //     const result = await uploadImage(ENCODED_IMAGE, UNIQUE_ID, IMAGE_SUFFIX, true);
-//     expect(result).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+//     expect(result).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
 //     expect(deleteFileStub).not.called;
 //   });
 //
@@ -42,21 +42,21 @@
 //
 //   it('does not upload the image if is not a base64 encoded image', async () => {
 //     const result = await uploadImage(EXAMPLE_UPLOADED_IMAGE_URL, UNIQUE_ID, IMAGE_SUFFIX);
-//     expect(result).to.equal(EXAMPLE_UPLOADED_IMAGE_URL);
+//     expect(result).toBe(EXAMPLE_UPLOADED_IMAGE_URL);
 //   });
 //
 //   it('does not upload the image if encodedImage param is null', async () => {
 //     const result = await uploadImage(null, UNIQUE_ID, IMAGE_SUFFIX);
-//     expect(result).to.equal(null);
+//     expect(result).toBe(null);
 //   });
 //
 //   it('does not upload the image if encodedImage param is an empty string', async () => {
 //     const result = await uploadImage('', UNIQUE_ID, IMAGE_SUFFIX);
-//     expect(result).to.equal('');
+//     expect(result).toBe('');
 //   });
 //
 //   it('does not upload the image, and returns "" if encodedImage param is undefined', async () => {
 //     const result = await uploadImage(undefined, UNIQUE_ID, IMAGE_SUFFIX);
-//     expect(result).to.equal('');
+//     expect(result).toBe('');
 //   });
 // });

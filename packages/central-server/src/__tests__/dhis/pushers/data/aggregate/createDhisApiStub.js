@@ -2,8 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import sinon from 'sinon';
-import { DhisApi } from '@tupaia/dhis-api';
+import { createJestMockInstance } from '@tupaia/utils';
 import { ORGANISATION_UNIT_ID } from './AggregateDataPusher.fixtures';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out
@@ -11,16 +10,10 @@ const SUCCESS_DIAGNOSTICS = {
   wasSuccessful: true,
 };
 
-const STUBBED_METHODS = {
-  postDataSetCompletion: SUCCESS_DIAGNOSTICS,
-  deleteDataSetCompletion: SUCCESS_DIAGNOSTICS,
-  getDataSetByCode: null,
-  getIdFromCode: ORGANISATION_UNIT_ID,
-};
-
-export const resetDhisApiStubHistory = dhisApiStub =>
-  Object.keys(STUBBED_METHODS).forEach(methodName => dhisApiStub[methodName].resetHistory());
-
-export const createDhisApiStub = () => {
-  return sinon.createStubInstance(DhisApi, STUBBED_METHODS);
-};
+export const createDhisApiStub = () =>
+  createJestMockInstance('@tupaia/dhis-api', 'DhisApi', {
+    postDataSetCompletion: async () => SUCCESS_DIAGNOSTICS,
+    deleteDataSetCompletion: async () => SUCCESS_DIAGNOSTICS,
+    getDataSetByCode: async () => null,
+    getIdFromCode: async () => ORGANISATION_UNIT_ID,
+  });

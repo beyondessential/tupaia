@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
-
 import {
   buildAndInsertSurveys,
   generateTestId,
@@ -98,12 +96,12 @@ const fetchCreatedResponseRecords = async models =>
 const fetchCreatedAnswerRecords = async (models, surveyResponseId) =>
   models.answer.find({ survey_response_id: surveyResponseId });
 
-describe('POST /import/striveLabResults', async () => {
+describe('POST /import/striveLabResults', () => {
   const app = new TestableApp();
   const { models } = app;
   let response;
 
-  before(async () => {
+  beforeAll(async () => {
     const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
     const { country: pgCountry } = await findOrCreateDummyCountryEntity(models, {
       code: 'PG',
@@ -122,17 +120,17 @@ describe('POST /import/striveLabResults', async () => {
     response = await importLabResults(app);
   });
 
-  after(() => {
+  afterAll(() => {
     app.revokeAccess();
   });
 
   it('should respond with a successful http status', () => {
-    expect(response).to.have.property('statusCode', 200);
+    expect(response).toHaveProperty('statusCode', 200);
   });
 
   it('should create a survey response record for each lab result', async () => {
     const surveyResponses = await fetchCreatedResponseRecords(models);
-    expect(surveyResponses).to.have.lengthOf(LAB_RESULTS.count);
+    expect(surveyResponses).toHaveLength(LAB_RESULTS.count);
   });
 
   it('should create answer records for each lab result', async () => {
@@ -145,11 +143,11 @@ describe('POST /import/striveLabResults', async () => {
       }),
     );
 
-    expect(answersPerLabResult).to.deep.equalInAnyOrder(EXPECTED_ANSWERS_PER_LAB_RESULT);
+    expect(answersPerLabResult).toIncludeSameMembers(EXPECTED_ANSWERS_PER_LAB_RESULT);
   });
 
   it('should include the survey response count in the response', () => {
-    expect(response).to.have.nested.property('body.count', LAB_RESULTS.count);
+    expect(response).toHaveProperty('body.count', LAB_RESULTS.count);
   });
 
   it('should include the ids of created records in the response', async () => {
@@ -161,7 +159,7 @@ describe('POST /import/striveLabResults', async () => {
       }),
     );
 
-    expect(response).to.have.nested.property('body.results');
-    expect(response.body.results).to.deep.equalInAnyOrder(expectedResults);
+    expect(response).toHaveProperty('body.results');
+    expect(response.body.results).toIncludeSameMembers(expectedResults);
   });
 });
