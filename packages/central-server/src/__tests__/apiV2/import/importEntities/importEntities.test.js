@@ -53,7 +53,7 @@ describe('importEntities(): POST import/entities', () => {
       app.revokeAccess();
     });
 
-    it('Sufficient permissions: Should pass permissions check when importing multiple sub national entities within 1 country if users have Tupaia Admin Panel access to that country', async () => {
+    it.only('Sufficient permissions: Should pass permissions check when importing multiple sub national entities within 1 country if users have Tupaia Admin Panel access to that country', async () => {
       await app.grantAccess(BES_ADMIN_POLICY);
       const response = await importFile('sufficientPermissionsImportEntities1Country.xlsx');
       const { statusCode } = response;

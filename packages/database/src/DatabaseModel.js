@@ -22,27 +22,27 @@ export class DatabaseModel {
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
     // avoid making an additional connection to pubsub and just leave their cache untouched
-    if (this.database.isSingleton) {
-      if (this.cacheEnabled) {
-        // fully reset cache on any change to this model's records
-        this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
-          this.cache = {};
-        });
+    // if (this.database.isSingleton) {
+    //   if (this.cacheEnabled) {
+    //     // fully reset cache on any change to this model's records
+    //     this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
+    //       this.cache = {};
+    //     });
 
-        // if this model has caching that depends on other models, also add invalidation for them
-        this.cacheDependencies.forEach(databaseType => {
-          this.database.addChangeHandlerForCollection(databaseType, () => {
-            this.cache = {};
-          });
-        });
-      }
+    //     // if this model has caching that depends on other models, also add invalidation for them
+    //     this.cacheDependencies.forEach(databaseType => {
+    //       this.database.addChangeHandlerForCollection(databaseType, () => {
+    //         this.cache = {};
+    //       });
+    //     });
+    //   }
 
-      // invalidate cached schema for this model on any change to db schema
-      this.database.addSchemaChangeHandler(() => {
-        this.schemaPromise = this.startSchemaFetch();
-        this.fieldNames = null;
-      });
-    }
+    //   // invalidate cached schema for this model on any change to db schema
+    //   this.database.addSchemaChangeHandler(() => {
+    //     this.schemaPromise = this.startSchemaFetch();
+    //     this.fieldNames = null;
+    //   });
+    // }
   }
 
   // cache disabled by default. If enabling remember to update the TABLES_REQUIRING_TRIGGER_CREATION to include this table in @tupaia/database/src/runPostMigration.js.

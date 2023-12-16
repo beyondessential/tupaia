@@ -28,6 +28,11 @@ export class ModelRegistry {
 
   async closeDatabaseConnections() {
     if (this.database.isSingleton) {
+      for (const modelName of Object.keys(this.modelClasses)) {
+        const modelKey = getModelKey(modelName);
+        // TODO do I need to await here? or can i set to null/manually fullfill?
+        await this[modelKey].schemaPromise;
+      }
       await this.database.closeConnections();
     }
   }

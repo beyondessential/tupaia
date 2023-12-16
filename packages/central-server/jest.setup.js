@@ -18,5 +18,6 @@ afterAll(async () => {
   const models = getModels();
   const { database } = models;
   await clearAllTestData(database);
-  await database.closeConnections();
+  await models.closeDatabaseConnections(); // TODO also try existing implementation
+  // await database.closeConnections();
 });

@@ -125,8 +125,9 @@ export async function surveyResponse(req, res) {
   // Upsert entities and options that were created in user's local database
   await upsertEntitiesAndOptions(models, responses);
 
+  await validateAllResponses(models, responses);
+
   await models.wrapInTransaction(async transactingModels => {
-    await validateAllResponses(transactingModels, responses);
     // Check permissions
     const surveyResponsePermissionsChecker = async accessPolicy => {
       await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);

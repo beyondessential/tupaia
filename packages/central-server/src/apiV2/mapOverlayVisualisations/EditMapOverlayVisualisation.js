@@ -97,12 +97,12 @@ export class EditMapOverlayVisualisation extends EditHandler {
     const mapOverlayRecord = this.getMapOverlayRecord();
     const reportRecord = this.getReportRecord();
 
-    return this.models.wrapInTransaction(async transactingModels => {
-      await assertPermissionGroupsAccess(this.accessPolicy, [
-        mapOverlayRecord.permission_group,
-        reportRecord.permission_group,
-      ]);
+    assertPermissionGroupsAccess(this.accessPolicy, [
+      mapOverlayRecord.permission_group,
+      reportRecord.permission_group,
+    ]);
 
+    return this.models.wrapInTransaction(async transactingModels => {
       if (mapOverlayRecord.id !== undefined && mapOverlayRecord.id !== this.recordId) {
         throw new Error(`mapOverlay.id is different from resource id: ${this.recordId}`);
       }

@@ -13,7 +13,7 @@ import { getStandardisedImageName } from '../../utilities';
  * @param {string} imageSuffix
  * @param {boolean} useTimestamp (if true, the image will be uploaded with a timestamp appended to the end of the filename)
  * @param {string} existingImagePath (if there is an existing image for the same field, this should be passed in so that it can be deleted before uploading the new image)
- * @returns {string} The URL of the uploaded image
+ * @returns {Promise<string>} The URL of the uploaded image
  */
 export const uploadImage = async (
   encodedImage,
