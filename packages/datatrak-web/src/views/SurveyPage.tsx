@@ -47,7 +47,7 @@ const SurveyScreenContainer = styled.div<{
 `;
 
 const SurveyPageInner = () => {
-  const { surveyCode, screenNumber } = useParams<SurveyParams>();
+  const { screenNumber } = useParams<SurveyParams>();
   const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
     useSurveyForm();
   const resolver = useValidationResolver();
