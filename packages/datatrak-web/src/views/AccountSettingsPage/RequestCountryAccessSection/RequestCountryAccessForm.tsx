@@ -137,7 +137,7 @@ export const RequestCountryAccessForm = () => {
 
   /**
    * HACK: Force a fresh render of the country checklist. Use when a MUI checkbox appears checked,
-   * but is actually unchecked (or vice versa)
+   * but is actually unchecked (or vice versa).
    */
   const rerenderCountryChecklist = () => setCountryChecklistKey(Date.now());
 
