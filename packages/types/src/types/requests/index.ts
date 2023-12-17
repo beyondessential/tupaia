@@ -36,7 +36,8 @@ export {
   TupaiaWebRequestCountryAccessRequest,
   TupaiaWebUserRequest,
   TupaiaWebProjectCountryAccessListRequest,
-  TupaiaWebSubscribeRequest,
-  TupaiaWebUnsubscribeRequest,
+  TupaiaWebSubscribeDashboardRequest,
+  TupaiaWebUnsubscribeDashboardRequest,
+  TupaiaWebUnsubscribeDashboardMailingListRequest,
 } from './tupaia-web-server';
 export { WebServerProjectRequest, ProjectResponse, WebServerEntityRequest } from './web-server';

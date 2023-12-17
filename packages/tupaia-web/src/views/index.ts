@@ -13,3 +13,4 @@ export { ForgotPasswordModal } from './ForgotPasswordModal';
 export { EmailVerificationModal } from './EmailVerificationModal';
 export { VerifyEmailResendModal } from './VerifyEmailResendModal';
 export { PDFExport } from './PDFExport';
+export { Unsubscribe } from './Unsubscribe';

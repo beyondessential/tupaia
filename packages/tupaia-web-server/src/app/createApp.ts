@@ -49,11 +49,11 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.DashboardsRoute),
     )
     .post<routes.ExportDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/export',
+      'dashboards/:projectCode/:entityCode/:dashboardCode/export',
       handleWith(routes.ExportDashboardRoute),
     )
     .post<routes.EmailDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/email',
+      'dashboards/:projectCode/:entityCode/:dashboardCode/email',
       handleWith(routes.EmailDashboardRoute),
     )
     .get<routes.ProjectCountryAccessListRequest>(
@@ -82,13 +82,17 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.ExportSurveyResponsesRoute),
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
-    .post<routes.SubscribeRequest>(
+    .post<routes.SubscribeDashboardRequest>(
       'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
-      handleWith(routes.SubscribeRoute),
+      handleWith(routes.SubscribeDashboardRoute),
     )
-    .put<routes.UnsubscribeRequest>(
+    .put<routes.UnsubscribeDashboardRequest>(
       'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
-      handleWith(routes.UnsubscribeRoute),
+      handleWith(routes.UnsubscribeDashboardRoute),
+    )
+    .put<routes.UnsubscribeDashboardMailingListRequest>(
+      'dashboardMailingList/:mailingListId/unsubscribe',
+      handleWith(routes.UnsubscribeDashboardMailingListRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi

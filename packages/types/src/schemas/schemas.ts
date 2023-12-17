@@ -26156,10 +26156,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"
@@ -52021,6 +52018,12 @@ export const DashboardItemUpdateSchema = {
 export const DashboardMailingListSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -52036,6 +52039,7 @@ export const DashboardMailingListSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"admin_permission_groups",
 		"dashboard_id",
 		"entity_id",
 		"id",
@@ -52046,6 +52050,12 @@ export const DashboardMailingListSchema = {
 export const DashboardMailingListCreateSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -52067,6 +52077,12 @@ export const DashboardMailingListCreateSchema = {
 export const DashboardMailingListUpdateSchema = {
 	"type": "object",
 	"properties": {
+		"admin_permission_groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"dashboard_id": {
 			"type": "string"
 		},
@@ -54802,10 +54818,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55310,10 +55323,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -55812,10 +55822,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"reference"
-					]
+					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
 					"type": "boolean"
@@ -59453,169 +59460,16 @@ export const DataTablePreviewRequestSchema = {
 } 
 
 export const ParamsSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd",
 	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ResBodySchema = {
-	"type": "array",
-	"items": {
-		"type": "object",
-		"properties": {
-			"attributes": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"bounds": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"code": {
-				"type": "string"
-			},
-			"countryCode": {
-				"type": "string"
-			},
-			"id": {
-				"type": "string"
-			},
-			"imageUrl": {
-				"type": "string"
-			},
-			"metadata": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"name": {
-				"type": "string"
-			},
-			"parentId": {
-				"type": "string"
-			},
-			"point": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"region": {
-				"anyOf": [
-					{
-						"type": "array",
-						"items": {
-							"type": "object",
-							"additionalProperties": false
-						}
-					},
-					{
-						"type": "object",
-						"additionalProperties": false
-					}
-				]
-			},
-			"type": {
-				"enum": [
-					"asset",
-					"case",
-					"case_contact",
-					"catchment",
-					"city",
-					"complaint",
-					"country",
-					"disaster",
-					"district",
-					"facility",
-					"farm",
-					"fetp_graduate",
-					"field_station",
-					"fiji_aspen_facility",
-					"household",
-					"incident",
-					"incident_reported",
-					"individual",
-					"institute",
-					"larval_habitat",
-					"local_government",
-					"medical_area",
-					"msupply_store",
-					"nursing_zone",
-					"postcode",
-					"project",
-					"repair_request",
-					"school",
-					"sub_catchment",
-					"sub_district",
-					"sub_facility",
-					"trap",
-					"village",
-					"water_sample",
-					"wish_sub_district",
-					"world"
-				],
-				"type": "string"
-			}
-		},
-		"additionalProperties": false,
-		"required": [
-			"code",
-			"id",
-			"name",
-			"type"
-		]
-	}
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
+	"properties": {
+		"projectCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectCode"
+	]
 } 
 
 export const ProjectResponseSchema = {
@@ -59690,6 +59544,90 @@ export const ProjectResponseSchema = {
 		"id",
 		"name"
 	]
+} 
+
+export const ResBodySchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"code": {
+			"type": "string"
+		},
+		"config": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"dashboardGroupName": {
+			"type": "string"
+		},
+		"defaultMeasure": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"entityHierarchyId": {
+			"type": "string"
+		},
+		"entityId": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"logoUrl": {
+			"type": "string"
+		},
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"additionalProperties": false
 } 
 
 export const VisibilityCriteriaSchema = {
@@ -60236,11 +60174,15 @@ export const MailingListSchema = {
 		},
 		"isSubscribed": {
 			"type": "boolean"
+		},
+		"isAdmin": {
+			"type": "boolean"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"entityCode",
+		"isAdmin",
 		"isSubscribed"
 	]
 } 
@@ -68273,11 +68215,15 @@ export const DashboardWithMetadataSchema = {
 					},
 					"isSubscribed": {
 						"type": "boolean"
+					},
+					"isAdmin": {
+						"type": "boolean"
 					}
 				},
 				"additionalProperties": false,
 				"required": [
 					"entityCode",
+					"isAdmin",
 					"isSubscribed"
 				]
 			}
@@ -68557,10 +68503,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"reference"
-			]
+			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
 			"type": "boolean"
@@ -68789,32 +68732,7 @@ export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
 } 
 
-export const CountryAccessObjectSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
-} 
-
-export const SubscribeResponseSchema = {
+export const SubscribeDashboardResponseSchema = {
 	"type": "object",
 	"properties": {
 		"entityCode": {
@@ -68839,7 +68757,7 @@ export const SubscribeResponseSchema = {
 	]
 } 
 
-export const SubscribeRequestSchema = {
+export const SubscribeDashboardRequestSchema = {
 	"type": "object",
 	"properties": {
 		"email": {
@@ -68852,7 +68770,7 @@ export const SubscribeRequestSchema = {
 	]
 } 
 
-export const UnsubscribeResponseSchema = {
+export const UnsubscribeDashboardResponseSchema = {
 	"type": "object",
 	"properties": {
 		"entityCode": {
@@ -68877,7 +68795,7 @@ export const UnsubscribeResponseSchema = {
 	]
 } 
 
-export const UnsubscribeRequestSchema = {
+export const UnsubscribeDashboardRequestSchema = {
 	"type": "object",
 	"properties": {
 		"email": {
@@ -68892,6 +68810,23 @@ export const UnsubscribeRequestSchema = {
 	"required": [
 		"email",
 		"unsubscribeTime"
+	]
+} 
+
+export const QuerySchema = {
+	"type": "object",
+	"properties": {
+		"email": {
+			"type": "string"
+		},
+		"token": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"email",
+		"token"
 	]
 } 
 

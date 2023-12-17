@@ -290,7 +290,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
         dashboard_group_name: [isAString],
-        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
+        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'code')],
       };
     case TYPES.DATA_ELEMENT_DATA_SERVICE:
       return {

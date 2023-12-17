@@ -5,21 +5,21 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebSubscribeRequest } from '@tupaia/types';
+import { TupaiaWebSubscribeDashboardRequest } from '@tupaia/types';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 
-export type SubscribeRequest = Request<
-  TupaiaWebSubscribeRequest.Params,
-  TupaiaWebSubscribeRequest.ResBody,
-  TupaiaWebSubscribeRequest.ReqBody,
-  TupaiaWebSubscribeRequest.ReqQuery
+export type SubscribeDashboardRequest = Request<
+  TupaiaWebSubscribeDashboardRequest.Params,
+  TupaiaWebSubscribeDashboardRequest.ResBody,
+  TupaiaWebSubscribeDashboardRequest.ReqBody,
+  TupaiaWebSubscribeDashboardRequest.ReqQuery
 >;
 
-export class SubscribeRoute extends Route<SubscribeRequest> {
+export class SubscribeDashboardRoute extends Route<SubscribeDashboardRequest> {
   public async buildResponse() {
     const {
       ctx,
       params: { projectCode, entityCode, dashboardCode },
-      session,
     } = this.req;
 
     const [dashboard] = await ctx.services.central.fetchResources('dashboards', {
@@ -51,9 +51,12 @@ export class SubscribeRoute extends Route<SubscribeRequest> {
       );
     }
 
+    const { email } = this.req.body;
+    assertIsNotNullish(email);
+
     const dashboardMailingListEntry = {
       dashboard_mailing_list_id: dashboardMailingList.id,
-      email: this.req.body.email,
+      email,
       subscribed: true,
       unsubscribed_time: null,
     };

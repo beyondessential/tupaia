@@ -15,7 +15,7 @@ import { CancelConfirmModal } from '../../components';
 
 interface MenuItem {
   label: string;
-  to?: string;
+  to?: string | null;
   href?: string;
   isExternal?: boolean;
   onClick?: (e: any) => void;
@@ -71,9 +71,13 @@ export const MenuList = ({
     }
   };
 
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+
   const accountSettingsItem = {
     label: 'Account settings',
     onClick: onClickInternalLink,
+    to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
+    component: shouldShowCancelModal ? 'button' : RouterLink,
   };
   // The help centre link is the same for both logged-in and logged-out users
   const helpCentreItem = {
@@ -88,7 +92,6 @@ export const MenuList = ({
       logout();
       onCloseMenu();
     },
-    component: 'button',
   };
 
   const hasProjectSelected = !!projectId;
@@ -110,7 +113,7 @@ export const MenuList = ({
         {menuItems.map(({ label, to, href, isExternal, onClick, component }) => (
           <MenuListItem key={label} button>
             <MenuButton
-              component={component || RouterLink}
+              component={component || 'button'}
               underline="none"
               target={isExternal ? '_blank' : null}
               onClick={onClick || onCloseMenu}
