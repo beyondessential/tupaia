@@ -68732,6 +68732,31 @@ export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
 } 
 
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
 export const SubscribeDashboardResponseSchema = {
 	"type": "object",
 	"properties": {
