@@ -36,7 +36,7 @@ const Header = styled.div`
 `;
 
 const Logo = styled.img.attrs({
-  src: '/bes-logo.svg',
+  src: '/bes-logo.png',
   alt: 'BES logo',
 })`
   width: 1.75rem;
