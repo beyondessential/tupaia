@@ -21,7 +21,14 @@ import { Button } from '../../../components';
 import { ProjectSelectModal } from '../../../layout/UserMenu/ProjectSelectModal.tsx';
 import { RequestCountryAccessForm } from './RequestCountryAccessForm.tsx';
 import { useCountryAccessList, useCurrentUser } from '../../../api';
-import { CountryAccessListRequest } from '@tupaia/types';
+import { Country, Project } from '@tupaia/types';
+
+interface CountryAccess {
+  id: Country['id'];
+  name: Country['name'];
+  hasAccess: boolean;
+  accessRequests: Project['code'][];
+}
 
 const ProjectButton = styled(Button).attrs({
   variant: 'text',
@@ -61,8 +68,8 @@ export const RequestCountryAccessSection = () => {
   const openProjectModal = () => setProjectModalOpen(true);
   const closeProjectModal = () => setProjectModalOpen(false);
 
-  const grantedCountries = countries.filter(
-    (country: CountryAccessListRequest.ResBody) => country.hasAccess,
+  const grantedCountries: CountryAccess[] = countries.filter(
+    (country: CountryAccess) => country.hasAccess,
   );
 
   return (
@@ -87,7 +94,7 @@ export const RequestCountryAccessSection = () => {
               </MuiTableHead>
               <MuiTableBody>
                 {grantedCountries.map(country => (
-                  <MuiTableCell>{country.name}</MuiTableCell>
+                  <MuiTableCell key={country.id}>{country.name}</MuiTableCell>
                 ))}
               </MuiTableBody>
             </MuiTable>
