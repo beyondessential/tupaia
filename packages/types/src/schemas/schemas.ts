@@ -59393,11 +59393,15 @@ export const CountryAccessResponseSchema = {
 			"items": {
 				"type": "string"
 			}
+		},
+		"code": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
 		"accessRequests",
+		"code",
 		"hasAccess",
 		"id",
 		"name"
