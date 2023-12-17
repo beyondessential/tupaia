@@ -16,7 +16,7 @@ export type ProjectCountryAccessListRequest = Request<
 
 export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessListRequest> {
   public async buildResponse() {
-    const { ctx, params } = this.req;
+    const { ctx, params, accessPolicy } = this.req;
     const { projectCode } = params;
     const { projects } = await ctx.services.webConfig.fetchProjects();
 
@@ -26,6 +26,7 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
     }
     const { names } = project;
     const countryAccessList = await ctx.services.central.getCountryAccessList();
+
     return names
       .sort()
       .reduce((result: TupaiaWebProjectCountryAccessListRequest.ResBody, name: string) => {
@@ -33,8 +34,11 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
           ({ name: countryName }: CountryAccessResponse) => countryName === name,
         );
         if (!country) return result;
-        const { hasAccess } = country;
-        const hasPendingAccess = country.accessRequests.includes(projectCode) && !hasAccess;
+        const hasPendingAccess = country.accessRequests.includes(projectCode);
+
+        const hasAccess = project.permissionGroups.some((permissionGroup: string) =>
+          accessPolicy.allows(country.code, permissionGroup),
+        );
 
         return [
           ...result,

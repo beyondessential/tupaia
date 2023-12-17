@@ -8,4 +8,5 @@ export interface CountryAccessResponse {
   name: string;
   hasAccess: boolean;
   accessRequests: string[];
+  code: string;
 }

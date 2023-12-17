@@ -57,12 +57,17 @@ export const RequestedCountries = ({
           <li key={name}>{name}</li>
         ))}
       </AccessRequestList>
-      <SubHeading variant="h3">Countries with approved access for this project:</SubHeading>
-      <AccessRequestList>
-        {countriesWithAccess.map(({ name }) => (
-          <li key={name}>{name}</li>
-        ))}
-      </AccessRequestList>
+      {countriesWithAccess.length > 0 && (
+        <>
+          <SubHeading variant="h3">Countries with approved access for this project:</SubHeading>
+          <AccessRequestList>
+            {countriesWithAccess.map(({ name }) => (
+              <li key={name}>{name}</li>
+            ))}
+          </AccessRequestList>
+        </>
+      )}
+
       <Text>
         This can take some time to process, as requests require formal permission to be granted.
       </Text>
