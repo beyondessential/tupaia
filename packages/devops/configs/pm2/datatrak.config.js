@@ -12,5 +12,6 @@ module.exports = {
     "report-server",
     "datatrak-web-server",
     "datatrak-web",
+    "web-config-server",
   ])
 };
