@@ -112,7 +112,7 @@ export const ProjectSelectForm = ({
 
   return (
     <>
-      <Typography variant="h1">Select a project</Typography>
+      <Typography variant="h1">Select project</Typography>
       {isLoading ? (
         <LoadingContainer>
           <SpinningLoader />
@@ -121,7 +121,7 @@ export const ProjectSelectForm = ({
         <ListWrapper $variant={variant}>
           <SelectList
             items={projectOptions}
-            label="You can change project at any time"
+            label="Select a project from the list below. You can change the project at any time"
             onSelect={onSelect}
           />
         </ListWrapper>
