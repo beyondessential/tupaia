@@ -123,7 +123,7 @@ export const RequestCountryAccessForm = () => {
     onSettled: () => reset(),
     onSuccess: response => {
       successToast(response.message);
-      setCountryChecklistKey(Date.now()); // Force re-render
+      rerenderCountryChecklist();
     },
   });
 
@@ -134,6 +134,12 @@ export const RequestCountryAccessForm = () => {
    * kicking machine" to force a re-render.
    */
   const [countryChecklistKey, setCountryChecklistKey] = useState(Date.now());
+
+  /**
+   * HACK: Force a fresh render of the country checklist. Use when a MUI checkbox appears checked,
+   * but is actually unchecked (or vice versa)
+   */
+  const rerenderCountryChecklist = () => setCountryChecklistKey(Date.now());
 
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
