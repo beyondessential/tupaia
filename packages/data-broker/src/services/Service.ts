@@ -13,7 +13,6 @@ import {
   DataSourceType,
   Diagnostics,
   EventResults,
-  Metadata,
   SyncGroupResults,
 } from '../types';
 import { DATA_SOURCE_TYPES } from '../utils';
@@ -82,7 +81,7 @@ export abstract class Service {
     dataSources: DataSource[],
     type: DataSourceType,
     options: PullMetadataOptions,
-  ): Promise<Metadata[]> {
+  ): Promise<{ code: string }[]> {
     return dataSources.map(ds => ({ code: ds.code }));
   }
 }
