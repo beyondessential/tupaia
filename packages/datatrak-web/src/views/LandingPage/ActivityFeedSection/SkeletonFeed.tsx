@@ -35,7 +35,7 @@ export const SkeletonFeed = () => {
   return (
     <Wrapper>
       {Array.from({
-        length: 6,
+        length: 6, // show max 6 items, as we will set overflow to hidden so if the screen is too short to show 6 items, the rest will be hidden
       }).map((_, i) => (
         <FeedItem key={i}>
           <FeedItemHeader>
