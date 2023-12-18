@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Dialog, Paper } from '@material-ui/core';
+import { Dialog, Paper, DialogProps } from '@material-ui/core';
 import MuiCloseIcon from '@material-ui/icons/Close';
 import { IconButton } from '@tupaia/ui-components';
 
@@ -31,15 +31,15 @@ const Content = styled.div`
   padding-top: 1rem;
 `;
 
-interface ModalProps {
+interface ModalProps extends DialogProps {
   open: boolean;
   onClose: () => void;
   children?: ReactNode;
 }
 
-export const Modal = ({ open, onClose, children }: ModalProps) => {
+export const Modal = ({ open, onClose, children, ...muiProps }: ModalProps) => {
   return (
-    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal>
+    <Dialog open={open} onClose={onClose} PaperComponent={Wrapper} disablePortal {...muiProps}>
       <CloseButton onClick={onClose}>
         <CloseIcon />
       </CloseButton>

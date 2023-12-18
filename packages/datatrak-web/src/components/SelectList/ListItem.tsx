@@ -70,7 +70,6 @@ const IconWrapper = styled.div`
   width: 1.5rem;
   svg {
     color: ${({ theme }) => theme.palette.primary.main};
-    width: auto;
     height: auto;
   }
 `;
