@@ -9,10 +9,11 @@ import { useForm } from 'react-hook-form';
 import { Box as MuiBox, FormLabel as MuiFormLabel, useMediaQuery } from '@material-ui/core';
 import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Country, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { ensure } from '@tupaia/tsutils';
 import { Button } from '../../../components';
+import { errorToast, successToast } from '../../../utils';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
-import { errorToast, successToast } from '../../../utils';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
@@ -114,7 +115,7 @@ interface RequestCountryAccessFormFields {
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
-  const projectCode = project?.code ?? null;
+  const projectCode = project?.code;
 
   const queryResult = useCountryAccessList();
   const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data ?? [];
@@ -183,7 +184,7 @@ export const RequestCountryAccessForm = () => {
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryChecklist key={countryChecklistKey}>
             {applicableCountries.map(({ id, name, hasAccess, accessRequests }) => {
-              const hasRequestedAccess = accessRequests.includes(projectCode);
+              const hasRequestedAccess = accessRequests.includes(ensure(projectCode));
               const getTooltip = () => {
                 if (hasAccess) return 'You already have access';
                 if (hasRequestedAccess) return 'Approval in progress';
