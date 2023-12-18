@@ -5,12 +5,12 @@
 
 import React from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
+import { TextFieldProps } from '@material-ui/core';
 import MuiPaper, { PaperProps } from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import { TextField } from './TextField';
-import { TextFieldProps } from '@material-ui/core';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.tertiary};
