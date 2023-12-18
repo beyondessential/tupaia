@@ -2,6 +2,7 @@ import { generateId } from '@tupaia/database';
 import { getTimezoneNameFromTimestamp } from '@tupaia/tsutils';
 import { ValidationError, stripTimezoneFromDate } from '@tupaia/utils';
 import keyBy from 'lodash.keyby';
+import momentTimezone from 'moment-tz';
 import { upsertAnswers } from '../../dataAccessors';
 
 async function getRecordsByCode(model, codes) {
@@ -72,8 +73,8 @@ function buildResponseRecord(user, entitiesByCode, body) {
   }
 
   const defaultToTimestampOrThrow = (value, parameterName) => {
-    if (value) return new Date(value).toISOString();
-    if (timestamp) return new Date(timestamp).toISOString();
+    if (value) return momentTimezone(value).format();
+    if (timestamp) return momentTimezone(timestamp).format();
 
     throw new ValidationError(`Must provide ${parameterName} or timestamp`);
   };
