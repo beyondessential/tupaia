@@ -14,8 +14,6 @@ import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 import { errorToast, successToast } from '../../../utils';
 
-const gridAndFlexGap = '1.25rem';
-
 const StyledForm = styled(Form)`
   inline-size: 100%;
   ${theme.breakpoints.up('md')} {
@@ -29,7 +27,7 @@ const StyledFieldset = styled.fieldset`
   padding: 0;
 
   display: grid;
-  gap: ${gridAndFlexGap};
+  gap: 1.25rem;
   grid-auto-flow: column;
   grid-template: auto auto / auto;
 
@@ -90,7 +88,7 @@ const StyledCheckbox = styled(Checkbox)`
 const StyledBox = styled(MuiBox)`
   display: block flex;
   flex-direction: column;
-  gap: ${gridAndFlexGap};
+  gap: 1.25rem;
 `;
 
 // Usage of this component has inline styling. See there for explanation.
