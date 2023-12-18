@@ -44,9 +44,8 @@ const Title = styled(Typography).attrs({
 `;
 
 export const RequestCountryAccessSection = () => {
-  const {
-    project: { name: projectName },
-  } = useCurrentUser();
+  const { project } = useCurrentUser();
+  const projectName = project?.name ?? null;
 
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const openProjectModal = () => setProjectModalOpen(true);
@@ -57,8 +56,11 @@ export const RequestCountryAccessSection = () => {
       title={
         <TitleWrapper>
           <Title variant="h2">Request country access</Title>
-          <ProjectButton onClick={openProjectModal} tooltip="Change project">
-            {projectName}
+          <ProjectButton
+            onClick={openProjectModal}
+            tooltip={!!projectName ? undefined : 'Change project'}
+          >
+            {projectName ?? 'Change project'}
           </ProjectButton>
         </TitleWrapper>
       }
