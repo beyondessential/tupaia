@@ -53,6 +53,13 @@ const TitleWrapper = styled(MuiBox)`
   margin-block-end: 0.6rem;
 `;
 
+const Title = styled(Typography).attrs({
+  variant: 'h2',
+})`
+  font-size: 1rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+`;
+
 const StyledTableContainer = styled(MuiTableContainer).attrs({
   elevation: 0,
   component: Paper,
@@ -97,7 +104,7 @@ export const RequestCountryAccessSection = () => {
     <AccountSettingsSection
       title={
         <TitleWrapper>
-          <Typography variant="h2">Request country access</Typography>
+          <Title variant="h2">Request country access</Title>
           <ProjectButton onClick={openProjectModal} tooltip="Change project">
             {projectName}
           </ProjectButton>
