@@ -59,6 +59,16 @@ const StyledTableContainer = styled(MuiTableContainer).attrs({
 })`
   border: 1px solid ${({ theme }) => theme.palette.grey[400]};
   margin-block: 1.2rem;
+
+  .MuiTableBody-root {
+    display: flex;
+    flex-direction: column;
+    margin-block: 0.1875rem;
+  }
+
+  .MuiTableCell-root {
+    border: none;
+  }
 `;
 
 const StyledTableHeader = styled(MuiTableHead)`
@@ -106,8 +116,8 @@ export const RequestCountryAccessSection = () => {
               <MuiTableBody>
                 {grantedCountries.length > 0 ? (
                   grantedCountries.map(country => (
-                    <MuiTableRow>
-                      <MuiTableCell key={country.id}>{country.name}</MuiTableCell>
+                    <MuiTableRow key={country.id}>
+                      <MuiTableCell>{country.name}</MuiTableCell>
                     </MuiTableRow>
                   ))
                 ) : (
