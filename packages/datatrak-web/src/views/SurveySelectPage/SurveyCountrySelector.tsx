@@ -10,8 +10,11 @@ import { Entity } from '../../types';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
-  margin-bottom: 0;
-  .MuiInputBase-input {
+
+  &.MuiFormControl-root {
+    margin-bottom: 0;
+  }
+  .MuiInputBase-input.MuiSelect-selectMenu {
     font-size: 0.875rem;
     padding: 0.5rem 2.5rem 0.5rem 1rem;
   }
@@ -60,8 +63,10 @@ export const SurveyCountrySelector = ({
         options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
         value={selectedCountry?.code}
         onChange={updateSelectedCountry}
-        inputProps={{ 'aria-label': 'Select a country' }}
         placeholder="Select a country"
+        SelectProps={{
+          'aria-label': 'Select a country',
+        }}
       />
     </CountrySelectWrapper>
   );
