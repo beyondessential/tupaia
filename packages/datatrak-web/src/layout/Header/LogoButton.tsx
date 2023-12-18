@@ -46,7 +46,7 @@ export const LogoButton = () => {
   return (
     <>
       <Logo component={RouterLink} onClick={onClickLogo} to="/" title="Home">
-        <img src="/datatrak-logo-black.svg" alt="tupaia-logo" />
+        <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
       </Logo>
       <CancelConfirmModal isOpen={surveyCancelModalIsOpen} onClose={onClose} />
     </>
