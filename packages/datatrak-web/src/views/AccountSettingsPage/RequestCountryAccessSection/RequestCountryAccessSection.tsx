@@ -56,7 +56,18 @@ const TitleWrapper = styled(MuiBox)`
 const StyledTableContainer = styled(MuiTableContainer).attrs({
   elevation: 0,
   component: Paper,
-});
+})`
+  border: 1px solid ${({ theme }) => theme.palette.grey[400]};
+  margin-block: 1.2rem;
+`;
+
+const StyledTableHeader = styled(MuiTableHead)`
+  border-block-end: 1px solid ${({ theme }) => theme.palette.grey[400]};
+`;
+
+const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
+  font-size: inherit;
+`;
 
 export const RequestCountryAccessSection = () => {
   const {
@@ -85,20 +96,30 @@ export const RequestCountryAccessSection = () => {
       description="Select the countries you would like access to and the reason for requesting access"
       supplement={
         <>
-          <MuiTableContainer>
+          <StyledTableContainer>
             <MuiTable size="small">
-              <MuiTableHead>
+              <StyledTableHeader>
                 <MuiTableRow>
                   <MuiTableCell>Countries with access granted</MuiTableCell>
                 </MuiTableRow>
-              </MuiTableHead>
+              </StyledTableHeader>
               <MuiTableBody>
-                {grantedCountries.map(country => (
-                  <MuiTableCell key={country.id}>{country.name}</MuiTableCell>
-                ))}
+                {grantedCountries.length > 0 ? (
+                  grantedCountries.map(country => (
+                    <MuiTableRow>
+                      <MuiTableCell key={country.id}>{country.name}</MuiTableCell>
+                    </MuiTableRow>
+                  ))
+                ) : (
+                  <MuiTableCell>
+                    <MuiTableRow>
+                      <EmptyStateLabel>None</EmptyStateLabel>
+                    </MuiTableRow>
+                  </MuiTableCell>
+                )}
               </MuiTableBody>
             </MuiTable>
-          </MuiTableContainer>
+          </StyledTableContainer>
         </>
       }
     >
