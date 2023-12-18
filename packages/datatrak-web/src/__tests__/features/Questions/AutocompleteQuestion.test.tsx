@@ -24,13 +24,6 @@ jest.mock('../../../api/queries/useUser', () => {
 
 const options = [
   {
-    label: 'Red',
-    value: 'red',
-    attributes: {
-      parentQuestion: 'anotherAnswer',
-    },
-  },
-  {
     label: 'Blue',
     value: 'blue',
     attributes: {
@@ -39,6 +32,13 @@ const options = [
   },
   {
     value: 'green',
+  },
+  {
+    label: 'Red',
+    value: 'red',
+    attributes: {
+      parentQuestion: 'anotherAnswer',
+    },
   },
 ];
 const server = setupServer(
