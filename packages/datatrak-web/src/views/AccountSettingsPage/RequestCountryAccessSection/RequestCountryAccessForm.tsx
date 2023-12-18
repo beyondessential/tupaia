@@ -166,8 +166,8 @@ export const RequestCountryAccessForm = () => {
       project?.names?.includes(country.name),
     ) ?? [];
 
-  const submissionShouldBeDisabled =
-    isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
+  const formIsNotSubmissible =
+    !project || isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
 
   function onSubmit(formData: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -179,7 +179,7 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={isSubmitting || requestIsLoading}>
+      <StyledFieldset disabled={!project || isSubmitting || requestIsLoading}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryChecklist key={countryChecklistKey}>
@@ -208,6 +208,7 @@ export const RequestCountryAccessForm = () => {
         </CountryChecklistWrapper>
         <StyledBox>
           <StyledFormInput
+            disabled={!project}
             fullWidth
             Input={TextField}
             inputProps={{
@@ -223,7 +224,7 @@ export const RequestCountryAccessForm = () => {
             size="medium"
           />
           <Button
-            disabled={submissionShouldBeDisabled}
+            disabled={formIsNotSubmissible}
             tooltip={isValid ? undefined : 'Select countries to request access'}
             type="submit"
           >
