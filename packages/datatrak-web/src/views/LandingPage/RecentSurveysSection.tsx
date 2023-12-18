@@ -44,7 +44,7 @@ export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
   return (
     <RecentSurveys>
-      <SectionHeading>My recent surveys</SectionHeading>
+      <SectionHeading>Top surveys</SectionHeading>
       {isLoading && <SpinningLoader />}
       {isSuccess && (
         <ScrollBody>

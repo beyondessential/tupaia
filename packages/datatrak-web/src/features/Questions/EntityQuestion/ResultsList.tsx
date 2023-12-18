@@ -5,8 +5,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { SelectList } from '../../../components';
 import RoomIcon from '@material-ui/icons/Room';
+import { SelectList } from '../../../components';
 
 const ListWrapper = styled.div`
   display: flex;
@@ -15,7 +15,7 @@ const ListWrapper = styled.div`
   margin-top: 0.9rem;
 `;
 
-const ResultItem = ({ name, parentName }) => {
+export const ResultItem = ({ name, parentName }) => {
   return (
     <>
       {name} | <span className="text-secondary">{parentName}</span>

@@ -47,6 +47,9 @@ export const theme = createMuiTheme(
       text: {
         secondary: '#9ba0a6',
       },
+      success: {
+        main: '#25d366',
+      },
     },
   },
   {

@@ -49,7 +49,7 @@ const transform = async (table: TransformTable, transformSteps: BuiltTransformPa
       }
       const titlePart = transformStep.title ? ` (${transformStep.title})` : '';
       const errorMessagePrefix = `Error in transform[${i + 1}]${titlePart}: `;
-      e.message = `${errorMessagePrefix}${(e as Error).message}`;
+      (e as Error).message = `${errorMessagePrefix}${(e as Error).message}`;
       throw e;
     }
   }

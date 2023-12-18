@@ -14,6 +14,18 @@ const settings: TJS.PartialArgs = {
   noExtraProps: true,
 };
 
+function getTsFiles(dir: string): string[] {
+  const dirContents = fs.readdirSync(dir);
+  const files = dirContents
+    .map(dirItem => {
+      const res = resolve(dir, dirItem);
+      return fs.statSync(res).isDirectory() ? getTsFiles(res) : res;
+    })
+    .flat();
+
+  return files.filter(fileName => fileName.endsWith('.ts'));
+}
+
 const HEADER = `/*
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -26,10 +38,13 @@ const HEADER = `/*
  */
 `;
 
+const rootDir = 'src/types';
+const filesToBuildSchemasFor = getTsFiles(rootDir);
+
 const { filename, typesPath } = config as any;
 
 const program = TJS.getProgramFromFiles([resolve(typesPath)]);
-const schemas = TJS.generateSchema(program, '*', settings);
+const schemas = TJS.generateSchema(program, '*', settings, filesToBuildSchemasFor);
 
 if (schemas?.definitions) {
   let fileContents = HEADER;

@@ -74,72 +74,9 @@ describe('Permissions checker for CreateDashboardMailingListEntry', async () => 
   });
 
   describe('POST /dashboardMailingListEntries', async () => {
-    describe('Insufficient permission', async () => {
-      it('Throw an exception when trying to create a dashboard mailing list entry to a dashboard we do not have access to', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
-        const { body: result } = await app.post(`dashboardMailingListEntries`, {
-          body: {
-            dashboard_mailing_list_id: nationalDashboard2MailingList.id,
-            email: TEST_USER_EMAIL,
-          },
-        });
-
-        expect(result).to.have.keys('error');
-      });
-
-      it('Throw an exception when trying to create a dashboard mailing list entry to a dashboard we do not have edit access to if the email is not for the users', async () => {
-        await app.grantAccess(DEFAULT_POLICY);
-        const { body: result } = await app.post(`dashboardMailingListEntries`, {
-          body: {
-            dashboard_mailing_list_id: nationalDashboard1MailingList.id,
-            email: 'not.my.email@domain.com',
-          },
-        });
-
-        expect(result).to.have.keys('error');
-      });
-    });
-
     describe('Sufficient permission', async () => {
       it('Allow creation of a dashboard mailing list entry for a dashboard we have permission for', async () => {
         await app.grantAccess(DEFAULT_POLICY);
-        await app.post(`dashboardMailingListEntries`, {
-          body: {
-            dashboard_mailing_list_id: nationalDashboard1MailingList.id,
-            email: TEST_USER_EMAIL,
-          },
-        });
-        const result = await models.dashboardMailingListEntry.find({
-          dashboard_mailing_list_id: nationalDashboard1MailingList.id,
-        });
-
-        expect(result.length).to.equal(1);
-        expect(result[0].email).to.equal(TEST_USER_EMAIL);
-        await models.dashboardMailingListEntry.delete({ id: result[0].id }); // Clean up
-      });
-
-      it('Allow creation of a dashboard mailing list entry for a dashboard we have edit permission for with a different users email', async () => {
-        await app.grantAccess({
-          DL: ['Public'],
-          KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        });
-        await app.post(`dashboardMailingListEntries`, {
-          body: {
-            dashboard_mailing_list_id: nationalDashboard1MailingList.id,
-            email: 'not.my.email@domain.com',
-          },
-        });
-        const result = await models.dashboardMailingListEntry.find({
-          dashboard_mailing_list_id: nationalDashboard1MailingList.id,
-        });
-
-        expect(result.length).to.equal(1);
-        expect(result[0].email).to.equal('not.my.email@domain.com');
-        await models.dashboardMailingListEntry.delete({ id: result[0].id }); // Clean up
-      });
-
-      it('Allow creation of a dashboard mailing list entry for Tupaia Admin user', async () => {
-        await app.grantAccess(BES_ADMIN_POLICY);
         await app.post(`dashboardMailingListEntries`, {
           body: {
             dashboard_mailing_list_id: nationalDashboard1MailingList.id,

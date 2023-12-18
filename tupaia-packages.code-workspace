@@ -249,13 +249,16 @@
       "**/lib": true,
       "**/logfile*.log": true,
       "**/yarn-1.18.0.js": true
-    }
+    },
+    "typescript.tsdk": "root/node_modules/typescript/lib"
   },
   "extensions": {
     "recommendations": [
       "dbaeumer.vscode-eslint",
       "eamodio.gitlens",
       "esbenp.prettier-vscode",
+      "humao.rest-client",
+      "ryu1kn.partial-diff",
       "streetsidesoftware.code-spell-checker",
       "visualstudioexptteam.vscodeintellicode",
       "wayou.vscode-todo-highlight"

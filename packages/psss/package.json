@@ -12,17 +12,11 @@
   "scripts": {
     "preview": "vite preview",
     "build": "npm run --prefix ../../ package:build:vite",
-    "eject": "yarn package:eject",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
-    "start-psss-server": "yarn workspace @tupaia/psss-server start-dev",
-    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
-    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
-    "start-report-server": "yarn workspace @tupaia/report-server start-dev",
+    "start-stack": "yarn package:start-stack psss",
     "test": "yarn test:jest",
     "test:jest": "yarn package:test --env=jsdom",
-    "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server",
     "start-dev": "yarn package:start:vite"
   },
   "browserslist": [
@@ -34,8 +28,8 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.10",
-    "@tupaia/ui-components": "1.0.0",
-    "@tupaia/utils": "1.0.0",
+    "@tupaia/ui-components": "workspace:*",
+    "@tupaia/utils": "workspace:*",
     "axios": "^0.21.0",
     "date-fns": "^2.16.1",
     "faker": "^4.1.0",
@@ -61,8 +55,8 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@tupaia/auth": "1.0.0",
-    "@tupaia/database": "1.0.0",
+    "@tupaia/auth": "workspace:*",
+    "@tupaia/database": "workspace:*",
     "cross-env": "^7.0.2",
     "mockdate": "^3.0.5",
     "npm-run-all": "^4.1.5",
