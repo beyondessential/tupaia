@@ -48,9 +48,8 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 export const AccessGrantedCountryList = () => {
   const { data: countries } = useCountryAccessList();
-  const grantedCountries: CountryAccess[] = countries.filter(
-    (country: CountryAccess) => country.hasAccess,
-  );
+  const grantedCountries: CountryAccess[] =
+    countries?.filter((country: CountryAccess) => country.hasAccess) ?? [];
 
   return (
     <StyledTableContainer>
