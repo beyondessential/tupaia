@@ -73,8 +73,14 @@ function buildResponseRecord(user, entitiesByCode, body) {
   }
 
   const defaultToTimestampOrThrow = (value, parameterName) => {
-    if (value) return momentTimezone(value).format();
-    if (timestamp) return momentTimezone(timestamp).format();
+    if (value)
+      return momentTimezone(value)
+        .tz(timezone || 'UTC')
+        .format();
+    if (timestamp)
+      return momentTimezone(timestamp)
+        .tz(timezone || 'UTC')
+        .format();
 
     throw new ValidationError(`Must provide ${parameterName} or timestamp`);
   };
