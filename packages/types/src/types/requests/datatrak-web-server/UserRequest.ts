@@ -4,9 +4,7 @@
  */
 
 import { ProjectResponse } from '../web-server';
-import { Entity } from '../../models';
-
-type Country = Pick<Entity, 'id' | 'name' | 'code'>;
+import { Country } from '../../models';
 
 export type Params = Record<string, never>;
 export interface ResBody {

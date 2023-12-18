@@ -69,7 +69,7 @@ const validateAggregationArray = (aggregation: Array<unknown>) => {
     try {
       validateAggregationDescriptor(descriptor);
     } catch (error) {
-      throw new Error(`Error in item #${i + 1}: ${error.message}`);
+      throw new Error(`Error in item #${i + 1}: ${(error as Error).message}`);
     }
   });
 };
@@ -97,7 +97,7 @@ const validateAggregationDictionary = (
         validateAggregationDescriptor(aggregationSpecs);
       }
     } catch (error) {
-      throw new Error(`Error in key '${code}': ${error.message}`);
+      throw new Error(`Error in key '${code}': ${(error as Error).message}`);
     }
   });
 };

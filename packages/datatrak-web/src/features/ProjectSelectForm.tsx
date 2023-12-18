@@ -52,7 +52,9 @@ export const ProjectSelectForm = ({
   const navigate = useNavigate();
   const [selectedProjectId, setSelectedProjectId] = useState(projectId);
   const { data: projects, isLoading } = useProjects();
+
   const { mutate, isLoading: isConfirming } = useEditUser(onClose);
+
   const onConfirm = () => {
     mutate({ projectId: selectedProjectId! });
   };
