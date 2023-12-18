@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box as MuiBox, FormLabel as MuiFormLabel, useMediaQuery } from '@material-ui/core';
 import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
+import { Country, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { Button } from '../../../components';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
@@ -114,7 +114,11 @@ interface RequestCountryAccessFormFields {
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
-  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
+
+  const queryResult = useCountryAccessList();
+  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data;
+  const accessListIsLoading = queryResult.isLoading;
+
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t submit your request. Please try again'),
@@ -155,8 +159,9 @@ export const RequestCountryAccessForm = () => {
     reset,
   } = formContext;
 
-  const applicableCountries = countries?.filter((country: Country) =>
-    project?.names.includes(country.name),
+  const applicableCountries = countries?.filter(
+    (country: TupaiaWebCountryAccessListRequest.CountryAccess) =>
+      project?.names.includes(country.name),
   );
 
   const submissionShouldBeDisabled =
