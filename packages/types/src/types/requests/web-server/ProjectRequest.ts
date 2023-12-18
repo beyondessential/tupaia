@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Project } from '../../models';
+import { Entity, Project } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
 export interface Params {
@@ -11,6 +11,7 @@ export interface Params {
 }
 export type ProjectResponse = KeysToCamelCase<Project> & {
   name: string;
+  names?: Entity['name'][];
   hasAccess: boolean;
   hasPendingAccess: boolean;
 };
