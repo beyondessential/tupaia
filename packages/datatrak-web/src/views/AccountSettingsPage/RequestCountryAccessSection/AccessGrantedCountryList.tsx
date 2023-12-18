@@ -63,7 +63,7 @@ export const AccessGrantedCountryList = () => {
           ) : (
             <MuiTableRow>
               <MuiTableCell>
-                <EmptyStateLabel>Loading&hellip;</EmptyStateLabel>
+                <EmptyStateLabel>Loading…</EmptyStateLabel>
               </MuiTableCell>
             </MuiTableRow>
           )}
