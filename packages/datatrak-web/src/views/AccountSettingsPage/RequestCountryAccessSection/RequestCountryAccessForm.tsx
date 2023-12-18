@@ -70,6 +70,10 @@ const CountryChecklist = styled.fieldset`
   overflow-y: scroll; /* fallback */
   overflow-block: scroll;
   padding-inline: 0.87rem;
+
+  :disabled {
+    background-color: #f5f5f5;
+  }
 `;
 
 const StyledCheckbox = styled(Checkbox)`
@@ -179,10 +183,13 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={!project || isSubmitting || requestIsLoading}>
+      <StyledFieldset>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          <CountryChecklist key={countryChecklistKey}>
+          <CountryChecklist
+            disabled={!project || isSubmitting || requestIsLoading}
+            key={countryChecklistKey}
+          >
             {applicableCountries.map(({ id, name, hasAccess, accessRequests }) => {
               const hasRequestedAccess = accessRequests.includes(ensure(projectCode));
               const getTooltip = () => {
