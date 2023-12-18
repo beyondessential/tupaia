@@ -63,7 +63,7 @@ export const RequestCountryAccessSection = () => {
         </TitleWrapper>
       }
       description="Select the countries you would like access to and the reason for requesting access"
-      supplement={<AccessGrantedCountryList />}
+      supportingInfo={<AccessGrantedCountryList />}
     >
       <RequestCountryAccessForm />
       {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
