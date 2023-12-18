@@ -4,21 +4,32 @@
  */
 import React, { ComponentType, ReactNode } from 'react';
 import styled from 'styled-components';
-import { Typography, Box } from '@material-ui/core';
+import { Typography, Box, Paper } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import { Button } from './Button';
 
-const ButtonWrapper = styled(Button)`
+const Wrapper = styled(Paper).attrs({
+  elevation: 0,
+})`
   display: flex;
-  position: relative;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background: ${({ theme }) => theme.palette.background.paper};
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   padding: 0.8rem 1rem;
+  background: ${({ theme }) => theme.palette.background.paper};
   border-radius: 0.625rem;
-  font-size: 0.75rem;
   font-weight: 400;
+  font-size: 0.75rem;
   color: ${({ theme }) => theme.palette.text.secondary};
   overflow: hidden;
+`;
+
+const ButtonWrapper = styled(Wrapper).attrs({
+  component: Button,
+})`
+  flex-direction: row;
+  position: relative;
+  justify-content: flex-start;
 
   svg {
     margin-right: 0.4rem;
@@ -54,9 +65,19 @@ const Text = styled(Typography)`
   }
 `;
 
+const LoadingContainer = styled.div`
+  overflow: hidden;
+  max-height: 100%;
+  > div {
+    &:not(:last-child) {
+      margin-bottom: 0.6rem;
+    }
+  }
+`;
+
 interface TileProps {
-  title: string;
-  text: string;
+  title?: string;
+  text?: string;
   to?: string;
   tooltip?: ReactNode;
   children?: ReactNode;
@@ -69,10 +90,24 @@ export const Tile = ({ title, text, children, to, tooltip, Icon, onClick }: Tile
     <ButtonWrapper to={to} tooltip={tooltip} onClick={onClick}>
       {Icon && <Icon />}
       <Box maxWidth="100%" pr={5}>
-        <Heading>{title}</Heading>
-        <Text>{text}</Text>
+        {title && <Heading>{title}</Heading>}
+        {text && <Text>{text}</Text>}
         {children && <Text>{children}</Text>}
       </Box>
     </ButtonWrapper>
+  );
+};
+
+export const LoadingTile = ({ count = 1 }) => {
+  return (
+    <LoadingContainer>
+      {Array.from({ length: count }).map((_, index) => (
+        <Wrapper key={index}>
+          <Skeleton variant="text" width="60%" />
+          <Skeleton variant="text" width="40%" />
+          <Skeleton variant="text" width="40%" />
+        </Wrapper>
+      ))}
+    </LoadingContainer>
   );
 };
