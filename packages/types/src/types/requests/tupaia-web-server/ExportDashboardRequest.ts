@@ -6,7 +6,7 @@
 export interface Params {
   projectCode: string;
   entityCode: string;
-  dashboardName: string;
+  dashboardCode: string;
 }
 export interface ResBody {
   contents: Buffer;
