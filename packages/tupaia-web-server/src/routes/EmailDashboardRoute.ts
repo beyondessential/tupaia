@@ -6,14 +6,16 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { sendEmail } from '@tupaia/server-utils';
+import { generateUnsubscribeToken, sendEmail } from '@tupaia/server-utils';
 import {
+  Dashboard,
   DashboardMailingList,
   DashboardMailingListEntry,
   Entity,
   Project,
   TupaiaWebEmailDashboardRequest,
 } from '@tupaia/types';
+import { PermissionsError, stringifyQuery } from '@tupaia/utils';
 import { downloadDashboardAsPdf } from '../utils';
 
 export type EmailDashboardRequest = Request<
@@ -25,8 +27,8 @@ export type EmailDashboardRequest = Request<
 
 export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
   public async buildResponse() {
-    const { projectCode, entityCode, dashboardName } = this.req.params;
-    const { dashboardId, baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
+    const { projectCode, entityCode, dashboardCode } = this.req.params;
+    const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -49,27 +51,43 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       filter: {
         code: entityCode,
       },
+      columns: ['id', 'name', 'country_code'],
+    })) as Pick<Entity, 'id' | 'name' | 'country_code'>[];
+    const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
+      filter: { code: dashboardCode },
       columns: ['id', 'name'],
-    })) as Pick<Entity, 'id' | 'name'>[];
+    })) as Pick<Dashboard, 'id' | 'name'>[];
 
-    // TODO: Add check to ensure user has permissions to send the email (RN-1073)
+    const entityPermissions = entity.country_code
+      ? this.req.accessPolicy.getPermissionGroups([entity.country_code])
+      : this.req.accessPolicy.getPermissionGroups(); // country_code is null for project level
 
     const [mailingList] = (await this.req.ctx.services.central.fetchResources(
       'dashboardMailingLists',
       {
         filter: {
-          dashboard_id: dashboardId,
+          dashboard_id: dashboard.id,
           project_id: project.id,
           entity_id: entity.id,
         },
-        columns: ['id'],
+        columns: ['id', 'admin_permission_groups'],
       },
-    )) as Pick<DashboardMailingList, 'id'>[];
+    )) as Pick<DashboardMailingList, 'id' | 'admin_permission_groups'>[];
 
     if (!mailingList) {
-      return {
-        message: `There is no mailing list for dashboard: ${dashboardName} at: ${entity.name} in project: ${projectEntity.name}`,
-      };
+      throw new Error(
+        `There is no mailing list for dashboard: ${dashboard.name} at: ${entity.name} in project: ${projectEntity.name}`,
+      );
+    }
+
+    if (
+      !mailingList.admin_permission_groups.some(permissionGroup =>
+        entityPermissions.includes(permissionGroup),
+      )
+    ) {
+      throw new PermissionsError(
+        `User must belong to one of the mailing list's admin permission groups in order to send the email export`,
+      );
     }
 
     const mailingListEntries = (await this.req.ctx.services.central.fetchResources(
@@ -84,13 +102,13 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     )) as Pick<DashboardMailingListEntry, 'email'>[];
 
     if (mailingListEntries.length === 0) {
-      return { message: 'There are no users subscribed to this dashboard mailing list' };
+      return { message: 'There are no users subscribed to this mailing list' };
     }
 
     const buffer = await downloadDashboardAsPdf(
       projectCode,
       entityCode,
-      dashboardName,
+      dashboard.name,
       baseUrl,
       cookie,
       cookieDomain,
@@ -98,16 +116,27 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     );
 
     const emails = mailingListEntries.map(({ email }) => email);
-    const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboardName}`;
-    const text = `Latest data for the ${dashboardName} dashboard in ${entity.name}.`;
-    const filename = `${projectEntity.name}-${entity.name}-${dashboardName}-export.pdf`;
+    const subject = `Tupaia Dashboard: ${projectEntity.name} ${entity.name} ${dashboard.name}`;
+    const html = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
+    const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
-    sendEmail(emails, {
-      subject,
-      text,
-      attachments: [{ filename, content: buffer }],
+    emails.forEach(email => {
+      const unsubscribeToken = generateUnsubscribeToken(email);
+      const unsubscribeUrl = stringifyQuery(baseUrl, 'unsubscribe', {
+        email,
+        token: unsubscribeToken,
+        mailingListId: mailingList.id,
+      });
+      const unsubscribeHtml = `If you wish to unsubscribe from these emails please click <a href='${unsubscribeUrl}'>here</a>`;
+      const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px; text-align: center;">${unsubscribeHtml}</p>`;
+      return sendEmail(email, {
+        subject,
+        html,
+        signOff,
+        attachments: [{ filename, content: buffer }],
+      });
     });
 
-    return { message: 'Sent dashboard export to the mailing list' };
+    return { message: 'Export successfully sent!' };
   }
 }

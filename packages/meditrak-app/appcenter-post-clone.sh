@@ -6,29 +6,26 @@
 echo "Setting up environment variables"
 env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 
-## Although appcenter generally automatically installs dependencies, it doesn't handle mono-repo
-## internal dependencies (see https://github.com/microsoft/appcenter/issues/278)
-## To manage that, we here manually install external deps, build internal deps, then redirect the
-## package.json entries to the internal filesystem
+# install nvm, yarn
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# workaround to override the v8 alias (see https://intercom.help/appcenter/en/articles/1592748-react-native-builds-fail-with-the-engine-node-is-incompatible-with-this-module-expected-version-x-x-x-error-found-incompatible-module)
-npm config delete prefix
-. ~/.bashrc
+# Workaround for meditrak-app needing node v16 but the monorepo using v14
+echo "16.20.2" > ../../.nvmrc
 nvm install
 nvm use
+npm install -g yarn
 
-# move to the root folder
-cd ../..
+set -x
 
-# install root dependencies
-SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
+# install meditrak-app and root (for shared scripts)
+SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia @tupaia/meditrak-app
 
-# move to meditrak folder
-cd packages/meditrak-app
+# build meditrak-app deps
+yarn workspace @tupaia/access-policy build-dev
+yarn workspace @tupaia/expression-parser build-dev
 
-# build internal dependencies of meditrak
-../../scripts/bash/buildInternalDependencies.sh --packagePath .
-
-# redirect package.json entries for internal dependencies to look locally
-node scripts/fixInternalDepsAppcenter.js
-
+## Appcenter does not support yarn workspaces (https://github.com/microsoft/appcenter/issues/278)
+## Workaround: symlink npm to echo so it doesnt run (appcenter will call `npm install` -> `echo install`)
+ln -sf $(which echo) $(which npm)

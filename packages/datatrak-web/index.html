@@ -4,10 +4,38 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no maximum-scale=1"  />
     <meta name="theme-color" content="#000000" />
+    <title>Tupaia DataTrak</title>
+    <!-- Open Graph for shared links -->
+    <meta property="og:title" content="Tupaia DataTrak" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://datatrak.tupaia.org" />
+    <meta property="og:image" content="https://datatrak.tupaia.org/social-preview.png" />
+    <meta property="og:image:alt" content="Woman using DataTrak app to collect health data" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
       property="og:description"
-      content="Data aggregation, analysis, and visualisation for the most remote settings in the world"
+      content="Data collection and visualisation for the most remote settings in the world"
     />
+    <% if (process.env.REACT_APP_DEPLOYMENT_NAME === 'master' ||
+    process.env.REACT_APP_DEPLOYMENT_NAME === 'main' || process.env.REACT_APP_DEPLOYMENT_NAME ===
+    'production') { %>
+      <!-- Google Analytics -->  
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-P5KF6SLGKR"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-P5KF6SLGKR');
+        </script>
+      <!-- End Google Analytics -->
+
+      <!-- Start of bes-support Zendesk Widget script -->
+      <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=4719227f-a493-431d-a920-41ebcafbcccb"> </script>
+      <!-- End of bes-support Zendesk Widget script -->
+    <% } %>
     <link rel="icon" type="image/png" href="/favicon.ico" />
     <link
       rel="stylesheet"
@@ -20,7 +48,6 @@
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
       crossorigin=""
     />
-    <title>Tupaia Datatrak</title>
   </head>
   <body>
     <noscript>
@@ -28,5 +55,6 @@
     </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
   </body>
 </html>

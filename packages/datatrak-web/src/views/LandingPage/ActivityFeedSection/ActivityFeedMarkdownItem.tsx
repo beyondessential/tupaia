@@ -9,6 +9,15 @@ import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import { MarkdownFeedItem } from '../../../types';
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  > * {
+    font-size: 0.75rem;
+  }
+`;
+
 const Heading = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   margin-bottom: 0.4rem;
@@ -18,6 +27,7 @@ const Image = styled.img`
   max-height: 10rem;
   border-radius: 0.625rem;
   max-width: 100%;
+  margin-top: 0.75rem;
 `;
 
 const Header = styled.div`
@@ -34,17 +44,11 @@ const Logo = styled.img.attrs({
   margin-right: 0.5rem;
 `;
 
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
 export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
   const formattedDate = creationDate ? new Date(creationDate as Date).toLocaleDateString() : '';
   return (
-    <ContentWrapper>
+    <Wrapper>
       <Header>
         <Logo />
         <div>
@@ -60,6 +64,6 @@ export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedI
           alt={`Image for feed item ${templateVariables?.title}`}
         />
       )}
-    </ContentWrapper>
+    </Wrapper>
   );
 };

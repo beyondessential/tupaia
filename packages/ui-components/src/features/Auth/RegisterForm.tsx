@@ -88,9 +88,22 @@ export const RegisterForm = ({
         <>
           {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
-            <FormInput name="firstName" label="First name" required Input={AuthFormTextField} />
-            <FormInput name="lastName" label="Last name" required Input={AuthFormTextField} />
             <FormInput
+              id="firstName"
+              name="firstName"
+              label="First name"
+              required
+              Input={AuthFormTextField}
+            />
+            <FormInput
+              id="lastName"
+              name="lastName"
+              label="Last name"
+              required
+              Input={AuthFormTextField}
+            />
+            <FormInput
+              id="emailAddress"
               name="emailAddress"
               label="Email"
               type="email"
@@ -99,11 +112,13 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              id="contactNumber"
               name="contactNumber"
               label="Contact number (optional)"
               Input={AuthFormTextField}
             />
             <FormInput
+              id="password"
               name="password"
               label="Password"
               type="password"
@@ -112,6 +127,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              id="passwordConfirm"
               name="passwordConfirm"
               label="Confirm password"
               type="password"
@@ -123,10 +139,23 @@ export const RegisterForm = ({
               }}
               Input={AuthFormTextField}
             />
-            <FormInput name="employer" label="Employer" required Input={AuthFormTextField} />
-            <FormInput name="position" label="Position" required Input={AuthFormTextField} />
+            <FormInput
+              id="employer"
+              name="employer"
+              label="Employer"
+              required
+              Input={AuthFormTextField}
+            />
+            <FormInput
+              id="position"
+              name="position"
+              label="Position"
+              required
+              Input={AuthFormTextField}
+            />
             <FullWidthColumn>
               <FormInput
+                id="hasAgreed"
                 name="hasAgreed"
                 label={
                   <TermsText>

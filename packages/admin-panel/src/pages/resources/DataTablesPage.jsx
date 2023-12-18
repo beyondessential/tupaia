@@ -48,6 +48,15 @@ const FIELDS = [
 const COLUMNS = [
   ...FIELDS,
   {
+    Header: 'Export',
+    source: 'id',
+    type: 'export',
+    actionConfig: {
+      exportEndpoint: 'dataTable',
+      fileName: '{code}',
+    },
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
@@ -56,6 +65,8 @@ const COLUMNS = [
       editEndpoint: DATA_TABLES_ENDPOINT,
       fields: FIELDS,
       FieldsComponent: DataTableEditFields,
+      displayUsedBy: true,
+      recordType: 'dataTable',
       extraDialogProps: {
         fullWidth: true,
         maxWidth: 'xl',
@@ -85,14 +96,24 @@ const CREATE_CONFIG = {
   },
 };
 
+const IMPORT_CONFIG = {
+  title: 'Import Data Table',
+  actionConfig: {
+    importEndpoint: 'dataTables',
+  },
+};
+const EDITOR_CONFIG = { displayUsedBy: true };
+
 export const DataTablesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data-Tables"
     endpoint={DATA_TABLES_ENDPOINT}
     columns={COLUMNS}
+    importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={onProcessDataForSave}
+    editorConfig={EDITOR_CONFIG}
   />
 );
 

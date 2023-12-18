@@ -42,6 +42,8 @@ export const AreaTooltip = ({
 }: AreaTooltipProps) => {
   return (
     <Tooltip
+      // workaround for tooltips not re-rendering when permanent changes (see: https://stackoverflow.com/questions/67610706/dynamic-permanent-property-for-tooltip-leaflet)
+      key={`${orgUnitName}-${permanent}-${sticky}`}
       pane="tooltipPane"
       direction="auto"
       opacity={1}

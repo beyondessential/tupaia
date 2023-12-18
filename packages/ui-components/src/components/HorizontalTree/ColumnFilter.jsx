@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import { TextField } from '@tupaia/ui-components';
+import { TextField } from '../Inputs';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 

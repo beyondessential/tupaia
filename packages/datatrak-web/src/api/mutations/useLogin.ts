@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { useFromLocation } from '../../utils';
+import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
@@ -30,6 +30,9 @@ export const useLogin = () => {
       });
     },
     {
+      onMutate: () => {
+        gaEvent('login', 'Login', 'Attempt');
+      },
       onSuccess: ({ user }) => {
         queryClient.invalidateQueries();
         if (from) {
