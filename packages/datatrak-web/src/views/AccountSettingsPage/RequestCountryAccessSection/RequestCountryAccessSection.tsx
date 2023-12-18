@@ -5,30 +5,13 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-  Box as MuiBox,
-  Paper,
-  Table as MuiTable,
-  TableBody as MuiTableBody,
-  TableCell as MuiTableCell,
-  TableContainer as MuiTableContainer,
-  TableHead as MuiTableHead,
-  TableRow as MuiTableRow,
-  Typography,
-} from '@material-ui/core';
+import { Box as MuiBox, Typography } from '@material-ui/core';
+import { AccessGrantedCountryList } from './AccessGrantedCountryList.tsx';
 import { AccountSettingsSection } from '../AccountSettingsSection.tsx';
 import { Button } from '../../../components';
 import { ProjectSelectModal } from '../../../layout/UserMenu/ProjectSelectModal.tsx';
 import { RequestCountryAccessForm } from './RequestCountryAccessForm.tsx';
-import { useCountryAccessList, useCurrentUser } from '../../../api';
-import { Country, Project } from '@tupaia/types';
-
-interface CountryAccess {
-  id: Country['id'];
-  name: Country['name'];
-  hasAccess: boolean;
-  accessRequests: Project['code'][];
-}
+import { useCurrentUser } from '../../../api';
 
 const ProjectButton = styled(Button).attrs({
   variant: 'text',
@@ -60,45 +43,14 @@ const Title = styled(Typography).attrs({
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
-const StyledTableContainer = styled(MuiTableContainer).attrs({
-  elevation: 0,
-  component: Paper,
-})`
-  border: 1px solid ${({ theme }) => theme.palette.grey[400]};
-  margin-block: 1.2rem;
-
-  .MuiTableBody-root {
-    display: flex;
-    flex-direction: column;
-    margin-block: 0.1875rem;
-  }
-
-  .MuiTableCell-root {
-    border: none;
-  }
-`;
-
-const StyledTableHeader = styled(MuiTableHead)`
-  border-block-end: 1px solid ${({ theme }) => theme.palette.grey[400]};
-`;
-
-const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
-  font-size: inherit;
-`;
-
 export const RequestCountryAccessSection = () => {
   const {
     project: { name: projectName },
   } = useCurrentUser();
-  const { data: countries } = useCountryAccessList();
 
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const openProjectModal = () => setProjectModalOpen(true);
   const closeProjectModal = () => setProjectModalOpen(false);
-
-  const grantedCountries: CountryAccess[] = countries.filter(
-    (country: CountryAccess) => country.hasAccess,
-  );
 
   return (
     <AccountSettingsSection
@@ -111,34 +63,7 @@ export const RequestCountryAccessSection = () => {
         </TitleWrapper>
       }
       description="Select the countries you would like access to and the reason for requesting access"
-      supplement={
-        <>
-          <StyledTableContainer>
-            <MuiTable size="small">
-              <StyledTableHeader>
-                <MuiTableRow>
-                  <MuiTableCell>Countries with access granted</MuiTableCell>
-                </MuiTableRow>
-              </StyledTableHeader>
-              <MuiTableBody>
-                {grantedCountries.length > 0 ? (
-                  grantedCountries.map(country => (
-                    <MuiTableRow key={country.id}>
-                      <MuiTableCell>{country.name}</MuiTableCell>
-                    </MuiTableRow>
-                  ))
-                ) : (
-                  <MuiTableCell>
-                    <MuiTableRow>
-                      <EmptyStateLabel>None</EmptyStateLabel>
-                    </MuiTableRow>
-                  </MuiTableCell>
-                )}
-              </MuiTableBody>
-            </MuiTable>
-          </StyledTableContainer>
-        </>
-      }
+      supplement={<AccessGrantedCountryList />}
     >
       <RequestCountryAccessForm />
       {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
