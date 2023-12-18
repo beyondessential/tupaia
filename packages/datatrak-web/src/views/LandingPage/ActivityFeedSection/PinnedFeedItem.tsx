@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
-import { useCurrentProjectActivityFeed } from '../../../api/queries';
-import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
 import styled from 'styled-components';
-import { ActivityFeedItem } from './ActivityFeedItem';
+import { Link } from '@material-ui/core';
+import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { PinIcon as BasePinIcon } from '../../../components';
+import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
+import { ActivityFeedItem } from './ActivityFeedItem';
 
 const PinIcon = styled(BasePinIcon)`
   position: absolute;
@@ -25,8 +26,14 @@ export const PinnedFeedItem = () => {
   const { pinned } = activityFeed.pages[0];
 
   if (!pinned) return null;
+  const { link } = pinned.templateVariables;
   return (
-    <ActivityFeedItem>
+    <ActivityFeedItem
+      button={!!link}
+      component={link ? Link : undefined}
+      href={link}
+      target="_blank"
+    >
       <PinIcon />
       <ActivityFeedMarkdownItem feedItem={pinned} />
     </ActivityFeedItem>
