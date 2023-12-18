@@ -59497,6 +59497,12 @@ export const ProjectResponseSchema = {
 		"name": {
 			"type": "string"
 		},
+		"names": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -59570,6 +59576,12 @@ export const ResBodySchema = {
 		},
 		"name": {
 			"type": "string"
+		},
+		"names": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		},
 		"hasAccess": {
 			"type": "boolean"
