@@ -16,7 +16,17 @@ import {
 interface MultiValueRowProps {
   report: ViewReport;
   config: ViewConfig;
+  isExport?: boolean;
 }
+
+const StyledTable = styled(Table)<{
+  $isExport?: boolean;
+}>`
+  th.MuiTableCell-root,
+  td.MuiTableCell-root {
+    ${props => props.$isExport && 'color: currentColor;'}
+  }
+`;
 
 const TableCell = styled(MuiTableCell)`
   border: none;
@@ -33,7 +43,7 @@ const TableHeaderCell = styled(TableCell)`
   text-decoration: underline;
 `;
 
-export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) => {
+export const MultiValueRow = ({ report: { data }, config, isExport }: MultiValueRowProps) => {
   const { presentationOptions } = (config || {}) as MultiValueRowViewConfig;
   const { leftColumn, middleColumn, rightColumn, rowHeader } = presentationOptions || {};
 
@@ -41,7 +51,7 @@ export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) 
   const showTableHeader = headerCells.length > 0 || rowHeader;
 
   return (
-    <Table>
+    <StyledTable $isExport={isExport}>
       {showTableHeader && (
         <TableHead>
           <TableRow>
@@ -64,6 +74,6 @@ export const MultiValueRow = ({ report: { data }, config }: MultiValueRowProps) 
           </TableRow>
         ))}
       </TableBody>
-    </Table>
+    </StyledTable>
   );
 };

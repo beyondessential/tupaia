@@ -5,16 +5,17 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebUnsubscribeRequest } from '@tupaia/types';
+import { TupaiaWebUnsubscribeDashboardRequest } from '@tupaia/types';
+import { assertIsNotNullish } from '@tupaia/tsutils';
 
-export type UnsubscribeRequest = Request<
-  TupaiaWebUnsubscribeRequest.Params,
-  TupaiaWebUnsubscribeRequest.ResBody,
-  TupaiaWebUnsubscribeRequest.ReqBody,
-  TupaiaWebUnsubscribeRequest.ReqQuery
+export type UnsubscribeDashboardRequest = Request<
+  TupaiaWebUnsubscribeDashboardRequest.Params,
+  TupaiaWebUnsubscribeDashboardRequest.ResBody,
+  TupaiaWebUnsubscribeDashboardRequest.ReqBody,
+  TupaiaWebUnsubscribeDashboardRequest.ReqQuery
 >;
 
-export class UnsubscribeRoute extends Route<UnsubscribeRequest> {
+export class UnsubscribeDashboardRoute extends Route<UnsubscribeDashboardRequest> {
   public async buildResponse() {
     const {
       ctx,
@@ -55,12 +56,16 @@ export class UnsubscribeRoute extends Route<UnsubscribeRequest> {
       );
     }
 
+    const { email, unsubscribeTime } = this.req.body;
+    assertIsNotNullish(email);
+    assertIsNotNullish(unsubscribeTime);
+
     const [dashboardMailingListEntry] = await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {
           dashboard_mailing_list_id: dashboardMailingList.id,
-          email: this.req.body.email,
+          email,
         },
       },
     );
@@ -76,7 +81,7 @@ export class UnsubscribeRoute extends Route<UnsubscribeRequest> {
       {},
       {
         subscribed: false,
-        unsubscribed_time: this.req.body.unsubscribeTime,
+        unsubscribed_time: unsubscribeTime,
       },
     );
 
