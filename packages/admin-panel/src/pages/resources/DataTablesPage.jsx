@@ -48,6 +48,15 @@ const FIELDS = [
 const COLUMNS = [
   ...FIELDS,
   {
+    Header: 'Export',
+    source: 'id',
+    type: 'export',
+    actionConfig: {
+      exportEndpoint: 'dataTable',
+      fileName: '{code}',
+    },
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
@@ -87,6 +96,12 @@ const CREATE_CONFIG = {
   },
 };
 
+const IMPORT_CONFIG = {
+  title: 'Import Data Table',
+  actionConfig: {
+    importEndpoint: 'dataTables',
+  },
+};
 const EDITOR_CONFIG = { displayUsedBy: true };
 
 export const DataTablesPage = ({ getHeaderEl }) => (
@@ -94,6 +109,7 @@ export const DataTablesPage = ({ getHeaderEl }) => (
     title="Data-Tables"
     endpoint={DATA_TABLES_ENDPOINT}
     columns={COLUMNS}
+    importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={onProcessDataForSave}

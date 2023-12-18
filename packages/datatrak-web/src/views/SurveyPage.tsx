@@ -50,13 +50,8 @@ const SurveyScreenContainer = styled.div<{
 const SurveyPageInner = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const {
-    formData,
-    isSuccessScreen,
-    isResponseScreen,
-    cancelModalOpen,
-    closeCancelConfirmation,
-  } = useSurveyForm();
+  const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
+    useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -107,7 +102,7 @@ export const SurveyPage = () => {
     if (!survey) return;
     const { projectId } = survey;
     if (user.isLoggedIn && projectId && user?.projectId !== projectId) {
-      // Update the user's preferred project if they start a survey in a different project to the saved project
+      // Update the user's preferred project if they start a survey in a different project to the saved project. Tell the user this has been done, so that they understand why their landing page will be changed
       editUser(
         {
           projectId,

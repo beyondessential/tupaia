@@ -39,6 +39,13 @@ export function getSortByKey(key, options) {
   return getSortByExtractedValue(o => o[key], options);
 }
 
+/**
+ * @template T
+ * @param {T[]} array
+ * @param { (string | (value: T) => unknown)[] } valueMappers
+ * @param {*} orders
+ * @returns {T[]}
+ */
 export const orderBy = (array, valueMappers, orders = []) => {
   const comparators = valueMappers.map((valueMapper, i) => {
     const mapValue =

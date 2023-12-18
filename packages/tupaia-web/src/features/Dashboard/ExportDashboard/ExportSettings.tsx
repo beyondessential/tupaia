@@ -7,13 +7,17 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
-import { Typography, FormGroup } from '@material-ui/core';
+import { Typography, FormGroup, Divider as BaseDivider } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-components';
-import { useEntity, useProject } from '../../../api/queries';
+import { useDashboards, useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { useDashboardMailingList } from '../../../utils';
+import { ExportSettingLabel } from './ExportSettingLabel';
+import { ExportSettingsInstructions } from './ExportSettingsInstructions';
+import { MailingListButton } from './MailingListButton';
 
 const ButtonGroup = styled.div`
   padding-top: 2.5rem;
@@ -61,14 +65,14 @@ const ExportSetting = styled.div`
   border: ${({ theme }) => theme.palette.text.secondary};
   border-width: 0.1rem;
   border-style: solid;
-  border-radius: 10px;
+  border-radius: 7px;
 
   .MuiFormGroup-root {
     align-content: start;
   }
 
   .MuiFormControlLabel-label {
-    font-size: 0.875rem;
+    font-size: 0.825rem;
   }
 
   display: flex;
@@ -81,14 +85,8 @@ const ExportSetting = styled.div`
   }
 `;
 
-const Legend = styled.legend`
-  color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-`;
-
 const Checkbox = styled(BaseCheckbox)`
-  margin: 0.5rem 0 0 1rem;
+  margin: 0;
   .MuiButtonBase-root {
     padding: 0;
     margin-right: 0.5rem;
@@ -143,12 +141,6 @@ const PreviewContainer = styled.div`
   overflow-x: hidden;
 `;
 
-const Instructions = styled(Typography)`
-  color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 0.875rem;
-  line-height: 1.4;
-`;
-
 const PreviewTitle = styled(Typography).attrs({
   variant: 'h2',
 })`
@@ -158,15 +150,24 @@ const PreviewTitle = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
+const Divider = styled(BaseDivider)`
+  background-color: ${({ theme }) => theme.palette.text.secondary};
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
   selectedDashboardItems: string[];
 }
 
-export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
+export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
+  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const mailingList = useDashboardMailingList();
+  const showMailingListButton = mailingList && mailingList.isAdmin;
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
@@ -190,7 +191,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
     requestPdfExport({
       projectCode,
       entityCode,
-      dashboardName,
+      dashboardCode: activeDashboard.code,
       selectedDashboardItems,
     });
 
@@ -205,12 +206,14 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
         <Container>
           <ExportSettingsContainer>
             <ExportSettingsInstructionsContainer>
-              <Instructions>Edit export settings and click 'Download'.</Instructions>
+              <ExportSettingsInstructions>
+                Edit export settings and click 'Download'.
+              </ExportSettingsInstructions>
             </ExportSettingsInstructionsContainer>
             <ExportSetting>
               <FormGroup>
                 <fieldset>
-                  <Legend>Display options (coming soon)</Legend>
+                  <ExportSettingLabel>Display options (coming soon)</ExportSettingLabel>
                   <Checkbox
                     label="Export with Labels"
                     value
@@ -218,6 +221,7 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                     color="primary"
                     checked={false}
                     disabled
+                    size="small"
                   />
                   <Checkbox
                     label="Export with Table"
@@ -226,9 +230,14 @@ export const Preview = ({ onClose, selectedDashboardItems = [] }: ExportDashboar
                     color="primary"
                     checked
                     disabled
+                    size="small"
                   />
                 </fieldset>
               </FormGroup>
+              {showMailingListButton ? <Divider /> : null}
+              {showMailingListButton ? (
+                <MailingListButton selectedDashboardItems={selectedDashboardItems} />
+              ) : null}
             </ExportSetting>
           </ExportSettingsContainer>
           {!isLoading && (

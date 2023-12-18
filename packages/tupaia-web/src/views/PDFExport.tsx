@@ -6,8 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { useDashboards, useEntity } from '../api/queries';
 import { useSearchParams } from 'react-router-dom';
+import { useDashboards, useEntity } from '../api/queries';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
 
