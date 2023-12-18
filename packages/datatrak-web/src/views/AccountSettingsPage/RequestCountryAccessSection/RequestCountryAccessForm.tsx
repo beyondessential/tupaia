@@ -114,9 +114,10 @@ interface RequestCountryAccessFormFields {
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
+  const projectCode = project?.code ?? null;
 
   const queryResult = useCountryAccessList();
-  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data;
+  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data ?? [];
   const accessListIsLoading = queryResult.isLoading;
 
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
@@ -159,10 +160,10 @@ export const RequestCountryAccessForm = () => {
     reset,
   } = formContext;
 
-  const applicableCountries = countries?.filter(
-    (country: TupaiaWebCountryAccessListRequest.CountryAccess) =>
-      project?.names.includes(country.name),
-  );
+  const applicableCountries =
+    countries?.filter((country: TupaiaWebCountryAccessListRequest.CountryAccess) =>
+      project?.names?.includes(country.name),
+    ) ?? [];
 
   const submissionShouldBeDisabled =
     isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
@@ -171,7 +172,7 @@ export const RequestCountryAccessForm = () => {
     requestCountryAccess({
       entityIds: formData.countryIds,
       message: formData.reasonForAccess,
-      projectCode: project.code,
+      projectCode: projectCode,
     });
   }
 
@@ -181,8 +182,8 @@ export const RequestCountryAccessForm = () => {
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <CountryChecklist key={countryChecklistKey}>
-            {applicableCountries?.map(({ id, name, hasAccess, accessRequests }) => {
-              const hasRequestedAccess = accessRequests.includes(project.code);
+            {applicableCountries.map(({ id, name, hasAccess, accessRequests }) => {
+              const hasRequestedAccess = accessRequests.includes(projectCode);
               const getTooltip = () => {
                 if (hasAccess) return 'You already have access';
                 if (hasRequestedAccess) return 'Approval in progress';

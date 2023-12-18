@@ -41,7 +41,7 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 export const AccessGrantedCountryList = () => {
   const queryResult = useCountryAccessList();
-  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data;
+  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data ?? [];
   const grantedCountries = countries.filter(
     (country: TupaiaWebCountryAccessListRequest.CountryAccess) => country.hasAccess,
   );
