@@ -94,7 +94,7 @@ export async function buildProjectDataForFrontend(project, req) {
 
 export async function getProjects(req, res) {
   const { query = {} } = req;
-  const { showExcludedProjects = false } = query;
+  const { showExcludedProjects = true } = query;
   const data = await req.models.project.getAllProjectDetails();
   // Filter out projects that should not be shown on the frontend, if the query param is set.
   // defaults to false, because tupaia-web and web-frontend should be false, whereas datatrak-web will be true
