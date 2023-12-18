@@ -10,15 +10,8 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Country, Project } from '@tupaia/types';
+import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { useCountryAccessList } from '../../../api';
-
-interface CountryAccess {
-  id: Country['id'];
-  name: Country['name'];
-  hasAccess: boolean;
-  accessRequests: Project['code'][];
-}
 
 const StyledTableContainer = styled(MuiTableContainer).attrs({
   elevation: 0,
@@ -48,8 +41,9 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 export const AccessGrantedCountryList = () => {
   const { data: countries } = useCountryAccessList();
-  const grantedCountries: CountryAccess[] =
-    countries?.filter((country: CountryAccess) => country.hasAccess) ?? [];
+  const grantedCountries: TupaiaWebCountryAccessListRequest.ResBody[] = countries.filter(
+    (country: TupaiaWebCountryAccessListRequest.ResBody) => country.hasAccess,
+  );
 
   return (
     <StyledTableContainer>
