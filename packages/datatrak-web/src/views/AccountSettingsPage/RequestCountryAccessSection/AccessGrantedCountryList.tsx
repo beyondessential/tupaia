@@ -40,9 +40,10 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 `;
 
 export const AccessGrantedCountryList = () => {
-  const { data: countries } = useCountryAccessList();
-  const grantedCountries: TupaiaWebCountryAccessListRequest.ResBody[] = countries.filter(
-    (country: TupaiaWebCountryAccessListRequest.ResBody) => country.hasAccess,
+  const queryResult = useCountryAccessList();
+  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data;
+  const grantedCountries = countries.filter(
+    (country: TupaiaWebCountryAccessListRequest.CountryAccess) => country.hasAccess,
   );
 
   return (
@@ -55,7 +56,7 @@ export const AccessGrantedCountryList = () => {
         </StyledTableHeader>
         <MuiTableBody>
           {grantedCountries.length > 0 ? (
-            grantedCountries.map(country => (
+            grantedCountries.map((country: TupaiaWebCountryAccessListRequest.CountryAccess) => (
               <MuiTableRow key={country.id}>
                 <MuiTableCell>{country.name}</MuiTableCell>
               </MuiTableRow>

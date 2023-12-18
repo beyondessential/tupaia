@@ -6,7 +6,7 @@ import { Country, Project } from '../../models';
 
 export type Params = Record<string, never>;
 
-interface CountryAccess {
+export interface CountryAccess {
   id: Country['id'];
   name: Country['name'];
   hasAccess: boolean;
