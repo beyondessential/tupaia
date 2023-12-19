@@ -140,18 +140,19 @@ export const SurveySideMenu = () => {
           {screenMenuItems?.map((screen, i) => {
             const num = i + 1;
             return (
-              <SurveyMenuItem
-                key={screen.id}
-                to={`./${num}`}
-                $active={screenNumber === num}
-                onClick={onChangeScreen}
-                $isInstructionOnly={!screen.screenNumber}
-              >
-                {screen.screenNumber && (
-                  <SurveyScreenNumber>{screen.screenNumber}:</SurveyScreenNumber>
-                )}
-                <SurveyScreenTitle>{screen.text}</SurveyScreenTitle>
-              </SurveyMenuItem>
+              <li key={screen.id}>
+                <SurveyMenuItem
+                  to={`./${num}`}
+                  $active={screenNumber === num}
+                  onClick={onChangeScreen}
+                  $isInstructionOnly={!screen.screenNumber}
+                >
+                  {screen.screenNumber && (
+                    <SurveyScreenNumber>{screen.screenNumber}:</SurveyScreenNumber>
+                  )}
+                  <SurveyScreenTitle>{screen.text}</SurveyScreenTitle>
+                </SurveyMenuItem>
+              </li>
             );
           })}
         </SurveyMenuContent>

@@ -14,14 +14,9 @@
     "build": "npm run --prefix ../../ package:build:vite",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "start-fullstack": "npm-run-all -c -l -p start-servers start-dev",
-    "start-psss-server": "yarn workspace @tupaia/psss-server start-dev",
-    "start-entity-server": "yarn workspace @tupaia/entity-server start-dev",
-    "start-central-server": "yarn workspace @tupaia/central-server start-dev",
-    "start-report-server": "yarn workspace @tupaia/report-server start-dev",
+    "start-stack": "yarn package:start-stack psss",
     "test": "yarn test:jest",
     "test:jest": "yarn package:test --env=jsdom",
-    "start-servers": "npm-run-all -c -l -p start-psss-server start-entity-server start-central-server start-report-server",
     "start-dev": "yarn package:start:vite"
   },
   "browserslist": [
