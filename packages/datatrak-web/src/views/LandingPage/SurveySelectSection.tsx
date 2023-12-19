@@ -134,6 +134,6 @@ export const SurveySelectSection = () => (
         </Text>
       </TextWrapper>
     </SurveyAlertContent>
-    <SurveysImage src="/surveys.svg" alt="survey administrator" />
+    <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
   </SurveyAlert>
 );

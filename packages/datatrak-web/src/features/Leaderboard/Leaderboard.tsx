@@ -5,11 +5,10 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { SpinningLoader } from '@tupaia/ui-components';
+import { useCurrentUser } from '../../api';
 import { useLeaderboard, useUserRewards } from '../../api/queries';
 import { UserRewardsSection } from './UserRewardsSection';
 import { LeaderboardTable } from './LeaderboardTable';
-import { useCurrentUser } from '../../api';
 
 const ScrollBody = styled.div`
   overflow: auto;
@@ -27,8 +26,8 @@ const ScrollBody = styled.div`
 export const Leaderboard = () => {
   const user = useCurrentUser();
   const { data: userRewards, isSuccess } = useUserRewards();
-  const { data: leaderboard, isLoading } = useLeaderboard(user.projectId);
-  if (isLoading) return <SpinningLoader />;
+  const { data: leaderboard } = useLeaderboard(user.projectId);
+
   return (
     <ScrollBody>
       {isSuccess && <UserRewardsSection pigs={userRewards.pigs} coconuts={userRewards.coconuts} />}

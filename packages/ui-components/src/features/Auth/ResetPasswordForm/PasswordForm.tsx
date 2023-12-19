@@ -68,6 +68,7 @@ export const PasswordForm = ({
         {formInputs.map(({ name, label, options }) => (
           <FormInput
             key={name}
+            id={name}
             name={name}
             label={label}
             type="password"

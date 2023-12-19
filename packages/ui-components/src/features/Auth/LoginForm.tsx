@@ -78,7 +78,6 @@ export const LoginForm = ({
           id="password"
           name="password"
           type="password"
-          options={FORM_FIELD_VALIDATION.PASSWORD}
           required
           Input={AuthFormTextField}
           label="Password"
