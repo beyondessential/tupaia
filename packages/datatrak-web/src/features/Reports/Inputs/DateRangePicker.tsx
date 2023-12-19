@@ -10,6 +10,26 @@ import { DateTimePicker as BaseDateTimePicker } from '@tupaia/ui-components';
 import { InputHelperText } from '../../../components';
 import { InputWrapper } from './InputWrapper';
 
+// get the date format string from the browser's locale
+const getDateFormatString = () => {
+  const formatObj = new Intl.DateTimeFormat('default').formatToParts(new Date());
+
+  return formatObj
+    .map(obj => {
+      switch (obj.type) {
+        case 'day':
+          return 'dd';
+        case 'month':
+          return 'MM';
+        case 'year':
+          return 'yyyy';
+        default:
+          return obj.value;
+      }
+    })
+    .join('');
+};
+
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
@@ -57,6 +77,9 @@ export const DateRangePicker = () => {
   const { errors, getValues } = useFormContext();
 
   const errorMessage = errors.startDate?.message || errors.endDate?.message;
+  const dateFormat = getDateFormatString();
+
+  const placeholder = dateFormat.toLowerCase();
 
   return (
     <InputWrapper>
@@ -84,6 +107,8 @@ export const DateRangePicker = () => {
               inputRef={ref}
               error={!!errorMessage}
               aria-describedby={errorMessage ? 'date-error-message' : undefined}
+              placeholder={placeholder}
+              format={dateFormat}
             />
           )}
         />
@@ -110,6 +135,8 @@ export const DateRangePicker = () => {
               inputRef={ref}
               error={!!errorMessage}
               aria-describedby={errorMessage ? 'date-error-message' : undefined}
+              placeholder={placeholder}
+              format={dateFormat}
             />
           )}
         />
