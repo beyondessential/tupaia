@@ -1,19 +1,15 @@
-import {
-  Paper,
-  Table as MuiTable,
-  TableBody as MuiTableBody,
-  TableCell as MuiTableCell,
-  TableContainer as MuiTableContainer,
-  TableHead as MuiTableHead,
-  TableRow as MuiTableRow,
-  Typography,
-} from '@material-ui/core';
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import styled from 'styled-components';
+import { Paper, TableCell, TableContainer, TableHead, Typography } from '@material-ui/core';
 import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { useCountryAccessList } from '../../../api';
 
-const StyledTableContainer = styled(MuiTableContainer).attrs({
+const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,
   component: Paper,
 })`
@@ -31,7 +27,7 @@ const StyledTableContainer = styled(MuiTableContainer).attrs({
   }
 `;
 
-const StyledTableHeader = styled(MuiTableHead)`
+const StyledTableHeader = styled(TableHead)`
   border-block-end: 1px solid ${({ theme }) => theme.palette.grey[400]};
 `;
 
@@ -48,28 +44,28 @@ export const AccessGrantedCountryList = () => {
 
   return (
     <StyledTableContainer>
-      <MuiTable size="small">
+      <Table size="small">
         <StyledTableHeader>
-          <MuiTableRow>
-            <MuiTableCell>Countries with access granted</MuiTableCell>
-          </MuiTableRow>
+          <TableRow>
+            <TableCell>Countries with access granted</TableCell>
+          </TableRow>
         </StyledTableHeader>
-        <MuiTableBody>
+        <TableBody>
           {grantedCountries.length > 0 ? (
             grantedCountries.map((country: TupaiaWebCountryAccessListRequest.CountryAccess) => (
-              <MuiTableRow key={country.id}>
-                <MuiTableCell>{country.name}</MuiTableCell>
-              </MuiTableRow>
+              <TableRow key={country.id}>
+                <TableCell>{country.name}</TableCell>
+              </TableRow>
             ))
           ) : (
-            <MuiTableRow>
-              <MuiTableCell>
+            <TableRow>
+              <TableCell>
                 <EmptyStateLabel>Loading…</EmptyStateLabel>
-              </MuiTableCell>
-            </MuiTableRow>
+              </TableCell>
+            </TableRow>
           )}
-        </MuiTableBody>
-      </MuiTable>
+        </TableBody>
+      </Table>
     </StyledTableContainer>
   );
 };
