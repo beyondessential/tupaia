@@ -36,7 +36,7 @@ const StyledFieldset = styled.fieldset`
     grid-template: auto / 1fr 1fr;
   }
 
-  .FormLabel-root {
+  .MuiFormLabel-root {
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${theme.typography.fontWeightMedium};
   }
