@@ -31,7 +31,7 @@ const StyledField = styled(TextField)<TextFieldProps>`
     order: 2;
   }
 
-  .MuiInputBase-input {
+  .MuiInputBase-input.MuiOutlinedInput-input {
     font-size: 0.875rem;
     padding: 0.6rem 0.2rem;
   }

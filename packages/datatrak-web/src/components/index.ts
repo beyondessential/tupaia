@@ -11,7 +11,7 @@ export { Button } from './Button';
 export * from './SelectList';
 export { TextInput } from './TextInput';
 export { Toast } from './Toast';
-export { Tile } from './Tile';
+export { Tile, LoadingTile } from './Tile';
 export * from './Icons';
 export { SmallModal } from './SmallModal';
 export { CancelConfirmModal } from './CancelConfirmModal';
