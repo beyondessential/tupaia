@@ -33,8 +33,8 @@ const Title = styled(Typography).attrs({
 `;
 
 interface AccountSettingsSectionProps {
-  title?: ReactNode | string;
-  description?: ReactNode | string;
+  title?: ReactNode;
+  description?: ReactNode;
   supportingInfo?: ReactNode;
   children?: ReactNode;
 }
@@ -48,7 +48,7 @@ export const AccountSettingsSection = ({
   return (
     <Wrapper>
       <AccountSettingsColumn>
-        {typeof title === 'string' ? <Title>{title}</Title> : title}
+        <Title>{title}</Title>
         {description}
         {supportingInfo}
       </AccountSettingsColumn>
