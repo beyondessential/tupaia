@@ -89,8 +89,7 @@ export const PersonalDetailsForm = () => {
   }
   const { isLoading, mutate: updateUser } = useEditUser(handleSubmissionSuccess);
 
-  const submissionShouldBeDisabled =
-    !isDirty || isValidating || !isValid || isSubmitting || isLoading;
+  const formIsNotSubmissible = !isDirty || isValidating || !isValid || isSubmitting || isLoading;
 
   function onSubmit(
     userDetails: PersonalDetailsFormFields,
@@ -178,7 +177,7 @@ export const PersonalDetailsForm = () => {
           <Button
             type="submit"
             tooltip={isDirty ? null : 'Change details to save changes'}
-            disabled={submissionShouldBeDisabled}
+            disabled={formIsNotSubmissible}
             fullWidth
           >
             {isSubmitting || isLoading ? 'Saving' : 'Save changes'}
