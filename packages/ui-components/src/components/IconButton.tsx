@@ -2,14 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
 import styled from 'styled-components';
-import MuiIconButton, { IconButtonProps } from '@material-ui/core/IconButton';
-import { OverrideableComponentProps } from '../types';
+import MuiIconButton from '@material-ui/core/IconButton';
 
-export const IconButton = (props: OverrideableComponentProps<IconButtonProps>) => (
-  <MuiIconButton color="primary" {...props} />
-);
+// export as a styled component so that we can forward refs without any other configuration
+export const IconButton = styled(MuiIconButton).attrs({
+  color: 'primary',
+})``;
 
 export const LightIconButton = styled(IconButton)`
   color: white;
