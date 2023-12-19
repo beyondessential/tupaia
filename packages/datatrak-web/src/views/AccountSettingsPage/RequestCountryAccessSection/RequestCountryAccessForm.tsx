@@ -126,7 +126,7 @@ export const RequestCountryAccessForm = () => {
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t submit your request. Please try again'),
-    onSettled: () => reset(),
+    onSettled: reset,
     onSuccess: response => {
       successToast(response.message);
       rerenderCountryChecklist();
