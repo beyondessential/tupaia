@@ -19,23 +19,20 @@ interface ResBody {
 
 export const useRequestProjectAccess = (options?: {
   onError?: (error: Error) => void;
-  onQueriesInvalidated?: () => void;
   onSettled?: () => void;
   onSuccess?: (response: ResBody) => void;
 }) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
-    ({ entityIds, message, projectCode }: RequestCountryAccessParams) => {
-      console.log({ entityIds, message, projectCode });
-      return post('me/requestCountryAccess', {
+    ({ entityIds, message, projectCode }: RequestCountryAccessParams) =>
+      post('me/requestCountryAccess', {
         data: {
           entityIds: Array.isArray(entityIds) ? entityIds : [entityIds], // Ensure entityIds is an array, as when there is only one option in a checkbox list, react-hook-form formats this as a single value string
           message,
           projectCode,
         },
-      });
-    },
+      }),
     {
       onError: (error: Error) => {
         if (options?.onError) options.onError(error);
