@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Box as MuiBox, FormLabel as MuiFormLabel, useMediaQuery } from '@material-ui/core';
+import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
 import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Country, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { ensure } from '@tupaia/tsutils';
@@ -36,7 +36,7 @@ const StyledFieldset = styled.fieldset`
     grid-template: auto / 1fr 1fr;
   }
 
-  .MuiFormLabel-root {
+  .FormLabel-root {
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${theme.typography.fontWeightMedium};
   }
@@ -47,14 +47,14 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
-const CountryChecklistWrapper = styled(MuiBox)`
+const CountryChecklistWrapper = styled(Box)`
   display: block flex;
   flex-direction: column;
   height: 18.625rem;
 `;
 
-/** Matches styling of .MuiFormLabel-root in ui-components TextField */
-const StyledFormLabel = styled(MuiFormLabel)`
+/** Matches styling of .FormLabel-root in ui-components TextField */
+const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 3px;
@@ -90,7 +90,7 @@ const StyledCheckbox = styled(Checkbox)`
   }
 `;
 
-const StyledBox = styled(MuiBox)`
+const StyledBox = styled(Box)`
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
