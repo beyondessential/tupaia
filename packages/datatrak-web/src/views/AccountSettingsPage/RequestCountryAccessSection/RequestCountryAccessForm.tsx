@@ -181,13 +181,10 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset>
+      <StyledFieldset disabled={isSubmitting || requestIsLoading}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          <CountryChecklist
-            disabled={!project || isSubmitting || requestIsLoading}
-            key={countryChecklistKey}
-          >
+          <CountryChecklist disabled={!project} key={countryChecklistKey}>
             {applicableCountries.map(({ id, name, hasAccess, accessRequests }) => {
               const hasRequestedAccess = accessRequests.includes(ensure(projectCode));
               const getTooltip = () => {
