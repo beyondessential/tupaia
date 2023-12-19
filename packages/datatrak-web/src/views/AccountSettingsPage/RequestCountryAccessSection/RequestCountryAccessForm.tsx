@@ -121,9 +121,7 @@ export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
   const projectCode = project?.code;
 
-  const queryResult = useCountryAccessList();
-  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data ?? [];
-  const accessListIsLoading = queryResult.isLoading;
+  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
 
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
     onError: error =>
