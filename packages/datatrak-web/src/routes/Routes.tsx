@@ -5,7 +5,6 @@
 
 import React from 'react';
 import { Navigate, Route, Routes as RouterRoutes } from 'react-router-dom';
-import { FullPageLoader } from '@tupaia/ui-components';
 import {
   LandingPage,
   SurveySelectPage,
@@ -21,7 +20,7 @@ import {
   AccountSettingsPage,
   ReportsPage,
 } from '../views';
-import { useCurrentUser, useUser } from '../api';
+import { useCurrentUser } from '../api';
 import { ROUTES } from '../constants';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
