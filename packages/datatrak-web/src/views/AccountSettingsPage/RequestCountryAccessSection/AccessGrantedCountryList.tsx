@@ -22,7 +22,7 @@ const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,
   component: Paper,
 })`
-  border: 1px solid ${({ theme }) => theme.palette.grey[400]};
+  border: 1px solid ${({ theme }) => theme.palette.divider};
   margin-block: 1.2rem;
 
   .MuiTableBody-root {
@@ -37,7 +37,7 @@ const StyledTableContainer = styled(TableContainer).attrs({
 `;
 
 const StyledTableHeader = styled(TableHead)`
-  border-block-end: 1px solid ${({ theme }) => theme.palette.grey[400]};
+  border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
 const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
