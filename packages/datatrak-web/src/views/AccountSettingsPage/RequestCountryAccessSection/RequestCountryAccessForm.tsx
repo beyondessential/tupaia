@@ -113,8 +113,8 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 interface RequestCountryAccessFormFields {
-  countryIds: Country['id'][];
-  reasonForAccess?: string;
+  entityIds: Country['id'][];
+  message?: string;
 }
 
 export const RequestCountryAccessForm = () => {
@@ -123,10 +123,24 @@ export const RequestCountryAccessForm = () => {
 
   const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
 
+  const formContext = useForm<RequestCountryAccessFormFields>({
+    defaultValues: {
+      entityIds: [],
+      message: '',
+    } as RequestCountryAccessFormFields,
+    mode: 'onChange',
+  });
+  const {
+    formState: { isSubmitting, isValidating, isValid },
+    handleSubmit,
+    register,
+    reset: resetForm,
+  } = formContext;
+
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t submit your request. Please try again'),
-    onSettled: reset,
+    onSettled: resetForm,
     onSuccess: response => {
       successToast(response.message);
       rerenderCountryChecklist();
@@ -149,20 +163,6 @@ export const RequestCountryAccessForm = () => {
 
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const formContext = useForm<RequestCountryAccessFormFields>({
-    defaultValues: {
-      countryIds: [],
-      reasonForAccess: '',
-    } as RequestCountryAccessFormFields,
-    mode: 'onChange',
-  });
-  const {
-    formState: { isSubmitting, isValidating, isValid },
-    handleSubmit,
-    register,
-    reset,
-  } = formContext;
-
   const applicableCountries =
     countries?.filter((country: TupaiaWebCountryAccessListRequest.CountryAccess) =>
       project?.names?.includes(country.name),
@@ -171,11 +171,11 @@ export const RequestCountryAccessForm = () => {
   const formIsNotSubmissible =
     !project || isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
 
-  function onSubmit(formData: RequestCountryAccessFormFields) {
+  function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
-      entityIds: formData.countryIds,
-      message: formData.reasonForAccess,
-      projectCode: projectCode,
+      entityIds,
+      message,
+      projectCode,
     });
   }
 
