@@ -5,7 +5,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Paper, TableCell, TableContainer, TableHead, Typography } from '@material-ui/core';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@material-ui/core';
 import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { useCountryAccessList } from '../../../api';
 
