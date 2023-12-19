@@ -57,7 +57,7 @@ const CountryChecklistWrapper = styled(Box)`
 const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
-  margin-bottom: 3px;
+  margin-block-end: 0.1875rem;
 `;
 
 const CountryChecklist = styled.fieldset`
