@@ -27,3 +27,5 @@ export const ROUTES = {
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+
+export const ADMIN_ONLY_ROUTES = [ROUTES.REPORTS];

@@ -39,16 +39,6 @@ const LoggedInRedirect = ({ children }) => {
   return <Navigate to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
 };
 
-const ReportsRedirect = () => {
-  const { isLoading, data: user } = useUser();
-  if (isLoading) {
-    return <FullPageLoader />;
-  }
-  if (!user?.hasAdminPanelAccess) {
-    return <Navigate to={ROUTES.HOME} replace={true} />;
-  }
-  return <ReportsPage />;
-};
 /**
  * This Router is using [version 6.3]{@link https://reactrouter.com/en/v6.3.0}, as later versions are not supported by our TS setup. See [this issue here]{@link https://github.com/remix-run/react-router/discussions/8364}
  * This means the newer 'createBrowserRouter' and 'RouterProvider' can't be used here.
@@ -81,7 +71,9 @@ export const Routes = () => {
               <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
             </Route>
           </Route>
+          <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
         </Route>
+        {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
         {/* PUBLIC ROUTES*/}
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
@@ -109,14 +101,7 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
           </Route>
         </Route>
-        <Route
-          path={ROUTES.REPORTS}
-          element={
-            <PrivateRoute>
-              <ReportsRedirect />
-            </PrivateRoute>
-          }
-        />
+
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>

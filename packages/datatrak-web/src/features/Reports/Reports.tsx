@@ -11,6 +11,7 @@ import { Alert, Form as BaseForm, SpinningLoader } from '@tupaia/ui-components';
 import { Button } from '../../components';
 import { useExportSurveyResponses, ExportSurveyResponsesParams } from '../../api/mutations';
 import { EntitySelectorInput, DateRangePicker, SurveysInput, EntityLevelInput } from './Inputs';
+import { COUNTRY_LEVEL_ENTITY, ENTITY_LEVEL_ENTITY } from './constants';
 
 const Wrapper = styled.div`
   position: relative;
@@ -65,13 +66,23 @@ const LoadingContainer = styled.div`
 `;
 
 const DEFAULT_FORM_VALUES = {
-  entityLevel: 'country',
+  entityLevel: COUNTRY_LEVEL_ENTITY,
   startDate: null,
   endDate: null,
   surveys: [],
   country: null,
   entity: [],
 };
+
+type DataType = {
+  surveys: { value: string }[];
+  entityLevel: typeof COUNTRY_LEVEL_ENTITY | typeof ENTITY_LEVEL_ENTITY;
+  country: { code: string };
+  entity: { value: string }[];
+  startDate?: string;
+  endDate?: string;
+};
+
 export const Reports = () => {
   const {
     mutate: exportSurveyResponses,
@@ -83,37 +94,38 @@ export const Reports = () => {
     defaultValues: DEFAULT_FORM_VALUES,
   });
 
-  const { reset, handleSubmit } = formContext;
+  const { reset, handleSubmit, watch } = formContext;
 
   const onReset = () => {
     reset(DEFAULT_FORM_VALUES);
   };
 
-  const onSubmit = (data: {
-    surveys: { value: string }[];
-    entityLevel: 'country' | 'entity';
-    country: { code: string };
-    entity: { value: string }[];
-    startDate?: string;
-    endDate?: string;
-  }) => {
-    const { surveys, entityLevel, country, entity, startDate, endDate } = data;
-
-    const surveyCodes = surveys.map(({ value }: { value: string }) => value).join(',');
-
+  const getSubmitFormParams = (data: DataType) => {
     const params = {
-      surveyCodes,
-      startDate,
-      endDate,
+      surveyCodes: data.surveys.map(({ value }: { value: string }) => value).join(','),
+      startDate: data.startDate,
+      endDate: data.endDate,
     } as ExportSurveyResponsesParams;
-    if (entityLevel === 'country') {
-      params.countryCode = country.code;
+    if (data.entityLevel === COUNTRY_LEVEL_ENTITY) {
+      return {
+        ...params,
+        countryCode: data.country.code,
+      };
     } else {
-      params.entityIds = entity.map(({ value }: { value: string }) => value).join(',');
+      return {
+        ...params,
+        entityIds: data.entity.map(({ value }: { value: string }) => value).join(','),
+      };
     }
+  };
+
+  const onSubmit = (data: DataType) => {
+    const params = getSubmitFormParams(data);
+
     exportSurveyResponses(params);
   };
 
+  const selectedEntityLevel = watch('entityLevel');
   return (
     <Wrapper>
       {isLoading && (
@@ -130,9 +142,8 @@ export const Reports = () => {
         )}
         <SurveysInput />
         <EntityLevelInput />
-        {/** Render both of these, and then handle hiding with isActive prop. This means that when we change entityLevel we don't get weird rendering of selected values from the wrong entity type */}
-        <EntitySelectorInput entityLevel="country" />
-        <EntitySelectorInput entityLevel="entity" />
+
+        <EntitySelectorInput key={selectedEntityLevel} selectedEntityLevel={selectedEntityLevel} />
         <DateRangePicker />
         <ButtonGroup>
           <Button variant="text" color="primary" onClick={onReset}>

@@ -8,26 +8,26 @@ import throttle from 'lodash.throttle';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useEntities } from '../../../api';
 import { InputHelperText } from '../../../components';
+import { COUNTRY_LEVEL_ENTITY, ENTITY_LEVEL_ENTITY } from '../constants';
 import { ReportAutocomplete } from './ReportAutocomplete';
 import { InputWrapper } from './InputWrapper';
 
 interface AsyncAutocompleteProps {
-  entityLevel?: 'country' | 'entity';
+  selectedEntityLevel?: typeof ENTITY_LEVEL_ENTITY | typeof COUNTRY_LEVEL_ENTITY;
 }
 
-export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => {
+export const EntitySelectorInput = ({ selectedEntityLevel }: AsyncAutocompleteProps) => {
   const [searchText, setSearchText] = useState('');
 
-  const { watch, errors } = useFormContext();
+  const { errors } = useFormContext();
 
-  const selectedEntityLevel = watch('entityLevel');
-  const isActive = selectedEntityLevel === entityLevel;
+  const isCountryInput = selectedEntityLevel === COUNTRY_LEVEL_ENTITY;
 
   const { data: entities, isLoading } = useEntities({
     filter: {
       type: {
-        comparator: entityLevel === 'country' ? '=' : '!=',
-        comparisonValue: 'country',
+        comparator: isCountryInput ? '=' : '!=',
+        comparisonValue: COUNTRY_LEVEL_ENTITY,
       },
       name: searchText
         ? {
@@ -42,26 +42,24 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
 
   useEffect(() => {
     // Reset search text when input is hidden
-    if (!isActive) {
-      setSearchText('');
-    }
-  }, [isActive]);
+    setSearchText('');
+  }, [selectedEntityLevel]);
 
-  if (!isActive) return null;
+  const label = isCountryInput ? 'Country' : 'Entities';
 
-  const label = entityLevel === 'country' ? 'Country' : 'Entities';
+  const error = errors[selectedEntityLevel];
 
   return (
     <InputWrapper>
       <Controller
-        name={entityLevel}
+        name={selectedEntityLevel}
         rules={{ required: 'Required' }}
         render={({ ref, onChange, value, name }, { invalid }) => (
           <ReportAutocomplete
             label={label}
             loading={isLoading}
             error={invalid}
-            id={entityLevel}
+            id={selectedEntityLevel}
             getOptionSelected={(option, selected) => option.value === selected.value}
             options={
               entities?.map(({ name: entityName, id, code, type: entityType }) => ({
@@ -81,7 +79,7 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
             name={name}
             inputValue={searchText}
             muiProps={{
-              multiple: entityLevel === 'entity',
+              multiple: !isCountryInput,
             }}
             onChange={(_, newValue) => {
               // the onChange function expected by react-hook-form and mui are different
@@ -92,9 +90,9 @@ export const EntitySelectorInput = ({ entityLevel }: AsyncAutocompleteProps) => 
           />
         )}
       />
-      {errors[entityLevel] && (
+      {error && (
         <InputHelperText error id="entities-error-message">
-          {(errors[entityLevel] as Error).message}
+          {(error as Error).message}
         </InputHelperText>
       )}
     </InputWrapper>
