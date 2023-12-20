@@ -313,17 +313,20 @@ export interface DashboardItemUpdate {
   'report_code'?: string | null;
 }
 export interface DashboardMailingList {
+  'admin_permission_groups': string[];
   'dashboard_id': string;
   'entity_id': string;
   'id': string;
   'project_id': string;
 }
 export interface DashboardMailingListCreate {
+  'admin_permission_groups'?: string[];
   'dashboard_id': string;
   'entity_id': string;
   'project_id': string;
 }
 export interface DashboardMailingListUpdate {
+  'admin_permission_groups'?: string[];
   'dashboard_id'?: string;
   'entity_id'?: string;
   'id'?: string;
@@ -671,7 +674,7 @@ export interface Entity {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityCreate {
   'attributes'?: any | null;
@@ -684,7 +687,7 @@ export interface EntityCreate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type': EntityType;
 }
 export interface EntityUpdate {
   'attributes'?: any | null;
@@ -698,7 +701,7 @@ export interface EntityUpdate {
   'parent_id'?: string | null;
   'point'?: any | null;
   'region'?: any | null;
-  'type'?: EntityType | null;
+  'type'?: EntityType;
 }
 export interface EntityHierarchy {
   'canonical_types'?: string[] | null;
