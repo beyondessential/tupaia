@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Box as MuiBox, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { AccessGrantedCountryList } from './AccessGrantedCountryList.tsx';
 import { AccountSettingsSection } from '../AccountSettingsSection.tsx';
 import { Button } from '../../../components';
@@ -13,34 +13,44 @@ import { ProjectSelectModal } from '../../../layout/UserMenu/ProjectSelectModal.
 import { RequestCountryAccessForm } from './RequestCountryAccessForm.tsx';
 import { useCurrentUser } from '../../../api';
 
+/**
+ * Ensures placement of project button inline with section heading. Necessary because tooltip attribute on the button
+ * wraps it in an element whose outer `display` type is `block`.
+ */
+const ProjectButtonWrapper = styled(Box)`
+  display: inline-block;
+`;
+
 const ProjectButton = styled(Button).attrs({
+  disableFocusRipple: true,
+  disableRipple: true,
   variant: 'text',
 })`
-  margin: 0;
-  padding-block: 0;
   color: ${({ theme }) => theme.palette.text.secondary};
-  padding-inline: 1rem;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
 
-  &:hover {
+  :before {
+    color: ${({ theme }) => theme.palette.text.secondary};
+    content: '|';
+    margin-inline: 0.25rem;
+  }
+
+  :focus,
+  :focus-visible,
+  :hover {
     background: none;
     color: ${({ theme }) => theme.palette.action.hover};
     text-decoration: underline;
   }
-`;
 
-const TitleWrapper = styled(MuiBox)`
-  align-items: baseline;
-  display: block flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  margin-block-end: 0.6rem;
-`;
-
-const Title = styled(Typography).attrs({
-  variant: 'h2',
-})`
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  .MuiButton-label {
+    font-size: inherit;
+    inline-size: fit-content;
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 export const RequestCountryAccessSection = () => {
@@ -51,21 +61,26 @@ export const RequestCountryAccessSection = () => {
   const openProjectModal = () => setProjectModalOpen(true);
   const closeProjectModal = () => setProjectModalOpen(false);
 
+  const description = (
+    <>
+      <p>Select the countries you would like access to and the reason for requesting access</p>
+      <AccessGrantedCountryList />
+    </>
+  );
+
   return (
     <AccountSettingsSection
       title={
-        <TitleWrapper>
-          <Title variant="h2">Request country access</Title>
-          <ProjectButton
-            onClick={openProjectModal}
-            tooltip={!!projectName ? undefined : 'Change project'}
-          >
-            {projectName ?? 'Change project'}
-          </ProjectButton>
-        </TitleWrapper>
+        <>
+          Request country access
+          <ProjectButtonWrapper>
+            <ProjectButton onClick={openProjectModal} tooltip="Change project">
+              {projectName ?? 'Change project'}
+            </ProjectButton>
+          </ProjectButtonWrapper>
+        </>
       }
-      description="Select the countries you would like access to and the reason for requesting access"
-      supportingInfo={<AccessGrantedCountryList />}
+      description={description}
     >
       <RequestCountryAccessForm />
       {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}

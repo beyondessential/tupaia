@@ -36,14 +36,12 @@ const Title = styled(Typography).attrs({
 interface AccountSettingsSectionProps {
   title?: ReactNode;
   description?: ReactNode;
-  supportingInfo?: ReactNode;
   children?: ReactNode;
 }
 
 export const AccountSettingsSection = ({
   title,
   description,
-  supportingInfo,
   children,
 }: AccountSettingsSectionProps) => {
   return (
@@ -51,7 +49,6 @@ export const AccountSettingsSection = ({
       <AccountSettingsColumn>
         <Title>{title}</Title>
         {description}
-        {supportingInfo}
       </AccountSettingsColumn>
       {children}
     </Wrapper>
