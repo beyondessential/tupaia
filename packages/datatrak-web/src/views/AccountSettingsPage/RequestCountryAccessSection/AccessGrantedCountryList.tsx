@@ -45,11 +45,9 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 `;
 
 export const AccessGrantedCountryList = () => {
-  const queryResult = useCountryAccessList();
-  const countries: TupaiaWebCountryAccessListRequest.ResBody = queryResult.data ?? [];
-  const grantedCountries = countries.filter(
-    (country: TupaiaWebCountryAccessListRequest.CountryAccess) => country.hasAccess,
-  );
+  const { data: countries, isFetched, isLoading } = useCountryAccessList();
+  const grantedCountries = countries?.filter(country => country.hasAccess) ?? [];
+  const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
     <StyledTableContainer>
@@ -61,15 +59,15 @@ export const AccessGrantedCountryList = () => {
         </StyledTableHeader>
         <TableBody>
           {grantedCountries.length > 0 ? (
-            grantedCountries.map((country: TupaiaWebCountryAccessListRequest.CountryAccess) => (
-              <TableRow key={country.id}>
-                <TableCell>{country.name}</TableCell>
+            grantedCountries.map(({ id, name }) => (
+              <TableRow key={id}>
+                <TableCell>{name}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
               <TableCell>
-                <EmptyStateLabel>Loading…</EmptyStateLabel>
+                <EmptyStateLabel>={emptyStateText}</EmptyStateLabel>
               </TableCell>
             </TableRow>
           )}
