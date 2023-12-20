@@ -270,8 +270,7 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   await configImporter.import();
 
   // Clear  any orphaned questions (i.e. questions no longer included in a survey)
-  // See RN-1106
-  // await deleteOrphanQuestions(models);
+  await deleteOrphanQuestions(models);
 }
 
 async function processOptionSetName(models, name, excelRowNumber, tabName) {
