@@ -15,7 +15,6 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { useCountryAccessList } from '../../../api';
 
 const StyledTableContainer = styled(TableContainer).attrs({
@@ -45,8 +44,8 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 `;
 
 export const AccessGrantedCountryList = () => {
-  const { data: countries, isFetched, isLoading } = useCountryAccessList();
-  const grantedCountries = countries?.filter(country => country.hasAccess) ?? [];
+  const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
+  const grantedCountries = countries.filter(country => country.hasAccess);
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
