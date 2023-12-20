@@ -69,41 +69,37 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       },
     ]);
 
-    const [
-      vanuatuAdminBuild,
-      laosAdminBuild,
-      vanuatuDonorBuild,
-      laosDonorBuild,
-    ] = await buildAndInsertSurveyResponses(models, [
-      {
-        id: vanuatuAdminResponseId,
-        surveyCode: 'TEST_SURVEY_1',
-        entityCode: vanuatuEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: laosAdminResponseId,
-        surveyCode: 'TEST_SURVEY_1',
-        entityCode: laosEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: vanuatuDonorResponseId,
-        surveyCode: 'TEST_SURVEY_2',
-        entityCode: vanuatuEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-      {
-        id: laosDonorResponseId,
-        surveyCode: 'TEST_SURVEY_2',
-        entityCode: laosEntity.code,
-        data_time: '2020-01-31T09:00:00',
-        answers: [],
-      },
-    ]);
+    const [vanuatuAdminBuild, laosAdminBuild, vanuatuDonorBuild, laosDonorBuild] =
+      await buildAndInsertSurveyResponses(models, [
+        {
+          id: vanuatuAdminResponseId,
+          surveyCode: 'TEST_SURVEY_1',
+          entityCode: vanuatuEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: laosAdminResponseId,
+          surveyCode: 'TEST_SURVEY_1',
+          entityCode: laosEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: vanuatuDonorResponseId,
+          surveyCode: 'TEST_SURVEY_2',
+          entityCode: vanuatuEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+        {
+          id: laosDonorResponseId,
+          surveyCode: 'TEST_SURVEY_2',
+          entityCode: laosEntity.code,
+          data_time: '2020-01-31T09:00:00',
+          answers: [],
+        },
+      ]);
 
     laosAdminResponseId = laosAdminBuild.surveyResponse.id;
     laosDonorResponseId = laosDonorBuild.surveyResponse.id;
@@ -220,7 +216,7 @@ describe('Permissions checker for GETSurveyResponses', async () => {
       const projectId = 'testId';
       // The test data doesn't have project ids, but still want to make sure that it handles the param and returns the correct rewards
       const rewards = await getRewardsForUser(app.database, userId, projectId);
-      expect(rewards.coconuts).to.equal('4');
+      expect(rewards.coconuts).to.equal(0);
     });
   });
 });

@@ -56,9 +56,11 @@ const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
   }
 
   // Delete all the same references
-  const noReferenceMapOverlayItems = children.map(mapOverlayItem => {
+  const noReferenceMapOverlayItems: OverlayChild[] = children.map(mapOverlayItem => {
     const { info, ...restValues } = mapOverlayItem;
-    delete info!.reference;
+    if (info) {
+      info.reference = undefined;
+    }
     return { ...restValues, info };
   });
 
@@ -112,11 +114,12 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
     }
 
     // Breaking orchestration server convention and accessing the db directly
-    const mapOverlayRelations = await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
-      mapOverlays
-        .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
-        .map((overlay: MapOverlay) => overlay.id),
-    );
+    const mapOverlayRelations =
+      await this.req.models.mapOverlayGroupRelation.findParentRelationTree(
+        mapOverlays
+          .filter((overlay: MapOverlay) => !overlay.config?.hideFromMenu)
+          .map((overlay: MapOverlay) => overlay.id),
+      );
 
     // Fetch all the groups we've used
     const overlayGroupIds: string[] = mapOverlayRelations.map(
@@ -167,10 +170,10 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
         name: parentEntry.name,
         info,
         children: orderBy(children, [
-          (child: OverlayChild) => (child.sortOrder === null ? 1 : 0), // Puts null values last
+          child => (child.sortOrder === null ? 1 : 0), // Puts null values last
           'sortOrder',
           'name',
-        ]).map((child: OverlayChild) => {
+        ]).map(child => {
           // We only needed the sortOrder for sorting, strip it before we return
           const { sortOrder, ...restOfChild } = child;
           return restOfChild;

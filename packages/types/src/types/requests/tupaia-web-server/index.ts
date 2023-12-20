@@ -18,3 +18,6 @@ export * as TupaiaWebProjectRequest from './ProjectRequest';
 export * as TupaiaWebReportRequest from './ReportRequest';
 export * as TupaiaWebRequestCountryAccessRequest from './RequestCountryAccessRequest';
 export * as TupaiaWebUserRequest from './UserRequest';
+export * as TupaiaWebSubscribeDashboardRequest from './SubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardRequest from './UnsubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardMailingListRequest from './UnsubscribeDashboardMailingListRequest';

@@ -32,7 +32,7 @@ const getRequestOptions = (options?: RequestParametersWithMethod) => {
 const getErrorMessage = (error: any) => {
   const { data } = error.response;
 
-  let message;
+  let message = error.message;
 
   // Some of the endpoints return 'details' with the message instead of 'message' or 'error'
   if (data.details) {
@@ -48,7 +48,7 @@ const getErrorMessage = (error: any) => {
   }
 
   // remove axios `api error ...:` prefix
-  return message?.includes(':') ? message?.split(': ')[1] : message;
+  return message?.includes(':') ? message?.split(': ').slice(1).join(': ') : message;
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety

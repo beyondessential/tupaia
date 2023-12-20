@@ -6,18 +6,30 @@ import nodemailer from 'nodemailer';
 import { getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 import Mail from 'nodemailer/lib/mailer';
 
-const DEFAULT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
+const TEXT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
+const HTML_SIGN_OFF = '<p>Cheers,<br><br>The Tupaia Team</p>';
 
 type MailOptions = {
   subject?: string;
   text?: string;
+  html?: string;
   attachments?: Mail.Attachment[];
   signOff?: string;
 };
 
 export const sendEmail = async (to: string | string[], mailOptions: MailOptions = {}) => {
-  const { subject, text, attachments, signOff = DEFAULT_SIGN_OFF } = mailOptions;
+  const {
+    subject,
+    text,
+    html,
+    attachments,
+    signOff = html ? HTML_SIGN_OFF : TEXT_SIGN_OFF,
+  } = mailOptions;
   const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
+
+  if (text && html) {
+    throw new Error('Only text or html can be sent in an email, not both');
+  }
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD || !SITE_EMAIL_ADDRESS) {
     return {};
@@ -36,11 +48,15 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   // Make sure it doesn't send real users mail from the dev server
   const sendTo = getIsProductionEnvironment() ? to : (requireEnv('DEV_EMAIL_ADDRESS') as string);
 
+  const fullText = text ? `${text}\n${signOff}` : undefined;
+  const fullHtml = html ? `${html}<br>${signOff}` : undefined;
+
   return transporter.sendMail({
     from: SITE_EMAIL_ADDRESS,
     to: sendTo,
     subject,
     attachments,
-    text: `${text}\n${signOff}`,
+    text: fullText,
+    html: fullHtml,
   });
 };

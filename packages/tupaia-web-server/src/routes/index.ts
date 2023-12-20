@@ -32,3 +32,12 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
+export { SubscribeDashboardRoute, SubscribeDashboardRequest } from './SubscribeDashboardRoute';
+export {
+  UnsubscribeDashboardRoute,
+  UnsubscribeDashboardRequest,
+} from './UnsubscribeDashboardRoute';
+export {
+  UnsubscribeDashboardMailingListRoute,
+  UnsubscribeDashboardMailingListRequest,
+} from './UnsubscribeDashboardMailingListRoute';

@@ -50,13 +50,8 @@ const SurveyScreenContainer = styled.div<{
 const SurveyPageInner = () => {
   const { surveyCode, screenNumber } = useParams<SurveyParams>();
   const { isLoading } = useSurvey(surveyCode);
-  const {
-    formData,
-    isSuccessScreen,
-    isResponseScreen,
-    cancelModalOpen,
-    closeCancelConfirmation,
-  } = useSurveyForm();
+  const { formData, isSuccessScreen, isResponseScreen, cancelModalOpen, closeCancelConfirmation } =
+    useSurveyForm();
   const resolver = useValidationResolver();
   const formContext = useForm({ defaultValues: formData, reValidateMode: 'onSubmit', resolver });
 
@@ -81,10 +76,11 @@ const SurveyPageInner = () => {
 
 // The form provider has to be outside the outlet so that the form context is available to all. This is also so that the side menu can be outside of the 'SurveyLayout' page, because otherwise it rerenders on survey screen change, which makes it close and open again every time you change screen via the jump-to menu. The survey side menu needs to be inside the form provider so that it can access the form context to save form data
 export const SurveyPage = () => {
-  const { countryCode } = useParams<SurveyParams>();
+  const { countryCode, surveyCode } = useParams<SurveyParams>();
   const { mutateAsync: editUser } = useEditUser();
   const user = useCurrentUser();
   const { data: surveyCountry } = useCountry(user.project?.code, countryCode);
+  const { data: survey } = useSurvey(surveyCode);
 
   // Update the user's preferred country if they start a survey in a different country
   // Todo: add check for project code once project_ids are added to the survey table
@@ -101,6 +97,20 @@ export const SurveyPage = () => {
       );
     }
   }, [surveyCountry?.code]);
+
+  useEffect(() => {
+    if (!survey) return;
+    const { projectId } = survey;
+    if (user.isLoggedIn && projectId && user?.projectId !== projectId) {
+      // Update the user's preferred project if they start a survey in a different project to the saved project. Tell the user this has been done, so that they understand why their landing page will be changed
+      editUser(
+        {
+          projectId,
+        },
+        { onSuccess: () => successToast(`Preferred project updated to ${survey.project?.name}`) },
+      );
+    }
+  }, [survey?.id]);
 
   return (
     <SurveyContext>

@@ -6,10 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { SpinningLoader } from '@tupaia/ui-components';
-import { SectionHeading } from './SectionHeading';
-import { SurveyIcon, Tile } from '../../components';
+import { SurveyIcon, Tile, LoadingTile } from '../../components';
 import { useCurrentUserRecentSurveys } from '../../api';
+import { SectionHeading } from './SectionHeading';
 
 const RecentSurveys = styled.section`
   grid-area: recentSurveys;
@@ -42,36 +41,39 @@ const ScrollBody = styled.div`
 
 export const RecentSurveysSection = () => {
   const { data: recentSurveys = [], isSuccess, isLoading } = useCurrentUserRecentSurveys();
+
   return (
     <RecentSurveys>
       <SectionHeading>Top surveys</SectionHeading>
-      {isLoading && <SpinningLoader />}
-      {isSuccess && (
-        <ScrollBody>
-          {recentSurveys?.length ? (
-            recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
-              <Tile
-                key={`${surveyCode}-${countryName}`}
-                title={surveyName}
-                text={countryName}
-                tooltip={
-                  <>
-                    {surveyName}
-                    <br />
-                    {countryName}
-                  </>
-                }
-                Icon={SurveyIcon}
-                to={`/survey/${countryCode}/${surveyCode}/1`}
-              />
-            ))
-          ) : (
-            <Typography variant="body2" color="textSecondary">
-              No recent surveys to display
-            </Typography>
-          )}
-        </ScrollBody>
-      )}
+      <ScrollBody>
+        {isLoading && <LoadingTile />}
+        {isSuccess && (
+          <>
+            {recentSurveys?.length ? (
+              recentSurveys.map(({ surveyName, surveyCode, countryName, countryCode }) => (
+                <Tile
+                  key={`${surveyCode}-${countryName}`}
+                  title={surveyName}
+                  text={countryName}
+                  tooltip={
+                    <>
+                      {surveyName}
+                      <br />
+                      {countryName}
+                    </>
+                  }
+                  Icon={SurveyIcon}
+                  to={`/survey/${countryCode}/${surveyCode}/1`}
+                />
+              ))
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                No recent surveys to display
+              </Typography>
+            )}
+          </>
+        )}
+      </ScrollBody>
     </RecentSurveys>
   );
 };

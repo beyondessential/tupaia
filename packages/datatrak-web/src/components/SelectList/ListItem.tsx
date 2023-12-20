@@ -70,7 +70,6 @@ const IconWrapper = styled.div`
   width: 1.5rem;
   svg {
     color: ${({ theme }) => theme.palette.primary.main};
-    width: auto;
     height: auto;
   }
 `;
@@ -126,7 +125,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   };
 
   return (
-    <>
+    <li>
       <BaseListItem
         button={button}
         onClick={button ? onClick : null}
@@ -143,6 +142,6 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         {selected && <Check color="primary" />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
-    </>
+    </li>
   );
 };

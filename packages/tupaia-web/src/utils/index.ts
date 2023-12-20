@@ -7,6 +7,7 @@ export { getProjectAccessType } from './getProjectAccessType';
 export { removeUrlSearchParams } from './removeUrlSearchParams';
 export { useModal } from './useModal';
 export { useEntityLink } from './useEntityLink';
+export { useDashboardMailingList } from './useDashboardMailingList';
 export { useDateRanges } from './useDateRanges';
 export { gaEvent } from './ga';
 export { transformDownloadLink } from './transformDownloadLink';

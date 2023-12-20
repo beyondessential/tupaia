@@ -69,10 +69,10 @@ export const UserDetails = () => {
       </div>
       <UserRewards>
         <UserRewardsItem>
-          <Pig /> {userRewards?.pigs} Pigs
+          <Pig /> {userRewards?.pigs}&nbsp;pigs
         </UserRewardsItem>
         <UserRewardsItem>
-          <Coconut /> {userRewards?.coconuts} Coconuts
+          <Coconut /> {userRewards?.coconuts}&nbsp;coconuts
         </UserRewardsItem>
       </UserRewards>
     </UserContent>

@@ -13,11 +13,12 @@ export interface Params {
 interface MailingList {
   entityCode: string;
   isSubscribed: boolean;
+  isAdmin: boolean;
 }
 
 interface DashboardWithMetadata extends Dashboard {
   items: DashboardItem[];
-  mailingLists?: MailingList[];
+  mailingLists: MailingList[];
 }
 export type ResBody = KeysToCamelCase<DashboardWithMetadata>[];
 export type ReqBody = Record<string, never>;

@@ -46,7 +46,7 @@ export const ResetPasswordSuccess = ({ loginLink }: PasswordResetSuccessProps) =
     <Wrapper>
       <CheckIcon />
       <Title>Password reset!</Title>
-      <Description>Your password has been successfully reset.</Description>
+      <Description>Your password has been successfully reset</Description>
       <AuthSubmitButton to={loginLink} component={RouterLink}>
         Back to login
       </AuthSubmitButton>

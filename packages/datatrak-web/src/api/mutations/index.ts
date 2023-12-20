@@ -11,7 +11,7 @@ export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
 export { useSubmitSurvey } from './useSubmitSurvey';
 export { useRequestResetPassword } from './useRequestResetPassword';
-export { useResetPassword } from './useResetPassword';
+export * from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
 export { useOneTimeLogin } from './useOneTimeLogin';
 export { useTupaiaRedirect } from './useTupaiaRedirect';

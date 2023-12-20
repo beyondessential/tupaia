@@ -6,6 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { prettyArray } from '../../utilities';
 
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
@@ -38,17 +40,32 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
   entity_code: {
     Header: 'Entity code',
     source: 'entity.code',
-    editConfig: {
-      sourceKey: 'entity_id',
-      optionsEndpoint: 'entities',
-      optionLabelKey: 'code',
-      optionValueKey: 'id',
-      secondaryLabel: 'Select the entity this dashboard mailing list should be for',
-    },
   },
   entity_name: {
     Header: 'Entity name',
     source: 'entity.name',
+    editConfig: {
+      sourceKey: 'entity_id',
+      optionsEndpoint: 'entities',
+      optionLabelKey: 'name',
+      optionValueKey: 'id',
+      secondaryLabel: 'Select the entity this dashboard mailing list should be for',
+    },
+  },
+  admin_permission_groups: {
+    Header: 'Admin permission groups',
+    source: 'admin_permission_groups',
+    Filter: ArrayFilter,
+    Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'admin_permission_groups',
+      allowMultipleValues: true,
+      secondaryLabel:
+        'Users with any of these permissions can send out the dashboard to the mailing list',
+    },
   },
 };
 
@@ -65,6 +82,7 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
         DASHBOARD_MAILING_LIST_FIELDS.project,
         DASHBOARD_MAILING_LIST_FIELDS.dashboard_code,
         DASHBOARD_MAILING_LIST_FIELDS.entity_name,
+        DASHBOARD_MAILING_LIST_FIELDS.admin_permission_groups,
       ],
     },
   },
@@ -85,6 +103,7 @@ const CREATE_CONFIG = {
       DASHBOARD_MAILING_LIST_FIELDS.project,
       DASHBOARD_MAILING_LIST_FIELDS.dashboard_code,
       DASHBOARD_MAILING_LIST_FIELDS.entity_name,
+      DASHBOARD_MAILING_LIST_FIELDS.admin_permission_groups,
     ],
     title: 'New dashboard mailing list',
   },

@@ -7,12 +7,13 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useMap } from 'react-leaflet';
 import { LegendProps } from '@tupaia/ui-map-components';
+import { useEntity } from '../../../api/queries';
 import { useMapOverlayMapData } from '../utils';
 import { PolygonLayer } from './PolygonLayer';
 import { MarkerLayer } from './MarkerLayer';
-import { useEntity } from '../../../api/queries';
 
 const POINT_ZOOM_LEVEL = 15;
+
 // When entity is selected, zoom to entity
 const useZoomToEntity = () => {
   const { projectCode, entityCode } = useParams();
@@ -21,9 +22,14 @@ const useZoomToEntity = () => {
 
   // This is a replacement for the map positioning being handled in the ui-map-components LeafletMap file. We are doing this because we need access to the user's current zoom level, and are also slowly moving away from class based components to use hooks instead.
   useEffect(() => {
-    if (!entity || !map || (!entity.point && !entity.bounds)) return;
+    if (!entity || !map || (!entity.point && !entity.bounds && !entity.region)) return;
+
     if (entity.bounds) {
       map.flyToBounds(entity.bounds, {
+        animate: false, // don't animate, as it can slow things down a bit
+      });
+    } else if (entity.region) {
+      map.flyToBounds(entity.region, {
         animate: false, // don't animate, as it can slow things down a bit
       });
     } else {
@@ -42,13 +48,16 @@ export const MapOverlaysLayer = ({
 }: {
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
-  const { serieses, measureData, isLoading } = useMapOverlayMapData(hiddenValues);
+  const { serieses, measureData, isLoading, isLoadingDifferentMeasureLevel } =
+    useMapOverlayMapData(hiddenValues);
   useZoomToEntity();
 
   return (
     <>
       <PolygonLayer measureData={measureData} serieses={serieses} isLoading={isLoading} />
-      {isLoading ? null : <MarkerLayer measureData={measureData} serieses={serieses} />}
+      {!isLoadingDifferentMeasureLevel && (
+        <MarkerLayer measureData={measureData} serieses={serieses} isLoading={isLoading} />
+      )}
     </>
   );
 };
