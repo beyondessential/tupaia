@@ -37,7 +37,7 @@ const StyledFieldset = styled.fieldset`
   }
 
   .MuiFormLabel-root {
-    color: ${props => props.theme.palette.text.primary};
+    color: ${theme.palette.text.primary};
     font-weight: ${theme.typography.fontWeightMedium};
   }
 
@@ -65,14 +65,16 @@ const CountryChecklist = styled.fieldset`
   padding-block: 0;
 
   border-radius: 0.1875rem;
-  border: 1px solid ${props => props.theme.palette.grey[400]};
+  border: 1px solid ${theme.palette.grey[400]};
   block-size: 100%;
   overflow-y: scroll; /* fallback */
   overflow-block: scroll;
   padding-inline: 0.87rem;
 
+  // Match styling of ui-components TextField
   :disabled {
-    background-color: #f5f5f5;
+    color: ${theme.palette.text.secondary};
+    background-color: ${theme.palette.grey['100']};
   }
 `;
 
