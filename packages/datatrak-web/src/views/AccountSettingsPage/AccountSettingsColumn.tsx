@@ -4,12 +4,17 @@
  */
 
 import styled from 'styled-components';
+import { Box } from '@material-ui/core';
 
-export const AccountSettingsColumn = styled.div`
+export const AccountSettingsColumn = styled(Box)`
   display: flex;
   flex-direction: column;
-  width: 100%;
   margin-bottom: 1rem;
+  width: 100%;
+
+  & > * {
+    margin-top: 0;
+  }
   &:first-child {
     margin-bottom: 1.9rem;
   }
