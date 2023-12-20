@@ -14,6 +14,7 @@ const Wrapper = styled(Paper).attrs({
 })`
   display: block flex;
   flex-direction: column;
+  column-gap: 1.9rem;
   margin-block-start: 1.5rem;
   padding: 1rem 1.25rem;
 
