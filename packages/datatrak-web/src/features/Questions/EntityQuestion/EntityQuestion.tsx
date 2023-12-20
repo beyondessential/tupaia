@@ -15,7 +15,6 @@ import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters, useAttributeFilter } from './utils';
-import { useSurveyForm } from '../../Survey';
 
 const Container = styled.div`
   width: 100%;
