@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import styled from 'styled-components';
 
-const Label = styled(FormControlLabel)`
+const LabelWrapper = styled(FormControlLabel)`
   align-items: flex-start;
   margin: 0;
 
@@ -39,7 +39,7 @@ interface TextInputProps
 export const TextInput = React.forwardRef<HTMLDivElement, TextInputProps>((props, ref) => {
   const { value, label, name, onChange, id, textInputProps, required, invalid } = props;
   return (
-    <Label
+    <LabelWrapper
       label={
         <FormLabel required={required} error={invalid}>
           {label}
