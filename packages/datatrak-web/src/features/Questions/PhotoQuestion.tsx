@@ -5,8 +5,8 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { SurveyQuestionInputProps } from '../../types';
 import { ImageUploadField } from '@tupaia/ui-components';
+import { SurveyQuestionInputProps } from '../../types';
 import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div`
