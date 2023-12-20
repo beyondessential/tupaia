@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
 import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { Country, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { Country } from '@tupaia/types';
 import { ensure } from '@tupaia/tsutils';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
@@ -121,7 +121,7 @@ export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
   const projectCode = project?.code;
 
-  const { data: countries, isLoading: accessListIsLoading } = useCountryAccessList();
+  const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -163,10 +163,7 @@ export const RequestCountryAccessForm = () => {
 
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const applicableCountries =
-    countries?.filter((country: TupaiaWebCountryAccessListRequest.CountryAccess) =>
-      project?.names?.includes(country.name),
-    ) ?? [];
+  const applicableCountries = countries.filter(country => project?.names?.includes(country.name));
 
   const formIsNotSubmissible =
     !project || isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
