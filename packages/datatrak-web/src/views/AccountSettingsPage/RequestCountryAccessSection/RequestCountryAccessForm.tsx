@@ -93,6 +93,7 @@ export const RequestCountryAccessForm = () => {
   const projectCode = ensure(project?.code);
 
   const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
+  const applicableCountries = countries.filter(country => project?.names?.includes(country.name));
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -124,7 +125,6 @@ export const RequestCountryAccessForm = () => {
    * kicking machine" to force a re-render.
    */
   const [countryChecklistKey, setCountryChecklistKey] = useState(Date.now());
-
   /**
    * HACK: Force a fresh render of the country checklist. Use when a MUI checkbox appears checked,
    * but is actually unchecked (or vice versa).
@@ -133,10 +133,9 @@ export const RequestCountryAccessForm = () => {
 
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const applicableCountries = countries.filter(country => project?.names?.includes(country.name));
-
   const formIsNotSubmissible =
     !project || isValidating || !isValid || isSubmitting || accessListIsLoading || requestIsLoading;
+  const buttonLabel = isSubmitting || requestIsLoading ? 'Submitting request' : 'Request access';
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -181,7 +180,7 @@ export const RequestCountryAccessForm = () => {
             tooltip={isValid ? undefined : 'Select countries to request access'}
             type="submit"
           >
-            {isSubmitting || requestIsLoading ? 'Submitting request' : 'Request access'}
+            {buttonLabel}
           </Button>
         </StyledBox>
       </StyledFieldset>
