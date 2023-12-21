@@ -2,12 +2,10 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { LandingPage, Project, Country, TupaiaWebProjectRequest } from '@tupaia/types';
+import { Country, LandingPage, Project, TupaiaWebProjectRequest } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
 export type SingleProject = TupaiaWebProjectRequest.ResBody & {
-  hasAccess: boolean;
-  hasPendingAccess: boolean;
   homeEntityCode: string;
   defaultDashboard: string;
   name: string;
