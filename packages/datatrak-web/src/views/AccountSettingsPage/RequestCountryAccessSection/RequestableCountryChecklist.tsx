@@ -28,7 +28,7 @@ const Container = styled.fieldset`
   }
 `;
 
-const StyledCheckbox = styled(Checkbox)`
+const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
   margin-block: 0;
 
   .MuiFormControlLabel-root {
@@ -67,7 +67,6 @@ export const RequestableCountryChecklist = ({
 
         return (
           <StyledCheckbox
-            color="primary"
             disabled={hasAccess || hasRequestedAccess}
             id="entityIds"
             inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
