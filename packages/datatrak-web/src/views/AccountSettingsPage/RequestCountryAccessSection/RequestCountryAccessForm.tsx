@@ -6,19 +6,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
+import { Box, FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
 import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { ensure } from '@tupaia/tsutils';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
-import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist.tsx';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
-  ${theme.breakpoints.up('md')} {
+  ${({ theme }) => theme.breakpoints.up('md')} {
     max-inline-size: 44.25rem;
   }
 `;
@@ -33,13 +32,13 @@ const StyledFieldset = styled.fieldset`
   margin: 0;
   padding: 0;
 
-  ${theme.breakpoints.up('sm')} {
+  ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
   }
 
   .MuiFormLabel-root {
-    color: ${theme.palette.text.primary};
-    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${({ theme }) => theme.palette.text.primary};
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   }
 
   // Fix labels appearing over hamburger menu drawer
@@ -131,6 +130,7 @@ export const RequestCountryAccessForm = () => {
     onSuccess: response => successToast(response.message),
   });
 
+  const theme = useTheme();
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
   const formIsNotSubmissible =
