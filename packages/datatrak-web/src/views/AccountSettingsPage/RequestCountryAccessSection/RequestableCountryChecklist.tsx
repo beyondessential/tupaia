@@ -74,6 +74,7 @@ export const RequestableCountryChecklist = ({
       {countries.map(({ id, name, hasAccess, accessRequests }) => {
         const hasRequestedAccess = accessRequests.includes(projectCode);
         const isSelected = selectedCountries.includes(id);
+        const tooltip = getTooltip(hasAccess, hasRequestedAccess);
 
         return (
           <StyledCheckbox
@@ -85,7 +86,7 @@ export const RequestableCountryChecklist = ({
             label={name}
             onChange={() => selectCountry(id, !isSelected)}
             name="entityIds"
-            tooltip={getTooltip(hasAccess, hasRequestedAccess)}
+            tooltip={tooltip}
             value={id}
           />
         );
