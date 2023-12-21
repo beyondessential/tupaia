@@ -24,14 +24,14 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledFieldset = styled.fieldset`
+  block-size: 18.32rem;
   border: none;
-  margin: 0;
-  padding: 0;
-
   display: grid;
   gap: 1.25rem;
   grid-auto-flow: column;
   grid-template: auto auto / auto;
+  margin: 0;
+  padding: 0;
 
   ${theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
@@ -52,6 +52,8 @@ const CountryChecklistWrapper = styled(Box)`
   block-size: 100%;
   display: block flex;
   flex-direction: column;
+  grid-row: 1 / -1;
+  overflow: hidden;
 `;
 
 /** Matches styling of .FormLabel-root in ui-components TextField */
@@ -62,7 +64,6 @@ const StyledFormLabel = styled(FormLabel)`
 `;
 
 const StyledBox = styled(Box)`
-  block-size: fit-content;
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -71,17 +72,15 @@ const StyledBox = styled(Box)`
 // Usage of this component has inline styling. See there for explanation.
 const StyledFormInput = styled(FormInput).attrs({
   fullWidth: true,
-  margin: 'none',
   multiline: true,
-  rows: 15,
 })`
-  flex-grow: 1;
+  block-size: 100%;
   margin: 0;
 
   .MuiInputBase-root {
-    //align-items: start;
-    //block-size: 100%;
-    //max-block-size: 100%;
+    align-items: start;
+    block-size: 100%;
+    max-block-size: 100%;
   }
 
   .MuiInputBase-input {
@@ -115,9 +114,9 @@ export const RequestCountryAccessForm = () => {
   } = formContext;
 
   /*
-   * Semantically, this belongs in RequestableCountryChecklist (child of this component), but setSelectedCountries is
-   * used here to circumvent some quirks of how React Hook Form + MUI checkboxes (mis-)handle multiple checkboxes with
-   * the same control name.
+   * Semantically, this belongs in RequestableCountryChecklist (child of this component), but
+   * setSelectedCountries is used here to circumvent some quirks of how React Hook Form +
+   * MUI checkboxes (mis-)handle multiple checkboxes with the same control name.
    */
   const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
   const resetForm = () => {
@@ -167,8 +166,8 @@ export const RequestCountryAccessForm = () => {
             inputProps={{
               enterKeyHint: 'done',
               // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
-              // dynamically resize it to fit content, so we must do the same to override it.
-              // style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
+              // resize it to fit an integer number of lines, so we must do the same to override it.
+              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
             }}
             label="Reason for access"
             name="message"
