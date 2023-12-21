@@ -88,7 +88,11 @@ interface LeaderboardTableProps {
   leaderboard?: DatatrakWebLeaderboardRequest.ResBody;
 }
 
-export const LeaderboardTable = ({ userRewards, user, leaderboard }: LeaderboardTableProps) => {
+export const LeaderboardTable = ({
+  userRewards,
+  user,
+  leaderboard = [],
+}: LeaderboardTableProps) => {
   return (
     <TableContainer>
       <Table>

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { EntityType, QuestionType } from '@tupaia/types';
-import { getBrowserTimeZone, getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
@@ -46,6 +46,7 @@ describe('processSurveyResponse', () => {
     surveyId: 'theSurveyId',
     countryId: 'theCountryId',
     startTime: 'theStartTime',
+    timezone: 'theTimezone',
   };
 
   const processedResponseData = {
@@ -56,7 +57,7 @@ describe('processSurveyResponse', () => {
     entity_id: 'theCountryId',
     end_time: timestamp,
     timestamp: timestamp,
-    timezone: getBrowserTimeZone(),
+    timezone: 'theTimezone',
     options_created: [],
     entities_upserted: [],
     qr_codes_to_create: [],
