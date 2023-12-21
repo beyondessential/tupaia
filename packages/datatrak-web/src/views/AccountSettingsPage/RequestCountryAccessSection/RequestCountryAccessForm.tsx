@@ -211,6 +211,7 @@ export const RequestCountryAccessForm = () => {
           <StyledFormInput
             disabled={!project}
             fullWidth
+            id="reasonForAccess"
             Input={TextField}
             inputProps={{
               enterKeyHint: 'done',
