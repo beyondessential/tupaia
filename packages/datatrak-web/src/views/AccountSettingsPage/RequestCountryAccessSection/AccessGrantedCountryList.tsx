@@ -66,7 +66,7 @@ export const AccessGrantedCountryList = () => {
           ) : (
             <TableRow>
               <TableCell>
-                <EmptyStateLabel>={emptyStateText}</EmptyStateLabel>
+                <EmptyStateLabel>{emptyStateText}</EmptyStateLabel>
               </TableCell>
             </TableRow>
           )}
