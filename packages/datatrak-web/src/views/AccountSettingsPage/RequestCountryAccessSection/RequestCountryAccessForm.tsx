@@ -7,14 +7,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
+import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
+import { ensure } from '@tupaia/tsutils';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist.tsx';
-import { ensure } from '@tupaia/tsutils';
-import { Entity } from '@tupaia/types';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
@@ -49,9 +49,9 @@ const StyledFieldset = styled.fieldset`
 `;
 
 const CountryChecklistWrapper = styled(Box)`
+  block-size: 100%;
   display: block flex;
   flex-direction: column;
-  height: 18.3rem;
 `;
 
 /** Matches styling of .FormLabel-root in ui-components TextField */
@@ -62,20 +62,26 @@ const StyledFormLabel = styled(FormLabel)`
 `;
 
 const StyledBox = styled(Box)`
+  block-size: fit-content;
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
 `;
 
 // Usage of this component has inline styling. See there for explanation.
-const StyledFormInput = styled(FormInput)`
+const StyledFormInput = styled(FormInput).attrs({
+  fullWidth: true,
+  margin: 'none',
+  multiline: true,
+  rows: 15,
+})`
   flex-grow: 1;
   margin: 0;
 
   .MuiInputBase-root {
-    align-items: start;
-    block-size: 100%;
-    max-block-size: 100%;
+    //align-items: start;
+    //block-size: 100%;
+    //max-block-size: 100%;
   }
 
   .MuiInputBase-input {
@@ -156,20 +162,16 @@ export const RequestCountryAccessForm = () => {
         <StyledBox>
           <StyledFormInput
             disabled={!project}
-            fullWidth
             id="message"
             Input={TextField}
             inputProps={{
               enterKeyHint: 'done',
               // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
               // dynamically resize it to fit content, so we must do the same to override it.
-              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
+              // style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
             }}
             label="Reason for access"
-            margin="none"
-            multiline
             name="message"
-            size="medium"
           />
           <Button
             disabled={formIsNotSubmissible}
