@@ -10,7 +10,7 @@ import { MODAL_ROUTES, DEFAULT_URL } from './constants';
 import { useUser } from './api/queries';
 import { MainLayout } from './layout';
 import { LoadingScreen } from './components';
-import { gaEvent, useEntityLink, useUrlLoginToken } from './utils';
+import { gaEvent, useEntityLink } from './utils';
 
 const HomeRedirect = () => {
   const { isLoggedIn } = useUser();
@@ -52,7 +52,6 @@ const UserPageRedirect = ({ modal }: { modal: MODAL_ROUTES }) => {
  *
  * **/
 export const Routes = () => {
-  useUrlLoginToken();
   const { isLoading, isFetched } = useUser();
 
   const showLoader = isLoading && !isFetched;
