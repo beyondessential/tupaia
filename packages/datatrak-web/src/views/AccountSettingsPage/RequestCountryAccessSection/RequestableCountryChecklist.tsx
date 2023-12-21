@@ -43,7 +43,7 @@ const StyledCheckbox = styled(Checkbox)`
 `;
 
 interface RequestableCountryChecklistProps {
-  countries: TupaiaWebCountryAccessListRequest.ResBody[];
+  countries: TupaiaWebCountryAccessListRequest.ResBody;
   disabled?: boolean;
   projectCode: Project['code'];
 }
