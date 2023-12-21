@@ -8,8 +8,8 @@ cohesive, maintainable, and globally valuable product.
 ## Code of conduct
 
 This project and everyone participating in it is governed by the
-[BES Open Source Code of Conduct](/CODE_OF_CONDUCT.md).
-By participating, you are expected to uphold this code. Please report unacceptable behavior to [opensource@bes.au](opensource@bes.au).
+[BES Open Source Code of Conduct](code-of-conduct.md).
+By participating, you are expected to uphold this code. Please report unacceptable behaviour to [opensource@bes.au](opensource@bes.au).
 
 ## Copyright Attribution
 
@@ -66,7 +66,7 @@ Being a complex product, Tupaia is at the stage where supported onboarding is ne
 project's contributors. The BES Tupaia team are happy to provide hands-on support for serious and
 committed contributors, But we will ask to see evidence of your commitment as well as a CV.
 
-Steps for onboarding and setting up your development environment can be found on the [BES Slab Wiki](INSERT APPROPRIATE LINK HERE).
+Steps for onboarding and setting up your development environment can be found on our [README](../README.md).
 However, it's most likely that support is needed from a BES developer in order for a successful and
 stable onboarding.
 
@@ -74,7 +74,7 @@ stable onboarding.
 
 You can find an outline of the project structure and prerequisites on our [Readme](https://github.com/beyondessential/tupaia/blob/master/README.md)
 
-#### Code Quality
+### Code Quality
 
 When making your contribution, please ensure that your code is of high quality. Follows best
 practices, write clean and readable code, add comments where necessary, and thoroughly test your
