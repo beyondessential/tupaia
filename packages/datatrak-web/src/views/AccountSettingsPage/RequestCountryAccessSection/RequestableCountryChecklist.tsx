@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { Country, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import React from 'react';
 import styled from 'styled-components';
+import { Checkbox } from '@tupaia/ui-components';
+import { Country, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { theme } from '../../../theme';
 import { useFormContext } from 'react-hook-form';
-import { Checkbox } from '@tupaia/ui-components';
 
 const Container = styled.fieldset`
   margin: 0;
