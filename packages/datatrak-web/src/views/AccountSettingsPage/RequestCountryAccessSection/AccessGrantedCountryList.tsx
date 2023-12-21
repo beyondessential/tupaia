@@ -22,21 +22,24 @@ const StyledTableContainer = styled(TableContainer).attrs({
   component: Paper,
 })`
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  margin-block: 1.2rem;
+  height: 18rem;
+  justify-self: flex-end;
+  margin-block: 0.6rem;
 
   .MuiTableBody-root {
     display: flex;
     flex-direction: column;
-    margin-block: 0.1875rem;
+    padding-block: 0.1875rem;
+  }
+
+  .MuiTableCell-stickyHeader {
+    background-color: ${({ theme }) => theme.palette.background.paper};
+    box-shadow: 0 1px 0 0 ${({ theme }) => theme.palette.divider};
   }
 
   .MuiTableCell-root {
     border: none;
   }
-`;
-
-const StyledTableHeader = styled(TableHead)`
-  border-block-end: 1px solid ${({ theme }) => theme.palette.divider};
 `;
 
 const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
@@ -45,17 +48,17 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 export const AccessGrantedCountryList = () => {
   const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
-  const grantedCountries = countries.filter(country => country.hasAccess);
+  const grantedCountries = countries; //.filter(country => country.hasAccess);
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
     <StyledTableContainer>
-      <Table size="small">
-        <StyledTableHeader>
+      <Table size="small" stickyHeader>
+        <TableHead>
           <TableRow>
             <TableCell>Countries with access granted</TableCell>
           </TableRow>
-        </StyledTableHeader>
+        </TableHead>
         <TableBody>
           {grantedCountries.length > 0 ? (
             grantedCountries.map(({ id, name }) => (
