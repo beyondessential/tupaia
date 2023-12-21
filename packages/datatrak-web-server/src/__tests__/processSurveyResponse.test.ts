@@ -2,8 +2,8 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { QuestionType } from '@tupaia/types';
-import { getBrowserTimeZone } from '@tupaia/utils';
+import { EntityType, QuestionType } from '@tupaia/types';
+import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 
@@ -19,10 +19,16 @@ const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
+  type: 'facility' as EntityType,
 });
 
 jest.mock('@tupaia/database', () => ({
   generateId: jest.fn(() => 'theEntityId'),
+}));
+
+jest.mock('@tupaia/utils', () => ({
+  ...jest.requireActual('@tupaia/utils'),
+  getUniqueSurveyQuestionFileName: jest.fn(() => 'theUniqueId'),
 }));
 
 describe('processSurveyResponse', () => {
@@ -40,10 +46,10 @@ describe('processSurveyResponse', () => {
     surveyId: 'theSurveyId',
     countryId: 'theCountryId',
     startTime: 'theStartTime',
+    timezone: 'theTimezone',
   };
 
   const processedResponseData = {
-    country_id: 'theCountryId',
     survey_id: 'theSurveyId',
     user_id: 'theUserId',
     start_time: 'theStartTime',
@@ -51,9 +57,10 @@ describe('processSurveyResponse', () => {
     entity_id: 'theCountryId',
     end_time: timestamp,
     timestamp: timestamp,
-    timezone: getBrowserTimeZone(),
+    timezone: 'theTimezone',
     options_created: [],
     entities_upserted: [],
+    qr_codes_to_create: [],
   };
 
   it('should process the survey response with standard question types', async () => {
@@ -343,6 +350,62 @@ describe('processSurveyResponse', () => {
     });
   });
 
+  it('should add to qr_codes_to_create when type is "Entity" and a generateQRCode config is set', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.Entity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {
+              entity: {
+                createNew: true,
+                generateQrCode: true,
+                fields: {
+                  code: {
+                    questionId: 'question2',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        answers: {
+          question1: 'answer1',
+          question2: 'answer2',
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.Entity,
+          body: 'answer1',
+        },
+      ],
+      entities_upserted: [
+        {
+          code: 'answer2',
+          id: 'answer1',
+        },
+      ],
+      qr_codes_to_create: [
+        {
+          code: 'answer2',
+          id: 'answer1',
+        },
+      ],
+    });
+  });
+
   it('should add to entities_upserted when type is "PrimaryEntity" and a create config is set', async () => {
     const result = await processSurveyResponse(
       {
@@ -381,6 +444,43 @@ describe('processSurveyResponse', () => {
         {
           code: 'answer2',
           id: generateId(),
+        },
+      ],
+    });
+  });
+  it('should handle when question type is File', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.File,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+          },
+        ],
+        answers: {
+          question1: {
+            value: 'theEncodedFile',
+            name: 'theFileName',
+          },
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.File,
+          body: {
+            data: 'theEncodedFile',
+            uniqueFileName: getUniqueSurveyQuestionFileName('theFileName'),
+          },
         },
       ],
     });

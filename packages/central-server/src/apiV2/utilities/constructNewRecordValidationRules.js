@@ -83,7 +83,7 @@ export const constructForSingle = (models, recordType) => {
         user_id: [constructIsEmptyOr(constructRecordExistsWithId(models.user))],
         permission_group_id: [
           // Always require a permission group ID, by default an item should at least be public.
-          constructRecordExistsWithId(models.permissionGroup),
+          constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup)),
         ],
         type: [isAString],
         template_variables: [constructIsEmptyOr(isPlainObject)],
@@ -169,6 +169,17 @@ export const constructForSingle = (models, recordType) => {
         config: [hasContent],
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
+      };
+    case TYPES.DASHBOARD_MAILING_LIST:
+      return {
+        dashboard_id: [hasContent],
+        project_id: [hasContent],
+        entity_id: [hasContent],
+      };
+    case TYPES.DASHBOARD_MAILING_LIST_ENTRY:
+      return {
+        dashboard_mailing_list_id: [hasContent],
+        email: [hasContent, isEmail],
       };
     case TYPES.MAP_OVERLAY_GROUP_RELATION:
       return {
@@ -279,7 +290,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
         dashboard_group_name: [isAString],
-        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'id')],
+        default_measure: [constructRecordExistsWithField(models.mapOverlay, 'code')],
       };
     case TYPES.DATA_ELEMENT_DATA_SERVICE:
       return {
@@ -350,8 +361,9 @@ export const constructForSingle = (models, recordType) => {
       };
     case TYPES.SURVEY:
       return {
+        'project.code': [hasContent, constructRecordExistsWithField(models.project, 'code')],
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
-        name: [isAString],
+        name: [isAString, constructIsShorterThan(50)],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
           async countryNames => {

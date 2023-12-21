@@ -18,7 +18,7 @@ const query = { dataElementCode: 'value' };
 const stubFetchComposedData = expectedResults => {
   const fetchComposedData = jest.spyOn(FetchComposedData, 'fetchComposedData');
   when(fetchComposedData)
-    .calledWith(models, aggregator, dhisApi, query, config)
+    .calledWith(models, aggregator, dhisApi, query, config, undefined)
     .mockResolvedValue(expectedResults);
 };
 

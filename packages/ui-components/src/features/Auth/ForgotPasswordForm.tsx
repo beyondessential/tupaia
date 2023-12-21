@@ -69,6 +69,7 @@ export const ForgotPasswordForm = ({
         <StyledForm onSubmit={onSubmit} formContext={formContext}>
           <FormInput
             Input={AuthFormTextField}
+            id="emailAddress"
             name="emailAddress"
             label="Email"
             type="email"
@@ -83,7 +84,7 @@ export const ForgotPasswordForm = ({
             Back to log in
           </AuthSubmitButton>
           <AuthLink align="center">
-            Don't have an account? <RouterLink to={registerLink}>Register here</RouterLink>
+            Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
           </AuthLink>
         </StyledForm>
       )}

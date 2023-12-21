@@ -35,6 +35,10 @@ export class QuestionModel extends MaterializedViewLogDatabaseModel {
     return QuestionType;
   }
 
+  get cacheEnabled() {
+    return true;
+  }
+
   meditrakConfig = {
     minAppVersion: '0.0.1',
   };

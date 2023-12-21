@@ -17,6 +17,7 @@ jest.mock('../../../api/queries', () => {
   return {
     useUser: jest.fn().mockReturnValue({}),
     useSurvey: jest.fn().mockReturnValue({}),
+    useCountry: jest.fn().mockReturnValue({}),
   };
 });
 

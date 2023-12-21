@@ -7,16 +7,13 @@ import React from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
-import { SIDE_MENU_WIDTH } from './Components';
+import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
-import { Button } from '../../components';
 import { useSubmitSurvey } from '../../api/mutations';
-import { useIsMobile } from '../../utils';
 import { getErrorsByScreen } from './utils';
 
 const ScrollableLayout = styled.div<{
@@ -60,43 +57,6 @@ const Form = styled.form`
   position: relative;
 `;
 
-const FormActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0.5rem;
-  border-top: 1px solid ${props => props.theme.palette.divider};
-  button:last-child {
-    margin-left: auto;
-  }
-  ${({ theme }) => theme.breakpoints.up('md')} {
-    padding: 1rem;
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  button,
-  a {
-    &:last-child {
-      margin-left: 1rem;
-    }
-  }
-`;
-
-const BackButton = styled(Button).attrs({
-  startIcon: <ArrowBackIosIcon />,
-  variant: 'text',
-  color: 'default',
-})`
-  ${({ theme }) => theme.breakpoints.down('md')} {
-    padding-left: 0.8rem;
-    .MuiButton-startIcon {
-      margin-right: 0.25rem;
-    }
-  }
-`;
-
 const LoadingContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -120,11 +80,10 @@ export const SurveyLayout = () => {
     sideMenuOpen,
     numberOfScreens,
     isReviewScreen,
+    isResponseScreen,
     visibleScreens,
-    openCancelConfirmation,
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
-  const isMobile = useIsMobile();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
@@ -189,45 +148,21 @@ export const SurveyLayout = () => {
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
-  const getNextButtonText = () => {
-    if (isReviewScreen) return 'Submit';
-    if (isLast) {
-      return isMobile ? 'Review' : 'Review and submit';
-    }
-    return 'Next';
-  };
-
-  const nextButtonText = getNextButtonText();
-
   return (
-    <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen}>
-      <Paper>
-        <Form onSubmit={handleClickSubmit} noValidate>
-          <Outlet />
-          {isSubmittingSurvey && (
-            <LoadingContainer>
-              <SpinningLoader />
-            </LoadingContainer>
-          )}
-          <FormActions>
-            <BackButton onClick={onStepPrevious} disabled={isSubmittingSurvey}>
-              Back
-            </BackButton>
-            <ButtonGroup>
-              <Button
-                onClick={openCancelConfirmation}
-                variant="outlined"
-                disabled={isSubmittingSurvey}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmittingSurvey}>
-                {nextButtonText}
-              </Button>
-            </ButtonGroup>
-          </FormActions>
-        </Form>
-      </Paper>
-    </ScrollableLayout>
+    <>
+      <SurveySideMenu />
+      <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
+        <Paper>
+          <Form onSubmit={handleClickSubmit} noValidate>
+            <Outlet context={{ onStepPrevious, isSubmittingSurvey }} />
+            {isSubmittingSurvey && (
+              <LoadingContainer>
+                <SpinningLoader />
+              </LoadingContainer>
+            )}
+          </Form>
+        </Paper>
+      </ScrollableLayout>
+    </>
   );
 };

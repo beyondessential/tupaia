@@ -16,14 +16,10 @@ type CamelCasePart<S extends string> = S extends `${infer First}_${infer Rest}`
 
 // Converts a type object to camel case, from snake case
 export type ObjectToCamel<T> = {
-  [K in keyof T as CamelCase<string & K>]: T[K] extends Record<string, any>
-    ? KeysToCamelCase<T[K]>
-    : T[K];
+  [K in keyof T as CamelCase<string & K>]: KeysToCamelCase<T[K]>;
 };
 
 // Converts type objects or arrays to camel case
-export type KeysToCamelCase<T> = {
-  [K in keyof T as CamelCase<string & K>]: T[K] extends Array<any>
-    ? KeysToCamelCase<T[K][number]>[]
-    : ObjectToCamel<T[K]>;
-};
+export type KeysToCamelCase<T> = T extends Array<infer ArrayElm>
+  ? KeysToCamelCase<ArrayElm>[] // If array, camel case items
+  : ObjectToCamel<T>; // If object, camel case keys;

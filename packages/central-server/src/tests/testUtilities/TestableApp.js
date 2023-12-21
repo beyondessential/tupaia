@@ -14,6 +14,7 @@ import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { createApp } from '../../createApp';
 import { getModels } from './database';
+import { TEST_USER_EMAIL } from './constants';
 
 const DEFAULT_API_VERSION = 2;
 const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
@@ -57,7 +58,7 @@ export class TestableApp {
   async authenticate() {
     const headers = { authorization: getAuthorizationHeader() };
     const body = {
-      emailAddress: 'test.user@tupaia.org',
+      emailAddress: TEST_USER_EMAIL,
       password: 'test.password',
       deviceName: 'Test Device',
       installId: 'TEST-4D1AC092-4A3E-9958-C109DC56051A',

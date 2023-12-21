@@ -1,7 +1,7 @@
 # Tupaia
 
 [![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
- 
+
 ## Open Source Info
 
 ### Open Source Mission statement
@@ -157,3 +157,7 @@ In order to automatically format code in VSCode according to our style guide:
 1. Install [Prettier for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 2. Enable the `Editor: Format on Save` setting
 3. Your files will now be formatted automatically when you save them
+
+---
+
+This project is tested with [Browserstack](https://www.browserstack.com/)

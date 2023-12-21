@@ -24,6 +24,14 @@ jest.mock('react-hook-form', () => {
   };
 });
 
+jest.mock('react-router', () => {
+  const actual = jest.requireActual('react-router');
+  return {
+    ...actual,
+    useParams: jest.fn().mockReturnValue({ countryCode: 'DL' }),
+  };
+});
+
 const entitiesData = [
   {
     id: '5d3f8844bf6b4031bfff591b',

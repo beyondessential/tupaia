@@ -10,10 +10,13 @@ export type Params = Record<string, never>;
 type SurveyResponse = {
   assessorName: SurveyResponseT['assessor_name'];
   countryName: Country['name'];
+  countryCode: Country['code'];
   dataTime: Date;
   entityName: Entity['name'];
   id: SurveyResponseT['id'];
   surveyName: Survey['name'];
+  surveyProjectId: Survey['project_id'];
+  surveyCode: Survey['code'];
 };
 
 export type ResBody = SurveyResponse[];
@@ -23,4 +26,5 @@ export interface ReqQuery {
   userId: string;
   pageSize?: number;
   sort?: string[];
+  projectId?: string;
 }

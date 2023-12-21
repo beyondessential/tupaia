@@ -24,6 +24,10 @@ content-type: {{contentType}}
 GET {{host}}/logout HTTP/1.1
 content-type: {{contentType}}
 
+### Get projects
+GET {{host}}/projects HTTP/1.1
+content-type: {{contentType}}
+
 ### Get Project
 # @name project
 GET {{host}}/project/covidau HTTP/1.1

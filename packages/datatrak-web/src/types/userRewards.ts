@@ -2,8 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 export type UserRewards = {
-  coconuts?: number;
-  pigs?: number;
-};
+  pigs: number;
+  coconuts: number;
+}

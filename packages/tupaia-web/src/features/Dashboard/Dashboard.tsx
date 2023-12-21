@@ -6,23 +6,23 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Typography, Button } from '@material-ui/core';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import { Typography } from '@material-ui/core';
 import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { ExpandButton } from './ExpandButton';
-import { Photo } from './Photo';
-import { Breadcrumbs } from './Breadcrumbs';
-import { StaticMap } from './StaticMap';
 import { useDashboards, useEntity, useProject } from '../../api/queries';
-import { DashboardMenu } from './DashboardMenu';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
+import { ExpandButton } from './ExpandButton';
+import { Photo } from './Photo';
+import { Breadcrumbs } from './Breadcrumbs';
+import { StaticMap } from './StaticMap';
+import { DashboardMenu } from './dashboardMenu/DashboardMenu';
 import { ExportDashboard } from './ExportDashboard';
+import { SubscribeModal } from './dashboardMenu/SubscribeModal';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
@@ -85,12 +85,6 @@ const TitleBar = styled.div`
   }
 `;
 
-const ExportButton = styled(Button).attrs({
-  variant: 'outlined',
-})`
-  font-size: 0.6875rem;
-`;
-
 const Title = styled(Typography)`
   color: white;
   font-weight: 400;
@@ -116,15 +110,19 @@ export const Dashboard = () => {
   const location = useLocation();
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
+  const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
+
   const {
     dashboards,
     activeDashboard,
     isLoading: isLoadingDashboards,
     isError,
     isFetched,
+    refetch,
   } = useDashboards(projectCode, entityCode, dashboardName);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
+
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
 
@@ -188,19 +186,19 @@ export const Dashboard = () => {
             {entity?.imageUrl ? (
               <Photo title={title} photoUrl={entity?.imageUrl} />
             ) : (
-              <StaticMap bounds={bounds} />
+              <StaticMap bounds={bounds} title={title} />
             )}
           </div>
           <StickyBar $isExpanded={isExpanded}>
             <TitleBar>
               <Title variant="h3">{title}</Title>
-              {activeDashboard && (
-                <ExportButton startIcon={<GetAppIcon />} onClick={() => setExportModalOpen(true)}>
-                  Export
-                </ExportButton>
-              )}
             </TitleBar>
-            <DashboardMenu activeDashboard={activeDashboard} dashboards={dashboards} />
+            <DashboardMenu
+              activeDashboard={activeDashboard}
+              dashboards={dashboards}
+              setExportModalOpen={setExportModalOpen}
+              setSubscribeModalOpen={setSubscribeModalOpen}
+            />
           </StickyBar>
           <DashboardItemsWrapper $isExpanded={isExpanded}>
             {isLoadingDashboards && <SpinningLoader mt={5} />}
@@ -214,6 +212,12 @@ export const Dashboard = () => {
           isOpen={exportModalOpen}
           onClose={() => setExportModalOpen(false)}
           dashboardItems={activeDashboard?.items as DashboardItemType[]}
+        />
+        <SubscribeModal
+          isOpen={subscribeModalOpen}
+          onClose={() => setSubscribeModalOpen(false)}
+          activeDashboard={activeDashboard}
+          onToggleSubscription={refetch}
         />
       </Panel>
     </ErrorBoundary>

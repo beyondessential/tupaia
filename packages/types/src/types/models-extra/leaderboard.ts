@@ -3,12 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { UserAccount } from '../models';
-
 export type LeaderboardItem = {
-  user_id: UserAccount['id'];
-  first_name: UserAccount['first_name'];
-  last_name: UserAccount['last_name'];
+  user_id: string;
+  first_name: string;
+  last_name: string;
   coconuts: number;
   pigs: number;
 };

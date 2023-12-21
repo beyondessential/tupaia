@@ -61,6 +61,7 @@ export class SurveyEditor {
       'data_group.service_type': serviceType,
       'data_group.config': dataGroupConfig = {},
       surveyQuestions,
+      project_id: projectId,
     } = fields;
 
     // We use code for both create & edit.
@@ -68,6 +69,11 @@ export class SurveyEditor {
     // In edit it will only be present if we changed it, so we must fetch it from the existing survey.
     const existingSurvey = surveyId ? await transactingModels.survey.findById(surveyId) : null;
     const surveyCode = code ?? existingSurvey.code;
+
+    // if the user is trying to remove the project from the survey, throw an error
+    if (existingSurvey && projectId === null) {
+      throw new Error('Surveys must have a project');
+    }
 
     const defaultPermissionGroup = await transactingModels.permissionGroup.findOne({
       name: 'Public',
@@ -125,6 +131,7 @@ export class SurveyEditor {
       (await transactingModels.survey.create({
         code: surveyCode,
         name,
+        project_id: projectId,
         permission_group_id: permissionGroup.id,
         data_group_id: dataGroup.id,
       }));
@@ -157,6 +164,9 @@ export class SurveyEditor {
     }
     if (name !== undefined) {
       fieldsToForceUpdate.name = name;
+    }
+    if (projectId !== undefined) {
+      fieldsToForceUpdate.project_id = projectId;
     }
     if (periodGranularity !== undefined) {
       fieldsToForceUpdate.period_granularity = periodGranularity === '' ? null : periodGranularity;

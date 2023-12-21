@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button } from '../../components';
-import { useUser } from '../../api/queries';
+import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
@@ -19,14 +19,13 @@ const Wrapper = styled.div`
 `;
 
 const Details = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  padding-inline: 0.5rem;
   > span {
     color: ${props => props.theme.palette.text.primary};
-    position: relative;
-    top: -1px;
     font-size: 1.2em;
-    margin-left: 0.5rem;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
@@ -36,18 +35,16 @@ const Details = styled.div`
 const ProjectButton = styled(Button).attrs({
   variant: 'text',
 })`
-  margin-left: 0.5rem;
-  padding-left: 0;
-  padding-right: 0.5rem;
+  padding-inline: 0;
   justify-content: center;
   .MuiButton-label {
-    padding-left: 0.5rem;
     font-size: 1rem;
     line-height: 1.4;
     font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
   }
   color: ${props => props.theme.palette.text.secondary};
   &:hover {
+    background: none;
     color: ${props => props.theme.palette.action.hover};
     text-decoration: underline;
   }
@@ -56,6 +53,7 @@ const ProjectButton = styled(Button).attrs({
     content: '';
     border-left: 1px solid ${props => props.theme.palette.text.secondary};
     height: 1.2rem;
+    margin-inline-end: 0.5rem;
   }
 `;
 
@@ -86,14 +84,14 @@ const AuthButtons = styled.div`
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void }) => {
-  const { isLoggedIn, data: user } = useUser();
+  const user = useCurrentUser();
 
   return (
     <Wrapper>
-      {isLoggedIn ? (
+      {user.isLoggedIn ? (
         <Details>
-          <UserName>{user.name}</UserName>
-          {user?.projectId && (
+          <UserName>{user.userName}</UserName>
+          {user.projectId && (
             <ProjectButton onClick={openProjectModal} tooltip="Change project">
               {user.project?.name}
             </ProjectButton>
@@ -104,7 +102,7 @@ export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void })
           <AuthLink variant="text" to={ROUTES.REGISTER}>
             Register
           </AuthLink>
-          <LoginLink to={ROUTES.LOGIN}>Login</LoginLink>
+          <LoginLink to={ROUTES.LOGIN}>Log in</LoginLink>
         </AuthButtons>
       )}
     </Wrapper>

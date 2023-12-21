@@ -12,9 +12,9 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
-import { attachAccessPolicy } from './middleware';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
+import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -49,8 +49,12 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.DashboardsRoute),
     )
     .post<routes.ExportDashboardRequest>(
-      'dashboards/:projectCode/:entityCode/:dashboardName/export',
+      'dashboards/:projectCode/:entityCode/:dashboardCode/export',
       handleWith(routes.ExportDashboardRoute),
+    )
+    .post<routes.EmailDashboardRequest>(
+      'dashboards/:projectCode/:entityCode/:dashboardCode/email',
+      handleWith(routes.EmailDashboardRoute),
     )
     .get<routes.CountryAccessListRequest>(
       'countryAccessList',
@@ -78,6 +82,18 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.ExportSurveyResponsesRoute),
     )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
+    .post<routes.SubscribeDashboardRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
+      handleWith(routes.SubscribeDashboardRoute),
+    )
+    .put<routes.UnsubscribeDashboardRequest>(
+      'dashboard/:projectCode/:entityCode/:dashboardCode/unsubscribe',
+      handleWith(routes.UnsubscribeDashboardRoute),
+    )
+    .put<routes.UnsubscribeDashboardMailingListRequest>(
+      'dashboardMailingList/:mailingListId/unsubscribe',
+      handleWith(routes.UnsubscribeDashboardMailingListRoute),
+    )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

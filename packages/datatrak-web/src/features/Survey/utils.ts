@@ -72,11 +72,7 @@ export const getErrorsByScreen = (
   return (
     Object.entries(errors).reduce((acc, [questionName, error]) => {
       const screenIndex = visibleScreens?.findIndex(({ surveyScreenComponents }) =>
-        surveyScreenComponents.find(question => {
-          // handle the fact that we rename the questionId to entityId in the form if it's a primary entity question
-          if (questionName === 'entityId') return question.type === QuestionType.PrimaryEntity;
-          return question.questionId === questionName;
-        }),
+        surveyScreenComponents.find(question => question.questionId === questionName),
       );
 
       if (screenIndex === undefined || screenIndex === -1) return acc;

@@ -5,7 +5,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppProviders } from './AppProviders';
-import { Routes } from './Routes';
+import { Routes } from './routes';
 
 export const App = () => {
   return (

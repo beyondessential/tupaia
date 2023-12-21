@@ -9,3 +9,4 @@ export { SurveyFolderIcon } from './SurveyFolderIcon';
 export { SurveyTickIcon } from './SurveyTickIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { RadioIcon } from './RadioIcon';
+export { PinIcon } from './PinIcon';

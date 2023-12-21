@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
 import { SurveyIcon, TopProgressBar } from '../../../components';
-import { useSurvey, useUser } from '../../../api/queries';
+import { useCountry, useCurrentUser, useSurvey } from '../../../api';
 import { SURVEY_TOOLBAR_HEIGHT } from '../../../constants';
 import { useSurveyForm } from '../SurveyContext';
 import { useIsMobile } from '../../../utils';
@@ -51,23 +51,31 @@ const CountryName = styled.span`
 `;
 
 export const SurveyToolbar = () => {
-  const { surveyCode, screenNumber: screenNumberParam } = useParams();
-  const { screenNumber, numberOfScreens } = useSurveyForm();
+  const user = useCurrentUser();
+  const { surveyCode, screenNumber: screenNumberParam, countryCode } = useParams();
+  const { screenNumber, numberOfScreens, isResponseScreen } = useSurveyForm();
+  const { data: country } = useCountry(user.project?.code, countryCode);
   const { data: survey } = useSurvey(surveyCode);
-  const { data: user } = useUser();
   const isMobile = useIsMobile();
 
   const getDisplaySurveyName = () => {
     const maxSurveyNameLength = 50;
     if (!survey?.name) return '';
+
+    const surveyName = survey.name;
+
     if (isMobile) {
-      return survey?.name.length > maxSurveyNameLength
-        ? `${survey?.name.slice(0, maxSurveyNameLength)}...`
-        : survey?.name;
+      return surveyName.length > maxSurveyNameLength
+        ? `${surveyName.slice(0, maxSurveyNameLength)}...`
+        : surveyName;
     }
-    return survey?.name;
+    return surveyName;
   };
   const surveyName = getDisplaySurveyName();
+
+  if (isResponseScreen) {
+    return null;
+  }
 
   return (
     <Toolbar $toolbarIsTransparent={!screenNumberParam}>
@@ -76,7 +84,7 @@ export const SurveyToolbar = () => {
         {survey?.name && (
           <Typography variant="h1">
             {surveyName}
-            {user?.country?.name && <CountryName>| {user?.country?.name}</CountryName>}
+            {<CountryName>| {country?.name}</CountryName>}
           </Typography>
         )}
       </SurveyTitleWrapper>

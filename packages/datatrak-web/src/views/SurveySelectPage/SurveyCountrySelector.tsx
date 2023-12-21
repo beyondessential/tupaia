@@ -5,12 +5,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select as BaseSelect } from '@tupaia/ui-components';
+import { Country } from '@tupaia/types';
 import { Entity } from '../../types';
 
 const Select = styled(BaseSelect)`
   width: 10rem;
-  margin-bottom: 0;
-  .MuiInputBase-input {
+
+  &.MuiFormControl-root {
+    margin-bottom: 0;
+  }
+  .MuiInputBase-input.MuiSelect-selectMenu {
     font-size: 0.875rem;
     padding: 0.5rem 2.5rem 0.5rem 1rem;
   }
@@ -40,7 +44,7 @@ const CountrySelectWrapper = styled.div`
 
 interface SurveyCountrySelectorProps {
   countries: Entity[];
-  selectedCountry?: Entity | null;
+  selectedCountry?: Country | null;
   onChangeCountry: (country: Entity | null) => void;
 }
 
@@ -55,15 +59,14 @@ export const SurveyCountrySelector = ({
   return (
     <CountrySelectWrapper>
       <Pin />
-      {/** @ts-ignore - TS is complaining about the type of the options, because we are creating them from Entities */}
       <Select
-        options={
-          countries?.map((country: Entity) => ({ value: country.code, label: country.name })) || []
-        }
+        options={countries?.map(country => ({ value: country.code, label: country.name })) || []}
         value={selectedCountry?.code}
         onChange={updateSelectedCountry}
-        inputProps={{ 'aria-label': 'Select a country' }}
         placeholder="Select a country"
+        SelectProps={{
+          'aria-label': 'Select a country',
+        }}
       />
     </CountrySelectWrapper>
   );

@@ -8,7 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderComponent } from '../../helpers/render';
-import { AutocompleteQuestion } from '../../../features/Questions/AutocompleteQuestion';
+import { AutocompleteQuestion } from '../../../features/Questions';
 
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -16,14 +16,13 @@ jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   }),
 }));
 
+jest.mock('../../../api/queries/useUser', () => {
+  return {
+    useUser: jest.fn().mockReturnValue({}),
+  };
+});
+
 const options = [
-  {
-    label: 'Red',
-    value: 'red',
-    attributes: {
-      parentQuestion: 'anotherAnswer',
-    },
-  },
   {
     label: 'Blue',
     value: 'blue',
@@ -33,6 +32,13 @@ const options = [
   },
   {
     value: 'green',
+  },
+  {
+    label: 'Red',
+    value: 'red',
+    attributes: {
+      parentQuestion: 'anotherAnswer',
+    },
   },
 ];
 const server = setupServer(

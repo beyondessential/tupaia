@@ -13,7 +13,6 @@ export {
   SurveyToolbar,
   useSurveyForm,
   getAllSurveyComponents,
-  CancelSurveyModal,
   SurveySideMenu,
   useValidationResolver,
 } from './Survey';

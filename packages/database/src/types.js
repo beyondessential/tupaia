@@ -14,6 +14,8 @@ export const TYPES = {
   COUNTRY: 'country',
   DASHBOARD: 'dashboard',
   DASHBOARD_ITEM: 'dashboard_item',
+  DASHBOARD_MAILING_LIST: 'dashboard_mailing_list',
+  DASHBOARD_MAILING_LIST_ENTRY: 'dashboard_mailing_list_entry',
   DASHBOARD_RELATION: 'dashboard_relation',
   DATA_ELEMENT_DATA_GROUP: 'data_element_data_group',
   DATA_ELEMENT_DATA_SERVICE: 'data_element_data_service',

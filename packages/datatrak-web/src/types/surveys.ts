@@ -15,6 +15,7 @@ export type SurveyScreenComponent = SurveyScreen['surveyScreenComponents'][0] & 
 
 export type SurveyParams = {
   projectCode: string;
+  countryCode: string;
   entityCode: string;
   surveyCode: string;
   screenNumber: string;

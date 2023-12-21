@@ -17,9 +17,9 @@ export type LeaderboardRequest = Request<
 
 export class LeaderboardRoute extends Route<LeaderboardRequest> {
   public async buildResponse() {
-    const { models } = this.req;
+    const { models, query = {} } = this.req;
 
-    const leaderboard = await models.surveyResponse.getLeaderboard();
+    const leaderboard = await models.surveyResponse.getLeaderboard(query.projectId);
     return camelcaseKeys(leaderboard, { deep: true });
   }
 }

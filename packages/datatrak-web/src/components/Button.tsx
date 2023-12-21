@@ -16,6 +16,11 @@ const StyledButton = styled(UIButton)`
   }
 `;
 
+const TooltipButtonWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+`;
+
 interface ButtonProps extends Record<string, any> {
   tooltip?: ReactNode;
   children?: ReactNode;
@@ -31,8 +36,9 @@ const ButtonWrapper = ({
 }) => {
   if (!tooltip) return children;
   return (
+    // we need to wrap the button in a span so that there is not a console error about tooltips on disabled buttons
     <Tooltip title={tooltip} arrow enterDelay={1000}>
-      {children}
+      <TooltipButtonWrapper>{children}</TooltipButtonWrapper>
     </Tooltip>
   );
 };

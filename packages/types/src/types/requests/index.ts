@@ -14,15 +14,18 @@ export {
   DatatrakWebSubmitSurveyRequest,
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
+  DatatrakWebRecentSurveysRequest,
+  DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebLeaderboardRequest,
+  DatatrakWebActivityFeedRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
   TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
+  TupaiaWebEmailDashboardRequest,
   TupaiaWebExportDashboardRequest,
   TupaiaWebEntitiesRequest,
-  TupaiaWebEntityRequest,
   TupaiaWebEntitySearchRequest,
   TupaiaWebExportSurveyResponsesRequest,
   TupaiaWebLegacyDashboardReportRequest,
@@ -32,5 +35,8 @@ export {
   TupaiaWebReportRequest,
   TupaiaWebRequestCountryAccessRequest,
   TupaiaWebUserRequest,
+  TupaiaWebSubscribeDashboardRequest,
+  TupaiaWebUnsubscribeDashboardRequest,
+  TupaiaWebUnsubscribeDashboardMailingListRequest,
 } from './tupaia-web-server';
-export { WebServerProjectRequest, ProjectResponse } from './web-server';
+export { WebServerProjectRequest, ProjectResponse, WebServerEntityRequest } from './web-server';

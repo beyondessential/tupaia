@@ -21,6 +21,7 @@ export {
 export { MapOverlaysRequest, MapOverlaysRoute } from './MapOverlaysRoute';
 export { UserRequest, UserRoute } from './UserRoute';
 export { ExportDashboardRequest, ExportDashboardRoute } from './ExportDashboardRoute';
+export { EmailDashboardRequest, EmailDashboardRoute } from './EmailDashboardRoute';
 export { ProjectRequest, ProjectRoute } from './ProjectRoute';
 export { CountryAccessListRequest, CountryAccessListRoute } from './CountryAccessListRoute';
 export {
@@ -31,3 +32,12 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
+export { SubscribeDashboardRoute, SubscribeDashboardRequest } from './SubscribeDashboardRoute';
+export {
+  UnsubscribeDashboardRoute,
+  UnsubscribeDashboardRequest,
+} from './UnsubscribeDashboardRoute';
+export {
+  UnsubscribeDashboardMailingListRoute,
+  UnsubscribeDashboardMailingListRequest,
+} from './UnsubscribeDashboardMailingListRoute';

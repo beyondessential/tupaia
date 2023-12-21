@@ -22,11 +22,14 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
     // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
     const getEntity = (entityId: string) => this.req.models.entity.findById(entityId);
 
-    const processedResponse = await processSurveyResponse(surveyResponseData, getEntity);
+    const { qr_codes_to_create, ...processedResponse } = await processSurveyResponse(
+      surveyResponseData,
+      getEntity,
+    );
 
     await centralApi.createSurveyResponses([processedResponse]);
     return {
-      createdEntities: processedResponse.entities_upserted || [],
+      qrCodeEntitiesCreated: qr_codes_to_create || [],
     };
   }
 }

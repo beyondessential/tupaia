@@ -4,6 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from 'react-query';
+import { gaEvent, useFromLocation } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { ROUTES } from '../../constants';
@@ -12,9 +13,11 @@ type LoginCredentials = {
   email: string;
   password: string;
 };
+
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const from = useFromLocation();
 
   return useMutation<any, Error, LoginCredentials, unknown>(
     ({ email, password }: LoginCredentials) => {
@@ -27,10 +30,19 @@ export const useLogin = () => {
       });
     },
     {
+      onMutate: () => {
+        gaEvent('login', 'Login', 'Attempt');
+      },
       onSuccess: ({ user }) => {
         queryClient.invalidateQueries();
-        const path = user?.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-        navigate(path);
+        if (from) {
+          navigate(from, {
+            state: null,
+          });
+        } else {
+          const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
+          navigate(path);
+        }
       },
       meta: {
         applyCustomErrorHandling: true,

@@ -82,6 +82,7 @@ type BaseModelOverrides<Fields = unknown, Type = unknown> = {
   find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
   findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
   findById: (id: string, customQueryOptions?: QueryOptions) => Promise<Type>;
+  update: (whereCondition: DbFilter<Fields>, fieldsToUpdate: Partial<Fields>) => Promise<void>;
 };
 
 export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<

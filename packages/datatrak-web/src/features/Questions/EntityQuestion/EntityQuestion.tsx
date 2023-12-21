@@ -6,11 +6,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntity, useUser } from '../../../api/queries';
+import { useEntities, useEntity, useCurrentUser } from '../../../api';
 import { useDebounce } from '../../../utils';
+import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
 import { useEntityBaseFilters, useAttributeFilter } from './utils';
@@ -24,9 +25,16 @@ const Container = styled.div`
   }
 `;
 
+const Label = styled(Typography).attrs({
+  variant: 'h4',
+})`
+  font-size: 1rem;
+  cursor: pointer;
+`;
+
 const useSearchResults = (searchValue, config) => {
-  const { data: user } = useUser();
-  const projectCode = user?.project?.code;
+  const user = useCurrentUser();
+  const projectCode = user.project?.code;
   const filters = useEntityBaseFilters(config);
   const attributeFilter = useAttributeFilter(config);
 
@@ -47,6 +55,7 @@ export const EntityQuestion = ({
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
+  const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const { errors } = useFormContext();
   const [isDirty, setIsDirty] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -82,17 +91,21 @@ export const EntityQuestion = ({
 
   return (
     <Container>
-      <SearchField
-        id={id}
-        isDirty={isDirty}
-        label={label}
-        detailLabel={detailLabel}
-        name={name!}
-        ref={ref}
-        onChangeSearch={onChangeSearch}
-        searchValue={searchValue}
-        invalid={invalid}
-      />
+      {isReviewScreen || isResponseScreen ? (
+        <Label>{label}</Label>
+      ) : (
+        <SearchField
+          id={id}
+          isDirty={isDirty}
+          label={label}
+          detailLabel={detailLabel}
+          name={name!}
+          ref={ref}
+          onChangeSearch={onChangeSearch}
+          searchValue={searchValue}
+          invalid={invalid}
+        />
+      )}
       {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}
       {!isFetched || isLoading ? (
         <SpinningLoader />

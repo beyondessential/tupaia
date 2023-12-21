@@ -64,6 +64,12 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   svg {
     margin-right: 0.5rem;
   }
+  @media screen and (max-width: 600px) {
+    padding: 0.4rem;
+    .MuiButton-label span {
+      word-break: break-word;
+    }
+  }
 `;
 
 type MatrixRowTitle = MatrixRowType['title'];

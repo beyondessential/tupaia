@@ -14,7 +14,13 @@ import {
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
-import { setupDummySyncQueue, TestableApp, upsertEntity, upsertQuestion } from '../testUtilities';
+import {
+  setupDummySyncQueue,
+  TEST_USER_EMAIL,
+  TestableApp,
+  upsertEntity,
+  upsertQuestion,
+} from '../testUtilities';
 
 const entityId = generateTestId();
 const surveyId = generateTestId();
@@ -113,7 +119,7 @@ describe('POST /surveyResponse', async () => {
       ]);
       await upsertEntity({ id: entityId, code: 'TEST_ENTITY' });
 
-      const user = await models.user.findOne({ email: 'test.user@tupaia.org' });
+      const user = await models.user.findOne({ email: TEST_USER_EMAIL });
       userId = user.id;
     });
 

@@ -6,9 +6,9 @@
 export * as TupaiaWebChangePasswordRequest from './ChangePasswordRequest';
 export * as TupaiaWebCountryAccessListRequest from './CountryAccessListRequest';
 export * as TupaiaWebDashboardsRequest from './DashboardsRequest';
+export * as TupaiaWebEmailDashboardRequest from './EmailDashboardRequest';
 export * as TupaiaWebExportDashboardRequest from './ExportDashboardRequest';
 export * as TupaiaWebEntitiesRequest from './EntitiesRequest';
-export * as TupaiaWebEntityRequest from './EntityRequest';
 export * as TupaiaWebEntitySearchRequest from './EntitySearchRequest';
 export * as TupaiaWebExportSurveyResponsesRequest from './ExportSurveyResponsesRequest';
 export * as TupaiaWebLegacyDashboardReportRequest from './LegacyDashboardReportRequest';
@@ -18,3 +18,6 @@ export * as TupaiaWebProjectRequest from './ProjectRequest';
 export * as TupaiaWebReportRequest from './ReportRequest';
 export * as TupaiaWebRequestCountryAccessRequest from './RequestCountryAccessRequest';
 export * as TupaiaWebUserRequest from './UserRequest';
+export * as TupaiaWebSubscribeDashboardRequest from './SubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardRequest from './UnsubscribeDashboardRequest';
+export * as TupaiaWebUnsubscribeDashboardMailingListRequest from './UnsubscribeDashboardMailingListRequest';

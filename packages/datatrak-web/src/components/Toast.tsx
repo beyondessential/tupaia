@@ -69,6 +69,7 @@ const CloseButton = styled(IconButton)<{
 const Message = styled(Typography)`
   font-size: 0.875rem;
   flex: 1;
+  word-break: break-word;
 `;
 
 interface ToastProps extends CustomContentProps {
@@ -87,7 +88,11 @@ export const Toast = React.forwardRef<HTMLDivElement, ToastProps>((props, ref) =
           </IconWrapper>
         )}
         <Message color={variant === 'error' ? 'error' : 'textPrimary'}>{message}</Message>
-        <CloseButton onClick={() => closeSnackbar(id)} $variant={variant}>
+        <CloseButton
+          onClick={() => closeSnackbar(id)}
+          $variant={variant}
+          title="Close toast message"
+        >
           <Close />
         </CloseButton>
       </Container>

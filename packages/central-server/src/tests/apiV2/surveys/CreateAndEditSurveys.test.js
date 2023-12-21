@@ -56,6 +56,8 @@ describe('Create and Edit Surveys', () => {
 
   let survey1_id;
 
+  let project;
+
   before(async () => {
     await resetTestData();
     adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -71,6 +73,10 @@ describe('Create and Edit Surveys', () => {
       code: 'VU',
       name: 'Vanuatu',
     }));
+
+    project = await findOrCreateDummyRecord(models.project, {
+      code: 'project1',
+    });
 
     const addQuestion = (id, type) =>
       upsertQuestion(
@@ -95,6 +101,7 @@ describe('Create and Edit Surveys', () => {
       name: EXISTING_TEST_SURVEY_CODE_1,
       permission_group_id: adminPermissionGroup.id,
       country_ids: [vanuatuCountry.id],
+      project_id: project.id,
       dataGroup: {
         service_type: 'tupaia',
       },
@@ -252,6 +259,7 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_1', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
+            'project.code': project.code,
           },
         });
 
@@ -271,6 +279,7 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_2', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
+            'project.code': project.code,
           },
         });
 
@@ -298,6 +307,7 @@ describe('Create and Edit Surveys', () => {
             code: 'NEW_TEST_SURVEY_3', // must be unique
             countryNames: [kiribatiCountry.name],
             'permission_group.name': adminPermissionGroup.name,
+            'project.code': project.code,
           },
         });
 
@@ -318,6 +328,7 @@ describe('Create and Edit Surveys', () => {
           code: 'new_survey_import_1_test', // must be unique
           countryNames: [kiribatiCountry.name],
           'permission_group.name': adminPermissionGroup.name,
+          'project.code': project.code,
         },
         filesByMultipartKey: {
           surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importANewSurvey.xlsx`),
@@ -349,6 +360,21 @@ describe('Create and Edit Surveys', () => {
 
       const survey = await models.survey.findById(survey1_id);
       expect(survey.period_granularity).to.equal('weekly');
+    });
+
+    it('Throws an error if a project is removed from a survey', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          name: 'Any change will do 1',
+          period_granularity: 'weekly',
+          project_id: null,
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal('Internal server error: Surveys must have a project');
     });
   });
 });

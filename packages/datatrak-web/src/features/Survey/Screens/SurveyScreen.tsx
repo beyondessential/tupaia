@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { useSurveyForm } from '../SurveyContext';
-import { SurveyQuestionGroup } from '../Components';
+import { SurveyPaginator, SurveyQuestionGroup } from '../Components';
 import { ScrollableBody } from '../../../layout';
 import { QuestionType } from '@tupaia/types';
 
@@ -33,14 +33,17 @@ export const SurveyScreen = () => {
   const { displayQuestions, screenHeader, activeScreen } = useSurveyForm();
 
   return (
-    <ScrollableBody $hasSidebar>
-      <ScreenHeading
-        variant="h2"
-        $centered={activeScreen.every(question => question.type === QuestionType.Instruction)}
-      >
-        {screenHeader}
-      </ScreenHeading>
-      <SurveyQuestionGroup questions={displayQuestions} />
-    </ScrollableBody>
+    <>
+      <ScrollableBody $hasSidebar>
+        <ScreenHeading
+          variant="h2"
+          $centered={activeScreen.every(question => question.type === QuestionType.Instruction)}
+        >
+          {screenHeader}
+        </ScreenHeading>
+        <SurveyQuestionGroup questions={displayQuestions} />
+      </ScrollableBody>
+      <SurveyPaginator />
+    </>
   );
 };
