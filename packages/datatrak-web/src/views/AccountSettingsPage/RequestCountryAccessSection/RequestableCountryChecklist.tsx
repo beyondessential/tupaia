@@ -54,14 +54,15 @@ export const RequestableCountryChecklist = ({
 }: RequestableCountryChecklistProps) => {
   const { register } = useFormContext();
 
+  function getTooltip(hasAccess: boolean, hasRequestedAccess: boolean) {
+    if (hasAccess) return 'You already have access';
+    if (hasRequestedAccess) return 'Approval in progress';
+  }
+
   return (
     <Container disabled={disabled}>
       {countries.map(({ id, name, hasAccess, accessRequests }) => {
         const hasRequestedAccess = accessRequests.includes(projectCode);
-        const getTooltip = () => {
-          if (hasAccess) return 'You already have access';
-          if (hasRequestedAccess) return 'Approval in progress';
-        };
 
         return (
           <StyledCheckbox
@@ -72,7 +73,7 @@ export const RequestableCountryChecklist = ({
             key={id}
             label={name}
             name="entityIds"
-            tooltip={getTooltip()}
+            tooltip={getTooltip(hasAccess, hasRequestedAccess)}
             value={id}
           />
         );
