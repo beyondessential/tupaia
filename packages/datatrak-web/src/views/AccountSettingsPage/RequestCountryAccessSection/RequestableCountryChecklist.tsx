@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
 import { Checkbox } from '@tupaia/ui-components';
-import { Country, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { Entity, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { theme } from '../../../theme';
 
 const Container = styled.fieldset`
@@ -70,7 +70,7 @@ export const RequestableCountryChecklist = ({
             color="primary"
             disabled={hasAccess || hasRequestedAccess}
             id="entityIds"
-            inputRef={register({ validate: (value: Country['id'][]) => value.length > 0 })}
+            inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
             key={id}
             label={name}
             name="entityIds"
