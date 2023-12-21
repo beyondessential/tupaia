@@ -50,7 +50,7 @@ const StyledFieldset = styled.fieldset`
 const CountryChecklistWrapper = styled(Box)`
   display: block flex;
   flex-direction: column;
-  height: 18.625rem;
+  height: 18.3rem;
 `;
 
 /** Matches styling of .FormLabel-root in ui-components TextField */

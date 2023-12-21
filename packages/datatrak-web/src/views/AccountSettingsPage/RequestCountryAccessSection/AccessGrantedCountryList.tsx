@@ -22,9 +22,9 @@ const StyledTableContainer = styled(TableContainer).attrs({
   component: Paper,
 })`
   border: 1px solid ${({ theme }) => theme.palette.divider};
-  height: 18rem;
   justify-self: flex-end;
-  margin-block: 0.6rem;
+  margin-block-start: 0.6rem;
+  max-block-size: 12rem;
 
   .MuiTableBody-root {
     display: flex;
@@ -34,6 +34,7 @@ const StyledTableContainer = styled(TableContainer).attrs({
 
   .MuiTableCell-stickyHeader {
     background-color: ${({ theme }) => theme.palette.background.paper};
+    // Shadow because border disappears when table body is scrolled
     box-shadow: 0 1px 0 0 ${({ theme }) => theme.palette.divider};
   }
 
@@ -48,7 +49,7 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 export const AccessGrantedCountryList = () => {
   const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
-  const grantedCountries = countries; //.filter(country => country.hasAccess);
+  const grantedCountries = countries.filter(country => country.hasAccess);
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
