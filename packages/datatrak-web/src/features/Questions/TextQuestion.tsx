@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { SurveyQuestionInputProps } from '../../types';
 import styled from 'styled-components';
+import { SurveyQuestionInputProps } from '../../types';
 import { TextInput } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
@@ -61,12 +61,12 @@ export const TextQuestion = ({
         ref={ref}
         onChange={onChange}
         value={value}
+        required={required}
+        invalid={invalid}
         textInputProps={{
           ['aria-describedby']: `question_number_${id}`,
-          type: FIELD_TYPES[(type as unknown) as FIELD_TYPES],
+          type: FIELD_TYPES[type as unknown as FIELD_TYPES],
           placeholder,
-          error: invalid,
-          required,
           min,
           max,
           multiline: type === 'FreeText',
