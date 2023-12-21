@@ -11,15 +11,15 @@ import { Tooltip } from '@tupaia/ui-components';
 import { IconButton } from '@tupaia/ui-components';
 import { ArrowDropDown, Layers, Assignment } from '@material-ui/icons';
 import { Accordion, Typography, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import { MapTableModal } from './MapTableModal';
-import { MapOverlayList } from './MapOverlayList';
-import { MapOverlayDatePicker } from './MapOverlayDatePicker';
-import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { useMapOverlayMapData } from '../utils';
 import { Entity } from '../../../types';
 import { useMapOverlays } from '../../../api/queries';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { useGAEffect } from '../../../utils';
+import { MapTableModal } from './MapTableModal';
+import { MapOverlayList } from './MapOverlayList';
+import { MapOverlayDatePicker } from './MapOverlayDatePicker';
+import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 
 const MapTableButton = styled(IconButton)`
   margin: -0.625rem -0.625rem -0.625rem 0;
@@ -180,11 +180,11 @@ export const DesktopMapOverlaySelector = ({
         <Header>
           <Heading>Map Overlays</Heading>
           {selectedOverlay && (
-            <MapTableButton onClick={toggleMapTableModal}>
-              <Tooltip arrow interactive placement="top" title="Generate Report">
+            <Tooltip arrow interactive placement="top" title="Generate Report">
+              <MapTableButton onClick={toggleMapTableModal}>
                 <TableAssignmentIcon />
-              </Tooltip>
-            </MapTableButton>
+              </MapTableButton>
+            </Tooltip>
           )}
         </Header>
         <Container>
