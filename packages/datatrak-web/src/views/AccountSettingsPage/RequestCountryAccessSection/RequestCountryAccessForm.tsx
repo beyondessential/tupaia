@@ -7,13 +7,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Box, FormLabel, useMediaQuery } from '@material-ui/core';
-import { Checkbox, Form, FormInput, TextField } from '@tupaia/ui-components';
-import { Country } from '@tupaia/types';
-import { ensure } from '@tupaia/tsutils';
+import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { theme } from '../../../theme';
 import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
+import { RequestableCountryChecklist } from './RequestableCountryChecklist.tsx';
+import { ensure } from '@tupaia/tsutils';
+import { Entity } from '@tupaia/types';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
@@ -60,38 +61,6 @@ const StyledFormLabel = styled(FormLabel)`
   margin-block-end: 0.1875rem;
 `;
 
-const CountryChecklist = styled.fieldset`
-  margin: 0;
-  padding-block: 0;
-
-  border-radius: 0.1875rem;
-  border: 1px solid ${theme.palette.grey[400]};
-  block-size: 100%;
-  overflow-y: scroll; /* fallback */
-  overflow-block: scroll;
-  padding-inline: 0.87rem;
-
-  // Match styling of ui-components TextField
-  :disabled {
-    color: ${theme.palette.text.secondary};
-    background-color: ${theme.palette.grey['100']};
-  }
-`;
-
-const StyledCheckbox = styled(Checkbox)`
-  margin-block: 0;
-
-  .MuiFormControlLabel-root {
-    inline-size: 100%;
-  }
-
-  .MuiFormControlLabel-label {
-    font-size: 0.875rem;
-    inline-size: 100%;
-    line-height: 1.125rem;
-  }
-`;
-
 const StyledBox = styled(Box)`
   display: block flex;
   flex-direction: column;
@@ -115,13 +84,13 @@ const StyledFormInput = styled(FormInput)`
 `;
 
 interface RequestCountryAccessFormFields {
-  entityIds: Country['id'][];
+  entityIds: Entity['id'][];
   message?: string;
 }
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
-  const projectCode = project?.code;
+  const projectCode = ensure(project?.code);
 
   const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
 
@@ -135,7 +104,6 @@ export const RequestCountryAccessForm = () => {
   const {
     formState: { isSubmitting, isValidating, isValid },
     handleSubmit,
-    register,
     reset: resetForm,
   } = formContext;
 
@@ -183,35 +151,18 @@ export const RequestCountryAccessForm = () => {
       <StyledFieldset disabled={isSubmitting || requestIsLoading}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          <CountryChecklist disabled={!project} key={countryChecklistKey}>
-            {applicableCountries.map(({ id, name, hasAccess, accessRequests }) => {
-              const hasRequestedAccess = accessRequests.includes(ensure(projectCode));
-              const getTooltip = () => {
-                if (hasAccess) return 'You already have access';
-                if (hasRequestedAccess) return 'Approval in progress';
-              };
-
-              return (
-                <StyledCheckbox
-                  color="primary"
-                  disabled={hasAccess || hasRequestedAccess}
-                  id="countryIds"
-                  inputRef={register({ validate: (value: Country['id'][]) => value.length > 0 })}
-                  key={id}
-                  label={name}
-                  name="countryIds"
-                  tooltip={getTooltip()}
-                  value={id}
-                />
-              );
-            })}
-          </CountryChecklist>
+          <RequestableCountryChecklist
+            countries={applicableCountries}
+            disabled={!project}
+            key={countryChecklistKey}
+            projectCode={projectCode}
+          />
         </CountryChecklistWrapper>
         <StyledBox>
           <StyledFormInput
             disabled={!project}
             fullWidth
-            id="reasonForAccess"
+            id="message"
             Input={TextField}
             inputProps={{
               enterKeyHint: 'done',
@@ -222,7 +173,7 @@ export const RequestCountryAccessForm = () => {
             label="Reason for access"
             margin="none"
             multiline
-            name="reasonForAccess"
+            name="message"
             size="medium"
           />
           <Button
