@@ -163,7 +163,7 @@ export const RequestCountryAccessForm = () => {
               enterKeyHint: 'done',
               // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
               // dynamically resize it to fit content, so we must do the same to override it.
-              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'scroll' } : {},
+              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
             }}
             label="Reason for access"
             margin="none"

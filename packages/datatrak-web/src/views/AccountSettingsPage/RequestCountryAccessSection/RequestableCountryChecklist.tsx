@@ -17,8 +17,8 @@ const Container = styled.fieldset`
   border-radius: 0.1875rem;
   border: 1px solid ${theme.palette.grey[400]};
   block-size: 100%;
-  overflow-y: scroll; /* fallback */
-  overflow-block: scroll;
+  overflow-y: auto; /* fallback */
+  overflow-block: auto;
   padding-inline: 0.87rem;
 
   // Match styling of ui-components TextField
