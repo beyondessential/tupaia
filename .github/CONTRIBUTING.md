@@ -104,7 +104,7 @@ can be merged into main and be included in an upcoming Tupaia release.
 ### Note on Forking
 
 While Tupaia is open-source, there is always the possibility for forking the repository, which
-we strongly recommend against it. We will not provide any support for forked versions of Tupaia.
+we strongly recommend against. We will not provide any support for forked versions of Tupaia.
 We have seen projects struggle and even fail because of this type of splintering. Instead, we
 encourage you to collaborate with us on the mainline product roadmap.
 
