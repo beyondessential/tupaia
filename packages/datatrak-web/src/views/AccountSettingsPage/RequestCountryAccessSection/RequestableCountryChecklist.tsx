@@ -43,17 +43,26 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
 `;
 
 interface RequestableCountryChecklistProps {
-  countries: TupaiaWebCountryAccessListRequest.ResBody;
-  disabled?: boolean;
   projectCode: Project['code'];
+  countries: TupaiaWebCountryAccessListRequest.ResBody;
+  selectedCountries: Entity['id'][];
+  setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
+  disabled?: boolean;
 }
 
 export const RequestableCountryChecklist = ({
-  countries,
-  disabled,
   projectCode,
+  countries,
+  selectedCountries,
+  setSelectedCountries,
+  disabled,
 }: RequestableCountryChecklistProps) => {
   const { register } = useFormContext();
+
+  const selectCountry = (id: Entity['id'], select = true) =>
+    setSelectedCountries(
+      select ? [...selectedCountries, id] : selectedCountries.filter(element => element !== id),
+    );
 
   function getTooltip(hasAccess: boolean, hasRequestedAccess: boolean) {
     if (hasAccess) return 'You already have access';
@@ -64,14 +73,17 @@ export const RequestableCountryChecklist = ({
     <Container disabled={disabled}>
       {countries.map(({ id, name, hasAccess, accessRequests }) => {
         const hasRequestedAccess = accessRequests.includes(projectCode);
+        const isSelected = selectedCountries.includes(id);
 
         return (
           <StyledCheckbox
+            checked={isSelected}
             disabled={hasAccess || hasRequestedAccess}
             id="entityIds"
             inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
             key={id}
             label={name}
+            onChange={() => selectCountry(id, !isSelected)}
             name="entityIds"
             tooltip={getTooltip(hasAccess, hasRequestedAccess)}
             value={id}

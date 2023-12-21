@@ -105,31 +105,26 @@ export const RequestCountryAccessForm = () => {
   const {
     formState: { isSubmitting, isValidating, isValid },
     handleSubmit,
-    reset: resetForm,
+    reset,
   } = formContext;
+
+  /*
+   * Semantically, this belongs in RequestableCountryChecklist (child of this component), but setSelectedCountries is
+   * used here to circumvent some quirks of how React Hook Form + MUI checkboxes (mis-)handle multiple checkboxes with
+   * the same control name.
+   */
+  const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
+  const resetForm = () => {
+    reset();
+    setSelectedCountries([]);
+  };
 
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
     onError: error =>
       errorToast(error?.message ?? 'Sorry, couldn’t submit your request. Please try again'),
     onSettled: resetForm,
-    onSuccess: response => {
-      successToast(response.message);
-      rerenderCountryChecklist();
-    },
+    onSuccess: response => successToast(response.message),
   });
-
-  /**
-   * When React Hook Form resets the form state, boxes get correctly unchecked, but the MUI
-   * component fails to reflect this until its next render (usually when the user interacts with it,
-   * which makes the checkbox feel broken). setCountryCheckList serves merely as an "automatic
-   * kicking machine" to force a re-render.
-   */
-  const [countryChecklistKey, setCountryChecklistKey] = useState(Date.now());
-  /**
-   * HACK: Force a fresh render of the country checklist. Use when a MUI checkbox appears checked,
-   * but is actually unchecked (or vice versa).
-   */
-  const rerenderCountryChecklist = () => setCountryChecklistKey(Date.now());
 
   const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -151,10 +146,11 @@ export const RequestCountryAccessForm = () => {
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <RequestableCountryChecklist
-            countries={applicableCountries}
-            disabled={!project}
-            key={countryChecklistKey}
             projectCode={projectCode}
+            countries={applicableCountries}
+            selectedCountries={selectedCountries}
+            setSelectedCountries={setSelectedCountries}
+            disabled={!project}
           />
         </CountryChecklistWrapper>
         <StyledBox>
