@@ -70,8 +70,8 @@ export async function addBaselineTestData() {
   });
 
   const apiUser = await createUserAccessor(models, {
-    emailAddress: process.env.CLIENT_USERNAME,
-    password: process.env.CLIENT_SECRET,
+    emailAddress: 'TEST_API_CLIENT',
+    password: 'TEST_API_CLIENT',
     firstName: 'API',
     lastName: 'Client',
     employer: 'Automation',
@@ -88,7 +88,7 @@ export async function addBaselineTestData() {
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(process.env.CLIENT_SECRET, process.env.API_CLIENT_SALT),
+      secret_key_hash: encryptPassword('TEST_API_CLIENT', process.env.API_CLIENT_SALT),
     },
   );
 }

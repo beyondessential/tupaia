@@ -18,8 +18,8 @@ import { FetchTransformSchemaRequest } from '../routes/FetchTransformSchemaRoute
 /**
  * Set up express server
  */
-export function createApp() {
-  return new MicroServiceApiBuilder(new TupaiaDatabase(), 'report')
+export async function createApp() {
+  const builder = new MicroServiceApiBuilder(new TupaiaDatabase(), 'report')
     .useBasicBearerAuth()
     .attachApiClientToContext(req => new ForwardingAuthHandler(req.headers.authorization))
     .get<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
@@ -28,6 +28,10 @@ export function createApp() {
       handleWith(FetchTransformSchemaRoute),
     )
     .post<FetchReportRequest>('fetchReport/:reportCode', handleWith(FetchReportRoute))
-    .post<TestReportRequest>('testReport', handleWith(TestReportRoute))
-    .build();
+    .post<TestReportRequest>('testReport', handleWith(TestReportRoute));
+  const app = builder.build();
+
+  await builder.initialiseApiClient([{ entityCode: 'DL', permissionGroupName: 'Public' }]);
+
+  return app;
 }

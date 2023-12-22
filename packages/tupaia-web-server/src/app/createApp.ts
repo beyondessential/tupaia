@@ -23,8 +23,8 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
-  const app = new OrchestratorApiBuilder(db, 'tupaia-web', { attachModels: true })
+export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
+  const builder = new OrchestratorApiBuilder(db, 'tupaia-web', { attachModels: true })
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
@@ -96,8 +96,18 @@ export function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
-    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
-    .build();
+    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }));
+  const app = builder.build();
+
+  await builder.initialiseApiClient(
+    [
+      {
+        entityCode: 'DL',
+        permissionGroupName: 'Admin',
+      },
+    ],
+    true,
+  );
 
   return app;
 }

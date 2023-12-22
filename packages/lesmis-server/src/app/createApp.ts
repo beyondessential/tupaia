@@ -36,8 +36,8 @@ const path = require('path');
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
+export async function createApp() {
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'lesmis')
     .useSessionModel(LesmisSessionModel)
     .useAttachSession(attachSession)
     .verifyLogin(hasLesmisAccess)
@@ -61,8 +61,19 @@ export function createApp() {
     .post<ReportRequest>('report/:entityCode/:reportCode', handleWith(ReportRoute))
     .post<PDFExportRequest>('pdf', handleWith(PDFExportRoute))
 
-    .use('*', forwardRequest(CENTRAL_API_URL))
-    .build();
+    .use('*', forwardRequest(CENTRAL_API_URL));
+
+  const app = builder.build();
+
+  await builder.initialiseApiClient(
+    [
+      {
+        entityCode: 'LA',
+        permissionGroupName: 'LESMIS Public',
+      },
+    ],
+    true,
+  );
 
   return app;
 }

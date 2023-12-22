@@ -13,13 +13,20 @@ import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
+import { initialiseApiClient } from '@tupaia/server-boilerplate';
+import morgan from 'morgan';
 
 export async function createApp() {
   const app = express();
 
   app.server = http.createServer(app);
-  // Uncomment to log out incoming requests
-  // app.use(morgan('dev'));
+
+  /**
+   * Access logs
+   */
+  if (process.env.NODE_ENV !== 'production') {
+    app.use(morgan(':method :url :status :req[Authorization]'));
+  }
 
   app.use(compression());
 
@@ -53,6 +60,18 @@ export async function createApp() {
     req.authenticator = authenticator;
     next();
   });
+
+  // Initialise API Client
+  await initialiseApiClient(
+    modelRegistry,
+    [
+      {
+        entityCode: 'DL',
+        permissionGroupName: 'Admin',
+      },
+    ],
+    true,
+  );
 
   // Initialise sessions
   bindUserSessions(app);

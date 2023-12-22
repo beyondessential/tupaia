@@ -17,15 +17,17 @@ import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { UnauthenticatedError } from '@tupaia/utils';
 
-import { handleWith, handleError, emptyMiddleware } from '../../utils';
+// @ts-expect-error no types
+import morgan from 'morgan';
+import { handleWith, handleError, emptyMiddleware, initialiseApiClient } from '../../utils';
 import { TestRoute } from '../../routes';
 import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
-import { sessionCookie } from './sessionCookie';
 import { SessionModel } from '../models';
 import { logApiRequest } from '../utils';
 import { ServerBoilerplateModelRegistry } from '../../types';
+import { sessionCookie } from './sessionCookie';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const i18n = require('i18n');
@@ -61,6 +63,13 @@ export class ApiBuilder {
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
+
+    /**
+     * Access logs
+     */
+    if (process.env.NODE_ENV !== 'production') {
+      this.app.use(morgan('dev'));
+    }
 
     /**
      * Add middleware
@@ -186,6 +195,14 @@ export class ApiBuilder {
       }
     });
 
+    return this;
+  }
+
+  public async initialiseApiClient(
+    permissions: { entityCode: string; permissionGroupName: string }[],
+    publicAccessToAllCountries = false,
+  ) {
+    await initialiseApiClient(this.models, permissions, publicAccessToAllCountries);
     return this;
   }
 

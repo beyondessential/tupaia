@@ -49,8 +49,8 @@ const {
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
-export function createApp() {
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
+export async function createApp() {
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
     attachModels: true,
   })
     .useSessionModel(DataTrakSessionModel)
@@ -71,8 +71,13 @@ export function createApp() {
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
-    .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
-    .build();
+    .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
+
+  await builder.initialiseApiClient([
+    {entityCode: 'DL', permissionGroupName: 'Admin'},
+  ], true);
+
+  const app = builder.build();
 
   return app;
 }
