@@ -64,10 +64,10 @@ export const RequestableCountryChecklist = ({
       select ? [...selectedCountries, id] : selectedCountries.filter(element => element !== id),
     );
 
-  function getTooltip(hasAccess: boolean, hasRequestedAccess: boolean) {
+  const getTooltip = (hasAccess: boolean, hasRequestedAccess: boolean) => {
     if (hasAccess) return 'You already have access';
     if (hasRequestedAccess) return 'Approval in progress';
-  }
+  };
 
   return (
     <Container disabled={disabled}>
@@ -84,8 +84,8 @@ export const RequestableCountryChecklist = ({
             inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
             key={id}
             label={name}
-            onChange={() => selectCountry(id, !isSelected)}
             name="entityIds"
+            onChange={() => selectCountry(id, !isSelected)}
             tooltip={tooltip}
             value={id}
           />
