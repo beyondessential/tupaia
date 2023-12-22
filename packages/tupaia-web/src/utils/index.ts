@@ -14,3 +14,4 @@ export { transformDownloadLink } from './transformDownloadLink';
 export { useDebounce } from './useDebounce';
 export { getDefaultDashboard } from './getDefaultDashboard';
 export { useGAEffect } from './useGAEffect';
+export { getTopBarHeight, getMobileTopBarHeight } from './getTopBarHeight';
