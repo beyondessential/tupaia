@@ -7,8 +7,8 @@ import { useFormContext } from 'react-hook-form';
 import { useLocation } from 'react-router';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { SurveyQuestion } from './SurveyQuestion';
 import { SurveyScreenComponent } from '../../../types';
+import { SurveyQuestion } from './SurveyQuestion';
 
 const QuestionWrapper = styled.div<{
   $isInstruction: boolean;
@@ -16,6 +16,9 @@ const QuestionWrapper = styled.div<{
   display: flex;
   &:not(:last-child) {
     margin-bottom: ${({ $isInstruction }) => ($isInstruction ? '1rem' : '2rem')};
+  }
+  .MuiFormLabel-root {
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 

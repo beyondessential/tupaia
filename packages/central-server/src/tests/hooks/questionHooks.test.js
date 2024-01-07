@@ -188,7 +188,7 @@ describe('Question hooks', () => {
           body: {
             survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
-            timestamp: 999,
+            timestamp: 9999,
             answers: {
               'TEST_backdate-test': 'test',
             },
@@ -205,7 +205,7 @@ describe('Question hooks', () => {
           body: {
             survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
-            timestamp: 888,
+            timestamp: 8888,
             answers: {
               'TEST_backdate-test': 'test',
             },

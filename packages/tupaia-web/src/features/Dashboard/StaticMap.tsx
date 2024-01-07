@@ -74,7 +74,9 @@ interface StaticMapProps {
   title?: string;
   bounds: Position[];
 }
-export const StaticMap = ({ bounds, title }: StaticMapProps) => {
+
+// default bounds to be DEFAULT_BOUNDS so that something shows while loading the entity, reducing largest contentful paint speeds
+export const StaticMap = ({ bounds = DEFAULT_BOUNDS, title }: StaticMapProps) => {
   if (!areBoundsValid(bounds)) {
     return null;
   }
