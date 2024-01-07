@@ -15,3 +15,4 @@ export { useDebounce } from './useDebounce';
 export { getDefaultDashboard } from './getDefaultDashboard';
 export { useGAEffect } from './useGAEffect';
 export { useUrlLoginToken } from './useUrlLoginToken';
+export { getTopBarHeight, getMobileTopBarHeight } from './getTopBarHeight';

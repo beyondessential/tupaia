@@ -38,27 +38,26 @@ const Alert = styled(BaseAlert)`
   }
 `;
 
-interface DashboardItemErrorProps {
+interface FetchErrorAlertProps {
   error: UseQueryResult['error'] | null;
   refetch: UseQueryResult['refetch'];
-  isExport?: boolean;
 }
 /**
  * DashboardItemError handles error displays for dashboard items in both enlarged and collapsed states
  */
-export const DashboardItemError = ({ error, refetch, isExport }: DashboardItemErrorProps) => {
+export const FetchErrorAlert = ({ error, refetch }: FetchErrorAlertProps) => {
   return (
     <Alert severity="error">
       <Typography>{error.message}</Typography>
       <Typography>
-        {isExport ? (
-          <>
-            Contact <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
-          </>
-        ) : (
+        {refetch ? (
           <>
             <RetryButton onClick={refetch}>Retry loading data</RetryButton> or contact{' '}
             <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
+          </>
+        ) : (
+          <>
+            Contact <ErrorLink href="mailto:support@tupaia.org">support@tupaia.org</ErrorLink>
           </>
         )}
       </Typography>
