@@ -96,7 +96,9 @@ export const RadioQuestion = ({
     >
       {/**replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping **/}
       <LegendWrapper>
-        <FormLabel component="legend">{label?.replace(/\xA0/g, ' ')}</FormLabel>
+        <FormLabel component="legend" error={invalid} required={required}>
+          {label?.replace(/\xA0/g, ' ')}
+        </FormLabel>
         {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
       </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (

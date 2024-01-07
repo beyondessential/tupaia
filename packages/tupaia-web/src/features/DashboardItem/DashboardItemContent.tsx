@@ -6,7 +6,8 @@
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
 import { BaseReport } from '@tupaia/types';
-import { ExpandItemButton } from './ExpandItemButton';
+import { FetchErrorAlert } from '../../components';
+import { DashboardItemReport, DashboardItemConfig } from '../../types';
 import {
   View,
   Chart,
@@ -15,9 +16,8 @@ import {
   NoAccessDashboard,
   NoDataAtLevelDashboard,
 } from '../Visuals';
-import { DashboardItemReport, DashboardItemConfig } from '../../types';
+import { ExpandItemButton } from './ExpandItemButton';
 import { DashboardItemContext } from './DashboardItemContext';
-import { DashboardItemError } from './DashboardItemError';
 import { DashboardItemLoader } from './DashboardItemLoader';
 import { DashboardItemDateDisplay } from './DashboardItemDateDisplay';
 
@@ -52,7 +52,7 @@ export const DashboardItemContent = () => {
 
   if (!DisplayComponent) return null;
 
-  if (error) return <DashboardItemError error={error} refetch={refetch} isExport={isExport} />;
+  if (error) return <FetchErrorAlert error={error} refetch={isExport ? undefined : refetch} />;
   // there will be no report returned if type is component, so don't show the loader for that type
   if (isLoading || (!report && config?.type !== 'component'))
     return <DashboardItemLoader name={config?.name} isExport={isExport} />;

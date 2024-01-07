@@ -35,6 +35,7 @@ interface SurveyResponse {
   questions: SurveyScreenComponent[];
   answers: Answers;
   startTime: string;
+  timezone: string;
 }
 
 export type Params = Record<string, never>;
