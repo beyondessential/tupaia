@@ -51,7 +51,6 @@ const CountryChecklistWrapper = styled(Box)`
   block-size: 100%;
   display: block flex;
   flex-direction: column;
-  grid-row: 1 / -1;
   overflow: hidden;
 `;
 
