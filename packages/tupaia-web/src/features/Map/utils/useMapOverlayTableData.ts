@@ -81,7 +81,11 @@ export const useMapOverlayTableData = ({
     selectedOverlay?.measureLevel?.includes('Country') &&
     entity?.type !== 'project';
 
-  const { data: entities } = useMapOverlayEntities(
+  const {
+    data: entities,
+    error: mapOverlayEntitiesError,
+    refetch: refetchMapOverlayEntities,
+  } = useMapOverlayEntities(
     projectCode,
     rootEntityCode,
     includeRootEntity,
@@ -89,7 +93,16 @@ export const useMapOverlayTableData = ({
     keepPreviousData,
   );
 
-  const { data, isLoading, isFetched, isFetching, isIdle, isPreviousData } = useMapOverlayReport(
+  const {
+    data,
+    isLoading,
+    isFetched,
+    isFetching,
+    isIdle,
+    isPreviousData,
+    error: mapOverlayReportError,
+    refetch: refetchMapOverlayReport,
+  } = useMapOverlayReport(
     projectCode,
     rootEntityCode,
     selectedOverlay,
@@ -124,5 +137,7 @@ export const useMapOverlayTableData = ({
     activeEntity: entity,
     startDate,
     endDate,
+    error: mapOverlayEntitiesError || mapOverlayReportError,
+    refetch: mapOverlayEntitiesError ? refetchMapOverlayEntities : refetchMapOverlayReport,
   };
 };
