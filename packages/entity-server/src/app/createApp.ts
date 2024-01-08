@@ -123,12 +123,5 @@ export function createApp(db = new TupaiaDatabase()) {
 
   const app = builder.build();
 
-  builder.initialiseApiClient([
-    {
-      entityCode: 'DL',
-      permissionGroupName: 'Public',
-    },
-  ]);
-
   return app;
 }

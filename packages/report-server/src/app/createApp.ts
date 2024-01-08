@@ -31,7 +31,5 @@ export async function createApp() {
     .post<TestReportRequest>('testReport', handleWith(TestReportRoute));
   const app = builder.build();
 
-  await builder.initialiseApiClient([{ entityCode: 'DL', permissionGroupName: 'Public' }]);
-
   return app;
 }
