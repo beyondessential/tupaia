@@ -8,6 +8,7 @@ import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
 import { SurveyQuestionInputProps } from '../../../types';
 import { Button, InputHelperText } from '../../../components';
+import { useSurveyForm } from '../..';
 import { MapModal } from './MapModal';
 import { LatLongFields } from './LatLongFields';
 
@@ -56,11 +57,14 @@ export const GeolocateQuestion = ({
   detailLabel,
   controllerProps: { value, onChange, name, invalid },
 }: SurveyQuestionInputProps) => {
+  const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const [mapModalOpen, setMapModalOpen] = useState(false);
 
   const toggleMapModal = () => {
     setMapModalOpen(!mapModalOpen);
   };
+
+  const displayMapModalButton = !isReviewScreen && !isResponseScreen;
   return (
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
@@ -73,11 +77,16 @@ export const GeolocateQuestion = ({
           invalid={invalid}
           required={required}
         />
-        <SeparatorText>or</SeparatorText>
-        <ModalButton onClick={toggleMapModal}>
-          <MapIcon />
-          <ButtonText>Drop pin on map</ButtonText>
-        </ModalButton>
+
+        {displayMapModalButton && (
+          <>
+            <SeparatorText>or</SeparatorText>
+            <ModalButton onClick={toggleMapModal}>
+              <MapIcon />
+              <ButtonText>Drop pin on map</ButtonText>
+            </ModalButton>
+          </>
+        )}
         {mapModalOpen && (
           <MapModal geolocation={value} setGeolocation={onChange} closeModal={toggleMapModal} />
         )}

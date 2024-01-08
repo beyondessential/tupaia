@@ -79,6 +79,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
         fields,
         filter,
       },
+      false,
       !isLoggedIn,
     );
 

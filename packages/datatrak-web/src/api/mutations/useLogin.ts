@@ -41,7 +41,9 @@ export const useLogin = () => {
           });
         } else {
           const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-          navigate(path);
+          navigate(path, {
+            state: from,
+          });
         }
       },
       meta: {

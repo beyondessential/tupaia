@@ -57,8 +57,8 @@ describe('Survey', () => {
 
     // after selecting 'lack of staff' option, 2 more questions should appear
     fireEvent.click(screen.getByRole('radio', { name: /lack of staff*/i }));
-    expect(screen.getByLabelText('How many staff do you have?')).toBeInTheDocument();
-    expect(screen.getByLabelText('How many staff do you need?')).toBeInTheDocument();
+    expect(screen.getByLabelText('How many staff do you have? *')).toBeInTheDocument();
+    expect(screen.getByLabelText('How many staff do you need? *')).toBeInTheDocument();
 
     // change the answer to 'open' and the other 3 questions should disappear
     fireEvent.click(screen.getByRole('radio', { name: /open*/i }));

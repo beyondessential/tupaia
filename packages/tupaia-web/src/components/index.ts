@@ -11,4 +11,5 @@ export { CheckboxList } from './CheckboxList';
 export { RouterButton, RouterLink } from './RouterButton';
 export { Form } from './Form';
 export { DateRangePicker } from './DateRangePicker';
-export * from './ModalTypography'
+export * from './ModalTypography';
+export { FetchErrorAlert } from './FetchErrorAlert';
