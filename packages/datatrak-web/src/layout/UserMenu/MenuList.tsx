@@ -75,7 +75,10 @@ export const MenuList = ({
 
   const accountSettingsItem = {
     label: 'Account settings',
-    onClick: onClickInternalLink,
+    onClick: e => {
+      onClickInternalLink(e);
+      onCloseMenu();
+    },
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
