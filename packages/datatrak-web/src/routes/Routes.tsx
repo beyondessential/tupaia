@@ -21,6 +21,7 @@ import {
 } from '../views';
 import { useCurrentUser } from '../api';
 import { ROUTES } from '../constants';
+import { useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
 import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
@@ -30,11 +31,20 @@ import { SurveyRoutes } from './SurveyRoutes';
  */
 const LoggedInRedirect = ({ children }) => {
   const { isLoggedIn, ...user } = useCurrentUser();
+  const from = useFromLocation();
 
   if (!isLoggedIn) {
     return children;
   }
-  return <Navigate to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT} replace={true} />;
+  return (
+    <Navigate
+      to={user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT}
+      replace={true}
+      state={{
+        from,
+      }}
+    />
+  );
 };
 
 /**
