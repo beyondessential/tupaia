@@ -96,9 +96,9 @@ export const MenuList = ({
     },
   };
 
-  const hasProjectSelected = !!projectId;
-
   const getMenuItems = () => {
+    const hasProjectSelected = !!projectId;
+
     const items: MenuItem[] = [];
     if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
     items.push(helpCentreItem);
