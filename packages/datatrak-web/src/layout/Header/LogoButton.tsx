@@ -28,19 +28,25 @@ const Logo = styled(Button)`
 `;
 
 export const LogoButton = () => {
-  const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
+  const [leaveSurveyModalIsOpen, setLeaveSurveyModalOpen] = useState(false);
+  const openLeaveSurveyModal = () => setLeaveSurveyModalOpen(true);
+  const closeLeaveSurveyModal = () => setLeaveSurveyModalOpen(false);
+
+  const [leaveSettingsModalIsOpen, setLeaveSettingsModalIsOpen] = useState(false);
+  const openLeaveSettingsModal = () => setLeaveSettingsModalIsOpen(true);
+  const closeLeaveSettingsModal = () => setLeaveSettingsModalIsOpen(false);
+
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isAccountSettings = !!useMatch(ROUTES.ACCOUNT_SETTINGS);
 
   const onClickLogo = e => {
+    e.preventDefault();
     if (isSurveyScreen && !isSuccessScreen) {
-      e.preventDefault();
-      setIsOpen(true);
+      openLeaveSurveyModal();
+    } else if (isAccountSettings) {
+      openLeaveSettingsModal();
     }
-  };
-
-  const onClose = () => {
-    setIsOpen(false);
   };
 
   return (
@@ -48,7 +54,15 @@ export const LogoButton = () => {
       <Logo component={RouterLink} onClick={onClickLogo} to="/" title="Home">
         <img src="/datatrak-logo-black.svg" alt="Tupaia Datatrak logo" width="100%" height="100%" />
       </Logo>
-      <CancelConfirmModal isOpen={surveyCancelModalIsOpen} onClose={onClose} />
+      <CancelConfirmModal isOpen={leaveSurveyModalIsOpen} onClose={closeLeaveSurveyModal} />
+      <CancelConfirmModal
+        isOpen={leaveSettingsModalIsOpen}
+        onClose={closeLeaveSettingsModal}
+        headingText="Leave this page?"
+        bodyText="Your changes will not be saved"
+        confirmText="Leave page"
+        cancelText="Back to editing"
+      />
     </>
   );
 };
