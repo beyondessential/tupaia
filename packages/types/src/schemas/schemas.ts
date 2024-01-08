@@ -57858,7 +57858,8 @@ export const SurveySchema = {
 	"required": [
 		"code",
 		"id",
-		"name"
+		"name",
+		"project_id"
 	]
 } 
 
@@ -57910,7 +57911,8 @@ export const SurveyCreateSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"name"
+		"name",
+		"project_id"
 	]
 } 
 

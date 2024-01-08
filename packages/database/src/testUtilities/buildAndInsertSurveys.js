@@ -52,10 +52,14 @@ export const buildAndInsertSurvey = async (
 ) => {
   const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
 
+  const exploreProject = await findOrCreateDummyRecord(models.project, {
+    code: 'explore',
+  });
+
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_group_id: dataGroup.id },
+    { ...surveyFields, data_group_id: dataGroup.id, project_id: exploreProject.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,
