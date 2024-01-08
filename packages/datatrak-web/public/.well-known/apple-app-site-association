@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak",
+        "appIDs": ["352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak"],
         "components": [
           { "/": "/" },
           { "/": "/survey/*" }
