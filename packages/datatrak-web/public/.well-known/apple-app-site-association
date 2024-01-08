@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak",
+        "components": [
+          { "/": "/" },
+          { "/": "/survey/*" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak"]
+  }
+}

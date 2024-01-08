@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:datatrak.tupaia.org</string>
+		<string>webcredentials:datatrak.tupaia.org</string>
+		<string>applinks:localhost:5173?mode=developer</string>
+		<string>webcredentials:localhost:5173?mode=developer</string>
+		<string>applinks:waitp-1500-open-ios-links-in-app-datatrak.tupaia.org?mode=developer</string>
+		<string>webcredentials:waitp-1500-open-ios-links-in-app-datatrak.tupaia.org?mode=developer</string>
+	</array>
+</dict>
+</plist>
