@@ -21,7 +21,7 @@ export const SpinningLoader = (props: SpinningLoaderProps) => {
   const { spinnerSize = 50, ...restOfProps } = props;
   return (
     <Container {...restOfProps}>
-      <CircularProgress size={spinnerSize} />
+      <CircularProgress size={spinnerSize} title="Loading" />
     </Container>
   );
 };
