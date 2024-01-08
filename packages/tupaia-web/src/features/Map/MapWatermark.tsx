@@ -66,7 +66,10 @@ export const MapWatermark = () => {
       >
         Mapbox
       </StyledLink>
-      <IconButton onClick={() => setShowPopover(true)}>
+      <IconButton
+        onClick={() => setShowPopover(true)}
+        title={`${showPopover ? 'Close' : 'Open'} map attribution details`}
+      >
         <InfoIcon />
       </IconButton>
       <Popover
