@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import 'ace-builds/src-noconflict/mode-pgsql';
 import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
-import { Ace } from 'ace-builds';
+import type { Ace } from 'ace-builds';
 
 const AceEditor = styled(BaseAceEditor)`
   .error-marker {
