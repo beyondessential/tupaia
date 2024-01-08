@@ -96,12 +96,10 @@ const upsertPermissions = async ({
   models,
   userAccountId,
   permissions,
-  publicAccessToAllCountries = false,
 }: {
   models: ServerBoilerplateModelRegistry;
   userAccountId: string;
   permissions: { entityCode: string; permissionGroupName: string }[];
-  publicAccessToAllCountries: boolean;
 }) => {
   await models.userEntityPermission.delete({ user_id: userAccountId });
 
@@ -133,21 +131,6 @@ const upsertPermissions = async ({
     })),
   );
 
-  if (publicAccessToAllCountries) {
-    const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
-    const allCountryCodes = (await models.country.all()).map(c => c.code);
-    const countryEntities = await models.entity.find({ code: allCountryCodes });
-    await models.userEntityPermission.createMany(
-      countryEntities.map(e => ({
-        id: generateId(),
-        user_id: userAccountId,
-        entity_id: e.id,
-        permission_group_id: publicPermissionGroup.id,
-      })),
-    );
-    console.log('');
-  }
-
   console.log('Upserted API Client (user_entity_permissions)');
 };
 
@@ -163,7 +146,6 @@ const upsertPermissions = async ({
 export const initialiseApiClient = async (
   models: ServerBoilerplateModelRegistry,
   permissions: { entityCode: string; permissionGroupName: string }[],
-  publicAccessToAllCountries = false,
 ) => {
   const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
   const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
@@ -187,7 +169,6 @@ export const initialiseApiClient = async (
       models: transactingModels,
       userAccountId: userAccountId,
       permissions,
-      publicAccessToAllCountries,
     });
     console.log('Initialised API Client');
   });

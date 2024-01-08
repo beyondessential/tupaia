@@ -65,15 +65,12 @@ export async function createApp() {
 
   const app = builder.build();
 
-  await builder.initialiseApiClient(
-    [
-      {
-        entityCode: 'LA',
-        permissionGroupName: 'LESMIS Public',
-      },
-    ],
-    true,
-  );
+  await builder.initialiseApiClient([
+    {
+      entityCode: 'LA',
+      permissionGroupName: 'LESMIS Public',
+    },
+  ]);
 
   return app;
 }

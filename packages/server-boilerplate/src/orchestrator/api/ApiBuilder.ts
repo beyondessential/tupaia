@@ -200,9 +200,8 @@ export class ApiBuilder {
 
   public async initialiseApiClient(
     permissions: { entityCode: string; permissionGroupName: string }[],
-    publicAccessToAllCountries = false,
   ) {
-    await initialiseApiClient(this.models, permissions, publicAccessToAllCountries);
+    await initialiseApiClient(this.models, permissions);
     return this;
   }
 
