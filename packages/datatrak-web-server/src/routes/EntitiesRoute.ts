@@ -84,9 +84,11 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
 
     const sortedEntities = searchString
       ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
-      // Put recent entities first
-      : [...entities.filter((e: any) =>  recentEntities.includes(e.id)),
-         ...entities.filter((e: any) => !recentEntities.includes(e.id))];
+      : // Put recent entities first
+        [
+          ...recentEntities.map((id: string) => entities.find((e: any) => e.id === id)),
+          ...entities.filter((e: any) => !recentEntities.includes(e.id)),
+        ];
 
     return camelcaseKeys(sortedEntities, { deep: true });
   }
