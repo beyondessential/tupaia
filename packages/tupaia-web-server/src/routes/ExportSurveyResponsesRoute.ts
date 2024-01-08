@@ -45,7 +45,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       countryCode?: string;
       entityCode?: string;
       respondWithEmailTimeout: number;
-      emailAsAttachment?: boolean;
+      emailExportFileMode?: string;
     } = {
       latest,
       surveyCodes,
@@ -55,7 +55,7 @@ export class ExportSurveyResponsesRoute extends Route<ExportSurveyResponsesReque
       reportName: dashboardItem.config?.name,
       easyReadingMode,
       respondWithEmailTimeout: EMAIL_TIMEOUT,
-      emailAsAttachment: true,
+      emailExportFileMode: 'attachment',
     };
 
     if (organisationUnitCode?.length === 2) {
