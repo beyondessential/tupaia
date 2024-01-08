@@ -6,11 +6,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
-import { MapModal } from './MapModal';
-import { LatLongFields } from './LatLongFields';
 import { SurveyQuestionInputProps } from '../../../types';
 import { Button } from '../../../components';
 import { QuestionHelperText } from '../QuestionHelperText';
+import { useSurveyForm } from '../..';
+import { MapModal } from './MapModal';
+import { LatLongFields } from './LatLongFields';
 
 const Container = styled.div`
   display: flex;
@@ -57,11 +58,14 @@ export const GeolocateQuestion = ({
   detailLabel,
   controllerProps: { value, onChange, name, invalid },
 }: SurveyQuestionInputProps) => {
+  const { isReviewScreen, isResponseScreen } = useSurveyForm();
   const [mapModalOpen, setMapModalOpen] = useState(false);
 
   const toggleMapModal = () => {
     setMapModalOpen(!mapModalOpen);
   };
+
+  const displayMapModalButton = !isReviewScreen && !isResponseScreen;
   return (
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
@@ -74,17 +78,19 @@ export const GeolocateQuestion = ({
           invalid={invalid}
           required={required}
         />
-        <SeparatorText>or</SeparatorText>
-        <ModalButton onClick={toggleMapModal}>
-          <MapIcon />
-          <ButtonText>Drop pin on map</ButtonText>
-        </ModalButton>
-        <MapModal
-          geolocation={value}
-          setGeolocation={onChange}
-          closeModal={toggleMapModal}
-          mapModalOpen={mapModalOpen}
-        />
+
+        {displayMapModalButton && (
+          <>
+            <SeparatorText>or</SeparatorText>
+            <ModalButton onClick={toggleMapModal}>
+              <MapIcon />
+              <ButtonText>Drop pin on map</ButtonText>
+            </ModalButton>
+          </>
+        )}
+        {mapModalOpen && (
+          <MapModal geolocation={value} setGeolocation={onChange} closeModal={toggleMapModal} />
+        )}
       </Container>
     </Wrapper>
   );

@@ -29,7 +29,6 @@ const Autocomplete = styled(BaseAutocomplete)`
   }
 
   .MuiFormLabel-root {
-    color: ${({ theme }) => theme.palette.text.primary};
     font-size: 0.875rem;
     line-height: 1.2;
     @media (min-width: ${MOBILE_BREAKPOINT}) {
@@ -127,6 +126,7 @@ export const AutocompleteQuestion = ({
   name,
   optionSetId,
   detailLabel,
+  required,
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
@@ -192,6 +192,7 @@ export const AutocompleteQuestion = ({
         id={id}
         label={label!}
         name={name!}
+        required={required}
         value={selectedValue?.value || null}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
         onInputChange={(_e, value) => setInputValue(value)}

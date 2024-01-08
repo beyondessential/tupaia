@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no maximum-scale=1"  />
+    <meta name="description" content="Data collection and visualisation for the most remote settings in the world" />
     <meta name="theme-color" content="#000000" />
     <title>Tupaia DataTrak</title>
     <!-- Open Graph for shared links -->
@@ -37,17 +38,36 @@
       <!-- End of bes-support Zendesk Widget script -->
     <% } %>
     <link rel="icon" type="image/png" href="/favicon.ico" />
+    <!-- Add media='print' and onload="this.media='all'" to stop the resource being render-blocking on load: see https://pagespeedchecklist.com/asynchronous-google-fonts -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
       crossorigin="anonymous"
+      media="print"
+      onload="this.media='all'"
     />
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
       integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin=""
+      crossorigin="" 
+      media="print" 
+      onload="this.media='all'"
     />
+    <!-- Add a noscript fallback for stylesheets -->
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,600,700&display=swap"
+        crossorigin="anonymous" 
+      />
+      <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""  
+    />
+    </noscript>
   </head>
   <body>
     <noscript>
