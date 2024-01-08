@@ -125,7 +125,7 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
   };
 
   return (
-    <>
+    <li>
       <BaseListItem
         button={button}
         onClick={button ? onClick : null}
@@ -142,6 +142,6 @@ export const ListItem = ({ item, children, onSelect }: ListItemProps) => {
         {selected && <Check color="primary" />}
       </BaseListItem>
       {isNested && <Collapse in={open}>{children}</Collapse>}
-    </>
+    </li>
   );
 };

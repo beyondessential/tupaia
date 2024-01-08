@@ -55,6 +55,9 @@ export const DatePicker = ({
       animateYearScrolling
       TextFieldComponent={TextFieldComponent}
       className={className}
+      KeyboardButtonProps={{
+        title: 'Change date',
+      }}
       {...props}
     />
   </MuiPickersUtilsProvider>
