@@ -32,9 +32,9 @@ export const LogoButton = () => {
   const openLeaveSurveyModal = () => setLeaveSurveyModalOpen(true);
   const closeLeaveSurveyModal = () => setLeaveSurveyModalOpen(false);
 
-  const [leaveSettingsModalIsOpen, setLeaveSettingsModalIsOpen] = useState(false);
-  const openLeaveSettingsModal = () => setLeaveSettingsModalIsOpen(true);
-  const closeLeaveSettingsModal = () => setLeaveSettingsModalIsOpen(false);
+  const [leaveSettingsModalIsOpen, setLeaveSettingsModalOpen] = useState(false);
+  const openLeaveSettingsModal = () => setLeaveSettingsModalOpen(true);
+  const closeLeaveSettingsModal = () => setLeaveSettingsModalOpen(false);
 
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
