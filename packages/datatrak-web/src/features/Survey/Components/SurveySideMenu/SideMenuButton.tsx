@@ -34,6 +34,7 @@ export const SideMenuButton = () => {
     <MenuButton
       onClick={toggleSideMenu}
       tooltip={`${sideMenuOpen ? 'Close' : 'Expand'} survey contents`}
+      aria-label="Toggle survey menu"
     >
       {sideMenuOpen ? <KeyboardArrowLeft /> : <FormatListBulleted />}
     </MenuButton>

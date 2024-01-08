@@ -25,6 +25,7 @@ const ListItemImageContainer = styled.div`
 
 const Image = styled.img.attrs({
   src: '/tupaia-high-five.svg',
+  alt: 'Illustration of two hands giving a high five',
 })`
   height: 100%;
   width: 100%;
