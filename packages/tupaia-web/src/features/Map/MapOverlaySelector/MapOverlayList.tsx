@@ -192,14 +192,15 @@ const useSavedMapOverlayDates = () => {
 /**
  * This is the parent list of all the map overlays available to pick from
  */
-export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: Function }) => {
+export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: () => void }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
   const { projectCode, entityCode } = useParams();
   const { getSavedMapOverlayDateRange } = useSavedMapOverlayDates();
-  const { mapOverlayGroups = [], selectedOverlayCode, isLoadingMapOverlays } = useMapOverlays(
-    projectCode,
-    entityCode,
-  );
+  const {
+    mapOverlayGroups = [],
+    selectedOverlayCode,
+    isLoadingMapOverlays,
+  } = useMapOverlays(projectCode, entityCode);
 
   const onChangeMapOverlay = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedCode = e.target.value;

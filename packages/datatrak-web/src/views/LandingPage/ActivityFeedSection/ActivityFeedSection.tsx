@@ -9,12 +9,13 @@ import { Link } from '@material-ui/core';
 import { FeedItemTypes } from '@tupaia/types';
 import { SectionHeading } from '../SectionHeading';
 import { useCurrentProjectActivityFeed } from '../../../api/queries';
+import { MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
 import { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
-import { MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
 import { InfiniteScroll } from './InfiniteScroll';
 import { PinnedFeedItem } from './PinnedFeedItem';
 import { ActivityFeedItem } from './ActivityFeedItem';
+import { SkeletonFeed } from './SkeletonFeed';
 
 const ActivityFeed = styled.section`
   grid-area: activityFeed;
@@ -52,37 +53,36 @@ export const ActivityFeedSection = () => {
     hasNextPage,
     isFetching,
   } = useCurrentProjectActivityFeed();
+  const isInitialLoad = !activityFeed;
   return (
     <ActivityFeed>
       <SectionHeading>Activity feed</SectionHeading>
       <Body>
-        <InfiniteScroll
-          onScroll={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetching}
-        >
-          <List>
-            <PinnedFeedItem />
-            {/** Creating a new flattened array out of these pages caused a re-render on all updates which led to some bugs, so doing a nested map is better here */}
-            {activityFeed?.pages?.map(page =>
-              page?.items?.map(feedItem => (
-                <ActivityFeedItem
-                  key={feedItem.id}
-                  button={!!feedItem?.templateVariables?.link}
-                  component={feedItem?.templateVariables?.link ? Link : undefined}
-                  href={feedItem?.templateVariables?.link}
-                  target="_blank"
-                >
-                  {feedItem.type === FeedItemTypes.SurveyResponse ? (
-                    <ActivityFeedSurveyItem feedItem={feedItem as SurveyResponseFeedItem} />
-                  ) : (
-                    <ActivityFeedMarkdownItem feedItem={feedItem as MarkdownFeedItem} />
-                  )}
-                </ActivityFeedItem>
-              )),
-            )}
-          </List>
-        </InfiniteScroll>
+        {isInitialLoad ? (
+          <SkeletonFeed />
+        ) : (
+          <InfiniteScroll
+            onScroll={fetchNextPage}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetching}
+          >
+            <List>
+              <PinnedFeedItem />
+              {/** Creating a new flattened array out of these pages caused a re-render on all updates which led to some bugs, so doing a nested map is better here */}
+              {activityFeed?.pages?.map(page =>
+                page?.items?.map(feedItem => (
+                  <ActivityFeedItem key={feedItem.id}>
+                    {feedItem.type === FeedItemTypes.SurveyResponse ? (
+                      <ActivityFeedSurveyItem feedItem={feedItem as SurveyResponseFeedItem} />
+                    ) : (
+                      <ActivityFeedMarkdownItem feedItem={feedItem as MarkdownFeedItem} />
+                    )}
+                  </ActivityFeedItem>
+                )),
+              )}
+            </List>
+          </InfiniteScroll>
+        )}
       </Body>
     </ActivityFeed>
   );
