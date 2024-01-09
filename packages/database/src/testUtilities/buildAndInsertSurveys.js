@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { generateId } from '../utilities';
+import { generateTestId } from './generateTestId';
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (
@@ -39,7 +39,7 @@ const buildAndInsertDataGroup = async (models, fields) => {
 };
 
 const buildAndInsertProject = async models => {
-  const uniqueId = generateId();
+  const uniqueId = generateTestId();
   return findOrCreateDummyRecord(
     models.project,
     { id: uniqueId },
