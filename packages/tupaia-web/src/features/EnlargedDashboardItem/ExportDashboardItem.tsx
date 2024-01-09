@@ -22,6 +22,7 @@ import {
 } from './utils';
 import { Entity } from '../../types';
 import { EnlargedDashboardVisual } from './EnlargedDashboardVisual';
+import { DashboardItemTypes, ViewTypes } from '@tupaia/types';
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -143,7 +144,7 @@ const PreviewWrapper = styled.div<{
 
 const PreviewContainer = styled.div`
   min-width: 50rem; // the size of the a4 page
-  width: max-content;
+  width: 100%;
   padding: 1rem;
   h2 {
     color: ${({ theme }) => theme.palette.common.black};
@@ -221,10 +222,13 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
       value: EXPORT_FORMATS.XLSX,
     },
   ];
-  const { type } = currentDashboardItem?.config ?? {};
+
+  const { type, viewType } = currentDashboardItem?.config ?? {};
+  const isChart = type === DashboardItemTypes.Chart;
+
   // PNG export is not available for matrix reports
   const availableExportOptions =
-    type === 'chart'
+    isChart || viewType === ViewTypes.MultiValue
       ? exportOptions
       : exportOptions.filter(option => option.value !== EXPORT_FORMATS.PNG);
 
@@ -245,7 +249,7 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
                 name="exportFormat"
                 label="Export format"
               />
-              {exportFormat === EXPORT_FORMATS.PNG && (
+              {exportFormat === EXPORT_FORMATS.PNG && isChart && (
                 <FormGroup>
                   <Legend>Display options</Legend>
                   <Checkbox

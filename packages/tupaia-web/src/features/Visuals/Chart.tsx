@@ -177,7 +177,7 @@ export const Chart = () => {
   const showTable = isEnlarged ? !isExport || config?.presentationOptions?.exportWithTable : false;
 
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
-  let availableDisplayTypes = showTable ? views : [views[0]];
+  const availableDisplayTypes = showTable ? views : [views[0]];
 
   const viewContent = {
     ...report,

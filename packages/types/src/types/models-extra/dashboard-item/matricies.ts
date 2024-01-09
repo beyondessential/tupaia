@@ -2,15 +2,19 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 import { CssColor } from '../../css';
+import type {
+  BaseConfig,
+  DashboardItemTypes,
+  ExportPresentationOptions,
+  ValueType,
+} from './common';
 
 /**
  * @description Matrix viz type
  */
 export type MatrixConfig = BaseConfig & {
-  type: 'matrix';
+  type: DashboardItemTypes.Matrix;
 
   /**
    * @description Matrix viz type can specify a column as the data element column.
