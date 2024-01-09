@@ -17,7 +17,7 @@ interface MenuItem {
   to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e?: Event) => void;
+  onClick?: (e: Event) => void;
   component?: ComponentType<any> | string;
 }
 
