@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { ViewReport } from '@tupaia/types';
+import { DashboardItemTypes, ViewReport, ViewTypes } from '@tupaia/types';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
 import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
@@ -58,7 +58,12 @@ const ZoomInIcon = styled(MuiZoomIcon)`
   }
 `;
 
-const EXPANDABLE_TYPES = ['chart', 'dataDownload', 'filesDownload'];
+const EXPANDABLE_TYPES = [
+  DashboardItemTypes.Chart,
+  ViewTypes.DataDownload,
+  ViewTypes.FilesDownload,
+  ViewTypes.MultiValue,
+];
 
 /**
  * ExpandItemButton handles the 'expand' button for the dashboard item in both mobile and desktop sizes
@@ -74,12 +79,12 @@ export const ExpandItemButton = () => {
   const getIsExpandable = () => {
     if (periodGranularity) return true;
     // always allow matrix to be expanded
-    else if (type === 'matrix') return true;
+    else if (type === DashboardItemTypes.Matrix) return true;
     // only expand expandable types if they have data, if they don't have periodGranularity set
     else if (EXPANDABLE_TYPES.includes(type) || (viewType && EXPANDABLE_TYPES.includes(viewType))) {
       const { data } = report as ViewReport;
       return data && data.length > 0;
-    } else if (viewType === 'qrCodeVisual') {
+    } else if (viewType === ViewTypes.QRCode) {
       const { data } = report as ViewReport;
       return data && data.length > 1;
     }
@@ -89,7 +94,7 @@ export const ExpandItemButton = () => {
   if (!getIsExpandable()) return null;
 
   const getText = () => {
-    if (viewType === 'dataDownload' || viewType === 'qrCodeVisual')
+    if (viewType && [ViewTypes.DataDownload, ViewTypes.FilesDownload].includes(viewType))
       return 'Expand to download data';
     return 'Expand chart';
   };

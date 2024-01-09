@@ -169,3 +169,10 @@ export type ExportPresentationOptions = {
   exportWithTable?: boolean;
   exportWithTableDisabled?: boolean;
 };
+
+export enum DashboardItemTypes {
+  Chart = 'chart',
+  Component = 'component',
+  Matrix = 'matrix',
+  View = 'view',
+}

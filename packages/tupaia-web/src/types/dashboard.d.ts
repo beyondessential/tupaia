@@ -8,9 +8,9 @@ import {
   MatrixConfig,
   MultiValueRowViewConfig,
   MultiValueViewConfig,
-  ViewConfig,
   DashboardItem as BaseDashboardItem,
   TupaiaWebDashboardsRequest,
+  ViewTypes,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
@@ -26,7 +26,7 @@ type BaseConfig = Omit<
 >;
 
 export type DashboardItemConfig = BaseConfig & {
-  viewType?: ViewConfig['viewType'];
+  viewType?: ViewTypes;
   presentationOptions?: DashboardItemConfigPresentationOptions;
   componentName?: ComponentConfig['componentName'];
 };

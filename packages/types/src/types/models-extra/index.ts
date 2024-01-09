@@ -14,7 +14,7 @@ export type {
   ViewDataItem,
   ViewReport,
 } from './report';
-export type {
+export {
   DashboardItemConfig,
   BarChartConfig,
   ComposedChartConfig,
@@ -42,6 +42,8 @@ export type {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
+  DashboardItemTypes,
+  ViewTypes,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
