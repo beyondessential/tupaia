@@ -28,7 +28,7 @@ const Wrapper = styled.div`
   align-items: start;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 2.5rem 2.875rem 0rem 2.875rem;
+    padding: 2.375rem 3.625rem 0rem 2.375rem;
   }
 `;
 
@@ -60,7 +60,7 @@ const Title = styled(Typography).attrs({
 })`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   line-height: 1.4;
 `;
 

@@ -89,6 +89,17 @@ export const getDatesAsString = (
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
+interface PDFExportDashboardItemProps {
+  dashboardItem?: DashboardItem;
+  entityName?: Entity['name'];
+  activeDashboard?: Dashboard;
+  isPreview?: boolean;
+  settings?: {
+    exportWithTable: boolean;
+    exportWithLabels: boolean;
+  };
+}
+
 /**
  * This is the dashboard item that gets generated when generating a PDF. It is only present when puppeteer hits this view.
  */
@@ -97,12 +108,8 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
-}: {
-  dashboardItem?: DashboardItem;
-  entityName?: Entity['name'];
-  activeDashboard?: Dashboard;
-  isPreview?: boolean;
-}) => {
+  settings,
+}: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
 
@@ -118,7 +125,11 @@ export const PDFExportDashboardItem = ({
     endDate?: Moment;
   };
 
-  const { data: report, isLoading, error } = useReport(reportCode, {
+  const {
+    data: report,
+    isLoading,
+    error,
+  } = useReport(reportCode, {
     dashboardCode: activeDashboard?.code,
     projectCode,
     entityCode,
@@ -133,9 +144,10 @@ export const PDFExportDashboardItem = ({
     ...config,
     presentationOptions: {
       ...(config?.presentationOptions || {}),
-      exportWithTable: true,
+      ...settings,
     },
   } as DashboardItemConfig;
+
   const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
 
   const getTitle = () => {
@@ -167,13 +179,7 @@ export const PDFExportDashboardItem = ({
           <ExportContent $hasData={data && data?.length > 0}>
             <DashboardItemContext.Provider
               value={{
-                config: {
-                  ...config,
-                  presentationOptions: {
-                    ...config.presentationOptions,
-                    exportWithTable: true,
-                  },
-                },
+                config: dashboardItemConfig,
                 report,
                 reportCode,
                 isLoading,

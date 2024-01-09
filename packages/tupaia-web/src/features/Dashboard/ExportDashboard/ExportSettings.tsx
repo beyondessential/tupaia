@@ -72,7 +72,7 @@ const ExportSetting = styled.div`
   }
 
   .MuiFormControlLabel-label {
-    font-size: 0.825rem;
+    font-size: 0.875rem;
   }
 
   display: flex;
@@ -112,7 +112,7 @@ const ExportSettingsInstructionsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
-  padding-bottom: 0.7rem;
+  padding-bottom: 1.4rem;
 `;
 
 const PreviewHeaderContainer = styled.div`
@@ -120,7 +120,7 @@ const PreviewHeaderContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.3rem;
+  padding-bottom: 1.3rem;
   @media screen and (max-width: ${MOBILE_BREAKPOINT}) {
     width: 100%;
   }
@@ -146,7 +146,7 @@ const PreviewTitle = styled(Typography).attrs({
 })`
   color: ${({ theme }) => theme.palette.text.primary};
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  font-size: 0.875rem;
+  font-size: 1rem;
   line-height: 1.4;
 `;
 
@@ -162,6 +162,8 @@ interface ExportDashboardProps {
 }
 
 export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
+  const [exportWithTable, setExportWithTable] = useState(true);
+  const [exportWithLabels, setExportWithLabels] = useState(false);
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
@@ -174,6 +176,11 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
+  };
+
+  const settings = {
+    exportWithLabels,
+    exportWithTable,
   };
 
   const {
@@ -193,6 +200,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
       entityCode,
       dashboardCode: activeDashboard.code,
       selectedDashboardItems,
+      settings,
     });
 
   return (
@@ -213,24 +221,26 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
             <ExportSetting>
               <FormGroup>
                 <fieldset>
-                  <ExportSettingLabel>Display options (coming soon)</ExportSettingLabel>
+                  <ExportSettingLabel>Display options</ExportSettingLabel>
                   <Checkbox
                     label="Export with Labels"
                     value
                     name="displayOptions"
                     color="primary"
-                    checked={false}
-                    disabled
+                    checked={exportWithLabels}
                     size="small"
+                    onChange={() => setExportWithLabels(!exportWithLabels)}
+                    id="export-with-labels"
                   />
                   <Checkbox
                     label="Export with Table"
                     value
                     name="displayOptions"
                     color="primary"
-                    checked
-                    disabled
+                    checked={exportWithTable}
                     size="small"
+                    id="export-with-table"
+                    onChange={() => setExportWithTable(!exportWithTable)}
                   />
                 </fieldset>
               </FormGroup>
@@ -258,6 +268,7 @@ export const ExportSettings = ({ onClose, selectedDashboardItems = [] }: ExportD
                   dashboardName={dashboardName}
                   selectedDashboardItems={[visualisationToPreview]}
                   isPreview={true}
+                  settings={settings}
                 />
               </PreviewContainer>
             </PreviewPanelContainer>
