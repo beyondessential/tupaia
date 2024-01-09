@@ -5,7 +5,12 @@
 
 import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  hasTupaiaAdminPanelAccessToCountry,
+} from '../../permissions';
 
 /**
  * Handles POST endpoints:
@@ -50,6 +55,20 @@ export class CreateUserAccounts extends CreateHandler {
       if (!country) {
         throw new Error(`No such country: ${countryName}`);
       }
+
+      const countryPermissionChecker = accessPolicy => {
+        if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, country.code)) {
+          throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${country.name}`);
+        }
+
+        if (!accessPolicy.allows(country.code, permissionGroup.name)) {
+          throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);
+        }
+      };
+
+      await this.assertPermissions(
+        assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]),
+      );
 
       const user = await transactingModels.user.create({
         first_name: firstName,
