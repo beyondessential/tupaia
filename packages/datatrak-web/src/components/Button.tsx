@@ -16,7 +16,7 @@ const StyledButton = styled(UIButton)`
   }
 `;
 
-const TooltipButtonWrapper = styled.span`
+export const TooltipButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
 `;

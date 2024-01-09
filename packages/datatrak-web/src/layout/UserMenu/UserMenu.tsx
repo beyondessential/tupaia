@@ -54,9 +54,10 @@ export const UserMenu = () => {
   const toggleUserMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
   return (
     <Wrapper>
-      <UserInfo openProjectModal={openProjectModal} />
+      <UserInfo />
       <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
         <MenuIcon />
       </MenuButton>
