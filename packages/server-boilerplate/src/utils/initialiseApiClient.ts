@@ -118,15 +118,6 @@ const upsertPermissions = async ({
       permission_group_id: permissionGroupIdByName[p.permissionGroupName],
     })),
   );
-
-  await models.userEntityPermission.createMany(
-    permissions.map(p => ({
-      id: generateId(),
-      user_id: userAccountId,
-      entity_id: entityIdByCode[p.entityCode],
-      permission_group_id: permissionGroupIdByName[p.permissionGroupName],
-    })),
-  );
 };
 
 /**

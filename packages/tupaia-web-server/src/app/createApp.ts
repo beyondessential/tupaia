@@ -114,7 +114,6 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     { entityCode: 'VU', permissionGroupName: 'Public' }, //	Vanuatu
     { entityCode: 'AU', permissionGroupName: 'Public' }, //	Australia
     { entityCode: 'PW', permissionGroupName: 'Public' }, //	Palau
-    { entityCode: 'TL', permissionGroupName: 'Public' }, //	Timor-Leste
     { entityCode: 'NU', permissionGroupName: 'Public' }, //	Niue
     { entityCode: 'TV', permissionGroupName: 'Public' }, //	Tuvalu
   ]);

@@ -6,6 +6,7 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import morgan from 'morgan';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
@@ -13,8 +14,6 @@ import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
-import { initialiseApiClient } from '@tupaia/server-boilerplate';
-import morgan from 'morgan';
 
 export async function createApp() {
   const app = express();
@@ -60,27 +59,6 @@ export async function createApp() {
     req.authenticator = authenticator;
     next();
   });
-
-  // Initialise API Client
-  await initialiseApiClient(modelRegistry, [
-    { entityCode: 'DL', permissionGroupName: 'Public' }, //	Demo Land
-    { entityCode: 'FJ', permissionGroupName: 'Public' }, //	Fiji
-    { entityCode: 'CK', permissionGroupName: 'Public' }, //	Cook Islands
-    { entityCode: 'PG', permissionGroupName: 'Public' }, //	Papua New Guinea
-    { entityCode: 'SB', permissionGroupName: 'Public' }, //	Solomon Islands
-    { entityCode: 'TK', permissionGroupName: 'Public' }, //	Tokelau
-    { entityCode: 'VE', permissionGroupName: 'Public' }, //	Venezuela
-    { entityCode: 'WS', permissionGroupName: 'Public' }, //	Samoa
-    { entityCode: 'KI', permissionGroupName: 'Public' }, //	Kiribati
-    { entityCode: 'TO', permissionGroupName: 'Public' }, //	Tonga
-    { entityCode: 'NG', permissionGroupName: 'Public' }, //	Nigeria
-    { entityCode: 'VU', permissionGroupName: 'Public' }, //	Vanuatu
-    { entityCode: 'AU', permissionGroupName: 'Public' }, //	Australia
-    { entityCode: 'PW', permissionGroupName: 'Public' }, //	Palau
-    { entityCode: 'TL', permissionGroupName: 'Public' }, //	Timor-Leste
-    { entityCode: 'NU', permissionGroupName: 'Public' }, //	Niue
-    { entityCode: 'TV', permissionGroupName: 'Public' }, //	Tuvalu
-  ]);
 
   // Initialise sessions
   bindUserSessions(app);
