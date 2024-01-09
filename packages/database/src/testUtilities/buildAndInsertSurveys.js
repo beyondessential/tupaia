@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { generateTestId } from './generateTestId';
 import { findOrCreateDummyRecord } from './upsertDummyRecord';
 
 const buildAndInsertQuestion = async (
@@ -37,6 +38,15 @@ const buildAndInsertDataGroup = async (models, fields) => {
   );
 };
 
+const buildAndInsertProject = async models => {
+  const uniqueId = generateTestId();
+  return findOrCreateDummyRecord(
+    models.project,
+    { id: uniqueId },
+    { id: uniqueId, code: uniqueId },
+  );
+};
+
 const buildAndInsertDataElement = async (models, fields) => {
   const { code, type, ...createFields } = fields;
   return findOrCreateDummyRecord(
@@ -52,10 +62,12 @@ export const buildAndInsertSurvey = async (
 ) => {
   const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
 
+  const project = await buildAndInsertProject(models);
+
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_group_id: dataGroup.id },
+    { ...surveyFields, data_group_id: dataGroup.id, project_id: project.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,
@@ -107,5 +119,5 @@ export const buildAndInsertSurvey = async (
  * ```
  */
 export const buildAndInsertSurveys = async (models, surveys) => {
-  return Promise.all(surveys.map(async survey => buildAndInsertSurvey(models, survey)));
+  return Promise.all(surveys.map(survey => buildAndInsertSurvey(models, survey)));
 };
