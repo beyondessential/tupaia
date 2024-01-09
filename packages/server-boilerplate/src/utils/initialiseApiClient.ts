@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import winston from 'winston';
 import { generateId } from '@tupaia/database';
 import { requireEnv } from '@tupaia/utils';
 import { encryptPassword } from '@tupaia/auth';
@@ -36,7 +37,6 @@ const upsertUserAccount = async ({
         password_salt: salt,
       },
     );
-    console.log('Updated API Client (user_account)');
     return existingUserAccount.id;
   }
 
@@ -49,7 +49,6 @@ const upsertUserAccount = async ({
     password_hash: passwordHash,
     password_salt: salt,
   });
-  console.log('Created API Client (user_account)');
   return newId;
 };
 
@@ -80,7 +79,6 @@ const upsertApiClient = async ({
         user_account_id: userAccountId,
       },
     );
-    console.log('Updated API Client (api_client)');
     return;
   }
   await models.apiClient.create({
@@ -89,7 +87,6 @@ const upsertApiClient = async ({
     secret_key_hash: secretKeyHash,
     user_account_id: userAccountId,
   });
-  console.log('Created API Client (api_client)');
 };
 
 const upsertPermissions = async ({
@@ -130,8 +127,6 @@ const upsertPermissions = async ({
       permission_group_id: permissionGroupIdByName[p.permissionGroupName],
     })),
   );
-
-  console.log('Upserted API Client (user_entity_permissions)');
 };
 
 /**
@@ -170,6 +165,6 @@ export const initialiseApiClient = async (
       userAccountId: userAccountId,
       permissions,
     });
-    console.log('Initialised API Client');
+    winston.info(`Initialised API Client: ${API_CLIENT_NAME}`);
   });
 };
