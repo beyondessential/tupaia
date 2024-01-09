@@ -7,6 +7,7 @@ import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia
 import { CreateHandler } from '../CreateHandler';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  assertAdminPanelAccess,
   assertAnyPermissions,
   assertBESAdminAccess,
   hasTupaiaAdminPanelAccessToCountry,
@@ -19,7 +20,7 @@ import {
 
 export class CreateUserAccounts extends CreateHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(assertAdminPanelAccess);
   }
 
   async createRecord() {
