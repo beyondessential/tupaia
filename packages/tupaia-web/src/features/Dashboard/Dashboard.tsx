@@ -22,7 +22,7 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { ExportDashboard } from './ExportDashboard';
 import { DashboardContextProvider, useDashboard } from './utils';
-import { SubscribeModal, DashboardMenu } from './DashboardMenu';
+import { SubscribeModal, DashboardMenu } from './Menu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
 const MAX_SIDEBAR_COLLAPSED_WIDTH = 550;
