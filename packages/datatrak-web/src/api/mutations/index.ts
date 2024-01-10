@@ -15,3 +15,4 @@ export * from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
 export { useOneTimeLogin } from './useOneTimeLogin';
 export * from './useExportSurveyResponses';
+export { useTupaiaRedirect } from './useTupaiaRedirect';
