@@ -11,10 +11,10 @@ import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
 import { useDashboards } from '../../../api/queries';
 import { useEmailDashboard } from '../../../api/mutations';
-import { ExportSettingLabel } from './ExportSettingLabel';
-import { ExportSettingsInstructions } from './ExportSettingsInstructions';
+import { ExportSettingLabel } from '../../ExportSettings';
+import { ExportSubtitle } from './ExportSubtitle';
 
-const Container = styled.div`
+const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -28,13 +28,13 @@ const ButtonContainer = styled.div`
   align-items: center;
 `;
 
-const ResponseMessage = styled(ExportSettingsInstructions)`
+const ResponseMessage = styled(ExportSubtitle)`
   display: flex;
   align-items: center;
   line-height: normal;
 `;
 
-const ErrorMessage = styled(ExportSettingsInstructions)`
+const ErrorMessage = styled(ExportSubtitle)`
   margin-left: 0.9rem;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@ interface ExportDashboardProps {
   selectedDashboardItems: string[];
 }
 
-export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboardProps) => {
+export const MailingListSection = ({ selectedDashboardItems = [] }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
@@ -107,38 +107,34 @@ export const MailingListButton = ({ selectedDashboardItems = [] }: ExportDashboa
     });
 
   return (
-    <fieldset>
-      <Container>
-        <MailingListLabel>Mailing list</MailingListLabel>
-        <ExportSettingsInstructions>
-          Send export to users who are subscribed to this dashboard.
-        </ExportSettingsInstructions>
-        <ButtonContainer>
-          {responseMessage ? (
-            <ResponseMessage>
-              {isSuccessfulExport ? <SuccessIcon /> : null}
-              {responseMessage}
-            </ResponseMessage>
-          ) : (
-            <>
-              <SendExportButton
-                variant="outlined"
-                color="default"
-                onClick={handleEmail}
-                disabled={isLoading}
-              >
-                {isLoading ? <SpinningLoader spinnerSize="1.45rem" /> : 'Send export'}
-              </SendExportButton>
-              {error ? (
-                <ErrorMessage>
-                  <ErrorIcon />
-                  {`Export failed: ${error.message}`}
-                </ErrorMessage>
-              ) : null}
-            </>
-          )}
-        </ButtonContainer>
-      </Container>
-    </fieldset>
+    <Wrapper>
+      <MailingListLabel>Mailing list</MailingListLabel>
+      <ExportSubtitle>Send export to users who are subscribed to this dashboard.</ExportSubtitle>
+      <ButtonContainer>
+        {responseMessage ? (
+          <ResponseMessage>
+            {isSuccessfulExport ? <SuccessIcon /> : null}
+            {responseMessage}
+          </ResponseMessage>
+        ) : (
+          <>
+            <SendExportButton
+              variant="outlined"
+              color="default"
+              onClick={handleEmail}
+              disabled={isLoading}
+            >
+              {isLoading ? <SpinningLoader spinnerSize="1.45rem" /> : 'Send export'}
+            </SendExportButton>
+            {error ? (
+              <ErrorMessage>
+                <ErrorIcon />
+                {`Export failed: ${error.message}`}
+              </ErrorMessage>
+            ) : null}
+          </>
+        )}
+      </ButtonContainer>
+    </Wrapper>
   );
 };

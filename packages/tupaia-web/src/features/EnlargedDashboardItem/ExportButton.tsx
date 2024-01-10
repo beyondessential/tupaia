@@ -11,9 +11,9 @@ import { DashboardItemTypes, ViewTypes } from '@tupaia/types';
 import { IconButton } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import {
-  ACTION_TYPES,
-  ExportContext,
-  ExportDispatchContext,
+  ExportDashboardItemActionTypes,
+  ExportDashboardItemContext,
+  ExportDashboardItemDispatchContext,
   useEnlargedDashboardItem,
 } from './utils';
 
@@ -35,8 +35,8 @@ const EXPORTABLE_TYPES = [
 
 export const ExportButton = () => {
   const [urlSearchParams] = useSearchParams();
-  const { isExportMode } = useContext(ExportContext);
-  const dispatch = useContext(ExportDispatchContext)!;
+  const { isExportMode } = useContext(ExportDashboardItemContext);
+  const dispatch = useContext(ExportDashboardItemDispatchContext)!;
   const { currentDashboardItem } = useEnlargedDashboardItem();
   const { type, viewType } = currentDashboardItem?.config || {};
   const displayType = viewType || type;
@@ -48,7 +48,7 @@ export const ExportButton = () => {
 
   const onClickExportButton = () => {
     dispatch({
-      type: ACTION_TYPES.SET_IS_EXPORT_MODE,
+      type: ExportDashboardItemActionTypes.SET_IS_EXPORT_MODE,
       payload: true,
     });
   };

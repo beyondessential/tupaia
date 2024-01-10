@@ -9,12 +9,13 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { FlexColumn } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
-import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
+import { ExportSettingsContext } from '../ExportSettings';
+import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { BackLink } from './BackLink';
-import { ExportContext, useEnlargedDashboardItem } from './utils';
+import { ExportDashboardItemContext, useEnlargedDashboardItem } from './utils';
 
 const Container = styled(FlexColumn)<{
   $isExportMode?: boolean;
@@ -79,7 +80,8 @@ export const EnlargedDashboardVisual = ({
   entityName,
   isPreview,
 }: EnlargedDashboardVisualProps) => {
-  const { isExportMode, exportWithLabels, exportWithTable } = useContext(ExportContext);
+  const { exportWithLabels, exportWithTable } = useContext(ExportSettingsContext);
+  const { isExportMode } = useContext(ExportDashboardItemContext);
   const {
     currentDashboardItem,
     parentDashboardItem,

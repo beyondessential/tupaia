@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { DashboardItem } from '../../../types';
 import { Modal as BaseModal } from '../../../components';
 import { SelectVisualisation } from './SelectVisualisations';
-import { ExportSettings } from './ExportSettings';
+import { ExportConfig } from './ExportConfig';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {
@@ -96,10 +96,7 @@ export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: Export
               setSelectedDashboardItems={setSelectedDashboardItems}
             />
           ) : (
-            <ExportSettings
-              onClose={onCloseModal}
-              selectedDashboardItems={selectedDashboardItems}
-            />
+            <ExportConfig onClose={onCloseModal} selectedDashboardItems={selectedDashboardItems} />
           )}
         </Container>
       </Wrapper>
