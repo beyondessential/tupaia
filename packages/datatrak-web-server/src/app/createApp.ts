@@ -73,6 +73,7 @@ export function createApp() {
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
+    .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     .build();

@@ -82,6 +82,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
+      primaryPlatform,
     } = this.newRecordData;
 
     let userData = {
@@ -92,6 +93,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
+      primaryPlatform,
     };
 
     // Get one of the non-default platform configs if it exists
@@ -99,8 +101,17 @@ export class RegisterUserAccounts extends CreateUserAccounts {
     const platformConfig = email in PLATFORM_CONFIGS ? PLATFORM_CONFIGS[email] : null;
 
     if (platformConfig) {
-      const { permissionGroupName, countryName, primaryPlatform } = platformConfig;
-      userData = { ...userData, permissionGroupName, countryName, primaryPlatform };
+      const {
+        permissionGroupName,
+        countryName,
+        primaryPlatform: apiClientUserPrimaryPlatform,
+      } = platformConfig;
+      userData = {
+        ...userData,
+        permissionGroupName,
+        countryName,
+        primaryPlatform: apiClientUserPrimaryPlatform,
+      };
     }
 
     const { userId } = await this.createUserRecord(userData);
