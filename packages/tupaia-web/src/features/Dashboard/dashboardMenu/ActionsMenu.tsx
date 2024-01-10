@@ -11,9 +11,7 @@ import {
 } from '@tupaia/ui-components';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { Dashboard } from '../../../types';
-import { useDashboardMailingList } from '../../../utils';
-import { useDashboard } from '../DashboardContext';
+import { useDashboard, useDashboardMailingList } from '../utils';
 
 const StyledExportIcon = styled(ExportIcon)`
   height: 0.9rem;

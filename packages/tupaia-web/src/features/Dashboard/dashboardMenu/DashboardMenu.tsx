@@ -9,7 +9,7 @@ import { ButtonBase, Menu, MenuItem, Box, Paper } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../../types';
 import { TOP_BAR_HEIGHT } from '../../../constants';
-import { useDashboard } from '../DashboardContext';
+import { useDashboard } from '../utils';
 import { ActionsMenu } from './ActionsMenu';
 
 const MenuButton = styled(ButtonBase)`

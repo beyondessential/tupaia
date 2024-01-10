@@ -5,4 +5,4 @@
 
 export { Dashboard } from './Dashboard';
 export * from '../ExportSettings';
-export { useDashboard } from './DashboardContext';
+export { useDashboard } from './utils';

@@ -11,7 +11,7 @@ import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
 import { useEmailDashboard } from '../../../api/mutations';
 import { ExportSettingLabel } from '../../ExportSettings';
-import { useDashboard } from '../DashboardContext';
+import { useDashboard, useDashboardMailingList } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 
 const Wrapper = styled.section`
@@ -77,6 +77,8 @@ const SpinningLoader = styled(BaseSpinningLoader)`
 export const MailingListSection = () => {
   const { projectCode, entityCode } = useParams();
   const { selectedDashboardItems, activeDashboard } = useDashboard();
+  const mailingList = useDashboardMailingList();
+  const showMailingList = mailingList && mailingList.isAdmin;
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
   // lazy assumption that the success message contains the word 'success', probably will be fine
@@ -93,6 +95,8 @@ export const MailingListSection = () => {
   } = useEmailDashboard({
     onSuccess: handleEmailComplete,
   });
+
+  if (!showMailingList) return null;
 
   const handleEmail = () =>
     requestEmailDashboard({

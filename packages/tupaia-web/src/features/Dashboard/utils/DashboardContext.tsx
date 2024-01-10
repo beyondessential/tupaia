@@ -4,8 +4,8 @@
  */
 import React, { Dispatch, createContext, useContext, useReducer } from 'react';
 import { useParams } from 'react-router';
-import { useDashboards } from '../../api/queries';
-import { useGAEffect } from '../../utils';
+import { useDashboards } from '../../../api/queries';
+import { useGAEffect } from '../../../utils';
 
 type DashboardReducer = {
   selectedDashboardItems: string[];
@@ -55,9 +55,11 @@ const dashboardReducer = (state: DashboardReducer, action: ActionT): DashboardRe
   }
 };
 
+// Utility hook to get the dashboard context
+// Contains the dashboards, active dashboard, and export and subscribe state
 export const useDashboard = () => {
   const { projectCode, entityCode, dashboardName } = useParams();
-  const { data: dashboards, ...dashboardResult } = useDashboards(projectCode, entityCode);
+  const { data: dashboards = [], ...dashboardResult } = useDashboards(projectCode, entityCode);
   const { selectedDashboardItems, exportModalOpen, subscribeModalOpen } =
     useContext(DashboardContext);
   const dispatch = useContext(DashboardDispatchContext);
@@ -73,13 +75,9 @@ export const useDashboard = () => {
   const toggleSubscribeModal = () => {
     dispatch?.({ type: Actions.TOGGLE_SUBSCRIBE_MODAL });
   };
-
-  let activeDashboard;
-
-  if (dashboards?.length > 0 && dashboardName) {
-    // trim dashboard name to avoid issues with trailing or leading spaces
-    activeDashboard = dashboards?.find(dashboard => dashboard.name.trim() === dashboardName.trim());
-  }
+  // trim dashboard name to avoid issues with trailing or leading spaces
+  const activeDashboard =
+    dashboards?.find(dashboard => dashboard.name.trim() === dashboardName?.trim()) ?? undefined;
 
   useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
@@ -96,6 +94,7 @@ export const useDashboard = () => {
   };
 };
 
+// A wrapper containing the context providers for the dashboard
 export const DashboardContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(dashboardReducer, defaultState);
   return (

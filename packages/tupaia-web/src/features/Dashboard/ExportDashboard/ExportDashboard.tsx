@@ -7,9 +7,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Modal as BaseModal } from '../../../components';
+import { useDashboard } from '../utils';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
-import { useDashboard } from '../DashboardContext';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {

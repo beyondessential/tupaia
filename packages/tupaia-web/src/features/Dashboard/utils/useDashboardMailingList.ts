@@ -4,7 +4,7 @@
  */
 
 import { useParams } from 'react-router';
-import { useDashboard } from '../features/Dashboard';
+import { useDashboard } from './DashboardContext';
 
 export const useDashboardMailingList = () => {
   const { entityCode } = useParams();

@@ -21,7 +21,7 @@ import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { ExportDashboard } from './ExportDashboard';
-import { DashboardContextProvider, useDashboard } from './DashboardContext';
+import { DashboardContextProvider, useDashboard } from './utils';
 import { SubscribeModal, DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;

@@ -10,18 +10,16 @@ import { useForm } from 'react-hook-form';
 import { Button, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { useUser } from '../../../api/queries';
-import { Dashboard } from '../../../types';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
-import { useDashboardMailingList } from '../../../utils';
+import { useDashboardMailingList, useDashboard } from '../utils';
 import {
   MODAL_SUBSCRIBE_TEXT,
   MODAL_SUBSCRIBE_TITLE,
   MODAL_UNSUBSCRIBE_TEXT,
   MODAL_UNSUBSCRIBE_TITLE,
 } from './constants';
-import { useDashboard } from '../DashboardContext';
 
 const Wrapper = styled.div`
   width: 45rem;

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useReducer } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
@@ -12,15 +12,13 @@ import { DashboardItemTypes } from '@tupaia/types';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import { useDashboardMailingList } from '../../../utils';
 import {
   DisplayOptionsSettings,
   ExportFormats,
-  ExportSettingsContext,
-  ExportSettingsDispatchContext,
-  exportSettingsReducer,
+  ExportSettingsContextProvider,
+  useExportSettings,
 } from '../../ExportSettings';
-import { useDashboard } from '../DashboardContext';
+import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
@@ -108,18 +106,10 @@ interface ExportDashboardProps {
 }
 
 export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
-  const [exportConfig, dispatch] = useReducer(exportSettingsReducer, {
-    exportFormat: ExportFormats.PNG,
-    exportWithLabels: false,
-    exportWithTable: true,
-  });
-
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { selectedDashboardItems, activeDashboard } = useDashboard();
-  const mailingList = useDashboardMailingList();
-  const showMailingListButton = mailingList && mailingList.isAdmin;
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -136,7 +126,7 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
-  const { exportWithLabels, exportWithTable } = exportConfig;
+  const { exportWithLabels, exportWithTable } = useExportSettings();
   const handleExport = () =>
     requestPdfExport({
       projectCode,
@@ -162,36 +152,40 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
       errorMessage={error?.message}
       onReset={reset}
     >
-      <ExportSettingsContext.Provider value={exportConfig}>
-        <ExportSettingsDispatchContext.Provider value={dispatch}>
-          <Wrapper>
-            <Container>
-              <ExportSettingsContainer>
-                <ExportSettingsInstructionsContainer>
-                  <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
-                </ExportSettingsInstructionsContainer>
-                <ExportSetting>
-                  {hasChartItems && (
-                    <section>
-                      <DisplayOptionsSettings />
-                    </section>
-                  )}
-                  {showMailingListButton && <MailingListSection />}
-                </ExportSetting>
-              </ExportSettingsContainer>
-              {!isLoading && <Preview />}
-            </Container>
-          </Wrapper>
-          <ButtonGroup>
-            <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
-              Cancel
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleExport} disabled={isLoading}>
-              Download
-            </Button>
-          </ButtonGroup>
-        </ExportSettingsDispatchContext.Provider>
-      </ExportSettingsContext.Provider>
+      <ExportSettingsContextProvider
+        defaultSettings={{
+          exportFormat: ExportFormats.PNG,
+          exportWithLabels: false,
+          exportWithTable: true,
+        }}
+      >
+        <Wrapper>
+          <Container>
+            <ExportSettingsContainer>
+              <ExportSettingsInstructionsContainer>
+                <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
+              </ExportSettingsInstructionsContainer>
+              <ExportSetting>
+                {hasChartItems && (
+                  <section>
+                    <DisplayOptionsSettings />
+                  </section>
+                )}
+                <MailingListSection />
+              </ExportSetting>
+            </ExportSettingsContainer>
+            {!isLoading && <Preview />}
+          </Container>
+        </Wrapper>
+        <ButtonGroup>
+          <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleExport} disabled={isLoading}>
+            Download
+          </Button>
+        </ButtonGroup>
+      </ExportSettingsContextProvider>
     </LoadingContainer>
   );
 };

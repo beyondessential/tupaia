@@ -4,6 +4,7 @@
  */
 
 import React, { Dispatch, createContext, useReducer } from 'react';
+import { ExportSettingsContextProvider } from '../../ExportSettings';
 
 type ExportReducerState = {
   isExporting: boolean;
@@ -67,13 +68,15 @@ export const exportDashboardItemReducer = (
   }
 };
 
-export const ExportDashboardItemContextProvider = ({ children }) => {
+export const ExportDashboardItemContextProvider = ({ children, defaultSettings }) => {
   const [state, dispatch] = useReducer(exportDashboardItemReducer, defaultContext);
   return (
-    <ExportDashboardItemContext.Provider value={state}>
-      <ExportDashboardItemDispatchContext.Provider value={dispatch}>
-        {children}
-      </ExportDashboardItemDispatchContext.Provider>
-    </ExportDashboardItemContext.Provider>
+    <ExportSettingsContextProvider defaultSettings={defaultSettings}>
+      <ExportDashboardItemContext.Provider value={state}>
+        <ExportDashboardItemDispatchContext.Provider value={dispatch}>
+          {children}
+        </ExportDashboardItemDispatchContext.Provider>
+      </ExportDashboardItemContext.Provider>
+    </ExportSettingsContextProvider>
   );
 };

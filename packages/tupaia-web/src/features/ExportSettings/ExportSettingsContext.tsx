@@ -109,10 +109,16 @@ export const useExportSettings = () => {
   };
 };
 
-export const ExportSettingsContextProvider = ({ defaultSettings, children }) => {
+export const ExportSettingsContextProvider = ({
+  defaultSettings,
+  children,
+}: {
+  defaultSettings?: ExportSettingsReducerState;
+  children: React.ReactNode;
+}) => {
   const [state, dispatch] = useReducer(exportSettingsReducer, {
     ...defaultContext,
-    ...defaultSettings,
+    ...(defaultSettings || {}),
   });
   return (
     <ExportSettingsContext.Provider value={state}>
