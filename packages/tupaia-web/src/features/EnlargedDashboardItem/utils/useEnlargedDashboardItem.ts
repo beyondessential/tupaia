@@ -4,7 +4,7 @@
  */
 import { useParams, useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { useReport } from '../../../api/queries';
+import { useDashboards, useReport } from '../../../api/queries';
 import { useDateRanges } from '../../../utils';
 import { DashboardItem } from '../../../types';
 import { useDashboard } from '../../Dashboard';
@@ -18,7 +18,8 @@ export const useEnlargedDashboardItem = () => {
   const [urlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT) as DashboardItem['code'];
 
-  const { activeDashboard, isLoading: isLoadingDashboards } = useDashboard();
+  const { isLoading: isLoadingDashboards } = useDashboards(projectCode, entityCode);
+  const { activeDashboard } = useDashboard();
 
   const currentDashboardItem = activeDashboard?.items.find(
     dashboardItem => dashboardItem.reportCode === reportCode,

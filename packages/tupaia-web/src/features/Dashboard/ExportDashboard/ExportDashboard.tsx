@@ -8,9 +8,9 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Modal as BaseModal } from '../../../components';
 import { useDashboard } from '../utils';
+import { ExportFormats, ExportSettingsContextProvider } from '..';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
-import { ExportFormats, ExportSettingsContextProvider } from '..';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {

@@ -11,7 +11,7 @@ import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { useEntity, useProject } from '../../api/queries';
+import { useDashboards, useEntity, useProject } from '../../api/queries';
 import { DashboardItem as DashboardItemType } from '../../types';
 import { gaEvent, getDefaultDashboard } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
@@ -111,13 +111,13 @@ export const Dashboard = () => {
   const { projectCode, entityCode } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
 
+  const { activeDashboard } = useDashboard();
   const {
-    activeDashboard,
-    dashboards,
+    data: dashboards,
     isLoading: isLoadingDashboards,
     isError,
     isFetched,
-  } = useDashboard();
+  } = useDashboards(projectCode, entityCode);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);

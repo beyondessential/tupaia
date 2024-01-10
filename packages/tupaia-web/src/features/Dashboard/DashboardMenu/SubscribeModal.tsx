@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Button, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useUser } from '../../../api/queries';
+import { useDashboards, useUser } from '../../../api/queries';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
@@ -91,13 +91,9 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
 `;
 
 export const SubscribeModal = () => {
-  const {
-    activeDashboard,
-    subscribeModalOpen,
-    toggleSubscribeModal,
-    refetch: refetchDashboards,
-  } = useDashboard();
+  const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
   const { entityCode, projectCode } = useParams();
+  const { refetch: refetchDashboards } = useDashboards(projectCode, entityCode);
   const { data: user, isLoggedIn, isLoading } = useUser();
   const mailingList = useDashboardMailingList();
   const isSubscribed = mailingList ? mailingList.isSubscribed : false;
