@@ -17,18 +17,15 @@ import { Button, TooltipButtonWrapper } from './Button.tsx';
 const Container = styled(Box)`
   .MuiTypography-h1 &,
   .MuiTypography-h2 &,
-  .MuiTypography-h3 & {
+  .MuiTypography-h3 &,
+  .MuiTypography-h4 &,
+  .MuiTypography-h5 &,
+  .MuiTypography-h6 & {
     display: inline;
 
     // Prevent span wrapper on button from growing to fill parent
     > ${TooltipButtonWrapper} {
       display: inline;
-    }
-
-    :before {
-      color: ${({ theme }) => theme.palette.text.secondary};
-      content: '|';
-      margin-inline: 0.25rem;
     }
   }
 `;
