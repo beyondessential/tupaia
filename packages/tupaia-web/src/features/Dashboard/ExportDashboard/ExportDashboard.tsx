@@ -6,10 +6,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { DashboardItem } from '../../../types';
 import { Modal as BaseModal } from '../../../components';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
+import { useDashboard } from '../DashboardContext';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {
@@ -64,39 +64,28 @@ const Title = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-interface ExportDashboardProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dashboardItems: DashboardItem[];
-}
-
 const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
 const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
 
-export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
-  const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
+export const ExportDashboard = () => {
+  const { setSelectedDashboardItems, exportModalOpen, toggleExportModal } = useDashboard();
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
   const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
   const onCloseModal = () => {
-    onClose();
+    toggleExportModal();
     setScreen(SELECT_VISUALISATIONS_SCREEN);
     setSelectedDashboardItems([]);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onCloseModal}>
+    <Modal isOpen={exportModalOpen} onClose={onCloseModal}>
       <Wrapper>
         <Title>Export dashboard</Title>
         <Container>
           {screen === SELECT_VISUALISATIONS_SCREEN ? (
-            <SelectVisualisation
-              onNext={onNext}
-              onClose={onCloseModal}
-              dashboardItems={dashboardItems}
-              setSelectedDashboardItems={setSelectedDashboardItems}
-            />
+            <SelectVisualisation onNext={onNext} onClose={onCloseModal} />
           ) : (
-            <ExportConfig onClose={onCloseModal} selectedDashboardItems={selectedDashboardItems} />
+            <ExportConfig onClose={onCloseModal} />
           )}
         </Container>
       </Wrapper>

@@ -4,11 +4,11 @@
  */
 
 import { useParams } from 'react-router';
-import { useDashboards } from '../api/queries';
+import { useDashboard } from '../features/Dashboard';
 
 export const useDashboardMailingList = () => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { entityCode } = useParams();
+  const { activeDashboard } = useDashboard();
   if (!activeDashboard) {
     return undefined;
   }

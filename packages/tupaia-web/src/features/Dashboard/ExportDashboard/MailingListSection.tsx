@@ -9,9 +9,9 @@ import { useParams } from 'react-router';
 import BaseErrorIcon from '@material-ui/icons/ErrorOutline';
 import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
-import { useDashboards } from '../../../api/queries';
 import { useEmailDashboard } from '../../../api/mutations';
 import { ExportSettingLabel } from '../../ExportSettings';
+import { useDashboard } from '../DashboardContext';
 import { ExportSubtitle } from './ExportSubtitle';
 
 const Wrapper = styled.section`
@@ -74,13 +74,9 @@ const SpinningLoader = styled(BaseSpinningLoader)`
   }
 `;
 
-interface ExportDashboardProps {
-  selectedDashboardItems: string[];
-}
-
-export const MailingListSection = ({ selectedDashboardItems = [] }: ExportDashboardProps) => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+export const MailingListSection = () => {
+  const { projectCode, entityCode } = useParams();
+  const { selectedDashboardItems, activeDashboard } = useDashboard();
   const [responseMessage, setResponseMessage] = useState<string | null>(null);
 
   // lazy assumption that the success message contains the word 'success', probably will be fine

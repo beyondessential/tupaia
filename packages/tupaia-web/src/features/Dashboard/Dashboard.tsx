@@ -11,9 +11,9 @@ import { DEFAULT_BOUNDS } from '@tupaia/ui-map-components';
 import { ErrorBoundary, SpinningLoader } from '@tupaia/ui-components';
 import { MatrixConfig } from '@tupaia/types';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { useDashboards, useEntity, useProject } from '../../api/queries';
+import { useEntity, useProject } from '../../api/queries';
 import { DashboardItem as DashboardItemType } from '../../types';
-import { gaEvent, getDefaultDashboard, useGAEffect } from '../../utils';
+import { gaEvent, getDefaultDashboard } from '../../utils';
 import { DashboardItem } from '../DashboardItem';
 import { EnlargedDashboardItem } from '../EnlargedDashboardItem';
 import { ExpandButton } from './ExpandButton';
@@ -21,6 +21,7 @@ import { Photo } from './Photo';
 import { Breadcrumbs } from './Breadcrumbs';
 import { StaticMap } from './StaticMap';
 import { ExportDashboard } from './ExportDashboard';
+import { DashboardContextProvider, useDashboard } from './DashboardContext';
 import { SubscribeModal, DashboardMenu } from './DashboardMenu';
 
 const MAX_SIDEBAR_EXPANDED_WIDTH = 1000;
@@ -107,20 +108,17 @@ const DashboardItemsWrapper = styled.div<{
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { projectCode, entityCode, dashboardName } = useParams();
+  const { projectCode, entityCode } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
-  const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);
 
   const {
-    dashboards,
     activeDashboard,
+    dashboards,
     isLoading: isLoadingDashboards,
     isError,
     isFetched,
-    refetch,
-  } = useDashboards(projectCode, entityCode, dashboardName);
+  } = useDashboard();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [exportModalOpen, setExportModalOpen] = useState<boolean>(false);
 
   const { data: entity } = useEntity(projectCode, entityCode);
   const bounds = entity?.bounds || DEFAULT_BOUNDS;
@@ -132,7 +130,6 @@ export const Dashboard = () => {
     isLoadingDashboards,
     isError,
   );
-  useGAEffect('Dashboard', 'Change Tab', activeDashboard?.name);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -147,6 +144,7 @@ export const Dashboard = () => {
     !isLoadingProject &&
     project?.code === projectCode &&
     !activeDashboard;
+
   useEffect(() => {
     if (dashboardNotFound) {
       navigate({
@@ -175,50 +173,39 @@ export const Dashboard = () => {
     entity?.type === 'project' && project?.config?.projectDashboardHeader
       ? project?.config?.projectDashboardHeader
       : entity?.name;
+
   return (
     <ErrorBoundary>
-      <Panel $isExpanded={isExpanded}>
-        <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
-        <ScrollBody>
-          <Breadcrumbs />
-          <div>
-            {entity?.imageUrl ? (
-              <Photo title={title} photoUrl={entity?.imageUrl} />
-            ) : (
-              <StaticMap bounds={bounds} title={title} />
-            )}
-          </div>
-          <StickyBar $isExpanded={isExpanded}>
-            <TitleBar>
-              <Title variant="h3">{title}</Title>
-            </TitleBar>
-            <DashboardMenu
-              activeDashboard={activeDashboard}
-              dashboards={dashboards}
-              setExportModalOpen={setExportModalOpen}
-              setSubscribeModalOpen={setSubscribeModalOpen}
-            />
-          </StickyBar>
-          <DashboardItemsWrapper $isExpanded={isExpanded}>
-            {isLoadingDashboards && <SpinningLoader mt={5} />}
-            {visibleDashboards?.map(item => (
-              <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
-            ))}
-          </DashboardItemsWrapper>
-        </ScrollBody>
-        <EnlargedDashboardItem entityName={entity?.name} />
-        <ExportDashboard
-          isOpen={exportModalOpen}
-          onClose={() => setExportModalOpen(false)}
-          dashboardItems={activeDashboard?.items as DashboardItemType[]}
-        />
-        <SubscribeModal
-          isOpen={subscribeModalOpen}
-          onClose={() => setSubscribeModalOpen(false)}
-          activeDashboard={activeDashboard}
-          onToggleSubscription={refetch}
-        />
-      </Panel>
+      <DashboardContextProvider>
+        <Panel $isExpanded={isExpanded}>
+          <ExpandButton setIsExpanded={toggleExpanded} isExpanded={isExpanded} />
+          <ScrollBody>
+            <Breadcrumbs />
+            <div>
+              {entity?.imageUrl ? (
+                <Photo title={title} photoUrl={entity?.imageUrl} />
+              ) : (
+                <StaticMap bounds={bounds} title={title} />
+              )}
+            </div>
+            <StickyBar $isExpanded={isExpanded}>
+              <TitleBar>
+                <Title variant="h3">{title}</Title>
+              </TitleBar>
+              <DashboardMenu />
+            </StickyBar>
+            <DashboardItemsWrapper $isExpanded={isExpanded}>
+              {isLoadingDashboards && <SpinningLoader mt={5} />}
+              {visibleDashboards?.map(item => (
+                <DashboardItem key={item.code} dashboardItem={item as DashboardItemType} />
+              ))}
+            </DashboardItemsWrapper>
+          </ScrollBody>
+          <EnlargedDashboardItem entityName={entity?.name} />
+          <ExportDashboard />
+          <SubscribeModal />
+        </Panel>
+      </DashboardContextProvider>
     </ErrorBoundary>
   );
 };

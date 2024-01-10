@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import { ExportSettingsContext } from '..';
+import { useDashboard } from '../DashboardContext';
 
 const PreviewPanelContainer = styled.div`
   height: 100%;
@@ -59,21 +58,11 @@ const PreviewTitle = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-interface PreviewProps {
-  selectedDashboardItems: string[];
-}
-
-export const Preview = ({ selectedDashboardItems = [] }: PreviewProps) => {
-  const { exportWithLabels, exportWithTable } = useContext(ExportSettingsContext);
-  const { projectCode, entityCode, dashboardName } = useParams();
+export const Preview = () => {
+  const { selectedDashboardItems } = useDashboard();
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
-
-  const settings = {
-    exportWithLabels,
-    exportWithTable,
-  };
 
   return (
     <PreviewPanelContainer>
@@ -87,14 +76,7 @@ export const Preview = ({ selectedDashboardItems = [] }: PreviewProps) => {
         />
       </PreviewHeaderContainer>
       <PreviewContainer>
-        <PDFExport
-          projectCode={projectCode}
-          entityCode={entityCode}
-          dashboardName={dashboardName}
-          selectedDashboardItems={[visualisationToPreview]}
-          isPreview={true}
-          settings={settings}
-        />
+        <PDFExport selectedDashboardItems={[visualisationToPreview]} isPreview={true} />
       </PreviewContainer>
     </PreviewPanelContainer>
   );

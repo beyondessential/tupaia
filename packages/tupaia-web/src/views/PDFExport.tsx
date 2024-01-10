@@ -8,9 +8,10 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
-import { useDashboards, useEntity } from '../api/queries';
+import { useEntity } from '../api/queries';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
+import { useDashboard, useExportSettings } from '../features/Dashboard';
 
 const A4_RATIO = 1 / 1.41;
 const Parent = styled.div<{ $isPreview?: boolean }>`
@@ -20,46 +21,28 @@ const Parent = styled.div<{ $isPreview?: boolean }>`
 `;
 
 interface PDFExportProps {
-  projectCode?: string;
-  entityCode?: string;
-  dashboardName?: string;
   selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'];
   isPreview?: boolean;
-  settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
 }
 
 /**
  * This is the view that gets hit by puppeteer when generating a PDF.
  */
 export const PDFExport = ({
-  projectCode: propsProjectCode,
-  entityCode: propsEntityCode,
-  dashboardName: propsDashboardName,
   selectedDashboardItems: propsSelectedDashboardItems,
   isPreview = false,
-  settings: propsSettings = {
-    exportWithTable: true,
-    exportWithLabels: false,
-  },
 }: PDFExportProps) => {
   // Hacky way to change default background color without touching root css. Only apply when generating the pdf, not when in preview mode as it changes the display
   if (!isPreview) {
     document.body.style.backgroundColor = 'white';
   }
 
-  const {
-    projectCode: urlProjectCode,
-    entityCode: urlEntityCode,
-    dashboardName: urlDashboardName,
-  } = useParams();
-
-  const projectCode = propsProjectCode || urlProjectCode;
-  const entityCode = propsEntityCode || urlEntityCode;
-  const dashboardName = propsDashboardName || urlDashboardName;
+  const { projectCode, entityCode } = useParams();
 
   const [urlSearchParams] = useSearchParams();
 
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { activeDashboard } = useDashboard();
+  const { exportWithTable, exportWithLabels } = useExportSettings();
   const { data: entity } = useEntity(projectCode, entityCode);
 
   const getSelectedDashboardItems = () => {
@@ -72,10 +55,18 @@ export const PDFExport = ({
     const urlSettings = urlSearchParams.get('settings');
 
     if (urlSettings) {
-      return JSON.parse(urlSettings) || propsSettings;
+      return (
+        JSON.parse(urlSettings) || {
+          exportWithTable,
+          exportWithLabels,
+        }
+      );
     }
 
-    return propsSettings;
+    return {
+      exportWithTable,
+      exportWithLabels,
+    };
   };
 
   const selectedDashboardItems = getSelectedDashboardItems();

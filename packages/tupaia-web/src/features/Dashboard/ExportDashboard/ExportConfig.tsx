@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { DashboardItemTypes } from '@tupaia/types';
-import { useDashboards, useEntity, useProject } from '../../../api/queries';
+import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { MOBILE_BREAKPOINT } from '../../../constants';
 import { useDashboardMailingList } from '../../../utils';
@@ -20,6 +20,7 @@ import {
   ExportSettingsDispatchContext,
   exportSettingsReducer,
 } from '../../ExportSettings';
+import { useDashboard } from '../DashboardContext';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
 import { Preview } from './Preview';
@@ -104,10 +105,9 @@ const ExportSettingsInstructionsContainer = styled.div`
 
 interface ExportDashboardProps {
   onClose: () => void;
-  selectedDashboardItems: string[];
 }
 
-export const ExportConfig = ({ onClose, selectedDashboardItems = [] }: ExportDashboardProps) => {
+export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
   const [exportConfig, dispatch] = useReducer(exportSettingsReducer, {
     exportFormat: ExportFormats.PNG,
     exportWithLabels: false,
@@ -117,7 +117,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems = [] }: ExportDas
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { selectedDashboardItems, activeDashboard } = useDashboard();
   const mailingList = useDashboardMailingList();
   const showMailingListButton = mailingList && mailingList.isAdmin;
 
@@ -176,12 +176,10 @@ export const ExportConfig = ({ onClose, selectedDashboardItems = [] }: ExportDas
                       <DisplayOptionsSettings />
                     </section>
                   )}
-                  {showMailingListButton && (
-                    <MailingListSection selectedDashboardItems={selectedDashboardItems} />
-                  )}
+                  {showMailingListButton && <MailingListSection />}
                 </ExportSetting>
               </ExportSettingsContainer>
-              {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
+              {!isLoading && <Preview />}
             </Container>
           </Wrapper>
           <ButtonGroup>

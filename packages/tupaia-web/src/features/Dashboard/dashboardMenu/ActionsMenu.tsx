@@ -13,6 +13,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Dashboard } from '../../../types';
 import { useDashboardMailingList } from '../../../utils';
+import { useDashboard } from '../DashboardContext';
 
 const StyledExportIcon = styled(ExportIcon)`
   height: 0.9rem;
@@ -26,17 +27,8 @@ const StyledCheckCircleIcon = styled(CheckCircleIcon)`
   height: 1.2rem;
 `;
 
-interface ActionsMenuProps {
-  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activeDashboard?: Dashboard;
-  setSubscribeModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const ActionsMenu = ({
-  setExportModalOpen,
-  activeDashboard,
-  setSubscribeModalOpen,
-}: ActionsMenuProps) => {
+export const ActionsMenu = () => {
+  const { toggleExportModal, toggleSubscribeModal, activeDashboard } = useDashboard();
   const mailingList = useDashboardMailingList();
 
   if (!activeDashboard) {
@@ -46,7 +38,7 @@ export const ActionsMenu = ({
   const menuOptions: ActionsMenuOptionType[] = [];
   const exportOption: ActionsMenuOptionType = {
     label: 'Export',
-    action: () => setExportModalOpen(true),
+    action: toggleExportModal,
     // eslint-disable-next-line react/display-name
     ActionIcon: () => <StyledExportIcon fill="white" />,
     toolTipTitle: 'Export dashboard',
@@ -60,12 +52,12 @@ export const ActionsMenu = ({
         ActionIcon: StyledCheckCircleIcon,
         color: 'primary',
         toolTipTitle: 'Remove yourself from email updates',
-        action: () => setSubscribeModalOpen(true),
+        action: toggleSubscribeModal,
       });
     } else {
       menuOptions.push({
         label: 'Subscribe',
-        action: () => setSubscribeModalOpen(true),
+        action: toggleSubscribeModal,
         ActionIcon: StyledAddCircleOutlineIcon,
         toolTipTitle: 'Subscribe to receive dashboard email updates',
       });

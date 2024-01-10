@@ -4,24 +4,21 @@
  */
 import { useParams, useSearchParams } from 'react-router-dom';
 import { URL_SEARCH_PARAMS } from '../../../constants';
-import { useDashboards, useReport } from '../../../api/queries';
+import { useReport } from '../../../api/queries';
 import { useDateRanges } from '../../../utils';
 import { DashboardItem } from '../../../types';
+import { useDashboard } from '../../Dashboard';
 
 /**
  * This is a utility hook for returning any useful data for enlarged dashboard items
  */
 export const useEnlargedDashboardItem = () => {
-  const { projectCode, entityCode, dashboardName } = useParams();
+  const { projectCode, entityCode } = useParams();
 
   const [urlSearchParams] = useSearchParams();
   const reportCode = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT) as DashboardItem['code'];
 
-  const { activeDashboard, isLoading: isLoadingDashboards } = useDashboards(
-    projectCode,
-    entityCode,
-    dashboardName,
-  );
+  const { activeDashboard, isLoading: isLoadingDashboards } = useDashboard();
 
   const currentDashboardItem = activeDashboard?.items.find(
     dashboardItem => dashboardItem.reportCode === reportCode,

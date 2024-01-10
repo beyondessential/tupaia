@@ -21,6 +21,7 @@ import {
   MODAL_UNSUBSCRIBE_TEXT,
   MODAL_UNSUBSCRIBE_TITLE,
 } from './constants';
+import { useDashboard } from '../DashboardContext';
 
 const Wrapper = styled.div`
   width: 45rem;
@@ -91,19 +92,13 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
       : ''};
 `;
 
-interface SubscribeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  activeDashboard?: Dashboard;
-  onToggleSubscription: () => void;
-}
-
-export const SubscribeModal = ({
-  isOpen,
-  onClose,
-  activeDashboard,
-  onToggleSubscription,
-}: SubscribeModalProps) => {
+export const SubscribeModal = () => {
+  const {
+    activeDashboard,
+    subscribeModalOpen,
+    toggleSubscribeModal,
+    refetch: refetchDashboards,
+  } = useDashboard();
   const { entityCode, projectCode } = useParams();
   const { data: user, isLoggedIn, isLoading } = useUser();
   const mailingList = useDashboardMailingList();
@@ -132,8 +127,8 @@ export const SubscribeModal = ({
     } else {
       await subscribe(data);
     }
-    onToggleSubscription();
-    onClose();
+    refetchDashboards();
+    toggleSubscribeModal();
   };
 
   const handleClose = () => {
@@ -142,13 +137,13 @@ export const SubscribeModal = ({
     } else {
       resetSubscribe();
     }
-    onClose();
+    toggleSubscribeModal();
   };
 
   const isMutateError = !!subscribeError || !!unsubscribeError;
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal isOpen={subscribeModalOpen} onClose={handleClose}>
       <Wrapper>
         {activeDashboard && mailingList ? (
           <Container>
