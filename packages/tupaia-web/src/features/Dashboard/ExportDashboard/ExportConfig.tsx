@@ -12,12 +12,7 @@ import { DashboardItemTypes } from '@tupaia/types';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import {
-  DisplayOptionsSettings,
-  ExportFormats,
-  ExportSettingsContextProvider,
-  useExportSettings,
-} from '../../ExportSettings';
+import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -131,7 +126,7 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
     requestPdfExport({
       projectCode,
       entityCode,
-      dashboardCode: activeDashboard.code,
+      dashboardCode: activeDashboard?.code,
       selectedDashboardItems,
       settings: {
         exportWithLabels,
@@ -140,7 +135,7 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
     });
 
   const hasChartItems = selectedDashboardItems.some(code => {
-    const item = activeDashboard.items.find(({ code: itemCode }) => itemCode === code);
+    const item = activeDashboard?.items.find(({ code: itemCode }) => itemCode === code);
 
     return item?.config?.type === DashboardItemTypes.Chart;
   });
@@ -152,40 +147,32 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
       errorMessage={error?.message}
       onReset={reset}
     >
-      <ExportSettingsContextProvider
-        defaultSettings={{
-          exportFormat: ExportFormats.PNG,
-          exportWithLabels: false,
-          exportWithTable: true,
-        }}
-      >
-        <Wrapper>
-          <Container>
-            <ExportSettingsContainer>
-              <ExportSettingsInstructionsContainer>
-                <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
-              </ExportSettingsInstructionsContainer>
-              <ExportSetting>
-                {hasChartItems && (
-                  <section>
-                    <DisplayOptionsSettings />
-                  </section>
-                )}
-                <MailingListSection />
-              </ExportSetting>
-            </ExportSettingsContainer>
-            {!isLoading && <Preview />}
-          </Container>
-        </Wrapper>
-        <ButtonGroup>
-          <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleExport} disabled={isLoading}>
-            Download
-          </Button>
-        </ButtonGroup>
-      </ExportSettingsContextProvider>
+      <Wrapper>
+        <Container>
+          <ExportSettingsContainer>
+            <ExportSettingsInstructionsContainer>
+              <ExportSubtitle>Edit export settings and click 'Download'.</ExportSubtitle>
+            </ExportSettingsInstructionsContainer>
+            <ExportSetting>
+              {hasChartItems && (
+                <section>
+                  <DisplayOptionsSettings />
+                </section>
+              )}
+              <MailingListSection />
+            </ExportSetting>
+          </ExportSettingsContainer>
+          {!isLoading && <Preview />}
+        </Container>
+      </Wrapper>
+      <ButtonGroup>
+        <Button variant="outlined" color="default" onClick={onClose} disabled={isLoading}>
+          Cancel
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleExport} disabled={isLoading}>
+          Download
+        </Button>
+      </ButtonGroup>
     </LoadingContainer>
   );
 };

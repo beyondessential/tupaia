@@ -10,6 +10,7 @@ import { Modal as BaseModal } from '../../../components';
 import { useDashboard } from '../utils';
 import { SelectVisualisation } from './SelectVisualisations';
 import { ExportConfig } from './ExportConfig';
+import { ExportFormats, ExportSettingsContextProvider } from '..';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {
@@ -79,16 +80,24 @@ export const ExportDashboard = () => {
 
   return (
     <Modal isOpen={exportModalOpen} onClose={onCloseModal}>
-      <Wrapper>
-        <Title>Export dashboard</Title>
-        <Container>
-          {screen === SELECT_VISUALISATIONS_SCREEN ? (
-            <SelectVisualisation onNext={onNext} onClose={onCloseModal} />
-          ) : (
-            <ExportConfig onClose={onCloseModal} />
-          )}
-        </Container>
-      </Wrapper>
+      <ExportSettingsContextProvider
+        defaultSettings={{
+          exportFormat: ExportFormats.PNG,
+          exportWithLabels: false,
+          exportWithTable: true,
+        }}
+      >
+        <Wrapper>
+          <Title>Export dashboard</Title>
+          <Container>
+            {screen === SELECT_VISUALISATIONS_SCREEN ? (
+              <SelectVisualisation onNext={onNext} onClose={onCloseModal} />
+            ) : (
+              <ExportConfig onClose={onCloseModal} />
+            )}
+          </Container>
+        </Wrapper>
+      </ExportSettingsContextProvider>
     </Modal>
   );
 };

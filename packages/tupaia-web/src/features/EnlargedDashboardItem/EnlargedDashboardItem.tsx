@@ -37,12 +37,25 @@ const Wrapper = styled.div<{
   flex-direction: column;
 `;
 
+// needs to be separate from EnlargedDashboardItem to allow use of hook inside ExportDashboardItemContextProvider
+const ContentWrapper = ({
+  entityName,
+  hasBigData,
+  children,
+}: {
+  entityName?: Entity['name'];
+  hasBigData: boolean;
+  children: React.ReactNode;
+}) => {
+  const { isExportMode } = useExportDashboardItem(entityName);
+  return <Wrapper $hasBigData={!isExportMode && hasBigData}>{children}</Wrapper>;
+};
+
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when there is a reportCode in the URL which is valid, and the dashboard item is loaded.
  */
 export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const { isExportMode } = useExportDashboardItem(entityName);
   const { reportCode, currentDashboardItem, isLoadingDashboards, reportData } =
     useEnlargedDashboardItem();
 
@@ -71,7 +84,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     if (isDataDownload || !reportData) return false;
     else if (type === 'matrix') return true;
     const { data } = reportData as BaseReport;
-    return data && data.length > 20;
+    return data ? data?.length > 20 : false;
   };
   const hasBigData = getHasBigData();
 
@@ -86,10 +99,10 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         }}
       >
         <ExportButton />
-        <Wrapper $hasBigData={!isExportMode && hasBigData}>
+        <ContentWrapper hasBigData={hasBigData} entityName={entityName}>
           <ExportDashboardItem entityName={entityName} />
           <EnlargedDashboardVisual entityName={entityName} />
-        </Wrapper>
+        </ContentWrapper>
       </ExportDashboardItemContextProvider>
     </StyledModal>
   );

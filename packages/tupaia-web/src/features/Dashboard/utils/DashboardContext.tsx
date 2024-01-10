@@ -10,7 +10,7 @@ import { useGAEffect } from '../../../utils';
 type DashboardReducer = {
   selectedDashboardItems: string[];
   exportModalOpen: boolean;
-  subscribeModalOpen?: boolean;
+  subscribeModalOpen: boolean;
 };
 
 const defaultState = {

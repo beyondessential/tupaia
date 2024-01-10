@@ -111,14 +111,14 @@ export const useExportDashboardItem = (
   const file = `${filename}.${exportFormat}`;
 
   const setExportError = (message: string | null) => {
-    dispatchExportDashboardItemAction({
+    dispatchExportDashboardItemAction?.({
       type: ExportDashboardItemActionTypes.SET_EXPORT_ERROR,
       payload: message,
     });
   };
 
   const setIsExporting = (value: boolean) => {
-    dispatchExportDashboardItemAction({
+    dispatchExportDashboardItemAction?.({
       type: ExportDashboardItemActionTypes.SET_IS_EXPORTING,
       payload: value,
     });
@@ -187,10 +187,10 @@ export const useExportDashboardItem = (
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {
-    dispatchExportDashboardItemAction({
+    dispatchExportDashboardItemAction?.({
       type: ExportDashboardItemActionTypes.RESET_EXPORT_STATE,
     });
-    dispatchExportSettingsContext({
+    dispatchExportSettingsContext?.({
       type: ExportSettingsActionTypes.RESET_EXPORT_STATE,
       payload: type,
     });

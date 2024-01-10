@@ -102,7 +102,7 @@ export const MailingListSection = () => {
     requestEmailDashboard({
       projectCode,
       entityCode,
-      dashboardCode: activeDashboard.code,
+      dashboardCode: activeDashboard?.code,
       selectedDashboardItems,
     });
 
