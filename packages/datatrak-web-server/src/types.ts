@@ -10,9 +10,9 @@ import {
   OneTimeLoginModel,
   OneTimeLoginType as BaseOneTimeLoginType,
   UserType as BaseUserType,
+  UserModel,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
-
 import { Entity, OneTimeLogin, UserAccount } from '@tupaia/types';
 import { FeedItemModel, SurveyResponseModel } from './models';
 
