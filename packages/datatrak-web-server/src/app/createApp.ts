@@ -40,6 +40,8 @@ import {
   ActivityFeedRoute,
   SingleSurveyResponseRoute,
   SingleSurveyResponseRequest,
+  GenerateLoginTokenRoute,
+  GenerateLoginTokenRequest,
 } from '../routes';
 
 const {
@@ -57,6 +59,7 @@ export function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
+    .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:projectCode/:entityCode', handleWith(SingleEntityRoute))
     .get<EntitiesRequest>('entities', handleWith(EntitiesRoute))

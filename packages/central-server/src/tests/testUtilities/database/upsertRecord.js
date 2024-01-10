@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { upsertDummyRecord } from '@tupaia/database';
+import { generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { getModels } from './getModels';
 
 const models = getModels();
@@ -53,7 +53,11 @@ export const upsertDataGroup = async data => {
 };
 
 export const upsertSurvey = async data => {
-  return upsertDummyRecord(models.survey, data);
+  const project = await upsertProject({ code: generateTestId() });
+  return upsertDummyRecord(models.survey, {
+    ...data,
+    project_id: project.id,
+  });
 };
 
 export const upsertSurveyGroup = async data => {
@@ -89,4 +93,8 @@ export const upsertSurveyScreenComponent = async data => {
 
 export const upsertPermissionGroup = async data => {
   return upsertDummyRecord(models.permissionGroup, data);
+};
+
+export const upsertProject = async data => {
+  return upsertDummyRecord(models.project, data);
 };
