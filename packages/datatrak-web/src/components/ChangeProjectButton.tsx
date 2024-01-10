@@ -20,6 +20,7 @@ const Container = styled(Box)`
   .MuiTypography-h3 & {
     display: inline;
 
+    // Prevent span wrapper on button from growing to fill parent
     > ${TooltipButtonWrapper} {
       display: inline;
     }
@@ -63,7 +64,7 @@ const ProjectButton = styled(Button).attrs({
   }
 `;
 
-export const ChangeProjectButton = () => {
+export const ChangeProjectButton = ({ className }: { className?: string }) => {
   const { project } = useCurrentUser();
   const projectName = project?.name ?? null;
 
@@ -72,7 +73,7 @@ export const ChangeProjectButton = () => {
   const closeProjectModal = () => setProjectModalOpen(false);
 
   return (
-    <Container>
+    <Container className={className}>
       <ProjectButton onClick={openProjectModal} tooltip="Change project">
         {projectName ?? 'Select project'}
       </ProjectButton>

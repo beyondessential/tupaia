@@ -7,7 +7,9 @@ import { To, Link as RouterLink } from 'react-router-dom';
 import { Tooltip, Button as UIButton } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
-const StyledButton = styled(UIButton)`
+const StyledButton = styled(UIButton).attrs({
+  style: { verticalAlign: 'baseline' }, // Override MUI-generated styling in <style> tag
+})`
   &.Mui-disabled {
     pointer-events: auto; // this is to allow the hover effect of a tooltip to work
     &.MuiButton-containedPrimary {
@@ -19,6 +21,7 @@ const StyledButton = styled(UIButton)`
 export const TooltipButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
+  vertical-align: baseline;
 `;
 
 interface ButtonProps extends Record<string, any> {

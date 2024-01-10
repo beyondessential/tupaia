@@ -12,14 +12,14 @@ import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
 const Wrapper = styled(Box)`
-  padding-left: 1rem;
+  padding-inline-start: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-left: 1.5rem;
+    padding-inline-start: 1.5rem;
   }
 `;
 
 const Details = styled(Box)`
-  align-items: center;
+  align-items: baseline;
   display: flex;
   font-size: 1rem;
   line-height: 1.2;
@@ -58,22 +58,19 @@ const AuthButtons = styled(Box)`
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = () => {
-  const user = useCurrentUser();
+  const { isLoggedIn, projectId, userName } = useCurrentUser();
 
   const StyledProjectButton = styled(ChangeProjectButton)`
-    //display: block;
     border-inline-start: 1px solid ${({ theme }) => theme.palette.text.secondary};
-    //margin-inline-end: 0.5rem;
-    margin-inline-start: 0.5rem;
     padding-inline-start: 0.5rem;
   `;
 
   return (
     <Wrapper>
-      {user.isLoggedIn ? (
+      {isLoggedIn ? (
         <Details>
-          <UserName>{user.userName}</UserName>
-          {user.projectId && <StyledProjectButton />}
+          <UserName>{userName}</UserName>
+          {projectId && <StyledProjectButton />}
         </Details>
       ) : (
         <AuthButtons>
