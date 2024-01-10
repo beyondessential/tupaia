@@ -66,7 +66,7 @@ export const MenuList = ({
 
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
-  const onClickInternalLink = (e: Event) => {
+  const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {
       e.preventDefault();
       setIsOpen(true);
