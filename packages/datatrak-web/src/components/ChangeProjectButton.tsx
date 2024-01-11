@@ -5,21 +5,34 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Button, TooltipButtonWrapper } from './Button';
+import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
 import { useCurrentUser } from '../api';
-import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal.tsx';
-import { Button, TooltipButtonWrapper } from './Button.tsx';
+import { UserDetails as NavbarUserDetails } from '../layout/UserMenu/UserInfo';
 
 /**
- * Ensures inline placement when appropriate. Necessary because tooltip attribute on the button
- * wraps it in an element whose outer `display` type is `block`.
+ * Manages how this “Change Project button” component is laid out. Under normal circumstances, it
+ * uses block display; but if it’s the child of a paragraph or heading, it is displayed inline.
+ *
+ * Also adds a border to separate it from adjacent elements in certain contexts.
  */
 const Container = styled.div`
-  .MuiTypography-root & {
-    display: inline;
+  ${NavbarUserDetails} & {
+    border-inline-start: 1px solid ${({ theme }) => theme.palette.text.secondary};
+    padding-inline-start: 0.5rem;
+  }
 
-    // Prevent span wrapper on button from growing to fill parent
-    > ${TooltipButtonWrapper} {
+  .MuiTypography-root & {
+    &,
+    > ${TooltipButtonWrapper} // Prevent span wrapper on button from growing to fill parent
+    {
       display: inline;
+    }
+
+    :before {
+      color: ${({ theme }) => theme.palette.text.secondary};
+      content: '|';
+      margin-inline: 0.25rem;
     }
   }
 `;

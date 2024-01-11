@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const Details = styled.div`
+export const UserDetails = styled.div`
   align-items: baseline;
   display: flex;
   font-size: 1rem;
@@ -60,18 +60,13 @@ const AuthButtons = styled.div`
 export const UserInfo = () => {
   const { isLoggedIn, projectId, userName } = useCurrentUser();
 
-  const StyledProjectButton = styled(ChangeProjectButton)`
-    border-inline-start: 1px solid ${({ theme }) => theme.palette.text.secondary};
-    padding-inline-start: 0.5rem;
-  `;
-
   return (
     <Wrapper>
       {isLoggedIn ? (
-        <Details>
+        <UserDetails>
           <UserName>{userName}</UserName>
-          {projectId && <StyledProjectButton />}
-        </Details>
+          {projectId && <ChangeProjectButton />}
+        </UserDetails>
       ) : (
         <AuthButtons>
           <AuthLink variant="text" to={ROUTES.REGISTER}>
