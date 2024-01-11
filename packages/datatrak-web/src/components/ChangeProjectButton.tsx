@@ -55,16 +55,16 @@ export const ChangeProjectButton = ({ className }: { className?: string }) => {
   const { project } = useCurrentUser();
   const projectName = project?.name ?? null;
 
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const openProjectModal = () => setProjectModalOpen(true);
-  const closeProjectModal = () => setProjectModalOpen(false);
+  const [projectModalIsOpen, setProjectModalIsOpen] = useState(false);
+  const openProjectModal = () => setProjectModalIsOpen(true);
+  const closeProjectModal = () => setProjectModalIsOpen(false);
 
   return (
     <Container className={className}>
       <ProjectButton onClick={openProjectModal} tooltip="Change project">
         {projectName ?? 'Select project'}
       </ProjectButton>
-      {projectModalOpen && <ProjectSelectModal onClose={closeProjectModal} />}
+      {projectModalIsOpen && <ProjectSelectModal onClose={closeProjectModal} />}
     </Container>
   );
 };
