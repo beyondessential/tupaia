@@ -88,6 +88,7 @@ export const theme = createMuiTheme({
     MuiButton: {
       root: {
         textTransform: 'none',
+        verticalAlign: 'baseline',
       },
       label: {
         fontSize: '0.875rem',

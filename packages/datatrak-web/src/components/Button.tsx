@@ -3,13 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactElement, ReactNode } from 'react';
-import { To, Link as RouterLink } from 'react-router-dom';
-import { Tooltip, Button as UIButton } from '@tupaia/ui-components';
+import { Link as RouterLink, To } from 'react-router-dom';
+import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
-const StyledButton = styled(UIButton).attrs({
-  style: { verticalAlign: 'baseline' }, // Override MUI-generated styling in <style> tag
-})`
+const StyledButton = styled(UIButton)`
   &.Mui-disabled {
     pointer-events: auto; // this is to allow the hover effect of a tooltip to work
     &.MuiButton-containedPrimary {
