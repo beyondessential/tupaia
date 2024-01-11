@@ -14,6 +14,7 @@ export type ProjectResponse = KeysToCamelCase<Project> & {
   names?: Entity['name'][];
   hasAccess: boolean;
   hasPendingAccess: boolean;
+  homeEntityCode: string;
 };
 
 export type ResBody = ProjectResponse;
