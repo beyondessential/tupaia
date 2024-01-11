@@ -67,16 +67,11 @@ const BROWSER_ICONS = {
   [BROWSERS.EDGE]: '/edge-icon.png',
 };
 
-// each of these will have a fallback url and an app url. The app url will be a link to the app itself, and the fallback url will be a link to the applicable app store
-const APP_URL = {
-  ANDROID: {
-    fallback: 'https://play.google.com/store/apps/details?id=com.tupaiameditrak',
-    app: 'tupaiameditrak://', // eventually this is where the deep link will go
-  },
-  IOS: {
-    fallback: 'https://itunes.apple.com/app/tupaia-meditrak/id1245053537',
-    app: 'tupaiameditrak://', // eventually this is where the deep link will go
-  },
+const APP_TARGET = 'tupaiameditrak://';
+
+const APP_STORE_URL = {
+  ANDROID: 'https://play.google.com/store/apps/details?id=com.tupaiameditrak',
+  IOS: 'https://itunes.apple.com/app/tupaia-meditrak/id1245053537',
 };
 
 const COOKIE_NAME = 'promptedCookie';
@@ -119,9 +114,9 @@ const usePromptCookie = () => {
   };
 };
 
-const getAppLink = () => {
+const getAppStoreLink = () => {
   const userAgent = window.navigator.userAgent;
-  return userAgent.includes('Mac') ? APP_URL.IOS : APP_URL.ANDROID;
+  return userAgent.includes('Mac') ? APP_STORE_URL.IOS : APP_STORE_URL.ANDROID;
 };
 
 export const MobileAppPrompt = () => {
@@ -132,14 +127,14 @@ export const MobileAppPrompt = () => {
 
   const browser = getBrowser();
   const browserIcon = browser ? BROWSER_ICONS[browser] : null;
-  const appLink = getAppLink();
+  const appStoreLink = getAppStoreLink();
 
   const onOpenApp = () => {
     togglePrompt();
-    window.location.href = appLink.app;
+    window.location.href = APP_TARGET; // eventually this is where the deep link will go
     // Set a timeout to redirect to the app store after a reasonable time
     setTimeout(() => {
-      window.location.href = appLink.fallback;
+      window.location.href = appStoreLink;
     }, 2000);
   };
 
