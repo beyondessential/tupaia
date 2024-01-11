@@ -15,12 +15,7 @@ import { Button, TooltipButtonWrapper } from './Button.tsx';
  * wraps it in an element whose outer `display` type is `block`.
  */
 const Container = styled(Box)`
-  .MuiTypography-h1 &,
-  .MuiTypography-h2 &,
-  .MuiTypography-h3 &,
-  .MuiTypography-h4 &,
-  .MuiTypography-h5 &,
-  .MuiTypography-h6 & {
+  .MuiTypography-root & {
     display: inline;
 
     // Prevent span wrapper on button from growing to fill parent
