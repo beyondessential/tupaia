@@ -5,20 +5,20 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Box, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button, ChangeProjectButton } from '../../components';
 import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
-const Wrapper = styled(Box)`
+const Wrapper = styled.div`
   padding-inline-start: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     padding-inline-start: 1.5rem;
   }
 `;
 
-const Details = styled(Box)`
+const Details = styled.div`
   align-items: baseline;
   display: flex;
   font-size: 1rem;
@@ -48,7 +48,7 @@ const UserName = styled(Typography)`
   }
 `;
 
-const AuthButtons = styled(Box)`
+const AuthButtons = styled.div`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
   }

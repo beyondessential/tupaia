@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Box } from '@material-ui/core';
 import { useCurrentUser } from '../api';
 import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal.tsx';
 import { Button, TooltipButtonWrapper } from './Button.tsx';
@@ -14,7 +13,7 @@ import { Button, TooltipButtonWrapper } from './Button.tsx';
  * Ensures inline placement when appropriate. Necessary because tooltip attribute on the button
  * wraps it in an element whose outer `display` type is `block`.
  */
-const Container = styled(Box)`
+const Container = styled.div`
   .MuiTypography-root & {
     display: inline;
 
