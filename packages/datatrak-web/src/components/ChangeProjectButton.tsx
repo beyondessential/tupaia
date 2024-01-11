@@ -36,11 +36,6 @@ const ProjectButton = styled(Button).attrs({
   variant: 'text',
 })`
   color: ${({ theme }) => theme.palette.text.secondary};
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  margin: 0;
-  padding: 0;
 
   :focus,
   :focus-visible,
@@ -50,6 +45,7 @@ const ProjectButton = styled(Button).attrs({
     text-decoration: underline;
   }
 
+  &,
   .MuiButton-root,
   .MuiButton-label {
     font-size: inherit;
