@@ -6,18 +6,19 @@ import path from 'path';
 import fs from 'fs';
 import { createDownloadLink } from './download';
 
-const generateAttachments = async (responseBody, emailExportFileMode) => {
-  const { filePath } = responseBody;
-  if (emailExportFileMode === 'attachment') {
-    const fileName = path.basename(filePath);
-    const buffer = await fs.readFileSync(filePath);
-    return [{ filename: fileName, content: buffer }];
-  }
-  return [];
+const EMAIL_EXPORT_FILE_MODES = {
+  ATTACHMENT: 'attachment',
+  DOWNLOAD_LINK: 'downloadLink',
+};
+
+const generateAttachments = async filePath => {
+  const fileName = path.basename(filePath);
+  const buffer = await fs.readFileSync(filePath);
+  return [{ filename: fileName, content: buffer }];
 };
 
 export const constructExportEmail = async (responseBody, req) => {
-  const { emailExportFileMode = 'downloadLink' } = req.query;
+  const { emailExportFileMode = EMAIL_EXPORT_FILE_MODES.DOWNLOAD_LINK } = req.query;
   const { error, filePath } = responseBody;
   const subject = 'Your export from Tupaia';
   if (error) {
@@ -32,7 +33,7 @@ ${error}`,
     throw new Error('No filePath in export response body');
   }
 
-  if (emailExportFileMode === 'attachment') {
+  if (emailExportFileMode === EMAIL_EXPORT_FILE_MODES.ATTACHMENT) {
     return {
       subject,
       message: 'Please find your requested export attached to this email.',
