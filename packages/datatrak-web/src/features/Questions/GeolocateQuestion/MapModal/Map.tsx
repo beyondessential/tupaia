@@ -29,7 +29,7 @@ const MapContainer = styled(BaseMapContainer)`
 
 const TilePickerWrapper = styled.div`
   position: absolute;
-  z-index: 1000;
+  z-index: 900;
   right: 0;
   bottom: 0;
   height: 100%;
@@ -81,7 +81,6 @@ export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapP
           onChange={onChangeTileSet}
         />
       </TilePickerWrapper>
-
       {!coordinatesInvalid && <PinDrop lat={lat} lng={lng} setCoordinates={onUpdateCoordinates} />}
       <ZoomControl position="topright" />
     </MapContainer>
