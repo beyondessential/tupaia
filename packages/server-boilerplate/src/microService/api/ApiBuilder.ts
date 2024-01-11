@@ -19,7 +19,7 @@ import {
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 
-import { handleWith, handleError } from '../../utils';
+import { handleWith, handleError, initialiseApiClient } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
@@ -100,6 +100,13 @@ export class ApiBuilder {
         next(err);
       }
     });
+  }
+
+  public async initialiseApiClient(
+    permissions: { entityCode: string; permissionGroupName: string }[],
+  ) {
+    await initialiseApiClient(this.models, permissions);
+    return this;
   }
 
   public use<T extends ExpressRequest<T> = Request>(
