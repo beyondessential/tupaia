@@ -15,9 +15,9 @@ import {
   getTestDatabase,
 } from '@tupaia/database';
 
+import { createApp } from '../../app';
 import { TestModelRegistry } from './testModelRegistry';
 import { PROJECTS, ENTITIES, ENTITY_RELATIONS } from './fixtures';
-import { createApp } from '../../app';
 
 // Don't generate the proxy middlewares while we're testing
 jest.mock('http-proxy-middleware');
@@ -65,7 +65,7 @@ export const setupTestData = async () => {
 };
 
 export const setupTestApp = async () => {
-  const app = new TestableServer(createApp(getTestDatabase()));
+  const app = new TestableServer(await createApp(getTestDatabase()));
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;
 };
