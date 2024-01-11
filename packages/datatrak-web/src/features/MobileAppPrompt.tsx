@@ -71,7 +71,7 @@ const BROWSER_ICONS = {
 const APP_URL = {
   ANDROID: {
     fallback: 'https://play.google.com/store/apps/details?id=com.tupaiameditrak',
-    app: 'intent://#Intent;package=com.tupaiameditrak;S.browser_fallback_url=https%3A%2F%2Fplay.google.com/store/apps/details?id=com.tupaiameditrak;end', // eventually this is where the deep link will go
+    app: 'tupaiameditrak://', // eventually this is where the deep link will go
   },
   IOS: {
     fallback: 'https://itunes.apple.com/app/tupaia-meditrak/id1245053537',
