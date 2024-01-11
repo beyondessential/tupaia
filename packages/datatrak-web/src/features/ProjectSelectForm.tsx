@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
 import { Lock, WatchLater } from '@material-ui/icons';
-import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
+import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
@@ -27,13 +27,20 @@ const LoadingContainer = styled.div`
 const ListWrapper = styled.div<{
   $variant?: 'modal' | 'page';
 }>`
-  max-height: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   display: flex;
   flex-direction: column;
   overflow: auto;
+
+  max-height: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   ${({ theme }) => theme.breakpoints.up('sm')} {
     max-height: 35rem;
   }
+
+  // Keep body text styling, even if component is child of a paragraph/heading
+  font-size: ${({ theme }) => theme.typography.body1.fontSize};
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: 0.01071em;
 `;
 
 interface ProjectSelectFormProps {

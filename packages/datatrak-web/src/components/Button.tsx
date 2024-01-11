@@ -3,8 +3,8 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { ReactElement, ReactNode } from 'react';
-import { To, Link as RouterLink } from 'react-router-dom';
-import { Tooltip, Button as UIButton } from '@tupaia/ui-components';
+import { Link as RouterLink, To } from 'react-router-dom';
+import { Button as UIButton, Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
 const StyledButton = styled(UIButton)`
@@ -16,9 +16,10 @@ const StyledButton = styled(UIButton)`
   }
 `;
 
-const TooltipButtonWrapper = styled.span`
+export const TooltipButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
+  vertical-align: baseline;
 `;
 
 interface ButtonProps extends Record<string, any> {
