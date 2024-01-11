@@ -36,6 +36,8 @@ const StyledTableContainer = styled(TableContainer).attrs({
     background-color: ${({ theme }) => theme.palette.background.paper};
     // Shadow because border disappears when table body is scrolled
     box-shadow: 0 1px 0 0 ${({ theme }) => theme.palette.divider};
+    // Fix table header appearing over modeals
+    z-index: auto;
   }
 
   .MuiTableCell-root {
