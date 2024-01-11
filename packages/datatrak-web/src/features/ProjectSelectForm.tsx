@@ -37,7 +37,7 @@ const ListWrapper = styled.div<{
   }
 
   // Keep body text styling, even if component is child of a paragraph/heading
-  font-size: 0.875rem;
+  font-size: ${({ theme }) => theme.typography.body1.fontSize};
   font-weight: 400;
   line-height: 1.43;
   letter-spacing: 0.01071em;
