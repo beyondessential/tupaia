@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class UserEntityPermissionType extends DatabaseType {
+export class UserEntityPermissionType extends DatabaseType {
   static databaseType = TYPES.USER_ENTITY_PERMISSION;
 
   static joins = [
