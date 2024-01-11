@@ -8,8 +8,7 @@ import styled from 'styled-components';
 import { useMatch } from 'react-router';
 import { Link, ListItem } from '@material-ui/core';
 import { Button, RouterLink } from '@tupaia/ui-components';
-import { useCurrentUser } from '../../api';
-import { useLogout } from '../../api/mutations';
+import { useCurrentUser, useLogout } from '../../api';
 import { ROUTES } from '../../constants';
 import { CancelConfirmModal } from '../../components';
 
@@ -18,7 +17,7 @@ interface MenuItem {
   to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e: any) => void;
+  onClick?: (e: Event) => void;
   component?: ComponentType<any> | string;
 }
 
@@ -64,14 +63,14 @@ export const MenuList = ({
   const { isLoggedIn, projectId } = useCurrentUser();
   const { mutate: logout } = useLogout();
 
-  const onClickInternalLink = e => {
-    if (isSurveyScreen && !isSuccessScreen) {
+  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
+
+  const onClickInternalLink = (e: Event) => {
+    if (shouldShowCancelModal) {
       e.preventDefault();
       setIsOpen(true);
     }
   };
-
-  const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
   const accountSettingsItem = {
     label: 'Account settings',
@@ -94,9 +93,9 @@ export const MenuList = ({
     },
   };
 
-  const hasProjectSelected = !!projectId;
-
   const getMenuItems = () => {
+    const hasProjectSelected = !!projectId;
+
     const items: MenuItem[] = [];
     if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
     items.push(helpCentreItem);
