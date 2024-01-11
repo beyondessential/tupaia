@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Link } from '@material-ui/core';
 import { FeedItemTypes } from '@tupaia/types';
 import { SectionHeading } from '../SectionHeading';
-import { useActivityFeed } from '../../../api/queries';
+import { useCurrentProjectActivityFeed } from '../../../api/queries';
 import { MarkdownFeedItem, SurveyResponseFeedItem } from '../../../types';
 import { ActivityFeedSurveyItem } from './ActivityFeedSurveyItem';
 import { ActivityFeedMarkdownItem } from './ActivityFeedMarkdownItem';
@@ -47,7 +47,12 @@ const Body = styled.div`
 `;
 
 export const ActivityFeedSection = () => {
-  const { data: activityFeed, fetchNextPage, hasNextPage, isFetching } = useActivityFeed();
+  const {
+    data: activityFeed,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = useCurrentProjectActivityFeed();
   const isInitialLoad = !activityFeed;
   return (
     <ActivityFeed>
