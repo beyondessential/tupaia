@@ -115,9 +115,20 @@ const SURVEY_RESPONSE = [
   },
 ];
 
+const PROJECT = [{ id: 'project001', code: 'P001' }];
 const SURVEY = [
-  { id: 'survey001_test', code: 'S001', data_group_id: 'dataGroup001_test' },
-  { id: 'survey002_test', code: 'S002', data_group_id: 'dataGroup002_test' },
+  {
+    id: 'survey001_test',
+    code: 'S001',
+    data_group_id: 'dataGroup001_test',
+    project_id: 'project001',
+  },
+  {
+    id: 'survey002_test',
+    code: 'S002',
+    data_group_id: 'dataGroup002_test',
+    project_id: 'project001',
+  },
 ];
 
 const ENTITY = [
@@ -149,6 +160,7 @@ export const TEST_DATA = {
   user: USER,
   dataElement: DATA_ELEMENT,
   dataGroup: DATA_GROUP,
+  project: PROJECT,
   survey: SURVEY,
   question: QUESTION,
   surveyResponse: SURVEY_RESPONSE,
