@@ -17,7 +17,7 @@ interface MenuItem {
   to?: string | null;
   href?: string;
   isExternal?: boolean;
-  onClick?: (e?: Event) => void;
+  onClick?: (e: Event) => void;
   component?: ComponentType<any> | string;
 }
 
@@ -74,10 +74,7 @@ export const MenuList = ({
 
   const accountSettingsItem = {
     label: 'Account settings',
-    onClick: e => {
-      onClickInternalLink(e);
-      onCloseMenu();
-    },
+    onClick: onClickInternalLink,
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
