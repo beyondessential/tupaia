@@ -14,22 +14,23 @@ import { createApp } from './app';
 configureWinston();
 dotenv.config(); // Load the environment variables into process.env
 
-/**
- * Set up app with routes etc.
- */
-const app = createApp();
+(async () => {
+  /**
+   * Set up app with routes etc.
+   */
+  const app = await createApp();
 
-/**
- * Start the server
- */
-const port = process.env.PORT || 8110;
-http.createServer(app).listen(port);
-winston.info(`Running on port ${port}`);
+  /**
+   * Start the server
+   */
+  const port = process.env.PORT || 8110;
+  http.createServer(app).listen(port);
+  winston.info(`Running on port ${port}`);
 
-/**
- * Notify PM2 that we are ready
- * */
-if (process.send) {
-  process.send('ready');
-}
-
+  /**
+   * Notify PM2 that we are ready
+   * */
+  if (process.send) {
+    process.send('ready');
+  }
+})();

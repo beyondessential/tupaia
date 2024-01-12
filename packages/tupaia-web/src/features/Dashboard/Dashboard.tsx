@@ -108,6 +108,7 @@ const DashboardItemsWrapper = styled.div<{
 export const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project, isLoading: isLoadingProject } = useProject(projectCode);
   const [subscribeModalOpen, setSubscribeModalOpen] = useState<boolean>(false);

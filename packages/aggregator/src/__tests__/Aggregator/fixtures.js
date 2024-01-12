@@ -28,3 +28,17 @@ export const AGGREGATED_ANALYTICS = [
   { dataElement: 'POP01', period: '20200214', value: 6 },
 ];
 export const FILTERED_ANALYTICS = [{ dataElement: 'POP01', period: '20200214', value: 3 }];
+
+export const DATA_ELEMENTS = {
+  POP01: { code: 'POP01', name: 'Population 1' },
+  POP02: { code: 'POP02', name: 'Population 2' },
+  DIFF: { code: 'Diff', name: 'Other' },
+};
+
+export const DATA_GROUPS = {
+  POP: {
+    code: 'POP',
+    name: 'Population Survey',
+    dataElements: [DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02],
+  },
+};

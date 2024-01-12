@@ -59532,12 +59532,16 @@ export const ProjectResponseSchema = {
 		},
 		"hasPendingAccess": {
 			"type": "boolean"
+		},
+		"homeEntityCode": {
+			"type": "string"
 		}
 	},
 	"required": [
 		"code",
 		"hasAccess",
 		"hasPendingAccess",
+		"homeEntityCode",
 		"id",
 		"name"
 	]
@@ -59606,12 +59610,16 @@ export const ResBodySchema = {
 		},
 		"hasPendingAccess": {
 			"type": "boolean"
+		},
+		"homeEntityCode": {
+			"type": "string"
 		}
 	},
 	"required": [
 		"code",
 		"hasAccess",
 		"hasPendingAccess",
+		"homeEntityCode",
 		"id",
 		"name"
 	]
