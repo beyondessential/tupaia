@@ -45,6 +45,9 @@ const PreviewTitle = styled(Typography).attrs({
   text-align: left;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   margin-bottom: 1rem;
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 1rem;
+  }
 `;
 
 const NoPreviewMessage = styled(Typography)`

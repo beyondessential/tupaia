@@ -23,24 +23,14 @@ const Wrapper = styled.div`
   }
 `;
 
-const Container = styled.div`
+const ExportContentContainer = styled.div`
   flex-grow: 1;
-  display: flex;
-`;
-
-const ExportContentContainer = styled(Container)`
-  flex-grow: 1;
-  display: flex;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    flex-direction: column;
-  }
-`;
-
-const LeftColumn = styled.div`
-  width: 30%;
   text-align: left;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: 100%;
+  margin-bottom: 1rem;
+  ${({ theme }) => theme.breakpoints.up('sm')} {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    grid-gap: 1rem;
   }
 `;
 
@@ -61,17 +51,6 @@ const ButtonWrapper = styled.div`
 
 const Button = styled(BaseButton)`
   text-transform: none;
-`;
-
-const RightColumn = styled.div`
-  flex-grow: 1;
-  width: 70%;
-  padding-left: 1rem;
-  padding-bottom: 1rem;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    width: 100%;
-    margin-top: 1rem;
-  }
 `;
 
 export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
@@ -105,7 +84,7 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
     <Wrapper>
       <Title>Export this chart</Title>
       <ExportContentContainer>
-        <LeftColumn>
+        <div>
           {isExporting ? (
             <SpinningLoader />
           ) : (
@@ -116,10 +95,10 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
             </form>
           )}
           {exportError && <Typography color="error">{exportError}</Typography>}
-        </LeftColumn>
-        <RightColumn>
+        </div>
+        <div>
           <ExportPreview entityName={entityName} exportRef={exportRef} />
-        </RightColumn>
+        </div>
       </ExportContentContainer>
       <ButtonWrapper>
         <Button onClick={cancelExport} variant="outlined" color="default" disabled={isExporting}>
