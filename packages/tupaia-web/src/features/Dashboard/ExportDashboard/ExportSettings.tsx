@@ -79,10 +79,6 @@ const ExportSetting = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 1rem;
-
-  fieldset {
-    border: 0;
-  }
 `;
 
 const Checkbox = styled(BaseCheckbox)`
