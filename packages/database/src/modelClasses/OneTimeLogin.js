@@ -10,7 +10,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class OneTimeLoginType extends DatabaseType {
+export class OneTimeLoginType extends DatabaseType {
   static databaseType = TYPES.ONE_TIME_LOGIN;
 
   isExpired() {
