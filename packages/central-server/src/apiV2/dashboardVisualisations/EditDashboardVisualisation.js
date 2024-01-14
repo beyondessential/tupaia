@@ -4,7 +4,11 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
+import {
+  ObjectValidator,
+  constructRecordExistsWithCode,
+  constructRecordExistsWithId,
+} from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
 import {
@@ -71,10 +75,11 @@ export class EditDashboardVisualisation extends EditHandler {
   async validateRecordExists() {
     const validationCriteria = {
       id: [constructRecordExistsWithId(this.database, TYPES.DASHBOARD_ITEM)],
+      code: [constructRecordExistsWithCode(this.models.report)], // check that a record with the same code exists
     };
 
     const validator = new ObjectValidator(validationCriteria);
-    return validator.validate({ id: this.recordId }); // Will throw an error if not valid
+    return validator.validate({ id: this.recordId, code: this.updatedFields.report.code }); // Will throw an error if not valid
   }
 
   async updateDashboardItem(transactingModels, dashboardItem, dashboardItemRecord) {
