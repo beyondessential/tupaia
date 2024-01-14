@@ -73,6 +73,7 @@ const ErrorMessage = styled(FormHelperText)`
 const Label = styled.label`
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 type Base64 = string | null | ArrayBuffer;

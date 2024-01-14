@@ -133,7 +133,7 @@ export {
 export { APIClientModel } from './APIClient';
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
-export { CountryModel } from './Country';
+export { CountryModel, CountryType } from './Country';
 export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
@@ -159,7 +159,7 @@ export { MeditrakDeviceModel } from './MeditrakDevice';
 export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';
-export { PermissionGroupModel } from './PermissionGroup';
+export { PermissionGroupModel, PermissionGroupType } from './PermissionGroup';
 export { ProjectModel, ProjectType } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportType } from './Report';
@@ -168,7 +168,7 @@ export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
 export { SurveyScreenModel } from './SurveyScreen';
-export { UserEntityPermissionModel } from './UserEntityPermission';
+export { UserEntityPermissionModel, UserEntityPermissionType } from './UserEntityPermission';
 export { UserModel, UserType } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
 export { DashboardType, DashboardModel } from './Dashboard';
@@ -179,3 +179,4 @@ export {
   DashboardMailingListEntryModel,
 } from './DashboardMailingListEntry';
 export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';
+export { OneTimeLoginType, OneTimeLoginModel } from './OneTimeLogin';

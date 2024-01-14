@@ -15,3 +15,4 @@ export * as DatatrakWebSingleSurveyResponseRequest from './SingleSurveyResponseR
 export * as DatatrakWebLeaderboardRequest from './LeaderboardRequest';
 export * as DatatrakWebActivityFeedRequest from './ActivityFeedRequest';
 export * as DatatrakWebCountryAccessListRequest from './CountryAccessListRequest';
+export * as DatatrakWebGenerateLoginTokenRequest from './GenerateLoginTokenRequest';
