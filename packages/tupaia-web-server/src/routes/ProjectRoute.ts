@@ -21,7 +21,9 @@ export class ProjectRoute extends Route<ProjectRequest> {
       params: { projectCode },
     } = this.req;
 
-    const { projects } = await ctx.services.webConfig.fetchProjects();
+    const { projects } = await ctx.services.webConfig.fetchProjects({
+      showExcludedProjects: false,
+    });
 
     const project = projects.find(({ code }: { code: string }) => code === projectCode);
     if (!project) {

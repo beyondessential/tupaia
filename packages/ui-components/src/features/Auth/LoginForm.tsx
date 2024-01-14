@@ -65,6 +65,7 @@ export const LoginForm = ({
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
+          id="email"
           name="email"
           type="email"
           options={FORM_FIELD_VALIDATION.EMAIL}
@@ -74,9 +75,9 @@ export const LoginForm = ({
           disabled={isLoading}
         />
         <FormInput
+          id="password"
           name="password"
           type="password"
-          options={FORM_FIELD_VALIDATION.PASSWORD}
           required
           Input={AuthFormTextField}
           label="Password"

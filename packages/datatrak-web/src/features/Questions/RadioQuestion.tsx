@@ -92,12 +92,13 @@ export const RadioQuestion = ({
       onChange={onChange}
       id={id}
       aria-invalid={invalid}
-      ref={ref}
       value={value || ''}
     >
       {/**replace non-breaking spaces that are returned with the label with normal spaces to prevent unwanted wrapping **/}
       <LegendWrapper>
-        <FormLabel component="legend">{label?.replace(/\xA0/g, ' ')}</FormLabel>
+        <FormLabel component="legend" error={invalid} required={required}>
+          {label?.replace(/\xA0/g, ' ')}
+        </FormLabel>
         {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
       </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (
@@ -105,6 +106,7 @@ export const RadioQuestion = ({
           key={value}
           $color={color}
           value={value}
+          ref={ref} // the ref needs to be passed to the radio item so that when an error is caught, focus can be applied to the input. Applying the ref to the div wrapper does not work because the div is not focusable
           control={
             <RadioButton
               $color={color}

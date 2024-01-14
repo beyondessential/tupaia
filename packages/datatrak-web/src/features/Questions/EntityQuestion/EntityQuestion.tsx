@@ -52,6 +52,7 @@ export const EntityQuestion = ({
   label,
   detailLabel,
   name,
+  required,
   controllerProps: { onChange, value, ref, invalid },
   config,
 }: SurveyQuestionInputProps) => {
@@ -104,6 +105,7 @@ export const EntityQuestion = ({
           onChangeSearch={onChangeSearch}
           searchValue={searchValue}
           invalid={invalid}
+          required={required}
         />
       )}
       {errors && errors[name!] && <FormHelperText error>*{errors[name!].message}</FormHelperText>}

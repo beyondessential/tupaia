@@ -5,6 +5,7 @@
 
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
+import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
 import { post, useCountry, useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
@@ -30,12 +31,14 @@ export const useSurveyResponseData = () => {
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
   const { data: country } = useCountry(user.project?.code, countryCode);
+  const timezone = getBrowserTimeZone();
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: country?.id,
     userId: user.id,
+    timezone,
   };
 };
 
@@ -55,7 +58,7 @@ export const useSubmitSurvey = () => {
         return;
       }
 
-      return await post('submitSurvey', {
+      return post('submitSurvey', {
         data: { ...surveyResponseData, answers },
       });
     },
