@@ -7,14 +7,14 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  align-items: center;
   display: grid;
   gap: 5mm;
   grid-template-columns: 1fr 2fr 1fr;
-  vertical-align: center;
   width: 100%;
 `;
 
-const HeaderImage = styled.img.attrs({})`
+const HeaderImage = styled.img`
   max-width: 3.5cm;
 `;
 
