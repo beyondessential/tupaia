@@ -20,7 +20,6 @@ const HeaderImage = styled.img`
 `;
 
 const Heading = styled.h1`
-  block-size: 100%;
   font-size: 1.625rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   inline-size: 100%;
