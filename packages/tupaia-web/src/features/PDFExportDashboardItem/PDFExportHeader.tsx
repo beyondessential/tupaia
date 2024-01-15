@@ -15,6 +15,7 @@ const Container = styled.div`
 `;
 
 const HeaderImage = styled.img`
+  max-height: 3cm;
   max-width: 3.5cm;
 `;
 
@@ -29,17 +30,17 @@ const Heading = styled.h1`
 `;
 
 export const PDFExportHeader = ({
-  headerImageUrl = '/tupaia-logo-dark.svg',
-  headerImageDescription = 'Tupaia logotype',
+  imageUrl = '/tupaia-logo-dark.svg',
+  imageDescription = 'Tupaia logotype',
   children,
 }: {
-  headerImageUrl?: string;
-  headerImageDescription?: string;
+  imageUrl?: string;
+  imageDescription?: string;
   children: ReactNode;
 }) => {
   return (
     <Container>
-      <HeaderImage alt={headerImageDescription} src={headerImageUrl} />
+      <HeaderImage alt={imageDescription} src={imageUrl} />
       <Heading>{children}</Heading>
     </Container>
   );

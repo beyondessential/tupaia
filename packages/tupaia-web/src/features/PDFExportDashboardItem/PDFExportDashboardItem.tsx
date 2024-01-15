@@ -17,7 +17,7 @@ import {
 import { BaseReport } from '@tupaia/types';
 import { A4_PAGE_WIDTH_PX, A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
-import { useReport } from '../../api/queries';
+import { useProject, useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
@@ -134,6 +134,10 @@ export const PDFExportDashboardItem = ({
   } as DashboardItemConfig;
   const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
 
+  const { data: project } = useProject(projectCode);
+  const projectLogoUrl = project?.logoUrl ?? undefined;
+  const projectLogoDescription = project ? `${project.name} logo` : undefined;
+
   const title = entityHeader ? `${name}, ${entityHeader}` : name;
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
@@ -145,7 +149,9 @@ export const PDFExportDashboardItem = ({
       $isPreview={isPreview}
       $previewZoom={previewZoom}
     >
-      <PDFExportHeader>{entityName}</PDFExportHeader>
+      <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
+        {entityName}
+      </PDFExportHeader>
       <PDFExportBody>
         <DashboardName>{activeDashboard?.name}</DashboardName>
         <Title>{title}</Title>
