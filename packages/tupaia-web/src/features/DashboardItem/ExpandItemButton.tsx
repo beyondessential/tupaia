@@ -8,8 +8,13 @@ import styled from 'styled-components';
 import MuiZoomIcon from '@material-ui/icons/ZoomIn';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
-import { DashboardItemTypes, ViewReport, ViewTypes } from '@tupaia/types';
-import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../constants';
+import { ViewReport } from '@tupaia/types';
+import {
+  DashboardItemVizTypes,
+  MOBILE_BREAKPOINT,
+  URL_SEARCH_PARAMS,
+  ViewVizTypes,
+} from '../../constants';
 import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
 
@@ -59,10 +64,10 @@ const ZoomInIcon = styled(MuiZoomIcon)`
 `;
 
 const EXPANDABLE_TYPES = [
-  DashboardItemTypes.Chart,
-  ViewTypes.DataDownload,
-  ViewTypes.FilesDownload,
-  ViewTypes.MultiValue,
+  DashboardItemVizTypes.Chart,
+  ViewVizTypes.DataDownload,
+  ViewVizTypes.FilesDownload,
+  ViewVizTypes.MultiValue,
 ];
 
 /**
@@ -79,12 +84,12 @@ export const ExpandItemButton = () => {
   const getIsExpandable = () => {
     if (periodGranularity) return true;
     // always allow matrix to be expanded
-    else if (type === DashboardItemTypes.Matrix) return true;
+    else if (type === DashboardItemVizTypes.Matrix) return true;
     // only expand expandable types if they have data, if they don't have periodGranularity set
     else if (EXPANDABLE_TYPES.includes(type) || (viewType && EXPANDABLE_TYPES.includes(viewType))) {
       const { data } = report as ViewReport;
       return data && data.length > 0;
-    } else if (viewType === ViewTypes.QRCode) {
+    } else if (viewType === QR_CODE_TYPE) {
       const { data } = report as ViewReport;
       return data && data.length > 1;
     }
@@ -94,7 +99,7 @@ export const ExpandItemButton = () => {
   if (!getIsExpandable()) return null;
 
   const getText = () => {
-    if (viewType && [ViewTypes.DataDownload, ViewTypes.FilesDownload].includes(viewType))
+    if (viewType && [ViewVizTypes.DataDownload, ViewVizTypes.FilesDownload].includes(viewType))
       return 'Expand to download data';
     return 'Expand chart';
   };

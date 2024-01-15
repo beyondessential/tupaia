@@ -7,9 +7,8 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { GetApp } from '@material-ui/icons';
-import { DashboardItemTypes, ViewTypes } from '@tupaia/types';
 import { IconButton } from '@tupaia/ui-components';
-import { URL_SEARCH_PARAMS } from '../../constants';
+import { URL_SEARCH_PARAMS, DashboardItemVizTypes, ViewVizTypes } from '../../constants';
 import {
   ACTION_TYPES,
   ExportContext,
@@ -28,9 +27,9 @@ const Button = styled(IconButton).attrs({
 `;
 
 const EXPORTABLE_TYPES = [
-  DashboardItemTypes.Chart,
-  DashboardItemTypes.Matrix,
-  ViewTypes.MultiValue,
+  DashboardItemVizTypes.Chart,
+  DashboardItemVizTypes.Matrix,
+  ViewVizTypes.MultiValue,
 ];
 
 export const ExportButton = () => {
