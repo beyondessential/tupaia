@@ -15,8 +15,9 @@ const Container = styled.div`
 `;
 
 const HeaderImage = styled.img`
-  max-height: 3cm;
-  max-width: 3.5cm;
+  aspect-ratio: 1;
+  height: 3.5cm; // equivalent to 132px
+  object-fit: contain;
 `;
 
 const Heading = styled.h1`
@@ -41,7 +42,7 @@ export const PDFExportHeader = ({
 }: PDFExportHeaderProps) => {
   return (
     <Container>
-      <HeaderImage alt={imageDescription} src={imageUrl} />
+      <HeaderImage alt={imageDescription} src={imageUrl} width="132" height="132" />
       <Heading>{children}</Heading>
     </Container>
   );
