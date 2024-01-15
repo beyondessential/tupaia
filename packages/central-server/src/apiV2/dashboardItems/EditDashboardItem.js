@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-
+import { ObjectValidator, constructIsEmptyOr, constructRecordExistsWithCode } from '@tupaia/utils';
 import { EditHandler } from '../EditHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardItemEditPermissions } from './assertDashboardItemsPermissions';
-import { ObjectValidator, constructIsEmptyOr, constructRecordExistsWithCode } from '@tupaia/utils';
 
 export class EditDashboardItem extends EditHandler {
   async assertUserHasAccess() {
@@ -17,20 +16,20 @@ export class EditDashboardItem extends EditHandler {
     );
   }
 
-  async validateReportExists(reportCode) {
-    const existingRecord = await this.models.dashboardItem.findOne({
-      id: this.recordId,
-    });
-    // if the report is not a legacy report, check if the report exists
-    if (!existingRecord.legacy) {
-      return constructRecordExistsWithCode(this.models.report)(reportCode);
-    }
-    return true;
-  }
-
   async validate() {
+    const validateReportExists = async reportCode => {
+      const existingRecord = await this.models.dashboardItem.findOne({
+        id: this.recordId,
+      });
+      // if the report is not a legacy report, check if the report exists
+      if (!existingRecord.legacy) {
+        return constructRecordExistsWithCode(this.models.report)(reportCode);
+      }
+      return true;
+    };
+
     const validationCriteria = {
-      report_code: [constructIsEmptyOr(this.validateReportExists)],
+      report_code: [constructIsEmptyOr(validateReportExists)],
     };
 
     const validator = new ObjectValidator(validationCriteria);

@@ -16,9 +16,9 @@ exports.setup = function (options, seedLink) {
 
 const addEqualColumnReportCodeConstraint = db => {
   return db.runSql(`
-  ALTER TABLE dashboard_item
-  ADD CONSTRAINT check_code_equals_report_code
-  CHECK (code = report_code);
+    ALTER TABLE dashboard_item
+    ADD CONSTRAINT check_code_equals_report_code
+    CHECK (legacy = true OR code = report_code);
   `);
 };
 
@@ -27,7 +27,7 @@ const updateDashboardItemCode = db => {
   return db.runSql(`
   UPDATE dashboard_item
   SET code = report_code
-  WHERE code <> report_code;
+  WHERE code <> report_code AND legacy != true;
 `);
 };
 
