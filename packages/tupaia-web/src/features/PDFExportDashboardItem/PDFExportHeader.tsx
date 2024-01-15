@@ -5,39 +5,42 @@
 
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { FlexCenter as BaseFlexCenter, FlexColumn as BaseFlexColumn } from '@tupaia/ui-components';
 
-const FlexCenter = styled(BaseFlexCenter)`
-  position: relative;
-  padding: 50px;
-`;
-
-const FlexColumn = styled(BaseFlexColumn)`
-  text-align: center;
+const Container = styled.div`
+  display: grid;
+  gap: 5mm;
+  grid-template-columns: 1fr 2fr 1fr;
+  vertical-align: center;
+  width: 100%;
 `;
 
 const Heading = styled.h1`
-  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
-  line-height: 1.4;
+  text-align: center;
+  block-size: 100%;
   font-size: 1.625rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+  inline-size: 100%;
+  line-height: 1.4;
   margin: 0;
 `;
 
-const Logo = styled.img.attrs({
-  src: '/tupaia-logo-dark.svg',
-})`
-  top: 1.875rem;
-  left: 1.2rem;
-  position: absolute;
+const Logo = styled.img.attrs({})`
+  max-width: 3.5cm;
 `;
 
-export const PDFExportHeader = ({ children }: { children: ReactNode }) => {
+export const PDFExportHeader = ({
+  headerImageUrl = '/tupaia-logo-dark.svg',
+  headerImageDescription = 'Tupaia logotype',
+  children,
+}: {
+  headerImageUrl?: string;
+  headerImageDescription?: string;
+  children: ReactNode;
+}) => {
   return (
-    <FlexCenter>
-      <Logo alt="Tupaia logo" width="74" height="30" />
-      <FlexColumn>
-        <Heading>{children}</Heading>
-      </FlexColumn>
-    </FlexCenter>
+    <Container>
+      <Logo alt={headerImageDescription} src={headerImageUrl} />
+      <Heading>{children}</Heading>
+    </Container>
   );
 };

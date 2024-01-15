@@ -29,15 +29,15 @@ const StyledA4Page = styled(A4Page)<{
     $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
 `;
 
-const Wrapper = styled.div`
-  margin: 0 7.8rem;
+const PDFExportBody = styled.main`
+  margin-block: 36pt;
 `;
+
 const Title = styled.h3`
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-block: 1rem 1.5rem;
   text-align: center;
-  padding: 1rem 1.5rem;
-  margin-bottom: 1.5rem;
 `;
 
 const ExportPeriod = styled(Typography)`
@@ -146,8 +146,8 @@ export const PDFExportDashboardItem = ({
       $previewZoom={previewZoom}
     >
       <PDFExportHeader>{entityName}</PDFExportHeader>
-      <DashboardName>{activeDashboard?.name}</DashboardName>
-      <Wrapper>
+      <PDFExportBody>
+        <DashboardName>{activeDashboard?.name}</DashboardName>
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
@@ -172,7 +172,7 @@ export const PDFExportDashboardItem = ({
             <DashboardItemContent />
           </DashboardItemContext.Provider>
         </ExportContent>
-      </Wrapper>
+      </PDFExportBody>
     </StyledA4Page>
   );
 };
