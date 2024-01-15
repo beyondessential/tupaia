@@ -15,7 +15,7 @@ import {
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
-import { A4_PAGE_WIDTH_PX, A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4_PAGE_WIDTH_PX, A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
@@ -146,35 +146,33 @@ export const PDFExportDashboardItem = ({
       $previewZoom={previewZoom}
     >
       <PDFExportHeader>{entityName}</PDFExportHeader>
-      <A4PageContent>
-        <DashboardName>{activeDashboard?.name}</DashboardName>
-        <Wrapper>
-          <Title>{title}</Title>
-          {reference && <ReferenceTooltip reference={reference} />}
-          {period && <ExportPeriod>{period}</ExportPeriod>}
-          <ExportContent $hasData={data && data?.length > 0}>
-            <DashboardItemContext.Provider
-              value={{
-                config: {
-                  ...config,
-                  presentationOptions: {
-                    ...config.presentationOptions,
-                    exportWithTable: true,
-                  },
+      <DashboardName>{activeDashboard?.name}</DashboardName>
+      <Wrapper>
+        <Title>{title}</Title>
+        {reference && <ReferenceTooltip reference={reference} />}
+        {period && <ExportPeriod>{period}</ExportPeriod>}
+        <ExportContent $hasData={data && data?.length > 0}>
+          <DashboardItemContext.Provider
+            value={{
+              config: {
+                ...config,
+                presentationOptions: {
+                  ...config.presentationOptions,
+                  exportWithTable: true,
                 },
-                report,
-                reportCode,
-                isLoading,
-                error,
-                isEnlarged: true,
-                isExport: true,
-              }}
-            >
-              <DashboardItemContent />
-            </DashboardItemContext.Provider>
-          </ExportContent>
-        </Wrapper>
-      </A4PageContent>
+              },
+              report,
+              reportCode,
+              isLoading,
+              error,
+              isEnlarged: true,
+              isExport: true,
+            }}
+          >
+            <DashboardItemContent />
+          </DashboardItemContext.Provider>
+        </ExportContent>
+      </Wrapper>
     </StyledA4Page>
   );
 };
