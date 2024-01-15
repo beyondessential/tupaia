@@ -14,18 +14,18 @@ const Container = styled.div`
   width: 100%;
 `;
 
+const HeaderImage = styled.img.attrs({})`
+  max-width: 3.5cm;
+`;
+
 const Heading = styled.h1`
-  text-align: center;
   block-size: 100%;
   font-size: 1.625rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   inline-size: 100%;
   line-height: 1.4;
   margin: 0;
-`;
-
-const Logo = styled.img.attrs({})`
-  max-width: 3.5cm;
+  text-align: center;
 `;
 
 export const PDFExportHeader = ({
@@ -39,7 +39,7 @@ export const PDFExportHeader = ({
 }) => {
   return (
     <Container>
-      <Logo alt={headerImageDescription} src={headerImageUrl} />
+      <HeaderImage alt={headerImageDescription} src={headerImageUrl} />
       <Heading>{children}</Heading>
     </Container>
   );
