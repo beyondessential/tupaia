@@ -20,7 +20,6 @@ const Heading = styled.h1`
   font-weight: ${({ theme }) => theme.typography.fontWeightBold};
   line-height: 1.4;
   font-size: 1.625rem;
-  text-transform: capitalize;
   margin: 0;
 `;
 
