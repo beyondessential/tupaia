@@ -86,7 +86,7 @@ describe('dateRangePicker', () => {
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);
       } else {
-        expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
+        expect(labelText).toHaveTextContent(`${startDate} – ${endDate}`); // En dash
       }
     });
   });
@@ -102,7 +102,7 @@ describe('dateRangePicker', () => {
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);
       } else {
-        expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
+        expect(labelText).toHaveTextContent(`${startDate} – ${endDate}`); // En dash
       }
     });
   });
