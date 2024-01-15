@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { Typography, Divider as BaseDivider } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
@@ -15,7 +15,7 @@ import {
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
-import { A4Page, A4PageContent, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4_PAGE_WIDTH_PX, A4Page, A4PageContent, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
@@ -52,21 +52,12 @@ const ExportContent = styled.div<{
   padding-top: ${({ $hasData }) => ($hasData ? '0' : '1.5rem')};
 `;
 
-const DashboardTitleContainer = styled.div`
-  text-align: start;
-  margin-bottom: 1.125rem;
-`;
-
-const DashboardNameText = styled.h2`
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+const DashboardName = styled.h2`
+  border-block-end: 0.18rem solid black;
   font-size: 1.25rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.4;
-  margin: 0;
-`;
-
-const Divider = styled(BaseDivider)`
-  background-color: black;
-  height: 0.18rem;
+  margin-block-end: 1.125rem;
 `;
 
 export const getDatesAsString = (
@@ -118,7 +109,11 @@ export const PDFExportDashboardItem = ({
     endDate?: Moment;
   };
 
-  const { data: report, isLoading, error } = useReport(reportCode, {
+  const {
+    data: report,
+    isLoading,
+    error,
+  } = useReport(reportCode, {
     dashboardCode: activeDashboard?.code,
     projectCode,
     entityCode,
@@ -156,10 +151,7 @@ export const PDFExportDashboardItem = ({
     >
       <PDFExportHeader>{entityName}</PDFExportHeader>
       <A4PageContent>
-        <DashboardTitleContainer>
-          <DashboardNameText>{activeDashboard?.name}</DashboardNameText>
-          <Divider />
-        </DashboardTitleContainer>
+        <DashboardName>{activeDashboard?.name}</DashboardName>
         <Wrapper>
           <Title>{title}</Title>
           {reference && <ReferenceTooltip reference={reference} />}
