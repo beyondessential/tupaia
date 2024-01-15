@@ -30,7 +30,7 @@ const Heading = styled.h1`
 
 export const PDFExportHeader = ({
   imageUrl = '/tupaia-logo-dark.svg',
-  imageDescription = 'Tupaia logotype',
+  imageDescription = 'Tupaia logo',
   children,
 }: {
   imageUrl?: string;
