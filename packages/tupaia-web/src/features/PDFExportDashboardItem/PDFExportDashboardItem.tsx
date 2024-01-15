@@ -8,10 +8,10 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import {
+  getDefaultDates,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
-  getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
@@ -53,7 +53,7 @@ const ExportContent = styled.div<{
 `;
 
 const DashboardName = styled.h2`
-  border-block-end: 0.18rem solid black;
+  border-block-end: 0.18rem solid ${({ theme }) => theme.palette.common.black};
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.4;
@@ -81,7 +81,8 @@ export const getDatesAsString = (
 };
 
 /**
- * This is the dashboard item that gets generated when generating a PDF. It is only present when puppeteer hits this view.
+ * This is the dashboard item that gets generated when generating a PDF. It is only present when
+ * puppeteer hits this view.
  */
 export const PDFExportDashboardItem = ({
   dashboardItem,
@@ -133,12 +134,7 @@ export const PDFExportDashboardItem = ({
   } as DashboardItemConfig;
   const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
 
-  const getTitle = () => {
-    if (entityHeader) return `${name}, ${entityHeader}`;
-    return name;
-  };
-
-  const title = getTitle();
+  const title = entityHeader ? `${name}, ${entityHeader}` : name;
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
