@@ -12,6 +12,8 @@ import {
   Checkbox as BaseCheckbox,
   SpinningLoader,
 } from '@tupaia/ui-components';
+import { Entity } from '../../types';
+import { DashboardItemVizTypes, ViewVizTypes } from '../../constants';
 import {
   ACTION_TYPES,
   EXPORT_FORMATS,
@@ -20,9 +22,7 @@ import {
   useEnlargedDashboardItem,
   useExportDashboardItem,
 } from './utils';
-import { Entity } from '../../types';
 import { EnlargedDashboardVisual } from './EnlargedDashboardVisual';
-import { DashboardItemTypes, ViewTypes } from '@tupaia/types';
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -224,11 +224,11 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
   ];
 
   const { type, viewType } = currentDashboardItem?.config ?? {};
-  const isChart = type === DashboardItemTypes.Chart;
+  const isChart = type === DashboardItemVizTypes.Chart;
 
   // PNG export is not available for matrix reports
   const availableExportOptions =
-    isChart || viewType === ViewTypes.MultiValue
+    isChart || viewType === ViewVizTypes.MultiValue
       ? exportOptions
       : exportOptions.filter(option => option.value !== EXPORT_FORMATS.PNG);
 
