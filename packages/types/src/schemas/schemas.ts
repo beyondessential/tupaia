@@ -815,16 +815,6 @@ export const ExportPresentationOptionsSchema = {
 	"additionalProperties": false
 } 
 
-export const DashboardItemTypesSchema = {
-	"enum": [
-		"chart",
-		"component",
-		"matrix",
-		"view"
-	],
-	"type": "string"
-} 
-
 export const MatrixConfigSchema = {
 	"description": "Matrix viz type",
 	"additionalProperties": false,
@@ -2725,6 +2715,12 @@ export const BaseChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -2774,7 +2770,8 @@ export const BaseChartConfigSchema = {
 		}
 	},
 	"required": [
-		"name"
+		"name",
+		"type"
 	]
 } 
 
@@ -3131,6 +3128,12 @@ export const GaugeChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -3177,12 +3180,6 @@ export const GaugeChartConfigSchema = {
 		"measureLevel": {},
 		"renderLegendForOneItem": {
 			"type": "boolean"
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
 		},
 		"chartType": {
 			"type": "string",
@@ -3551,6 +3548,12 @@ export const ComposedChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -3678,12 +3681,6 @@ export const ComposedChartConfigSchema = {
 			]
 		},
 		"presentationOptions": {},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
 		"chartType": {
 			"type": "string",
 			"enum": [
@@ -4088,6 +4085,12 @@ export const BarChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -4215,12 +4218,6 @@ export const BarChartConfigSchema = {
 			]
 		},
 		"presentationOptions": {},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
 		"chartType": {
 			"type": "string",
 			"enum": [
@@ -4625,6 +4622,12 @@ export const PieChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -4671,12 +4674,6 @@ export const PieChartConfigSchema = {
 		"measureLevel": {},
 		"renderLegendForOneItem": {
 			"type": "boolean"
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
 		},
 		"chartType": {
 			"type": "string",
@@ -5060,6 +5057,12 @@ export const LineChartConfigSchema = {
 			],
 			"type": "string"
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"ticks": {},
 		"startDate": {
 			"type": "string"
@@ -5187,12 +5190,6 @@ export const LineChartConfigSchema = {
 			]
 		},
 		"presentationOptions": {},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
 		"chartType": {
 			"type": "string",
 			"enum": [
@@ -5827,6 +5824,12 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -5873,12 +5876,6 @@ export const ChartConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
 				},
 				"chartType": {
 					"type": "string",
@@ -6246,6 +6243,12 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -6373,12 +6376,6 @@ export const ChartConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -6782,6 +6779,12 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -6909,12 +6912,6 @@ export const ChartConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -7318,6 +7315,12 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -7364,12 +7367,6 @@ export const ChartConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
 				},
 				"chartType": {
 					"type": "string",
@@ -7752,6 +7749,12 @@ export const ChartConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -7879,12 +7882,6 @@ export const ChartConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -8333,24 +8330,6 @@ export const ColorOptionSchema = {
 	"required": [
 		"color"
 	]
-} 
-
-export const ViewTypesSchema = {
-	"enum": [
-		"colorList",
-		"dataDownload",
-		"filesDownload",
-		"list",
-		"multiPhotograph",
-		"multiSingleValue",
-		"multiValue",
-		"multiValueRow",
-		"qrCodeVisual",
-		"singleDate",
-		"singleDownloadLink",
-		"singleValue"
-	],
-	"type": "string"
 } 
 
 export const ListViewConfigSchema = {
@@ -19077,6 +19056,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -19123,12 +19108,6 @@ export const DashboardItemConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
 				},
 				"chartType": {
 					"type": "string",
@@ -19496,6 +19475,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -19623,12 +19608,6 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -20032,6 +20011,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -20159,12 +20144,6 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -20568,6 +20547,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -20614,12 +20599,6 @@ export const DashboardItemConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
 				},
 				"chartType": {
 					"type": "string",
@@ -21002,6 +20981,12 @@ export const DashboardItemConfigSchema = {
 					],
 					"type": "string"
 				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"ticks": {},
 				"startDate": {
 					"type": "string"
@@ -21129,12 +21114,6 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"presentationOptions": {},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
 				"chartType": {
 					"type": "string",
 					"enum": [
@@ -29466,6 +29445,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -29512,12 +29497,6 @@ export const DashboardItemSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -29885,6 +29864,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -30012,12 +29997,6 @@ export const DashboardItemSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -30421,6 +30400,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -30548,12 +30533,6 @@ export const DashboardItemSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -30957,6 +30936,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -31003,12 +30988,6 @@ export const DashboardItemSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -31391,6 +31370,12 @@ export const DashboardItemSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -31518,12 +31503,6 @@ export const DashboardItemSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -37479,6 +37458,12 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -37525,12 +37510,6 @@ export const DashboardItemCreateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -37898,6 +37877,12 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -38025,12 +38010,6 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -38434,6 +38413,12 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -38561,12 +38546,6 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -38970,6 +38949,12 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -39016,12 +39001,6 @@ export const DashboardItemCreateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -39404,6 +39383,12 @@ export const DashboardItemCreateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -39531,12 +39516,6 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -45486,6 +45465,12 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -45532,12 +45517,6 @@ export const DashboardItemUpdateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -45905,6 +45884,12 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -46032,12 +46017,6 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -46441,6 +46420,12 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -46568,12 +46553,6 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -46977,6 +46956,12 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -47023,12 +47008,6 @@ export const DashboardItemUpdateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
 						},
 						"chartType": {
 							"type": "string",
@@ -47411,6 +47390,12 @@ export const DashboardItemUpdateSchema = {
 							],
 							"type": "string"
 						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
 						"ticks": {},
 						"startDate": {
 							"type": "string"
@@ -47538,12 +47523,6 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"presentationOptions": {},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
 						"chartType": {
 							"type": "string",
 							"enum": [
@@ -61639,6 +61618,12 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"ticks": {},
 									"startDate": {
 										"type": "string"
@@ -61685,12 +61670,6 @@ export const DashboardWithMetadataSchema = {
 									"measureLevel": {},
 									"renderLegendForOneItem": {
 										"type": "boolean"
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
 									},
 									"chartType": {
 										"type": "string",
@@ -62058,6 +62037,12 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"ticks": {},
 									"startDate": {
 										"type": "string"
@@ -62185,12 +62170,6 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"presentationOptions": {},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
 									"chartType": {
 										"type": "string",
 										"enum": [
@@ -62594,6 +62573,12 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"ticks": {},
 									"startDate": {
 										"type": "string"
@@ -62721,12 +62706,6 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"presentationOptions": {},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
 									"chartType": {
 										"type": "string",
 										"enum": [
@@ -63130,6 +63109,12 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"ticks": {},
 									"startDate": {
 										"type": "string"
@@ -63176,12 +63161,6 @@ export const DashboardWithMetadataSchema = {
 									"measureLevel": {},
 									"renderLegendForOneItem": {
 										"type": "boolean"
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
 									},
 									"chartType": {
 										"type": "string",
@@ -63564,6 +63543,12 @@ export const DashboardWithMetadataSchema = {
 										],
 										"type": "string"
 									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
 									"ticks": {},
 									"startDate": {
 										"type": "string"
@@ -63691,12 +63676,6 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"presentationOptions": {},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
 									"chartType": {
 										"type": "string",
 										"enum": [

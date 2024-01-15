@@ -89,7 +89,7 @@ export const ExpandItemButton = () => {
     else if (EXPANDABLE_TYPES.includes(type) || (viewType && EXPANDABLE_TYPES.includes(viewType))) {
       const { data } = report as ViewReport;
       return data && data.length > 0;
-    } else if (viewType === QR_CODE_TYPE) {
+    } else if (viewType === ViewVizTypes.QRCode) {
       const { data } = report as ViewReport;
       return data && data.length > 1;
     }

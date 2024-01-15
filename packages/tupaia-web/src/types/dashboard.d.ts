@@ -10,7 +10,6 @@ import {
   MultiValueViewConfig,
   DashboardItem as BaseDashboardItem,
   TupaiaWebDashboardsRequest,
-  ViewTypes,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
@@ -20,13 +19,9 @@ type DashboardItemConfigPresentationOptions =
   | MatrixConfig['presentationOptions']
   | ChartConfig['presentationOptions'];
 
-type BaseConfig = Omit<
-  BaseDashboardItemConfig,
-  'viewType' | 'presentationOptions' | 'componentName'
->;
+type BaseConfig = Omit<BaseDashboardItemConfig, 'presentationOptions' | 'componentName'>;
 
 export type DashboardItemConfig = BaseConfig & {
-  viewType?: ViewTypes;
   presentationOptions?: DashboardItemConfigPresentationOptions;
   componentName?: ComponentConfig['componentName'];
 };

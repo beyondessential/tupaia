@@ -7,6 +7,7 @@ import type { BaseConfig, ExportPresentationOptions, ValueType } from './common'
 import { CssColor } from '../../css';
 
 export type BaseChartConfig = BaseConfig & {
+  type: 'chart';
   ticks?: any;
 
   startDate?: string;
@@ -39,7 +40,6 @@ export type BaseChartConfig = BaseConfig & {
  * @description Gauge Chart
  */
 export type GaugeChartConfig = BaseChartConfig & {
-  type: 'chart';
   chartType: 'gauge';
 };
 
@@ -48,7 +48,6 @@ export type GaugeChartConfig = BaseChartConfig & {
  */
 export type ComposedChartConfig = BaseChartConfig &
   CartesianChartConfig & {
-    type: 'chart';
     chartType: 'composed';
     chartConfig?: CommonChartChartConfig;
   };
@@ -58,7 +57,6 @@ export type ComposedChartConfig = BaseChartConfig &
  */
 export type BarChartConfig = BaseChartConfig &
   CartesianChartConfig & {
-    type: 'chart';
     chartType: 'bar';
     chartConfig?: CommonChartChartConfig;
   };
@@ -67,7 +65,6 @@ export type BarChartConfig = BaseChartConfig &
  * @description Pie Chart
  */
 export type PieChartConfig = BaseChartConfig & {
-  type: 'chart';
   chartType: 'pie';
   presentationOptions?: {
     [key: string]: {
@@ -81,7 +78,6 @@ export type PieChartConfig = BaseChartConfig & {
  */
 export type LineChartConfig = BaseChartConfig &
   CartesianChartConfig & {
-    type: 'chart';
     chartType: 'line';
     chartConfig?: CommonChartChartConfig;
   };
@@ -133,16 +129,6 @@ type YAxisDomainEntry = {
   min?: number;
   max?: number;
 };
-
-type ConditionValue = string | number;
-
-enum ConditionType {
-  '=' = '=',
-  '>' = '>',
-  '<' = '<',
-  '>=' = '>=',
-  '<=' = '<=',
-}
 
 export type ChartConfig =
   | GaugeChartConfig

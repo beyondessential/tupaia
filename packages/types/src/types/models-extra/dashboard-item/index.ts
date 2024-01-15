@@ -26,7 +26,6 @@ import type {
   SingleValueViewConfig,
   ViewConfig,
 } from './views';
-export { ViewTypes } from './views';
 
 export type {
   BarChartConfig,
@@ -43,7 +42,7 @@ export type {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { DashboardItemTypes, ValueType } from './common';
+export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
