@@ -1,7 +1,5 @@
 # Tupaia
 
-[![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
-
 ## Open Source Info
 
 ### Open Source Mission statement
@@ -10,36 +8,41 @@
 
 ### Code of Conduct
 
-For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia/blob/master/code-of-conduct.md) published in the repo.
+Our contributor’s [code of conduct](/.github/CODE_OF_CONDUCT.md) is published in this repo.
 
 ## Packages
 
-> This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
+> [!NOTE]  
+> This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
-It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
-be run from the root directory using `yarn workspace @tupaia/package-name command`, e.g.
-`yarn workspace @tupaia/central-server start-dev`
+It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example:
 
-The easiest way to open the packages in vscode is to double click 'tupaia-packages.code-workspace'.
-This opens all packages as roots in the workspace, and means linting etc. will work correctly.
+```sh
+yarn workspace @tupaia/central-server start-dev
+```
+
+Use the `start-stack` command
+
+> [!TIP]
+> The easiest way to open the packages in VS Code is to open the [tupaia-packages.code-workspace](/tupaia-packages.code-workspace) file. This opens all packages as roots in the workspace, and means linting et al will work correctly.
 
 ### Package structure
 
-The Tupaia mono-repo is comprised for 3 types of packages:
+The Tupaia monorepo is comprised of three types of packages:
 
-- Platform interfaces (Frontend React applications that the user interacts with)
-- Servers
-  - Orchestration servers (dedicated backend applications for each platform interface)
-  - Micro servers (applications which are used by the orchestration servers to perform common system functions)
-- Libraries (various utility and common libraries that are used throughout the mono-repo)
+1. **Platform interfaces.** Front-end React applications that the user interacts with.
+2. **Servers.**
+	- *Orchestration servers.* Dedicated backend applications for each platform interface.
+	- *Micro servers.* Applications which are used by the orchestration servers to perform common system functions.
+3. **Libraries.** Various utility and common libraries that are used throughout the monorepo.
 
 While each package type has their own structure, there are a few common standards:
 
-- `<package>/package.json` - package definition
-- `<package>/src/` - contains source code
-- `<package>/.env.example` - file showing what environment variables are required by the package
-- `<package>/.env` - environment variables used by package (ignored in git)
-- `<package>/src/__tests__/` - contains unit tests
+- `<package>/package.json` – package definition
+- `<package>/src/` – contains source code
+- `<package>/.env.example` – file showing what environment variables are required by the package
+- `<package>/.env` – environment variables used by package (ignored in git)
+- `<package>/src/__tests__/` – contains unit tests
 
 ### Platform interfaces
 
@@ -68,15 +71,14 @@ While each package type has their own structure, there are a few common standard
 - [report-server](https://github.com/beyondessential/tupaia/blob/dev/packages/report-server/README.md)
 - [data-table-server](https://github.com/beyondessential/tupaia/blob/dev/packages/data-table-server/README.md)
 
-Server packages can be built by running `yarn workspace @tupaia/package-name build`.
-Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
+Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 
-All servers are NodeJS express applications, and the packages follow the same basic structure:
+All servers are Node.js express applications, and the packages follow the same basic structure:
 
-- `<package>/examples.http` - example queries showing the server interface
-- `<package>/src/index.ts` - server entrypoint
-- `<package>/src/app/createApp.ts` - express router definition
-- `<package>/src/routes/` - route definitions
+- `<package>/examples.http` – example queries showing the server interface
+- `<package>/src/index.ts` – server entry point
+- `<package>/src/app/createApp.ts` – express router definition
+- `<package>/src/routes/` – route definitions
 
 ### Libraries
 
@@ -114,7 +116,7 @@ Most packages will require a .env file. `.env.example` files indicate the requir
 
 ### Local database
 
-🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) - steps 4 and 5
+🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) – steps 4 and 5
 
 ### Dependencies
 
@@ -123,19 +125,15 @@ root, and it will install dependencies everywhere.
 
 ## CI/CD
 
-We use codeship for the CI/CD
-
-🔑 **BES internal:** [CI/CD using Codeship](https://beyond-essential.slab.com/posts/ci-cd-using-codeship-uzxspw8z)
+We use [GitHub Actions](https://docs.github.com/en/actions) for the CI/CD.
 
 ## Tests
 
 Most of the packages support the following scripts for testing:
 
-```
-
+```sh
 yarn test
-yarn test:coverage # also displays code coverage
-
+yarn test:coverage  # Also displays code coverage
 ```
 
 ## Style Guide
@@ -148,13 +146,14 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 
 The config for this repository is defined in `.eslintrc` under the root folder. Additional rules/overrides per package are specified in this file.
 
-⚠️ Please do not use individual eslint configs, but update the main configuration file instead.
+> [!IMPORTANT]
+> Please do not use individual ESLint configs, but update the main configuration file instead.
 
 ### Auto-formatting in Visual Studio Code
 
-In order to automatically format code in VSCode according to our style guide:
+In order to automatically format code in VS Code according to our style guide:
 
-1. Install [Prettier for VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 2. Enable the `Editor: Format on Save` setting
 3. Your files will now be formatted automatically when you save them
 
