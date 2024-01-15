@@ -86,7 +86,7 @@ export const getDatesAsString = (
   );
   const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, undefined);
 
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
+  return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
 };
 
 /**
