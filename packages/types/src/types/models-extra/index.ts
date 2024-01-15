@@ -42,8 +42,6 @@ export {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
-  DashboardItemTypes,
-  ViewTypes,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
