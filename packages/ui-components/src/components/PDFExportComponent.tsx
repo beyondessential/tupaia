@@ -16,5 +16,5 @@ export const A4Page = styled.div`
   height: ${A4_PAGE_HEIGHT_MM}px;
 
   break-after: page;
-  padding: 4cm 4.5cm 4.5cm; // Bottom slightly taller top for *optical* vertical center alignment
+  padding: 4cm 4.5cm 4.5cm; // Bottom slightly taller than top for *optical* alignment
 `;
