@@ -7,13 +7,10 @@ import { ApiConnection } from '@tupaia/server-boilerplate';
 import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from '/appServer/requestHelpers/refreshAndSaveAccessToken';
 
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
+const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
 
 const PUBLIC_USER_NAME = 'public';
-const PUBLIC_USER_AUTH_HEADER = createBasicHeader(
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_SECRET,
-);
+const PUBLIC_USER_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
 
 const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 

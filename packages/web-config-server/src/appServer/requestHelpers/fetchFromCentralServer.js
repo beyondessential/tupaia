@@ -7,11 +7,8 @@ import {
 } from '@tupaia/utils';
 import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
-const DEFAULT_AUTH_HEADER = createBasicHeader(
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_SECRET,
-);
+const { API_CLIENT_NAME, API_CLIENT_PASSWORD } = process.env;
+const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
 
 /**
  * Send request to Central server and handle responses.
