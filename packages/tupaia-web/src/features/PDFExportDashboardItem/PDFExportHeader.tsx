@@ -28,15 +28,17 @@ const Heading = styled.h1`
   text-align: center;
 `;
 
+interface PDFExportHeaderProps {
+  imageUrl?: string;
+  imageDescription?: string;
+  children: ReactNode;
+}
+
 export const PDFExportHeader = ({
   imageUrl = '/tupaia-logo-dark.svg',
   imageDescription = 'Tupaia logo',
   children,
-}: {
-  imageUrl?: string;
-  imageDescription?: string;
-  children: ReactNode;
-}) => {
+}: PDFExportHeaderProps) => {
   return (
     <Container>
       <HeaderImage alt={imageDescription} src={imageUrl} />
