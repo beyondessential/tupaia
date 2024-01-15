@@ -8,11 +8,11 @@
 
 ### Code of Conduct
 
-Our contributor’s [code of conduct](/.github/CODE_OF_CONDUCT.md) is published in this repo.
+The [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) is published in this repo.
 
 ## Packages
 
-> [!NOTE]  
+> [!NOTE]
 > This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example:
@@ -21,7 +21,11 @@ It is set up using `yarn workspaces`, meaning any command you would normally run
 yarn workspace @tupaia/central-server start-dev
 ```
 
-Use the `start-stack` command
+Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example:
+
+```sh
+yarn start-stack tupaia-web
+```
 
 > [!TIP]
 > The easiest way to open the packages in VS Code is to open the [tupaia-packages.code-workspace](/tupaia-packages.code-workspace) file. This opens all packages as roots in the workspace, and means linting et al will work correctly.
@@ -58,7 +62,7 @@ While each package type has their own structure, there are a few common standard
 
 #### Orchestration servers
 
-- [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md) (Tupaia's orchestration server, referred to as web-config-server for legacy reasons)
+- [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
 - [admin-panel-server](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel-server/README.md)
 - [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
 - [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
@@ -95,37 +99,34 @@ All servers are Node.js express applications, and the packages follow the same b
 - [e2e](https://github.com/beyondessential/tupaia/blob/dev/packages/e2e/README.md)
 - [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
 - [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
-- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
-- [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
-- [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
 - [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
 - [superset-api](https://github.com/beyondessential/tupaia/blob/dev/packages/superset-api/README.md)
-- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
-- [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 - [tsutils](https://github.com/beyondessential/tupaia/blob/dev/packages/tsutils/README.md)
 - [types](https://github.com/beyondessential/tupaia/blob/dev/packages/types/README.md)
+- [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
+- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
+- [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
+- [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 - [weather-api](https://github.com/beyondessential/tupaia/blob/dev/packages/weather-api/README.md)
 
 ## Getting started
 
 ### Secrets
 
-Most packages will require a .env file. `.env.example` files indicate the required variables per package.
+Most packages will require a `.env` file. `.env.example` files indicate the required variables per package. More instructions for setting environment variables are in the [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#hvfnz-set-environment-variables) documentation.
 
-🔑 **BES internal:** [Adding .env files](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#step-3-add-env-files)
+### Development database
 
-### Local database
-
-🔑 **BES internal:** [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq) – steps 4 and 5
+Development database setup instructions are in the [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#hs8ne-set-up-database) documentation.
 
 ### Dependencies
 
-We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project
-root, and it will install dependencies everywhere.
+We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project root, and it will install dependencies everywhere.
 
 ## CI/CD
 
-We use [GitHub Actions](https://docs.github.com/en/actions) for the CI/CD.
+We use [GitHub Actions](https://docs.github.com/en/actions) for CI/CD.
 
 ## Tests
 
@@ -133,10 +134,10 @@ Most of the packages support the following scripts for testing:
 
 ```sh
 yarn test
-yarn test:coverage  # Also displays code coverage
+yarn test:coverage # Also displays code coverage
 ```
 
-## Style Guide
+## Style guide
 
 We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
 
@@ -153,9 +154,10 @@ The config for this repository is defined in `.eslintrc` under the root folder. 
 
 In order to automatically format code in VS Code according to our style guide:
 
-1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-2. Enable the `Editor: Format on Save` setting
-3. Your files will now be formatted automatically when you save them
+1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
+2. Enable the `Editor: Format on Save` setting.
+
+Your files will now be formatted automatically when you save them.
 
 ---
 
