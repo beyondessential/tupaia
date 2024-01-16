@@ -6,17 +6,17 @@
 import { useEffect } from 'react';
 import moment, { Moment } from 'moment';
 import {
-  DEFAULT_MIN_DATE,
   getDefaultDates,
+  DEFAULT_MIN_DATE,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
-  momentToDateDisplayString,
-  roundEndDate,
-  roundStartDate,
-  roundStartEndDates,
-  toStandardDateString,
   WEEK_DISPLAY_CONFIG,
+  momentToDateDisplayString,
+  roundStartEndDates,
+  roundStartDate,
+  roundEndDate,
+  toStandardDateString,
 } from '@tupaia/utils';
 import { GranularityType, ModifierType } from '../../types';
 
@@ -30,11 +30,9 @@ const getDatesAsString = (
   weekDisplayFormat?: string | number,
 ) => {
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
-  const { rangeFormat, modifier } = (
-    isWeek && weekDisplayFormat
-      ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
-      : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]
-  ) as {
+  const { rangeFormat, modifier } = (isWeek && weekDisplayFormat
+    ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+    : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]) as {
     rangeFormat: string;
     modifier?: ModifierType;
   };
@@ -47,7 +45,7 @@ const getDatesAsString = (
   );
   const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier!);
 
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
+  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
 /**
