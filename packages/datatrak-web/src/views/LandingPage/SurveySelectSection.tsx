@@ -6,8 +6,10 @@
 import React from 'react';
 import { DESKTOP_MEDIA_QUERY, ROUTES } from '../../constants';
 import styled from 'styled-components';
-import { ButtonLink as BaseButtonLink } from '../../components';
+import { ButtonLink as BaseButtonLink, Button } from '../../components';
 import { Typography } from '@material-ui/core';
+
+const TUPAIA_REDIRECT_URL = process.env.REACT_APP_TUPAIA_REDIRECT_URL || 'https://tupaia.org'
 
 const SurveyAlert = styled.div`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -114,26 +116,28 @@ const SurveyAlertContent = styled.div`
   }
 `;
 
-export const SurveySelectSection = () => (
-  <SurveyAlert>
-    <SurveyAlertContent>
-      <ButtonWrapper>
-        <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
-        <ButtonLink to="#" variant="outlined">
-          Explore data
-        </ButtonLink>
-      </ButtonWrapper>
-      <TextWrapper>
-        <Text>
-          Tupaia DataTrak makes data collection easy!{' '}
-          <DesktopText>
-            You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
-            stories and information with the Tupaia community. To collect data offline, please
-            download our mobile app, Tupaia MediTrak, from Google Play or the Apple App Store.
-          </DesktopText>
-        </Text>
-      </TextWrapper>
-    </SurveyAlertContent>
-    <SurveysImage src="/surveys.svg" />
-  </SurveyAlert>
-);
+export const SurveySelectSection = () => {
+  return (
+    <SurveyAlert>
+      <SurveyAlertContent>
+        <ButtonWrapper>
+          <ButtonLink to={ROUTES.SURVEY_SELECT}>Select survey</ButtonLink>
+          <Button variant="outlined" onClick={() => window.open(TUPAIA_REDIRECT_URL)}>
+            Explore Data
+          </Button>
+        </ButtonWrapper>
+        <TextWrapper>
+          <Text>
+            Tupaia DataTrak makes data collection easy!{' '}
+            <DesktopText>
+              You can use Tupaia DataTrak to complete surveys (and collect coconuts!), share news,
+              stories and information with the Tupaia community. To collect data offline, please
+              download our mobile app, Tupaia MediTrak from Google Play or the Apple App Store.
+            </DesktopText>
+          </Text>
+        </TextWrapper>
+      </SurveyAlertContent>
+      <SurveysImage src="/surveys.svg" alt="Illustration of woman holding a tablet" />
+    </SurveyAlert>
+  )
+};
