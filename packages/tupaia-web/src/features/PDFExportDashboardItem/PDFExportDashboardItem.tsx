@@ -6,18 +6,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
-import { Typography } from '@material-ui/core';
+import { Typography, Divider as BaseDivider } from '@material-ui/core';
 import {
-  getDefaultDates,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
+  getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
-import { A4_PAGE_WIDTH_PX, A4Page, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4Page, A4PageContent, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
-import { useProject, useReport } from '../../api/queries';
+import { useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
 
@@ -29,15 +29,15 @@ const StyledA4Page = styled(A4Page)<{
     $isPreview ? `width: 100%; zoom: ${$previewZoom};` : ''};
 `;
 
-const PDFExportBody = styled.main`
-  margin-block: 36pt;
+const Wrapper = styled.div`
+  margin: 0 7.8rem;
 `;
-
 const Title = styled.h3`
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  margin-block: 1rem 1.5rem;
   text-align: center;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
 `;
 
 const ExportPeriod = styled(Typography)`
@@ -52,12 +52,21 @@ const ExportContent = styled.div<{
   padding-top: ${({ $hasData }) => ($hasData ? '0' : '1.5rem')};
 `;
 
-const DashboardName = styled.h2`
-  border-block-end: 0.18rem solid ${({ theme }) => theme.palette.common.black};
-  font-size: 1.25rem;
+const DashboardTitleContainer = styled.div`
+  text-align: start;
+  margin-bottom: 1.125rem;
+`;
+
+const DashboardNameText = styled.h2`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  font-size: 1.25rem;
   line-height: 1.4;
-  margin-block-end: 1.125rem;
+  margin: 0;
+`;
+
+const Divider = styled(BaseDivider)`
+  background-color: black;
+  height: 0.18rem;
 `;
 
 export const getDatesAsString = (
@@ -77,12 +86,11 @@ export const getDatesAsString = (
   );
   const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, undefined);
 
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
+  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
 /**
- * This is the dashboard item that gets generated when generating a PDF. It is only present when
- * puppeteer hits this view.
+ * This is the dashboard item that gets generated when generating a PDF. It is only present when puppeteer hits this view.
  */
 export const PDFExportDashboardItem = ({
   dashboardItem,
@@ -110,11 +118,7 @@ export const PDFExportDashboardItem = ({
     endDate?: Moment;
   };
 
-  const {
-    data: report,
-    isLoading,
-    error,
-  } = useReport(reportCode, {
+  const { data: report, isLoading, error } = useReport(reportCode, {
     dashboardCode: activeDashboard?.code,
     projectCode,
     entityCode,
@@ -134,11 +138,12 @@ export const PDFExportDashboardItem = ({
   } as DashboardItemConfig;
   const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
 
-  const { data: project } = useProject(projectCode);
-  const projectLogoUrl = project?.logoUrl ?? undefined;
-  const projectLogoDescription = project ? `${project.name} logo` : undefined;
+  const getTitle = () => {
+    if (entityHeader) return `${name}, ${entityHeader}`;
+    return name;
+  };
 
-  const title = entityHeader ? `${name}, ${entityHeader}` : name;
+  const title = getTitle();
   const period = getDatesAsString(periodGranularity, startDate, endDate);
 
   const data = isLoading ? undefined : (report as BaseReport)?.data;
@@ -149,36 +154,39 @@ export const PDFExportDashboardItem = ({
       $isPreview={isPreview}
       $previewZoom={previewZoom}
     >
-      <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
-        {entityName}
-      </PDFExportHeader>
-      <PDFExportBody>
-        <DashboardName>{activeDashboard?.name}</DashboardName>
-        <Title>{title}</Title>
-        {reference && <ReferenceTooltip reference={reference} />}
-        {period && <ExportPeriod>{period}</ExportPeriod>}
-        <ExportContent $hasData={data && data?.length > 0}>
-          <DashboardItemContext.Provider
-            value={{
-              config: {
-                ...config,
-                presentationOptions: {
-                  ...config.presentationOptions,
-                  exportWithTable: true,
+      <PDFExportHeader>{entityName}</PDFExportHeader>
+      <A4PageContent>
+        <DashboardTitleContainer>
+          <DashboardNameText>{activeDashboard?.name}</DashboardNameText>
+          <Divider />
+        </DashboardTitleContainer>
+        <Wrapper>
+          <Title>{title}</Title>
+          {reference && <ReferenceTooltip reference={reference} />}
+          {period && <ExportPeriod>{period}</ExportPeriod>}
+          <ExportContent $hasData={data && data?.length > 0}>
+            <DashboardItemContext.Provider
+              value={{
+                config: {
+                  ...config,
+                  presentationOptions: {
+                    ...config.presentationOptions,
+                    exportWithTable: true,
+                  },
                 },
-              },
-              report,
-              reportCode,
-              isLoading,
-              error,
-              isEnlarged: true,
-              isExport: true,
-            }}
-          >
-            <DashboardItemContent />
-          </DashboardItemContext.Provider>
-        </ExportContent>
-      </PDFExportBody>
+                report,
+                reportCode,
+                isLoading,
+                error,
+                isEnlarged: true,
+                isExport: true,
+              }}
+            >
+              <DashboardItemContent />
+            </DashboardItemContext.Provider>
+          </ExportContent>
+        </Wrapper>
+      </A4PageContent>
     </StyledA4Page>
   );
 };
