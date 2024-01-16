@@ -46,30 +46,30 @@ While each package type has their own structure, there are a few common standard
 
 ### Platform interfaces
 
-- [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
-- [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
-- [Tupaia DataTrak Web](https://github.com/beyondessential/tupaia/blob/dev/packages/datatrak-web/README.md)
-- [Admin Panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
-- [LESMIS](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
-- [PSSS](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
-- [MediTrak](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
+- [Tupaia](/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
+- [Tupaia Web](/packages/tupaia-web/README.md) (New version of web-frontend)
+- [Tupaia DataTrak Web](/packages/datatrak-web/README.md)
+- [Admin Panel](/packages/admin-panel/README.md)
+- [LESMIS](/packages/lesmis/README.md)
+- [PSSS](/packages/psss/README.md)
+- [MediTrak](/packages/meditrak-app/README.md)
 
 ### Servers
 
 #### Orchestration servers
 
-- [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
-- [admin-panel-server](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel-server/README.md)
-- [lesmis-server](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis-server/README.md)
-- [psss-server](https://github.com/beyondessential/tupaia/blob/dev/packages/psss-server/README.md)
-- [meditrak-app-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app-server/README.md)
+- [web-config-server](/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
+- [admin-panel-server](/packages/admin-panel-server/README.md)
+- [lesmis-server](/packages/lesmis-server/README.md)
+- [psss-server](/packages/psss-server/README.md)
+- [meditrak-app-server](/packages/meditrak-app-server/README.md)
 
 #### Micro servers
 
-- [central-server](https://github.com/beyondessential/tupaia/blob/dev/packages/central-server/README.md)
-- [entity-server](https://github.com/beyondessential/tupaia/blob/dev/packages/entity-server/README.md)
-- [report-server](https://github.com/beyondessential/tupaia/blob/dev/packages/report-server/README.md)
-- [data-table-server](https://github.com/beyondessential/tupaia/blob/dev/packages/data-table-server/README.md)
+- [central-server](/packages/central-server/README.md)
+- [entity-server](/packages/entity-server/README.md)
+- [report-server](/packages/report-server/README.md)
+- [data-table-server](/packages/data-table-server/README.md)
 
 Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 
@@ -82,29 +82,29 @@ All servers are Node.js express applications, and the packages follow the same b
 
 ### Libraries
 
-- [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
-- [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
-- [api-client](https://github.com/beyondessential/tupaia/blob/dev/packages/api-client/README.md)
-- [auth](https://github.com/beyondessential/tupaia/blob/dev/packages/auth/README.md)
-- [data-api](https://github.com/beyondessential/tupaia/blob/dev/packages/data-api/README.md)
-- [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
-- [data-lake-api](https://github.com/beyondessential/tupaia/blob/dev/packages/data-lake-api/README.md)
-- [database](https://github.com/beyondessential/tupaia/blob/dev/packages/database/README.md)
-- [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
-- [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
-- [e2e](https://github.com/beyondessential/tupaia/blob/dev/packages/e2e/README.md)
-- [expression-parser](https://github.com/beyondessential/tupaia/blob/dev/packages/expression-parser/README.md)
-- [indicators](https://github.com/beyondessential/tupaia/blob/dev/packages/indicators/README.md)
-- [server-boilerplate](https://github.com/beyondessential/tupaia/blob/dev/packages/server-boilerplate/README.md)
-- [superset-api](https://github.com/beyondessential/tupaia/blob/dev/packages/superset-api/README.md)
-- [tsutils](https://github.com/beyondessential/tupaia/blob/dev/packages/tsutils/README.md)
-- [types](https://github.com/beyondessential/tupaia/blob/dev/packages/types/README.md)
-- [ui-chart-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-chart-components/README.md)
-- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
-- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
-- [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
-- [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
-- [weather-api](https://github.com/beyondessential/tupaia/blob/dev/packages/weather-api/README.md)
+- [access-policy](/packages/access-policy/README.md)
+- [aggregator](/packages/aggregator/README.md)
+- [api-client](/packages/api-client/README.md)
+- [auth](/packages/auth/README.md)
+- [data-api](/packages/data-api/README.md)
+- [data-broker](/packages/data-broker/README.md)
+- [data-lake-api](/packages/data-lake-api/README.md)
+- [database](/packages/database/README.md)
+- [devops](/packages/devops/README.md)
+- [dhis-api](/packages/dhis-api/README.md)
+- [e2e](/packages/e2e/README.md)
+- [expression-parser](/packages/expression-parser/README.md)
+- [indicators](/packages/indicators/README.md)
+- [server-boilerplate](/packages/server-boilerplate/README.md)
+- [superset-api](/packages/superset-api/README.md)
+- [tsutils](/packages/tsutils/README.md)
+- [types](/packages/types/README.md)
+- [ui-chart-components](/packages/ui-chart-components/README.md)
+- [ui-components](/packages/ui-components/README.md)
+- [ui-components](/packages/ui-components/README.md)
+- [ui-map-components](/packages/ui-map-components/README.md)
+- [utils](/packages/utils/README.md)
+- [weather-api](/packages/weather-api/README.md)
 
 ## Getting started
 
