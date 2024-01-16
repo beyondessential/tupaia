@@ -53,9 +53,9 @@ const {
 /**
  * Set up express server with middleware,
  */
-export function createApp() {
+export async function createApp() {
   const forwardToEntityApi = forwardRequest(ENTITY_API_URL);
-  const app = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
     .verifyLogin(hasTupaiaAdminPanelAccess)
@@ -143,8 +143,11 @@ export function createApp() {
     )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
-    .use('*', forwardRequest(CENTRAL_API_URL))
-    .build();
+    .use('*', forwardRequest(CENTRAL_API_URL));
+
+  await builder.initialiseApiClient([{ entityCode: 'DL', permissionGroupName: 'Public' }]);
+
+  const app = builder.build();
 
   return app;
 }
