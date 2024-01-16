@@ -30,7 +30,7 @@ Use the `start-stack` command to start all servers needed to run a stack. Availa
 
 The Tupaia monorepo has three types of packages:
 
-1. **Platform interfaces.** Front-end React applications that the user interacts with.
+1. **Platform interfaces.** Front-end [React](https://react.dev) applications that the user interacts with.
 2. **Servers.**
 	- *Orchestration servers.* Dedicated backend applications for each platform interface.
 	- *Micro servers.* Applications which are used by the orchestration servers to perform common system functions.
