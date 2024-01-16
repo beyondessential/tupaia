@@ -58,11 +58,12 @@ While each package type has their own structure, there are a few common standard
 
 #### Orchestration servers
 
-- [web-config-server](/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
 - [admin-panel-server](/packages/admin-panel-server/README.md)
+- [datatrak-web-server](/packages/datatrak-web-server/README.md)
 - [lesmis-server](/packages/lesmis-server/README.md)
-- [psss-server](/packages/psss-server/README.md)
 - [meditrak-app-server](/packages/meditrak-app-server/README.md)
+- [psss-server](/packages/psss-server/README.md)
+- [web-config-server](/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
 
 #### Micro servers
 
