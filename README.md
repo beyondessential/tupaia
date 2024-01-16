@@ -12,7 +12,7 @@
 
 ### Code of Conduct
 
-The [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) is published in this repo.
+The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) are published in this repo.
 
 ## Packages
 
@@ -28,7 +28,7 @@ Use the `start-stack` command to start all servers needed to run a stack. Availa
 
 ### Package structure
 
-The Tupaia monorepo is comprised of three types of packages:
+The Tupaia monorepo has three types of packages:
 
 1. **Platform interfaces.** Front-end React applications that the user interacts with.
 2. **Servers.**
@@ -38,16 +38,18 @@ The Tupaia monorepo is comprised of three types of packages:
 
 While each package type has their own structure, there are a few common standards:
 
-- `<package>/package.json` – package definition
-- `<package>/src/` – contains source code
-- `<package>/.env.example` – file showing what environment variables are required by the package
-- `<package>/.env` – environment variables used by package ([ignored by Git](/.gitignore#L1))
-- `<package>/src/__tests__/` – contains unit tests
+| Standard file              | Purpose                                                                  |
+|:---------------------------|:-------------------------------------------------------------------------|
+| `<package>/package.json`   | Package definition                                                       |
+| `<package>/src/`           | Contains source code                                                     |
+| `<package>/.env.example`   | File showing what environment variables are required by the package      |
+| `<package>/.env`           | Environment variables used by package ([ignored by Git](/.gitignore#L1)) |
+| `<package>/src/__tests__/` | Contains unit tests                                                      |
 
 ### Platform interfaces
 
-- [Tupaia](/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
-- [Tupaia Web](/packages/tupaia-web/README.md) (New version of web-frontend)
+- [Tupaia Web](/packages/tupaia-web/README.md)
+- ~~[Tupaia](/packages/web-frontend/README.md)~~ (*Deprecated.*  Replaced by Tupaia Web. Referred to as web-frontend for legacy reasons.)
 - [Tupaia DataTrak Web](/packages/datatrak-web/README.md)
 - [Admin Panel](/packages/admin-panel/README.md)
 - [LESMIS](/packages/lesmis/README.md)
