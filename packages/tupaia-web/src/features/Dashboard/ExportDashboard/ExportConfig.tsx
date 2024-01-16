@@ -8,10 +8,9 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
 import { Button, LoadingContainer } from '@tupaia/ui-components';
-import { DashboardItemTypes } from '@tupaia/types';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
-import { MOBILE_BREAKPOINT } from '../../../constants';
+import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
 import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
@@ -137,7 +136,7 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
   const hasChartItems = selectedDashboardItems.some(code => {
     const item = activeDashboard?.items.find(({ code: itemCode }) => itemCode === code);
 
-    return item?.config?.type === DashboardItemTypes.Chart;
+    return item?.config?.type === DashboardItemVizTypes.Chart;
   });
 
   return (
