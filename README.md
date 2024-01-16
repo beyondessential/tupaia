@@ -1,6 +1,6 @@
 <p align="center">
 	<a href="https://tupaia.org">
-		<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/68e3f45a-dd63-431f-a206-f72352af98c1" width="158" height="65" />
+		<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/314d7a34-b816-474d-a6f3-5ae2698e6b8a" width="158" height="65" />
 	</a>
 </p>
 
