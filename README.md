@@ -44,8 +44,8 @@ While each package type has their own structure, there are a few common standard
 - `<package>/.env` – environment variables used by package (ignored in git)
 - `<package>/src/__tests__/` – contains unit tests
 
-### Platform interfaces
-
+<details open>
+<summary>Platform interfaces</summary>
 - [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
 - [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
 - [Tupaia Datatrak Web](https://github.com/beyondessential/tupaia/blob/dev/packages/datatrak-web/README.md)
@@ -53,6 +53,7 @@ While each package type has their own structure, there are a few common standard
 - [LESMIS](https://github.com/beyondessential/tupaia/blob/dev/packages/lesmis/README.md)
 - [PSSS](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [Meditrak](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
+</details>
 
 ### Servers
 
