@@ -125,13 +125,11 @@ export class Aggregator {
   }
 
   async fetchDataElements(codes, fetchOptions) {
-    const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
-    return this.dataBroker.pullMetadata(dataSourceSpec, fetchOptions);
+    return this.dataBroker.pullDataElements(codes, fetchOptions);
   }
 
   async fetchDataGroup(code, fetchOptions) {
-    const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-    return this.dataBroker.pullMetadata(dataSourceSpec, fetchOptions);
+    return this.dataBroker.pullDataGroup(code, fetchOptions);
   }
 
   // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
