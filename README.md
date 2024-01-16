@@ -76,12 +76,14 @@ While each package type has their own structure, there are a few common standard
 
 Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 
-All servers are Node.js express applications, and the packages follow the same basic structure:
+All servers are [Node.js](https://nodejs.org)–[Express](https://expressjs.com) applications, and the packages follow the same basic structure:
 
-- `<package>/examples.http` – example queries showing the server interface
-- `<package>/src/index.ts` – server entry point
-- `<package>/src/app/createApp.ts` – express router definition
-- `<package>/src/routes/` – route definitions
+| File                             | Purpose                                      |
+|:---------------------------------|:---------------------------------------------|
+| `<package>/examples.http`        | Example queries showing the server interface |
+| `<package>/src/index.ts`         | Server entry point                           |
+| `<package>/src/app/createApp.ts` | Express router definition                    |
+| `<package>/src/routes/`          | Route definitions                            |
 
 ### Libraries
 
