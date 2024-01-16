@@ -1,8 +1,8 @@
-# Tupaia
+<p align="center">[<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/68e3f45a-dd63-431f-a206-f72352af98c1" width="158" height="65" />](http://tupaia.org)</p>
 
-## Open Source Info
+## Open source info
 
-### Open Source Mission statement
+### Open source mission statement
 
 > By engaging and collaborating with our community we can deliver a more robust product that bridges cultural differences and empowers decision making within health systems worldwide.
 
@@ -112,6 +112,8 @@ All servers are Node.js express applications, and the packages follow the same b
 
 ## Getting started
 
+Comprehensive setup instructions are available in the [Tupaia dev onboarding](https://beyond-essential.slab.com/posts/tupaia-system-architecture-bx4yroqt) series.
+
 ### Secrets
 
 Most packages will require a `.env` file. `.env.example` files indicate the required variables per package. More instructions for setting environment variables are in the [Tupaia monorepo setup](https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#hvfnz-set-environment-variables) documentation.
@@ -137,6 +139,8 @@ yarn test
 yarn test:coverage # Also displays code coverage
 ```
 
+This project is also tested with [BrowserStack](https://www.browserstack.com).
+
 ## Style guide
 
 We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
@@ -158,7 +162,3 @@ In order to automatically format code in VS Code according to our style guide:
 2. Enable the `Editor: Format on Save` setting.
 
 Your files will now be formatted automatically when you save them.
-
----
-
-This project is tested with [Browserstack](https://www.browserstack.com/)
