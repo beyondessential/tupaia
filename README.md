@@ -15,17 +15,9 @@ The [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) is published 
 > [!NOTE]
 > This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
-It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example:
+It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
 
-```sh
-yarn workspace @tupaia/central-server start-dev
-```
-
-Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example:
-
-```sh
-yarn start-stack tupaia-web
-```
+Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
 > [!TIP]
 > The easiest way to open the packages in VS Code is to open the [tupaia-packages.code-workspace](/tupaia-packages.code-workspace) file. This opens all packages as roots in the workspace, and means linting et al will work correctly.
@@ -136,7 +128,7 @@ Most of the packages support the following scripts for testing:
 
 ```sh
 yarn test
-yarn test:coverage # Also displays code coverage
+yarn test:coverage  # Also displays code coverage
 ```
 
 This project is also tested with [BrowserStack](https://www.browserstack.com).
@@ -159,6 +151,6 @@ The config for this repository is defined in `.eslintrc` under the root folder. 
 In order to automatically format code in VS Code according to our style guide:
 
 1. Install [Prettier for VS Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
-2. Enable the `Editor: Format on Save` setting.
+2. Enable the **Editor: Format on Save** setting: `"editor.formatOnSave": true`.
 
 Your files will now be formatted automatically when you save them.
