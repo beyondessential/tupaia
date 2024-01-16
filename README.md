@@ -1,4 +1,8 @@
-<p align="center">[<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/68e3f45a-dd63-431f-a206-f72352af98c1" width="158" height="65" />](http://tupaia.org)</p>
+<p align="center">
+	<a href="https://tupaia.org">
+		<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/68e3f45a-dd63-431f-a206-f72352af98c1" width="158" height="65" />
+	</a>
+</p>
 
 ## Open source info
 
