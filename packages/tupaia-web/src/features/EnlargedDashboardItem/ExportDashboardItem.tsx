@@ -3,14 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button as BaseButton, SpinningLoader } from '@tupaia/ui-components';
 import { DashboardItemVizTypes, ViewVizTypes } from '../../constants';
 import { Entity } from '../../types';
 import { DisplayOptionsSettings, ExportFormatSettings, ExportFormats } from '../ExportSettings';
-import { useEnlargedDashboardItem, useExportDashboardItem } from './utils';
+import {
+  ExportDashboardItemContext,
+  useEnlargedDashboardItem,
+  useExportDashboardItem,
+} from './utils';
 import { ExportPreview } from './ExportPreview';
 
 const Wrapper = styled.div`
@@ -56,8 +60,8 @@ const Button = styled(BaseButton)`
 export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
   const exportRef = useRef<HTMLDivElement | null>(null);
   const { currentDashboardItem } = useEnlargedDashboardItem();
-  const { handleExport, cancelExport, isExportMode, isExporting, exportError } =
-    useExportDashboardItem(entityName, exportRef);
+  const { isExportMode, isExporting, exportError } = useContext(ExportDashboardItemContext);
+  const { handleExport, cancelExport } = useExportDashboardItem(entityName, exportRef);
   if (!isExportMode) return null;
 
   const exportOptions = [

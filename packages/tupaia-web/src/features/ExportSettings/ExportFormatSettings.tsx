@@ -22,11 +22,11 @@ const FormControlLabel = styled(BaseFormControlLabel)`
 `;
 
 export const ExportFormatSettings = ({ exportFormatOptions }) => {
-  const { exportFormat, setExportFormat } = useExportSettings();
+  const { exportFormat, updateExportFormat } = useExportSettings();
   return (
     <FormControl component="fieldset">
       <ExportSettingLabel as="legend">Export format</ExportSettingLabel>
-      <RadioGroup name="exportFormat" value={exportFormat} onChange={setExportFormat}>
+      <RadioGroup name="exportFormat" value={exportFormat} onChange={updateExportFormat}>
         {exportFormatOptions.map(exportFormatOption => (
           <FormControlLabel
             value={exportFormatOption.value}

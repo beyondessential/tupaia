@@ -32,13 +32,14 @@ const Group = styled(FormGroup)`
 export const DisplayOptionsSettings = () => {
   const {
     exportWithLabels,
-    setExportWithLabels,
+    updateExportWithLabels,
     exportWithTable,
-    setExportWithTable,
+    updateExportWithTable,
     exportWithTableDisabled,
     exportFormat,
   } = useExportSettings();
   if (exportFormat !== ExportFormats.PNG) return null;
+
   return (
     <FormControl component="fieldset">
       <ExportSettingLabel as="legend">Display options</ExportSettingLabel>
@@ -49,7 +50,7 @@ export const DisplayOptionsSettings = () => {
           name="displayOptions"
           color="primary"
           checked={exportWithLabels}
-          onChange={setExportWithLabels}
+          onChange={updateExportWithLabels}
         />
         {!exportWithTableDisabled && (
           <Checkbox
@@ -58,7 +59,7 @@ export const DisplayOptionsSettings = () => {
             name="displayOptions"
             color="primary"
             checked={exportWithTable}
-            onChange={setExportWithTable}
+            onChange={updateExportWithTable}
           />
         )}
       </Group>

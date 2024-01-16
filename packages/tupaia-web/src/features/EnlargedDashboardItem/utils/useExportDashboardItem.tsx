@@ -21,17 +21,8 @@ import {
 } from '../../../types';
 import { gaEvent } from '../../../utils';
 import { useExportToExcel } from '../../../api/mutations';
-import {
-  ExportSettingsActionTypes,
-  ExportFormats,
-  ExportSettingsContext,
-  ExportSettingsDispatchContext,
-} from '../../ExportSettings';
-import {
-  ExportDashboardItemActionTypes,
-  ExportDashboardItemContext,
-  ExportDashboardItemDispatchContext,
-} from './ExportDashboardItemContext';
+import { ExportFormats, useExportSettings } from '../../ExportSettings';
+import { ExportDashboardItemContext } from './ExportDashboardItemContext';
 import { useEnlargedDashboardItem } from '.';
 
 interface ExportToExcelParams {
@@ -84,11 +75,17 @@ export const useExportDashboardItem = (
 ) => {
   const { currentDashboardItem, activeDashboard, reportData } = useEnlargedDashboardItem();
   const { projectCode, entityCode } = useParams();
-  const { exportFormat, exportWithLabels, exportWithTable, exportWithTableDisabled } =
-    useContext(ExportSettingsContext);
-  const { exportError, isExportMode, isExporting } = useContext(ExportDashboardItemContext);
-  const dispatchExportDashboardItemAction = useContext(ExportDashboardItemDispatchContext)!;
-  const dispatchExportSettingsContext = useContext(ExportSettingsDispatchContext)!;
+  const {
+    exportFormat,
+    exportWithLabels,
+    exportWithTable,
+    exportWithTableDisabled,
+    resetExportSettings,
+  } = useExportSettings();
+  const { setExportError, setIsExportMode, setIsExporting } = useContext(
+    ExportDashboardItemContext,
+  );
+
   const { config } = currentDashboardItem || ({} as DashboardItem);
   const { type, presentationOptions, name } = config || ({} as DashboardItemConfig);
   const exportTitle = `${name}, ${entityName}`;
@@ -109,20 +106,6 @@ export const useExportDashboardItem = (
 
   const filename = toFilename(`export-${entityName}-${name}`, true);
   const file = `${filename}.${exportFormat}`;
-
-  const setExportError = (message: string | null) => {
-    dispatchExportDashboardItemAction?.({
-      type: ExportDashboardItemActionTypes.SET_EXPORT_ERROR,
-      payload: message,
-    });
-  };
-
-  const setIsExporting = (value: boolean) => {
-    dispatchExportDashboardItemAction?.({
-      type: ExportDashboardItemActionTypes.SET_IS_EXPORTING,
-      payload: value,
-    });
-  };
 
   // set the isExporting state to true and the export error state to null when the export starts
   const handleStartExport = () => {
@@ -146,10 +129,7 @@ export const useExportDashboardItem = (
   };
 
   const cancelExport = () => {
-    dispatchExportDashboardItemAction({
-      type: ExportDashboardItemActionTypes.SET_IS_EXPORT_MODE,
-      payload: false,
-    });
+    setIsExportMode(false);
   };
 
   // use the useExportToExcel hook to export the matrix dashboard item
@@ -187,21 +167,13 @@ export const useExportDashboardItem = (
 
   // reset the export state when the current dashboard item changes
   useEffect(() => {
-    dispatchExportDashboardItemAction?.({
-      type: ExportDashboardItemActionTypes.RESET_EXPORT_STATE,
-    });
-    dispatchExportSettingsContext?.({
-      type: ExportSettingsActionTypes.RESET_EXPORT_STATE,
-      payload: type,
-    });
+    setExportError(null);
+    setIsExporting(false);
+    setIsExportMode(false);
+    resetExportSettings(type);
   }, [currentDashboardItem]);
 
   return {
-    exportError,
-    isExportMode,
-    isExporting,
-    setExportError,
-    setIsExporting,
     handleExport: EXPORT_FUNCTIONS[exportFormat],
     cancelExport,
   };

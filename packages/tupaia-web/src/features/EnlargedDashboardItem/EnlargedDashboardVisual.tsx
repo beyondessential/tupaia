@@ -12,7 +12,7 @@ import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
 import { Entity } from '../../types';
-import { ExportSettingsContext } from '../ExportSettings';
+import { useExportSettings } from '../ExportSettings';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { BackLink } from './BackLink';
 import { ExportDashboardItemContext, useEnlargedDashboardItem } from './utils';
@@ -80,7 +80,7 @@ export const EnlargedDashboardVisual = ({
   entityName,
   isPreview,
 }: EnlargedDashboardVisualProps) => {
-  const { exportWithLabels, exportWithTable } = useContext(ExportSettingsContext);
+  const { exportWithLabels, exportWithTable } = useExportSettings();
   const { isExportMode } = useContext(ExportDashboardItemContext);
   const {
     currentDashboardItem,

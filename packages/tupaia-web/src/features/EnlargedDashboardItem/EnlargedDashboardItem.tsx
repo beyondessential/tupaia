@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { BaseReport, ViewConfig } from '@tupaia/types';
@@ -14,9 +14,9 @@ import { ExportFormats } from '../ExportSettings';
 import { ExportDashboardItem } from './ExportDashboardItem';
 import { EnlargedDashboardVisual } from './EnlargedDashboardVisual';
 import {
+  ExportDashboardItemContext,
   ExportDashboardItemContextProvider,
   useEnlargedDashboardItem,
-  useExportDashboardItem,
 } from './utils';
 import { ExportButton } from './ExportButton';
 
@@ -39,15 +39,13 @@ const Wrapper = styled.div<{
 
 // needs to be separate from EnlargedDashboardItem to allow use of hook inside ExportDashboardItemContextProvider
 const ContentWrapper = ({
-  entityName,
   hasBigData,
   children,
 }: {
-  entityName?: Entity['name'];
   hasBigData: boolean;
   children: React.ReactNode;
 }) => {
-  const { isExportMode } = useExportDashboardItem(entityName);
+  const { isExportMode } = useContext(ExportDashboardItemContext);
   return <Wrapper $hasBigData={!isExportMode && hasBigData}>{children}</Wrapper>;
 };
 
@@ -99,7 +97,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
         }}
       >
         <ExportButton />
-        <ContentWrapper hasBigData={hasBigData} entityName={entityName}>
+        <ContentWrapper hasBigData={hasBigData}>
           <ExportDashboardItem entityName={entityName} />
           <EnlargedDashboardVisual entityName={entityName} />
         </ContentWrapper>
