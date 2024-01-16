@@ -45,7 +45,7 @@ While each package type has their own structure, there are a few common standard
 - `<package>/src/__tests__/` – contains unit tests
 
 <details open>
-<summary>Platform interfaces</summary>
+<summary>**Platform interfaces</summary>**
 
 - [Tupaia](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
 - [Tupaia Web](https://github.com/beyondessential/tupaia/blob/dev/packages/tupaia-web/README.md) (New version of web-frontend)
@@ -57,7 +57,8 @@ While each package type has their own structure, there are a few common standard
 
 </details>
 
-### Servers
+<details open>
+<summary>**Servers</summary>**
 
 #### Orchestration servers
 
@@ -74,6 +75,8 @@ While each package type has their own structure, there are a few common standard
 - [report-server](https://github.com/beyondessential/tupaia/blob/dev/packages/report-server/README.md)
 - [data-table-server](https://github.com/beyondessential/tupaia/blob/dev/packages/data-table-server/README.md)
 
+</details>
+
 Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 
 All servers are Node.js express applications, and the packages follow the same basic structure:
@@ -83,7 +86,8 @@ All servers are Node.js express applications, and the packages follow the same b
 - `<package>/src/app/createApp.ts` – express router definition
 - `<package>/src/routes/` – route definitions
 
-### Libraries
+<details open>
+<summary>**Libraries**</summary>
 
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
@@ -108,6 +112,8 @@ All servers are Node.js express applications, and the packages follow the same b
 - [ui-map-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-map-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 - [weather-api](https://github.com/beyondessential/tupaia/blob/dev/packages/weather-api/README.md)
+
+</details>
 
 ## Getting started
 
