@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { CssColor } from '../../css';
-import type { BaseConfig, DashboardItemTypes, ValueType } from './common';
+import type { BaseConfig, ValueType } from './common';
 
 type BaseViewConfig = BaseConfig &
   Record<string, unknown> & {
-    type: DashboardItemTypes.View;
+    type: 'view';
     valueType?: ValueType;
     value_metadata?: Record<string, unknown>;
   };
@@ -16,23 +16,8 @@ type ColorOption = {
   color: CssColor;
 };
 
-export enum ViewTypes {
-  List = 'list',
-  SingleValue = 'singleValue',
-  MultiPhotograph = 'multiPhotograph',
-  MultiSingleValue = 'multiSingleValue',
-  SingleDownloadLink = 'singleDownloadLink',
-  MultiValueRow = 'multiValueRow',
-  DataDownload = 'dataDownload',
-  SingleDate = 'singleDate',
-  MultiValue = 'multiValue',
-  FilesDownload = 'filesDownload',
-  QRCode = 'qrCodeVisual',
-  ColorList = 'colorList',
-}
-
 export type ListViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.List;
+  viewType: 'list';
   listConfig: {
     [key: string]: {
       color: CssColor;
@@ -50,25 +35,25 @@ export type ListViewConfig = BaseViewConfig & {
 };
 
 export type SingleValueViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.SingleValue;
+  viewType: 'singleValue';
   dataColor: CssColor;
 };
 
 export type MultiPhotographViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.MultiPhotograph;
+  viewType: 'multiPhotograph';
 };
 
 export type MultiSingleValueViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.MultiSingleValue;
+  viewType: 'multiSingleValue';
 };
 
 export type SingleDownloadLinkViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.SingleDownloadLink;
+  viewType: 'singleDownloadLink';
 };
 
 type MultiValueRowOption = ColorOption & { header: string };
 export type MultiValueRowViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.MultiValueRow;
+  viewType: 'multiValueRow';
   presentationOptions?: MultiValueRowOption & {
     dataPairNames?: string[];
     rowHeader?: ColorOption & { name?: string };
@@ -79,22 +64,22 @@ export type MultiValueRowViewConfig = BaseViewConfig & {
 };
 
 export type ColorListViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.ColorList;
+  viewType: 'colorList';
 };
 
 export type DataDownloadViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.DataDownload;
+  viewType: 'dataDownload';
 };
 export type SingleDateViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.SingleDate;
+  viewType: 'singleDate';
 };
 
 export type DownloadFilesViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.FilesDownload;
+  viewType: 'filesDownload';
 };
 
 export type MultiValueViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.MultiValue;
+  viewType: 'multiValue';
   presentationOptions?: Record<string, ColorOption> & {
     isTitleVisible?: boolean;
     valueFormat?: string;
@@ -102,7 +87,7 @@ export type MultiValueViewConfig = BaseViewConfig & {
 };
 
 export type QRCodeViewConfig = BaseViewConfig & {
-  viewType: ViewTypes.QRCode;
+  viewType: 'qrCodeVisual';
 };
 
 export type ViewConfig =

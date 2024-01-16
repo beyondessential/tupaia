@@ -7,7 +7,7 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button as BaseButton, SpinningLoader } from '@tupaia/ui-components';
-import { DashboardItemTypes, ViewTypes } from '@tupaia/types';
+import { DashboardItemVizTypes, ViewVizTypes } from '../../constants';
 import { Entity } from '../../types';
 import { DisplayOptionsSettings, ExportFormatSettings, ExportFormats } from '../ExportSettings';
 import { useEnlargedDashboardItem, useExportDashboardItem } from './utils';
@@ -72,11 +72,11 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
   ];
 
   const { type, viewType } = currentDashboardItem?.config ?? {};
-  const isChart = type === DashboardItemTypes.Chart;
+  const isChart = type === DashboardItemVizTypes.Chart;
 
   // PNG export is not available for matrix reports
   const availableExportOptions =
-    isChart || viewType === ViewTypes.MultiValue
+    isChart || viewType === ViewVizTypes.MultiValue
       ? exportOptions
       : exportOptions.filter(option => option.value !== ExportFormats.PNG);
 

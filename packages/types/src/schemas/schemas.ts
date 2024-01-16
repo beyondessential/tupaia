@@ -815,16 +815,6 @@ export const ExportPresentationOptionsSchema = {
 	"additionalProperties": false
 } 
 
-export const DashboardItemTypesSchema = {
-	"enum": [
-		"chart",
-		"component",
-		"matrix",
-		"view"
-	],
-	"type": "string"
-} 
-
 export const MatrixConfigSchema = {
 	"description": "Matrix viz type",
 	"additionalProperties": false,
@@ -8333,24 +8323,6 @@ export const ColorOptionSchema = {
 	"required": [
 		"color"
 	]
-} 
-
-export const ViewTypesSchema = {
-	"enum": [
-		"colorList",
-		"dataDownload",
-		"filesDownload",
-		"list",
-		"multiPhotograph",
-		"multiSingleValue",
-		"multiValue",
-		"multiValueRow",
-		"qrCodeVisual",
-		"singleDate",
-		"singleDownloadLink",
-		"singleValue"
-	],
-	"type": "string"
 } 
 
 export const ListViewConfigSchema = {

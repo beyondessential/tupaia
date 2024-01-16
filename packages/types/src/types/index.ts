@@ -57,8 +57,6 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
-  DashboardItemTypes,
-  ViewTypes,
 } from './models-extra';
 export * from './requests';
 export * from './css';
