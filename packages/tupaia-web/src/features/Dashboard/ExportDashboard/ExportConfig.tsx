@@ -7,11 +7,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import downloadJs from 'downloadjs';
-import { Button, LoadingContainer } from '@tupaia/ui-components';
+import { FormGroup } from '@material-ui/core';
+import { Button, LoadingContainer, Checkbox as BaseCheckbox } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import { ExportSettingLabel } from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -95,6 +96,17 @@ const ExportSettingsInstructionsContainer = styled.div`
   padding-bottom: 1.4rem;
 `;
 
+const Checkbox = styled(BaseCheckbox)`
+  margin: 0;
+  .MuiButtonBase-root {
+    padding: 0;
+    margin-right: 0.5rem;
+  }
+  label {
+    padding: 0.5rem 0 0 0.5rem;
+  }
+`;
+
 interface ExportDashboardProps {
   onClose: () => void;
 }
@@ -120,17 +132,12 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
 
   const exportFileName = `${project?.name}-${entity?.name}-${dashboardName}-dashboard-export`;
 
-  const { exportWithLabels, exportWithTable } = useExportSettings();
   const handleExport = () =>
     requestPdfExport({
       projectCode,
       entityCode,
       dashboardCode: activeDashboard?.code,
       selectedDashboardItems,
-      settings: {
-        exportWithLabels,
-        exportWithTable,
-      },
     });
 
   const hasChartItems = selectedDashboardItems.some(code => {
@@ -155,7 +162,29 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
             <ExportSetting>
               {hasChartItems && (
                 <section>
-                  <DisplayOptionsSettings />
+                  <FormGroup>
+                    <fieldset>
+                      <ExportSettingLabel>Display options (coming soon)</ExportSettingLabel>
+                      <Checkbox
+                        label="Export with Labels"
+                        value
+                        name="displayOptions"
+                        color="primary"
+                        checked={false}
+                        disabled
+                        size="small"
+                      />
+                      <Checkbox
+                        label="Export with Table"
+                        value
+                        name="displayOptions"
+                        color="primary"
+                        checked
+                        disabled
+                        size="small"
+                      />
+                    </fieldset>
+                  </FormGroup>
                 </section>
               )}
               <MailingListSection />

@@ -94,10 +94,6 @@ interface PDFExportDashboardItemProps {
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
   isPreview?: boolean;
-  settings?: {
-    exportWithTable: boolean;
-    exportWithLabels: boolean;
-  };
 }
 
 /**
@@ -108,7 +104,6 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
-  settings,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -144,7 +139,8 @@ export const PDFExportDashboardItem = ({
     ...config,
     presentationOptions: {
       ...(config?.presentationOptions || {}),
-      ...settings,
+      exportWithLabels: false,
+      exportWithTable: true,
     },
   } as DashboardItemConfig;
 

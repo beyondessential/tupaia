@@ -15,15 +15,10 @@ export const downloadDashboardAsPdf = (
   cookie: string,
   cookieDomain: TupaiaWebExportDashboardRequest.ReqBody['cookieDomain'],
   selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'],
-  settings: TupaiaWebExportDashboardRequest.ReqBody['settings'] = {
-    exportWithTable: true,
-    exportWithLabels: false,
-  },
 ) => {
   const endpoint = `${projectCode}/${entityCode}/${dashboardName}/pdf-export`;
   const pdfPageUrl = stringifyQuery(baseUrl, endpoint, {
     selectedDashboardItems: selectedDashboardItems?.join(','),
-    settings: JSON.stringify(settings),
   });
 
   return downloadPageAsPDF(pdfPageUrl, cookie, cookieDomain);

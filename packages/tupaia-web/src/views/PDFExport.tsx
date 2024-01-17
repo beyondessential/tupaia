@@ -11,7 +11,7 @@ import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { useEntity } from '../api/queries';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
-import { useDashboard, useExportSettings } from '../features/Dashboard';
+import { useDashboard } from '../features/Dashboard';
 
 const A4_RATIO = 1 / 1.41;
 const Parent = styled.div<{ $isPreview?: boolean }>`
@@ -42,7 +42,6 @@ export const PDFExport = ({
   const [urlSearchParams] = useSearchParams();
 
   const { activeDashboard } = useDashboard();
-  const { exportWithTable, exportWithLabels } = useExportSettings();
   const { data: entity } = useEntity(projectCode, entityCode);
 
   const getSelectedDashboardItems = () => {
@@ -51,27 +50,7 @@ export const PDFExport = ({
     return propsSelectedDashboardItems || urlSelectedDashboardItems;
   };
 
-  const getSettings = () => {
-    const urlSettings = urlSearchParams.get('settings');
-
-    if (urlSettings) {
-      return (
-        JSON.parse(urlSettings) || {
-          exportWithTable,
-          exportWithLabels,
-        }
-      );
-    }
-
-    return {
-      exportWithTable,
-      exportWithLabels,
-    };
-  };
-
   const selectedDashboardItems = getSelectedDashboardItems();
-
-  const settings = getSettings();
 
   if (!activeDashboard) return null;
 
@@ -94,7 +73,6 @@ export const PDFExport = ({
           entityName={entity?.name}
           activeDashboard={activeDashboard}
           isPreview={isPreview}
-          settings={settings}
         />
       ))}
     </Parent>
