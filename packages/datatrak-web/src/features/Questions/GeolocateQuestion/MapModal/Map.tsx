@@ -17,27 +17,51 @@ import { PinDrop } from './PinDrop';
 const PAGE_PADDING = 280;
 
 const MapContainer = styled(BaseMapContainer)`
-  height: 30rem;
+  height: 100%;
   width: 100%;
-  margin-top: 2.5rem;
+`;
 
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin-top: 1rem;
-    height: calc(100vh - ${PAGE_PADDING}px);
-  }
+const ControlsWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  // This is to prevent the wrapper div from blocking clicks on the map overlays
+  pointer-events: none;
 `;
 
 const TilePickerWrapper = styled.div`
   position: absolute;
-  z-index: 900;
-  right: 0;
   bottom: 0;
+  right: 0;
   height: 100%;
+
   .MuiButton-root {
     background-color: ${({ theme }) => theme.palette.background.paper};
     ${({ theme }) => theme.breakpoints.down('xs')} {
       margin-bottom: 1.5rem;
     }
+  }
+`;
+
+const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  height: 30rem;
+  // Overwrite default zoom control styles
+
+  .leaflet-top {
+    z-index: 1;
+  }
+  .leaflet-pane {
+    // Set z-index of map pane to 0 so that it doesn't overlap with the sidebar and the map controls
+    z-index: 0;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    margin-top: 1rem;
+    height: calc(100vh - ${PAGE_PADDING}px);
   }
 `;
 
@@ -60,29 +84,35 @@ export const Map = ({ lat, lng, setCoordinates, tileSet, onChangeTileSet }: MapP
     });
   };
   return (
-    <MapContainer
-      bounds={DEFAULT_BOUNDS}
-      zoom={coordinatesInvalid ? UNSET_LOCATION_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL}
-      scrollWheelZoom={true}
-      zoomControl={false}
-      attributionControl={false}
-    >
-      <UserLocationMap
-        lat={lat}
-        lng={lng}
-        setCoordinates={onUpdateCoordinates}
-        coordinatesInvalid={coordinatesInvalid}
-        tileSet={tileSet}
-      />
-      <TilePickerWrapper>
-        <TilePicker
-          tileSets={[DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite]}
-          activeTileSet={tileSet}
-          onChange={onChangeTileSet}
+    <Wrapper>
+      <MapContainer
+        bounds={DEFAULT_BOUNDS}
+        zoom={coordinatesInvalid ? UNSET_LOCATION_ZOOM_LEVEL : DEFAULT_ZOOM_LEVEL}
+        scrollWheelZoom={true}
+        zoomControl={false}
+        attributionControl={false}
+      >
+        <UserLocationMap
+          lat={lat}
+          lng={lng}
+          setCoordinates={onUpdateCoordinates}
+          coordinatesInvalid={coordinatesInvalid}
+          tileSet={tileSet}
         />
-      </TilePickerWrapper>
-      {!coordinatesInvalid && <PinDrop lat={lat} lng={lng} setCoordinates={onUpdateCoordinates} />}
-      <ZoomControl position="topright" />
-    </MapContainer>
+        {!coordinatesInvalid && (
+          <PinDrop lat={lat} lng={lng} setCoordinates={onUpdateCoordinates} />
+        )}
+        <ZoomControl position="topright" />
+      </MapContainer>
+      <ControlsWrapper>
+        <TilePickerWrapper>
+          <TilePicker
+            tileSets={[DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite]}
+            activeTileSet={tileSet}
+            onChange={onChangeTileSet}
+          />
+        </TilePickerWrapper>
+      </ControlsWrapper>
+    </Wrapper>
   );
 };
