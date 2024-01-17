@@ -80,7 +80,7 @@ All servers are [Node.js](https://nodejs.org)–[Express](https://expressjs.com)
 
 | File                             | Purpose                                      |
 |:---------------------------------|:---------------------------------------------|
-| `<package>/examples.http`        | Example queries showing the server interface |
+| `<package>/examples.http`        | Example queries showing the server interface |
 | `<package>/src/index.ts`         | Server entry point                           |
 | `<package>/src/app/createApp.ts` | Express router definition                    |
 | `<package>/src/routes/`          | Route definitions                            |
