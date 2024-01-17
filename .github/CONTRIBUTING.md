@@ -22,7 +22,7 @@ before merging in your first pull request.
 
 Our core philosophy is to maintain the long-term sustainability of Tupaia. We, at BES work hard
 to maintain a cohesive vision for the project. While we encourage collaboration and contributions,
-we also want to avoid fragmentation that could compromise Tupaia's usability, maintainability,
+we also want to avoid fragmentation that could compromise Tupaia’s usability, maintainability,
 and value. We believe that the best way to contribute is to align your efforts with our existing
 product roadmap.
 
@@ -34,7 +34,7 @@ coordination and support from BES as the project maintainers. As such we encoura
 from individuals and organisations who are prepared to invest significant amounts of time into
 their work, ensuring alignment with our roadmap and the highest quality results. While we appreciate
 the interest of potential casual contributors, we aim to collaborate with contributors who are
-serious about their commitment to Tupaia. If you're ready to deeply engage and uphold Tupaia's
+serious about their commitment to Tupaia. If you’re ready to deeply engage and uphold Tupaia’s
 vision and standards, we warmly welcome your involvement.
 
 ### Following our roadmap
@@ -53,7 +53,7 @@ making your contribution, put your contribution idea against the following crite
 **Documentation:**
 
 - If there is no documentation for a specific aspect of Tupaia.
-- If a specific area in the project's documentation is either: lacking detail, outdated or unclear.
+- If a specific area in the project’s documentation is either: lacking detail, outdated or unclear.
 
 **Features:**
 
@@ -63,11 +63,11 @@ making your contribution, put your contribution idea against the following crite
 ### Developer onboarding and orientation
 
 Being a complex product, Tupaia is at the stage where supported onboarding is necessary for the
-project's contributors. The BES Tupaia team are happy to provide hands-on support for serious and
+project’s contributors. The BES Tupaia team are happy to provide hands-on support for serious and
 committed contributors, but we will ask to see evidence of your commitment as well as a CV.
 
 Steps for onboarding and setting up your development environment can be found on our [README](/#readme).
-However, it's most likely that support is needed from a BES developer in order for a successful and
+However, it’s most likely that support is needed from a BES developer in order for a successful and
 stable onboarding.
 
 ## Making your code contribution
