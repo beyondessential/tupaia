@@ -125,11 +125,7 @@ export const PDFExportDashboardItem = ({
     endDate?: Moment;
   };
 
-  const {
-    data: report,
-    isLoading,
-    error,
-  } = useReport(reportCode, {
+  const { data: report, isLoading, error } = useReport(reportCode, {
     dashboardCode: activeDashboard?.code,
     projectCode,
     entityCode,
