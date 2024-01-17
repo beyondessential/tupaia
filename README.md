@@ -19,7 +19,7 @@ The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contribu
 > [!NOTE]
 > This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
-It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
+It is set up using [Yarn workspaces](https://yarnpkg.com/features/workspaces), meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
 
 Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
@@ -38,7 +38,7 @@ The Tupaia monorepo has three types of packages:
 
 While each package type has their own structure, there are a few common standards:
 
-| File              | Purpose                                                                  |
+| File                       | Purpose                                                                  |
 |:---------------------------|:-------------------------------------------------------------------------|
 | `<package>/package.json`   | Package definition                                                       |
 | `<package>/src/`           | Contains source code                                                     |
@@ -125,7 +125,7 @@ Development database setup instructions are in the [Tupaia monorepo setup](https
 
 ### Dependencies
 
-We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project root, and it will install dependencies everywhere.
+We use [Yarn Workspaces](https://yarnpkg.com/features/workspaces) to manage our packages, which allows us to run `yarn` once at the project root, and it will install dependencies everywhere.
 
 ## CI/CD
 
