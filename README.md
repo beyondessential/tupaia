@@ -6,11 +6,11 @@
 
 ## Open source info
 
-### Open source mission statement
+### Mission statement
 
 > By engaging and collaborating with our community we can deliver a more robust product that bridges cultural differences and empowers decision making within health systems worldwide.
 
-### Code of Conduct
+### Community
 
 The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) are published in this repo.
 
@@ -38,7 +38,7 @@ The Tupaia monorepo has three types of packages:
 
 While each package type has their own structure, there are a few common standards:
 
-| Standard file              | Purpose                                                                  |
+| File              | Purpose                                                                  |
 |:---------------------------|:-------------------------------------------------------------------------|
 | `<package>/package.json`   | Package definition                                                       |
 | `<package>/src/`           | Contains source code                                                     |
@@ -49,7 +49,7 @@ While each package type has their own structure, there are a few common standard
 ### Platform interfaces
 
 - [Tupaia Web](/packages/tupaia-web/README.md)
-- ~~[Tupaia](/packages/web-frontend/README.md)~~ (*Deprecated.*  Replaced by Tupaia Web. Referred to as web-frontend for legacy reasons.)
+- ~~[Tupaia](/packages/web-frontend/README.md)~~ (*Deprecated.* Replaced by Tupaia Web. Referred to as web-frontend for legacy reasons.)
 - [Tupaia DataTrak Web](/packages/datatrak-web/README.md)
 - [Admin Panel](/packages/admin-panel/README.md)
 - [LESMIS](/packages/lesmis/README.md)
@@ -153,7 +153,7 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 The config for this repository is defined in `.eslintrc` under the root folder. Additional rules/overrides per package are specified in this file.
 
 > [!IMPORTANT]
-> Please do not use individual ESLint configs, but update the main configuration file instead.
+> Please do not use individual ESLint configs. Update the main configuration file instead.
 
 ### Auto-formatting in Visual Studio Code
 
