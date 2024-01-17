@@ -144,7 +144,7 @@ This project is also tested with [BrowserStack](https://www.browserstack.com).
 
 ## Style guide
 
-We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
+We use a combination of [ESLint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
 
 - [@beyondessential/eslint-config-js](https://www.npmjs.com/package/@beyondessential/eslint-config-js) for JavaScript packages
 - [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
