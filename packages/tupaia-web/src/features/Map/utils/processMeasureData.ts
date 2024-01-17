@@ -56,7 +56,7 @@ export const processMeasureData = ({
 
   // for radius overlay sort desc radius to place smaller circles over larger circles
   if (serieses.some(l => l.type === MEASURE_TYPE_RADIUS)) {
-    entityMeasureData.sort((a, b) => Number(b.radius) - Number(a.radius));
+    entityMeasureData?.sort((a, b) => Number(b.radius) - Number(a.radius));
   }
 
   return entityMeasureData;
