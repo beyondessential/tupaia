@@ -11,7 +11,6 @@ import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
 import { ExportFormats } from '../ExportSettings';
-import { ExportDashboardItem } from './ExportDashboardItem';
 import { EnlargedDashboardVisual } from './EnlargedDashboardVisual';
 import {
   ExportDashboardItemContext,
@@ -19,6 +18,7 @@ import {
   useEnlargedDashboardItem,
 } from './utils';
 import { ExportButton } from './ExportButton';
+import { ExportDashboardItem } from './ExportDashboardItem';
 
 const StyledModal = styled(Modal)`
   .MuiPaper-root:not(.MuiAlert-root) {
