@@ -14,7 +14,7 @@ import {
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import { BaseReport } from '@tupaia/types';
+import { BaseReport, TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { A4Page, A4PageContent, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useReport } from '../../api/queries';
@@ -94,6 +94,7 @@ interface PDFExportDashboardItemProps {
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
   isPreview?: boolean;
+  settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
 }
 
 /**
@@ -104,6 +105,7 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
+  settings,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -139,8 +141,7 @@ export const PDFExportDashboardItem = ({
     ...config,
     presentationOptions: {
       ...(config?.presentationOptions || {}),
-      exportWithLabels: false,
-      exportWithTable: true,
+      ...settings,
     },
   } as DashboardItemConfig;
 
