@@ -4,12 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   DialogActions,
-  Typography,
-  FormGroup,
   FormControl as BaseFormControl,
+  FormGroup,
+  Typography,
 } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
 import {
@@ -27,8 +27,6 @@ const FormControl = styled(BaseFormControl).attrs({
   component: 'fieldset',
   required: true,
 })`
-  border: none;
-  padding: 0;
   margin-bottom: 2rem;
 `;
 
@@ -62,7 +60,7 @@ const TextArea = styled(TextField).attrs({
     font-size: 0.875rem;
     padding: 0.875rem;
   }
-  // we have to override this here as there are selectors inside ui-components with higher specificity than we can achieve via the theme overrides 
+  // we have to override this here as there are selectors inside ui-components with higher specificity than we can achieve via the theme overrides
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     box-shadow: none;
     border-color: ${({ theme }) => theme.palette.primary.main};
