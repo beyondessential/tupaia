@@ -81,9 +81,6 @@ export const theme = createMuiTheme({
           minWidth: 0,
           padding: 0,
         },
-        img: {
-          display: 'block;',
-        },
       },
     },
     MuiDialogActions: {
