@@ -5,8 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { Entity, WebServerEntityRequest } from '@tupaia/types';
-import { camelcaseKeys } from '@tupaia/tsutils';
+import { WebServerEntityRequest } from '@tupaia/types';
 
 export type SingleEntityRequest = Request<
   WebServerEntityRequest.Params,
@@ -15,18 +14,17 @@ export type SingleEntityRequest = Request<
   WebServerEntityRequest.ReqQuery
 >;
 
-const DEFAULT_FIELDS = ['id', 'parent_code', 'code', 'name', 'type'];
-
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
-    const { params, query, ctx } = this.req;
-    const { projectCode, entityCode } = params;
-
-    const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
-      fields: DEFAULT_FIELDS,
-      ...query,
-    })) as Entity;
-
-    return camelcaseKeys(entity);
+    const { params, query, models } = this.req;
+    const { entityCode } = params;
+    const {
+      id,
+      type,
+      name,
+      code,
+      parent_id: parentId,
+    } = await models.entity.findOne({ code: entityCode });
+    return { id, name, type, code, parentId };
   }
 }
