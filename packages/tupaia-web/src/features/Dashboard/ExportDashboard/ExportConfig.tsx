@@ -109,13 +109,14 @@ const Checkbox = styled(BaseCheckbox)`
 
 interface ExportDashboardProps {
   onClose: () => void;
+  selectedDashboardItems: string[];
 }
 
-export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
+export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { selectedDashboardItems, activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboard();
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -187,10 +188,10 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
                   </FormGroup>
                 </section>
               )}
-              <MailingListSection />
+              <MailingListSection selectedDashboardItems={selectedDashboardItems} />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview />}
+          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
         </Container>
       </Wrapper>
       <ButtonGroup>

@@ -58,8 +58,7 @@ const PreviewTitle = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-export const Preview = () => {
-  const { selectedDashboardItems } = useDashboard();
+export const Preview = ({ selectedDashboardItems }: { selectedDashboardItems: string[] }) => {
   const [page, setPage] = useState(1);
   const onPageChange = (_: unknown, newPage: number) => setPage(newPage);
   const visualisationToPreview = selectedDashboardItems[page - 1];
