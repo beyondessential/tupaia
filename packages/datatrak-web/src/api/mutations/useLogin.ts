@@ -33,15 +33,17 @@ export const useLogin = () => {
       onMutate: () => {
         gaEvent('login', 'Login', 'Attempt');
       },
-      onSuccess: ({ user }) => {
-        queryClient.invalidateQueries();
+      onSuccess: async ({ user }) => {
+        await queryClient.invalidateQueries();
         if (from) {
           navigate(from, {
             state: null,
           });
         } else {
           const path = user.projectId ? ROUTES.HOME : ROUTES.PROJECT_SELECT;
-          navigate(path);
+          navigate(path, {
+            state: from,
+          });
         }
       },
       meta: {
