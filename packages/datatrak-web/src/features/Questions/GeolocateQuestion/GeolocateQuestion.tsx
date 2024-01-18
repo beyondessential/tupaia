@@ -88,9 +88,12 @@ export const GeolocateQuestion = ({
             </ModalButton>
           </>
         )}
-        {mapModalOpen && (
-          <MapModal geolocation={value} setGeolocation={onChange} closeModal={toggleMapModal} />
-        )}
+        <MapModal
+          geolocation={value}
+          setGeolocation={onChange}
+          closeModal={toggleMapModal}
+          mapModalOpen={mapModalOpen}
+        />
       </Container>
     </Wrapper>
   );
