@@ -43,17 +43,16 @@ const Wrapper = styled.div<{
  */
 export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const {
-    reportCode,
-    currentDashboardItem,
-    isLoadingDashboards,
-    reportData,
-  } = useEnlargedDashboardItem();
+  const { reportCode, currentDashboardItem, isLoadingDashboards, reportData } =
+    useEnlargedDashboardItem();
 
   const { type, presentationOptions } = currentDashboardItem?.config || {};
 
-  const { exportWithLabels = false, exportWithTable = true, exportWithTableDisabled = false } =
-    presentationOptions || {};
+  const {
+    exportWithLabels = false,
+    exportWithTable = true,
+    exportWithTableDisabled = false,
+  } = presentationOptions || {};
 
   const [exportConfig, dispatch] = useReducer(exportReducer, {
     isExporting: false,
@@ -77,7 +76,7 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
 
   const { isExportMode } = exportConfig;
   const isDataDownload =
-    ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
+    (currentDashboardItem?.config as unknown as ViewConfig)?.viewType === 'dataDownload';
 
   const getHasBigData = () => {
     if (isDataDownload || !reportData) return false;

@@ -16,6 +16,16 @@ export const theme = createMuiTheme(
           fontSize: '0.875rem',
         },
       },
+      MuiCssBaseline: {
+        '@global': {
+          fieldset: {
+            border: 0,
+            margin: 0,
+            minWidth: 0,
+            padding: 0,
+          },
+        },
+      },
       MuiCardHeader: {
         root: {
           fontSize: '0.875rem',
