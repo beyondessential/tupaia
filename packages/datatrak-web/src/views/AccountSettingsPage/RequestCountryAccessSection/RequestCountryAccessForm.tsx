@@ -1,12 +1,12 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Box, FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
+import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
 import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { ensure } from '@tupaia/tsutils';
@@ -24,13 +24,10 @@ const StyledForm = styled(Form)`
 
 const StyledFieldset = styled.fieldset`
   block-size: 18.32rem;
-  border: none;
   display: grid;
   gap: 1.25rem;
   grid-auto-flow: column;
   grid-template: auto auto / auto;
-  margin: 0;
-  padding: 0;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
@@ -47,7 +44,7 @@ const StyledFieldset = styled.fieldset`
   }
 `;
 
-const CountryChecklistWrapper = styled(Box)`
+const CountryChecklistWrapper = styled.div`
   block-size: 100%;
   display: block flex;
   flex-direction: column;
@@ -61,7 +58,7 @@ const StyledFormLabel = styled(FormLabel)`
   margin-block-end: 0.1875rem;
 `;
 
-const StyledBox = styled(Box)`
+const StyledDiv = styled.div`
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -157,7 +154,7 @@ export const RequestCountryAccessForm = () => {
             disabled={!project}
           />
         </CountryChecklistWrapper>
-        <StyledBox>
+        <StyledDiv>
           <StyledFormInput
             disabled={!project}
             id="message"
@@ -178,7 +175,7 @@ export const RequestCountryAccessForm = () => {
           >
             {buttonLabel}
           </Button>
-        </StyledBox>
+        </StyledDiv>
       </StyledFieldset>
     </StyledForm>
   );
