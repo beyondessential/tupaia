@@ -5,14 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useFormContext } from 'react-hook-form';
-import { CheckboxField } from '.';
 import { Typography } from '@material-ui/core';
-
-const Fieldset = styled.fieldset`
-  border: none;
-  padding: 0;
-  margin: 0;
-`;
+import { CheckboxField } from '.';
 
 const Legend = styled.legend`
   font-size: 1.2rem;
@@ -38,7 +32,7 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
   const { errors = {} } = useFormContext();
 
   return (
-    <Fieldset>
+    <fieldset>
       <Legend>{legend}</Legend>
       {options.map(({ value, label }) => (
         <CheckboxField
@@ -51,6 +45,6 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
         />
       ))}
       {errors[name] && <Error>{errors[name].message}</Error>}
-    </Fieldset>
+    </fieldset>
   );
 };

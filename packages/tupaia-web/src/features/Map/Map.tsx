@@ -6,17 +6,24 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { TileLayer, LeafletMap, ZoomControl, TilePicker } from '@tupaia/ui-map-components';
+import {
+  TileLayer,
+  LeafletMap,
+  ZoomControl,
+  TilePicker,
+  getAutoTileSet,
+  DEFAULT_TILESETS,
+} from '@tupaia/ui-map-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { TILE_SETS, MOBILE_BREAKPOINT, openStreets, satellite } from '../../constants';
+import { useProject } from '../../api/queries';
+import { useGAEffect } from '../../utils';
+import { CUSTOM_TILE_SETS, MOBILE_BREAKPOINT } from '../../constants';
 import { MapWatermark } from './MapWatermark';
 import { MapLegend } from './MapLegend';
 import { MapOverlaySelector } from './MapOverlaySelector';
 import { MapOverlaysLayer } from './MapOverlaysLayer';
 import { useHiddenMapValues, useDefaultMapOverlay, useMapOverlayMapData } from './utils';
-import { useGAEffect } from '../../utils';
 import { DemoLand } from './DemoLand';
-import { useProject } from '../../api/queries';
 
 const MapContainer = styled.div`
   height: 100%;
@@ -101,38 +108,20 @@ const MapControlColumn = styled.div`
   }
 `;
 
-/**
- * Utility function to determine whether tileSet should default to satellite
- * or to osm, based on page load time. This will only run when determining the
- * initial state of the map.
- */
-const getAutoTileset = () => {
-  // default to osm in dev so that we don't pay for tiles when running locally
-  if (!import.meta.env.PROD) {
-    return openStreets;
-  } else {
-    const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
-    return (
-      window as unknown as Window & {
-        loadTime: number;
-      }
-    )?.loadTime < SLOW_LOAD_TIME_THRESHOLD
-      ? satellite
-      : openStreets;
-  }
-};
-
 const useTileSets = () => {
   const { projectCode } = useParams();
   const { data: project } = useProject(projectCode);
-  const initialTileSet = getAutoTileset();
+  const initialTileSet = getAutoTileSet();
   const [activeTileSet, setActiveTileSet] = useState(initialTileSet);
   const { tileSets = '' } = project?.config || {};
   const customTilesetNames = tileSets?.split(',') || [];
   const customTileSets = customTilesetNames
-    .map(tileset => TILE_SETS.find(({ key }) => key === tileset) as (typeof TILE_SETS)[0])
+    .map(
+      tileset =>
+        CUSTOM_TILE_SETS.find(({ key }) => key === tileset) as (typeof CUSTOM_TILE_SETS)[0],
+    )
     .filter(item => item);
-  const defaultTileSets = [openStreets, satellite];
+  const defaultTileSets = [DEFAULT_TILESETS.osm, DEFAULT_TILESETS.satellite];
   const availableTileSets = [...defaultTileSets, ...customTileSets];
 
   useGAEffect('Map', 'Change Tile Set', activeTileSet?.label);
@@ -140,7 +129,7 @@ const useTileSets = () => {
   const onTileSetChange = (tileSetKey: string) => {
     const newActiveTileSet = availableTileSets.find(
       ({ key }) => key === tileSetKey,
-    ) as (typeof TILE_SETS)[0];
+    ) as (typeof CUSTOM_TILE_SETS)[0];
     setActiveTileSet(newActiveTileSet);
   };
 

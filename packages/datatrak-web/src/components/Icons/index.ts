@@ -10,3 +10,4 @@ export { SurveyTickIcon } from './SurveyTickIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { RadioIcon } from './RadioIcon';
 export { PinIcon } from './PinIcon';
+export { CopyIcon } from './CopyIcon';

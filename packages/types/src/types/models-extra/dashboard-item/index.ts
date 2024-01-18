@@ -42,7 +42,7 @@ export type {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export type { ValueType } from './common';
+export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
