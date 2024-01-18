@@ -32,8 +32,8 @@ The Tupaia monorepo is comprised of three types of packages:
 
 1. **Platform interfaces.** Front-end React applications that the user interacts with.
 2. **Servers.**
-	- *Orchestration servers.* Dedicated backend applications for each platform interface.
-	- *Micro servers.* Applications which are used by the orchestration servers to perform common system functions.
+   - _Orchestration servers._ Dedicated backend applications for each platform interface.
+   - _Micro servers._ Applications which are used by the orchestration servers to perform common system functions.
 3. **Libraries.** Various utility and common libraries that are used throughout the monorepo.
 
 While each package type has their own structure, there are a few common standards:
@@ -46,8 +46,7 @@ While each package type has their own structure, there are a few common standard
 
 ### Platform interfaces
 
-- [Tupaia](/packages/web-frontend/README.md) (for legacy reasons referred to as web-frontend)
-- [Tupaia Web](/packages/tupaia-web/README.md) (New version of web-frontend)
+- [Tupaia Web](/packages/tupaia-web/README.md)
 - [Tupaia DataTrak Web](/packages/datatrak-web/README.md)
 - [Admin Panel](/packages/admin-panel/README.md)
 - [LESMIS](/packages/lesmis/README.md)
