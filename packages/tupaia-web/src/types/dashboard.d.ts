@@ -8,7 +8,6 @@ import {
   MatrixConfig,
   MultiValueRowViewConfig,
   MultiValueViewConfig,
-  ViewConfig,
   DashboardItem as BaseDashboardItem,
   TupaiaWebDashboardsRequest,
 } from '@tupaia/types';
@@ -20,13 +19,9 @@ type DashboardItemConfigPresentationOptions =
   | MatrixConfig['presentationOptions']
   | ChartConfig['presentationOptions'];
 
-type BaseConfig = Omit<
-  BaseDashboardItemConfig,
-  'viewType' | 'presentationOptions' | 'componentName'
->;
+type BaseConfig = Omit<BaseDashboardItemConfig, 'presentationOptions' | 'componentName'>;
 
 export type DashboardItemConfig = BaseConfig & {
-  viewType?: ViewConfig['viewType'];
   presentationOptions?: DashboardItemConfigPresentationOptions;
   componentName?: ComponentConfig['componentName'];
 };

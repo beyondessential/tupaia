@@ -20,10 +20,6 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledFieldset = styled.fieldset`
-  border: none;
-  margin: 0;
-  padding: 0;
-
   align-items: start;
   display: grid;
   gap: 1.56rem 1.25rem;
