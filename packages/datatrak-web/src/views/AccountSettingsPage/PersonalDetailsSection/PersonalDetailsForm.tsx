@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -41,10 +41,6 @@ const StyledForm = styled(Form)`
 `;
 
 const StyledFieldset = styled.fieldset`
-  border: none;
-  margin: 0;
-  padding: 0;
-
   display: grid;
   gap: 1.56rem 1.25rem;
 
