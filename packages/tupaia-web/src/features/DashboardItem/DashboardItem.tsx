@@ -49,17 +49,16 @@ const Title = styled(Typography).attrs({
   line-height: 1.4;
 `;
 
-const getShowDashboardItemTitle = (config: DashboardItemConfig) => {
+const getShowDashboardItemTitle = (config: DashboardItemConfig, legacy?: boolean) => {
   const { presentationOptions, type, viewType, name } = config;
   if (!name) return false;
   if (viewType === 'multiValue') {
-    return (presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible;
+    // if report is legacy, show title because it won't have the config set
+    return (
+      (presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible || legacy
+    );
   }
-  if (
-    viewType?.includes('Download') ||
-    type === 'component' ||
-    viewType === 'multiSingleValue' 
-  )
+  if (viewType?.includes('Download') || type === 'component' || viewType === 'multiSingleValue')
     return false;
   return true;
 };
@@ -77,7 +76,12 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     endDate?: Moment;
   };
 
-  const { data: report, isLoading, error, refetch } = useReport(dashboardItem?.reportCode, {
+  const {
+    data: report,
+    isLoading,
+    error,
+    refetch,
+  } = useReport(dashboardItem?.reportCode, {
     projectCode,
     entityCode,
     dashboardCode: activeDashboard?.code,
@@ -87,9 +91,9 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     legacy: dashboardItem?.legacy,
   });
 
-  const { config = {} } = dashboardItem;
+  const { config = {}, legacy } = dashboardItem;
 
-  const showTitle = getShowDashboardItemTitle(config);
+  const showTitle = getShowDashboardItemTitle(config, legacy);
 
   return (
     <Wrapper>

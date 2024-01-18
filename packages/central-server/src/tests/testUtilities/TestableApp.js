@@ -21,7 +21,7 @@ const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/v${apiVersion}/${endpoint}`;
 
 export const getAuthorizationHeader = () => {
-  return createBasicHeader(process.env.CLIENT_USERNAME, process.env.CLIENT_SECRET);
+  return createBasicHeader(process.env.API_CLIENT_NAME, process.env.API_CLIENT_PASSWORD);
 };
 
 const translateQuery = query =>
