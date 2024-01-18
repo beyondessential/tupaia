@@ -73,6 +73,19 @@ export const theme = createMuiTheme({
     },
   },
   overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        fieldset: {
+          border: 0,
+          margin: 0,
+          minWidth: 0,
+          padding: 0,
+        },
+        img: {
+          display: 'block;',
+        },
+      },
+    },
     MuiDialogActions: {
       root: {
         padding: '1.5rem 0 0 0',
