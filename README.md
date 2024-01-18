@@ -1,25 +1,25 @@
 <p align="center">
 	<a href="https://tupaia.org">
-		<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/68e3f45a-dd63-431f-a206-f72352af98c1" width="158" height="65" />
+		<img alt="Tupaia logo" src="https://github.com/beyondessential/tupaia/assets/33956381/314d7a34-b816-474d-a6f3-5ae2698e6b8a" width="158" height="65" />
 	</a>
 </p>
 
 ## Open source info
 
-### Open source mission statement
+### Mission statement
 
 > By engaging and collaborating with our community we can deliver a more robust product that bridges cultural differences and empowers decision making within health systems worldwide.
 
-### Code of Conduct
+### Community
 
-The [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) is published in this repo.
+The [Tupaia Contributing Guidelines](/.github/CONTRIBUTING.md) and [BES Contributor Code of Conduct](/.github/CODE_OF_CONDUCT.md) are published in this repo.
 
 ## Packages
 
 > [!NOTE]
 > This is a [monorepo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md).
 
-It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
+It is set up using [Yarn workspaces](https://yarnpkg.com/features/workspaces), meaning any command you would normally run inside a package can be run from the root directory using `yarn workspace @tupaia/package-name command`. For example, `yarn workspace @tupaia/central-server start-dev`.
 
 Use the `start-stack` command to start all servers needed to run a stack. Available for `admin-panel`, `datatrak`, `lesmis`, `psss` and `tupaia-web`. For example, `yarn start-stack tupaia-web`.
 
@@ -28,9 +28,9 @@ Use the `start-stack` command to start all servers needed to run a stack. Availa
 
 ### Package structure
 
-The Tupaia monorepo is comprised of three types of packages:
+The Tupaia monorepo has three types of packages:
 
-1. **Platform interfaces.** Front-end React applications that the user interacts with.
+1. **Platform interfaces.** Front-end [React](https://react.dev) applications that the user interacts with.
 2. **Servers.**
    - _Orchestration servers._ Dedicated backend applications for each platform interface.
    - _Micro servers._ Applications which are used by the orchestration servers to perform common system functions.
@@ -38,11 +38,13 @@ The Tupaia monorepo is comprised of three types of packages:
 
 While each package type has their own structure, there are a few common standards:
 
-- `<package>/package.json` – package definition
-- `<package>/src/` – contains source code
-- `<package>/.env.example` – file showing what environment variables are required by the package
-- `<package>/.env` – environment variables used by package ([ignored by Git](/.gitignore#L1))
-- `<package>/src/__tests__/` – contains unit tests
+| File                       | Purpose                                                                  |
+| :------------------------- | :----------------------------------------------------------------------- |
+| `<package>/package.json`   | Package definition                                                       |
+| `<package>/src/`           | Contains source code                                                     |
+| `<package>/.env.example`   | File showing what environment variables are required by the package      |
+| `<package>/.env`           | Environment variables used by package ([ignored by Git](/.gitignore#L1)) |
+| `<package>/src/__tests__/` | Contains unit tests                                                      |
 
 ### Platform interfaces
 
@@ -57,11 +59,12 @@ While each package type has their own structure, there are a few common standard
 
 #### Orchestration servers
 
-- [web-config-server](/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
 - [admin-panel-server](/packages/admin-panel-server/README.md)
+- [datatrak-web-server](/packages/datatrak-web-server/README.md)
 - [lesmis-server](/packages/lesmis-server/README.md)
-- [psss-server](/packages/psss-server/README.md)
 - [meditrak-app-server](/packages/meditrak-app-server/README.md)
+- [psss-server](/packages/psss-server/README.md)
+- [web-config-server](/packages/web-config-server/README.md) (Tupaia’s orchestration server, referred to as web-config-server for legacy reasons)
 
 #### Micro servers
 
@@ -72,12 +75,14 @@ While each package type has their own structure, there are a few common standard
 
 Server packages can be built by running `yarn workspace @tupaia/package-name build`. Server packages can then be started by running `yarn workspace @tupaia/package-name start`.
 
-All servers are Node.js express applications, and the packages follow the same basic structure:
+All servers are [Node.js](https://nodejs.org)–[Express](https://expressjs.com) applications, and the packages follow the same basic structure:
 
-- `<package>/examples.http` – example queries showing the server interface
-- `<package>/src/index.ts` – server entry point
-- `<package>/src/app/createApp.ts` – express router definition
-- `<package>/src/routes/` – route definitions
+| File                             | Purpose                                      |
+| :------------------------------- | :------------------------------------------- |
+| `<package>/examples.http`        | Example queries showing the server interface |
+| `<package>/src/index.ts`         | Server entry point                           |
+| `<package>/src/app/createApp.ts` | Express router definition                    |
+| `<package>/src/routes/`          | Route definitions                            |
 
 ### Libraries
 
@@ -119,7 +124,7 @@ Development database setup instructions are in the [Tupaia monorepo setup](https
 
 ### Dependencies
 
-We use yarn workspaces to manage our packages, which allows us to run `yarn` once at the project root, and it will install dependencies everywhere.
+We use [Yarn Workspaces](https://yarnpkg.com/features/workspaces) to manage our packages, which allows us to run `yarn` once at the project root, and it will install dependencies everywhere.
 
 ## CI/CD
 
@@ -138,7 +143,7 @@ This project is also tested with [BrowserStack](https://www.browserstack.com).
 
 ## Style guide
 
-We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
+We use a combination of [ESLint configs](https://eslint.org/docs/user-guide/configuring) to detect quality and formatting issues in code:
 
 - [@beyondessential/eslint-config-js](https://www.npmjs.com/package/@beyondessential/eslint-config-js) for JavaScript packages
 - [@beyondessential/eslint-config-ts](https://www.npmjs.com/package/@beyondessential/eslint-config-ts) for TypeScript packages
@@ -147,7 +152,7 @@ We use a combination of [ESlint configs](https://eslint.org/docs/user-guide/conf
 The config for this repository is defined in `.eslintrc` under the root folder. Additional rules/overrides per package are specified in this file.
 
 > [!IMPORTANT]
-> Please do not use individual ESLint configs, but update the main configuration file instead.
+> Please do not use individual ESLint configs. Update the main configuration file instead.
 
 ### Auto-formatting in Visual Studio Code
 
