@@ -18,25 +18,30 @@ export type SubmitSurveyRequest = Request<
 export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
     const surveyResponseData = this.req.body;
+    const { models } = this.req;
     const { central: centralApi } = this.req.ctx.services;
     const { session } = this.req;
 
     // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
-    const getEntity = (entityId: string) => this.req.models.entity.findById(entityId);
+    const findEntityById = (entityId: string) => this.req.models.entity.findById(entityId);
     const addRecentEntity = async (userId: string, entityId: string) => {
       // If we're submitting publicly (no session) don't track recent entities
       if (!!session) {
         await addRecentEntityUtil(this.req.models, userId, entityId);
       }
-    }
+    };
 
     const { qr_codes_to_create, ...processedResponse } = await processSurveyResponse(
       surveyResponseData,
-      getEntity,
+      findEntityById,
       addRecentEntity,
     );
 
-    await centralApi.createSurveyResponses([processedResponse]);
+    await centralApi.createSurveyResponses(
+      [processedResponse],
+      // If the user is not logged in, submit the survey response as public
+      processedResponse.user_id ? undefined : { submitAsPublic: true },
+    );
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],
     };

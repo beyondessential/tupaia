@@ -96,7 +96,11 @@ export class EntityApi extends BaseApi {
     }
 
     const { field, fields, filter } = queryOptions;
-    return { field, fields: this.stringifyFields(fields), filter: this.stringifyFilter(filter) };
+    return {
+      field,
+      fields: this.stringifyFields(fields),
+      filter: this.stringifyFilter(filter),
+    };
   }
 
   private stringifyRelationshipsSubQueryParameters<Pref extends 'ancestor' | 'descendant'>(
@@ -158,10 +162,12 @@ export class EntityApi extends BaseApi {
       filter?: any;
     },
     includeRootEntity = false,
+    isPublic = false,
   ) {
     return this.connection.get(`hierarchy/${hierarchyName}/${entityCode}/descendants`, {
       ...this.stringifyQueryParameters(queryOptions),
       includeRootEntity: `${includeRootEntity}`,
+      isPublic: `${isPublic}`,
     });
   }
 

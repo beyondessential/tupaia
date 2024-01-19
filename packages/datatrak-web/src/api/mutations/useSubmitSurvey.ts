@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
-import { post, useCountry, useCurrentUser } from '../../api';
+import { post, useCurrentUser, useEntityByCode } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -30,14 +30,14 @@ export const useSurveyResponseData = () => {
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
-  const { data: country } = useCountry(user.project?.code, countryCode);
+  const { data: country } = useEntityByCode(countryCode!);
   const timezone = getBrowserTimeZone();
   return {
     startTime: surveyStartTime,
     surveyId: survey?.id,
     questions: getAllSurveyComponents(surveyScreens), // flattened array of survey questions
     countryId: country?.id,
-    userId: user.id,
+    userId: user.isLoggedIn ? user.id : null, // Let the server assign the public user if not logged in
     timezone,
   };
 };

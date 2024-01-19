@@ -90,10 +90,13 @@ const TitleWrapper = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
   padding: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
-const ButtonWrapper = styled.div`
+const Container = styled.div`
   display: flex;
+  flex-direction: column;
   // add padding around the date picker when present
   > div {
     padding: 1rem;
@@ -114,24 +117,26 @@ export const MobileMapOverlaySelector = ({
 
   return (
     <Wrapper>
-      <ButtonWrapper>
+      <Container>
         <MapOverlayDatePicker />
         <TitleWrapper>
-          <MapOverlayTitle>Map Overlay</MapOverlayTitle>
-          <MapOverlaySelectorTitle />
+          <div>
+            <MapOverlayTitle>Map Overlay</MapOverlayTitle>
+            <MapOverlaySelectorTitle />
+          </div>
+          {hasMapOverlays && (
+            <ExpandButton
+              onClick={toggleOverlayLibrary}
+              aria-controls="overlay-selector"
+              title={`${overlayLibraryOpen ? 'Hide' : 'Show'} overlay library`}
+            >
+              <ArrowWrapper>
+                <ArrowForwardIos />
+              </ArrowWrapper>
+            </ExpandButton>
+          )}
         </TitleWrapper>
-        {hasMapOverlays && (
-          <ExpandButton
-            onClick={toggleOverlayLibrary}
-            aria-controls="overlay-selector"
-            title={`${overlayLibraryOpen ? 'Hide' : 'Show'} overlay library`}
-          >
-            <ArrowWrapper>
-              <ArrowForwardIos />
-            </ArrowWrapper>
-          </ExpandButton>
-        )}
-      </ButtonWrapper>
+      </Container>
       <OverlayMenu
         $expanded={overlayLibraryOpen}
         aria-expanded={overlayLibraryOpen}
