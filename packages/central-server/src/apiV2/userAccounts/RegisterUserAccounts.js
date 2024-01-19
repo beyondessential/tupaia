@@ -74,15 +74,8 @@ export class RegisterUserAccounts extends CreateUserAccounts {
   }
 
   async createRecord() {
-    const {
-      firstName,
-      lastName,
-      emailAddress,
-      employer,
-      position,
-      contactNumber,
-      password,
-    } = this.newRecordData;
+    const { firstName, lastName, emailAddress, employer, position, contactNumber, password } =
+      this.newRecordData;
 
     let userData = {
       firstName,
@@ -103,7 +96,7 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       userData = { ...userData, permissionGroupName, countryName, primaryPlatform };
     }
 
-    const { userId } = await this.createUserRecord(userData);
+    const { id: userId } = await this.createUserRecord(this.models, userData);
     const user = await this.models.user.findById(userId);
     await sendEmailVerification(user);
 

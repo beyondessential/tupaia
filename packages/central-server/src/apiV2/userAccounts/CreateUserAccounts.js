@@ -24,68 +24,19 @@ export class CreateUserAccounts extends CreateHandler {
   }
 
   async createRecord() {
-    return this.createUserRecord(this.newRecordData);
-  }
-
-  async createUserRecord({
-    firstName,
-    lastName,
-    emailAddress,
-    contactNumber,
-    password,
-    countryName = 'Demo Land',
-    permissionGroupName,
-    primaryPlatform,
-    is_api_client: isApiClient,
-    verifiedEmail,
-    ...restOfUser
-  }) {
     return this.models.wrapInTransaction(async transactingModels => {
-      const permissionGroup = await transactingModels.permissionGroup.findOne({
-        name: permissionGroupName,
-      });
-      const country = await transactingModels.entity.findOne({
-        name: countryName,
-        type: 'country',
-      });
+      const {
+        countryName = 'Demo Land',
+        permissionGroupName,
+        is_api_client: isApiClient,
+        ...restOfUser
+      } = this.newRecordData;
 
-      if (!permissionGroup) {
-        throw new Error(`No such permission group: ${permissionGroupName}`);
-      }
-
-      if (!country) {
-        throw new Error(`No such country: ${countryName}`);
-      }
-
-      const countryPermissionChecker = accessPolicy => {
-        if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, country.code)) {
-          throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${country.name}`);
-        }
-
-        if (!accessPolicy.allows(country.code, permissionGroup.name)) {
-          throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);
-        }
-      };
-
-      await this.assertPermissions(
-        assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]),
-      );
-
-      const user = await transactingModels.user.create({
-        first_name: firstName,
-        last_name: lastName,
-        email: emailAddress,
-        mobile_number: contactNumber,
-        primary_platform: primaryPlatform,
-        ...hashAndSaltPassword(password),
-        verified_email: verifiedEmail,
-        ...restOfUser,
-      });
-
-      await transactingModels.userEntityPermission.findOrCreate({
-        user_id: user.id,
-        entity_id: country.id,
-        permission_group_id: permissionGroup.id,
+      const user = await this.createUserRecord(transactingModels, restOfUser);
+      await this.createUserPermission(transactingModels, {
+        userId: user.id,
+        countryName,
+        permissionGroupName,
       });
 
       let secretKey;
@@ -99,6 +50,69 @@ export class CreateUserAccounts extends CreateHandler {
       }
 
       return { userId: user.id, secretKey };
+    });
+  }
+
+  async createUserPermission(transactingModels, { userId, countryName, permissionGroupName }) {
+    const permissionGroup = await transactingModels.permissionGroup.findOne({
+      name: permissionGroupName,
+    });
+    const country = await transactingModels.entity.findOne({
+      name: countryName,
+      type: 'country',
+    });
+
+    if (!permissionGroup) {
+      throw new Error(`No such permission group: ${permissionGroupName}`);
+    }
+
+    if (!country) {
+      throw new Error(`No such country: ${countryName}`);
+    }
+
+    const countryPermissionChecker = accessPolicy => {
+      if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, country.code)) {
+        throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${country.name}`);
+      }
+
+      if (!accessPolicy.allows(country.code, permissionGroup.name)) {
+        throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);
+      }
+    };
+
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, countryPermissionChecker]),
+    );
+
+    return transactingModels.userEntityPermission.findOrCreate({
+      user_id: userId,
+      entity_id: country.id,
+      permission_group_id: permissionGroup.id,
+    });
+  }
+
+  async createUserRecord(
+    transactingModels,
+    {
+      firstName,
+      lastName,
+      emailAddress,
+      contactNumber,
+      password,
+      primaryPlatform,
+      verifiedEmail,
+      ...restOfUser
+    },
+  ) {
+    return transactingModels.user.create({
+      first_name: firstName,
+      last_name: lastName,
+      email: emailAddress,
+      mobile_number: contactNumber,
+      primary_platform: primaryPlatform,
+      ...hashAndSaltPassword(password),
+      verified_email: verifiedEmail,
+      ...restOfUser,
     });
   }
 }
