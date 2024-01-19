@@ -13,8 +13,8 @@ export const A4_PAGE_HEIGHT_PX = 1684; // at 144ppi
 
 export const A4Page = styled.div`
   width: ${A4_PAGE_WIDTH_PX}px;
-  height: ${A4_PAGE_HEIGHT_MM}px;
 
   break-after: page;
-  padding: 4cm 4.5cm 4.5cm; // Bottom slightly taller than top for *optical* alignment
+  flex-direction: column;
+  padding: 3.5cm 4.5cm 4cm; // Bottom slightly taller than top for *optical* alignment
 `;
