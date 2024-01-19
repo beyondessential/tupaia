@@ -6,11 +6,7 @@ import React from 'react';
 import { TopProgressBar } from '../components';
 import { renderComponent } from './helpers/render.tsx';
 
-describe('Example test', () => {
-  it('passes a stub test', () => {
-    expect(1).toBe(1);
-  });
-
+describe('Component test', () => {
   it('renders a basic component', () => {
     renderComponent(<TopProgressBar currentSurveyQuestion={1} totalNumberOfSurveyQuestions={2} />);
   });
