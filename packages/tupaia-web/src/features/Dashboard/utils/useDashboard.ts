@@ -10,14 +10,8 @@ import { DashboardContext } from './DashboardContext';
 export const useDashboard = () => {
   const { dashboardName, entityCode, projectCode } = useParams();
   const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
-  const {
-    selectedDashboardItems,
-    exportModalOpen,
-    subscribeModalOpen,
-    setSelectedDashboardItems,
-    setExportModalOpen,
-    setSubscribeModalOpen,
-  } = useContext(DashboardContext);
+  const { exportModalOpen, subscribeModalOpen, setExportModalOpen, setSubscribeModalOpen } =
+    useContext(DashboardContext);
 
   const toggleExportModal = () => {
     setExportModalOpen(!exportModalOpen);
@@ -34,8 +28,6 @@ export const useDashboard = () => {
 
   return {
     activeDashboard,
-    selectedDashboardItems,
-    setSelectedDashboardItems,
     toggleExportModal,
     exportModalOpen,
     subscribeModalOpen,

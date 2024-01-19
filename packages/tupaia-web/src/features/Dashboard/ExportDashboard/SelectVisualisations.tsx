@@ -41,9 +41,11 @@ const CheckboxListContainer = styled.div`
   width: 100%;
 `;
 
-interface ExportDashboardProps {
+interface SelectVisualisationsProps {
   onNext: () => void;
   onClose: () => void;
+  selectedDashboardItems: string[];
+  setSelectedDashboardItems: (newItems: string[]) => void;
 }
 
 interface ListItem extends ListItemProps {
@@ -68,8 +70,13 @@ const getIsSupported = (config: DashboardItem['config']) => {
   return false;
 };
 
-export const SelectVisualisation = ({ onNext, onClose }: ExportDashboardProps) => {
-  const { setSelectedDashboardItems, selectedDashboardItems, activeDashboard } = useDashboard();
+export const SelectVisualisation = ({
+  onNext,
+  onClose,
+  selectedDashboardItems,
+  setSelectedDashboardItems,
+}: SelectVisualisationsProps) => {
+  const { activeDashboard } = useDashboard();
 
   const list =
     activeDashboard?.items?.map(({ config, code }) => {

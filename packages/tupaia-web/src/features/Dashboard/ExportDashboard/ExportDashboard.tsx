@@ -69,7 +69,8 @@ const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
 const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
 
 export const ExportDashboard = () => {
-  const { setSelectedDashboardItems, exportModalOpen, toggleExportModal } = useDashboard();
+  const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
+  const { exportModalOpen, toggleExportModal } = useDashboard();
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
   const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
   const onCloseModal = () => {
@@ -91,9 +92,17 @@ export const ExportDashboard = () => {
           <Title>Export dashboard</Title>
           <Container>
             {screen === SELECT_VISUALISATIONS_SCREEN ? (
-              <SelectVisualisation onNext={onNext} onClose={onCloseModal} />
+              <SelectVisualisation
+                onNext={onNext}
+                onClose={onCloseModal}
+                selectedDashboardItems={selectedDashboardItems}
+                setSelectedDashboardItems={setSelectedDashboardItems}
+              />
             ) : (
-              <ExportConfig onClose={onCloseModal} />
+              <ExportConfig
+                onClose={onCloseModal}
+                selectedDashboardItems={selectedDashboardItems}
+              />
             )}
           </Container>
         </Wrapper>

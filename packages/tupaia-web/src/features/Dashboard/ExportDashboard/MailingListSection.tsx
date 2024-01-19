@@ -74,9 +74,13 @@ const SpinningLoader = styled(BaseSpinningLoader)`
   }
 `;
 
-export const MailingListSection = () => {
+export const MailingListSection = ({
+  selectedDashboardItems,
+}: {
+  selectedDashboardItems: string[];
+}) => {
   const { projectCode, entityCode } = useParams();
-  const { selectedDashboardItems, activeDashboard } = useDashboard();
+  const { activeDashboard } = useDashboard();
   const mailingList = useDashboardMailingList();
   const showMailingList = mailingList && mailingList.isAdmin;
   const [responseMessage, setResponseMessage] = useState<string | null>(null);

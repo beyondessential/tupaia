@@ -13,6 +13,7 @@ import { EntityQuestion } from '../../../features/Questions';
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
     getAnswerByQuestionId: () => 'blue',
+    surveyProjectCode: 'explore',
   }),
 }));
 
@@ -68,7 +69,7 @@ const entitiesData = [
 const userData = { project: { code: 'explore' }, country: { code: 'DL' } };
 
 const server = setupServer(
-  rest.get('*/v1/entities', (_, res, ctx) => {
+  rest.get('*/v1/entityDescendants', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(entitiesData));
   }),
   rest.get('*/v1/getUser', (_, res, ctx) => {
@@ -114,7 +115,7 @@ describe('Entity Question', () => {
   });
 
   it('correctly constructs the request filter for the entities request, ', async () => {
-    const entitiesRequest = spyOnMockRequest(server, 'GET', '*entities');
+    const entitiesRequest = spyOnMockRequest(server, 'GET', '*entityDescendants');
 
     renderComponent(
       <EntityQuestion

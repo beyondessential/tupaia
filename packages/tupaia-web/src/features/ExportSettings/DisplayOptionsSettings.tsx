@@ -14,7 +14,7 @@ const Checkbox = styled(BaseCheckbox)`
   margin: 0.5rem 0 0 1rem;
   .MuiButtonBase-root {
     padding: 0;
-    margin-inline-end: 0.5rem;
+    margin-right: 0.5rem;
   }
   label {
     padding: 0;
@@ -24,8 +24,8 @@ const Checkbox = styled(BaseCheckbox)`
 
 const Group = styled(FormGroup)`
   > div {
-    margin-inline-start: 0.5rem;
-    margin-block-start: 0;
+    margin-left: 0.5rem;
+    margin-top: 0;
   }
 `;
 

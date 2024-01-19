@@ -11,7 +11,7 @@ import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
+import { DisplayOptionsSettings } from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -102,14 +102,14 @@ const ExportSettingsInstructionsContainer = styled.div`
 
 interface ExportDashboardProps {
   onClose: () => void;
+  selectedDashboardItems: string[];
 }
 
-export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
+export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboardProps) => {
   const { projectCode, entityCode, dashboardName } = useParams();
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { selectedDashboardItems, activeDashboard } = useDashboard();
-  const { exportWithLabels, exportWithTable } = useExportSettings();
+  const { activeDashboard } = useDashboard();
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
@@ -163,10 +163,10 @@ export const ExportConfig = ({ onClose }: ExportDashboardProps) => {
                   <DisplayOptionsSettings />
                 </section>
               )}
-              <MailingListSection />
+              <MailingListSection selectedDashboardItems={selectedDashboardItems} />
             </ExportSetting>
           </ExportSettingsContainer>
-          {!isLoading && <Preview />}
+          {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
         </Container>
       </Wrapper>
       <ButtonGroup>
