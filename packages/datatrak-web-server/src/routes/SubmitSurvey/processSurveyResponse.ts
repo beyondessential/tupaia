@@ -34,7 +34,7 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
   findEntityById: (id: string) => Promise<Entity>,
-  addRecentEntity: (userId: string, entityId: string) => Promise<void>,
+  addRecentEntity: (userId: string | null, entityId: string) => Promise<void>,
 ) => {
   const {
     surveyId,
@@ -71,9 +71,7 @@ export const processSurveyResponse = async (
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
-    if (
-      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)
-    ) {
+    if ([QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)) {
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (isUpsertEntityQuestion(config)) {
         const entityObj = (await buildUpsertEntity(
