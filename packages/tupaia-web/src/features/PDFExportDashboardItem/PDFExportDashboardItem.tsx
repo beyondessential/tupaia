@@ -65,7 +65,7 @@ const DashboardName = styled.h2`
   font-size: 1.25rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   line-height: 1.4;
-  margin-block-end: 2.125rem;
+  margin-block-end: 1.125rem;
 `;
 
 export const getDatesAsString = (
