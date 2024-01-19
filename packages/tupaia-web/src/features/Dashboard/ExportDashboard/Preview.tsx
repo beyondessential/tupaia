@@ -9,7 +9,6 @@ import { Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { PDFExport } from '../../../views';
 import { MOBILE_BREAKPOINT } from '../../../constants';
-import { useDashboard } from '../utils';
 
 const PreviewPanelContainer = styled.div`
   height: 100%;
