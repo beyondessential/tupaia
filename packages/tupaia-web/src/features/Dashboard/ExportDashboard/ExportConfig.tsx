@@ -11,7 +11,7 @@ import { Button, LoadingContainer } from '@tupaia/ui-components';
 import { useEntity, useProject } from '../../../api/queries';
 import { useExportDashboard } from '../../../api/mutations';
 import { DashboardItemVizTypes, MOBILE_BREAKPOINT } from '../../../constants';
-import { DisplayOptionsSettings } from '../../ExportSettings';
+import { DisplayOptionsSettings, useExportSettings } from '../../ExportSettings';
 import { useDashboard } from '../utils';
 import { ExportSubtitle } from './ExportSubtitle';
 import { MailingListSection } from './MailingListSection';
@@ -110,6 +110,7 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
   const { data: project } = useProject(projectCode);
   const { data: entity } = useEntity(projectCode, entityCode);
   const { activeDashboard } = useDashboard();
+  const { exportWithLabels, exportWithTable } = useExportSettings();
 
   const handleExportSuccess = (data: Blob) => {
     downloadJs(data, `${exportFileName}.pdf`);
