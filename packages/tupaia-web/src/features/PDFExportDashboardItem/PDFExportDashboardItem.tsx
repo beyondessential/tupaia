@@ -15,7 +15,7 @@ import {
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport } from '@tupaia/types';
-import { A4_PAGE_WIDTH_PX, A4Page, A4PageBody, ReferenceTooltip } from '@tupaia/ui-components';
+import { A4_PAGE_WIDTH_PX, A4Page, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
 import { useProject, useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
@@ -152,35 +152,33 @@ export const PDFExportDashboardItem = ({
       <PDFExportHeader imageUrl={projectLogoUrl} imageDescription={projectLogoDescription}>
         {entityName}
       </PDFExportHeader>
-      <A4PageBody>
-        <PDFExportBody>
-          <DashboardName>{activeDashboard?.name}</DashboardName>
-          <Title>{title}</Title>
-          {reference && <ReferenceTooltip reference={reference} />}
-          {period && <ExportPeriod>{period}</ExportPeriod>}
-          <ExportContent $hasData={data && data?.length > 0}>
-            <DashboardItemContext.Provider
-              value={{
-                config: {
-                  ...config,
-                  presentationOptions: {
-                    ...config.presentationOptions,
-                    exportWithTable: true,
-                  },
+      <PDFExportBody>
+        <DashboardName>{activeDashboard?.name}</DashboardName>
+        <Title>{title}</Title>
+        {reference && <ReferenceTooltip reference={reference} />}
+        {period && <ExportPeriod>{period}</ExportPeriod>}
+        <ExportContent $hasData={data && data?.length > 0}>
+          <DashboardItemContext.Provider
+            value={{
+              config: {
+                ...config,
+                presentationOptions: {
+                  ...config.presentationOptions,
+                  exportWithTable: true,
                 },
-                report,
-                reportCode,
-                isLoading,
-                error,
-                isEnlarged: true,
-                isExport: true,
-              }}
-            >
-              <DashboardItemContent />
-            </DashboardItemContext.Provider>
-          </ExportContent>
-        </PDFExportBody>
-      </A4PageBody>
+              },
+              report,
+              reportCode,
+              isLoading,
+              error,
+              isEnlarged: true,
+              isExport: true,
+            }}
+          >
+            <DashboardItemContent />
+          </DashboardItemContext.Provider>
+        </ExportContent>
+      </PDFExportBody>
     </StyledA4Page>
   );
 };
