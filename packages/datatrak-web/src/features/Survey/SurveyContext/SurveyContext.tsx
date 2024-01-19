@@ -7,7 +7,7 @@ import React, { Dispatch, createContext, useContext, useEffect, useReducer } fro
 import { useMatch, useParams } from 'react-router-dom';
 import moment from 'moment';
 import { SurveyParams } from '../../../types';
-import { useSurvey } from '../../../api/queries';
+import { useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../utils';
 import { getDisplayQuestions, getIsQuestionVisible, getUpdatedFormData } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
@@ -22,6 +22,7 @@ const defaultContext = {
   numberOfScreens: 0,
   screenNumber: 1,
   screenHeader: '',
+  surveyProjectCode: '',
   displayQuestions: [],
   sideMenuOpen: false,
   cancelModalOpen: false,
@@ -79,6 +80,7 @@ export const SurveyContext = ({ children }) => {
     <SurveyFormContext.Provider
       value={{
         ...state,
+        surveyProjectCode: survey?.project?.code,
         activeScreen,
         screenNumber,
         displayQuestions,

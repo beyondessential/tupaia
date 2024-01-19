@@ -192,8 +192,8 @@ export const AutocompleteQuestion = ({
         id={id}
         label={label!}
         name={name!}
+        value={selectedValue?.value || selectedValue || null}
         required={required}
-        value={selectedValue?.value || null}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
         onInputChange={(_e, value) => setInputValue(value)}
         inputValue={inputValue}

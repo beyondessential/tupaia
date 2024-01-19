@@ -25,9 +25,6 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.fieldset`
-  margin: 0;
-  border: none;
-  padding: 0;
   legend {
     padding: 0;
   }
