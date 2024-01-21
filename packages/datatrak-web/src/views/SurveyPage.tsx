@@ -97,8 +97,7 @@ export const SurveyPage = () => {
       return;
     }
     const { projectId } = survey;
-    if (user.isLoggedIn && projectId && user?.projectId !== projectId) {
-      // Update the user's preferred project if they start a survey in a different project to the saved project. Tell the user this has been done, so that they understand why their landing page will be changed
+    if (user?.projectId !== projectId) {
       editUser(
         {
           projectId,

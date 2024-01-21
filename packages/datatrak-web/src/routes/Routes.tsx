@@ -110,7 +110,6 @@ export const Routes = () => {
             <Route path={ROUTES.VERIFY_EMAIL_RESEND} element={<VerifyEmailResendPage />} />
           </Route>
         </Route>
-
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </RouterRoutes>

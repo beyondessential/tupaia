@@ -32,9 +32,6 @@ const SectionHeader = styled(Typography).attrs({
 const Fieldset = styled.fieldset.attrs({
   disabled: true,
 })`
-  border: none;
-  margin: 0;
-  padding: 0;
   input,
   label,
   button,
