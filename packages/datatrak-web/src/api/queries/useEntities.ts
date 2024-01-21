@@ -8,7 +8,7 @@ import { get } from '../api';
 
 export const useEntities = params => {
   return useQuery(
-    ['entityDescendants', params],
-    (): Promise<DatatrakWebEntitiesRequest.ResBody> => get(`entityDescendants`, { params }),
+    ['entities', params],
+    (): Promise<DatatrakWebEntitiesRequest.ResBody> => get(`entities`, { params }),
   );
 };
