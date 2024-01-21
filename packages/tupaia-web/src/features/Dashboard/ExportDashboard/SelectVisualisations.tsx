@@ -3,11 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button, CheckboxList, ListItemProps } from '@tupaia/ui-components';
 import { DashboardItem } from '../../../types';
+import { useDashboard } from '../utils';
 
 const Container = styled.div`
   display: flex;
@@ -40,11 +41,11 @@ const CheckboxListContainer = styled.div`
   width: 100%;
 `;
 
-interface ExportDashboardProps {
+interface SelectVisualisationsProps {
   onNext: () => void;
   onClose: () => void;
-  dashboardItems: DashboardItem[];
-  setSelectedDashboardItems: (items: string[]) => void;
+  selectedDashboardItems: string[];
+  setSelectedDashboardItems: (newItems: string[]) => void;
 }
 
 interface ListItem extends ListItemProps {
@@ -72,25 +73,27 @@ const getIsSupported = (config: DashboardItem['config']) => {
 export const SelectVisualisation = ({
   onNext,
   onClose,
-  dashboardItems = [],
+  selectedDashboardItems,
   setSelectedDashboardItems,
-}: ExportDashboardProps) => {
-  const [selectedItems, setSelectedItems] = useState<ListItem[]>([]);
+}: SelectVisualisationsProps) => {
+  const { activeDashboard } = useDashboard();
 
-  const list = dashboardItems.map(({ config, code }) => {
-    const isSupported = getIsSupported(config);
-    return {
-      name: config?.name,
-      code,
-      disabled: !isSupported,
-      tooltip: !isSupported ? 'PDF export coming soon' : undefined,
-    };
-  });
+  const list =
+    activeDashboard?.items?.map(({ config, code }) => {
+      const isSupported = getIsSupported(config);
+      return {
+        name: config?.name,
+        code,
+        disabled: !isSupported,
+        tooltip: !isSupported ? 'PDF export coming soon' : undefined,
+      };
+    }) ?? [];
 
   const onChange = (newItems: ListItem[]) => {
-    setSelectedItems(newItems);
     setSelectedDashboardItems(newItems.map(({ code }) => code));
   };
+
+  const selectedItems = list.filter(({ code }) => selectedDashboardItems.includes(code));
 
   return (
     <Container>

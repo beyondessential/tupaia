@@ -3,23 +3,22 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useReducer } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { BaseReport, ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
-import { ExportDashboardItem } from './ExportDashboardItem';
+import { ExportFormats } from '../ExportSettings';
 import { EnlargedDashboardVisual } from './EnlargedDashboardVisual';
 import {
-  EXPORT_FORMATS,
-  ExportContext,
-  ExportDispatchContext,
-  exportReducer,
+  ExportDashboardItemContext,
+  ExportDashboardItemContextProvider,
   useEnlargedDashboardItem,
 } from './utils';
 import { ExportButton } from './ExportButton';
+import { ExportDashboardItem } from './ExportDashboardItem';
 
 const StyledModal = styled(Modal)`
   .MuiPaper-root:not(.MuiAlert-root) {
@@ -38,32 +37,33 @@ const Wrapper = styled.div<{
   flex-direction: column;
 `;
 
+// needs to be separate from EnlargedDashboardItem to allow use of hook inside ExportDashboardItemContextProvider
+const ContentWrapper = ({
+  hasBigData,
+  children,
+}: {
+  hasBigData: boolean;
+  children: React.ReactNode;
+}) => {
+  const { isExportMode } = useContext(ExportDashboardItemContext);
+  return <Wrapper $hasBigData={!isExportMode && hasBigData}>{children}</Wrapper>;
+};
+
 /**
  * EnlargedDashboardItem is the dashboard item modal. It is visible when there is a reportCode in the URL which is valid, and the dashboard item is loaded.
  */
 export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['name'] }) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-  const {
-    reportCode,
-    currentDashboardItem,
-    isLoadingDashboards,
-    reportData,
-  } = useEnlargedDashboardItem();
+  const { reportCode, currentDashboardItem, isLoadingDashboards, reportData } =
+    useEnlargedDashboardItem();
 
   const { type, presentationOptions } = currentDashboardItem?.config || {};
 
-  const { exportWithLabels = false, exportWithTable = true, exportWithTableDisabled = false } =
-    presentationOptions || {};
-
-  const [exportConfig, dispatch] = useReducer(exportReducer, {
-    isExporting: false,
-    isExportMode: false,
-    exportError: null,
-    exportFormat: type === 'chart' ? EXPORT_FORMATS.PNG : EXPORT_FORMATS.XLSX,
-    exportWithLabels,
-    exportWithTable,
-    exportWithTableDisabled,
-  });
+  const {
+    exportWithLabels = false,
+    exportWithTable = true,
+    exportWithTableDisabled = false,
+  } = presentationOptions || {};
 
   if (!reportCode || (!isLoadingDashboards && !currentDashboardItem)) return null;
 
@@ -75,29 +75,33 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
     setUrlSearchParams(urlSearchParams);
   };
 
-  const { isExportMode } = exportConfig;
   const isDataDownload =
-    ((currentDashboardItem?.config as unknown) as ViewConfig)?.viewType === 'dataDownload';
+    (currentDashboardItem?.config as unknown as ViewConfig)?.viewType === 'dataDownload';
 
   const getHasBigData = () => {
     if (isDataDownload || !reportData) return false;
     else if (type === 'matrix') return true;
     const { data } = reportData as BaseReport;
-    return data && data.length > 20;
+    return data ? data?.length > 20 : false;
   };
   const hasBigData = getHasBigData();
 
   return (
     <StyledModal isOpen onClose={handleCloseModal}>
-      <ExportContext.Provider value={exportConfig}>
-        <ExportDispatchContext.Provider value={dispatch}>
-          <ExportButton />
-          <Wrapper $hasBigData={!isExportMode && hasBigData}>
-            <ExportDashboardItem entityName={entityName} />
-            <EnlargedDashboardVisual entityName={entityName} />
-          </Wrapper>
-        </ExportDispatchContext.Provider>
-      </ExportContext.Provider>
+      <ExportDashboardItemContextProvider
+        defaultSettings={{
+          exportWithLabels,
+          exportWithTable,
+          exportWithTableDisabled,
+          exportFormat: type === 'matrix' ? ExportFormats.XLSX : ExportFormats.PNG,
+        }}
+      >
+        <ExportButton />
+        <ContentWrapper hasBigData={hasBigData}>
+          <ExportDashboardItem entityName={entityName} />
+          <EnlargedDashboardVisual entityName={entityName} />
+        </ContentWrapper>
+      </ExportDashboardItemContextProvider>
     </StyledModal>
   );
 };

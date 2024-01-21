@@ -55,7 +55,6 @@
     "@storybook/react": "^7.0.18",
     "@storybook/react-vite": "^7.0.18",
     "@storybook/testing-library": "^0.0.14-next.2",
-    "@tupaia/types": "workspace:*",
     "@types/dom-to-image": "^2.6.4",
     "@types/downloadjs": "^1.4.3",
     "@types/mapbox__polyline": "^1.0.2",
