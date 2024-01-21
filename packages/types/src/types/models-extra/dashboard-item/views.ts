@@ -2,9 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import type { BaseConfig, ValueType } from './common';
 import { CssColor } from '../../css';
+import type { BaseConfig, ValueType } from './common';
 
 type BaseViewConfig = BaseConfig &
   Record<string, unknown> & {

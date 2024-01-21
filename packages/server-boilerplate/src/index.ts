@@ -6,7 +6,13 @@
 
 export * from './connections';
 export * from './routes';
-export * from './utils';
+export {
+  configureWinston,
+  emptyMiddleware,
+  handleError,
+  handleWith,
+  forwardRequest,
+} from './utils';
 export {
   ApiBuilder as MicroServiceApiBuilder,
   buildBasicBearerAuthMiddleware,

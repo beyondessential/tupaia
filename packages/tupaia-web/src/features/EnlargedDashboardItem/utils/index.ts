@@ -5,4 +5,4 @@
 
 export { useEnlargedDashboardItem } from './useEnlargedDashboardItem';
 export { useExportDashboardItem } from './useExportDashboardItem';
-export * from './ExportContext';
+export * from './ExportDashboardItemContext';

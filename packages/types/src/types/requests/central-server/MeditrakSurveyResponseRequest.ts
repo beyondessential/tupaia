@@ -24,7 +24,7 @@ type AnswerType = {
 export interface MeditrakSurveyResponseRequest {
   id?: Id;
   survey_id: Id;
-  user_id: Id;
+  user_id: Id | null;
   answers: AnswerType[];
   clinic_id?: Id | null;
   entity_id?: Id;
