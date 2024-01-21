@@ -7,9 +7,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
-import { useDashboards, useEntity } from '../api/queries';
+import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
+import { useEntity } from '../api/queries';
 import { PDFExportDashboardItem } from '../features';
 import { DashboardItem } from '../types';
+import { useDashboard } from '../features/Dashboard';
 
 const A4_RATIO = 1 / 1.41;
 const Parent = styled.div<{ $isPreview?: boolean }>`
@@ -18,21 +20,15 @@ const Parent = styled.div<{ $isPreview?: boolean }>`
   ${({ $isPreview }) => ($isPreview ? `aspect-ratio: ${A4_RATIO};` : '')};
 `;
 
-type PDFExportProps = {
-  projectCode?: string;
-  entityCode?: string;
-  dashboardName?: string;
-  selectedDashboardItems?: string[];
+interface PDFExportProps {
+  selectedDashboardItems?: TupaiaWebExportDashboardRequest.ReqBody['selectedDashboardItems'];
   isPreview?: boolean;
-};
+}
 
 /**
  * This is the view that gets hit by puppeteer when generating a PDF.
  */
 export const PDFExport = ({
-  projectCode: propsProjectCode,
-  entityCode: propsEntityCode,
-  dashboardName: propsDashboardName,
   selectedDashboardItems: propsSelectedDashboardItems,
   isPreview = false,
 }: PDFExportProps) => {
@@ -41,29 +37,27 @@ export const PDFExport = ({
     document.body.style.backgroundColor = 'white';
   }
 
-  const {
-    projectCode: urlProjectCode,
-    entityCode: urlEntityCode,
-    dashboardName: urlDashboardName,
-  } = useParams();
-
-  const projectCode = propsProjectCode || urlProjectCode;
-  const entityCode = propsEntityCode || urlEntityCode;
-  const dashboardName = propsDashboardName || urlDashboardName;
+  const { projectCode, entityCode } = useParams();
 
   const [urlSearchParams] = useSearchParams();
 
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { activeDashboard } = useDashboard();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const urlSelectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
-  const selectedDashboardItems = propsSelectedDashboardItems || urlSelectedDashboardItems;
+
+  const getSelectedDashboardItems = () => {
+    const urlSelectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
+
+    return propsSelectedDashboardItems || urlSelectedDashboardItems;
+  };
+
+  const selectedDashboardItems = getSelectedDashboardItems();
 
   if (!activeDashboard) return null;
 
   const dashboardItems = selectedDashboardItems?.reduce(
     (result: DashboardItem[], code?: string) => {
       const item = (activeDashboard?.items as DashboardItem[])?.find(
-        (item: DashboardItem) => item.code === (code as DashboardItem['code']),
+        (dashboardItem: DashboardItem) => dashboardItem.code === (code as DashboardItem['code']),
       );
       return item ? [...result, item] : result;
     },
