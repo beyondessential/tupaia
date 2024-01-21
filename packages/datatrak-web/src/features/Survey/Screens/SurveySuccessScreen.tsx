@@ -12,6 +12,7 @@ import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
 import { SurveyQRCode } from '../SurveyQRCode';
+import { useCurrentUser } from '../../../api';
 
 const Wrapper = styled.div`
   display: flex;
@@ -69,6 +70,7 @@ const Button = styled(BaseButton)`
 `;
 
 export const SurveySuccessScreen = () => {
+  const { isLoggedIn } = useCurrentUser();
   const params = useParams();
   const navigate = useNavigate();
   const { resetForm } = useSurveyForm();
@@ -98,17 +100,21 @@ export const SurveySuccessScreen = () => {
       <Container>
         <StyledImg src="/tupaia-high-five.svg" alt="Survey submit success" />
         <Title>Survey submitted!</Title>
-        <Text>{text}</Text>
-        <ButtonGroup>
-          {survey?.canRepeat && (
-            <Button onClick={repeatSurvey} fullWidth variant="outlined">
-              Repeat Survey
-            </Button>
-          )}
-          <Button to="/" fullWidth>
-            Return to dashboard
-          </Button>
-        </ButtonGroup>
+        {isLoggedIn && (
+          <>
+            <Text>{text}</Text>
+            <ButtonGroup>
+              {survey?.canRepeat && (
+                <Button onClick={repeatSurvey} fullWidth variant="outlined">
+                  Repeat Survey
+                </Button>
+              )}
+              <Button to="/" fullWidth>
+                Return to dashboard
+              </Button>
+            </ButtonGroup>
+          </>
+        )}
       </Container>
       <SurveyQRCode />
     </Wrapper>

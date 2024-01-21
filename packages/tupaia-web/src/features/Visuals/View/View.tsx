@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DashboardItemReport, DashboardItemConfig } from '../../../types';
+import { DashboardItemContext } from '../../DashboardItem';
+import { DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
@@ -15,8 +17,6 @@ import { MultiValueRow } from './MultiValueRow';
 import { DataDownload } from './DataDownload';
 import { DownloadFiles } from './DownloadFiles';
 import { QRCode } from './QRCode';
-import { DashboardItemContext } from '../../DashboardItem';
-import { DashboardInfoHover } from '../../DashboardItem';
 import { MultiPhotograph } from './MultiPhotograph';
 
 const MultiSingleValueWrapper = styled.div`

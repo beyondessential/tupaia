@@ -2,37 +2,17 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { UseQueryResult, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { TupaiaWebDashboardsRequest } from '@tupaia/types';
+import { EntityCode, ProjectCode } from '../../types';
 import { get } from '../api';
-import { DashboardName, EntityCode, ProjectCode } from '../../types';
 
 // Returns all dashboards for a project and entity, and also the active dashboard
-export const useDashboards = (
-  projectCode?: ProjectCode,
-  entityCode?: EntityCode,
-  dashboardName?: DashboardName,
-): UseQueryResult & {
-  dashboards: TupaiaWebDashboardsRequest.ResBody;
-  activeDashboard?: TupaiaWebDashboardsRequest.ResBody[number];
-} => {
-  const enabled = !!entityCode && !!projectCode;
-  const result = useQuery(
+export const useDashboards = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+  return useQuery(
     ['dashboards', projectCode, entityCode],
-    (): Promise<TupaiaWebDashboardsRequest.ResBody> => 
-      get(`dashboards/${projectCode}/${entityCode}`)
-      ,
-    { enabled, keepPreviousData: false },
+    (): Promise<TupaiaWebDashboardsRequest.ResBody> =>
+      get(`dashboards/${projectCode}/${entityCode}`),
+    { enabled: !!entityCode && !!projectCode, keepPreviousData: false },
   );
-
-  const { data = [] } = result;
-
-  let activeDashboard;
-
-  if (data?.length > 0 && dashboardName) {
-    // trim dashboard name to avoid issues with trailing or leading spaces
-    activeDashboard = data?.find(dashboard => dashboard.name.trim() === dashboardName.trim());
-  }
-
-  return { ...result, dashboards: data, activeDashboard };
 };
