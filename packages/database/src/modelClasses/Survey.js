@@ -129,7 +129,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
     return SurveyType;
   }
 
-  async createQueryClause(accessPolicy) {
+  async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
     const params = Object.entries(countryIdsByPermissionGroup).reduce(
       (result, [permissionGroup, countryIds]) => [...result, permissionGroup, ...countryIds],
@@ -142,7 +142,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
           return `
           (
             permission_group_id = ? AND 
-            ${SqlQuery.array(countryIds, 'TEXT')} @> country_ids
+            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
           )
         `;
         })
@@ -181,7 +181,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
    * @returns
    */
   async findSurveysForAccessPolicy(accessPolicy, projectId = '') {
-    const queryClause = await this.createQueryClause(accessPolicy);
+    const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
 
     const queryConditions = {
       [QUERY_CONJUNCTIONS.RAW]: queryClause,

@@ -54,7 +54,10 @@ export class FeedItemModel extends DatabaseModel {
 
     const feedItems = await this.find(
       {
-        'survey_response.survey_id': surveyIds,
+        'survey_response.survey_id': {
+          comparator: 'IN',
+          comparisonValue: surveyIds,
+        },
         [QUERY_CONJUNCTIONS.OR]: {
           type: FeedItemTypes.Markdown,
         },

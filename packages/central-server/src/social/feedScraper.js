@@ -47,9 +47,8 @@ const addLatestSurveyFeedItems = async models => {
 
   // Use async for loop instead of Promise.all because this process doesn't block
   // user events and should pace itself to avoid overloading the database.
-  for (let i = 0; i < newSurveyResponses.length; i++) {
+  for (const surveyResponse of newSurveyResponses) {
     try {
-      const surveyResponse = newSurveyResponses[i];
       const { id: surveyResponseId, end_time: endTime } = surveyResponse;
 
       const { name: surveyName, permission_group_id: permissionGroupId } =
