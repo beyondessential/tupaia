@@ -66,6 +66,7 @@ export const registerInputFields = () => {
     <ReduxAutocomplete
       id={props.id}
       placeholder={props.value}
+      initialValue={props.value}
       label={props.label}
       helperText={props.secondaryLabel}
       endpoint={props.optionsEndpoint}

@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getAutocompleteState } from './selectors';
@@ -26,6 +26,8 @@ const ReduxAutocompleteComponent = React.memo(
     onChangeSelection,
     onChangeSearchTerm,
     selection,
+    setInitialSelection,
+    initialValue,
     isLoading,
     results,
     label,
@@ -37,11 +39,26 @@ const ReduxAutocompleteComponent = React.memo(
     placeholder,
     helperText,
   }) => {
+    const [hasSetInitialSelection, setHasSetInitialSelection] = useState(false);
+
     React.useEffect(() => {
       return () => {
         onClearState();
       };
     }, []);
+
+    // If working with a multi-value input, set the initial selection to the initial value so that users can easily add/remove from the existing values
+    React.useEffect(() => {
+      if (
+        !hasSetInitialSelection &&
+        allowMultipleValues &&
+        initialValue &&
+        initialValue.length > 0
+      ) {
+        setInitialSelection(initialValue);
+        setHasSetInitialSelection(true);
+      }
+    }, [hasSetInitialSelection, allowMultipleValues, initialValue]);
 
     let value = selection;
 
@@ -77,6 +94,7 @@ ReduxAutocompleteComponent.propTypes = {
   allowMultipleValues: PropTypes.bool,
   canCreateNewOptions: PropTypes.bool,
   isLoading: PropTypes.bool.isRequired,
+  setInitialSelection: PropTypes.func.isRequired,
   onChangeSearchTerm: PropTypes.func.isRequired,
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
@@ -87,11 +105,13 @@ ReduxAutocompleteComponent.propTypes = {
   label: PropTypes.string,
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 ReduxAutocompleteComponent.defaultProps = {
   allowMultipleValues: false,
   selection: [],
+  initialValue: [],
   results: [],
   canCreateNewOptions: false,
   searchTerm: null,
@@ -123,6 +143,15 @@ const mapDispatchToProps = (
     distinct,
   },
 ) => ({
+  setInitialSelection: initialValue =>
+    dispatch(
+      changeSelection(
+        reduxId,
+        // Note: This will look incorrect if we're using a different optionLabelKey to optionValueKey (as the selected option will have the 'value' as the label)
+        // However the same issue exists with the placeholder, and in practice we rarely use different keys for labels and values in multi-select
+        initialValue.map(value => ({ [optionLabelKey]: value, [optionValueKey]: value })),
+      ),
+    ),
   onChangeSelection: (event, newSelection, reason) => {
     if (newSelection === null) {
       onChange(null);

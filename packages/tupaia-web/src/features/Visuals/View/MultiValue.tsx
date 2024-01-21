@@ -10,7 +10,17 @@ import { MultiValueViewConfig, ViewConfig, ViewReport, ViewDataItem } from '@tup
 
 const StyledTable = styled(Table)<{
   $isExport?: boolean;
+  $isEnlarged?: boolean;
 }>`
+  max-width: 30rem;
+  margin: ${({ $isEnlarged, $isExport }) => {
+    if (!$isEnlarged) return 0;
+    if ($isExport) {
+      return '1rem auto 0';
+    }
+    return '2rem auto 0';
+  }};
+  color: ${({ theme, $isExport }) => ($isExport ? theme.palette.common.black : 'inherit')};
   th.MuiTableCell-root,
   td.MuiTableCell-root {
     ${props => props.$isExport && 'color: currentColor;'}
@@ -47,6 +57,7 @@ interface MultiValueProps {
   report: ViewReport;
   config: ViewConfig;
   isExport?: boolean;
+  isEnlarged?: boolean;
 }
 
 const TableCell = styled(MuiTableCell)`
@@ -61,10 +72,10 @@ const TableCell = styled(MuiTableCell)`
   }
 `;
 
-export const MultiValue = ({ report: { data }, config, isExport }: MultiValueProps) => {
+export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: MultiValueProps) => {
   const { valueType } = config;
   return (
-    <StyledTable $isExport={isExport}>
+    <StyledTable $isExport={isExport} $isEnlarged={isEnlarged}>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
           <TableRow key={i}>

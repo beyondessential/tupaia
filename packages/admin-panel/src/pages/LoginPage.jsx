@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -93,8 +93,9 @@ LoginPageComponent.defaultProps = {
   LogoComponent: Logo,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   isLoggedIn: getIsUserAuthenticated(state),
+  redirectTo: ownProps.redirectTo || ownProps.location?.state?.from || '/',
 });
 
-export const LoginPage = connect(mapStateToProps)(LoginPageComponent);
+export const LoginPage = withRouter(connect(mapStateToProps)(LoginPageComponent));
