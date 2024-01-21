@@ -104,14 +104,14 @@ export const SurveySideMenu = () => {
     toggleSideMenu,
     visibleScreens,
     screenNumber,
-    setFormData,
+    updateFormData,
     isReviewScreen,
     isSuccessScreen,
     isResponseScreen,
   } = useSurveyForm();
   if (isReviewScreen || isSuccessScreen || isResponseScreen) return null;
   const onChangeScreen = () => {
-    setFormData(getValues());
+    updateFormData(getValues());
     if (isMobile) toggleSideMenu();
   };
   const getFormattedScreens = () => {

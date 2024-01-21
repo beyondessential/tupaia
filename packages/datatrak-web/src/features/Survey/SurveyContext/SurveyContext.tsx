@@ -6,13 +6,13 @@
 import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
 import { useMatch, useParams } from 'react-router-dom';
 import moment from 'moment';
+import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../utils';
 import { getDisplayQuestions, getIsQuestionVisible, getUpdatedFormData } from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
-import { ROUTES } from '../../../constants';
 
 const defaultContext = {
   startTime: new Date().toISOString(),
@@ -37,6 +37,7 @@ export const SurveyContext = ({ children }) => {
   const { surveyCode, ...params } = useParams<SurveyParams>();
   const screenNumber = params.screenNumber ? parseInt(params.screenNumber!, 10) : null;
   const { data: survey } = useSurvey(surveyCode);
+  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
 
   const { formData } = state;
 
@@ -65,8 +66,17 @@ export const SurveyContext = ({ children }) => {
         payload: moment().toISOString(),
       });
     };
+
+    const initialiseFormData = () => {
+      // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
+      if (isResponseScreen) return;
+      const initialFormData = getUpdatedFormData({}, formData, flattenedScreenComponents!);
+      dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
+    };
+
     // update the start time when a survey is started, so that it can be passed on when submitting the survey
     updateStartTime();
+    initialiseFormData();
   }, [surveyCode]);
 
   const displayQuestions = getDisplayQuestions(
@@ -102,14 +112,24 @@ export const useSurveyForm = () => {
   const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
+  const numberOfScreens = visibleScreens?.length || 0;
+  const isLast = screenNumber === numberOfScreens;
+  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
+  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
+  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
+
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
   };
 
   const setFormData = (newFormData: Record<string, any>) => {
+    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: newFormData });
+  };
+
+  const updateFormData = (newFormData: Record<string, any>) => {
     const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents!);
 
-    dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: updatedFormData });
+    setFormData(updatedFormData);
   };
 
   const resetForm = () => {
@@ -128,12 +148,6 @@ export const useSurveyForm = () => {
     dispatch({ type: ACTION_TYPES.CLOSE_CANCEL_CONFIRMATION });
   };
 
-  const numberOfScreens = visibleScreens?.length || 0;
-  const isLast = screenNumber === numberOfScreens;
-  const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
-
   return {
     ...surveyFormContext,
     isLast,
@@ -142,6 +156,7 @@ export const useSurveyForm = () => {
     isResponseScreen,
     numberOfScreens,
     toggleSideMenu,
+    updateFormData,
     setFormData,
     resetForm,
     getAnswerByQuestionId,

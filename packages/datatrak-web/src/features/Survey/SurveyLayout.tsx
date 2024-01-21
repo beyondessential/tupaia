@@ -73,7 +73,7 @@ export const SurveyLayout = () => {
   const navigate = useNavigate();
   const params = useParams<SurveyParams>();
   const {
-    setFormData,
+    updateFormData,
     formData,
     isLast,
     screenNumber,
@@ -87,7 +87,7 @@ export const SurveyLayout = () => {
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
 
   const handleStep = (path, data) => {
-    setFormData({ ...formData, ...data });
+    updateFormData({ ...formData, ...data });
     navigate(path);
   };
 

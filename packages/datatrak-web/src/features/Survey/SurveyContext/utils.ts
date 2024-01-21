@@ -188,8 +188,8 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
+    const { config, questionId } = question;
     if (hasConditionConfig(question)) {
-      const { config, questionId } = question;
       const { conditions } = config.condition;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
@@ -199,14 +199,12 @@ const updateDependentQuestions = (
       }
     }
     if (hasArithmeticConfig(question)) {
-      const { config, questionId } = question;
       const result = getArithmeticResult(expressionParser, formDataCopy, config.arithmetic);
       if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
       }
     }
-    if (hasCodeGeneratorConfig(question)) {
-      const { config, questionId } = question;
+    if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
       const code =
         config.codeGenerator.type === 'shortid'
           ? generateShortId(config.codeGenerator)
