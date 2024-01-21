@@ -6,10 +6,9 @@
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 
-export const ExportSettingLabel = styled(Typography).attrs({
-  variant: 'h3',
-})`
+export const ExportSubtitle = styled(Typography)`
   color: ${({ theme }) => theme.palette.text.primary};
-  font-size: 1rem;
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-top: 0.3rem;
 `;

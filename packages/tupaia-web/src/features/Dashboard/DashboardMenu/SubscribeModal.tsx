@@ -9,12 +9,11 @@ import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Button, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useUser } from '../../../api/queries';
-import { Dashboard } from '../../../types';
+import { useDashboards, useUser } from '../../../api/queries';
 import { Modal, Form, TextField, Title, ModalParagraph } from '../../../components';
 import { FORM_FIELD_VALIDATION, MOBILE_BREAKPOINT } from '../../../constants';
 import { useSubscribeDashboard, useUnsubscribeDashboard } from '../../../api/mutations';
-import { useDashboardMailingList } from '../../../utils';
+import { useDashboardMailingList, useDashboard } from '../utils';
 import {
   MODAL_SUBSCRIBE_TEXT,
   MODAL_SUBSCRIBE_TITLE,
@@ -91,20 +90,10 @@ const EmailInput = styled(TextField)<{ $disabled?: boolean }>`
       : ''};
 `;
 
-interface SubscribeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  activeDashboard?: Dashboard;
-  onToggleSubscription: () => void;
-}
-
-export const SubscribeModal = ({
-  isOpen,
-  onClose,
-  activeDashboard,
-  onToggleSubscription,
-}: SubscribeModalProps) => {
+export const SubscribeModal = () => {
+  const { activeDashboard, subscribeModalOpen, toggleSubscribeModal } = useDashboard();
   const { entityCode, projectCode } = useParams();
+  const { refetch: refetchDashboards } = useDashboards(projectCode, entityCode);
   const { data: user, isLoggedIn, isLoading } = useUser();
   const mailingList = useDashboardMailingList();
   const isSubscribed = mailingList ? mailingList.isSubscribed : false;
@@ -132,8 +121,8 @@ export const SubscribeModal = ({
     } else {
       await subscribe(data);
     }
-    onToggleSubscription();
-    onClose();
+    refetchDashboards();
+    toggleSubscribeModal();
   };
 
   const handleClose = () => {
@@ -142,13 +131,13 @@ export const SubscribeModal = ({
     } else {
       resetSubscribe();
     }
-    onClose();
+    toggleSubscribeModal();
   };
 
   const isMutateError = !!subscribeError || !!unsubscribeError;
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose}>
+    <Modal isOpen={subscribeModalOpen} onClose={handleClose}>
       <Wrapper>
         {activeDashboard && mailingList ? (
           <Container>
