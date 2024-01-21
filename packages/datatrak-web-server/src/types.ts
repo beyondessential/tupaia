@@ -17,13 +17,10 @@ import { FeedItemModel, SurveyResponseModel, UserModel } from './models';
 export type EntityType = BaseEntityType & Entity;
 export type OneTimeLoginType = BaseOneTimeLoginType & OneTimeLogin;
 
-export type UserType = BaseUserType & UserAccount;
-
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly entity: Model<EntityModel, Entity, EntityType>;
   readonly surveyResponse: SurveyResponseModel;
   readonly feedItem: FeedItemModel;
-  readonly user: Model<UserModel, UserAccount, UserType>;
-  readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginType>;
   readonly user: UserModel;
+  readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginType>;
 }
