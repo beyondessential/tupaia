@@ -4,13 +4,13 @@
  *
  */
 import React from 'react';
-import { Typography, Tooltip, withStyles } from '@material-ui/core';
+import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
 
 const DEFAULT = 'default';
 const TILE_SET = 'tileSet';
-const MAP_OVERLAY = 'mayOverlay';
+const MAP_OVERLAY = 'mapOverlay';
 
 type ButtonProps = {
   $buttonType: string;
