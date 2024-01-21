@@ -188,7 +188,7 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
-    const { config, questionId } = question;
+    const { config = {}, questionId } = question;
     if (hasConditionConfig(question)) {
       const { conditions } = config.condition;
       const result = Object.keys(conditions).find(resultValue =>
