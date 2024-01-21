@@ -11,7 +11,8 @@ import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
 import { MultiValueViewConfig } from '@tupaia/types';
 import { DashboardItemConfig, DashboardItem as DashboardItemType } from '../../types';
-import { useDashboards, useReport } from '../../api/queries';
+import { useReport } from '../../api/queries';
+import { useDashboard } from '../Dashboard';
 import { DashboardItemContent } from './DashboardItemContent';
 import { DashboardItemContext } from './DashboardItemContext';
 
@@ -67,8 +68,8 @@ const getShowDashboardItemTitle = (config: DashboardItemConfig, legacy?: boolean
  * This is the dashboard item, and renders the item in the dashboard itself, as well as a modal if the item is expandable
  */
 export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemType }) => {
-  const { projectCode, entityCode, dashboardName } = useParams();
-  const { activeDashboard } = useDashboards(projectCode, entityCode, dashboardName);
+  const { projectCode, entityCode } = useParams();
+  const { activeDashboard } = useDashboard();
   const { startDate: defaultStartDate, endDate: defaultEndDate } = getDefaultDates(
     dashboardItem?.config,
   ) as {

@@ -6,10 +6,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { DashboardItem } from '../../../types';
 import { Modal as BaseModal } from '../../../components';
+import { useDashboard } from '../utils';
+import { ExportFormats, ExportSettingsContextProvider } from '..';
 import { SelectVisualisation } from './SelectVisualisations';
-import { ExportSettings } from './ExportSettings';
+import { ExportConfig } from './ExportConfig';
 
 const Modal = styled(BaseModal)`
   .MuiPaper-root {
@@ -28,7 +29,7 @@ const Wrapper = styled.div`
   align-items: start;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    padding: 2.5rem 2.875rem 0rem 2.875rem;
+    padding: 2.375rem 3.625rem 0rem 2.375rem;
   }
 `;
 
@@ -60,49 +61,52 @@ const Title = styled(Typography).attrs({
 })`
   color: ${props => props.theme.palette.text.primary};
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   line-height: 1.4;
 `;
-
-interface ExportDashboardProps {
-  isOpen: boolean;
-  onClose: () => void;
-  dashboardItems: DashboardItem[];
-}
 
 const SELECT_VISUALISATIONS_SCREEN = 'SELECT_VISUALISATIONS';
 const EXPORT_SETTINGS_SCREEN = 'EXPORT_SETTINGS';
 
-export const ExportDashboard = ({ isOpen, onClose, dashboardItems = [] }: ExportDashboardProps) => {
+export const ExportDashboard = () => {
   const [selectedDashboardItems, setSelectedDashboardItems] = useState<string[]>([]);
+  const { exportModalOpen, toggleExportModal } = useDashboard();
   const [screen, setScreen] = useState(SELECT_VISUALISATIONS_SCREEN);
   const onNext = () => setScreen(EXPORT_SETTINGS_SCREEN);
   const onCloseModal = () => {
-    onClose();
+    toggleExportModal();
     setScreen(SELECT_VISUALISATIONS_SCREEN);
     setSelectedDashboardItems([]);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onCloseModal}>
-      <Wrapper>
-        <Title>Export dashboard</Title>
-        <Container>
-          {screen === SELECT_VISUALISATIONS_SCREEN ? (
-            <SelectVisualisation
-              onNext={onNext}
-              onClose={onCloseModal}
-              dashboardItems={dashboardItems}
-              setSelectedDashboardItems={setSelectedDashboardItems}
-            />
-          ) : (
-            <ExportSettings
-              onClose={onCloseModal}
-              selectedDashboardItems={selectedDashboardItems}
-            />
-          )}
-        </Container>
-      </Wrapper>
+    <Modal isOpen={exportModalOpen} onClose={onCloseModal}>
+      <ExportSettingsContextProvider
+        defaultSettings={{
+          exportFormat: ExportFormats.PNG,
+          exportWithLabels: false,
+          exportWithTable: true,
+        }}
+      >
+        <Wrapper>
+          <Title>Export dashboard</Title>
+          <Container>
+            {screen === SELECT_VISUALISATIONS_SCREEN ? (
+              <SelectVisualisation
+                onNext={onNext}
+                onClose={onCloseModal}
+                selectedDashboardItems={selectedDashboardItems}
+                setSelectedDashboardItems={setSelectedDashboardItems}
+              />
+            ) : (
+              <ExportConfig
+                onClose={onCloseModal}
+                selectedDashboardItems={selectedDashboardItems}
+              />
+            )}
+          </Container>
+        </Wrapper>
+      </ExportSettingsContextProvider>
     </Modal>
   );
 };
