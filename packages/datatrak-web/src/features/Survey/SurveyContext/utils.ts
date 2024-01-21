@@ -204,6 +204,18 @@ const updateDependentQuestions = (
         formDataCopy[questionId] = result;
       }
     }
+  });
+
+  return formDataCopy;
+};
+
+export const generateCodeForCodeGeneratorQuestions = (
+  screenComponents: SurveyScreenComponent[],
+  formData: Record<string, any>,
+) => {
+  const formDataCopy = { ...formData };
+  screenComponents?.forEach(question => {
+    const { config, questionId } = question;
     if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
       const code =
         config.codeGenerator.type === 'shortid'
@@ -212,7 +224,6 @@ const updateDependentQuestions = (
       formDataCopy[questionId] = code;
     }
   });
-
   return formDataCopy;
 };
 

@@ -10,7 +10,12 @@ import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
 import { getAllSurveyComponents } from '../utils';
-import { getDisplayQuestions, getIsQuestionVisible, getUpdatedFormData } from './utils';
+import {
+  generateCodeForCodeGeneratorQuestions,
+  getDisplayQuestions,
+  getIsQuestionVisible,
+  getUpdatedFormData,
+} from './utils';
 import { SurveyFormContextType, surveyReducer } from './reducer';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
@@ -42,7 +47,7 @@ export const SurveyContext = ({ children }) => {
   const { formData } = state;
 
   const surveyScreens = survey?.screens || [];
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens) ?? [];
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
@@ -70,7 +75,10 @@ export const SurveyContext = ({ children }) => {
     const initialiseFormData = () => {
       // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
       if (isResponseScreen) return;
-      const initialFormData = getUpdatedFormData({}, formData, flattenedScreenComponents!);
+      const initialFormData = generateCodeForCodeGeneratorQuestions(
+        flattenedScreenComponents,
+        formData,
+      );
       dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
     };
 
@@ -81,7 +89,7 @@ export const SurveyContext = ({ children }) => {
 
   const displayQuestions = getDisplayQuestions(
     activeScreen,
-    flattenedScreenComponents!,
+    flattenedScreenComponents,
     screenNumber,
   );
   const screenHeader = activeScreen?.[0]?.text;
@@ -109,7 +117,7 @@ export const SurveyContext = ({ children }) => {
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens) ?? [];
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
   const numberOfScreens = visibleScreens?.length || 0;
@@ -127,7 +135,7 @@ export const useSurveyForm = () => {
   };
 
   const updateFormData = (newFormData: Record<string, any>) => {
-    const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents!);
+    const updatedFormData = getUpdatedFormData(newFormData, formData, flattenedScreenComponents);
 
     setFormData(updatedFormData);
   };
