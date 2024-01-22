@@ -188,9 +188,14 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
-    const { config = {}, questionId } = question;
+    if (!question.config) return;
+    const { questionId, config } = question;
     if (hasConditionConfig(question)) {
-      const { conditions } = config.condition;
+      const { conditions } = (
+        config as {
+          condition: ConditionQuestionConfig;
+        }
+      ).condition;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
@@ -199,7 +204,10 @@ const updateDependentQuestions = (
       }
     }
     if (hasArithmeticConfig(question)) {
-      const result = getArithmeticResult(expressionParser, formDataCopy, config.arithmetic);
+      const { arithmetic } = config as {
+        arithmetic: ArithmeticQuestionConfig;
+      };
+      const result = getArithmeticResult(expressionParser, formDataCopy, arithmetic);
       if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
       }
@@ -215,12 +223,14 @@ export const generateCodeForCodeGeneratorQuestions = (
 ) => {
   const formDataCopy = { ...formData };
   screenComponents?.forEach(question => {
+    if (!question.config) return;
     const { config, questionId } = question;
+    const { codeGenerator } = config as {
+      codeGenerator: CodeGeneratorQuestionConfig;
+    };
     if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
       const code =
-        config.codeGenerator.type === 'shortid'
-          ? generateShortId(config.codeGenerator)
-          : generateMongoId();
+        codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
       formDataCopy[questionId] = code;
     }
   });
