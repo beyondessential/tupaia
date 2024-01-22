@@ -64,26 +64,21 @@ export const SurveyContext = ({ children }) => {
   const activeScreen = visibleScreens?.[screenNumber! - 1]?.surveyScreenComponents || [];
 
   useEffect(() => {
-    const updateStartTime = () => {
-      if (!surveyCode) return;
+    const initialiseFormData = () => {
+      if (!surveyCode || isResponseScreen) return;
+      // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
+      const initialFormData = generateCodeForCodeGeneratorQuestions(
+        flattenedScreenComponents,
+        formData,
+      );
+      dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
+      // update the start time when a survey is started, so that it can be passed on when submitting the survey
       dispatch({
         type: ACTION_TYPES.SET_SURVEY_START_TIME,
         payload: moment().toISOString(),
       });
     };
 
-    const initialiseFormData = () => {
-      // if we are on the response screen, we don't want to initialise the form data, because we want to show the user's saved answers
-      if (isResponseScreen) return;
-      const initialFormData = generateCodeForCodeGeneratorQuestions(
-        flattenedScreenComponents,
-        formData,
-      );
-      dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
-    };
-
-    // update the start time when a survey is started, so that it can be passed on when submitting the survey
-    updateStartTime();
     initialiseFormData();
   }, [surveyCode]);
 

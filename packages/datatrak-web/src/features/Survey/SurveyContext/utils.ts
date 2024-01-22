@@ -189,13 +189,9 @@ const updateDependentQuestions = (
 
   screenComponents?.forEach(question => {
     if (!question.config) return;
-    const { questionId, config } = question;
+    const { questionId } = question;
     if (hasConditionConfig(question)) {
-      const { conditions } = (
-        config as {
-          condition: ConditionQuestionConfig;
-        }
-      ).condition;
+      const { conditions } = question.config.condition;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
@@ -204,9 +200,7 @@ const updateDependentQuestions = (
       }
     }
     if (hasArithmeticConfig(question)) {
-      const { arithmetic } = config as {
-        arithmetic: ArithmeticQuestionConfig;
-      };
+      const { arithmetic } = question.config;
       const result = getArithmeticResult(expressionParser, formDataCopy, arithmetic);
       if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
