@@ -18,16 +18,21 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
     const surveyResponseData = this.req.body;
     const { central: centralApi } = this.req.ctx.services;
+    const { models } = this.req;
 
     // The processSurvey util needs this to look up entity records. Pass in a util function rather than the whole model context
-    const getEntity = (entityId: string) => this.req.models.entity.findById(entityId);
+    const findEntityById = (entityId: string) => models.entity.findById(entityId);
 
     const { qr_codes_to_create, ...processedResponse } = await processSurveyResponse(
       surveyResponseData,
-      getEntity,
+      findEntityById,
     );
 
-    await centralApi.createSurveyResponses([processedResponse]);
+    await centralApi.createSurveyResponses(
+      [processedResponse],
+      // If the user is not logged in, submit the survey response as public
+      processedResponse.user_id ? undefined : { submitAsPublic: true },
+    );
     return {
       qrCodeEntitiesCreated: qr_codes_to_create || [],
     };

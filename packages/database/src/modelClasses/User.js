@@ -33,9 +33,24 @@ export class UserType extends DatabaseType {
   }
 }
 
+const PUBLIC_USER_EMAIL = 'public@tupaia.org';
+
 export class UserModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return UserType;
+  }
+
+  /**
+   * Returns the user that is used for submitting surveys when not logged in
+   * @returns {Promise<null|*>}
+   */
+  async findPublicUser() {
+    const user = await this.findOne({ email: PUBLIC_USER_EMAIL });
+    if (!user) {
+      throw new Error('Public user not found. There must be a user with email public@tupaia.org');
+    }
+
+    return user;
   }
 
   emailVerifiedStatuses = {

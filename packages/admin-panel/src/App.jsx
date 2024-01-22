@@ -69,7 +69,12 @@ export const App = ({ user }) => {
         </Switch>
         <Footer />
       </PrivateRoute>
-      <Redirect to="/login" />
+      <Redirect
+        to={{
+          pathname: '/login',
+          state: { from: window.location.pathname },
+        }}
+      />
     </Switch>
   );
 };
