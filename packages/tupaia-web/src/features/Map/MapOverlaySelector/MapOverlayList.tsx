@@ -183,9 +183,7 @@ const useSavedMapOverlayDates = () => {
   const getSavedMapOverlayDateRange = (code: string) => {
     if (code) {
       const savedDateRange = getMapOverlayDateRange(code);
-      if (savedDateRange) {
-        return savedDateRange;
-      }
+      if (savedDateRange) return savedDateRange;
     }
     return DEFAULT_PERIOD_PARAM_STRING;
   };
@@ -215,9 +213,7 @@ export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?
     urlSearchParams.set(URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD, newDateRange);
     setUrlParams(urlSearchParams);
 
-    if (toggleOverlayLibrary) {
-      toggleOverlayLibrary();
-    }
+    if (toggleOverlayLibrary) toggleOverlayLibrary();
   };
 
   if (isLoadingMapOverlays) return null;

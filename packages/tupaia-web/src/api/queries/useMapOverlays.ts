@@ -62,7 +62,7 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
   const codedOverlays = mapOverlayByCode(flattenedMapOverlayGroups);
 
   const selectedOverlay = codedOverlays[selectedOverlayCode!];
-  const isPolygonSerieses = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
+  const isPolygonSeries = POLYGON_MEASURE_TYPES.includes(selectedOverlay?.displayType);
 
   return {
     allMapOverlays: flattenedMapOverlayGroups,
@@ -73,6 +73,6 @@ export const useMapOverlays = (projectCode?: ProjectCode, entityCode?: EntityCod
     errorLoadingMapOverlays: error,
     selectedOverlayCode,
     selectedOverlay,
-    isPolygonSerieses,
+    isPolygonSeries,
   };
 };

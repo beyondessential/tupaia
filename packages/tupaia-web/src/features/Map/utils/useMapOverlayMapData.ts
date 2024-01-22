@@ -120,11 +120,11 @@ const useRootEntityCode = (entity, measureLevel, displayOnLevel) => {
 export const useMapOverlayMapData = (hiddenValues = {}) => {
   const { projectCode, entityCode } = useParams();
   const { data: entity } = useEntity(projectCode, entityCode);
-  const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
+  const { selectedOverlay, isPolygonSeries } = useMapOverlays(projectCode, entityCode);
   const entityRelatives = useNavigationEntities(
     projectCode,
     entity,
-    isPolygonSerieses,
+    isPolygonSeries,
     selectedOverlay?.measureLevel,
     selectedOverlay?.displayOnLevel,
   );

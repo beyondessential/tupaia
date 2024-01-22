@@ -6,13 +6,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import {
-  LayerGroup,
-  BasePolygon,
   AreaTooltip,
+  BasePolygon,
+  BREWER_PALETTE,
+  LayerGroup,
+  MAP_COLORS,
   MeasureData,
   Series,
-  MAP_COLORS,
-  BREWER_PALETTE,
 } from '@tupaia/ui-map-components';
 import { Polygon } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
@@ -89,7 +89,7 @@ const DISPLAY_TYPES = {
 export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: PolygonLayerProps) => {
   const { projectCode, entityCode: activeEntityCode } = useParams();
   const navigateToEntity = useNavigateToEntity();
-  const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, activeEntityCode);
+  const { selectedOverlay, isPolygonSeries } = useMapOverlays(projectCode, activeEntityCode);
   const polygons = measureData.filter(m => !!m.region);
 
   const overlayLevels = Array.isArray(selectedOverlay?.measureLevel)
@@ -104,7 +104,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: Pol
     }
     if (
       !isLoading &&
-      isPolygonSerieses &&
+      isPolygonSeries &&
       overlayLevels.includes(measure?.type?.toLowerCase().replace('_', '')) // handle differences between camelCase and snake_case
     ) {
       // The active entity is part of the data visual so display it as a shaded polygon rather
@@ -116,7 +116,7 @@ export const PolygonLayer = ({ measureData = [], serieses = [], isLoading }: Pol
     }
 
     // only show shaded polygons if there is a measure value, i.e. it is not a navigation polygon (like a sibling etc)
-    if (isPolygonSerieses && measure?.value !== undefined) {
+    if (isPolygonSeries && measure?.value !== undefined) {
       return DISPLAY_TYPES.shaded;
     }
 
