@@ -27,8 +27,10 @@ const IconButton = styled(InfoRoundedIcon)<ButtonProps>`
   }
 `;
 
-const TextCaption = styled(Typography)`
-  background-color: black;
+const TextCaption = styled(Typography).attrs({
+  variant: 'caption',
+})`
+  background-color: ${({ theme }) => theme.palette.common.black};
 `;
 
 const Link = styled.a`
@@ -50,23 +52,17 @@ export interface ReferenceProps {
   link?: string;
 }
 
-const Content = ({ text = '', name = '', link = '' }: ReferenceProps) => {
-  if (text) {
-    return (
-      <TextCaption variant="caption">
-        <span>{text} </span>
-      </TextCaption>
-    );
-  }
-  return (
-    <TextCaption variant="caption">
-      <span>Source: </span>
+const Content = ({ text = '', name = '', link = '' }: ReferenceProps) =>
+  text ? (
+    <TextCaption>{text}</TextCaption>
+  ) : (
+    <TextCaption>
+      Source:{' '}
       <Link href={link} target="_blank" rel="noopener noreferrer">
         {name}
       </Link>
     </TextCaption>
   );
-};
 
 interface ReferenceTooltipProps {
   iconStyleOption?: ButtonType;
