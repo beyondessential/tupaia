@@ -8,18 +8,16 @@ import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
 
-const DEFAULT = 'default';
-const TILE_SET = 'tileSet';
-const MAP_OVERLAY = 'mapOverlay';
+type ButtonType = 'default' | 'tileSet' | 'mapOverlay';
 
 type ButtonProps = {
-  $buttonType: string;
+  $buttonType: ButtonType;
 };
 
 const IconButton = styled(InfoRoundedIcon)<ButtonProps>`
-  font-size: ${({ $buttonType }) => ($buttonType === MAP_OVERLAY ? '20px' : '16px')};
-  margin-top: ${({ $buttonType }) => ($buttonType === MAP_OVERLAY ? '3px' : '0px')};
-  margin-bottom: ${({ $buttonType }) => ($buttonType === TILE_SET ? '-1px' : '0px')};
+  font-size: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '20px' : '16px')};
+  margin-top: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '3px' : '0px')};
+  margin-bottom: ${({ $buttonType }) => ($buttonType === 'tileSet' ? '-1px' : '0px')};
   color: grey;
   transition: color 0.2s ease;
 
