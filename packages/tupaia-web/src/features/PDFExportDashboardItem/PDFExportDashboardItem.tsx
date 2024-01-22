@@ -130,7 +130,7 @@ export const PDFExportDashboardItem = ({
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
-      ...(config?.presentationOptions || {}),
+      ...config?.presentationOptions,
       exportWithLabels: false,
       exportWithTable: true,
     },
