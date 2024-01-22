@@ -9,12 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { GetApp } from '@material-ui/icons';
 import { IconButton } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS, DashboardItemVizTypes, ViewVizTypes } from '../../constants';
-import {
-  ACTION_TYPES,
-  ExportContext,
-  ExportDispatchContext,
-  useEnlargedDashboardItem,
-} from './utils';
+import { ExportDashboardItemContext, useEnlargedDashboardItem } from './utils';
 
 const Button = styled(IconButton).attrs({
   color: 'default',
@@ -34,8 +29,7 @@ const EXPORTABLE_TYPES = [
 
 export const ExportButton = () => {
   const [urlSearchParams] = useSearchParams();
-  const { isExportMode } = useContext(ExportContext);
-  const dispatch = useContext(ExportDispatchContext)!;
+  const { isExportMode, setIsExportMode } = useContext(ExportDashboardItemContext);
   const { currentDashboardItem } = useEnlargedDashboardItem();
   const { type, viewType } = currentDashboardItem?.config || {};
   const displayType = viewType || type;
@@ -46,10 +40,7 @@ export const ExportButton = () => {
     !urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
   const onClickExportButton = () => {
-    dispatch({
-      type: ACTION_TYPES.SET_IS_EXPORT_MODE,
-      payload: true,
-    });
+    setIsExportMode(true);
   };
 
   if (!canExport || isExportMode) return null;
