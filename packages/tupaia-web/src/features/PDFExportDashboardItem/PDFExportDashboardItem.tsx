@@ -80,6 +80,13 @@ export const getDatesAsString = (
   return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
 };
 
+interface PDFExportDashboardItemProps {
+  dashboardItem?: DashboardItem;
+  entityName?: Entity['name'];
+  activeDashboard?: Dashboard;
+  isPreview?: boolean;
+}
+
 /**
  * This is the dashboard item that gets generated when generating a PDF. It is only present when
  * puppeteer hits this view.
@@ -89,12 +96,7 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
-}: {
-  dashboardItem?: DashboardItem;
-  entityName?: Entity['name'];
-  activeDashboard?: Dashboard;
-  isPreview?: boolean;
-}) => {
+}: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
 
@@ -129,9 +131,11 @@ export const PDFExportDashboardItem = ({
     ...config,
     presentationOptions: {
       ...(config?.presentationOptions || {}),
+      exportWithLabels: false,
       exportWithTable: true,
     },
   } as DashboardItemConfig;
+
   const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
 
   const { data: project } = useProject(projectCode);
@@ -160,13 +164,7 @@ export const PDFExportDashboardItem = ({
         <ExportContent $hasData={data && data?.length > 0}>
           <DashboardItemContext.Provider
             value={{
-              config: {
-                ...config,
-                presentationOptions: {
-                  ...config.presentationOptions,
-                  exportWithTable: true,
-                },
-              },
+              config: dashboardItemConfig,
               report,
               reportCode,
               isLoading,
