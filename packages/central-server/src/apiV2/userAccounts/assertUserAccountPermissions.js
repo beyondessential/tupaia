@@ -26,9 +26,9 @@ export const assertUserAccountPermissions = async (accessPolicy, models, userAcc
   const permissionsById = keyBy(permissions, 'id');
   const entities = await models.entity.findManyById(entityPermissions.map(ep => ep.entity_id));
   const entitiesById = keyBy(entities, 'id');
-  const countryCodes = entities.map(e => e.country_code).filter(c => c !== 'DL');
+  const countryCodes = entities.map(e => e.country_code);
   if (countryCodes.length === 0) {
-    // User only has access to Demo Land, and it got filtered out
+    // User has no permissions, so anyone can view/edit their account
     return true;
   }
 
@@ -64,26 +64,45 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
   /**
    * Here we're building up an inner query to work out which user permissions exist that we don't
    * have access to. Once we know that, we just filter to find the users whose ids are not in that list
+   * 
+   * eg. If my access policy is: { DL: ['Admin', 'Public'], TO: ['Donor'] }
+   * The query is:
+      user_account.id NOT IN (
+        SELECT uep.user_id FROM user_entity_permission uep 
+        JOIN entity e ON uep.entity_id = e.id 
+        JOIN permission_group pg ON uep.permission_group_id = pg.id 
+
+        WHERE uep.user_id IS NOT NULL AND 
+        (
+          -- Either we don't have access to a country they have access to
+          e.code NOT IN ('DL', 'TO')
+        
+          -- Or we have access to it, but not with the level of permissions they do
+          OR (e.code = 'DL' AND pg.name NOT IN ('Admin', 'Public'))
+          OR (e.code = 'TO' AND pg.name NOT IN ('Donor'))
+        )
+      )
    */
   const sql = `
-  user_account.id not in (
-    -- Inner query to detect which user_ids we don't have permission for
-    select uep.user_id from user_entity_permission uep 
-    join entity e on uep.entity_id = e.id 
-    join permission_group pg on uep.permission_group_id = pg.id 
+  user_account.id NOT IN (
+    -- Inner query to detect which users have permissions that we do not
+    SELECT uep.user_id FROM user_entity_permission uep 
+    JOIN entity e ON uep.entity_id = e.id 
+    JOIN permission_group pg ON uep.permission_group_id = pg.id 
 
-    where uep.user_id is not null and 
+    WHERE uep.user_id IS NOT NULL AND 
     (
       -- Either we don't have access to a country they have access to
-      e.code not in ${SqlQuery.record(accessibleCountryCodes)}
+      e.code NOT IN ${SqlQuery.record(accessibleCountryCodes)}
 
       -- Or we have access to it, but not with the level of permissions they do
 ${accessibleCountryCodes
-  .map(countryCode => {
-    return `      or (e.code = ? and pg.name not in ${SqlQuery.record(
-      permissionsByCountryCode[countryCode],
-    )})`;
-  })
+  .map(
+    countryCode =>
+      `      OR (e.code = ? AND pg.name NOT IN ${SqlQuery.record(
+        permissionsByCountryCode[countryCode],
+      )})`,
+  )
   .join('\n')}
     )
   )`;
