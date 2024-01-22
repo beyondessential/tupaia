@@ -11,7 +11,6 @@ import { RawAnalyticResults, DataBrokerModelRegistry } from '../../../types';
 import { buildAnalyticsFromDhisAnalytics, buildAnalyticsFromDhisEventAnalytics } from '../builders';
 import { DataServiceMapping } from '../../DataServiceMapping';
 import { DataElement, DataType, DhisAnalytics, DhisEventAnalytics } from '../types';
-import { DataElementsMetadataPuller } from './DataElementsMetadataPuller';
 import { DhisTranslator } from '../translators';
 
 export type PullAnalyticsOptions = {
@@ -28,16 +27,10 @@ export type PullAnalyticsOptions = {
 export class AnalyticsPuller {
   private readonly models;
   private readonly translator;
-  private readonly dataElementsMetadataPuller;
 
-  public constructor(
-    models: DataBrokerModelRegistry,
-    translator: DhisTranslator,
-    dataElementsMetadataPuller: DataElementsMetadataPuller,
-  ) {
+  public constructor(models: DataBrokerModelRegistry, translator: DhisTranslator) {
     this.models = models;
     this.translator = translator;
-    this.dataElementsMetadataPuller = dataElementsMetadataPuller;
   }
 
   private groupDataSourcesByDhisDataType = (dataSources: DataElement[]) =>
@@ -116,9 +109,8 @@ export class AnalyticsPuller {
       if (dhisDataType === this.models.dataElement.getDhisDataTypes().INDICATOR) {
         // Multiple DHIS Indicators may have different period types,
         // so we have to group them by their period types and fetch them separately
-        const groupedDataSourcesByPeriodType = this.groupIndicatorDataSourcesByPeriodType(
-          dataSources,
-        );
+        const groupedDataSourcesByPeriodType =
+          this.groupIndicatorDataSourcesByPeriodType(dataSources);
         return Promise.all(
           Object.entries(groupedDataSourcesByPeriodType).map(
             ([dataPeriodType, groupedDataSources]) => {
@@ -243,10 +235,8 @@ export class AnalyticsPuller {
       dhisDataType?: DataType;
     },
   ) => {
-    const {
-      programCodes,
-      dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT,
-    } = options;
+    const { programCodes, dhisDataType = this.models.dataElement.getDhisDataTypes().DATA_ELEMENT } =
+      options;
 
     if (programCodes) {
       return this.pullAnalyticsFromEventsForApi;

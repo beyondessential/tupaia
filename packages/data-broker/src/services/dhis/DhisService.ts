@@ -107,15 +107,8 @@ export class DhisService extends Service {
       this.models.dataElement,
       this.translator,
     );
-    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
-      this.models.dataGroup,
-      this.translator,
-    );
-    this.analyticsPuller = new AnalyticsPuller(
-      this.models,
-      this.translator,
-      this.dataElementsMetadataPuller,
-    );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(this.models.dataGroup);
+    this.analyticsPuller = new AnalyticsPuller(this.models, this.translator);
     this.eventsPuller = new EventsPuller(this.models, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models, this.translator);
     this.pushers = this.getPushers();
