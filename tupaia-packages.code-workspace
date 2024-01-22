@@ -168,10 +168,6 @@
       "name": "web-config-server",
       "path": "packages/web-config-server"
     },
-    {
-      "name": "web-frontend",
-      "path": "packages/web-frontend"
-    }
   ],
   "settings": {
     "cSpell.caseSensitive": false,
@@ -241,7 +237,10 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": ["typescript", "typescriptreact"],
+    "eslint.validate": [
+      "typescript",
+      "typescriptreact"
+    ],
     "files.exclude": {
       "packages/": true
     },
