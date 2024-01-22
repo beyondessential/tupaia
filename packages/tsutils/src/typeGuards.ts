@@ -9,7 +9,7 @@ export const isNotNullish = <T>(val: T): val is NonNullable<T> => val !== undefi
 
 export function assertIsNotNullish<T>(val: T): asserts val is NonNullable<T> {
   if (!isNotNullish(val)) {
-    throw new Error('Unexpected null or undefined value');
+    throw new Error(`Expected value to be defined, but got ${val}`);
   }
 }
 
