@@ -9,7 +9,7 @@ import { DataGroup } from '../types';
 import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
 export type PullDataGroupsOptions = BasePullMetadataOptions & {
-  includeOptions: boolean;
+  includeOptions?: boolean;
 };
 
 export class DataGroupMetadataPuller {

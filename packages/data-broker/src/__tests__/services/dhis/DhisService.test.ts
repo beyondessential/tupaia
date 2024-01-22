@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { when } from 'jest-when';
+
 import * as GetDhisApi from '../../../services/dhis/getDhisApi';
 import {
   DATA_ELEMENTS,
@@ -19,16 +21,19 @@ const mockPullAnalytics = jest.fn();
 const mockPullEvents = jest.fn();
 const mockPullDeprecatedEvents = jest.fn();
 
+const mockDataElementsMetadataPuller = {
+  pull: jest.fn(),
+};
+const mockDataGroupMetadataPuller = {
+  pull: jest.fn(),
+};
+
 jest.mock('../../../services/dhis/pullers', () => ({
   AnalyticsPuller: jest.fn().mockImplementation(() => ({
     pull: mockPullAnalytics,
   })),
-  DataElementsMetadataPuller: jest.fn().mockImplementation(() => ({
-    pull: jest.fn(),
-  })),
-  DataGroupMetadataPuller: jest.fn().mockImplementation(() => ({
-    pull: jest.fn(),
-  })),
+  DataElementsMetadataPuller: jest.fn(() => mockDataElementsMetadataPuller),
+  DataGroupMetadataPuller: jest.fn(() => mockDataGroupMetadataPuller),
   DeprecatedEventsPuller: jest.fn().mockImplementation(() => ({
     pull: mockPullDeprecatedEvents,
   })),
@@ -86,8 +91,8 @@ describe('DhisService', () => {
             {
               ...event,
               dataValues: [
-                { dataElement: 'id000POP01', value: '1' },
-                { dataElement: 'id000POP02', value: '2' },
+                { dataElement: '100', value: '1' },
+                { dataElement: '200', value: '2' },
               ],
             },
           ]);
@@ -112,11 +117,11 @@ describe('DhisService', () => {
               ...event,
               dataValues: [
                 {
-                  dataElement: 'id000POP01',
+                  dataElement: '100',
                   value: '1',
                 },
                 {
-                  dataElement: 'id000DIF01_DHIS',
+                  dataElement: '101',
                   value: '3',
                 },
               ],
@@ -419,5 +424,39 @@ describe('DhisService', () => {
   describe('pullSyncGroupResults()', () => {
     it('throws an error', async () =>
       expect(dhisService.pullSyncGroupResults()).toBeRejectedWith('not supported'));
+  });
+
+  describe('pullMetadata()', () => {
+    const getApisForDataSourcesSpy = jest.spyOn(GetDhisApi, 'getApisForDataSources');
+
+    it('data element metadata', async () => {
+      const dataElements = [DATA_ELEMENTS.POP01];
+      const options = { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING };
+      const mockMetadata = [{ code: 'POP01', name: 'Population 1' }];
+      when(getApisForDataSourcesSpy)
+        .calledWith(models, dataElements, DEFAULT_DATA_SERVICE_MAPPING)
+        .mockResolvedValue([dhisApi]);
+      when(mockDataElementsMetadataPuller.pull)
+        .calledWith(dhisApi, dataElements, options)
+        .mockResolvedValue(mockMetadata);
+
+      const results = await dhisService.pullMetadata(dataElements, 'dataElement', options);
+      expect(results).toStrictEqual(mockMetadata);
+    });
+
+    it('data group metadata', async () => {
+      const dataGroups = [DATA_GROUPS.POP01_GROUP];
+      const options = { dataServiceMapping: DEFAULT_DATA_SERVICE_MAPPING };
+      const mockMetadata = [{ code: 'POP01', name: 'Population Group 1' }];
+      when(getApisForDataSourcesSpy)
+        .calledWith(models, dataGroups, DEFAULT_DATA_SERVICE_MAPPING)
+        .mockResolvedValue([dhisApi]);
+      when(mockDataGroupMetadataPuller.pull)
+        .calledWith(dhisApi, dataGroups, options)
+        .mockResolvedValue(mockMetadata);
+
+      const results = await dhisService.pullMetadata(dataGroups, 'dataGroup', options);
+      expect(results).toStrictEqual(mockMetadata);
+    });
   });
 });

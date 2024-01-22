@@ -44,6 +44,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/jest-when": "^3.5.5",
     "@types/lodash.flatten": "^4.4.0",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.isequal": "^4.5.0",

@@ -7,7 +7,23 @@
   "overrides": [
     {
       "files": ["*.test.ts"],
-      "extends": "@beyondessential/jest"
+      "extends": "@beyondessential/jest",
+      "rules": {
+        "jest/valid-expect": [
+          "error",
+          {
+            "maxArgs": 2
+          }
+        ],
+        "no-new": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": ["src/__tests__/**/*.ts"],
+            "packageDir": ["./", "../../"]
+          }
+        ]
+      }
     }
   ],
   "ignorePatterns": ["dist/", "build/", "node_modules/", ".eslintrc.js"]

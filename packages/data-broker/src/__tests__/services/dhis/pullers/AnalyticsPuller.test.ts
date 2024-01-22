@@ -12,10 +12,7 @@ import {
   createMockDhisApi,
 } from '../DhisService.stubs';
 import { DhisTranslator } from '../../../../services/dhis/translators/DhisTranslator';
-import {
-  PullAnalyticsOptions,
-  DataElementsMetadataPuller,
-} from '../../../../services/dhis/pullers';
+import { PullAnalyticsOptions } from '../../../../services/dhis/pullers';
 import { DataServiceMapping } from '../../../../services/DataServiceMapping';
 
 describe('AnalyticsPuller', () => {
@@ -23,8 +20,7 @@ describe('AnalyticsPuller', () => {
 
   const models = createModelsStub();
   const translator = new DhisTranslator(models);
-  const dataElementsMetadataPuller = new DataElementsMetadataPuller(models.dataElement, translator);
-  const analyticsPuller = new AnalyticsPuller(models, translator, dataElementsMetadataPuller);
+  const analyticsPuller = new AnalyticsPuller(models, translator);
 
   describe('from aggregate data', () => {
     describe('DHIS API invocation', () => {

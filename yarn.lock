@@ -12141,6 +12141,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@tupaia/weather-api": "workspace:*"
+    "@types/jest-when": ^3.5.5
     "@types/lodash.flatten": ^4.4.0
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.isequal": ^4.5.0
@@ -13517,6 +13518,25 @@ __metadata:
   dependencies:
     "@types/istanbul-lib-report": "*"
   checksum: 286a18cff19c4dac4321b9ea406a3560faf577fb2a4df5abf9d577fa81ba831c9baa7d40d03f1daf7fe613d468546b731c00b844b72fad9834c583311a35bb7b
+  languageName: node
+  linkType: hard
+
+"@types/jest-when@npm:^3.5.5":
+  version: 3.5.5
+  resolution: "@types/jest-when@npm:3.5.5"
+  dependencies:
+    "@types/jest": "*"
+  checksum: 816c1ed5554182c43261d23c2902506c316bc0368f2ea1e632a0a93d05d8f6f2918afa6a406c2f5fdd4d277e042b8d2ba797993dc3c2fd2d5f53cda946696772
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:*":
+  version: 29.5.11
+  resolution: "@types/jest@npm:29.5.11"
+  dependencies:
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: f892a06ec9f0afa9a61cd7fa316ec614e21d4df1ad301b5a837787e046fcb40dfdf7f264a55e813ac6b9b633cb9d366bd5b8d1cea725e84102477b366df23fdd
   languageName: node
   linkType: hard
 
