@@ -9,6 +9,8 @@ import { ButtonBase, Menu, MenuItem, Box, Paper } from '@material-ui/core';
 import styled from 'styled-components';
 import { Dashboard } from '../../../types';
 import { TOP_BAR_HEIGHT } from '../../../constants';
+import { useDashboards } from '../../../api/queries';
+import { useDashboard } from '../utils';
 import { ActionsMenu } from './ActionsMenu';
 
 const MenuButton = styled(ButtonBase)`
@@ -78,17 +80,10 @@ const DashboardMenuItem = ({ dashboardName, onClose }: DashboardMenuItemProps) =
   );
 };
 
-export const DashboardMenu = ({
-  activeDashboard,
-  dashboards,
-  setExportModalOpen,
-  setSubscribeModalOpen,
-}: {
-  activeDashboard?: Dashboard;
-  dashboards: Dashboard[];
-  setExportModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSubscribeModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+export const DashboardMenu = () => {
+  const { projectCode, entityCode } = useParams();
+  const { activeDashboard } = useDashboard();
+  const { data: dashboards = [] } = useDashboards(projectCode, entityCode);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
@@ -109,11 +104,7 @@ export const DashboardMenu = ({
             {activeDashboard?.name}
             {hasMultipleDashboards && <KeyboardArrowDownIcon />}
           </MenuButton>
-          <ActionsMenu
-            setExportModalOpen={setExportModalOpen}
-            activeDashboard={activeDashboard}
-            setSubscribeModalOpen={setSubscribeModalOpen}
-          />
+          <ActionsMenu />
         </MenuButtonWrapper>
       )}
       <StyledMenu
