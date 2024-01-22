@@ -96,7 +96,7 @@ const FormLabel = styled(FormControlLabel)`
 `;
 
 /**
- * This is a recursive component that renders a list of map overlays in an accordion
+ * A recursive component that renders a list of map overlays in an accordion.
  */
 const MapOverlayAccordion = ({
   mapOverlayGroup,
@@ -112,7 +112,7 @@ const MapOverlayAccordion = ({
     <AccordionWrapper expanded={expanded} onChange={toggleExpanded} square>
       <AccordionHeader expandIcon={<KeyboardArrowRight />}>
         {mapOverlayGroup.name}
-        {mapOverlayGroup.info && mapOverlayGroup.info.reference && (
+        {mapOverlayGroup.info?.reference && (
           <ReferenceTooltip
             reference={mapOverlayGroup.info.reference}
             iconStyleOption="mapOverlay"
@@ -120,7 +120,8 @@ const MapOverlayAccordion = ({
         )}
       </AccordionHeader>
       <AccordionContent>
-        {/** Map through the children, and if there are more nested children, render another accordion, otherwise render radio input for the overlay */}
+        {/* Map through the children, and if there are more nested children, render another
+        accordion. Otherwise, render radio input for the overlay */}
         {mapOverlayGroup.children.map(mapOverlay =>
           'children' in mapOverlay ? (
             <MapOverlayAccordion mapOverlayGroup={mapOverlay} key={mapOverlay.name} />
@@ -132,7 +133,7 @@ const MapOverlayAccordion = ({
                 label={mapOverlay.name}
                 key={mapOverlay.code}
               />
-              {mapOverlay.info && mapOverlay.info.reference && (
+              {mapOverlay.info?.reference && (
                 <ReferenceTooltip
                   reference={mapOverlay.info.reference}
                   iconStyleOption="mapOverlay"
@@ -146,13 +147,16 @@ const MapOverlayAccordion = ({
   );
 };
 
+/**
+ * Prevents the menu buttons moving around when opening the accordion.
+ */
 const RadioGroupContainer = styled(RadioGroup)`
-  // Use display block to prevent the menu buttons moving around when opening the accordion
   display: block;
 `;
 
 /**
- * A utility that saves selected map overlay date ranges in state, so that it can be retrieved if the user navigates back to them
+ * A utility that saves selected map overlay date ranges in state, so that it can be retrieved if
+ * the user navigates back to them.
  */
 const useSavedMapOverlayDates = () => {
   const [datesByMapOverlay, setDatesByMapOverlay] = useState({});
@@ -190,7 +194,7 @@ const useSavedMapOverlayDates = () => {
 };
 
 /**
- * This is the parent list of all the map overlays available to pick from
+ * The parent list of all the map overlays available to pick from.
  */
 export const MapOverlayList = ({ toggleOverlayLibrary }: { toggleOverlayLibrary?: () => void }) => {
   const [urlSearchParams, setUrlParams] = useSearchParams();
