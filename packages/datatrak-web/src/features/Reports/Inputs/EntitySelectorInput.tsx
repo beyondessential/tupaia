@@ -12,11 +12,11 @@ import { COUNTRY_LEVEL_ENTITY, ENTITY_LEVEL_ENTITY } from '../constants';
 import { ReportAutocomplete } from './ReportAutocomplete';
 import { InputWrapper } from './InputWrapper';
 
-interface AsyncAutocompleteProps {
+interface EntitySelectorInputProps {
   selectedEntityLevel?: typeof ENTITY_LEVEL_ENTITY | typeof COUNTRY_LEVEL_ENTITY;
 }
 
-export const EntitySelectorInput = ({ selectedEntityLevel }: AsyncAutocompleteProps) => {
+export const EntitySelectorInput = ({ selectedEntityLevel }: EntitySelectorInputProps) => {
   const [searchText, setSearchText] = useState('');
 
   const { errors } = useFormContext();
