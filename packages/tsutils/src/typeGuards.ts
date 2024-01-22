@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
