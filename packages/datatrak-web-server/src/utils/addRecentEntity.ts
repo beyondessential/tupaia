@@ -7,7 +7,12 @@ import { DatatrakWebServerModelRegistry } from '../types';
 
 const MAX_RECENT_ENTITIES = 3;
 
-export async function addRecentEntity(models: DatatrakWebServerModelRegistry, userId: string, entityId: string) {
+export async function addRecentEntity(
+  models: DatatrakWebServerModelRegistry,
+  userId: string,
+  entityId: string,
+) {
+  if (!entityId) return;
   const entity = await models.entity.findById(entityId);
   const user = await models.user.findById(userId);
 
@@ -21,7 +26,8 @@ export async function addRecentEntity(models: DatatrakWebServerModelRegistry, us
   const countryCode = entity.country_code as string;
   const entityType = entity.type as string;
 
-  const { recentEntities: allRecentEntities = {} } = user.preferences;
+  const { recent_entities: allRecentEntities = {} } = user.preferences;
+
   if (!allRecentEntities?.[countryCode]) {
     allRecentEntities[countryCode] = {};
   }
@@ -39,5 +45,7 @@ export async function addRecentEntity(models: DatatrakWebServerModelRegistry, us
   const updatedEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
   allRecentEntities[countryCode][entityType] = updatedEntities;
 
-  return models.user.updateById(userId, { preferences: { ...user.preferences, recentEntities: allRecentEntities } });
-};
+  return models.user.updateById(userId, {
+    preferences: { ...user.preferences, recent_entities: allRecentEntities },
+  });
+}

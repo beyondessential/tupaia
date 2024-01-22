@@ -27,10 +27,12 @@ export const useEditUser = (onSuccess?: () => void) => {
         project_id?: Project['id'];
         country_id?: Entity['id'];
         delete_account_requested?: boolean;
+        recent_entities?: Record<string, unknown>;
       };
 
       if (projectId) {
         updates.project_id = projectId;
+        updates.recent_entities = {};
       }
 
       if (countryId) {

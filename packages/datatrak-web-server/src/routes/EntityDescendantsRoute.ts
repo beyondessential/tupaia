@@ -43,7 +43,8 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-      recentEntities = currentUser.preferences.recentEntities?.[countryCode]?.[type] || [];
+      const { recent_entities: userRecentEntities } = currentUser.preferences;
+      recentEntities = userRecentEntities?.[countryCode]?.[type] || [];
     }
 
     const filter = {
@@ -93,8 +94,14 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     const sortedEntities = searchString
       ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
       : [
-          ...recentEntities.map((id: string) => entities.find((e: any) => e.id === id)),
-          ...entities.filter((e: any) => !recentEntities.includes(e.id)),
+          ...recentEntities.map((id: string) => {
+            const entity = entities.find((e: any) => e.id === id);
+            return {
+              ...entity,
+              isRecent: true,
+            };
+          }),
+          ...entities,
         ];
 
     return camelcaseKeys(sortedEntities, { deep: true });
