@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -115,7 +115,7 @@ const MapOverlayAccordion = ({
         {mapOverlayGroup.info && mapOverlayGroup.info.reference && (
           <ReferenceTooltip
             reference={mapOverlayGroup.info.reference}
-            iconStyleOption="mayOverlay"
+            iconStyleOption="mapOverlay"
           />
         )}
       </AccordionHeader>
@@ -135,7 +135,7 @@ const MapOverlayAccordion = ({
               {mapOverlay.info && mapOverlay.info.reference && (
                 <ReferenceTooltip
                   reference={mapOverlay.info.reference}
-                  iconStyleOption="mayOverlay"
+                  iconStyleOption="mapOverlay"
                 />
               )}
             </Wrapper>
