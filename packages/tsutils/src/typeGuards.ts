@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export const isDefined = <T>(value: T): value is Exclude<T, undefined> => value !== undefined;
@@ -9,7 +9,7 @@ export const isNotNullish = <T>(val: T): val is NonNullable<T> => val !== undefi
 
 export function assertIsNotNullish<T>(val: T): asserts val is NonNullable<T> {
   if (!isNotNullish(val)) {
-    throw new Error('Unexpected null or undefined value');
+    throw new Error(`Expected value to be defined, but got ${val}`);
   }
 }
 
