@@ -13,10 +13,10 @@ import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for GETUserAccounts', async () => {
   const DEFAULT_POLICY = {
-    DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     LA: ['Admin'],
     TO: ['Admin'],
   };

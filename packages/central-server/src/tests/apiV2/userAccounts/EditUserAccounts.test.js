@@ -13,12 +13,12 @@ import { TestableApp } from '../../testUtilities';
 
 describe('Permissions checker for EditUserAccounts', async () => {
   const DEFAULT_POLICY = {
-    DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    DL: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Public'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {
@@ -108,6 +108,15 @@ describe('Permissions checker for EditUserAccounts', async () => {
         await app.grantAccess(DEFAULT_POLICY);
         const { body: result } = await app.put(`users/${userAccount2.id}`, {
           body: { email: 'hal.jordan@lantern.corp' },
+        });
+
+        expect(result).to.have.keys('error');
+      });
+
+      it('Throw an exception if we do not have equal or greater access to all the countries the user we are editing has access to', async () => {
+        await app.grantAccess({ ...DEFAULT_POLICY, KI: ['Donor'] });
+        const { body: result } = await app.put(`users/${userAccount2.id}`, {
+          body: { email: 'barry.allen@ccpd.gov' },
         });
 
         expect(result).to.have.keys('error');
