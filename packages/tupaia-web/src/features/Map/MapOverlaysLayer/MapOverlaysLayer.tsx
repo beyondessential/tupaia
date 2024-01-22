@@ -48,10 +48,11 @@ export const MapOverlaysLayer = ({
 }: {
   hiddenValues: LegendProps['hiddenValues'];
 }) => {
-  const { serieses, measureData, isLoading, isLoadingDifferentMeasureLevel } =
+  const { serieses, measureData, isLoading, isLoadingDifferentMeasureLevel, error } =
     useMapOverlayMapData(hiddenValues);
   useZoomToEntity();
 
+  if (error) return null;
   return (
     <>
       <PolygonLayer measureData={measureData} serieses={serieses} isLoading={isLoading} />

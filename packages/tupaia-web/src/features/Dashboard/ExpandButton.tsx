@@ -43,5 +43,9 @@ interface ExpandButtonProps {
 
 export const ExpandButton = ({ isExpanded, setIsExpanded }: ExpandButtonProps) => {
   const arrowIcon = isExpanded ? <CloseArrowIcon /> : <OpenArrowIcon />;
-  return <SemiCircle onClick={setIsExpanded}>{arrowIcon}</SemiCircle>;
+  return (
+    <SemiCircle onClick={setIsExpanded} title={`${isExpanded ? 'Collapse' : 'Expand'} dashboard`}>
+      {arrowIcon}
+    </SemiCircle>
+  );
 };

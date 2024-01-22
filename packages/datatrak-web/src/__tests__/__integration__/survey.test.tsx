@@ -5,13 +5,16 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { renderSurveyPage } from './helpers/render';
-import { handlers } from './mocks/handlers';
+import { renderSurveyPage } from '../helpers/render';
+import { handlers } from '../mocks/handlers';
 
 const server = setupServer(
   ...handlers,
   rest.get('*/v1/getUser', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({ name: 'John Smith', email: 'john@gmail.com' }));
+  }),
+  rest.get('*/v1/*', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json([]));
   }),
 );
 
@@ -54,8 +57,8 @@ describe('Survey', () => {
 
     // after selecting 'lack of staff' option, 2 more questions should appear
     fireEvent.click(screen.getByRole('radio', { name: /lack of staff*/i }));
-    expect(screen.getByLabelText('How many staff do you have?')).toBeInTheDocument();
-    expect(screen.getByLabelText('How many staff do you need?')).toBeInTheDocument();
+    expect(screen.getByLabelText('How many staff do you have? *')).toBeInTheDocument();
+    expect(screen.getByLabelText('How many staff do you need? *')).toBeInTheDocument();
 
     // change the answer to 'open' and the other 3 questions should disappear
     fireEvent.click(screen.getByRole('radio', { name: /open*/i }));

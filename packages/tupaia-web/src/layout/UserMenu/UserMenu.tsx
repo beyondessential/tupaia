@@ -133,7 +133,12 @@ export const UserMenu = () => {
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
         />
-        <MenuButton onClick={toggleUserMenu} disableRipple id="user-menu-button">
+        <MenuButton
+          onClick={toggleUserMenu}
+          disableRipple
+          id="user-menu-button"
+          title="Toggle menu"
+        >
           <MenuIcon />
         </MenuButton>
         {/** PopoverMenu is for larger (desktop size) screens, and DrawerMenu is for mobile screens. Each component takes care of the hiding and showing at different screen sizes. Eventually all the props will come from a context */}

@@ -25,9 +25,6 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.fieldset`
-  margin: 0;
-  border: none;
-  padding: 0;
   legend {
     padding: 0;
   }
@@ -88,9 +85,12 @@ export const GeolocateQuestion = ({
             </ModalButton>
           </>
         )}
-        {mapModalOpen && (
-          <MapModal geolocation={value} setGeolocation={onChange} closeModal={toggleMapModal} />
-        )}
+        <MapModal
+          geolocation={value}
+          setGeolocation={onChange}
+          closeModal={toggleMapModal}
+          mapModalOpen={mapModalOpen}
+        />
       </Container>
     </Wrapper>
   );

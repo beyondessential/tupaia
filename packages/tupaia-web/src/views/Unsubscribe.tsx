@@ -70,7 +70,6 @@ const Container = styled.div`
 
 const UnsubscribeFieldset = styled.fieldset`
   padding-top: 2rem;
-  border: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

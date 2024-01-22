@@ -8,9 +8,9 @@ import { Drawer as MuiDrawer, Paper as MuiPaper, Typography } from '@material-ui
 import CloseIcon from '@material-ui/icons/Close';
 import { IconButton, RouterLink } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
-import { MenuButton, MenuList } from './MenuList';
 import { useCurrentUser } from '../../api';
 import { Button } from '../../components';
+import { MenuButton, MenuList } from './MenuList';
 
 const Drawer = styled(MuiDrawer)`
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {

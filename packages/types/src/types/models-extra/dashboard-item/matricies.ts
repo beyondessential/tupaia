@@ -2,9 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 import { CssColor } from '../../css';
+import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
 
 /**
  * @description Matrix viz type

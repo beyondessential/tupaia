@@ -4,15 +4,16 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router';
+import { Typography } from '@material-ui/core';
 import { ArrowBack, ArrowForwardIos } from '@material-ui/icons';
 import { Button } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../../constants';
+import { getMobileTopBarHeight } from '../../../utils';
+import { useMapOverlays } from '../../../api/queries';
 import { MapOverlayList } from './MapOverlayList';
 import { MapOverlaySelectorTitle } from './MapOverlaySelectorTitle';
 import { MapOverlayDatePicker } from './MapOverlayDatePicker';
-import { getMobileTopBarHeight } from '../../../utils/getTopBarHeight';
-import { useMapOverlays } from '../../../api/queries';
-import { useParams } from 'react-router';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -25,23 +26,17 @@ const Wrapper = styled.div`
 `;
 
 const ExpandButton = styled(Button)`
-  width: 100%;
   display: flex;
   justify-content: space-between;
   text-transform: none;
   align-items: center;
-  font-size: 0.875rem;
   border-radius: 0;
   padding: 1rem;
-  text-align: left;
   background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
   position: relative;
   &:hover,
   &:focus {
     background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
-  }
-  p {
-    margin-left: 1rem;
   }
 `;
 
@@ -53,6 +48,7 @@ const OverlayLibraryHeaderButton = styled(ExpandButton)`
   font-size: 1.125rem;
   text-align: center;
   padding: 1rem;
+  width: 100%;
 `;
 
 const OverlayLibraryHeader = styled.span`
@@ -73,9 +69,7 @@ const OverlayMenu = styled.div<{
   position: fixed;
   bottom: 0;
   background-color: ${({ theme }) => theme.mobile.background};
-
   overflow: auto;
-
   ${OverlayLibraryHeaderButton} {
     display: ${({ $expanded }) => ($expanded ? 'flex' : 'none')};
   }
@@ -84,11 +78,25 @@ const OverlayMenu = styled.div<{
   }
 `;
 
-const ExpandButtonLabel = styled.div`
+const MapOverlayTitle = styled(Typography).attrs({
+  variant: 'h2',
+})`
   padding-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
-const ButtonWrapper = styled.div`
+const TitleWrapper = styled.div`
+  width: 100%;
+  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   // add padding around the date picker when present
   > div {
     padding: 1rem;
@@ -109,25 +117,26 @@ export const MobileMapOverlaySelector = ({
 
   return (
     <Wrapper>
-      {!overlayLibraryOpen && (
-        <ButtonWrapper>
-          <MapOverlayDatePicker />
-          <ExpandButton
-            onClick={hasMapOverlays ? toggleOverlayLibrary : undefined}
-            aria-controls="overlay-selector"
-          >
-            <span>
-              <ExpandButtonLabel>Map Overlay</ExpandButtonLabel>
-              <MapOverlaySelectorTitle />
-            </span>
-            {hasMapOverlays && (
+      <Container>
+        <MapOverlayDatePicker />
+        <TitleWrapper>
+          <div>
+            <MapOverlayTitle>Map Overlay</MapOverlayTitle>
+            <MapOverlaySelectorTitle />
+          </div>
+          {hasMapOverlays && (
+            <ExpandButton
+              onClick={toggleOverlayLibrary}
+              aria-controls="overlay-selector"
+              title={`${overlayLibraryOpen ? 'Hide' : 'Show'} overlay library`}
+            >
               <ArrowWrapper>
                 <ArrowForwardIos />
               </ArrowWrapper>
-            )}
-          </ExpandButton>
-        </ButtonWrapper>
-      )}
+            </ExpandButton>
+          )}
+        </TitleWrapper>
+      </Container>
       <OverlayMenu
         $expanded={overlayLibraryOpen}
         aria-expanded={overlayLibraryOpen}
