@@ -69,12 +69,12 @@ const Content = ({ text = '', name = '', link = '' }: ReferenceProps) => {
 };
 
 interface ReferenceTooltipProps {
-  iconStyleOption?: string;
+  iconStyleOption?: ButtonType;
   reference?: ReferenceProps;
 }
 
 export const ReferenceTooltip = ({
-  iconStyleOption = DEFAULT,
+  iconStyleOption = 'default',
   reference = {},
 }: ReferenceTooltipProps) => {
   return (
