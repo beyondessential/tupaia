@@ -47,7 +47,7 @@ export const SurveyContext = ({ children }) => {
   const { formData } = state;
 
   const surveyScreens = survey?.screens || [];
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens) ?? [];
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
 
   // filter out screens that have no visible questions, and the components that are not visible. This is so that the titles of the screens are not using questions that are not visible
   const visibleScreens = surveyScreens
@@ -117,7 +117,7 @@ export const SurveyContext = ({ children }) => {
 export const useSurveyForm = () => {
   const surveyFormContext = useContext(SurveyFormContext);
   const { surveyScreens, formData, screenNumber, visibleScreens } = surveyFormContext;
-  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens) ?? [];
+  const flattenedScreenComponents = getAllSurveyComponents(surveyScreens);
   const dispatch = useContext(SurveyFormDispatchContext)!;
 
   const numberOfScreens = visibleScreens?.length || 0;
