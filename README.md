@@ -8,6 +8,8 @@
 
 ### Mission statement
 
+HIHIHIHIHI
+
 > By engaging and collaborating with our community we can deliver a more robust product that bridges cultural differences and empowers decision making within health systems worldwide.
 
 ### Community
@@ -32,14 +34,14 @@ The Tupaia monorepo has three types of packages:
 
 1. **Platform interfaces.** Front-end [React](https://react.dev) applications that the user interacts with.
 2. **Servers.**
-	- *Orchestration servers.* Dedicated backend applications for each platform interface.
-	- *Micro servers.* Applications which are used by the orchestration servers to perform common system functions.
+   - _Orchestration servers._ Dedicated backend applications for each platform interface.
+   - _Micro servers._ Applications which are used by the orchestration servers to perform common system functions.
 3. **Libraries.** Various utility and common libraries that are used throughout the monorepo.
 
 While each package type has their own structure, there are a few common standards:
 
 | File                       | Purpose                                                                  |
-|:---------------------------|:-------------------------------------------------------------------------|
+| :------------------------- | :----------------------------------------------------------------------- |
 | `<package>/package.json`   | Package definition                                                       |
 | `<package>/src/`           | Contains source code                                                     |
 | `<package>/.env.example`   | File showing what environment variables are required by the package      |
@@ -49,7 +51,7 @@ While each package type has their own structure, there are a few common standard
 ### Platform interfaces
 
 - [Tupaia Web](/packages/tupaia-web/README.md)
-- ~~[Tupaia](/packages/web-frontend/README.md)~~ (*Deprecated.* Replaced by Tupaia Web. Referred to as web-frontend for legacy reasons.)
+- ~~[Tupaia](/packages/web-frontend/README.md)~~ (_Deprecated._ Replaced by Tupaia Web. Referred to as web-frontend for legacy reasons.)
 - [Tupaia DataTrak Web](/packages/datatrak-web/README.md)
 - [Admin Panel](/packages/admin-panel/README.md)
 - [LESMIS](/packages/lesmis/README.md)
@@ -79,7 +81,7 @@ Server packages can be built by running `yarn workspace @tupaia/package-name bui
 All servers are [Node.js](https://nodejs.org)–[Express](https://expressjs.com) applications, and the packages follow the same basic structure:
 
 | File                             | Purpose                                      |
-|:---------------------------------|:---------------------------------------------|
+| :------------------------------- | :------------------------------------------- |
 | `<package>/examples.http`        | Example queries showing the server interface |
 | `<package>/src/index.ts`         | Server entry point                           |
 | `<package>/src/app/createApp.ts` | Express router definition                    |
