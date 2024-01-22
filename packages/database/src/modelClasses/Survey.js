@@ -131,10 +131,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
 
   async createAccessPolicyQueryClause(accessPolicy) {
     const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
-    const params = Object.entries(countryIdsByPermissionGroup).reduce(
-      (result, [permissionGroup, countryIds]) => [...result, permissionGroup, ...countryIds],
-      [],
-    );
+    const params = Object.entries(countryIdsByPermissionGroup).flat();
 
     return {
       sql: `(${Object.entries(countryIdsByPermissionGroup)
@@ -177,21 +174,19 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   /**
    *
    * @param {AccessPolicy} accessPolicy
-   * @param {string} projectId
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
    * @returns
    */
-  async findSurveysForAccessPolicy(accessPolicy, projectId = '') {
+  async findByAccessPolicy(accessPolicy, dbConditions = {}, customQueryOptions) {
     const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
 
     const queryConditions = {
       [QUERY_CONJUNCTIONS.RAW]: queryClause,
+      ...dbConditions,
     };
 
-    if (projectId) {
-      queryConditions.project_id = projectId;
-    }
-
-    const surveys = await this.otherModels.survey.find(queryConditions);
+    const surveys = await this.model.find(queryConditions, customQueryOptions);
 
     return surveys;
   }

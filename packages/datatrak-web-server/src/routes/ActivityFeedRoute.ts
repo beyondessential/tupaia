@@ -57,7 +57,9 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
     const pinned = page === 0 ? await this.getPinnedItem() : undefined;
 
-    const conditions = {} as Record<string, unknown>;
+    const conditions = {
+      project_id: projectId,
+    } as Record<string, unknown>;
 
     // if there is a pinned item, exclude it from the rest of the feed items
     if (pinned) {
@@ -67,9 +69,8 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       };
     }
 
-    const { items, hasMorePages } = await models.feedItem.findFeedItemsByAccessPolicy(
+    const { items, hasMorePages } = await models.feedItem.findByAccessPolicy(
       accessPolicy,
-      projectId,
       conditions,
       {
         page,

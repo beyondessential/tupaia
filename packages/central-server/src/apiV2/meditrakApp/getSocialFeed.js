@@ -59,9 +59,8 @@ export const getSocialFeed = async (req, res) => {
     };
   }
 
-  const { items, hasMorePages } = await models.feedItem.findFeedItemsByAccessPolicy(
+  const { items, hasMorePages } = await models.feedItem.findByAccessPolicy(
     accessPolicy,
-    null,
     conditions,
     {
       pageLimit: numberPerPage,

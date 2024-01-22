@@ -31,21 +31,25 @@ export class FeedItemModel extends DatabaseModel {
   /**
    *
    * @param {AccessPolicy} accessPolicy
-   * @param {string} projectId
-   * @param {object} conditions
-   * @param {object} options
-   * @param {string[]} [options.sort]
-   * @param {number} [options.pageLimit]
-   * @param {number} [options.page]
+   * @param {object} customDbConditions
+   * @param {object} dbOptions
+   * @param {string[]} [dbOptions.sort]
+   * @param {number} [dbOptions.pageLimit]
+   * @param {number} [dbOptions.page]
    * @returns
    */
-  async findFeedItemsByAccessPolicy(accessPolicy, projectId = '', conditions = {}, options = {}) {
-    const surveys = await this.otherModels.survey.findSurveysForAccessPolicy(
+  async findByAccessPolicy(accessPolicy, customDbConditions = {}, dbOptions = {}) {
+    const { project_id: projectIdFilter, ...dbConditions } = customDbConditions;
+    const surveys = await this.otherModels.survey.findByAccessPolicy(
       accessPolicy,
-      projectId,
+      projectIdFilter
+        ? {
+            project_id: projectIdFilter,
+          }
+        : {},
     );
 
-    const { sort = ['creation_date DESC'], pageLimit = 20, page = 0 } = options;
+    const { sort = ['creation_date DESC'], pageLimit = 20, page = 0 } = dbOptions;
 
     // get an extra item to see if there are more pages of results
     const limit = pageLimit + 1;
@@ -61,7 +65,7 @@ export class FeedItemModel extends DatabaseModel {
         [QUERY_CONJUNCTIONS.OR]: {
           type: FeedItemTypes.Markdown,
         },
-        ...conditions,
+        ...dbConditions,
       },
       {
         sort,
