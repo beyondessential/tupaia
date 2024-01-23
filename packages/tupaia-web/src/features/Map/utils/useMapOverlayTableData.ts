@@ -65,7 +65,7 @@ export const useMapOverlayTableData = ({
   rootEntityCode,
 }: UseMapOverlayDataProps = {}) => {
   const { projectCode, entityCode } = useParams();
-  const { selectedOverlay, isPolygonSeries } = useMapOverlays(projectCode, entityCode);
+  const { selectedOverlay, isPolygonSerieses } = useMapOverlays(projectCode, entityCode);
   const keepPreviousData = useKeepPreviousData(projectCode, selectedOverlay?.measureLevel);
   const { startDate, endDate } = useDateRanges(
     URL_SEARCH_PARAMS.MAP_OVERLAY_PERIOD,
@@ -77,7 +77,7 @@ export const useMapOverlayTableData = ({
   // data visuals are for children of the root entity. There is one exception where the root entity is the country
   // and the measure level is country. In this case we want to include the root entity in the list of entities
   const includeRootEntity =
-    isPolygonSeries &&
+    isPolygonSerieses &&
     selectedOverlay?.measureLevel?.includes('Country') &&
     entity?.type !== 'project';
 
