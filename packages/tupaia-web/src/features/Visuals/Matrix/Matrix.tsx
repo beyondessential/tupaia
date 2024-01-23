@@ -28,6 +28,16 @@ const SearchInput = styled(TextField)`
   }
 `;
 
+const Wrapper = styled.div`
+  overflow: hidden;
+  max-height: min(
+    80vh,
+    40rem
+  ); // 80vh is the fallback for when the user is on a small screen, 40rem is the max height of the matrix, bearing in mind we already tell users the matrix can't be viewed properly on small screens
+  display: flex;
+  flex-direction: column;
+`;
+
 const NoResultsMessage = styled(Typography)`
   padding: 1rem;
 `;
@@ -174,7 +184,7 @@ const MatrixVisual = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       <MatrixComponent
         {...config}
         rows={parsedRows}
@@ -202,7 +212,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </>
+    </Wrapper>
   );
 };
 
