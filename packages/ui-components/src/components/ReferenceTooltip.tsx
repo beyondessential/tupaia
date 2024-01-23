@@ -7,7 +7,7 @@ import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
-import { ValueOf } from '../types';
+import { ValueOf } from '../types/helpers';
 
 export const ICON_STYLES = {
   DEFAULT: 'default',
