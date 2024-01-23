@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
 /**
  * Converts a type key to camel case, from snake case
  */
