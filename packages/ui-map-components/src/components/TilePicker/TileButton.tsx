@@ -6,7 +6,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ReferenceProps, ReferenceTooltip } from '@tupaia/ui-components';
+import { ICON_STYLES, ReferenceProps, ReferenceTooltip } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { SeriesValue } from '../../types';
@@ -100,7 +100,7 @@ export const TileButton = React.memo(({ tileSet, isActive = false, onChange }: T
     <TileLabel>
       {tileSet.label}
       {tileSet.reference && (
-        <ReferenceTooltip reference={tileSet.reference} iconStyleOption="tileSet" />
+        <ReferenceTooltip reference={tileSet.reference} iconStyle={ICON_STYLES.TILE_SET} />
       )}
     </TileLabel>
   </StyledButton>
