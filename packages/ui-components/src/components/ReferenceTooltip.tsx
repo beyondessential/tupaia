@@ -87,6 +87,15 @@ interface ReferenceTooltipProps {
   reference: ReferenceProps;
 }
 
+/**
+ * A special case of the Tooltip component, used to display supplementary text or link to a source
+ * of data. When provided just a `text` property, it behaves much like the ui-components Tooltip;
+ * when provided a `name` and `link`, it is shown as a named link to a data source.
+ *
+ * @param iconStyleOption
+ * @param reference An object with either a string `text` value, OR the `name` + `link` for a named
+ * link. It must NOT contain both the `text` property and details for a named link.
+ */
 export const ReferenceTooltip = ({
   iconStyleOption = 'default',
   reference,
