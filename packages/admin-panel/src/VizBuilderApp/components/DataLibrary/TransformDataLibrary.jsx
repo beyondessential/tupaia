@@ -1,15 +1,15 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { prefetchTransformSchemas, useSearchTransformSchemas } from '../../api';
 import {
-  TransformSelectedOptionWithEditor,
-  TransformSelectedOption,
   DataLibrary,
+  TransformSelectedOption,
+  TransformSelectedOptionWithEditor,
 } from './component';
 
 const DATA_TYPES = {

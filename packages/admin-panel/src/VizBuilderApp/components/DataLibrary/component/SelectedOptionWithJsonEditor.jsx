@@ -10,8 +10,8 @@ import { JsonEditor } from '../../../../widgets';
 import { SelectedOption } from './SelectedOption';
 
 const JsonEditorPanel = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   width: 100%;
 
   > div {
@@ -29,41 +29,41 @@ export const SelectedOptionWithJsonEditor = ({
   basicOption, // Option panel configs (title, description etc)
   supportsTitleEditing,
   onRemove, // ************************************************
-  setIsDragDisabled, // Json editor configs
+  setIsDragDisabled, // JSON editor configs
   optionMetaData, //
   currentValue, //
   onInvalidChange, // *****************************************
   onChange,
 }) => {
+  const onValidationError = err => {
+    if (err.length > 0) onInvalidChange(err[0].message);
+  };
+
   const Editor = (
     <JsonEditorPanel
       onMouseOver={() => setIsDragDisabled(true)}
       onMouseLeave={() => setIsDragDisabled(false)}
     >
       <JsonEditor
-        value={currentValue}
-        mode="code"
         mainMenuBar={false}
+        mode="code"
         onChange={onChange}
-        schema={optionMetaData?.schema}
         onInvalidChange={onInvalidChange}
-        onValidationError={err => {
-          if (err.length > 0) {
-            onInvalidChange(err[0].message);
-          }
-        }}
+        onValidationError={onValidationError}
+        schema={optionMetaData?.schema}
+        value={currentValue}
       />
     </JsonEditorPanel>
   );
 
   return (
     <SelectedOption
-      option={option}
       basicOption={basicOption}
-      supportsTitleEditing={supportsTitleEditing}
-      onRemove={onRemove}
-      onChange={onChange}
       editor={Editor}
+      onChange={onChange}
+      onRemove={onRemove}
+      option={option}
+      supportsTitleEditing={supportsTitleEditing}
     />
   );
 };
