@@ -15,7 +15,7 @@ type ButtonProps = {
 };
 
 const IconButton = styled(InfoRoundedIcon)<ButtonProps>`
-  color: rgba(255, 255, 255, 85%);
+  color: rgba(255, 255, 255, 70%);
   font-size: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '20px' : '16px')};
   margin-bottom: ${({ $buttonType }) => ($buttonType === 'tileSet' ? '-1px' : '0px')};
   margin-top: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '3px' : '0px')};
