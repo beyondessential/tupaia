@@ -7,7 +7,7 @@ import React, { useContext } from 'react';
 import moment, { Moment } from 'moment';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { FlexColumn } from '@tupaia/ui-components';
+import { FlexColumn, ReferenceTooltip } from '@tupaia/ui-components';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { useDateRanges } from '../../utils';
 import { DateRangePicker } from '../../components';
@@ -120,6 +120,7 @@ export const EnlargedDashboardVisual = ({
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
         {config?.name && <Title>{titleText}</Title>}
+        {config?.reference && <ReferenceTooltip reference={config.reference} />}
         {showDatePicker && !isExportMode && (
           <DateRangePicker
             granularity={periodGranularity}
