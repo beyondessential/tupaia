@@ -93,8 +93,8 @@ interface ReferenceTooltipProps {
  * when provided a `name` and `link`, it is shown as a named link to a data source.
  *
  * @param iconStyleOption
- * @param reference An object with either a string `text` value, OR the `name` + `link` for a named
- * link. It must NOT contain both the `text` property and details for a named link.
+ * @param reference An object with either a string `text` value, or the `name` + `link` for a named
+ * link. It must not contain both the `text` property and details for a named link.
  */
 export const ReferenceTooltip = ({
   iconStyleOption = 'default',
