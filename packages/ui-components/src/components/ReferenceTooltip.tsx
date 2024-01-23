@@ -52,12 +52,12 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-interface PlaintextReferenceProps {
+export interface PlaintextReferenceProps {
   text: string;
   name?: never;
   link?: never;
 }
-interface LinkReferenceProps {
+export interface LinkReferenceProps {
   text?: never;
   name: string;
   link: string;
