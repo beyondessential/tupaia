@@ -26,7 +26,7 @@ The page will reload if you make edits.
 
 ## Leaflet
 
-The components are mostly built on top of components from the [Leaflet JS library](https://leafletjs.com).
+The components are mostly built on top of components from the [Leaflet](https://leafletjs.com) library.
 
 ## Notes on approach
 
