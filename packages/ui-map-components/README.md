@@ -1,6 +1,6 @@
-# @tupaia/ui-chart-components
+# @tupaia/ui-map-components
 
-A library of chart interface components for the Tupaia project.
+A library of map interface components for the Tupaia project.
 
 ## Available scripts
 
@@ -13,7 +13,7 @@ yarn storybook
 Or from the monorepo root:
 
 ```sh
-yarn workspace @tupaia/ui-chart-components storybook
+yarn workspace @tupaia/ui-map-components storybook
 ```
 
 This runs the Storybook app and pulls stories from the [`stories/`](stories/) directory which have a `.stories.js` suffix.
