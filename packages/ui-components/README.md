@@ -28,9 +28,9 @@ The page will reload if you make edits.
 
 The components are mostly built on top of components from the [Material UI (version 4)](https://v4.mui.com) library.
 
-## Notes on approach:
+## Notes on approach
 
 - Use [Styled Components](https://styled-components.com) to customise components.
-- Import Material UI components with a `Mui` prefix to when you need to disambiguate them from custom components. e.g. `import { Button as MuiButton } from '@material-ui/core'`
+- Import Material UI components with a `Mui` prefix to when you need to disambiguate them from custom components. e.g. `import { Button as MuiButton } from '@material-ui/core'`
 - Avoid hard-coding children and allow them to be passed in as JSX as much as possible.
 - Export components using named exports.
