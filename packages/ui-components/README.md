@@ -16,7 +16,7 @@ Or from the monorepo root:
 yarn workspace @tupaia/ui-components storybook
 ```
 
-This runs the Storybook app and pulls stories from the [`.storybook/`](.storybook/) directory which have a `.stories.js` suffix.
+This runs the Storybook app and pulls stories from the [`stories/`](stories/) directory which have a `.stories.js` suffix.
 
 The page will reload if you make edits.
 
