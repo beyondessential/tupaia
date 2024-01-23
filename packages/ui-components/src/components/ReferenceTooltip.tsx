@@ -7,18 +7,24 @@ import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
+import { ValueOf } from '@tupaia/ui-map-components';
 
-type ButtonType = 'default' | 'tileSet' | 'mapOverlay';
+export const ICON_STYLES = {
+  DEFAULT: 'default',
+  MAP_OVERLAY: 'mapOverlay',
+  TILE_SET: 'tileSet',
+};
+type IconStyle = ValueOf<typeof ICON_STYLES>;
 
-type ButtonProps = {
-  $buttonType: ButtonType;
+type IconButtonProps = {
+  $iconStyle: IconStyle;
 };
 
-const IconButton = styled(InfoRoundedIcon)<ButtonProps>`
+const IconButton = styled(InfoRoundedIcon)<IconButtonProps>`
   color: rgba(255, 255, 255, 70%);
-  font-size: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '20px' : '16px')};
-  margin-bottom: ${({ $buttonType }) => ($buttonType === 'tileSet' ? '-1px' : '0px')};
-  margin-top: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '3px' : '0px')};
+  font-size: ${({ $iconStyle }) => ($iconStyle === 'mapOverlay' ? '20px' : '16px')};
+  margin-bottom: ${({ $iconStyle }) => ($iconStyle === 'tileSet' ? '-1px' : '0px')};
+  margin-top: ${({ $iconStyle }) => ($iconStyle === 'mapOverlay' ? '3px' : '0px')};
   transition: color 0.2s ease;
 
   :hover {
@@ -83,7 +89,7 @@ const Content = (referenceProps: ReferenceProps) => {
 };
 
 interface ReferenceTooltipProps {
-  iconStyleOption?: ButtonType;
+  iconStyle?: IconStyle;
   reference: ReferenceProps;
 }
 
@@ -99,7 +105,7 @@ interface ReferenceTooltipProps {
  * link. It must not contain both the `text` property and details for a named link.
  */
 export const ReferenceTooltip = ({
-  iconStyleOption = 'default',
+  iconStyle = ICON_STYLES.DEFAULT,
   reference,
 }: ReferenceTooltipProps) => {
   if (!reference) return null;
@@ -112,7 +118,7 @@ export const ReferenceTooltip = ({
       enterTouchDelay={50}
       title={<Content {...reference} />}
     >
-      <IconButton $buttonType={iconStyleOption} />
+      <IconButton $iconStyle={iconStyle} />
     </StyledToolTip>
   );
 };
