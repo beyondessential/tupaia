@@ -92,6 +92,8 @@ interface ReferenceTooltipProps {
  * of data. When provided just a `text` property, it behaves much like the ui-components Tooltip;
  * when provided a `name` and `link`, it is shown as a named link to a data source.
  *
+ * @remarks If the provided `reference` prop is nullish, then null is returned. Nothing is rendered.
+ *
  * @param iconStyleOption
  * @param reference An object with either a string `text` value, or the `name` + `link` for a named
  * link. It must not contain both the `text` property and details for a named link.
