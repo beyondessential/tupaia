@@ -58817,7 +58817,10 @@ export const UserEntityPermissionSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"id"
+		"entity_id",
+		"id",
+		"permission_group_id",
+		"user_id"
 	]
 } 
 
@@ -58834,7 +58837,12 @@ export const UserEntityPermissionCreateSchema = {
 			"type": "string"
 		}
 	},
-	"additionalProperties": false
+	"additionalProperties": false,
+	"required": [
+		"entity_id",
+		"permission_group_id",
+		"user_id"
+	]
 } 
 
 export const UserEntityPermissionUpdateSchema = {
