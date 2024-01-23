@@ -1,8 +1,8 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
@@ -15,13 +15,13 @@ type ButtonProps = {
 };
 
 const IconButton = styled(InfoRoundedIcon)<ButtonProps>`
+  color: rgba(255, 255, 255, 85%);
   font-size: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '20px' : '16px')};
-  margin-top: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '3px' : '0px')};
   margin-bottom: ${({ $buttonType }) => ($buttonType === 'tileSet' ? '-1px' : '0px')};
-  color: grey;
+  margin-top: ${({ $buttonType }) => ($buttonType === 'mapOverlay' ? '3px' : '0px')};
   transition: color 0.2s ease;
 
-  &:hover {
+  :hover {
     background-color: initial;
     color: white;
   }
@@ -46,23 +46,41 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-export interface ReferenceProps {
-  text?: string;
-  name?: string;
-  link?: string;
+interface PlaintextReferenceProps {
+  text: string;
+  name?: never;
+  link?: never;
+}
+interface LinkReferenceProps {
+  text?: never;
+  name: string;
+  link: string;
 }
 
-const Content = ({ text = '', name = '', link = '' }: ReferenceProps) =>
-  text ? (
-    <TextCaption>{text}</TextCaption>
-  ) : (
+/**
+ * Props for the reference prop of the ReferenceTooltip component. It can have either a piece of
+ * plaintext to display in the tooltip, or a named link; but not both.
+ */
+export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
+
+const isPlaintextReferenceProp = (obj: ReferenceProps): obj is PlaintextReferenceProps =>
+  'text' in obj && !('name' in obj) && !('link' in obj);
+
+const Content = (referenceProps: ReferenceProps) => {
+  if (isPlaintextReferenceProp(referenceProps)) {
+    return <TextCaption>{referenceProps.text}</TextCaption>;
+  }
+
+  const { name: sourceName, link: sourceUrl } = referenceProps;
+  return (
     <TextCaption>
       Source:{' '}
-      <Link href={link} target="_blank" rel="noopener noreferrer">
-        {name}
+      <Link href={sourceUrl} target="_blank" rel="noopener noreferrer">
+        {sourceName}
       </Link>
     </TextCaption>
   );
+};
 
 interface ReferenceTooltipProps {
   iconStyleOption?: ButtonType;
@@ -71,7 +89,7 @@ interface ReferenceTooltipProps {
 
 export const ReferenceTooltip = ({
   iconStyleOption = 'default',
-  reference = {},
+  reference,
 }: ReferenceTooltipProps) => {
   return (
     <StyledToolTip
