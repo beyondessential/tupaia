@@ -84,7 +84,7 @@ const Content = (referenceProps: ReferenceProps) => {
 
 interface ReferenceTooltipProps {
   iconStyleOption?: ButtonType;
-  reference?: ReferenceProps;
+  reference: ReferenceProps;
 }
 
 export const ReferenceTooltip = ({
