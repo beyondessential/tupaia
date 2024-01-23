@@ -508,4 +508,15 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
     );
     return entityTypes.map(({ type }) => type);
   }
+
+  async addEntityType({ type }) {
+    // Postgres doesn't accept parameter binding in enum value queries
+    // So we harshly validate to avoid SQL injection risks
+    if (!/^[a-z_]+$/g.test(type)) {
+      throw new Error(
+        'Invalid character in provided type - only lower case letters and underscores',
+      );
+    }
+    await this.database.executeSql(`ALTER TYPE entity_type ADD VALUE IF NOT EXISTS '${type}';`);
+  }
 }
