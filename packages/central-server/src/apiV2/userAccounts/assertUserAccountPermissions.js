@@ -72,15 +72,13 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
         JOIN entity e ON uep.entity_id = e.id 
         JOIN permission_group pg ON uep.permission_group_id = pg.id 
 
-        WHERE uep.user_id IS NOT NULL AND 
-        (
+        WHERE
           -- Either we don't have access to a country they have access to
           e.code NOT IN ('DL', 'TO')
         
           -- Or we have access to it, but not with the level of permissions they do
           OR (e.code = 'DL' AND pg.name NOT IN ('Admin', 'Public'))
           OR (e.code = 'TO' AND pg.name NOT IN ('Donor'))
-        )
       )
    */
   const sql = `
@@ -90,8 +88,7 @@ const buildUserAccountRawSqlFilter = accessPolicy => {
     JOIN entity e ON uep.entity_id = e.id 
     JOIN permission_group pg ON uep.permission_group_id = pg.id 
 
-    WHERE uep.user_id IS NOT NULL AND 
-    (
+    WHERE 
       -- Either we don't have access to a country they have access to
       e.code NOT IN ${SqlQuery.record(accessibleCountryCodes)}
 
@@ -104,7 +101,6 @@ ${accessibleCountryCodes
       )})`,
   )
   .join('\n')}
-    )
   )`;
 
   const parameters = [
