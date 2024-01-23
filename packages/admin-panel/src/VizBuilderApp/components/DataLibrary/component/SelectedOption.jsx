@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { FlexSpaceBetween, Checkbox } from '@tupaia/ui-components';
+import { Checkbox, FlexSpaceBetween } from '@tupaia/ui-components';
 import { BaseSelectedOption, EditableSelectedOption } from './options';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
@@ -16,12 +16,12 @@ const FlexBetweenPanel = styled(FlexSpaceBetween)`
 `;
 
 const OptionPanelWithEditor = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
   align-items: flex-start;
-  height: auto;
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  height: auto;
+  justify-content: space-between;
   min-width: 0;
   overflow: hidden;
 `;
@@ -32,6 +32,7 @@ const DownArrowIconWrapper = styled.div`
   .icon-wrapper {
     cursor: pointer;
   }
+
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
     transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
@@ -61,20 +62,20 @@ export const SelectedOption = ({
     <OptionPanelWithEditor>
       <FlexBetweenPanel>
         <Checkbox
-          checkedIcon={<CheckBoxOutlinedIcon />}
           checked={!option.isDisabled}
+          checkedIcon={<CheckBoxOutlinedIcon />}
+          disableRipple
           onChange={() => {
             const newOption = { ...option };
             newOption.isDisabled = !option.isDisabled;
             onChange(newOption);
           }}
-          disableRipple
           size="small"
         />
         <DownArrowIconWrapper
           $expanded={isExpanded}
-          onClick={() => handleToggleExpanded(!isExpanded)}
           className="icon-wrapper"
+          onClick={() => handleToggleExpanded(!isExpanded)}
         >
           <DownArrow />
         </DownArrowIconWrapper>

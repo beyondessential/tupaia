@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -10,8 +10,8 @@ import { SqlEditor } from '@tupaia/ui-components';
 import { SelectedOption } from './SelectedOption';
 
 const SqlEditorPanel = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   width: 100%;
 
   .ace_editor {
@@ -36,22 +36,22 @@ export const SelectedOptionWithSqlEditor = ({
       onMouseLeave={() => setIsDragDisabled(false)}
     >
       <SqlEditor
-        placeholder="SELECT * FROM transform_table"
         onChange={onSqlChange}
-        value={currentValue.sql}
+        placeholder="SELECT * FROM transform_table"
         tables={['transform_table']}
+        value={currentValue.sql}
       />
     </SqlEditorPanel>
   );
 
   return (
     <SelectedOption
-      option={option}
       basicOption={basicOption}
-      supportsTitleEditing={supportsTitleEditing}
-      onRemove={onRemove}
-      onChange={onChange}
       editor={Editor}
+      onChange={onChange}
+      onRemove={onRemove}
+      option={option}
+      supportsTitleEditing={supportsTitleEditing}
     />
   );
 };

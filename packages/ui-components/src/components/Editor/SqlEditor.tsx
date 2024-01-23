@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -16,21 +16,19 @@ const AceEditor = styled(BaseAceEditor)`
   .error-marker {
     z-index: 20;
     position: absolute;
-    border-bottom-width: 2px;
-    border-bottom-color: red;
-    border-bottom-style: dashed;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-bottom: 2px dashed red;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 `;
 
 type SqlEditorProps = {
   customKeywords?: string[];
-  tables?: string[];
   mode?: string;
   onChange: (newValue: string) => unknown;
-  value?: string;
   placeholder?: string;
+  tables?: string[];
+  value?: string;
 };
 
 export const SqlEditor = ({
@@ -39,7 +37,7 @@ export const SqlEditor = ({
   tables = [],
   mode = 'pgsql',
   value = '',
-  placeholder = 'Example: SELECT * FROM tablename',
+  placeholder = 'SELECT * FROM tablename',
 }: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
   const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
@@ -53,7 +51,7 @@ export const SqlEditor = ({
       parser.parse(sqlQuery);
       setAnnotations({ text: '', type: '' });
     } catch (e) {
-      // errors will be:
+      // Errors will be:
       // [
       //   'Parse error on line 2:',
       //   "...23123123123213' and ",
