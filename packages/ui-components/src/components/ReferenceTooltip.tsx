@@ -100,6 +100,8 @@ export const ReferenceTooltip = ({
   iconStyleOption = 'default',
   reference,
 }: ReferenceTooltipProps) => {
+  if (!reference) return null;
+
   return (
     <StyledToolTip
       arrow
