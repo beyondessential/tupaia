@@ -16,12 +16,12 @@ import {
   TooltipProps,
   LegendProps,
 } from 'recharts';
-import { PieChartConfig } from '@tupaia/types';
+import { PieChartConfig, PieChartPresentationOptions } from '@tupaia/types';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
-import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
+import { ViewContent, LegendPosition } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -69,28 +69,32 @@ const getFormattedValue = (viewContent: ViewContent, data: any) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }: TooltipProps) => {
-  if (!active || !payload || !payload.length) {
-    return null;
-  }
+const makeCustomTooltip =
+  (viewContent: ViewContent) =>
+  ({ active, payload }: TooltipProps) => {
+    if (!active || !payload || !payload.length) {
+      return null;
+    }
 
-  const data = payload[0].payload;
-  const { name, fill } = data;
+    const data = payload[0].payload;
+    const { name, fill } = data;
 
-  return (
-    <TooltipContainer>
-      <Heading>{name}</Heading>
-      <Item>
-        <Box style={{ background: fill }} />
-        <Text>{getFormattedValue(viewContent, data)}</Text>
-      </Item>
-    </TooltipContainer>
-  );
-};
+    return (
+      <TooltipContainer>
+        <Heading>{name}</Heading>
+        <Item>
+          <Box style={{ background: fill }} />
+          <Text>{getFormattedValue(viewContent, data)}</Text>
+        </Item>
+      </TooltipContainer>
+    );
+  };
 
-const makeLabel = (viewContent: ViewContent) => ({ payload }: any) => {
-  return getFormattedValue(viewContent, payload.payload);
-};
+const makeLabel =
+  (viewContent: ViewContent) =>
+  ({ payload }: any) => {
+    return getFormattedValue(viewContent, payload.payload);
+  };
 
 const chartColorAtIndex = (colorArray: string[], index: number) =>
   colorArray[index % colorArray.length];
@@ -139,10 +143,10 @@ export const PieChart = ({
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
+  const getPresentationOption = (key: keyof PieChartPresentationOptions | string, option: string) =>
     !!presentationOptions &&
     presentationOptions.hasOwnProperty(key) &&
-    presentationOptions[key as keyof PresentationOptions][option];
+    presentationOptions[key as keyof PieChartPresentationOptions][option];
 
   const getValidData = () =>
     data
