@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Text, XAxis as XAxisComponent } from 'recharts';
-import { CartesianChartConfig } from '@tupaia/types';
+import { CartesianChartConfig, BarChartConfig } from '@tupaia/types';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
@@ -72,7 +72,7 @@ interface XAxisProps {
 export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { Bar, Composed } = ChartType;
-  const { chartType, chartConfig = {}, data } = viewContent;
+  const { chartType, chartConfig, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
 
@@ -133,7 +133,10 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
-      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
+      (chartConfig &&
+        Object.values(chartConfig).some(
+          ({ chartType: composedType }: BarChartConfig) => composedType === Bar,
+        ));
 
     if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
