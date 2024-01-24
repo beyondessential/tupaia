@@ -24,7 +24,9 @@ export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
   sortOrder?: number | null;
-  info?: PlaintextReferenceProps;
+  info?: {
+    reference?: PlaintextReferenceProps;
+  };
 }
 export type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 export interface ResBody {
