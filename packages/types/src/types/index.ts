@@ -19,14 +19,13 @@ export {
   ValueType,
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
   ViewConfig,
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -57,6 +56,10 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
+  ViewPresentationOptions,
+  ChartPresentationOptions,
+  PieChartPresentationOptions,
+  BarChartPresentationOptions,
 } from './models-extra';
 export * from './requests';
 export * from './css';

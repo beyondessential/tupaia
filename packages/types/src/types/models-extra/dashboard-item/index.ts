@@ -6,17 +6,16 @@
 import type {
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
 } from './matricies';
 import type { ComponentConfig } from './components';
-import type { ChartConfig } from './charts';
+import type { ChartConfig, ChartPresentationOptions } from './charts';
 import type {
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -25,6 +24,7 @@ import type {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ViewConfig,
+  ViewPresentationOptions,
 } from './views';
 
 export type {
@@ -35,6 +35,8 @@ export type {
   PieChartConfig,
   BaseChartConfig,
   CartesianChartConfig,
+  PieChartPresentationOptions,
+  BarChartPresentationOptions,
 } from './charts';
 /**
  * The master list of viz types.
@@ -46,14 +48,13 @@ export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
   ViewConfig,
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -62,4 +63,11 @@ export type {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
+  ViewPresentationOptions,
+  ChartPresentationOptions,
 };
+
+export type PresentationOptions =
+  | MatrixPresentationOptions
+  | ViewPresentationOptions
+  | ChartPresentationOptions;
