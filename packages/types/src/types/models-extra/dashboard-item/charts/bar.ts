@@ -11,6 +11,12 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
    * @description This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}
    */
   valueFormat?: string;
+  referenceLines?: {
+    targetLine: {
+      referenceValue: number;
+      referenceLabel: string;
+    };
+  };
 };
 
 /**

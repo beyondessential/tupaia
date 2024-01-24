@@ -60,6 +60,7 @@ export {
   ChartPresentationOptions,
   PieChartPresentationOptions,
   BarChartPresentationOptions,
+  PresentationOptions,
 } from './models-extra';
 export * from './requests';
 export * from './css';

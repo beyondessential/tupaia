@@ -45,6 +45,7 @@ export {
   ViewPresentationOptions,
   PieChartPresentationOptions,
   BarChartPresentationOptions,
+  PresentationOptions,
 } from './dashboard-item';
 export {
   MapOverlayConfig,

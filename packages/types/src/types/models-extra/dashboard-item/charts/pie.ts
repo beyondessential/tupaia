@@ -7,12 +7,12 @@ import { CssColor } from '../../../css';
 import { ExportPresentationOptions } from '../common';
 import { BaseChartConfig } from './common';
 
-export type PieChartPresentationOptions = Record<
-  string,
-  {
+export type PieChartPresentationOptions = {
+  [x: string]: {
     color?: CssColor;
-  } & ExportPresentationOptions
->;
+    label?: string;
+  };
+} & ExportPresentationOptions;
 
 /**
  * @description Pie Chart
