@@ -4,7 +4,7 @@
  */
 import { find, isString, isNumber } from 'lodash';
 import {
-  MatrixPresentationOptions,
+  PresentationOptions,
   ConditionValue,
   RangePresentationOptions,
   ConditionalPresentationOptions,
@@ -29,7 +29,7 @@ export const getFullHex = (hex: string) => {
 };
 
 export const findByKey = (
-  collection: MatrixPresentationOptions['conditions'],
+  collection: PresentationOptions['conditions'],
   key: string,
   caseSensitive = true,
 ) =>
@@ -57,10 +57,8 @@ const CONDITION_CHECK_METHOD = {
 };
 
 // This function is used to get the presentation option from the conditions, where the key is the value
-const getPresentationOptionFromKey = (
-  options: MatrixPresentationOptions['conditions'],
-  value: any,
-) => findByKey(options, value, false) || null;
+const getPresentationOptionFromKey = (options: PresentationOptions['conditions'], value: any) =>
+  findByKey(options, value, false) || null;
 
 // This function is used to get the presentation option from the conditions, when conditions is an array
 const getPresentationOptionFromCondition = (
@@ -112,7 +110,7 @@ export const getPresentationOptionFromRange = (options: RangePresentationOptions
 };
 
 // This function returns the applicable presentation option from the presentation options, for the value
-export const getPresentationOption = (options: MatrixPresentationOptions, value: any) => {
+export const getPresentationOption = (options: PresentationOptions, value: any) => {
   switch (options.type) {
     case PRESENTATION_TYPES.RANGE:
       return getPresentationOptionFromRange(options as RangePresentationOptions, value);
@@ -123,7 +121,7 @@ export const getPresentationOption = (options: MatrixPresentationOptions, value:
   }
 };
 
-export function getIsUsingDots(presentationOptions: MatrixPresentationOptions = {}) {
+export function getIsUsingDots(presentationOptions: PresentationOptions = {}) {
   return (
     Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
   );
