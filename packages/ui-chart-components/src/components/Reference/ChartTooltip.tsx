@@ -8,8 +8,8 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, BaseChartConfig, ChartPresentationOptions } from '@tupaia/types';
-import { ChartType, LooseObject, VizPeriodGranularity } from '../../types';
+import { ValueType, BaseChartConfig } from '@tupaia/types';
+import { ChartType, PresentationOptions, LooseObject, VizPeriodGranularity } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
@@ -58,7 +58,7 @@ const Box = styled.div`
 interface ChartTooltipProps {
   payload?: any[];
   active?: boolean;
-  presentationOptions?: ChartPresentationOptions;
+  presentationOptions?: PresentationOptions;
   valueType: ValueType;
   chartConfig?: BaseChartConfig;
   chartType?: ChartType;
