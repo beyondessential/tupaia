@@ -24,7 +24,7 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
 /**
  * @description Bar Chart
  */
-export type BarChartConfig = Omit<CartesianChartConfig, 'presentationOptions'> & {
+export type BarChartConfig = CartesianChartConfig & {
   chartType: ChartType.Bar;
   presentationOptions: BarChartPresentationOptions;
 };

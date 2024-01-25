@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { CartesianChartConfig, ChartConfigObjectT, ChartType } from './common';
+import { CartesianChartConfig, ChartConfigObject, ChartType } from './common';
 
-type ObjectT = ChartConfigObjectT & {
+type ObjectT = ChartConfigObject & {
   chartType: ChartType.Line | ChartType.Bar;
 };
 type ComposedChartChildConfig = {

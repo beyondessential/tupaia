@@ -12,5 +12,6 @@ export {
   ChartType,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigObject,
 } from './common';
 export { ComposedChartConfig } from './composed';

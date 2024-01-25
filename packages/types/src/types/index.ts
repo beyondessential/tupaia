@@ -68,6 +68,7 @@ export {
   ChartData,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigObject,
 } from './models-extra';
 export * from './requests';
 export * from './css';

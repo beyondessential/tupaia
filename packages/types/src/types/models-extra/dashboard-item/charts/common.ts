@@ -36,7 +36,7 @@ export type YAxisDomain = {
  */
 export type BaseChartConfig = BaseConfig & {
   type: 'chart';
-  chartType: string;
+  chartType: ChartType;
   ticks?: any;
 
   startDate?: string;
@@ -80,7 +80,7 @@ type Key = string | '$all';
  * @description The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns
  */
 
-export type ChartConfigObjectT = ReferenceLinesConfig & {
+export type ChartConfigObject = ReferenceLinesConfig & {
   color?: CssColor;
   label?: string;
   stackId?: number;
@@ -93,7 +93,7 @@ type ChartConfigT = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */
-  [key: Key]: ChartConfigObjectT;
+  [key: Key]: ChartConfigObject;
 };
 
 /**
