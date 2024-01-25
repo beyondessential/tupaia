@@ -79,8 +79,12 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const datatrakUrl =
+    process.env.NODE_ENV !== 'production'
+      ? 'https://dev-datatrak.tupaia.org'
+      : 'https://datatrak.tupaia.org';
   const SubmitData = (
-    <BaseMenuItem key="SubmitData" href="https://datatrak.tupaia.org" externalLink>
+    <BaseMenuItem key="SubmitData" href={datatrakUrl} externalLink>
       Submit data
     </BaseMenuItem>
   );
