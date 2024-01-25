@@ -7,10 +7,17 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { ChartType } from '@tupaia/types';
+import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
+import {
+  ViewContent,
+  LegendPosition,
+  GaugeChartViewContent,
+  PieChartViewContent,
+  CartesianChartViewContent,
+} from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
-import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
-import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -57,17 +64,6 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = (chartType: ChartType) => {
-  switch (chartType) {
-    case ChartType.Pie:
-      return PieChart;
-    case ChartType.Gauge:
-      return GaugeChart;
-    default:
-      return CartesianChart;
-  }
-};
-
 interface ChartProps {
   viewContent: ViewContent;
   isEnlarged?: boolean;
@@ -94,15 +90,29 @@ export const Chart = ({
   }
 
   const viewContentConfig = getViewContent(viewContent);
-  const ChartComponent = getChartComponent(chartType);
 
-  return (
-    <ChartComponent
-      isEnlarged={isEnlarged}
-      isExporting={isExporting}
-      viewContent={viewContentConfig}
-      onItemClick={onItemClick}
-      legendPosition={legendPosition}
-    />
-  );
+  const commonProps = {
+    isEnlarged,
+    isExporting,
+    onItemClick,
+    legendPosition,
+  };
+
+  // Each of these has a quite different type for viewContent, so we need to cast it
+  switch (chartType) {
+    case ChartType.Pie:
+      return <PieChart viewContent={viewContentConfig as PieChartViewContent} {...commonProps} />;
+
+    case ChartType.Gauge:
+      return (
+        <GaugeChart viewContent={viewContentConfig as GaugeChartViewContent} {...commonProps} />
+      );
+    default:
+      return (
+        <CartesianChart
+          viewContent={viewContentConfig as CartesianChartViewContent}
+          {...commonProps}
+        />
+      );
+  }
 };

@@ -6,11 +6,10 @@
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { BaseChartConfig, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
-import { ChartType, DataProps } from '../../types';
-import { ReferenceLabel } from './ReferenceLabel';
 import { ViewContent } from '../../types';
+import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({
   referenceLineLabel,
@@ -74,13 +73,15 @@ const ValueReferenceLine = ({
 
   return referenceLines.map(referenceLine => (
     <ReferenceLine
+      key={referenceLine.key}
+      y={referenceLine.y}
+      yAxisId={referenceLine.yAxisId}
       stroke={isExporting ? '#000000' : '#ffffff'}
       strokeDasharray="3 3"
       label={ReferenceLineLabel({
         referenceLineLabel: referenceLine.referenceLineLabel,
         isExporting,
       })}
-      {...referenceLine}
     />
   ));
 };
@@ -92,7 +93,9 @@ interface ReferenceLineProps {
 }
 
 const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
-  const { valueType, data, presentationOptions } = viewContent;
+  const { valueType, data } = viewContent;
+  const presentationOptions =
+    'presentationOptions' in viewContent && viewContent.presentationOptions;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
@@ -116,9 +119,17 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
 };
 
 const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  const { referenceLines } = viewContent.presentationOptions || {};
+  const presentationOptions =
+    'presentationOptions' in viewContent && viewContent.presentationOptions;
+  const referenceLines =
+    presentationOptions &&
+    'referenceLines' in presentationOptions &&
+    presentationOptions.referenceLines;
   if (referenceLines) {
-    return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
+    return ValueReferenceLine({
+      viewContent: { chartConfig: { ...viewContent.chartConfig, ...referenceLines } },
+      isExporting,
+    });
   }
   return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
 };

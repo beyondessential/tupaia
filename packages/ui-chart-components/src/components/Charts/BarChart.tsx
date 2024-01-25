@@ -5,28 +5,18 @@
 
 import React from 'react';
 import { Bar, LabelList } from 'recharts';
-import { BarChartConfig, ComposedChartConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ChartType } from '@tupaia/types';
 import { BLUE } from '../../constants';
-import { ChartType } from '../../types';
+import { ViewContent } from '../../types';
 import { getIsTimeSeries } from '../../utils';
 
-interface DataProps {
-  name: string;
-  value: string;
-  timestamp?: string;
-}
-
-interface BarChartProps {
+interface BarChartProps extends Pick<ViewContent, 'valueType' | 'data' | 'color' | 'chartConfig'> {
   dataKey: string;
   yAxisId: string | number;
   stackId: string;
-  valueType: string;
-  color?: string;
-  data: DataProps[];
   isEnlarged?: boolean;
   isExporting?: boolean;
-  chartConfig: BarChartConfig | ComposedChartConfig;
   exportWithLabels?: boolean;
 }
 

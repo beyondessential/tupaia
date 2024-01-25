@@ -5,12 +5,11 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BaseChartConfig, ValueType } from '@tupaia/types';
+import { BaseChartConfig, ValueType, ChartType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, LooseObject, TableAccessor } from '../types';
+import { LooseObject, TableAccessor, ViewContent } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
-import { ViewContent } from '../types';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
@@ -48,7 +47,18 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
     return [];
   }
 
-  const { data, xName, periodGranularity } = viewContent;
+  const { data, periodGranularity, chartType } = viewContent;
+
+  const getXName = () => {
+    return chartType === ChartType.Bar ||
+      chartType === ChartType.Line ||
+      chartType === ChartType.Composed
+      ? viewContent.xName
+      : undefined;
+  };
+
+  const xName = getXName();
+
   const hasNamedData = data[0]?.name;
   const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
   let firstColumn = null;
@@ -119,9 +129,10 @@ export const getChartTableData = (viewContent: ViewContent) => {
     () => (rowA: any, rowB: any) => sortDates(rowA.original.timestamp, rowB.original.timestamp),
     undefined,
   );
-  const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
-    JSON.stringify(viewContent),
-  ]);
+  const columns = useMemo(
+    () => processColumns(viewContent, sortByTimestamp),
+    [JSON.stringify(viewContent)],
+  );
   const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
   return {
     columns,

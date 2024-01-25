@@ -10,21 +10,20 @@ import {
   ComposedChart,
   LineChart,
   Legend,
-  ReferenceArea,
   ResponsiveContainer,
   Tooltip,
   LegendProps,
 } from 'recharts';
-import { BaseChartConfig, CartesianChartConfig, ValueType } from '@tupaia/types';
+import { CartesianChartConfig, ChartType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, ViewContent, LegendPosition } from '../types';
+import { ViewContent, LegendPosition, CartesianChartViewContent } from '../types';
+import { isMobile } from '../utils';
 import {
   BarChart as BarChartComponent,
   LineChart as LineChartComponent,
   AreaChart as AreaChartComponent,
 } from './Charts';
 import { getCartesianLegend, ReferenceLines, ChartTooltip as CustomTooltip } from './Reference';
-import { isMobile } from '../utils';
 import { XAxis as XAxisComponent, YAxes } from './Axes';
 
 const { Area, Bar, Composed, Line } = ChartType;
@@ -44,8 +43,8 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
-  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation?: 'left' | 'right'): number =>
+  (orientation && Y_AXIS_IDS[orientation]) || DEFAULT_Y_AXIS.id;
 
 const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
@@ -106,18 +105,10 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
   return { left: 0, right: 0, top: 0, bottom: 0 };
 };
 
-type CartesianChartConfigWithAll = CartesianChartConfig & { [LEGEND_ALL_DATA_KEY]?: any };
-
 type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
 
-interface CustomViewContent extends Omit<ViewContent, 'chartConfig' | 'valueType' | 'labelType'> {
-  chartConfig: CartesianChartConfig;
-  valueType: ValueType;
-  labelType: ValueType;
-}
-
 interface CartesianChartProps {
-  viewContent: ViewContent<CartesianChartConfig>;
+  viewContent: CartesianChartViewContent;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
@@ -129,9 +120,7 @@ export const CartesianChart = ({
   isExporting = false,
   legendPosition = 'bottom',
 }: CartesianChartProps) => {
-  const [chartConfig, setChartConfig] = useState<CartesianChartConfigWithAll>(
-    viewContent.chartConfig || {},
-  );
+  const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
   // eslint-disable-next-line no-unused-vars
   const [_, setLoaded] = useState(false);
@@ -151,10 +140,8 @@ export const CartesianChart = ({
     data,
     valueType,
     labelType,
-    presentationOptions,
     renderLegendForOneItem,
-    referenceAreas,
-  } = viewContent as CustomViewContent;
+  } = viewContent;
 
   const getIsActiveKey = (legendDataKey: string) =>
     activeDataKeys.length === 0 ||
@@ -221,6 +208,9 @@ export const CartesianChart = ({
 
   const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
 
+  const presentationOptions =
+    'presentationOptions' in viewContent ? viewContent.presentationOptions : {};
+
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
    * so they are called as functions below
@@ -232,7 +222,6 @@ export const CartesianChart = ({
         margin={getMargin(isExporting, isEnlarged)}
         reverseStackOrder={isExporting}
       >
-        {referenceAreas && referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />)}
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
         {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged } as any)}
         <Tooltip
@@ -242,7 +231,7 @@ export const CartesianChart = ({
               valueType={valueType}
               labelType={labelType}
               periodGranularity={viewContent.periodGranularity}
-              chartConfig={chartConfig as BaseChartConfig}
+              chartConfig={chartConfig}
               presentationOptions={presentationOptions}
               chartType={defaultChartType}
             />

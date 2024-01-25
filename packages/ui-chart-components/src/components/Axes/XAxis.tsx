@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { Text, XAxis as XAxisComponent } from 'recharts';
-import { CartesianChartConfig, BarChartConfig } from '@tupaia/types';
+import { BarChartConfig, ChartData, ChartType } from '@tupaia/types';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
-import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
-import { ChartType, DataProps, ViewContent } from '../../types';
+import { CartesianChartViewContent } from '../../types';
+import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -52,19 +52,19 @@ const renderXAxisLabel = (
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = (data: DataProps[], isExporting: boolean) => {
+const calculateXAxisHeight = (data: ChartData[], isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
     return BASE_H;
   }
 
   if (isExporting) {
-    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) || 5 * 6, 190);
+    return Math.min(BASE_H + Math.max(...data.map(item => item?.name?.length ?? 0)) || 5 * 6, 190);
   }
   return BASE_H;
 };
 
 interface XAxisProps {
-  viewContent: ViewContent<CartesianChartConfig>;
+  viewContent: CartesianChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
@@ -94,8 +94,20 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   };
 
   const formatXAxisTick = (tickData: string) => {
-    const { periodGranularity, presentationOptions = {} } = viewContent;
-    const { periodTickFormat } = presentationOptions;
+    const periodGranularity =
+      'periodGranularity' in viewContent ? viewContent.periodGranularity : undefined;
+    const getPeriodTickFormat = () => {
+      if (
+        'presentationOptions' in viewContent &&
+        viewContent.presentationOptions &&
+        'periodTickFormat' in viewContent.presentationOptions
+      ) {
+        return viewContent.presentationOptions.periodTickFormat;
+      }
+      return undefined;
+    };
+
+    const periodTickFormat = getPeriodTickFormat();
 
     return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)

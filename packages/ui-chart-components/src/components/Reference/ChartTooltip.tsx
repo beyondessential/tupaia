@@ -8,12 +8,17 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, BaseChartConfig } from '@tupaia/types';
-import { ChartType, PresentationOptions, LooseObject, VizPeriodGranularity } from '../../types';
+import { BaseChartConfig, ChartType, ValueType, VizPeriodGranularity } from '@tupaia/types';
+import { CartesianChartViewContent, LooseObject } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
-function formatLabelledValue(label: string, value: any, valueType: string, metadata: LooseObject) {
+function formatLabelledValue(
+  label: string,
+  value: any,
+  valueType?: ValueType,
+  metadata?: LooseObject,
+) {
   const valueText = formatDataValueByType({ value, metadata }, valueType);
   if (label) {
     return `${label}: ${valueText}`;
@@ -55,15 +60,18 @@ const Box = styled.div`
   margin-right: 5px;
 `;
 
-interface ChartTooltipProps {
+interface ChartTooltipProps
+  extends Pick<
+    CartesianChartViewContent,
+    | 'presentationOptions'
+    | 'chartConfig'
+    | 'chartType'
+    | 'valueType'
+    | 'labelType'
+    | 'periodGranularity'
+  > {
   payload?: any[];
   active?: boolean;
-  presentationOptions?: PresentationOptions;
-  valueType: ValueType;
-  chartConfig?: BaseChartConfig;
-  chartType?: ChartType;
-  labelType?: ValueType;
-  periodGranularity?: VizPeriodGranularity;
 }
 
 interface ChartTooltipPropsWithData extends ChartTooltipProps {
@@ -157,7 +165,7 @@ const NoDataTooltip = ({
   periodGranularity,
 }: {
   payload: any[];
-  periodGranularity?: VizPeriodGranularity;
+  periodGranularity?: `${VizPeriodGranularity}`;
 }) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
