@@ -1,9 +1,10 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { DateOffsetSpec, VizPeriodGranularity } from './dashboard-item/common';
+import { ReferenceProps } from './common';
 
 export type MapOverlayConfig = {
   customColors?: string; // Comma separated string
@@ -24,11 +25,7 @@ export type MapOverlayConfig = {
   hideFromPopup?: boolean;
   icon?: IconKey;
   info?: {
-    reference?: {
-      link?: string;
-      name?: string;
-      text?: string;
-    };
+    reference?: ReferenceProps;
   };
   isTimePeriodEditable?: boolean;
   // linkedMeasures?: null; // There's one record in the db that has this field and it's null
