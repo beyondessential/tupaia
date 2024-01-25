@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { PlaintextReferenceProps } from '@tupaia/types';
 import { MapOverlay } from '../../models';
-import { MapOverlayConfig } from '../../models-extra';
+import { MapOverlayConfig, PlaintextReferenceProps } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {

@@ -32,9 +32,3 @@ export interface LinkReferenceProps {
  * of plaintext to display in the tooltip, or a named link; but not both.
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
-
-const isPlaintextReferenceProp = (obj: ReferenceProps): obj is PlaintextReferenceProps =>
-  'text' in obj && !('name' in obj) && !('link' in obj);
-
-const isLinkReferenceProp = (obj: ReferenceProps): obj is LinkReferenceProps =>
-  !('text' in obj) && 'name' in obj && 'link' in obj;

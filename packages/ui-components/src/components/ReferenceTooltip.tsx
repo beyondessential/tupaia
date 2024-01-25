@@ -7,7 +7,7 @@ import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
-import { isPlaintextReferenceProp, LinkReferenceProps, ReferenceProps } from '@tupaia/types';
+import { LinkReferenceProps, PlaintextReferenceProps, ReferenceProps } from '@tupaia/types';
 import { ValueOf } from '../types/helpers';
 
 export const ICON_STYLES = {
@@ -53,11 +53,16 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
+export const isPlaintextReferenceProp = (obj: ReferenceProps): obj is PlaintextReferenceProps =>
+  'text' in obj && !('name' in obj) && !('link' in obj);
+
 const Content = (referenceProps: ReferenceProps) => {
   if (isPlaintextReferenceProp(referenceProps)) {
     return <TextCaption>{referenceProps.text}</TextCaption>;
   }
 
+  // Type assertion below is redundant, but typing system doesn’t seem to pick it up when those
+  // types are defined in another package
   const { name: sourceName, link: sourceUrl } = referenceProps as LinkReferenceProps;
   return (
     <TextCaption>

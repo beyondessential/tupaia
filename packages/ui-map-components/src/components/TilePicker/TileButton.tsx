@@ -1,14 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled from 'styled-components';
-import { ICON_STYLES, ReferenceProps, ReferenceTooltip } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
+import { ReferenceProps } from '@tupaia/types';
 import { SeriesValue } from '../../types';
 
 const StyledButton = styled(Button)`
