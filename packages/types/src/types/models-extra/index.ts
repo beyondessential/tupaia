@@ -54,6 +54,7 @@ export {
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
   ChartConfigObject,
+  ComposedChartConfigObject,
 } from './dashboard-item';
 export {
   MapOverlayConfig,

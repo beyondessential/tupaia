@@ -4686,7 +4686,7 @@ export const BarChartConfigSchema = {
 	]
 } 
 
-export const ObjectTSchema = {
+export const ComposedChartConfigObjectSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {

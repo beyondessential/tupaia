@@ -14,4 +14,4 @@ export {
   ReferenceLinesConfig,
   ChartConfigObject,
 } from './common';
-export { ComposedChartConfig } from './composed';
+export { ComposedChartConfig, ComposedChartConfigObject } from './composed';

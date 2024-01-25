@@ -41,6 +41,7 @@ export type {
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
   ChartConfigObject,
+  ComposedChartConfigObject,
 } from './charts';
 /**
  * The master list of viz types.

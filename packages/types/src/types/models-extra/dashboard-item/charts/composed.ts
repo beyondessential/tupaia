@@ -5,11 +5,11 @@
 
 import { CartesianChartConfig, ChartConfigObject, ChartType } from './common';
 
-type ObjectT = ChartConfigObject & {
+export type ComposedChartConfigObject = ChartConfigObject & {
   chartType: ChartType.Line | ChartType.Bar;
 };
 type ComposedChartChildConfig = {
-  [x: string]: ObjectT;
+  [x: string]: ComposedChartConfigObject;
 };
 /**
  * @description A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart
