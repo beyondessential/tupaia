@@ -119,8 +119,13 @@ export const EnlargedDashboardVisual = ({
     <Container $isExportMode={isExportMode}>
       <TitleWrapper>
         <BackLink parentDashboardItem={parentDashboardItem} />
-        {config?.name && <Title>{titleText}</Title>}
-        {config?.reference && <ReferenceTooltip reference={config.reference} />}
+        {config?.name && (
+          <Title>
+            {titleText}
+            {config?.reference && <ReferenceTooltip reference={config.reference} />}
+          </Title>
+        )}
+
         {showDatePicker && !isExportMode && (
           <DateRangePicker
             granularity={periodGranularity}

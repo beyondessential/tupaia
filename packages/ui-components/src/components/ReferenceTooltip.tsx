@@ -51,7 +51,9 @@ const StyledToolTip = withStyles(theme => ({
   tooltip: {
     backgroundColor: theme.palette.common.black,
   },
-}))(Tooltip);
+}))(styled(Tooltip)`
+  margin-inline: 0.5rem;
+`);
 
 export const isPlaintextReferenceProp = (obj: ReferenceProps): obj is PlaintextReferenceProps =>
   'text' in obj && !('name' in obj) && !('link' in obj);
