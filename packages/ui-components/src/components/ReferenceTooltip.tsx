@@ -7,6 +7,7 @@ import React from 'react';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import styled from 'styled-components';
+import { isPlaintextReferenceProp, LinkReferenceProps, ReferenceProps } from '@tupaia/types';
 import { ValueOf } from '../types/helpers';
 
 export const ICON_STYLES = {
@@ -52,32 +53,12 @@ const StyledToolTip = withStyles(theme => ({
   },
 }))(Tooltip);
 
-export interface PlaintextReferenceProps {
-  text: string;
-  name?: never;
-  link?: never;
-}
-export interface LinkReferenceProps {
-  text?: never;
-  name: string;
-  link: string;
-}
-
-/**
- * Props for the reference prop of the ReferenceTooltip component. It can have either a piece of
- * plaintext to display in the tooltip, or a named link; but not both.
- */
-export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
-
-const isPlaintextReferenceProp = (obj: ReferenceProps): obj is PlaintextReferenceProps =>
-  'text' in obj && !('name' in obj) && !('link' in obj);
-
 const Content = (referenceProps: ReferenceProps) => {
   if (isPlaintextReferenceProp(referenceProps)) {
     return <TextCaption>{referenceProps.text}</TextCaption>;
   }
 
-  const { name: sourceName, link: sourceUrl } = referenceProps;
+  const { name: sourceName, link: sourceUrl } = referenceProps as LinkReferenceProps;
   return (
     <TextCaption>
       Source:{' '}

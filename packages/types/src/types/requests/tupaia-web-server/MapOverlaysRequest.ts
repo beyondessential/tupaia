@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { PlaintextReferenceProps } from '@tupaia/ui-components';
+import { PlaintextReferenceProps } from '@tupaia/types';
 import { MapOverlay } from '../../models';
 import { MapOverlayConfig } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';
