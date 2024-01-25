@@ -2883,7 +2883,10 @@ export const CartesianChartPresentationOptionsSchema = {
 		"exportWithTableDisabled": {
 			"type": "boolean"
 		},
-		"periodTickFormat": {},
+		"periodTickFormat": {
+			"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+			"type": "string"
+		},
 		"hideAverage": {
 			"type": "boolean"
 		}
@@ -3573,7 +3576,10 @@ export const CartesianChartConfigSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				}
@@ -4055,7 +4061,10 @@ export const BarChartPresentationOptionsSchema = {
 		"exportWithTableDisabled": {
 			"type": "boolean"
 		},
-		"periodTickFormat": {},
+		"periodTickFormat": {
+			"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+			"type": "string"
+		},
 		"hideAverage": {
 			"type": "boolean"
 		},
@@ -4646,7 +4655,10 @@ export const BarChartConfigSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				},
@@ -5313,7 +5325,10 @@ export const ComposedChartConfigSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				}
@@ -6370,7 +6385,10 @@ export const LineChartConfigSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				}
@@ -7383,7 +7401,10 @@ export const ChartConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						},
@@ -7930,7 +7951,10 @@ export const ChartConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						}
@@ -8985,7 +9009,10 @@ export const ChartConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						}
@@ -9016,7 +9043,10 @@ export const ChartPresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				}
@@ -9050,7 +9080,10 @@ export const ChartPresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				},
@@ -19894,7 +19927,10 @@ export const DashboardItemConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						},
@@ -20441,7 +20477,10 @@ export const DashboardItemConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						}
@@ -21496,7 +21535,10 @@ export const DashboardItemConfigSchema = {
 						"exportWithTableDisabled": {
 							"type": "boolean"
 						},
-						"periodTickFormat": {},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
 						"hideAverage": {
 							"type": "boolean"
 						}
@@ -25708,7 +25750,10 @@ export const PresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				}
@@ -25742,7 +25787,10 @@ export const PresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"type": "boolean"
 				},
-				"periodTickFormat": {},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
 				"hideAverage": {
 					"type": "boolean"
 				},
@@ -30653,7 +30701,10 @@ export const DashboardItemSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								},
@@ -31200,7 +31251,10 @@ export const DashboardItemSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -32255,7 +32309,10 @@ export const DashboardItemSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -38407,7 +38464,10 @@ export const DashboardItemCreateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								},
@@ -38954,7 +39014,10 @@ export const DashboardItemCreateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -40009,7 +40072,10 @@ export const DashboardItemCreateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -46155,7 +46221,10 @@ export const DashboardItemUpdateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								},
@@ -46702,7 +46771,10 @@ export const DashboardItemUpdateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -47757,7 +47829,10 @@ export const DashboardItemUpdateSchema = {
 								"exportWithTableDisabled": {
 									"type": "boolean"
 								},
-								"periodTickFormat": {},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
 								"hideAverage": {
 									"type": "boolean"
 								}
@@ -62057,7 +62132,10 @@ export const DashboardWithMetadataSchema = {
 											"exportWithTableDisabled": {
 												"type": "boolean"
 											},
-											"periodTickFormat": {},
+											"periodTickFormat": {
+												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
 											"hideAverage": {
 												"type": "boolean"
 											},
@@ -62604,7 +62682,10 @@ export const DashboardWithMetadataSchema = {
 											"exportWithTableDisabled": {
 												"type": "boolean"
 											},
-											"periodTickFormat": {},
+											"periodTickFormat": {
+												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
 											"hideAverage": {
 												"type": "boolean"
 											}
@@ -63659,7 +63740,10 @@ export const DashboardWithMetadataSchema = {
 											"exportWithTableDisabled": {
 												"type": "boolean"
 											},
-											"periodTickFormat": {},
+											"periodTickFormat": {
+												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
 											"hideAverage": {
 												"type": "boolean"
 											}

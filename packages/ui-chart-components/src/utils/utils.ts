@@ -5,13 +5,13 @@
 
 import moment from 'moment';
 import { useTheme } from '@material-ui/core/styles';
-import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import {
   CartesianChartPresentationOptions,
   ChartData,
   ChartType,
   VizPeriodGranularity,
 } from '@tupaia/types';
+import { GRANULARITY_CONFIG } from '@tupaia/utils';
 import { ViewContent } from '../types';
 
 // tupaia-web uses a responsive approach, so we need to check the window width
@@ -26,15 +26,24 @@ export const isMobile = (isExporting = false) => {
   return appType === 'mobile' || window.innerWidth < 900;
 };
 
-const granularityConfig = GRANULARITY_CONFIG;
-
 // Timestamps returned from the back-end correspond to UTC time
 export const formatTimestampForChart = (
   timestamp: number | string,
   granularity?: `${VizPeriodGranularity}`,
   periodTickFormat?: CartesianChartPresentationOptions['periodTickFormat'],
-  // @ts-ignore - TODO: fix this
-) => moment.utc(timestamp).format(periodTickFormat || granularityConfig[granularity].chartFormat);
+) => {
+  const getFormatString = () => {
+    if (periodTickFormat) return periodTickFormat;
+    if (granularity && granularity in GRANULARITY_CONFIG) {
+      // TS complains that some keys of GRANULARITY_CONFIG are not in VizPeriodGranularity, so we cast these here
+      return GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG].chartFormat;
+    }
+
+    return undefined;
+  };
+  const formatString = getFormatString();
+  return moment.utc(timestamp).format(formatString);
+};
 
 export const getIsTimeSeries = (data: ChartData[]) => data && data.length > 0 && data[0]?.timestamp;
 

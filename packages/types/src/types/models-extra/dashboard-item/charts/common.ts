@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
 import { CssColor } from '../../../css';
 import { BaseConfig, ExportPresentationOptions, ValueType } from '../common';
 
@@ -66,7 +65,10 @@ export type BaseChartConfig = BaseConfig & {
 };
 
 export type CartesianChartPresentationOptions = ExportPresentationOptions & {
-  periodTickFormat?: moment.MomentFormatSpecification; // moment format string
+  /**
+   * @description This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values
+   */
+  periodTickFormat?: string;
   hideAverage?: boolean;
 };
 
