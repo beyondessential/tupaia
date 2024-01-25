@@ -16,5 +16,5 @@ export const A4Page = styled.div`
 
   break-after: page;
   flex-direction: column;
-  padding: 3.5cm 4.5cm 4cm; // Bottom slightly taller than top for *optical* alignment
+  padding: 1.5cm 4.5cm 2cm; // Bottom slightly taller than top for *optical* alignment
 `;
