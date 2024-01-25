@@ -26209,19 +26209,39 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"reference": {
-					"type": "object",
-					"properties": {
-						"link": {
-							"type": "string"
+					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"type": "string"
-						},
-						"text": {
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false
+					]
 				}
 			},
 			"additionalProperties": false
@@ -54871,19 +54891,39 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"reference": {
-							"type": "object",
-							"properties": {
-								"link": {
-									"type": "string"
+							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"type": "string"
-								},
-								"text": {
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false
+							]
 						}
 					},
 					"additionalProperties": false
@@ -55376,19 +55416,39 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"reference": {
-							"type": "object",
-							"properties": {
-								"link": {
-									"type": "string"
+							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"type": "string"
-								},
-								"text": {
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false
+							]
 						}
 					},
 					"additionalProperties": false
@@ -55875,19 +55935,39 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"reference": {
-							"type": "object",
-							"properties": {
-								"link": {
-									"type": "string"
+							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"type": "string"
-								},
-								"text": {
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false
+							]
 						}
 					},
 					"additionalProperties": false
@@ -68533,19 +68613,39 @@ export const TranslatedMapOverlaySchema = {
 			"type": "object",
 			"properties": {
 				"reference": {
-					"type": "object",
-					"properties": {
-						"link": {
-							"type": "string"
+					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"type": "string"
-						},
-						"text": {
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false
+					]
 				}
 			},
 			"additionalProperties": false
