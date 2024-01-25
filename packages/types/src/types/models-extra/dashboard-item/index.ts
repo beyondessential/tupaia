@@ -40,6 +40,7 @@ export type {
   BarChartPresentationOptions,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigObject,
 } from './charts';
 /**
  * The master list of viz types.
