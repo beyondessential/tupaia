@@ -23,9 +23,9 @@ type IconButtonProps = {
 
 const IconButton = styled(InfoRoundedIcon)<IconButtonProps>`
   color: rgba(255, 255, 255, 70%);
-  font-size: ${({ $iconStyle }) => ($iconStyle === 'mapOverlay' ? '20px' : '16px')};
-  margin-bottom: ${({ $iconStyle }) => ($iconStyle === 'tileSet' ? '-1px' : '0px')};
-  margin-top: ${({ $iconStyle }) => ($iconStyle === 'mapOverlay' ? '3px' : '0px')};
+  font-size: ${({ $iconStyle }) => ($iconStyle === ICON_STYLES.MAP_OVERLAY ? '20px' : '16px')};
+  margin-bottom: ${({ $iconStyle }) => ($iconStyle === ICON_STYLES.TILE_SET ? '-1px' : '0px')};
+  margin-top: ${({ $iconStyle }) => ($iconStyle === ICON_STYLES.MAP_OVERLAY ? '3px' : '0px')};
   transition: color 0.2s ease;
 
   :hover {

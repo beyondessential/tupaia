@@ -7,7 +7,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { ReferenceTooltip } from '@tupaia/ui-components';
+import { ICON_STYLES, ReferenceTooltip } from '@tupaia/ui-components';
 import {
   Accordion,
   AccordionDetails,
@@ -115,7 +115,7 @@ const MapOverlayAccordion = ({
         {mapOverlayGroup.info?.reference && (
           <ReferenceTooltip
             reference={mapOverlayGroup.info.reference}
-            iconStyleOption="mapOverlay"
+            iconStyleOption={ICON_STYLES.MAP_OVERLAY}
           />
         )}
       </AccordionHeader>
