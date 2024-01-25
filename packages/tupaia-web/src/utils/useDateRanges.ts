@@ -97,7 +97,7 @@ export const useDateRanges = (
 
   // this only applies to map overlays
   const isTimePeriodEditable =
-    ('isTimePeriodEditable' in selectedItem && selectedItem.isTimePeriodEditable) ?? true;
+    'isTimePeriodEditable' in selectedItem ? selectedItem.isTimePeriodEditable : true;
 
   const getInitialStartDate = () => {
     if ('startDate' in selectedItem) {
