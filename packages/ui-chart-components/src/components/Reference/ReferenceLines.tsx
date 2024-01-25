@@ -1,16 +1,15 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { BaseChartConfig } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
-import { ChartType, DataProps } from '../../types';
+import { ChartType, ViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
-import { ViewContent } from '../../types';
 
 const ReferenceLineLabel = ({
   referenceLineLabel,
