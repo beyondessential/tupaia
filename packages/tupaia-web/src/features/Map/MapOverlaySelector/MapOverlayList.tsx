@@ -134,10 +134,7 @@ const MapOverlayAccordion = ({
                 key={mapOverlay.code}
               />
               {mapOverlay.info?.reference && (
-                <ReferenceTooltip
-                  reference={mapOverlay.info.reference}
-                  iconStyleOption="mapOverlay"
-                />
+                <ReferenceTooltip reference={mapOverlay.info.reference} iconStyle="mapOverlay" />
               )}
             </Wrapper>
           ),

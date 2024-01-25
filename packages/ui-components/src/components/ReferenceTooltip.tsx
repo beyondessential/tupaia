@@ -86,7 +86,7 @@ interface ReferenceTooltipProps {
  *
  * @remarks If the provided `reference` prop is nullish, then null is returned. Nothing is rendered.
  *
- * @param iconStyleOption
+ * @param iconStyle
  * @param reference An object with either a string `text` value, or the `name` + `link` for a named
  * link. It must not contain both the `text` property and details for a named link.
  */
