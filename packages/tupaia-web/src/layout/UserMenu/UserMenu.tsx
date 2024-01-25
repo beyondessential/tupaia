@@ -105,23 +105,20 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const RequestCountryAccess = (
+    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
+      Request country access
+    </BaseMenuItem>
+  );
+
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
     ? [VisitMainSite, HelpCentre, ChangePassword, Logout]
     : [VisitMainSite, HelpCentre];
 
   const baseMenuItems = isLoggedIn
-    ? [
-        SubmitData,
-        ViewProjects,
-        HelpCentre,
-        ChangePassword,
-        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
-          Request country access
-        </BaseMenuItem>,
-        Logout,
-      ]
-    : [ViewProjects, HelpCentre];
+    ? [SubmitData, ViewProjects, HelpCentre, ChangePassword, RequestCountryAccess, Logout]
+    : [SubmitData, ViewProjects, HelpCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
