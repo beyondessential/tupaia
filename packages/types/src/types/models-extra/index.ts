@@ -14,7 +14,7 @@ export type {
   ViewDataItem,
   ViewReport,
 } from './report';
-export type {
+export {
   DashboardItemConfig,
   BarChartConfig,
   ComposedChartConfig,

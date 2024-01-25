@@ -118,7 +118,14 @@ export const submitResponses = async (models, userId, responses) => {
 };
 
 export async function surveyResponse(req, res) {
-  const { userId, body, models } = req;
+  const { userId, body, query, models } = req;
+  const { submitAsPublic } = query;
+
+  let submitterId = userId;
+  if (submitAsPublic) {
+    const user = await models.user.findPublicUser();
+    submitterId = user.id;
+  }
 
   let results = [];
   const responses = Array.isArray(body) ? body : [body];
@@ -135,7 +142,7 @@ export async function surveyResponse(req, res) {
       assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
     );
 
-    results = await saveResponsesToDatabase(transactingModels, userId, responses);
+    results = await saveResponsesToDatabase(transactingModels, submitterId, responses);
 
     if (req.query.waitForAnalyticsRebuild) {
       const { database } = transactingModels;
