@@ -4,8 +4,14 @@
  */
 
 import { PieChartConfig, PieChartPresentationOptions } from './pie';
-import { BaseChartConfig, CartesianChartConfig, CartesianChartPresentationOptions } from './common';
+import {
+  BaseChartConfig,
+  CartesianChartConfig,
+  CartesianChartPresentationOptions,
+  ChartType,
+} from './common';
 import { BarChartConfig, BarChartPresentationOptions } from './bar';
+import { ComposedChartConfig } from './composed';
 
 /**
  * These are all the different chart config types. Anything that is more than the generic chart config has it's own file
@@ -15,21 +21,14 @@ import { BarChartConfig, BarChartPresentationOptions } from './bar';
  * @description Gauge Chart
  */
 export type GaugeChartConfig = BaseChartConfig & {
-  chartType: 'gauge';
+  chartType: ChartType.Gauge;
 };
 
 /**
  * @description Line Chart
  */
 export type LineChartConfig = CartesianChartConfig & {
-  chartType: 'line';
-};
-
-/**
- * @description A Composed chart is a concept from Recharts, e.g. a line chart layered on top of a bar chart
- */
-export type ComposedChartConfig = CartesianChartConfig & {
-  chartType: 'composed';
+  chartType: ChartType.Line;
 };
 
 export type ChartConfig =

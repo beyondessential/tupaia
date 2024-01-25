@@ -6,13 +6,12 @@
 import { CssColor } from '../../../css';
 import { BaseConfig, ValueType } from '../common';
 
-export type BaseViewConfig = BaseConfig &
-  Record<string, unknown> & {
-    type: 'view';
-    viewType: string;
-    valueType?: ValueType;
-    value_metadata?: Record<string, unknown>;
-  };
+export type BaseViewConfig = BaseConfig & {
+  type: 'view';
+  viewType: string;
+  valueType?: ValueType;
+  value_metadata?: Record<string, unknown>;
+};
 
 export type ColorOption = {
   color: CssColor;

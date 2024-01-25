@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { CssColor } from '../../../css';
-import { CartesianChartConfig, CartesianChartPresentationOptions } from './common';
+import {
+  CartesianChartConfig,
+  CartesianChartPresentationOptions,
+  ChartType,
+  ReferenceLinesConfig,
+} from './common';
 
 export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
   color?: CssColor;
@@ -12,10 +17,7 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
    */
   valueFormat?: string;
   referenceLines?: {
-    targetLine: {
-      referenceValue: number;
-      referenceLabel: string;
-    };
+    targetLine?: ReferenceLinesConfig;
   };
 };
 
@@ -23,6 +25,6 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
  * @description Bar Chart
  */
 export type BarChartConfig = Omit<CartesianChartConfig, 'presentationOptions'> & {
-  chartType: 'bar';
+  chartType: ChartType.Bar;
   presentationOptions: BarChartPresentationOptions;
 };

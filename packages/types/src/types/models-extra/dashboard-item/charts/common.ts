@@ -11,6 +11,15 @@ import { BaseConfig, ExportPresentationOptions, ValueType } from '../common';
  * These are the common chart config options that are shared between several chart types
  */
 
+export enum ChartType {
+  Area = 'area',
+  Bar = 'bar',
+  Composed = 'composed',
+  Line = 'line',
+  Pie = 'pie',
+  Gauge = 'gauge',
+}
+
 type YAxisDomainEntry = {
   type: 'number' | 'scale' | 'clamp' | 'string';
   value?: number | string;
@@ -27,6 +36,7 @@ export type YAxisDomain = {
  */
 export type BaseChartConfig = BaseConfig & {
   type: 'chart';
+  chartType: string;
   ticks?: any;
 
   startDate?: string;
@@ -60,21 +70,30 @@ export type CartesianChartPresentationOptions = ExportPresentationOptions & {
   hideAverage?: boolean;
 };
 
+export type ReferenceLinesConfig = {
+  referenceValue?: number;
+  referenceLabel?: string;
+};
+
+type Key = string | '$all';
 /**
  * @description The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns
  */
+
+export type ChartConfigObjectT = ReferenceLinesConfig & {
+  color?: CssColor;
+  label?: string;
+  stackId?: number;
+  legendOrder?: number;
+  yAxisDomain?: any;
+  valueType?: ValueType;
+  yAxisOrientation?: 'left' | 'right';
+};
 type ChartConfigT = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */
-  [key: string]: {
-    color?: CssColor;
-    label?: string;
-    stackId?: number;
-    legendOrder?: number;
-    yAxisDomain?: any;
-    valueType?: ValueType;
-  };
+  [key: Key]: ChartConfigObjectT;
 };
 
 /**

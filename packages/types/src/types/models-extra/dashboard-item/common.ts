@@ -11,7 +11,7 @@ export type BaseConfig = {
    */
   description?: string;
 
-  periodGranularity?: VizPeriodGranularity;
+  periodGranularity?: `${VizPeriodGranularity}`;
 
   defaultTimePeriod?: DefaultTimePeriod;
 

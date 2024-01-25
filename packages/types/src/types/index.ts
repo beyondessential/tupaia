@@ -61,6 +61,13 @@ export {
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
+  VizPeriodGranularity,
+  ChartType,
+  ChartReport,
+  DashboardItemReport,
+  ChartData,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

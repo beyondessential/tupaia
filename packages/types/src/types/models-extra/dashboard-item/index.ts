@@ -27,6 +27,7 @@ import type {
   ViewPresentationOptions,
 } from './views';
 
+export { ChartType } from './charts';
 export type {
   BarChartConfig,
   ComposedChartConfig,
@@ -37,6 +38,8 @@ export type {
   CartesianChartConfig,
   PieChartPresentationOptions,
   BarChartPresentationOptions,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
 } from './charts';
 /**
  * The master list of viz types.
@@ -44,7 +47,7 @@ export type {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType } from './common';
+export { ValueType, VizPeriodGranularity } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,

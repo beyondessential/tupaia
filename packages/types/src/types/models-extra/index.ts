@@ -13,6 +13,9 @@ export type {
   BaseReport,
   ViewDataItem,
   ViewReport,
+  ChartReport,
+  DashboardItemReport,
+  ChartData,
 } from './report';
 export {
   DashboardItemConfig,
@@ -46,6 +49,10 @@ export {
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
+  VizPeriodGranularity,
+  ChartType,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
 } from './dashboard-item';
 export {
   MapOverlayConfig,

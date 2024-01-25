@@ -5,19 +5,19 @@
 
 import { CssColor } from '../../../css';
 import { ExportPresentationOptions } from '../common';
-import { BaseChartConfig } from './common';
+import { BaseChartConfig, ChartType } from './common';
 
-export type PieChartPresentationOptions = {
+export type PieChartPresentationOptions = ExportPresentationOptions & {
   [x: string]: {
     color?: CssColor;
     label?: string;
   };
-} & ExportPresentationOptions;
+};
 
 /**
  * @description Pie Chart
  */
 export type PieChartConfig = BaseChartConfig & {
-  chartType: 'pie';
+  chartType: ChartType.Pie;
   presentationOptions?: PieChartPresentationOptions;
 };

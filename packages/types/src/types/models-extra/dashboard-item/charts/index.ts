@@ -6,4 +6,11 @@
 export * from './charts';
 export * from './pie';
 export * from './bar';
-export { BaseChartConfig, CartesianChartConfig } from './common';
+export {
+  BaseChartConfig,
+  CartesianChartConfig,
+  ChartType,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
+} from './common';
+export { ComposedChartConfig } from './composed';
