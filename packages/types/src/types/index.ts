@@ -70,6 +70,7 @@ export {
   ReferenceLinesConfig,
   ChartConfigObject,
   ComposedChartConfigObject,
+  ComponentConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

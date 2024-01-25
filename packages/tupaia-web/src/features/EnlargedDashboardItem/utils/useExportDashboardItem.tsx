@@ -8,12 +8,12 @@ import moment from 'moment';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { useParams } from 'react-router-dom';
+import { DashboardItemConfig } from '@tupaia/types';
 import { toFilename } from '@tupaia/utils';
 import { ViewContent, useChartDataExport } from '@tupaia/ui-chart-components';
 import {
   Dashboard,
   DashboardItem,
-  DashboardItemConfig,
   DashboardItemReport,
   Entity,
   EntityCode,
@@ -87,7 +87,10 @@ export const useExportDashboardItem = (
   );
 
   const { config } = currentDashboardItem || ({} as DashboardItem);
-  const { type, presentationOptions, name } = config || ({} as DashboardItemConfig);
+  const { type, name } = config || ({} as DashboardItemConfig);
+
+  const presentationOptions =
+    config && 'presentationOptions' in config ? config.presentationOptions : undefined;
   const exportTitle = `${name}, ${entityName}`;
 
   const { doExport } = useChartDataExport(

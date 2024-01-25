@@ -122,7 +122,13 @@ const processData = (viewContent: ViewContent) => {
   return data;
 };
 
-export const getChartTableData = (viewContent: ViewContent) => {
+export const getChartTableData = (viewContent?: ViewContent) => {
+  if (!viewContent) {
+    return {
+      columns: [],
+      data: [],
+    };
+  }
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks
   const sortByTimestamp = useMemo(

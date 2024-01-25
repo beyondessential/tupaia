@@ -7,7 +7,7 @@ import { useDataTableExport } from '@tupaia/ui-components';
 import { getChartTableData } from './getChartTableData';
 import { ViewContent } from '../types';
 
-export const useChartDataExport = (viewContent: ViewContent, title: string) => {
+export const useChartDataExport = (viewContent?: ViewContent, title = '') => {
   const { startDate, endDate } = viewContent ?? {};
   const { columns, data } = getChartTableData(viewContent);
   return useDataTableExport(columns, data, title, startDate, endDate);

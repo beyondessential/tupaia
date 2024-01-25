@@ -31,11 +31,20 @@ export const ExportButton = () => {
   const [urlSearchParams] = useSearchParams();
   const { isExportMode, setIsExportMode } = useContext(ExportDashboardItemContext);
   const { currentDashboardItem } = useEnlargedDashboardItem();
-  const { type, viewType } = currentDashboardItem?.config || {};
-  const displayType = viewType || type;
+  const getDisplayType = () => {
+    if (!currentDashboardItem?.config) return null;
+    const { config } = currentDashboardItem;
+    if (config.type === 'view') {
+      const { viewType } = config;
+      return viewType;
+    }
+    return config.type;
+  };
+  const displayType = getDisplayType();
 
   // Only show export button if the current dashboard item is a chart, matrix or multi-value view AND it is not a drilldown
   const canExport =
+    displayType &&
     EXPORTABLE_TYPES.includes(displayType) &&
     !urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 

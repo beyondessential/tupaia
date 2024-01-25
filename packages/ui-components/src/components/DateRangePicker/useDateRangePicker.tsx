@@ -30,9 +30,11 @@ const getDatesAsString = (
   weekDisplayFormat?: string | number,
 ) => {
   const isWeek = granularity === GRANULARITIES.WEEK || granularity === GRANULARITIES.SINGLE_WEEK;
-  const { rangeFormat, modifier } = (isWeek && weekDisplayFormat
-    ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
-    : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]) as {
+  const { rangeFormat, modifier } = (
+    isWeek && weekDisplayFormat
+      ? WEEK_DISPLAY_CONFIG[weekDisplayFormat]
+      : GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG]
+  ) as {
     rangeFormat: string;
     modifier?: ModifierType;
   };
@@ -59,8 +61,8 @@ const getDatesAsString = (
  */
 const getCurrentDates = (
   granularity: GranularityType,
-  startDate: Moment,
-  endDate: Moment,
+  startDate: Moment | string,
+  endDate: Moment | string,
   defaultStartDate: Moment,
   defaultEndDate: Moment,
 ) => ({
@@ -81,8 +83,8 @@ const getCurrentDates = (
  */
 
 interface UseDateRangePickerProps {
-  startDate?: Moment;
-  endDate?: Moment;
+  startDate?: Moment | string;
+  endDate?: Moment | string;
   minDate?: Moment | string;
   maxDate?: Moment | string;
   granularity?: GranularityType;

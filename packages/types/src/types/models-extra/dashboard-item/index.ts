@@ -70,6 +70,7 @@ export type {
   ChartConfig,
   ViewPresentationOptions,
   ChartPresentationOptions,
+  ComponentConfig,
 };
 
 export type PresentationOptions =

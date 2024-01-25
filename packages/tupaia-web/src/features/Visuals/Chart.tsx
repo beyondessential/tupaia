@@ -174,7 +174,23 @@ export const Chart = () => {
     setDisplayType(value);
   };
   const shouldUseTabs = isEnlarged && !isExport;
-  const showTable = isEnlarged ? !isExport || config?.presentationOptions?.exportWithTable : false;
+
+  const getShowTable = () => {
+    if (!isEnlarged) return false;
+    if (!isExport) return true;
+    // type guard because presentationOptions is not on all viz types and not all vizes with presentationOptions have exportWithTable as an option
+    if (
+      config &&
+      'presentationOptions' in config &&
+      config.presentationOptions &&
+      'exportWithTable' in config.presentationOptions
+    ) {
+      const { exportWithTable } = config.presentationOptions;
+      return exportWithTable === true;
+    }
+    return false;
+  };
+  const showTable = getShowTable();
 
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   const availableDisplayTypes = showTable ? views : [views[0]];

@@ -55,6 +55,7 @@ export {
   ReferenceLinesConfig,
   ChartConfigObject,
   ComposedChartConfigObject,
+  ComponentConfig,
 } from './dashboard-item';
 export {
   MapOverlayConfig,

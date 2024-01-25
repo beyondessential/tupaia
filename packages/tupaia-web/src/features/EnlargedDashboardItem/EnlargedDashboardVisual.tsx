@@ -115,6 +115,32 @@ export const EnlargedDashboardVisual = ({
 
   // today's date for export
   const date = String(moment());
+
+  const getMergedConfig = () => {
+    // gauge charts don't have presentation options
+    if (config?.type !== 'chart' || config?.chartType === 'gauge') return config;
+    // only apply these changes to chart types, as they are not relevant to other types
+    if ('presentationOptions' in currentDashboardItem?.config) {
+      return {
+        ...config,
+        presentationOptions: {
+          ...config?.presentationOptions,
+          exportWithLabels,
+          exportWithTable,
+        },
+      };
+    }
+    return {
+      ...config,
+      presentationOptions: {
+        exportWithLabels,
+        exportWithTable,
+      },
+    };
+  };
+
+  const mergedConfig = getMergedConfig();
+
   return (
     <Container $isExportMode={isExportMode}>
       <TitleWrapper>
@@ -144,14 +170,7 @@ export const EnlargedDashboardVisual = ({
             isEnlarged: true,
             isExport: isPreview,
             reportCode: currentDashboardItem?.reportCode,
-            config: {
-              ...currentDashboardItem?.config,
-              presentationOptions: {
-                ...currentDashboardItem?.config?.presentationOptions,
-                exportWithLabels,
-                exportWithTable,
-              },
-            },
+            config: mergedConfig,
           }}
         >
           <DashboardItemContent />

@@ -3,13 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-import {
-  BaseChartConfig,
-  CartesianChartConfig,
-  ChartConfigObject,
-  ChartData,
-  ChartType,
-} from '@tupaia/types';
+import { BaseChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
 import { LooseObject, ViewContent } from '../types';
 import { isDataKey } from './utils';
@@ -22,7 +16,7 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
 export const parseChartConfig = (viewContent: ViewContent) => {
-  const { chartType, chartConfig, data, colorPalette: paletteName } = viewContent;
+  const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
 
   const configForAllKeys = ADD_TO_ALL_KEY in chartConfig ? chartConfig[ADD_TO_ALL_KEY] : null;
 
