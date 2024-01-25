@@ -7,14 +7,14 @@ import React, { useState } from 'react';
 import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
+import { ErrorBoundary } from '@tupaia/ui-components';
 import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { MODAL_ROUTES } from '../../constants';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
-import { MODAL_ROUTES } from '../../constants';
 import { UserInfo } from './UserInfo';
-import { ErrorBoundary } from '@tupaia/ui-components';
 
 const UserMenuContainer = styled.div<{
   secondaryColor?: string;
@@ -52,7 +52,7 @@ export const UserMenu = () => {
     landingPage: { primaryHexcode, secondaryHexcode },
   } = useLandingPage();
 
-  const { isLoggedIn, data } = useUser();
+  const { data: user, isLoggedIn } = useUser();
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }: any) => (
@@ -129,7 +129,7 @@ export const UserMenu = () => {
     <ErrorBoundary>
       <UserMenuContainer>
         <UserInfo
-          currentUserUsername={data?.name}
+          currentUserUsername={user?.name}
           isLoggedIn={isLoggedIn}
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
@@ -157,7 +157,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={data?.name}
+          currentUserUsername={user?.name}
         >
           {menuItems}
         </DrawerMenu>
