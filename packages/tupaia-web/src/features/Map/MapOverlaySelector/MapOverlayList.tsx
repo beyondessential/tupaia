@@ -115,7 +115,7 @@ const MapOverlayAccordion = ({
         {mapOverlayGroup.info?.reference && (
           <ReferenceTooltip
             reference={mapOverlayGroup.info.reference}
-            iconStyleOption={ICON_STYLES.MAP_OVERLAY}
+            iconStyle={ICON_STYLES.MAP_OVERLAY}
           />
         )}
       </AccordionHeader>
