@@ -30,7 +30,8 @@ const StyledA4Page = styled(A4Page)<{
 `;
 
 const Wrapper = styled.div`
-  margin: 0 7.8rem;
+  margin: 0 auto;
+  width: 55rem;
 `;
 const Title = styled.h3`
   font-size: 1.25rem;
