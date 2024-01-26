@@ -31,7 +31,7 @@ const StyledA4Page = styled(A4Page)<{
 
 const Wrapper = styled.div`
   margin: 0 auto;
-  width: 55rem;
+  width: 55rem; // set this to a specific width because otherwise when adding table in, sometimes the scrollbar pushes the chart smaller and affects x axis labels
 `;
 const Title = styled.h3`
   font-size: 1.25rem;
