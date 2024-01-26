@@ -8,10 +8,11 @@ import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { ChartType } from '@tupaia/types';
 import { BLUE } from '../../constants';
-import { ViewContent } from '../../types';
+import { ParsedViewContent } from '../../types';
 import { getIsTimeSeries } from '../../utils';
 
-interface BarChartProps extends Pick<ViewContent, 'valueType' | 'data' | 'color' | 'chartConfig'> {
+interface BarChartProps
+  extends Pick<ParsedViewContent, 'valueType' | 'data' | 'color' | 'chartConfig'> {
   dataKey: string;
   yAxisId: string | number;
   stackId: string;

@@ -10,7 +10,7 @@ import domtoimage from 'dom-to-image';
 import { useParams } from 'react-router-dom';
 import { DashboardItemConfig } from '@tupaia/types';
 import { toFilename } from '@tupaia/utils';
-import { ViewContent, useChartDataExport } from '@tupaia/ui-chart-components';
+import { ExportViewContent, useChartDataExport } from '@tupaia/ui-chart-components';
 import {
   Dashboard,
   DashboardItem,
@@ -87,27 +87,39 @@ export const useExportDashboardItem = (
   );
 
   const { config } = currentDashboardItem || ({} as DashboardItem);
-  const { type, name } = config || ({} as DashboardItemConfig);
 
-  const presentationOptions =
-    config && 'presentationOptions' in config ? config.presentationOptions : undefined;
-  const exportTitle = `${name}, ${entityName}`;
+  const exportTitle = `${config?.name}, ${entityName}`;
 
-  const { doExport } = useChartDataExport(
-    {
-      ...reportData,
+  const getExportViewConfig = () => {
+    if (!config || config?.type !== 'chart') return config;
+    const { chartType } = config;
+    if (chartType === 'gauge') return config;
+    const { presentationOptions } = config;
+    return {
       ...config,
       presentationOptions: {
-        ...(presentationOptions || {}),
+        ...presentationOptions,
         exportWithLabels,
         exportWithTable,
         exportWithTableDisabled,
       },
-    } as ViewContent,
-    exportTitle,
-  );
+    };
+  };
 
-  const filename = toFilename(`export-${entityName}-${name}`, true);
+  const getExportViewContent = () => {
+    if (config?.type === 'matrix' || config?.type === 'component') return undefined;
+    const exportViewConfig = getExportViewConfig();
+    return {
+      ...reportData,
+      ...exportViewConfig,
+    } as ExportViewContent; // casting here to handle the different types of data that can be passed to the ExportViewContent component, which the union type doesn't cover well, and the fact that DashboardItemReport doesn't know when type is chart that it returns a ChartData type and not a ViewDataItem type etc
+  };
+
+  const exportViewContent = getExportViewContent();
+
+  const { doExport } = useChartDataExport(exportViewContent, exportTitle);
+
+  const filename = toFilename(`export-${entityName}-${config?.name}`, true);
   const file = `${filename}.${exportFormat}`;
 
   // set the isExporting state to true and the export error state to null when the export starts
@@ -165,7 +177,7 @@ export const useExportDashboardItem = (
 
   const EXPORT_FUNCTIONS = {
     [ExportFormats.PNG]: exportToPNG,
-    [ExportFormats.XLSX]: type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
+    [ExportFormats.XLSX]: config?.type === 'matrix' ? () => exportToExcel(excelParams) : doExport,
   };
 
   // reset the export state when the current dashboard item changes
@@ -173,7 +185,7 @@ export const useExportDashboardItem = (
     setExportError(null);
     setIsExporting(false);
     setIsExportMode(false);
-    resetExportSettings(type);
+    resetExportSettings(config?.type);
   }, [currentDashboardItem]);
 
   return {

@@ -10,11 +10,11 @@ import styled from 'styled-components';
 import { ChartType } from '@tupaia/types';
 import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
 import {
-  ViewContent,
   LegendPosition,
-  GaugeChartViewContent,
-  PieChartViewContent,
-  CartesianChartViewContent,
+  ParsedGaugeChartViewContent,
+  ParsedPieChartViewContent,
+  ParsedCartesianChartViewContent,
+  UnparsedChartViewContent,
 } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
@@ -53,8 +53,9 @@ const sortData = (data: any[]): any[] =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
 const getViewContent = (viewContent: ChartProps['viewContent']) => {
-  const { chartConfig, data } = viewContent;
+  const { data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
+  const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : undefined;
   return chartConfig
     ? {
         ...viewContent,
@@ -65,7 +66,7 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
 };
 
 interface ChartProps {
-  viewContent: ViewContent;
+  viewContent: UnparsedChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -101,16 +102,21 @@ export const Chart = ({
   // Each of these has a quite different type for viewContent, so we need to cast it
   switch (chartType) {
     case ChartType.Pie:
-      return <PieChart viewContent={viewContentConfig as PieChartViewContent} {...commonProps} />;
+      return (
+        <PieChart viewContent={viewContentConfig as ParsedPieChartViewContent} {...commonProps} />
+      );
 
     case ChartType.Gauge:
       return (
-        <GaugeChart viewContent={viewContentConfig as GaugeChartViewContent} {...commonProps} />
+        <GaugeChart
+          viewContent={viewContentConfig as ParsedGaugeChartViewContent}
+          {...commonProps}
+        />
       );
     default:
       return (
         <CartesianChart
-          viewContent={viewContentConfig as CartesianChartViewContent}
+          viewContent={viewContentConfig as ParsedCartesianChartViewContent}
           {...commonProps}
         />
       );

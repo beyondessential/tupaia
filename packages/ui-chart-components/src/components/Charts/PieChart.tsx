@@ -21,7 +21,7 @@ import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
-import { ViewContent, LegendPosition, PieChartViewContent } from '../../types';
+import { ParsedViewContent, LegendPosition, ParsedPieChartViewContent } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -60,7 +60,7 @@ const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getFormattedValue = (viewContent: ViewContent, data: any) => {
+const getFormattedValue = (viewContent: ParsedViewContent, data: any) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
   const { name, value, originalItem } = data;
@@ -70,7 +70,7 @@ const getFormattedValue = (viewContent: ViewContent, data: any) => {
 };
 
 const makeCustomTooltip =
-  (viewContent: ViewContent) =>
+  (viewContent: ParsedViewContent) =>
   ({ active, payload }: TooltipProps) => {
     if (!active || !payload || !payload.length) {
       return null;
@@ -91,7 +91,7 @@ const makeCustomTooltip =
   };
 
 const makeLabel =
-  (viewContent: ViewContent) =>
+  (viewContent: ParsedViewContent) =>
   ({ payload }: any) => {
     return getFormattedValue(viewContent, payload.payload);
   };
@@ -107,7 +107,7 @@ const getHeight = (isExporting: boolean, isEnlarged: boolean, isMobileSize: bool
 };
 
 interface PieChartProps {
-  viewContent: PieChartViewContent;
+  viewContent: ParsedPieChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;

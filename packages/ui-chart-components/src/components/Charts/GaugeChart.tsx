@@ -16,10 +16,10 @@ import {
 } from 'recharts';
 import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
-import { GaugeChartViewContent } from '../../types';
+import { ParsedGaugeChartViewContent } from '../../types';
 
 interface GaugeChartProps {
-  viewContent: GaugeChartViewContent;
+  viewContent: ParsedGaugeChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BaseChartConfig, ValueType, ChartType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { LooseObject, TableAccessor, ViewContent } from '../types';
+import { ExportViewContent, LooseObject, TableAccessor, UnparsedChartViewContent } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
@@ -42,7 +42,7 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => {
+const processColumns = (viewContent: UnparsedChartViewContent, sortByTimestamp: Function) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -104,7 +104,7 @@ const sortDates = (dateA: Date, dateB: Date) => {
   return dateAMoreRecent ? 1 : -1;
 };
 
-const processData = (viewContent: ViewContent) => {
+const processData = (viewContent: UnparsedChartViewContent) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -122,8 +122,9 @@ const processData = (viewContent: ViewContent) => {
   return data;
 };
 
-export const getChartTableData = (viewContent?: ViewContent) => {
-  if (!viewContent) {
+export const getChartTableData = (viewContent?: ExportViewContent) => {
+  // tables only work for charts
+  if (!viewContent || viewContent.type !== 'chart') {
     return {
       columns: [],
       data: [],

@@ -8,7 +8,11 @@ import styled from 'styled-components';
 import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
-import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
+import {
+  Chart as ChartComponent,
+  ChartTable,
+  UnparsedChartViewContent,
+} from '@tupaia/ui-chart-components';
 import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItemContext } from '../DashboardItem';
@@ -195,10 +199,11 @@ export const Chart = () => {
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   const availableDisplayTypes = showTable ? views : [views[0]];
 
+  // casting to type here because sometimes when report or config are not yet defined this will be an empty or incomplete object (e.g. when loading)
   const viewContent = {
     ...report,
     ...config,
-  } as unknown as ViewContent;
+  } as UnparsedChartViewContent;
 
   return (
     <ErrorBoundary>

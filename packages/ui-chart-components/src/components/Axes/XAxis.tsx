@@ -8,7 +8,7 @@ import { Text, XAxis as XAxisComponent } from 'recharts';
 import { ChartData, ChartType, ComposedChartConfigObject } from '@tupaia/types';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
 import { DARK_BLUE } from '../../constants';
-import { CartesianChartViewContent } from '../../types';
+import { ParsedCartesianChartViewContent } from '../../types';
 import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
@@ -64,7 +64,7 @@ const calculateXAxisHeight = (data: ChartData[], isExporting: boolean) => {
 };
 
 interface XAxisProps {
-  viewContent: CartesianChartViewContent;
+  viewContent: ParsedCartesianChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }

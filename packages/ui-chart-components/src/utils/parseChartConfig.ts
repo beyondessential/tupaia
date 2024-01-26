@@ -5,7 +5,7 @@
  */
 import { BaseChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { LooseObject, ViewContent } from '../types';
+import { LooseObject, UnparsedChartViewContent } from '../types';
 import { isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
@@ -15,9 +15,11 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-export const parseChartConfig = (viewContent: ViewContent) => {
-  const { chartType, chartConfig = {}, data, colorPalette: paletteName } = viewContent;
+export const parseChartConfig = (viewContent: UnparsedChartViewContent) => {
+  const { chartType, data, colorPalette: paletteName } = viewContent;
 
+  const chartConfig =
+    'chartConfig' in viewContent && viewContent.chartConfig ? viewContent.chartConfig : {};
   const configForAllKeys = ADD_TO_ALL_KEY in chartConfig ? chartConfig[ADD_TO_ALL_KEY] : null;
 
   // Remove '$all' key and the 'name' from chart config - we can't use a spread here because some types don't have this key, so we need to filter it out and use a type guard above to get the '$all' config
@@ -34,10 +36,11 @@ export const parseChartConfig = (viewContent: ViewContent) => {
 
   const chartConfigs = [baseConfig];
 
-  return chartConfigs
+  const parsedChartConfig = chartConfigs
     .map(sortChartConfigByLegendOrder)
     .map(addDefaultColors)
-    .map(setOpacityValues)[0]; // must remove from array after mapping
+    .map(setOpacityValues)[0];
+  return parsedChartConfig;
 };
 
 /**

@@ -16,7 +16,7 @@ import {
 } from 'recharts';
 import { CartesianChartConfig, ChartType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ViewContent, LegendPosition, CartesianChartViewContent } from '../types';
+import { ParsedViewContent, LegendPosition, ParsedCartesianChartViewContent } from '../types';
 import { isMobile } from '../utils';
 import {
   BarChart as BarChartComponent,
@@ -108,7 +108,7 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
 type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
 
 interface CartesianChartProps {
-  viewContent: CartesianChartViewContent;
+  viewContent: ParsedCartesianChartViewContent;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
@@ -270,7 +270,7 @@ export const CartesianChart = ({
               exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
-        {ReferenceLines({ viewContent: viewContent as ViewContent, isExporting, isEnlarged })}
+        {ReferenceLines({ viewContent: viewContent as ParsedViewContent, isExporting, isEnlarged })}
       </ChartContainer>
     </ResponsiveContainer>
   );

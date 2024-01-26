@@ -8,7 +8,7 @@ import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { BaseChartConfig, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { ViewContent } from '../../types';
+import { ParsedViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({
@@ -87,7 +87,7 @@ const ValueReferenceLine = ({
 };
 
 interface ReferenceLineProps {
-  viewContent: ViewContent;
+  viewContent: ParsedViewContent;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }

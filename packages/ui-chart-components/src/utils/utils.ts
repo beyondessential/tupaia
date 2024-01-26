@@ -12,7 +12,6 @@ import {
   VizPeriodGranularity,
 } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
-import { ViewContent } from '../types';
 
 // tupaia-web uses a responsive approach, so we need to check the window width
 export const isMobile = (isExporting = false) => {
@@ -68,25 +67,4 @@ export const getIsChartData = ({
   }
 
   return data && data.length > 0;
-};
-
-export const getPropertyFromChartConfig = (
-  viewContent: ViewContent,
-  property: keyof ViewContent['chartConfig'],
-) => {
-  const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : null;
-  if (!chartConfig) return null;
-  if (property in chartConfig) {
-    return chartConfig[property];
-  }
-
-  return null;
-};
-
-export const getPresentationOptions = (viewContent: ViewContent) => {
-  const { chartType } = viewContent;
-  if (chartType === ChartType.Pie || chartType === ChartType.Bar || chartType === ChartType.Line)
-    return viewContent.presentationOptions;
-
-  return {};
 };

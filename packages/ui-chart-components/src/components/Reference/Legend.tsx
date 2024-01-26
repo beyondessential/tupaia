@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { TooltipPayload } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
 import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
-import { LegendPosition, ViewContent } from '../../types';
+import { LegendPosition, ParsedViewContent } from '../../types';
 import { isMobile } from '../../utils';
 
 const LegendContainer = styled.div<{
@@ -111,7 +111,7 @@ const getPieLegendDisplayValue = (
   chartConfig: PieChartConfig | {},
   value: string,
   item: any,
-  viewContent: ViewContent,
+  viewContent: ParsedViewContent,
   isEnlarged?: boolean,
   isMobileSize?: boolean,
 ) => {
@@ -130,49 +130,45 @@ interface PieLegendProps {
   isEnlarged?: boolean;
   isExporting?: boolean;
   legendPosition?: LegendPosition;
-  viewContent: ViewContent;
+  viewContent: ParsedViewContent;
 }
 
-export const getPieLegend = ({
-  chartConfig = {},
-  isEnlarged,
-  isExporting,
-  legendPosition,
-  viewContent,
-}: PieLegendProps) => ({ payload }: any) => {
-  const isMobileSize = isMobile(isExporting);
-  return (
-    <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
-      {payload.map(({ color, value, payload: item }: TooltipPayload) => {
-        const displayValue = getPieLegendDisplayValue(
-          chartConfig,
-          value as string,
-          item,
-          viewContent,
-          isEnlarged,
-          isMobileSize,
-        );
+export const getPieLegend =
+  ({ chartConfig = {}, isEnlarged, isExporting, legendPosition, viewContent }: PieLegendProps) =>
+  ({ payload }: any) => {
+    const isMobileSize = isMobile(isExporting);
+    return (
+      <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
+        {payload.map(({ color, value, payload: item }: TooltipPayload) => {
+          const displayValue = getPieLegendDisplayValue(
+            chartConfig,
+            value as string,
+            item,
+            viewContent,
+            isEnlarged,
+            isMobileSize,
+          );
 
-        return (
-          <LegendItem
-            key={value as string}
-            isExporting={isExporting}
-            className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
-            disabled
-          >
-            <TooltipContainer>
-              <Box
-                className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
-                style={{ background: color }}
-              />
-              <Text>{displayValue}</Text>
-            </TooltipContainer>
-          </LegendItem>
-        );
-      })}
-    </PieLegendContainer>
-  );
-};
+          return (
+            <LegendItem
+              key={value as string}
+              isExporting={isExporting}
+              className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
+              disabled
+            >
+              <TooltipContainer>
+                <Box
+                  className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
+                  style={{ background: color }}
+                />
+                <Text>{displayValue}</Text>
+              </TooltipContainer>
+            </LegendItem>
+          );
+        })}
+      </PieLegendContainer>
+    );
+  };
 
 interface CartesianLegendProps {
   chartConfig: CartesianChartConfig;
@@ -182,39 +178,35 @@ interface CartesianLegendProps {
   legendPosition?: LegendPosition;
 }
 
-export const getCartesianLegend = ({
-  chartConfig,
-  onClick,
-  getIsActiveKey,
-  isExporting,
-  legendPosition,
-}: CartesianLegendProps) => ({ payload }: any) => {
-  const isMobileSize = isMobile(isExporting);
-  return (
-    <LegendContainer $position={legendPosition} $isExporting={isExporting}>
-      {payload.map(({ color, value, dataKey }: TooltipPayload) => {
-        const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
+export const getCartesianLegend =
+  ({ chartConfig, onClick, getIsActiveKey, isExporting, legendPosition }: CartesianLegendProps) =>
+  ({ payload }: any) => {
+    const isMobileSize = isMobile(isExporting);
+    return (
+      <LegendContainer $position={legendPosition} $isExporting={isExporting}>
+        {payload.map(({ color, value, dataKey }: TooltipPayload) => {
+          const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
 
-        return (
-          <LegendItem
-            key={value as string}
-            onClick={() => onClick(dataKey)}
-            isExporting={isExporting}
-            className={isMobileSize ? 'small' : 'enlarged'}
-            style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
-          >
-            <Tooltip title="Click to filter data" placement="top" arrow>
-              <TooltipContainer>
-                <Box
-                  className={isMobileSize ? 'small' : 'enlarged'}
-                  style={{ background: color }}
-                />
-                <Text>{displayValue}</Text>
-              </TooltipContainer>
-            </Tooltip>
-          </LegendItem>
-        );
-      })}
-    </LegendContainer>
-  );
-};
+          return (
+            <LegendItem
+              key={value as string}
+              onClick={() => onClick(dataKey)}
+              isExporting={isExporting}
+              className={isMobileSize ? 'small' : 'enlarged'}
+              style={{ textDecoration: getIsActiveKey(value) ? '' : 'line-through' }}
+            >
+              <Tooltip title="Click to filter data" placement="top" arrow>
+                <TooltipContainer>
+                  <Box
+                    className={isMobileSize ? 'small' : 'enlarged'}
+                    style={{ background: color }}
+                  />
+                  <Text>{displayValue}</Text>
+                </TooltipContainer>
+              </Tooltip>
+            </LegendItem>
+          );
+        })}
+      </LegendContainer>
+    );
+  };

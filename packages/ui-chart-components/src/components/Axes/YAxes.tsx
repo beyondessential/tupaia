@@ -8,7 +8,7 @@ import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
 import { ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
 import { DARK_BLUE } from '../../constants';
-import { LooseObject, ViewContent } from '../../types';
+import { LooseObject, ParsedViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
 
 interface AxisDomainProps {
@@ -53,7 +53,7 @@ const parseDomainConfig = (config: AxisDomainProps) => {
   }
 };
 
-const getDefaultYAxisDomain = (viewContent: ViewContent) =>
+const getDefaultYAxisDomain = (viewContent: ParsedViewContent) =>
   viewContent.valueType === 'percentage' ? PERCENTAGE_Y_DOMAIN : DEFAULT_Y_AXIS.yAxisDomain;
 
 const calculateYAxisDomain = ({
