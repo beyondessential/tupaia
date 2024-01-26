@@ -131,9 +131,11 @@ export const useMapOverlayMapData = (hiddenValues = {}) => {
   // Get the main visual entities (descendants of root entity for the selected visual) and their data for displaying the visual
   const mapOverlayData = useMapOverlayTableData({ hiddenValues, rootEntityCode });
 
-  // Check if the data is all polygon data. Default to true if there is no data
+  // Check if the data is polygon data. Default to false if there is no data
   const isPolygonOverlayData =
-    mapOverlayData?.measureData?.every(measure => !!measure.region) ?? true;
+    mapOverlayData?.measureData
+      ?.filter(measure => measure.locationType !== 'no-coordinates')
+      .some(measure => !!measure.region) ?? false;
 
   const entityRelatives = useNavigationEntities(
     projectCode,
