@@ -4,7 +4,6 @@
  */
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { encryptPassword } from '@tupaia/auth';
 import { generateTestId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { getModels } from './getModels';
@@ -88,10 +87,6 @@ export async function addBaselineTestData() {
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(
-        process.env.API_CLIENT_PASSWORD,
-        process.env.API_CLIENT_SALT,
-      ),
     },
   );
 }

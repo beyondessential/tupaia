@@ -26,7 +26,6 @@
     "@tupaia/utils": "workspace:*",
     "jsonwebtoken": "^7.4.3",
     "rand-token": "^1.0.1",
-    "randomatic": "^3.1.1",
     "semver-compare": "^1.0.0",
     "sha256": "^0.2.0"
   },

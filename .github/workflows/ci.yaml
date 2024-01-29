@@ -93,7 +93,6 @@ jobs:
       AGGREGATION_URL_PREFIX: dev-
       API_CLIENT_NAME: api-client
       API_CLIENT_PASSWORD: api-client
-      API_CLIENT_SALT: abc132
       JWT_SECRET: abc132
 
       # test database

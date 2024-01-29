@@ -4,7 +4,7 @@
  */
 
 import { DatabaseError } from '@tupaia/utils';
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
+import { hashAndSaltPassword } from '@tupaia/auth';
 
 export const createUser = async (
   models,
@@ -55,17 +55,14 @@ export const createUser = async (
         permission_group_id: permissionGroup.id,
       });
 
-      let secretKey;
       if (isApiClient) {
-        secretKey = await generateSecretKey();
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
         });
       }
 
-      return { userId: user.id, secretKey };
+      return { userId: user.id };
     });
   } catch (error) {
     throw new DatabaseError('creating user', error);

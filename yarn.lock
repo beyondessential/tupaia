@@ -12039,7 +12039,6 @@ __metadata:
     jsonwebtoken: ^7.4.3
     npm-run-all: ^4.1.5
     rand-token: ^1.0.1
-    randomatic: ^3.1.1
     semver-compare: ^1.0.0
     sha256: ^0.2.0
   languageName: unknown
@@ -27441,13 +27440,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-number@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "is-number@npm:4.0.0"
-  checksum: e71962a5ae97400211e6be5946eff2b81d3fa85154dad498bfe2704999e63ac6b3f8591fdb7971a121122cc6e25915c2cfe882ff7b77e243d51b92ca6961267e
-  languageName: node
-  linkType: hard
-
 "is-number@npm:^7.0.0":
   version: 7.0.0
   resolution: "is-number@npm:7.0.0"
@@ -31601,13 +31593,6 @@ __metadata:
   version: 2.0.1
   resolution: "math-interval-parser@npm:2.0.1"
   checksum: aa7111a337106a68a822d63331b9400621637700f96b1a2ae5dcd4abb7571c271d56995b78223023e255259f37065e55a848bdc4c82d023e628e7e415082475f
-  languageName: node
-  linkType: hard
-
-"math-random@npm:^1.0.1":
-  version: 1.0.4
-  resolution: "math-random@npm:1.0.4"
-  checksum: 9edf31ea337bba21994eb968218fd571d55fce86b51661158d8e241886b73121d9e1a35a5bb8997dba8ce67417a83c8dbd0811917248f886840035b7f1c667b9
   languageName: node
   linkType: hard
 
@@ -36604,17 +36589,6 @@ __metadata:
   version: 1.0.1
   resolution: "rand-token@npm:1.0.1"
   checksum: 406f6dfa66b937b193f79779105ab73ccf4aa7f89a770fc7aa059888692f1b0ce606e569b8425e3e4d1f98007cb7211774cd6c8870ea583b7257c6087f88b75b
-  languageName: node
-  linkType: hard
-
-"randomatic@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "randomatic@npm:3.1.1"
-  dependencies:
-    is-number: ^4.0.0
-    kind-of: ^6.0.0
-    math-random: ^1.0.1
-  checksum: 1952baed71801d3698fe84f3ab01e25ea124fc20ce91e133aa1981268c1347647f9ae1fdc62389db2411ebdad61c0f7cea0ce840dee260ad2adadfcf27299018
   languageName: node
   linkType: hard
 

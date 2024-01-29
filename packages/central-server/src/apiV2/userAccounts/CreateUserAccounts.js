@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '@tupaia/auth';
+import { hashAndSaltPassword } from '@tupaia/auth';
 import { CreateHandler } from '../CreateHandler';
 import { assertBESAdminAccess } from '../../permissions';
 
@@ -68,17 +68,14 @@ export class CreateUserAccounts extends CreateHandler {
         permission_group_id: permissionGroup.id,
       });
 
-      let secretKey;
       if (isApiClient) {
-        secretKey = await generateSecretKey();
         await transactingModels.apiClient.create({
           username: user.email,
           user_account_id: user.id,
-          secret_key_hash: encryptPassword(secretKey, process.env.API_CLIENT_SALT),
         });
       }
 
-      return { userId: user.id, secretKey };
+      return { userId: user.id };
     });
   }
 }

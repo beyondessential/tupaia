@@ -4,11 +4,6 @@
  */
 
 import jwt from 'jsonwebtoken';
-import randomize from 'randomatic';
-
-export function generateSecretKey() {
-  return randomize('*', 20);
-}
 
 /**
  * 'Bearer abcd123' => 'abcd123'

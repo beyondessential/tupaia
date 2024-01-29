@@ -6,7 +6,7 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
-import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
+import { hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
 import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 
@@ -54,7 +54,6 @@ describe('Authenticate', function () {
     await findOrCreateDummyRecord(models.apiClient, {
       username: apiClientUserAccount.email,
       user_account_id: apiClientUserAccount.id,
-      secret_key_hash: encryptPassword(apiClientSecret, process.env.API_CLIENT_SALT),
     });
 
     // Public Demo Land Permission
