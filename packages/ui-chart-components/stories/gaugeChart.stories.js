@@ -13,7 +13,7 @@ export default {
 
 /**
  * To test the charts,
- * - Copy a response from the web-frontend view endpoint (full json response)
+ * - Copy a response from the tupaia-web view endpoint (full json response)
  * - Go to the controls tab of the storybook addons and paste in the response
  */
 
