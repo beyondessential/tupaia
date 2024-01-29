@@ -27512,9 +27512,6 @@ export const ApiClientSchema = {
 		"id": {
 			"type": "string"
 		},
-		"secret_key_hash": {
-			"type": "string"
-		},
 		"user_account_id": {
 			"type": "string"
 		},
@@ -27525,7 +27522,7 @@ export const ApiClientSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id",
-		"secret_key_hash",
+		"user_account_id",
 		"username"
 	]
 } 
@@ -27533,9 +27530,6 @@ export const ApiClientSchema = {
 export const ApiClientCreateSchema = {
 	"type": "object",
 	"properties": {
-		"secret_key_hash": {
-			"type": "string"
-		},
 		"user_account_id": {
 			"type": "string"
 		},
@@ -27545,7 +27539,7 @@ export const ApiClientCreateSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"secret_key_hash",
+		"user_account_id",
 		"username"
 	]
 } 
@@ -27554,9 +27548,6 @@ export const ApiClientUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"id": {
-			"type": "string"
-		},
-		"secret_key_hash": {
 			"type": "string"
 		},
 		"user_account_id": {
