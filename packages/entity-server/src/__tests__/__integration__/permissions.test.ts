@@ -70,6 +70,21 @@ describe('permissions', () => {
       );
     });
 
+    it('does not filter descendants when requested with isPublic option', async () => {
+      const { body: entities } = await app.post('hierarchy/goldsilver/descendants?isPublic=true', {
+        query: { fields: 'code,name,type' },
+        body: { entities: ['LAVENDER', 'ECRUTEAK'] },
+      });
+
+      expect(entities).toBeArray();
+      expect(entities).toIncludeSameMembers(
+        getEntitiesWithFields(
+          ['LAVENDER_RADIO_TOWER', 'BELL_TOWER', 'BURNED_TOWER'],
+          ['code', 'name', 'type'],
+        ),
+      );
+    });
+
     it('filters relatives when requested for some with access', async () => {
       const { body: entities } = await app.post('hierarchy/goldsilver/relatives', {
         query: { fields: 'code,name,type' },

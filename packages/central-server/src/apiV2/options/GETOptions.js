@@ -4,13 +4,13 @@
  */
 
 import { GETHandler } from '../GETHandler';
-import { assertAdminPanelAccess } from '../../permissions';
+import { allowNoPermissions } from '../../permissions';
 
 export class GETOptions extends GETHandler {
   permissionsFilteredInternally = true;
 
   async assertUserHasAccess() {
-    await this.assertPermissions(assertAdminPanelAccess);
+    await this.assertPermissions(allowNoPermissions);
   }
 
   async getPermissionsFilter(criteria, options) {

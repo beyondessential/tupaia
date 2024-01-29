@@ -13,6 +13,7 @@ import { useSurveyResponse } from '../api/queries';
 import { SurveyReviewSection } from '../features/Survey/Components';
 import { Button, SurveyTickIcon } from '../components';
 import { shortDate } from '../utils';
+import { useSurveyForm } from '../features';
 
 const Header = styled.div`
   display: flex;
@@ -79,6 +80,7 @@ const getSubHeadingText = surveyResponse => {
 
 export const SurveyResponsePage = () => {
   const { surveyResponseId } = useParams();
+  const { setFormData } = useSurveyForm();
   const formContext = useFormContext();
   const { data: surveyResponse } = useSurveyResponse(surveyResponseId);
   const answers = surveyResponse?.answers || {};
@@ -93,6 +95,7 @@ export const SurveyResponsePage = () => {
         return { ...acc, [key]: isStringifiedObject ? JSON.parse(value) : value };
       }, {});
       formContext.reset(formattedAnswers);
+      setFormData(formattedAnswers);
     }
   }, [JSON.stringify(answers)]);
 

@@ -2,29 +2,35 @@
 
 A library of user interface components for the Tupaia project.
 
-## Available Scripts
+## Available scripts
 
-In the project directory, you can run:
+In the package directory, you can run:
 
-`yarn storybook`
+```sh
+yarn storybook
+```
 
-Runs the storybook app and pulls stories from the `src` directory which have a .stories.js suffix.<br />
+Or from the monorepo root:
 
-The page will reload if you make edits.<br />
+```sh
+yarn workspace @tupaia/ui-components storybook
+```
 
-## Story Book
+This runs the Storybook app and pulls stories from the [`stories/`](stories/) directory which have a `.stories.js` suffix.
 
-Storybook is an open source tool for developing UI components.
-[https://github.com/storybookjs/storybook](https://github.com/storybookjs/storybook)
+The page will reload if you make edits.
+
+## Storybook
+
+[Storybook](https://storybook.js.org) is an open-source tool for developing UI components.
 
 ## Material UI
 
-The components are mostly built on top of components from the Material UI library. https://material-ui.com.
+The components are mostly built on top of components from the [Material UI (version 4)](https://v4.mui.com) library.
 
-##### Notes on approach:
+## Notes on approach
 
-- Use [styled components](https://styled-components.com) to customise components
-- Import Material UI components with a Mui prefix to distinguish them from custom components. eg. `import MuiButton from '@material-ui/core/Button';`
-
-- Avoid hard coding children and allow them to be passed in as JSX as much as possible
-- Export components using named exports
+- Use [Styled Components](https://styled-components.com) to customise components.
+- Import Material UI components with a `Mui` prefix to when you need to disambiguate them from custom components. e.g. `import { Button as MuiButton } from '@material-ui/core'`
+- Avoid hard-coding children and allow them to be passed in as JSX as much as possible.
+- Export components using named exports.
