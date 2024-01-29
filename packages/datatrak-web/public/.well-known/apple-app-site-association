@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appIDs": ["352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak"],
+        "appIDs": ["352QMCKRKJ.com.tupaia.meditrak"],
         "components": [
           { "/": "/" },
           { "/": "/survey/*" }
@@ -12,6 +12,6 @@
     ]
   },
   "webcredentials": {
-    "apps": ["352QMCKRKJ.org.reactjs.native.example.TupaiaMediTrak"]
+    "apps": ["352QMCKRKJ.com.tupaia.meditrak"]
   }
 }
