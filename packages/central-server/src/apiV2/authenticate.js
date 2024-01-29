@@ -84,14 +84,14 @@ const checkUserAuthentication = async req => {
 
 const checkApiClientAuthentication = async req => {
   const { headers, authenticator } = req;
-  const { username, password: secretKey } = getUserAndPassFromBasicAuth(headers.authorization);
+  const { username, password } = getUserAndPassFromBasicAuth(headers.authorization);
 
   if (!username) {
     return {};
   }
 
   try {
-    return await authenticator.authenticateApiClient({ username, secretKey });
+    return await authenticator.authenticateApiClient({ username, password });
   } catch (error) {
     winston.warn('Invalid Api Client Basic Auth header provided');
     return {};

@@ -8,7 +8,6 @@ import compareVersions from 'semver-compare';
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 import { mergeAccessPolicies } from './mergeAccessPolicies';
-import { encryptPassword } from './utils';
 import { getTokenClaims } from './userAuth';
 
 const REFRESH_TOKEN_LENGTH = 40;
@@ -44,18 +43,23 @@ export class Authenticator {
 
   /**
    * Authenticate an api client user
-   * @param {{ username: string, secretKey: string }} apiClientCredentials
+   * @param {{ username: string, password: string }} apiClientCredentials
    */
-  async authenticateApiClient({ username, secretKey }) {
-    const secretKeyHash = encryptPassword(secretKey, process.env.API_CLIENT_SALT);
+  async authenticateApiClient({ username, password }) {
     const apiClient = await this.models.apiClient.findOne({
       username,
-      secret_key_hash: secretKeyHash,
     });
+
     if (!apiClient) {
       throw new UnauthenticatedError('Could not authenticate Api Client');
     }
+
+    // Check password hash matches that in db
     const user = await apiClient.getUser();
+    if (!user.checkPassword(password)) {
+      throw new UnauthenticatedError('Incorrect email or password');
+    }
+
     const accessPolicy = await this.getAccessPolicyForUser(user.id);
     return { user, accessPolicy };
   }
