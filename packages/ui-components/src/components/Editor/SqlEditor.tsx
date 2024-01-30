@@ -47,8 +47,6 @@ type SqlEditorProps = {
 
 export const SqlEditor = ({
   customKeywords = [],
-  enableBasicAutocompletion = false,
-  enableLiveAutocompletion = false,
   fontSize = 14,
   mode = 'pgsql',
   onChange,
@@ -98,8 +96,6 @@ export const SqlEditor = ({
 
   return (
     <AceEditor
-      enableBasicAutocompletion={enableBasicAutocompletion}
-      enableLiveAutocompletion={enableLiveAutocompletion}
       fontSize={fontSize}
       mode={mode}
       name={editorName}
