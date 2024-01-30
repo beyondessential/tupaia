@@ -93,70 +93,74 @@ export const SqlEditor = ({
       });
     }
   };
+  const onFocus = editor => {
+    const customKeywordList = customKeywords.map(key => ({
+      caption: `:${key}`,
+      value: `:${key}`,
+      meta: 'custom-parameter',
+    }));
+    const sqlKeywordList = originalHighlightList.map(key => ({
+      caption: `${key}`,
+      value: `${key}`,
+      meta: 'keyword',
+    }));
+    const tableList = tables.map(key => ({
+      caption: `${key}`,
+      value: `${key}`,
+      meta: 'table',
+    }));
+    const wordCompleter = {
+      identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
+      getCompletions: (_editor: any, _session: any, _pos: any, _prefix: any, callback: any) => {
+        callback(null, [...sqlKeywordList, ...customKeywordList, ...tableList]);
+      },
+    };
+
+    // eslint-disable-next-line no-param-reassign
+    editor.view.ace.edit(editorName).completers = [wordCompleter];
+  };
+  const onLoad = editor => {
+    // @ts-ignore We're looking under the hood here
+    const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
+    setOriginalHighlightList(sqlKeywordList);
+  };
+
+  const markers = [
+    {
+      type: 'text',
+      startRow: annotations.row || 0,
+      endRow: annotations.row || 0,
+      startCol: annotations.column || 0,
+      endCol: (annotations.column || 0) + 2,
+      className: 'error-marker',
+    },
+  ];
 
   return (
     <AceEditor
+      annotations={[annotations]}
+      editorProps={{
+        $blockScrolling: true,
+        $useWorker: false,
+      }}
       fontSize={fontSize}
       mode={mode}
       name={editorName}
+      onChange={newQuery => {
+        validateQuery(newQuery);
+        onChange(newQuery);
+      }}
+      markers={markers}
+      onFocus={onFocus}
+      onLoad={onLoad}
       placeholder={placeholder}
+      setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
       showPrintMargin={false}
       tabSize={2}
       theme="github"
       value={value}
       width="100%"
       wrapEnabled={wrapEnabled}
-      onChange={newQuery => {
-        validateQuery(newQuery);
-        onChange(newQuery);
-      }}
-      editorProps={{
-        $blockScrolling: true,
-        $useWorker: false,
-      }}
-      setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
-      onLoad={editor => {
-        // @ts-ignore We're looking under the hood here
-        const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
-        setOriginalHighlightList(sqlKeywordList);
-      }}
-      onFocus={editor => {
-        const customKeywordList = customKeywords.map(key => ({
-          caption: `:${key}`,
-          value: `:${key}`,
-          meta: 'custom-parameter',
-        }));
-        const sqlKeywordList = originalHighlightList.map(key => ({
-          caption: `${key}`,
-          value: `${key}`,
-          meta: 'keyword',
-        }));
-        const tableList = tables.map(key => ({
-          caption: `${key}`,
-          value: `${key}`,
-          meta: 'table',
-        }));
-        const wordCompleter = {
-          identifierRegexps: [/[a-zA-Z_0-9:$\-\u00A2-\uFFFF]/],
-          getCompletions: (_editor: any, _session: any, _pos: any, _prefix: any, callback: any) => {
-            callback(null, [...sqlKeywordList, ...customKeywordList, ...tableList]);
-          },
-        };
-
-        // eslint-disable-next-line no-param-reassign
-        editor.view.ace.edit(editorName).completers = [wordCompleter];
-      }}
-      annotations={[annotations]}
-      markers={[
-        {
-          type: 'text',
-          startRow: annotations.row || 0,
-          endRow: annotations.row || 0,
-          startCol: annotations.column || 0,
-          endCol: (annotations.column || 0) + 2,
-          className: 'error-marker',
-        },
-      ]}
     />
   );
 };
