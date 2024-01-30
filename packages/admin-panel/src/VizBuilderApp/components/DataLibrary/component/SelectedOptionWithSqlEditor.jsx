@@ -20,13 +20,13 @@ const SqlEditorPanel = styled.div`
 `;
 
 export const SelectedOptionWithSqlEditor = ({
-  option, // **************************************************
   basicOption, // Option panel configs (title, description etc)
-  supportsTitleEditing,
-  onRemove, // ************************************************
-  setIsDragDisabled,
   currentValue,
   onChange,
+  onRemove,
+  option,
+  setIsDragDisabled,
+  supportsTitleEditing,
 }) => {
   const enableDrag = () => setIsDragDisabled(true);
   const disableDrag = () => setIsDragDisabled(false);
