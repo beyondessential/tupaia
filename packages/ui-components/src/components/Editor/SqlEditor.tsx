@@ -126,7 +126,7 @@ export const SqlEditor = ({
     // eslint-disable-next-line no-param-reassign
     editor.view.ace.edit(editorName).completers = [wordCompleter];
   };
-  const onLoad = editor => {
+  const configureSyntaxHighlighting = editor => {
     // @ts-ignore We're looking under the hood here
     const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
     setOriginalHighlightList(sqlKeywordList);
@@ -159,7 +159,7 @@ export const SqlEditor = ({
       }}
       markers={markers}
       onFocus={onFocus}
-      onLoad={onLoad}
+      onLoad={configureSyntaxHighlighting}
       placeholder={placeholder}
       setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
       showPrintMargin={false}
