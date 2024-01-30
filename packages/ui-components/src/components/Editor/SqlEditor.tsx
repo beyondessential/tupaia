@@ -25,6 +25,7 @@ const AceEditor = styled(BaseAceEditor)`
 type SqlEditorProps = {
   customKeywords?: string[];
   mode?: string;
+  mode?: 'mysql' | 'pgsql' | 'sql';
   onChange: (newValue: string) => unknown;
   placeholder?: string;
   tables?: string[];
