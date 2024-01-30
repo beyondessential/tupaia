@@ -24,6 +24,8 @@ const AceEditor = styled(BaseAceEditor)`
 
 type SqlEditorProps = {
   customKeywords?: string[];
+  enableBasicAutocompletion?: boolean;
+  enableLiveAutocompletion?: boolean;
   mode?: 'mysql' | 'pgsql' | 'sql';
   onChange: (newValue: string) => unknown;
   placeholder?: string;
@@ -32,12 +34,14 @@ type SqlEditorProps = {
 };
 
 export const SqlEditor = ({
-  onChange,
   customKeywords = [],
-  tables = [],
+  enableBasicAutocompletion = false,
+  enableLiveAutocompletion = false,
   mode = 'pgsql',
-  value = '',
+  onChange,
   placeholder = 'SELECT * FROM tablename',
+  tables = [],
+  value = '',
 }: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
   const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
@@ -82,6 +86,8 @@ export const SqlEditor = ({
 
   return (
     <AceEditor
+      enableLiveAutocompletion={enableLiveAutocompletion}
+      enableBasicAutocompletion={enableBasicAutocompletion}
       name={editorName}
       placeholder={placeholder}
       mode={mode}
