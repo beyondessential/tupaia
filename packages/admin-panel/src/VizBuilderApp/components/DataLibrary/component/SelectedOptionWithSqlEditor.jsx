@@ -35,6 +35,8 @@ export const SelectedOptionWithSqlEditor = ({
   const Editor = (
     <SqlEditorPanel onMouseEnter={enableDrag} onMouseLeave={disableDrag}>
       <SqlEditor
+        enableBasicAutocompletion
+        enableLiveAutocompletion
         onChange={onSqlChange}
         placeholder="SELECT * FROM transform_table"
         tables={['transform_table']}

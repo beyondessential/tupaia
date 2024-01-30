@@ -15,6 +15,11 @@ import type { Ace } from 'ace-builds';
 const editorName = 'sqlEditor';
 
 const AceEditor = styled(BaseAceEditor)`
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Monaco, Menlo, 'Cascadia Code', Consolas,
+    'Ubuntu Mono', monospace;
+  // font-size set by fontSize prop
+  line-height: 1.5;
+
   .error-marker {
     z-index: 20;
     position: absolute;
@@ -33,6 +38,7 @@ type SqlEditorProps = {
   placeholder?: string;
   tables?: string[];
   value?: string;
+  wrapEnabled?: boolean;
 };
 
 export const SqlEditor = ({
@@ -44,6 +50,7 @@ export const SqlEditor = ({
   placeholder = 'SELECT * FROM tablename',
   tables = [],
   value = '',
+  wrapEnabled = true,
 }: SqlEditorProps) => {
   const [originalHighlightList, setOriginalHighlightList] = useState([]);
   const [annotations, setAnnotations] = useState<Ace.Annotation>({ text: '', type: '' });
@@ -86,15 +93,18 @@ export const SqlEditor = ({
 
   return (
     <AceEditor
-      enableLiveAutocompletion={enableLiveAutocompletion}
       enableBasicAutocompletion={enableBasicAutocompletion}
+      enableLiveAutocompletion={enableLiveAutocompletion}
+      fontSize={14}
+      mode={mode}
       name={editorName}
       placeholder={placeholder}
-      mode={mode}
-      theme="github"
       showPrintMargin={false}
-      width="100%"
+      tabSize={2}
+      theme="github"
       value={value}
+      width="100%"
+      wrapEnabled={wrapEnabled}
       onChange={newQuery => {
         validateQuery(newQuery);
         onChange(newQuery);
