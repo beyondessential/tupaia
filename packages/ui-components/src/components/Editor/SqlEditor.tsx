@@ -27,6 +27,12 @@ const AceEditor = styled(BaseAceEditor)`
     transform: unset;
   }
 
+  .ace_tooltip {
+    font-size: 0.75rem;
+    max-width: 72ch;
+    text-wrap: unset;
+  }
+
   .error-marker {
     z-index: 20;
     position: absolute;
