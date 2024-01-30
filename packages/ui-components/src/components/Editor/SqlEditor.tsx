@@ -33,6 +33,10 @@ type SqlEditorProps = {
   customKeywords?: string[];
   enableBasicAutocompletion?: boolean;
   enableLiveAutocompletion?: boolean;
+  /**
+   * Pixel value for `font-size`
+   */
+  fontSize?: number;
   mode?: 'mysql' | 'pgsql' | 'sql';
   onChange: (newValue: string) => unknown;
   placeholder?: string;
@@ -45,6 +49,7 @@ export const SqlEditor = ({
   customKeywords = [],
   enableBasicAutocompletion = false,
   enableLiveAutocompletion = false,
+  fontSize = 14,
   mode = 'pgsql',
   onChange,
   placeholder = 'SELECT * FROM tablename',
@@ -95,7 +100,7 @@ export const SqlEditor = ({
     <AceEditor
       enableBasicAutocompletion={enableBasicAutocompletion}
       enableLiveAutocompletion={enableLiveAutocompletion}
-      fontSize={14}
+      fontSize={fontSize}
       mode={mode}
       name={editorName}
       placeholder={placeholder}
