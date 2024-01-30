@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -35,15 +35,15 @@ export const SelectedOptionWithJsonEditor = ({
   onInvalidChange, // *****************************************
   onChange,
 }) => {
+  const enableDrag = () => setIsDragDisabled(true);
+  const disableDrag = () => setIsDragDisabled(false);
+
   const onValidationError = err => {
     if (err.length > 0) onInvalidChange(err[0].message);
   };
 
   const Editor = (
-    <JsonEditorPanel
-      onMouseOver={() => setIsDragDisabled(true)}
-      onMouseLeave={() => setIsDragDisabled(false)}
-    >
+    <JsonEditorPanel onMouseEnter={enableDrag} onMouseLeave={disableDrag}>
       <JsonEditor
         mainMenuBar={false}
         mode="code"
