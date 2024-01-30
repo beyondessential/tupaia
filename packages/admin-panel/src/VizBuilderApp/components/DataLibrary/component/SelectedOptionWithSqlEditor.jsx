@@ -28,13 +28,12 @@ export const SelectedOptionWithSqlEditor = ({
   currentValue,
   onChange,
 }) => {
+  const enableDrag = () => setIsDragDisabled(true);
+  const disableDrag = () => setIsDragDisabled(false);
   const onSqlChange = newValue => onChange({ ...currentValue, sql: newValue });
 
   const Editor = (
-    <SqlEditorPanel
-      onMouseOver={() => setIsDragDisabled(true)}
-      onMouseLeave={() => setIsDragDisabled(false)}
-    >
+    <SqlEditorPanel onMouseEnter={enableDrag} onMouseLeave={disableDrag}>
       <SqlEditor
         onChange={onSqlChange}
         placeholder="SELECT * FROM transform_table"
