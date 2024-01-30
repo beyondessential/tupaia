@@ -127,7 +127,7 @@ export const SqlEditor = ({
 
   const markers = [
     {
-      type: 'text',
+      type: 'text' as const,
       startRow: annotations.row || 0,
       endRow: annotations.row || 0,
       startCol: annotations.column || 0,
