@@ -12,6 +12,8 @@ import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import type { Ace } from 'ace-builds';
 
+const editorName = 'sqlEditor';
+
 const AceEditor = styled(BaseAceEditor)`
   .error-marker {
     z-index: 20;
@@ -81,8 +83,6 @@ export const SqlEditor = ({
       });
     }
   };
-
-  const editorName = 'sqlEditor';
 
   return (
     <AceEditor
