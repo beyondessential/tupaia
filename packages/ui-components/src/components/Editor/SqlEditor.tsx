@@ -20,6 +20,13 @@ const AceEditor = styled(BaseAceEditor)`
   // font-size set by fontSize prop
   line-height: 1.5;
 
+  .ace_placeholder {
+    font-family: inherit;
+    font-style: normal;
+    margin-left: unset;
+    transform: unset;
+  }
+
   .error-marker {
     z-index: 20;
     position: absolute;
