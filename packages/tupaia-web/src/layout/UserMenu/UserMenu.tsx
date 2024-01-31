@@ -63,7 +63,7 @@ export const UserMenu = () => {
 
   const VisitMainSite = (
     <BaseMenuItem key="mainSite" href="https://www.tupaia.org" externalLink>
-      Visit&nbsp;<span>tupaia.org</span>
+      Visit tupaia.org
     </BaseMenuItem>
   );
 
