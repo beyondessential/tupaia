@@ -30,10 +30,11 @@ const SearchInput = styled(TextField)`
 
 const Wrapper = styled.div`
   overflow: hidden;
-  max-height: min(
-    80vh,
-    40rem
-  ); // 80vh is the fallback for when the user is on a small screen, 40rem is the max height of the matrix, bearing in mind we already tell users the matrix can't be viewed properly on small screens
+  max-height: clamp(
+    20rem,
+    70vh,
+    60rem
+  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
   display: flex;
   flex-direction: column;
 `;
