@@ -52,6 +52,7 @@
     "@mui/types": "^7.2.4",
     "@storybook/addon-essentials": "6.3.9",
     "@storybook/react": "^6.3.9",
+    "@testing-library/jest-dom": "^6.2.0",
     "@tupaia/types": "workspace:*",
     "@types/downloadjs": "^1.4.3",
     "@types/jest": "^29.5.1",
