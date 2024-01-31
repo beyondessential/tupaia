@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -79,12 +79,9 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
-  const datatrakUrl =
-    process.env.NODE_ENV !== 'production'
-      ? 'https://dev-datatrak.tupaia.org'
-      : 'https://datatrak.tupaia.org';
+  const datatrakUrl = process.env.REACT_APP_DATATRAK_REDIRECT_URL || 'https://datatrak.tupaia.org';
   const SubmitData = (
-    <BaseMenuItem key="SubmitData" href={datatrakUrl} externalLink>
+    <BaseMenuItem key="submitData" href={datatrakUrl} externalLink>
       Submit data
     </BaseMenuItem>
   );
