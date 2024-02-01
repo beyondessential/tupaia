@@ -4,12 +4,12 @@
  */
 
 import moment from 'moment';
-
+import { AccessPolicy } from '@tupaia/access-policy';
+import { FeedItemTypes } from '@tupaia/types';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-
-export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
+import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 export class FeedItemType extends DatabaseType {
   static databaseType = TYPES.FEED_ITEM;
@@ -26,5 +26,65 @@ export class FeedItemType extends DatabaseType {
 export class FeedItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return FeedItemType;
+  }
+
+  /**
+   *
+   * @param {AccessPolicy} accessPolicy
+   * @param {object} customDbConditions
+   * @param {object} dbOptions
+   * @param {string[]} [dbOptions.sort]
+   * @param {number} [dbOptions.pageLimit]
+   * @param {number} [dbOptions.page]
+   * @returns
+   */
+  async findByAccessPolicy(accessPolicy, customDbConditions = {}, dbOptions = {}) {
+    const { project_id: projectIdFilter, ...dbConditions } = customDbConditions;
+    const surveys = await this.otherModels.survey.findByAccessPolicy(
+      accessPolicy,
+      projectIdFilter
+        ? {
+            project_id: projectIdFilter,
+          }
+        : {},
+    );
+
+    const { sort = ['creation_date DESC'], pageLimit = 20, page = 0 } = dbOptions;
+
+    // get an extra item to see if there are more pages of results
+    const limit = pageLimit + 1;
+    const offset = page * pageLimit;
+    const surveyIds = surveys.map(survey => survey.id);
+
+    const feedItems = await this.find(
+      {
+        'survey_response.survey_id': {
+          comparator: 'IN',
+          comparisonValue: surveyIds,
+        },
+        [QUERY_CONJUNCTIONS.OR]: {
+          type: FeedItemTypes.Markdown,
+        },
+        ...dbConditions,
+      },
+      {
+        sort,
+        limit,
+        offset,
+        joinWith: TYPES.SURVEY_RESPONSE,
+        joinCondition: [`${TYPES.FEED_ITEM}.record_id`, `${TYPES.SURVEY_RESPONSE}.id`],
+        joinType: JOIN_TYPES.LEFT,
+        columns: [`${TYPES.FEED_ITEM}.*`],
+      },
+    );
+
+    const items = await Promise.all(feedItems.slice(0, pageLimit).map(item => item.getData()));
+
+    const hasMorePages = feedItems.length > pageLimit;
+
+    return {
+      hasMorePages,
+      items,
+    };
   }
 }
