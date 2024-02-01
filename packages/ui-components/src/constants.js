@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export const AM_PM_DATE_FORMAT = "h:mmaaaaa'm'";
@@ -14,6 +14,6 @@ export const FORM_FIELD_VALIDATION = {
     },
   },
   PASSWORD: {
-    minLength: { value: 9, message: 'Must be over 8 characters long' },
+    minLength: { value: 9, message: 'Must be at least 9 characters long' },
   },
 };
