@@ -37,10 +37,15 @@ export default defineConfig(({ command, mode }) => {
       },
     },
 
-    // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
-    assetsInclude: ['**/apple-app-site-association'],
+    assetsInclude: [
+      /**
+       * For Universal Links and Shared Web Credentials on Apple platforms
+       * @see https://developer.apple.com/documentation/xcode/supporting-associated-domains
+       */
+      '**/apple-app-site-association',
+    ],
     plugins: [
-      ViteEjsPlugin(),
+      ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
       react({
         jsxRuntime: 'classic',
