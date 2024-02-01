@@ -9,7 +9,10 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../permissions';
-import { getAdminPanelAllowedCountryCodes } from '../utilities';
+import {
+  getAdminPanelAllowedCountryCodes,
+  getAdminPanelAllowedPermissionGroupIdsByCountryIds,
+} from '../utilities';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -95,18 +98,9 @@ export const assertUserEntityPermissionUpsertPermissions = async (
  *  OR (entity = 'TO' AND permission_group IN ('Donor')
  */
 const buildRawSqlUserEntityPermissionsFilter = async (accessPolicy, models) => {
-  const allowedCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
-  const allowedPermissionIdsByCountryIds = Object.fromEntries(
-    await Promise.all(
-      allowedCountryCodes.map(async countryCode => [
-        (await models.entity.findOne({ code: countryCode })).id,
-        (
-          await models.permissionGroup.find({
-            name: accessPolicy.getPermissionGroups([countryCode]),
-          })
-        ).map(({ id }) => id),
-      ]),
-    ),
+  const allowedPermissionIdsByCountryIds = await getAdminPanelAllowedPermissionGroupIdsByCountryIds(
+    accessPolicy,
+    models,
   );
   const sql = Object.values(allowedPermissionIdsByCountryIds)
     .map(
