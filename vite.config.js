@@ -38,6 +38,7 @@ export default defineConfig(({ command, mode }) => {
     },
 
     // ViteEjsPlugin is used to allow the use of EJS templates in the index.html file, for analytics scripts etc
+    assetsInclude: ['**/apple-app-site-association'],
     plugins: [
       ViteEjsPlugin(),
       viteCompression(),
