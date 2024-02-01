@@ -23,20 +23,10 @@ import { MatrixPreview } from './MatrixPreview';
 
 const SearchInput = styled(TextField)`
   margin-bottom: 0;
+  min-width: 10rem;
   .MuiInputBase-root {
     background-color: transparent;
   }
-`;
-
-const Wrapper = styled.div`
-  overflow: hidden;
-  max-height: clamp(
-    20rem,
-    70vh,
-    60rem
-  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
-  display: flex;
-  flex-direction: column;
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -185,7 +175,7 @@ const MatrixVisual = () => {
   }
 
   return (
-    <Wrapper>
+    <>
       <MatrixComponent
         {...config}
         rows={parsedRows}
@@ -213,7 +203,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </Wrapper>
+    </>
   );
 };
 

@@ -6,7 +6,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { BaseReport, ViewConfig } from '@tupaia/types';
+import { BaseReport, MatrixReport, ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
@@ -80,7 +80,12 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
 
   const getHasBigData = () => {
     if (isDataDownload || !reportData) return false;
-    else if (type === 'matrix') return true;
+    else if (type === 'matrix') {
+      // have to cast this because the types don't know that matrix type in the config leads to matrix type report data
+      const { columns } = reportData as MatrixReport;
+      // Only make the modal bigger if there are more than 5 columns, otherwise we end up with a lot of empty space in the cells
+      return (columns && columns?.length > 5) ?? false;
+    }
     const { data } = reportData as BaseReport;
     return data ? data?.length > 20 : false;
   };

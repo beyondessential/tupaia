@@ -118,7 +118,8 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   let CellComponent;
   if (onClick) {
     CellComponent = CellButton;
-  } else if (isDots) {
+    // if no data, don't make component clickable
+  } else if (isDots && value !== undefined) {
     CellComponent = ExpandButton;
   }
   return (
