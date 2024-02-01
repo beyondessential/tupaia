@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import throttle from 'lodash.throttle';
 import { Paper } from '@material-ui/core';
 import { Check } from '@material-ui/icons';
 import { createFilterOptions } from '@material-ui/lab';
@@ -130,12 +131,13 @@ export const AutocompleteQuestion = ({
   config = {},
   controllerProps: { value: selectedValue = null, onChange, ref, invalid },
 }: SurveyQuestionInputProps) => {
-  const [inputValue, setInputValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const { autocomplete = {} } = config!;
   const { attributes, createNew } = autocomplete;
   const { data, isLoading, isError, error, isFetched } = useAutocompleteOptions(
     optionSetId,
     attributes,
+    searchValue,
   );
 
   const getOptionSelected = (option: Option, selectedOption?: string | null) => {
@@ -146,15 +148,15 @@ export const AutocompleteQuestion = ({
   const getOptions = () => {
     const options = data || [];
     // If we can't create a new option, or there is no input value, or the input value is already in the options, or the value is already added, return the options as they are
-    if (!createNew || !inputValue || options.find(option => option.value === inputValue))
+    if (!createNew || !searchValue || options.find(option => option.value === searchValue))
       return options;
     // if we have selected a newly created option, add it to the list of options
-    if (selectedValue?.value === inputValue)
+    if (selectedValue?.value === searchValue)
       return [
         ...options,
         {
-          label: inputValue,
-          value: inputValue,
+          label: searchValue,
+          value: searchValue,
         },
       ];
     return options;
@@ -195,8 +197,10 @@ export const AutocompleteQuestion = ({
         value={selectedValue?.value || selectedValue || null}
         required={required}
         onChange={(_e, newSelectedOption) => handleSelectOption(newSelectedOption)}
-        onInputChange={(_e, value) => setInputValue(value)}
-        inputValue={inputValue}
+        onInputChange={throttle((_, newValue) => {
+          setSearchValue(newValue);
+        }, 200)}
+        inputValue={searchValue}
         inputRef={ref}
         options={options}
         getOptionLabel={option =>

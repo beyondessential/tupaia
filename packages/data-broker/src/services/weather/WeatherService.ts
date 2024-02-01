@@ -188,6 +188,16 @@ export class WeatherService extends Service {
     }
   }
 
+  private getEntityPoint(entity: EntityType) {
+    try {
+      return entity.pointLatLon();
+    } catch (error) {
+      throw new Error(
+        `Cannot fetch weather data for ${entity.code} as it does not have a point location recorded`,
+      );
+    }
+  }
+
   /**
    * Fetch API data and return in format of events/analytics
    */
@@ -214,7 +224,7 @@ export class WeatherService extends Service {
 
     // Run requests in parallel for performance
     const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = entity.pointLatLon();
+      const { lat, lon } = this.getEntityPoint(entity);
 
       // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
       // Performance looks fine requesting 16 days.
@@ -250,14 +260,12 @@ export class WeatherService extends Service {
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
   ) {
-    const {
-      startDate: sanitisedStartDate,
-      endDate: sanitisedEndDate,
-    } = this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
+    const { startDate: sanitisedStartDate, endDate: sanitisedEndDate } =
+      this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
 
     // Run requests in parallel for performance
     const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = entity.pointLatLon();
+      const { lat, lon } = this.getEntityPoint(entity);
 
       if (sanitisedStartDate === null || sanitisedEndDate === null) {
         return {
