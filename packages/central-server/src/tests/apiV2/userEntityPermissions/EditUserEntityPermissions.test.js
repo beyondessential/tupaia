@@ -14,11 +14,11 @@ import { TestableApp } from '../../testUtilities';
 describe('Permissions checker for EditUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
     SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {

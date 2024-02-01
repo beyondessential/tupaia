@@ -14,15 +14,14 @@ import { TestableApp } from '../../testUtilities';
 describe('Permissions checker for GETUserEntityPermissions', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
-    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
-    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-    LA: ['Admin'],
-    TO: ['Admin'],
+    KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin', 'Public'],
+    LA: ['Admin', 'Public'],
+    TO: ['Admin', 'Public'],
   };
 
   const BES_ADMIN_POLICY = {
-    SB: [BES_ADMIN_PERMISSION_GROUP],
+    DL: [BES_ADMIN_PERMISSION_GROUP],
   };
 
   const app = new TestableApp();
