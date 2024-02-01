@@ -4,7 +4,7 @@
  */
 
 import { hashAndSaltPassword } from '@tupaia/auth';
-import { createBasicHeader } from '@tupaia/utils';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 import { TestableServer } from '@tupaia/server-boilerplate';
 
 import {
@@ -42,13 +42,6 @@ export const setupTestData = async () => {
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
   });
 
-  // add something for the api client to have access to
-  await findOrCreateDummyCountryEntity(models, {
-    code: 'DL',
-    name: 'Demo Land',
-    type: 'country',
-  });
-
   hierarchyCacher.listenForChanges();
   await buildAndInsertProjectsAndHierarchies(models, projectsForInserting);
   await models.database.waitForAllChangeHandlers();
@@ -67,6 +60,41 @@ export const setupTestData = async () => {
       ...hashAndSaltPassword(userAccountPassword),
       verified_email: VERIFIED,
     },
+  );
+
+  const apiClientEmail = requireEnv('API_CLIENT_NAME');
+  const apiClientPassword = requireEnv('API_CLIENT_PASSWORD');
+  const apiClient = await findOrCreateDummyRecord(
+    models.user,
+    {
+      email: apiClientEmail,
+    },
+    {
+      first_name: 'API',
+      last_name: 'Client',
+      ...hashAndSaltPassword(apiClientPassword),
+      verified_email: VERIFIED,
+    },
+  );
+
+  const publicPermissionGroup = await findOrCreateDummyRecord(
+    models.permissionGroup,
+    {
+      name: 'Public',
+    },
+    {},
+  );
+
+  const demoLand = await models.entity.findOne({ code: 'DL' });
+
+  await findOrCreateDummyRecord(
+    models.userEntityPermission,
+    {
+      user_id: apiClient.id,
+      entity_id: demoLand.id,
+      permission_group_id: publicPermissionGroup.id,
+    },
+    {},
   );
 };
 

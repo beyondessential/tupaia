@@ -5,12 +5,7 @@
 
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { PermissionsError } from '@tupaia/utils';
-import {
-  grantAccessToCountries,
-  revokeCountryAccess,
-  setupTestApp,
-  COUNTRIES,
-} from './testUtilities';
+import { setupTestApp } from './testUtilities';
 
 jest.mock('@tupaia/api-client', () => {
   const { MockTupaiaApiClient } = jest.requireActual('@tupaia/api-client');
@@ -32,14 +27,6 @@ describe('Error responses', () => {
 
   beforeAll(async () => {
     app = await setupTestApp();
-  });
-
-  beforeEach(() => {
-    grantAccessToCountries(COUNTRIES);
-  });
-
-  afterEach(() => {
-    revokeCountryAccess();
   });
 
   describe('Microservice errors', () => {
