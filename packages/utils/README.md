@@ -19,7 +19,7 @@ actually have to publish it. In order to use it in other packages, simply run (f
 yarn workspace @tupaia/central-server add @tupaia/utils@1.0.0
 ```
 
-and then import from `@tupaia/utils` as though it were any other dependency.
+and then import from [@tupaia/utils](/packages/utils/README.md) as though it were any other dependency.
 
 After making changes to the code in this package, you must run
 
