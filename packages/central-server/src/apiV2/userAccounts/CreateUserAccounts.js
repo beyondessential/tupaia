@@ -26,7 +26,7 @@ export class CreateUserAccounts extends CreateHandler {
   async createRecord() {
     return this.models.wrapInTransaction(async transactingModels => {
       const {
-        countryName = 'Demo Land',
+        countryName,
         permissionGroupName,
         is_api_client: isApiClient,
         ...restOfUser
