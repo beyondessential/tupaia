@@ -5,7 +5,12 @@
 
 import { TestableServer } from '@tupaia/server-boilerplate';
 import { PermissionsError } from '@tupaia/utils';
-import { setupTestApp } from './testUtilities';
+import {
+  grantAccessToCountries,
+  revokeCountryAccess,
+  setupTestApp,
+  COUNTRIES,
+} from './testUtilities';
 
 jest.mock('@tupaia/api-client', () => {
   const { MockTupaiaApiClient } = jest.requireActual('@tupaia/api-client');
@@ -29,9 +34,17 @@ describe('Error responses', () => {
     app = await setupTestApp();
   });
 
+  beforeEach(() => {
+    grantAccessToCountries(COUNTRIES);
+  });
+
+  afterEach(() => {
+    revokeCountryAccess();
+  });
+
   describe('Microservice errors', () => {
     it('Returns the original error from the backing server', async () => {
-      const response = await app.get('entity/oracleages/YOLLS');
+      const response = await app.get('entity/redblue/CINNABAR');
 
       // Forbidden error
       expect(response.statusCode).toEqual(403);

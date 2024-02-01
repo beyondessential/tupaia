@@ -13,6 +13,7 @@ import {
   getTestModels,
   EntityHierarchyCacher,
   getTestDatabase,
+  findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 
 import { createApp } from '../../app';
@@ -26,17 +27,26 @@ const models = getTestModels() as TestModelRegistry;
 const hierarchyCacher = new EntityHierarchyCacher(models);
 hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
 
-const userAccountEmail = 'link@hyrule.com';
+const userAccountEmail = 'ash-ketchum@pokemon.org';
 const userAccountPassword = 'test';
 
 export const setupTestData = async () => {
   const projectsForInserting = PROJECTS.map(project => {
-    const relationsInProject = ENTITY_RELATIONS[project.code];
+    const relationsInProject = ENTITY_RELATIONS.filter(
+      relation => relation.hierarchy === project.code,
+    );
     const entityCodesInProject = relationsInProject.map(relation => relation.child);
     const entitiesInProject = entityCodesInProject.map(entityCode =>
       ENTITIES.find(entity => entity.code === entityCode),
     );
     return { ...project, entities: entitiesInProject, relations: relationsInProject };
+  });
+
+  // add something for the api client to have access to
+  await findOrCreateDummyCountryEntity(models, {
+    code: 'DL',
+    name: 'Demo Land',
+    type: 'country',
   });
 
   hierarchyCacher.listenForChanges();
@@ -52,7 +62,8 @@ export const setupTestData = async () => {
       email: userAccountEmail,
     },
     {
-      first_name: 'Link',
+      first_name: 'Ash',
+      last_name: 'Ketchum',
       ...hashAndSaltPassword(userAccountPassword),
       verified_email: VERIFIED,
     },
@@ -60,6 +71,7 @@ export const setupTestData = async () => {
 };
 
 export const setupTestApp = async () => {
+  await setupTestData();
   const app = new TestableServer(await createApp(getTestDatabase()));
   app.setDefaultHeader('Authorization', createBasicHeader(userAccountEmail, userAccountPassword));
   return app;

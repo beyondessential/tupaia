@@ -4,3 +4,5 @@
  */
 
 export * from './setup';
+export * from './grantAccessToCountries';
+export * from './fixtures';
