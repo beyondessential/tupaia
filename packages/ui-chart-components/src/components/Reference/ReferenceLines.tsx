@@ -75,10 +75,12 @@ const ValueReferenceLine = ({
     <ReferenceLine
       stroke={isExporting ? '#000000' : '#ffffff'}
       strokeDasharray="3 3"
-      label={ReferenceLineLabel({
-        referenceLineLabel: referenceLine.referenceLineLabel,
-        isExporting,
-      })}
+      label={
+        <ReferenceLineLabel
+          referenceLineLabel={referenceLine.referenceLineLabel}
+          isExporting={isExporting}
+        />
+      }
       {...referenceLine}
     />
   ));
