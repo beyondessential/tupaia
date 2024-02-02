@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import { BaseChartConfig, ValueType } from '@tupaia/types';
 import { ReferenceAreaProps } from 'recharts';
 import { GRANULARITY_SHAPE } from '@tupaia/utils';
@@ -54,7 +55,12 @@ export type PresentationOptions = {
   hideAverage?: boolean;
   valueFormat?: string;
   conditions?: ConditionalMatrixConditionShape[];
-  referenceLines?: any;
+  referenceLines?: {
+    targetLine?: {
+      referenceLabel: string;
+      referenceValue: number;
+    };
+  };
 };
 
 /**
