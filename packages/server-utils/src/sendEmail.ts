@@ -52,7 +52,8 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   const fullHtml = html ? `${html}<br>${signOff}` : undefined;
 
   return transporter.sendMail({
-    from: SITE_EMAIL_ADDRESS,
+    from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
+    sender: SITE_EMAIL_ADDRESS,
     to: sendTo,
     subject,
     attachments,

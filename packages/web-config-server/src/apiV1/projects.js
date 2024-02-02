@@ -98,7 +98,7 @@ export async function getProjects(req, res) {
 
   const data = await req.models.project.getAllProjectDetails();
   // Filter out projects that should not be shown on the frontend, if the query param is set.
-  // defaults to true, because tupaia-web and web-frontend should be false, whereas datatrak-web will be true, and there are more places where we want to show all projects than not
+  // defaults to true, because tupaia-web should be false, whereas datatrak-web will be true, and there are more places where we want to show all projects than not
 
   // allow 'false' or false to be falsey (as it depends on the query coming from the server or client side)
   const isFalsey = value => value === 'false' || value === false;
