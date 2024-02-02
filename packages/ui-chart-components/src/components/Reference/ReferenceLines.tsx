@@ -32,6 +32,17 @@ const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) =>
   );
 };
 
+/**
+ * A reference line which is displayed by default on bar charts, showing the average value. This can
+ * be suppressed by setting `hideAverage`.
+ *
+ * @remarks Not supported with stacked charts.
+ *
+ * @example
+ * "presentationOptions": {
+ *   "hideAverage": true
+ * }
+ */
 const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
   const { valueType, data, presentationOptions } = viewContent;
   // show reference line by default
@@ -56,14 +67,33 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
   );
 };
 
+/**
+ * A special case of the {@link ReferenceLines} component for bar charts. If no reference line is
+ * explicitly defined, then a reference line showing the average is displayed.
+ */
 const BarReferenceLine = (props: ReferenceLineProps) =>
   props.viewContent.presentationOptions?.referenceLines
     ? ValueReferenceLine(props)
     : AverageReferenceLine(props);
 
-export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  if (viewContent.chartType === ChartType.Bar) {
-    return BarReferenceLine({ viewContent, isExporting, isEnlarged });
-  }
-  return ValueReferenceLine({ viewContent, isExporting });
+/**
+ * Returns a labelled `ReferenceLine`, which may be used in Cartesian charts.
+ *
+ * @example
+ * "presentationOptions": {
+ *   "referenceLines": {
+ *     "targetLine": {
+ *       "referenceLabel": "Total Beds",
+ *       "referenceValue": 43
+ *     }
+ *   }
+ * }
+ *
+ * @see https://recharts.org/en-US/api/ReferenceLine
+ * @see https://recharts.org/en-US/examples/LineChartWithReferenceLines
+ */
+export const ReferenceLines = (props: ReferenceLineProps) => {
+  return props.viewContent.chartType === ChartType.Bar
+    ? BarReferenceLine(props)
+    : ValueReferenceLine(props);
 };
