@@ -1,32 +1,24 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import styled from 'styled-components';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { AuthViewWrapper } from './AuthViewWrapper';
-import { AuthSubmitButton } from './AuthSubmitButton';
-import { Form, FormInput } from '../Form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Checkbox } from '../../components';
 import { FORM_FIELD_VALIDATION } from '../../constants';
+import { Form, FormInput } from '../Form';
 import { RouterLink } from '../RouterLink';
-import { SignUpComplete } from './SignUpComplete';
+import { AuthErrorMessage } from './AuthErrorMessage';
 import { AuthFormTextField } from './AuthFormTextField';
 import { AuthLink } from './AuthLink';
-import { AuthErrorMessage } from './AuthErrorMessage';
+import { AuthSubmitButton } from './AuthSubmitButton';
+import { AuthViewWrapper } from './AuthViewWrapper';
+import { SignUpComplete } from './SignUpComplete';
 
 const Wrapper = styled(AuthViewWrapper)`
   width: 49rem;
-`;
-
-const TermsText = styled.span`
-  color: ${props => props.theme.palette.text.primary};
-
-  .MuiTypography-root.MuiFormControlLabel-label & a {
-    color: ${props => props.theme.palette.text.primary};
-    font-size: inherit; // override any font-size set elsewhere
-  }
 `;
 
 const FullWidthColumn = styled.div`
@@ -52,6 +44,23 @@ const StyledForm = styled(Form)`
     row-gap: 0;
   }
 `;
+
+const TermsText = styled.span`
+  color: ${props => props.theme.palette.text.primary};
+
+  .MuiTypography-root.MuiFormControlLabel-label & a {
+    color: ${props => props.theme.palette.text.primary};
+    font-size: inherit; // override any font-size set elsewhere
+  }
+`;
+const termsAndConditionsLabel = (
+  <TermsText>
+    I agree to the{' '}
+    <a href="https://www.bes.au/terms-and-conditions" target="_blank" rel="noreferrer noopener">
+      terms and conditions
+    </a>
+  </TermsText>
+);
 
 interface RegisterFormProps {
   onSubmit: SubmitHandler<any>;
@@ -89,6 +98,7 @@ export const RegisterForm = ({
           {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
           <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
             <FormInput
+              autocomplete="given-name"
               id="firstName"
               name="firstName"
               label="First name"
@@ -96,6 +106,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="family-name"
               id="lastName"
               name="lastName"
               label="Last name"
@@ -103,6 +114,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="email"
               id="emailAddress"
               name="emailAddress"
               label="Email"
@@ -112,12 +124,14 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="tel"
               id="contactNumber"
               name="contactNumber"
               label="Contact number (optional)"
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="new-password"
               id="password"
               name="password"
               label="Password"
@@ -127,6 +141,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="new-password"
               id="passwordConfirm"
               name="passwordConfirm"
               label="Confirm password"
@@ -140,6 +155,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="organization"
               id="employer"
               name="employer"
               label="Employer"
@@ -147,6 +163,7 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FormInput
+              autocomplete="organization-title"
               id="position"
               name="position"
               label="Position"
@@ -157,18 +174,7 @@ export const RegisterForm = ({
               <FormInput
                 id="hasAgreed"
                 name="hasAgreed"
-                label={
-                  <TermsText>
-                    I agree to the{' '}
-                    <a
-                      href="https://www.bes.au/terms-and-conditions"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      terms and conditions
-                    </a>
-                  </TermsText>
-                }
+                label={termsAndConditionsLabel}
                 required
                 color="primary"
                 Input={Checkbox}
