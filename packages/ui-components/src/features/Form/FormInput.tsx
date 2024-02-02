@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React, { ComponentType } from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -49,11 +50,12 @@ export const FormInput = ({
 
   return (
     <Input
-      name={name}
-      required={!!required}
       error={!!errors[name]}
       helperText={errors[name]?.message}
       inputRef={register(registerOptions)}
+      name={name}
+      required={!!required}
+      type={type}
       {...props}
     />
   );
