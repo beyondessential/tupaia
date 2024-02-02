@@ -12,13 +12,13 @@ import { Cell } from './Cell';
 
 const HeaderCell = styled(Cell)`
   text-align: center;
-  max-width: 12rem;
   border-width: 1px 1px 2px 1px;
   border-style: solid;
   border-color: ${({ theme }) => darken(theme.palette.text.primary, 0.4)}
     ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   &:first-child {
     z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
+    max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
   }
 `;
 

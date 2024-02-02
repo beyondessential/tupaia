@@ -39,7 +39,6 @@ const HeaderCell = styled(Cell).attrs({
   top: 0;
   left: 0;
   z-index: 2;
-  max-width: 25%;
   background-color: ${({ theme }) =>
     theme.palette.background
       .default}; // set the background color to the same as the table background so that the cells that scroll under it don't show through

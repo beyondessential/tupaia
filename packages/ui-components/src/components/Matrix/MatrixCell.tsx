@@ -38,11 +38,11 @@ const DataCell = styled(Cell)`
   z-index: 1;
   padding: 0;
   height: 100%;
-  word-break: break-word;
+  max-width: 20rem; // put a sensible limit and allow the text to wrap, so that one or two cells with more content doesn't make the whole column super wide
 `;
 
 const DataCellContent = styled.div`
-  padding: 0.25rem;
+  padding: 0.5rem;
   height: 100%;
   width: 100%;
   display: flex;
@@ -60,7 +60,7 @@ const ExpandButton = styled(Button)`
   }
 `;
 
-interface MatrixCellProps {
+interface MatrixRowProps {
   value: any;
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
@@ -71,7 +71,7 @@ interface MatrixCellProps {
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixCellProps) => {
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixRowProps) => {
   const {
     presentationOptions = {},
     categoryPresentationOptions = {},
@@ -118,7 +118,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   let CellComponent;
   if (onClick) {
     CellComponent = CellButton;
-    // if no data, don't make component clickable
+    // if no value, don't render as a button because it won't do anything
   } else if (isDots && value !== undefined) {
     CellComponent = ExpandButton;
   }

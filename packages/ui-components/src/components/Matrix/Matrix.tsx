@@ -69,8 +69,8 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
               ))}
             </TableBody>
           </Table>
-          <MatrixLegend />
         </ScrollContainer>
+        <MatrixLegend />
       </MatrixDispatchContext.Provider>
     </MatrixContext.Provider>
   );
