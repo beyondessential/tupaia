@@ -18,7 +18,7 @@ const ReferenceLineLabel = ({
   referenceLineLabel: string;
   isExporting?: boolean;
 }) => {
-  if (referenceLineLabel === undefined) return undefined;
+  if (referenceLineLabel === undefined) return null;
   return <ReferenceLabel value={referenceLineLabel} fill={isExporting ? '#000000' : '#ffffff'} />;
 };
 
