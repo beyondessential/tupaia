@@ -11,8 +11,6 @@ import {
   LESMIS_ADMIN_PERMISSION_GROUP,
 } from '../../permissions';
 
-const { RAW } = QUERY_CONJUNCTIONS;
-
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
   const userAccount = await models.user.findById(userAccountId);
   if (!userAccount) {
@@ -116,9 +114,20 @@ export const createUserAccountDBFilter = async (accessPolicy, models, criteria) 
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = { ...criteria };
-  dbConditions[RAW] = buildUserAccountRawSqlFilter(accessPolicy);
 
-  return dbConditions;
+  // If we don't have BES Admin access, add a filter to the SQL query
+  const rawSqlFilter = buildUserAccountRawSqlFilter(accessPolicy, models);
+  if (!criteria || Object.keys(criteria).length === 0) {
+    // No given criteria, just return raw SQL
+    return {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    };
+  }
+
+  return {
+    ...criteria,
+    [QUERY_CONJUNCTIONS.AND]: {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    },
+  };
 };

@@ -114,10 +114,18 @@ export const createAccessRequestDBFilter = async (accessPolicy, models, criteria
     return criteria;
   }
   // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = {
-    [QUERY_CONJUNCTIONS.RAW]: await buildRawSqlAccessRequestFilter(accessPolicy, models),
-    ...criteria,
-  };
+  const rawSqlFilter = await buildRawSqlAccessRequestFilter(accessPolicy, models);
+  if (!criteria || Object.keys(criteria).length === 0) {
+    // No given criteria, just return raw SQL
+    return {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    };
+  }
 
-  return dbConditions;
+  return {
+    ...criteria,
+    [QUERY_CONJUNCTIONS.AND]: {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    },
+  };
 };

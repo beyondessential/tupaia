@@ -119,11 +119,20 @@ export const createUserEntityPermissionDBFilter = async (accessPolicy, models, c
   if (hasBESAdminAccess(accessPolicy)) {
     return criteria;
   }
-  // If we don't have BES Admin access, add a filter to the SQL query
-  const dbConditions = {
-    [QUERY_CONJUNCTIONS.RAW]: await buildRawSqlUserEntityPermissionsFilter(accessPolicy, models),
-    ...criteria,
-  };
 
-  return dbConditions;
+  // If we don't have BES Admin access, add a filter to the SQL query
+  const rawSqlFilter = await buildRawSqlUserEntityPermissionsFilter(accessPolicy, models);
+  if (!criteria || Object.keys(criteria).length === 0) {
+    // No given criteria, just return raw SQL
+    return {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    };
+  }
+
+  return {
+    ...criteria,
+    [QUERY_CONJUNCTIONS.AND]: {
+      [QUERY_CONJUNCTIONS.RAW]: rawSqlFilter,
+    },
+  };
 };
