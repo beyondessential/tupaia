@@ -116,13 +116,10 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
   );
 };
 
-const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  const { referenceLines } = viewContent.presentationOptions || {};
-  if (referenceLines) {
-    return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
-  }
-  return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
-};
+const BarReferenceLine = (props: ReferenceLineProps) =>
+  props.viewContent.presentationOptions?.referenceLines
+    ? ValueReferenceLine(props)
+    : AverageReferenceLine(props);
 
 export const ReferenceLines = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
   if (viewContent.chartType === ChartType.Bar) {
