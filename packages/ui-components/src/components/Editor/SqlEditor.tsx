@@ -106,7 +106,7 @@ export const SqlEditor = ({
       });
     }
   };
-  const onFocus = editor => {
+  const onFocus = (editor: any) => {
     const customKeywordList = customKeywords.map(key => ({
       caption: `:${key}`,
       value: `:${key}`,
@@ -132,7 +132,7 @@ export const SqlEditor = ({
     // eslint-disable-next-line no-param-reassign
     editor.view.ace.edit(editorName).completers = [wordCompleter];
   };
-  const configureSyntaxHighlighting = editor => {
+  const configureSyntaxHighlighting = (editor: any) => {
     // @ts-ignore We're looking under the hood here
     const { $keywordList: sqlKeywordList } = editor.session.$mode.$highlightRules;
     setOriginalHighlightList(sqlKeywordList);
