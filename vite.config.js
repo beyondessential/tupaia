@@ -43,6 +43,7 @@ export default defineConfig(({ command, mode }) => {
        * @see https://developer.apple.com/documentation/xcode/supporting-associated-domains
        */
       '/**/.well-known/apple-app-site-association',
+      '/**/.well-known/apple-app-site-association.*',
     ],
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
