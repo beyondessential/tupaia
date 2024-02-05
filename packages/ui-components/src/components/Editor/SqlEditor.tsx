@@ -18,8 +18,6 @@ const AceEditor = styled(BaseAceEditor).attrs({
   setOptions: {
     enableLiveAutocompletion: true,
     enableBasicAutocompletion: true,
-    fontFamily:
-      'ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Monaco, Menlo, Consolas, monospace',
   },
   showPrintMargin: false,
   tabSize: 2,
