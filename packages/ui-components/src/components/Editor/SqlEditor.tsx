@@ -14,9 +14,18 @@ import type { Ace } from 'ace-builds';
 
 const editorName = 'sqlEditor';
 
-const AceEditor = styled(BaseAceEditor)`
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Monaco, Menlo, 'Cascadia Code', Consolas,
-    'Ubuntu Mono', monospace;
+const AceEditor = styled(BaseAceEditor).attrs({
+  setOptions: {
+    enableLiveAutocompletion: true,
+    enableBasicAutocompletion: true,
+    fontFamily:
+      'ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Monaco, Menlo, Consolas, monospace',
+  },
+  showPrintMargin: false,
+  tabSize: 2,
+  theme: 'github',
+  width: '100%',
+})`
   // font-size set by fontSize prop
   line-height: 1.5;
 
@@ -167,12 +176,7 @@ export const SqlEditor = ({
       onFocus={onFocus}
       onLoad={configureSyntaxHighlighting}
       placeholder={placeholder}
-      setOptions={{ enableLiveAutocompletion: true, enableBasicAutocompletion: true }}
-      showPrintMargin={false}
-      tabSize={2}
-      theme="github"
       value={value}
-      width="100%"
       wrapEnabled={wrapEnabled}
     />
   );
