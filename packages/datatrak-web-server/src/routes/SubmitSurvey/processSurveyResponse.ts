@@ -15,6 +15,7 @@ import { buildUpsertEntity } from './buildUpsertEntity';
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
+  recent_entities: string[];
 };
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
@@ -34,7 +35,6 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 export const processSurveyResponse = async (
   surveyResponseData: SurveyRequestT,
   findEntityById: (id: string) => Promise<Entity>,
-  addRecentEntity: (userId: string | null, entityId: string) => Promise<void>,
 ) => {
   const {
     surveyId,
@@ -60,6 +60,7 @@ export const processSurveyResponse = async (
     timezone,
     entities_upserted: [],
     qr_codes_to_create: [],
+    recent_entities: [],
     options_created: [],
     answers: [],
   };
@@ -86,9 +87,8 @@ export const processSurveyResponse = async (
         if (config.entity?.generateQrCode) {
           surveyResponse.qr_codes_to_create?.push(entityObj);
         }
-      } else {
-        await addRecentEntity(userId, answer as string);
       }
+      surveyResponse.recent_entities.push(answer as string);
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;

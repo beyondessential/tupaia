@@ -94,13 +94,16 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     const sortedEntities = searchString
       ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
       : [
-          ...recentEntities.map((id: string) => {
-            const entity = entities.find((e: any) => e.id === id);
-            return {
-              ...entity,
-              isRecent: true,
-            };
-          }),
+          ...recentEntities
+            .map((id: string) => {
+              const entity = entities.find((e: any) => e.id === id);
+              if (!entity) return null; // If the entity is not found, return null so it is filtered out. This can happen if the entity has been deleted or if the entity is new and the entity hierarchy cache has not refreshed yet
+              return {
+                ...entity,
+                isRecent: true,
+              };
+            })
+            .filter(e => e),
           ...entities,
         ];
 

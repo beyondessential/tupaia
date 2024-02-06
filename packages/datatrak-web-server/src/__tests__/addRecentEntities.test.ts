@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { addRecentEntity } from '../utils';
+import { addRecentEntities } from '../utils';
 
 const NUM_MOCK_ENTITIES = 10;
 const mockEntities = [...Array(NUM_MOCK_ENTITIES).keys()].flatMap(x => [
@@ -34,50 +34,46 @@ const mockModels = {
   },
 };
 
-describe('addRecentEntity', () => {
+describe('addRecentEntities', () => {
   afterEach(() => {
     // Reset the mockUser
     mockUser.preferences = {};
   });
 
   it('Adds an entry to the recent entities list', async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
+    await addRecentEntities(mockModels as any, 'user', ['DL_1']);
     expect(mockUser).toMatchObject({
       preferences: { recent_entities: { DL: { district: ['DL_1'] } } },
     });
   });
   it("Doesn't add an entry to the recent entities list if it already exists in the list", async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
+    await addRecentEntities(mockModels as any, 'user', ['DL_1']);
+    await addRecentEntities(mockModels as any, 'user', ['DL_1']);
     expect(mockUser).toMatchObject({
       preferences: { recent_entities: { DL: { district: ['DL_1'] } } },
     });
   });
   it('Adds multiple entries to the recent entities list if it already exists in the list', async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
-    await addRecentEntity(mockModels as any, 'user', 'DL_2');
-    await addRecentEntity(mockModels as any, 'user', 'DL_3');
+    await addRecentEntities(mockModels as any, 'user', ['DL_1', 'DL_2', 'DL_3']);
     expect(mockUser).toMatchObject({
       preferences: { recent_entities: { DL: { district: ['DL_3', 'DL_2', 'DL_1'] } } },
     });
   });
   it('Cycles out the last entry when exceeded MAX = 3', async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
-    await addRecentEntity(mockModels as any, 'user', 'DL_2');
-    await addRecentEntity(mockModels as any, 'user', 'DL_3');
-    await addRecentEntity(mockModels as any, 'user', 'DL_4');
-    await addRecentEntity(mockModels as any, 'user', 'DL_5');
+    await addRecentEntities(mockModels as any, 'user', ['DL_1', 'DL_2', 'DL_3', 'DL_4', 'DL_5']);
     expect(mockUser).toMatchObject({
       preferences: { recent_entities: { DL: { district: ['DL_5', 'DL_4', 'DL_3'] } } },
     });
   });
   it('Separately stores lists for different entity types', async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
-    await addRecentEntity(mockModels as any, 'user', 'DL_2');
-    await addRecentEntity(mockModels as any, 'user', 'DL_3');
-    await addRecentEntity(mockModels as any, 'user', 'DL_6');
-    await addRecentEntity(mockModels as any, 'user', 'DL_7');
-    await addRecentEntity(mockModels as any, 'user', 'DL_8');
+    await addRecentEntities(mockModels as any, 'user', [
+      'DL_1',
+      'DL_2',
+      'DL_3',
+      'DL_6',
+      'DL_7',
+      'DL_8',
+    ]);
     expect(mockUser).toMatchObject({
       preferences: {
         recent_entities: {
@@ -87,12 +83,14 @@ describe('addRecentEntity', () => {
     });
   });
   it('Separately stores lists for different countries', async () => {
-    await addRecentEntity(mockModels as any, 'user', 'DL_1');
-    await addRecentEntity(mockModels as any, 'user', 'DL_2');
-    await addRecentEntity(mockModels as any, 'user', 'DL_3');
-    await addRecentEntity(mockModels as any, 'user', 'FJ_1');
-    await addRecentEntity(mockModels as any, 'user', 'FJ_2');
-    await addRecentEntity(mockModels as any, 'user', 'FJ_3');
+    await addRecentEntities(mockModels as any, 'user', [
+      'DL_1',
+      'DL_2',
+      'DL_3',
+      'FJ_1',
+      'FJ_2',
+      'FJ_3',
+    ]);
     expect(mockUser).toMatchObject({
       preferences: {
         recent_entities: {

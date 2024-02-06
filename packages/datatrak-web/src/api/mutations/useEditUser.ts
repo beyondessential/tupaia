@@ -32,7 +32,7 @@ export const useEditUser = (onSuccess?: () => void) => {
 
       if (projectId) {
         updates.project_id = projectId;
-        updates.recent_entities = {};
+        updates.recent_entities = {}; // Clear recent entities when changing project
       }
 
       if (countryId) {

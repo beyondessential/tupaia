@@ -4,4 +4,4 @@
  */
 
 export { sortSearchResults } from './sortSearchResults';
-export { addRecentEntity } from './addRecentEntity';
+export { addRecentEntities } from './addRecentEntities';
