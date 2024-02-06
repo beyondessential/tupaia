@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
-import { MeasureType } from '@tupaia/types';
+import { MapOverlayDisplayType } from '@tupaia/types';
 import { LegendProps as BaseLegendProps, Series, MeasureTypeLiteral } from '../../types';
 
 const LegendFrame = styled.div<{
@@ -33,7 +33,11 @@ const LegendName = styled.div`
   margin: auto 0.6rem;
 `;
 
-const coloredMeasureTypes = [MeasureType.COLOR, MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM];
+const coloredMeasureTypes = [
+  MapOverlayDisplayType.COLOR,
+  MapOverlayDisplayType.SPECTRUM,
+  MapOverlayDisplayType.SHADED_SPECTRUM,
+];
 
 // This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
 const checkMeasureType = (item: MeasureTypeLiteral, subset: MeasureTypeLiteral[]) =>
@@ -43,10 +47,10 @@ const NullLegend = () => null;
 
 const getLegendComponent = (measureType: MeasureTypeLiteral) => {
   switch (measureType) {
-    case MeasureType.SHADED_SPECTRUM:
-    case MeasureType.SPECTRUM:
+    case MapOverlayDisplayType.SHADED_SPECTRUM:
+    case MapOverlayDisplayType.SPECTRUM:
       return SpectrumLegend;
-    case MeasureType.RADIUS:
+    case MapOverlayDisplayType.RADIUS:
       return NullLegend;
     default:
       return MarkerLegend;
@@ -90,14 +94,19 @@ export const Legend = React.memo(
         ({ type, hideFromLegend, values = [], min, max, noDataColour }: Series) => {
           const seriesType = type as MeasureTypeLiteral;
           // if type is radius or popup-only, don't create a legend
-          if (checkMeasureType(seriesType, [MeasureType.RADIUS, MeasureType.POPUP_ONLY]))
+          if (checkMeasureType(seriesType, [MapOverlayDisplayType.RADIUS, 'popup-only']))
             return false;
 
           // if hideFromLegend is true, don't create a legend
           if (hideFromLegend) return false;
 
           // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
-          if (checkMeasureType(seriesType, [MeasureType.SHADED_SPECTRUM, MeasureType.SPECTRUM]))
+          if (
+            checkMeasureType(seriesType, [
+              MapOverlayDisplayType.SHADED_SPECTRUM,
+              MapOverlayDisplayType.SPECTRUM,
+            ])
+          )
             return noDataColour
               ? true
               : !(min === null || min === undefined || max === null || max === undefined);
@@ -122,8 +131,8 @@ export const Legend = React.memo(
         {currentMapOverlayCodes.map(mapOverlayCode => {
           const { serieses } = measureInfo[mapOverlayCode];
           const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
-          const hasIconLayer = baseSerieses.some(l => l.type === MeasureType.ICON);
-          const hasRadiusLayer = baseSerieses.some(l => l.type === MeasureType.RADIUS);
+          const hasIconLayer = baseSerieses.some(l => l.type === MapOverlayDisplayType.ICON);
+          const hasRadiusLayer = baseSerieses.some(l => l.type === MapOverlayDisplayType.RADIUS);
           const hasColorLayer = baseSerieses.some(l =>
             checkMeasureType(l.type as MeasureTypeLiteral, coloredMeasureTypes),
           );
@@ -131,7 +140,7 @@ export const Legend = React.memo(
             !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
 
           return serieses
-            .sort(a => (a.type === MeasureType.COLOR ? -1 : 1)) // color series should sit at the top
+            .sort(a => (a.type === MapOverlayDisplayType.COLOR ? -1 : 1)) // color series should sit at the top
             .map((series, index) => {
               const { type } = series;
               const LegendComponent = getLegendComponent(type as MeasureTypeLiteral);

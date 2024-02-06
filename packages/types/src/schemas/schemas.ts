@@ -9,11 +9,87 @@
  * Rerun generate:schemas to regenerate this file.
  */
 export const CssColorSchema = {
+	"description": "A CSS color string e.g. green or #abc123",
+	"type": "string"
+} 
+
+export const VizPeriodGranularitySchema = {
+	"enum": [
+		"day",
+		"month",
+		"one_day_at_a_time",
+		"one_month_at_a_time",
+		"one_quarter_at_a_time",
+		"one_week_at_a_time",
+		"one_year_at_a_time",
+		"quarter",
+		"week",
+		"year"
+	],
+	"type": "string"
+} 
+
+export const DateOffsetSpecSchema = {
+	"type": "object",
+	"properties": {
+		"unit": {
+			"enum": [
+				"day",
+				"month",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"offset": {
+			"type": "number"
+		},
+		"modifier": {
+			"enum": [
+				"end_of",
+				"start_of"
+			],
+			"type": "string"
+		},
+		"modifierUnit": {
+			"enum": [
+				"day",
+				"month",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"offset",
+		"unit"
+	]
+} 
+
+export const OffsetModifierSchema = {
+	"enum": [
+		"end_of",
+		"start_of"
+	],
+	"type": "string"
+} 
+
+export const PeriodUnitSchema = {
+	"enum": [
+		"day",
+		"month",
+		"quarter",
+		"week",
+		"year"
+	],
 	"type": "string"
 } 
 
 export const BaseConfigSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
 	"type": "object",
 	"properties": {
 		"name": {
@@ -371,22 +447,6 @@ export const BaseConfigSchema = {
 	]
 } 
 
-export const VizPeriodGranularitySchema = {
-	"enum": [
-		"day",
-		"month",
-		"one_day_at_a_time",
-		"one_month_at_a_time",
-		"one_quarter_at_a_time",
-		"one_week_at_a_time",
-		"one_year_at_a_time",
-		"quarter",
-		"week",
-		"year"
-	],
-	"type": "string"
-} 
-
 export const ValueTypeSchema = {
 	"enum": [
 		"boolean",
@@ -410,17 +470,6 @@ export const WeekDisplayFormatSchema = {
 		"WEEK_COMMENCING_ABBR",
 		"WEEK_ENDING",
 		"WEEK_ENDING_ABBR"
-	],
-	"type": "string"
-} 
-
-export const PeriodUnitSchema = {
-	"enum": [
-		"day",
-		"month",
-		"quarter",
-		"week",
-		"year"
 	],
 	"type": "string"
 } 
@@ -683,55 +732,6 @@ export const DefaultTimePeriodWithAbsoluteDateSchema = {
 	"required": [
 		"start"
 	]
-} 
-
-export const DateOffsetSpecSchema = {
-	"type": "object",
-	"properties": {
-		"unit": {
-			"enum": [
-				"day",
-				"month",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		},
-		"offset": {
-			"type": "number"
-		},
-		"modifier": {
-			"enum": [
-				"end_of",
-				"start_of"
-			],
-			"type": "string"
-		},
-		"modifierUnit": {
-			"enum": [
-				"day",
-				"month",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"offset",
-		"unit"
-	]
-} 
-
-export const OffsetModifierSchema = {
-	"enum": [
-		"end_of",
-		"start_of"
-	],
-	"type": "string"
 } 
 
 export const DisplayOnEntityConditionsSchema = {
@@ -3686,6 +3686,7 @@ export const ComposedChartConfigSchema = {
 				"type": "object",
 				"properties": {
 					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
 					},
 					"label": {
@@ -4223,6 +4224,7 @@ export const BarChartConfigSchema = {
 				"type": "object",
 				"properties": {
 					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
 					},
 					"label": {
@@ -5195,6 +5197,7 @@ export const LineChartConfigSchema = {
 				"type": "object",
 				"properties": {
 					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
 					},
 					"label": {
@@ -5240,6 +5243,7 @@ export const CommonChartChartConfigSchema = {
 		"type": "object",
 		"properties": {
 			"color": {
+				"description": "A CSS color string e.g. green or #abc123",
 				"type": "string"
 			},
 			"label": {
@@ -6381,6 +6385,7 @@ export const ChartConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -6917,6 +6922,7 @@ export const ChartConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -7887,6 +7893,7 @@ export const ChartConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -8316,6 +8323,7 @@ export const ColorOptionSchema = {
 	"type": "object",
 	"properties": {
 		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
 		}
 	},
@@ -8714,6 +8722,7 @@ export const ListViewConfigSchema = {
 				"type": "object",
 				"properties": {
 					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
 					},
 					"label": {
@@ -9137,6 +9146,7 @@ export const SingleValueViewConfigSchema = {
 			]
 		},
 		"dataColor": {
+			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
 		}
 	},
@@ -10326,6 +10336,7 @@ export const MultiValueRowOptionSchema = {
 	"type": "object",
 	"properties": {
 		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
 		},
 		"header": {
@@ -10726,6 +10737,7 @@ export const MultiValueRowViewConfigSchema = {
 			"type": "object",
 			"properties": {
 				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
 					"type": "string"
 				},
 				"header": {
@@ -10742,6 +10754,7 @@ export const MultiValueRowViewConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"name": {
@@ -10757,6 +10770,7 @@ export const MultiValueRowViewConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"header": {
@@ -10773,6 +10787,7 @@ export const MultiValueRowViewConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"header": {
@@ -10789,6 +10804,7 @@ export const MultiValueRowViewConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"header": {
@@ -13563,6 +13579,7 @@ export const ViewConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -13985,6 +14002,7 @@ export const ViewConfigSchema = {
 					]
 				},
 				"dataColor": {
+					"description": "A CSS color string e.g. green or #abc123",
 					"type": "string"
 				}
 			},
@@ -15553,6 +15571,7 @@ export const ViewConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"header": {
@@ -15569,6 +15588,7 @@ export const ViewConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"name": {
@@ -15584,6 +15604,7 @@ export const ViewConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -15600,6 +15621,7 @@ export const ViewConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -15616,6 +15638,7 @@ export const ViewConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -19613,6 +19636,7 @@ export const DashboardItemConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -20149,6 +20173,7 @@ export const DashboardItemConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -21119,6 +21144,7 @@ export const DashboardItemConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -21546,6 +21572,7 @@ export const DashboardItemConfigSchema = {
 						"type": "object",
 						"properties": {
 							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
 							},
 							"label": {
@@ -21968,6 +21995,7 @@ export const DashboardItemConfigSchema = {
 					]
 				},
 				"dataColor": {
+					"description": "A CSS color string e.g. green or #abc123",
 					"type": "string"
 				}
 			},
@@ -23536,6 +23564,7 @@ export const DashboardItemConfigSchema = {
 					"type": "object",
 					"properties": {
 						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						},
 						"header": {
@@ -23552,6 +23581,7 @@ export const DashboardItemConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"name": {
@@ -23567,6 +23597,7 @@ export const DashboardItemConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -23583,6 +23614,7 @@ export const DashboardItemConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -23599,6 +23631,7 @@ export const DashboardItemConfigSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -25921,10 +25954,282 @@ export const MatrixReportSchema = {
 	]
 } 
 
+export const ValueKeySchema = {
+	"description": "A key that can be used to reference a value in a measureConfig, or to reference all values",
+	"type": "string"
+} 
+
+export const ReferenceObjectSchema = {
+	"type": "object",
+	"properties": {
+		"link": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"text": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const InlineValueSchema = {
+	"type": "object",
+	"properties": {
+		"color": {
+			"type": "string"
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"hideFromPopup": {
+			"type": "boolean"
+		},
+		"icon": {
+			"enum": [
+				"checkbox",
+				"circle",
+				"downArrow",
+				"empty",
+				"fade",
+				"h",
+				"healthPin",
+				"help",
+				"hidden",
+				"pentagon",
+				"pin",
+				"radius",
+				"rightArrow",
+				"ring",
+				"square",
+				"triangle",
+				"upArrow",
+				"warning",
+				"x"
+			],
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"value": {
+			"type": [
+				"string",
+				"number"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"icon",
+		"value"
+	]
+} 
+
+export const MeasureConfigSchema = {
+	"type": "object",
+	"properties": {
+		"type": {
+			"enum": [
+				"color",
+				"icon",
+				"popup-only",
+				"radius",
+				"shaded-spectrum",
+				"shading",
+				"spectrum"
+			],
+			"type": "string"
+		},
+		"measureLevel": {
+			"enum": [
+				"Country",
+				"Disaster",
+				"District",
+				"Facility",
+				"SubDistrict"
+			],
+			"type": "string"
+		},
+		"values": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"color": {
+						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"hideFromPopup": {
+						"type": "boolean"
+					},
+					"icon": {
+						"enum": [
+							"checkbox",
+							"circle",
+							"downArrow",
+							"empty",
+							"fade",
+							"h",
+							"healthPin",
+							"help",
+							"hidden",
+							"pentagon",
+							"pin",
+							"radius",
+							"rightArrow",
+							"ring",
+							"square",
+							"triangle",
+							"upArrow",
+							"warning",
+							"x"
+						],
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"value": {
+						"type": [
+							"string",
+							"number"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"icon",
+					"value"
+				]
+			}
+		},
+		"sortOrder": {
+			"type": "number"
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"name": {
+			"type": "string"
+		},
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"type"
+	]
+} 
+
+export const IconKeySchema = {
+	"enum": [
+		"checkbox",
+		"circle",
+		"downArrow",
+		"empty",
+		"fade",
+		"h",
+		"healthPin",
+		"help",
+		"hidden",
+		"pentagon",
+		"pin",
+		"radius",
+		"rightArrow",
+		"ring",
+		"square",
+		"triangle",
+		"upArrow",
+		"warning",
+		"x"
+	],
+	"type": "string"
+} 
+
+export const ScaleTypeSchema = {
+	"enum": [
+		"gpi",
+		"neutral",
+		"neutralReverse",
+		"performance",
+		"performanceDesc",
+		"time"
+	],
+	"type": "string"
+} 
+
+export const MapOverlayDisplayTypeSchema = {
+	"enum": [
+		"color",
+		"icon",
+		"radius",
+		"shaded-spectrum",
+		"shading",
+		"spectrum"
+	],
+	"type": "string"
+} 
+
+export const DisplayedValueTypeSchema = {
+	"enum": [
+		"facilityTypeName",
+		"name",
+		"originalValue",
+		"schoolTypeName"
+	],
+	"type": "string"
+} 
+
+export const EntityLevelSchema = {
+	"enum": [
+		"Country",
+		"Disaster",
+		"District",
+		"Facility",
+		"SubDistrict"
+	],
+	"type": "string"
+} 
+
+export const MeasureValueTypeSchema = {
+	"enum": [
+		"boolean",
+		"currency",
+		"default",
+		"fraction",
+		"fractionAndPercentage",
+		"number",
+		"numberAndPercentage",
+		"oneDecimalPlace",
+		"percentage",
+		"text"
+	],
+	"type": "string"
+} 
+
+export const MeasureColorSchemeSchema = {
+	"enum": [
+		"default",
+		"default-reverse",
+		"gpi",
+		"performance",
+		"time"
+	],
+	"type": "string"
+} 
+
 export const MapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customColors": {
+			"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 			"type": "string"
 		},
 		"customLabel": {
@@ -26017,6 +26322,7 @@ export const MapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -26048,9 +26354,102 @@ export const MapOverlayConfigSchema = {
 						"year"
 					],
 					"type": "string"
+				},
+				"start": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"end": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"offset",
 				"unit"
@@ -26083,7 +26482,6 @@ export const MapOverlayConfigSchema = {
 			"enum": [
 				"color",
 				"icon",
-				"popup-only",
 				"radius",
 				"shaded-spectrum",
 				"shading",
@@ -26101,6 +26499,7 @@ export const MapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"hideByDefault": {
+			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
 			"additionalProperties": false
 		},
@@ -26162,6 +26561,7 @@ export const MapOverlayConfigSchema = {
 			"type": "boolean"
 		},
 		"measureConfig": {
+			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
 			"type": "object",
 			"additionalProperties": false
 		},
@@ -26179,6 +26579,7 @@ export const MapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"noDataColour": {
+			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
@@ -26197,7 +26598,10 @@ export const MapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string"
+			"type": "string",
+			"enum": [
+				"\"{code}: {name}\""
+			]
 		},
 		"scaleBounds": {
 			"type": "object",
@@ -26302,6 +26706,7 @@ export const MapOverlayConfigSchema = {
 			"enum": [
 				"boolean",
 				"currency",
+				"default",
 				"fraction",
 				"fractionAndPercentage",
 				"number",
@@ -26363,7 +26768,6 @@ export const MapOverlayConfigSchema = {
 				"additionalProperties": false,
 				"required": [
 					"icon",
-					"name",
 					"value"
 				]
 			}
@@ -26373,157 +26777,6 @@ export const MapOverlayConfigSchema = {
 	"required": [
 		"displayType"
 	]
-} 
-
-export const InlineValueSchema = {
-	"type": "object",
-	"properties": {
-		"color": {
-			"type": "string"
-		},
-		"hideFromLegend": {
-			"type": "boolean"
-		},
-		"hideFromPopup": {
-			"type": "boolean"
-		},
-		"icon": {
-			"enum": [
-				"checkbox",
-				"circle",
-				"downArrow",
-				"empty",
-				"fade",
-				"h",
-				"healthPin",
-				"help",
-				"hidden",
-				"pentagon",
-				"pin",
-				"radius",
-				"rightArrow",
-				"ring",
-				"square",
-				"triangle",
-				"upArrow",
-				"warning",
-				"x"
-			],
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"value": {
-			"type": [
-				"string",
-				"number"
-			]
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"icon",
-		"name",
-		"value"
-	]
-} 
-
-export const IconKeySchema = {
-	"enum": [
-		"checkbox",
-		"circle",
-		"downArrow",
-		"empty",
-		"fade",
-		"h",
-		"healthPin",
-		"help",
-		"hidden",
-		"pentagon",
-		"pin",
-		"radius",
-		"rightArrow",
-		"ring",
-		"square",
-		"triangle",
-		"upArrow",
-		"warning",
-		"x"
-	],
-	"type": "string"
-} 
-
-export const ScaleTypeSchema = {
-	"enum": [
-		"gpi",
-		"neutral",
-		"neutralReverse",
-		"performance",
-		"performanceDesc",
-		"time"
-	],
-	"type": "string"
-} 
-
-export const MeasureTypeSchema = {
-	"enum": [
-		"color",
-		"icon",
-		"popup-only",
-		"radius",
-		"shaded-spectrum",
-		"shading",
-		"spectrum"
-	],
-	"type": "string"
-} 
-
-export const DisplayedValueTypeSchema = {
-	"enum": [
-		"facilityTypeName",
-		"name",
-		"originalValue",
-		"schoolTypeName"
-	],
-	"type": "string"
-} 
-
-export const EntityLevelSchema = {
-	"enum": [
-		"Country",
-		"Disaster",
-		"District",
-		"Facility",
-		"SubDistrict"
-	],
-	"type": "string"
-} 
-
-export const MeasureValueTypeSchema = {
-	"enum": [
-		"boolean",
-		"currency",
-		"fraction",
-		"fractionAndPercentage",
-		"number",
-		"numberAndPercentage",
-		"oneDecimalPlace",
-		"percentage",
-		"text"
-	],
-	"type": "string"
-} 
-
-export const MeasureColorSchemeSchema = {
-	"enum": [
-		"default",
-		"default-reverse",
-		"gpi",
-		"performance",
-		"time"
-	],
-	"type": "string"
 } 
 
 export const CodeGeneratorQuestionConfigSchema = {
@@ -30002,6 +30255,7 @@ export const DashboardItemSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -30538,6 +30792,7 @@ export const DashboardItemSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -31508,6 +31763,7 @@ export const DashboardItemSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -31935,6 +32191,7 @@ export const DashboardItemSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -32357,6 +32614,7 @@ export const DashboardItemSchema = {
 							]
 						},
 						"dataColor": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						}
 					},
@@ -33925,6 +34183,7 @@ export const DashboardItemSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -33941,6 +34200,7 @@ export const DashboardItemSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"name": {
@@ -33956,6 +34216,7 @@ export const DashboardItemSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -33972,6 +34233,7 @@ export const DashboardItemSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -33988,6 +34250,7 @@ export const DashboardItemSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -38015,6 +38278,7 @@ export const DashboardItemCreateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -38551,6 +38815,7 @@ export const DashboardItemCreateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -39521,6 +39786,7 @@ export const DashboardItemCreateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -39948,6 +40214,7 @@ export const DashboardItemCreateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -40370,6 +40637,7 @@ export const DashboardItemCreateSchema = {
 							]
 						},
 						"dataColor": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						}
 					},
@@ -41938,6 +42206,7 @@ export const DashboardItemCreateSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -41954,6 +42223,7 @@ export const DashboardItemCreateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"name": {
@@ -41969,6 +42239,7 @@ export const DashboardItemCreateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -41985,6 +42256,7 @@ export const DashboardItemCreateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -42001,6 +42273,7 @@ export const DashboardItemCreateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -46022,6 +46295,7 @@ export const DashboardItemUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -46558,6 +46832,7 @@ export const DashboardItemUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -47528,6 +47803,7 @@ export const DashboardItemUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -47955,6 +48231,7 @@ export const DashboardItemUpdateSchema = {
 								"type": "object",
 								"properties": {
 									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									},
 									"label": {
@@ -48377,6 +48654,7 @@ export const DashboardItemUpdateSchema = {
 							]
 						},
 						"dataColor": {
+							"description": "A CSS color string e.g. green or #abc123",
 							"type": "string"
 						}
 					},
@@ -49945,6 +50223,7 @@ export const DashboardItemUpdateSchema = {
 							"type": "object",
 							"properties": {
 								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
 									"type": "string"
 								},
 								"header": {
@@ -49961,6 +50240,7 @@ export const DashboardItemUpdateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"name": {
@@ -49976,6 +50256,7 @@ export const DashboardItemUpdateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -49992,6 +50273,7 @@ export const DashboardItemUpdateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -50008,6 +50290,7 @@ export const DashboardItemUpdateSchema = {
 									"type": "object",
 									"properties": {
 										"color": {
+											"description": "A CSS color string e.g. green or #abc123",
 											"type": "string"
 										},
 										"header": {
@@ -54590,6 +54873,7 @@ export const MapOverlaySchema = {
 			"type": "object",
 			"properties": {
 				"customColors": {
+					"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 					"type": "string"
 				},
 				"customLabel": {
@@ -54682,6 +54966,7 @@ export const MapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -54713,9 +54998,102 @@ export const MapOverlaySchema = {
 								"year"
 							],
 							"type": "string"
+						},
+						"start": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"offset",
 						"unit"
@@ -54748,7 +55126,6 @@ export const MapOverlaySchema = {
 					"enum": [
 						"color",
 						"icon",
-						"popup-only",
 						"radius",
 						"shaded-spectrum",
 						"shading",
@@ -54766,6 +55143,7 @@ export const MapOverlaySchema = {
 					"type": "string"
 				},
 				"hideByDefault": {
+					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -54827,6 +55205,7 @@ export const MapOverlaySchema = {
 					"type": "boolean"
 				},
 				"measureConfig": {
+					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -54844,6 +55223,7 @@ export const MapOverlaySchema = {
 					"type": "string"
 				},
 				"noDataColour": {
+					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
@@ -54862,7 +55242,10 @@ export const MapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string"
+					"type": "string",
+					"enum": [
+						"\"{code}: {name}\""
+					]
 				},
 				"scaleBounds": {
 					"type": "object",
@@ -54967,6 +55350,7 @@ export const MapOverlaySchema = {
 					"enum": [
 						"boolean",
 						"currency",
+						"default",
 						"fraction",
 						"fractionAndPercentage",
 						"number",
@@ -55028,7 +55412,6 @@ export const MapOverlaySchema = {
 						"additionalProperties": false,
 						"required": [
 							"icon",
-							"name",
 							"value"
 						]
 					}
@@ -55095,6 +55478,7 @@ export const MapOverlayCreateSchema = {
 			"type": "object",
 			"properties": {
 				"customColors": {
+					"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 					"type": "string"
 				},
 				"customLabel": {
@@ -55187,6 +55571,7 @@ export const MapOverlayCreateSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -55218,9 +55603,102 @@ export const MapOverlayCreateSchema = {
 								"year"
 							],
 							"type": "string"
+						},
+						"start": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"offset",
 						"unit"
@@ -55253,7 +55731,6 @@ export const MapOverlayCreateSchema = {
 					"enum": [
 						"color",
 						"icon",
-						"popup-only",
 						"radius",
 						"shaded-spectrum",
 						"shading",
@@ -55271,6 +55748,7 @@ export const MapOverlayCreateSchema = {
 					"type": "string"
 				},
 				"hideByDefault": {
+					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -55332,6 +55810,7 @@ export const MapOverlayCreateSchema = {
 					"type": "boolean"
 				},
 				"measureConfig": {
+					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -55349,6 +55828,7 @@ export const MapOverlayCreateSchema = {
 					"type": "string"
 				},
 				"noDataColour": {
+					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
@@ -55367,7 +55847,10 @@ export const MapOverlayCreateSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string"
+					"type": "string",
+					"enum": [
+						"\"{code}: {name}\""
+					]
 				},
 				"scaleBounds": {
 					"type": "object",
@@ -55472,6 +55955,7 @@ export const MapOverlayCreateSchema = {
 					"enum": [
 						"boolean",
 						"currency",
+						"default",
 						"fraction",
 						"fractionAndPercentage",
 						"number",
@@ -55533,7 +56017,6 @@ export const MapOverlayCreateSchema = {
 						"additionalProperties": false,
 						"required": [
 							"icon",
-							"name",
 							"value"
 						]
 					}
@@ -55594,6 +56077,7 @@ export const MapOverlayUpdateSchema = {
 			"type": "object",
 			"properties": {
 				"customColors": {
+					"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 					"type": "string"
 				},
 				"customLabel": {
@@ -55686,6 +56170,7 @@ export const MapOverlayUpdateSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"unit": {
@@ -55717,9 +56202,102 @@ export const MapOverlayUpdateSchema = {
 								"year"
 							],
 							"type": "string"
+						},
+						"start": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
 						}
 					},
-					"additionalProperties": false,
 					"required": [
 						"offset",
 						"unit"
@@ -55752,7 +56330,6 @@ export const MapOverlayUpdateSchema = {
 					"enum": [
 						"color",
 						"icon",
-						"popup-only",
 						"radius",
 						"shaded-spectrum",
 						"shading",
@@ -55770,6 +56347,7 @@ export const MapOverlayUpdateSchema = {
 					"type": "string"
 				},
 				"hideByDefault": {
+					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -55831,6 +56409,7 @@ export const MapOverlayUpdateSchema = {
 					"type": "boolean"
 				},
 				"measureConfig": {
+					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
 					"type": "object",
 					"additionalProperties": false
 				},
@@ -55848,6 +56427,7 @@ export const MapOverlayUpdateSchema = {
 					"type": "string"
 				},
 				"noDataColour": {
+					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
@@ -55866,7 +56446,10 @@ export const MapOverlayUpdateSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string"
+					"type": "string",
+					"enum": [
+						"\"{code}: {name}\""
+					]
 				},
 				"scaleBounds": {
 					"type": "object",
@@ -55971,6 +56554,7 @@ export const MapOverlayUpdateSchema = {
 					"enum": [
 						"boolean",
 						"currency",
+						"default",
 						"fraction",
 						"fractionAndPercentage",
 						"number",
@@ -56032,7 +56616,6 @@ export const MapOverlayUpdateSchema = {
 						"additionalProperties": false,
 						"required": [
 							"icon",
-							"name",
 							"value"
 						]
 					}
@@ -62191,6 +62774,7 @@ export const DashboardWithMetadataSchema = {
 											"type": "object",
 											"properties": {
 												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
 												},
 												"label": {
@@ -62727,6 +63311,7 @@ export const DashboardWithMetadataSchema = {
 											"type": "object",
 											"properties": {
 												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
 												},
 												"label": {
@@ -63697,6 +64282,7 @@ export const DashboardWithMetadataSchema = {
 											"type": "object",
 											"properties": {
 												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
 												},
 												"label": {
@@ -64124,6 +64710,7 @@ export const DashboardWithMetadataSchema = {
 											"type": "object",
 											"properties": {
 												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
 												},
 												"label": {
@@ -64546,6 +65133,7 @@ export const DashboardWithMetadataSchema = {
 										]
 									},
 									"dataColor": {
+										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
 									}
 								},
@@ -66114,6 +66702,7 @@ export const DashboardWithMetadataSchema = {
 										"type": "object",
 										"properties": {
 											"color": {
+												"description": "A CSS color string e.g. green or #abc123",
 												"type": "string"
 											},
 											"header": {
@@ -66130,6 +66719,7 @@ export const DashboardWithMetadataSchema = {
 												"type": "object",
 												"properties": {
 													"color": {
+														"description": "A CSS color string e.g. green or #abc123",
 														"type": "string"
 													},
 													"name": {
@@ -66145,6 +66735,7 @@ export const DashboardWithMetadataSchema = {
 												"type": "object",
 												"properties": {
 													"color": {
+														"description": "A CSS color string e.g. green or #abc123",
 														"type": "string"
 													},
 													"header": {
@@ -66161,6 +66752,7 @@ export const DashboardWithMetadataSchema = {
 												"type": "object",
 												"properties": {
 													"color": {
+														"description": "A CSS color string e.g. green or #abc123",
 														"type": "string"
 													},
 													"header": {
@@ -66177,6 +66769,7 @@ export const DashboardWithMetadataSchema = {
 												"type": "object",
 												"properties": {
 													"color": {
+														"description": "A CSS color string e.g. green or #abc123",
 														"type": "string"
 													},
 													"header": {
@@ -68257,6 +68850,7 @@ export const TranslatedMapOverlaySchema = {
 			"type": "string"
 		},
 		"customColors": {
+			"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 			"type": "string"
 		},
 		"customLabel": {
@@ -68349,6 +68943,7 @@ export const TranslatedMapOverlaySchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"unit": {
@@ -68380,9 +68975,102 @@ export const TranslatedMapOverlaySchema = {
 						"year"
 					],
 					"type": "string"
+				},
+				"start": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"end": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
 				}
 			},
-			"additionalProperties": false,
 			"required": [
 				"offset",
 				"unit"
@@ -68415,7 +69103,6 @@ export const TranslatedMapOverlaySchema = {
 			"enum": [
 				"color",
 				"icon",
-				"popup-only",
 				"radius",
 				"shaded-spectrum",
 				"shading",
@@ -68433,6 +69120,7 @@ export const TranslatedMapOverlaySchema = {
 			"type": "string"
 		},
 		"hideByDefault": {
+			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
 			"additionalProperties": false
 		},
@@ -68494,6 +69182,7 @@ export const TranslatedMapOverlaySchema = {
 			"type": "boolean"
 		},
 		"measureConfig": {
+			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
 			"type": "object",
 			"additionalProperties": false
 		},
@@ -68508,6 +69197,7 @@ export const TranslatedMapOverlaySchema = {
 			"type": "string"
 		},
 		"noDataColour": {
+			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
@@ -68526,7 +69216,10 @@ export const TranslatedMapOverlaySchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string"
+			"type": "string",
+			"enum": [
+				"\"{code}: {name}\""
+			]
 		},
 		"scaleBounds": {
 			"type": "object",
@@ -68631,6 +69324,7 @@ export const TranslatedMapOverlaySchema = {
 			"enum": [
 				"boolean",
 				"currency",
+				"default",
 				"fraction",
 				"fractionAndPercentage",
 				"number",
@@ -68692,7 +69386,6 @@ export const TranslatedMapOverlaySchema = {
 				"additionalProperties": false,
 				"required": [
 					"icon",
-					"name",
 					"value"
 				]
 			}

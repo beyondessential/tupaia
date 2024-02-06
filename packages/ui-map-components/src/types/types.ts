@@ -5,14 +5,20 @@
 import { ReactNode } from 'react';
 import { CircleMarkerProps, PolygonProps } from 'react-leaflet';
 import { LatLngExpression, LatLngBoundsExpression } from 'leaflet';
-import { Entity as TupaiaEntity, CssColor, IconKey, MeasureType, ScaleType } from '@tupaia/types';
+import {
+  Entity as TupaiaEntity,
+  CssColor,
+  IconKey,
+  MapOverlayDisplayType,
+  ScaleType,
+} from '@tupaia/types';
 import { BREWER_PALETTE } from '../constants';
 
 export type ColorKey = keyof typeof BREWER_PALETTE;
 export type Color = ColorKey | 'transparent' | CssColor;
 
 export type ScaleTypeLiteral = `${ScaleType}`;
-export type MeasureTypeLiteral = `${MeasureType}`;
+export type MeasureTypeLiteral = `${MapOverlayDisplayType}`;
 export type OrgUnitCode = string | undefined;
 
 export type Location = {

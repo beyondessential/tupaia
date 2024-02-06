@@ -37,7 +37,7 @@ export {
   ChartConfig,
   MapOverlayConfig,
   IconKey,
-  MeasureType,
+  MapOverlayDisplayType,
   ScaleType,
   MeasureColorScheme,
   BaseReport,
