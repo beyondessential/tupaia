@@ -7,6 +7,7 @@ import {
   ModelRegistry,
   EntityModel,
   EntityType as BaseEntityType,
+  SurveyModel,
   OneTimeLoginModel,
   OneTimeLoginType as BaseOneTimeLoginType,
 } from '@tupaia/database';
@@ -22,5 +23,6 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly surveyResponse: SurveyResponseModel;
   readonly feedItem: FeedItemModel;
   readonly user: UserModel;
+  readonly survey: SurveyModel;
   readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginType>;
 }
