@@ -38,7 +38,6 @@ const DataCell = styled(Cell)`
   z-index: 1;
   padding: 0;
   height: 100%;
-  max-width: 20rem; // put a sensible limit and allow the text to wrap, so that one or two cells with more content doesn't make the whole column super wide
 `;
 
 const DataCellContent = styled.div`
@@ -123,7 +122,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
     CellComponent = ExpandButton;
   }
   return (
-    <DataCell>
+    <DataCell $characterLength={isDots ? 0 : String(displayValue).length}>
       <DataCellContent
         as={CellComponent}
         onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}

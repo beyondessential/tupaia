@@ -175,7 +175,7 @@ const RowHeaderCell = ({
     );
 
   return (
-    <HeaderCell>
+    <HeaderCell $characterLength={typeof children === 'string' ? rowTitle?.length : 0}>
       <RowHeaderCellContent $depth={depth}>{children}</RowHeaderCellContent>
     </HeaderCell>
   );

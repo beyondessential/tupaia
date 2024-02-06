@@ -75,7 +75,11 @@ export const MatrixHeader = () => {
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
           {columns.map(({ title, key }) => (
-            <HeaderCell key={key} aria-label={hideColumnTitles ? title : ''}>
+            <HeaderCell
+              key={key}
+              aria-label={hideColumnTitles ? title : ''}
+              $characterLength={title?.length}
+            >
               {!hideColumnTitles && title}
             </HeaderCell>
           ))}
