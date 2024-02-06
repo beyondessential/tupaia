@@ -6,7 +6,7 @@
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { BaseReport, ViewConfig } from '@tupaia/types';
+import { BaseReport } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
