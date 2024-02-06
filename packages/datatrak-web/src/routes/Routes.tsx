@@ -64,7 +64,6 @@ export const Routes = () => {
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
           >
             <Route element={<CentredLayout />}>
-              <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
           </Route>
