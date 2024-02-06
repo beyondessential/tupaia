@@ -7,6 +7,7 @@ import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../constants';
 import {
+  ErrorPage,
   SurveyPage,
   SurveyResponsePage,
   SurveyReviewScreen,
@@ -14,7 +15,7 @@ import {
   SurveySuccessScreen,
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
-import { useSurvey } from '../api';
+import { useCurrentUser, useSurvey } from '../api';
 
 // Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = () => {
@@ -35,16 +36,18 @@ const SurveyPageRedirect = ({ children }) => {
 };
 
 const SurveyRoute = ({ children }) => {
+  const { isLoggedIn } = useCurrentUser();
   const { surveyCode } = useParams();
-  const { isError, isLoading } = useSurvey(surveyCode);
+  const { isError, error, isLoading } = useSurvey(surveyCode);
 
   if (isLoading) {
     return <FullPageLoader />;
   }
-
-  // Redirect to login page if survey does not exist or the user does not have permission
+  // Redirect to login page if the user is not logged in, otherwise show an error page
   if (isError) {
-    return (
+    return isLoggedIn ? (
+      <ErrorPage error={error as Error} title="Unable to fetch survey" />
+    ) : (
       <Navigate
         to="/login"
         replace={true}
