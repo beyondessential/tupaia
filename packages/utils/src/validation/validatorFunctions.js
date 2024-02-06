@@ -142,7 +142,7 @@ export const fieldHasContent = value => {
 export const isValidPassword = password => {
   try {
     hasContent(password);
-    constructIsLongerThan(8)(password);
+    constructIsLongerThan(7)(password);
   } catch (error) {
     throw new ValidationError('Password must be over 8 characters long.');
   }
