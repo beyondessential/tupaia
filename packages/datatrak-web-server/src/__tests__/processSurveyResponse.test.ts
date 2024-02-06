@@ -495,6 +495,7 @@ describe('processSurveyResponse', () => {
           id: generateId(),
         },
       ],
+      recent_entities: [generateId()],
     });
   });
   it('should handle when question type is File', async () => {
