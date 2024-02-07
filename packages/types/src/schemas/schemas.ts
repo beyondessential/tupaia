@@ -53514,6 +53514,7 @@ export const EntitySchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -53588,6 +53589,7 @@ export const EntityCreateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -53664,6 +53666,7 @@ export const EntityUpdateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -56827,6 +56830,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -56902,6 +56906,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -56974,6 +56979,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -59068,6 +59074,7 @@ export const PeriodGranularitySchema = {
 export const EntityTypeSchema = {
 	"enum": [
 		"asset",
+		"business",
 		"case",
 		"case_contact",
 		"catchment",
@@ -59299,6 +59306,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"type": {
 						"enum": [
 							"asset",
+							"business",
 							"case",
 							"case_contact",
 							"catchment",

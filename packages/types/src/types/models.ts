@@ -1777,6 +1777,7 @@ export enum EntityType {
   'water_sample' = 'water_sample',
   'farm' = 'farm',
   'repair_request' = 'repair_request',
+  'business' = 'business',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
