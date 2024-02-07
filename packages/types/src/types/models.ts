@@ -1731,6 +1731,7 @@ export enum QuestionType {
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
   'lesmis' = 'lesmis',
+  'datatrak' = 'datatrak',
 }
 export enum PeriodGranularity {
   'yearly' = 'yearly',
