@@ -171,13 +171,12 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FullWidthColumn>
-              <FormInput
+              <Checkbox
                 id="hasAgreed"
                 name="hasAgreed"
                 label={termsAndConditionsLabel}
                 required
                 color="primary"
-                Input={Checkbox}
               />
             </FullWidthColumn>
             <ButtonColumn>
