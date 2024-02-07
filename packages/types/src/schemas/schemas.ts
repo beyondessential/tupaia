@@ -26165,7 +26165,7 @@ export const ScaleTypeSchema = {
 	"type": "string"
 } 
 
-export const MapOverlayDisplayTypeSchema = {
+export const MeasureTypeSchema = {
 	"enum": [
 		"color",
 		"icon",

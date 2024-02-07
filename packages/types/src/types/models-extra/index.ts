@@ -46,7 +46,7 @@ export {
 export {
   MapOverlayConfig,
   IconKey,
-  MapOverlayDisplayType,
+  MeasureType,
   ScaleType,
   MeasureColorScheme,
   InlineValue,

@@ -8,7 +8,7 @@ import {
   IconMapOverlayConfig,
   InlineValue,
   MapOverlayConfig,
-  MapOverlayDisplayType,
+  MeasureType,
   RadiusMapOverlayConfig,
   ShadingMapOverlayConfig,
   SpectrumMapOverlayConfig,

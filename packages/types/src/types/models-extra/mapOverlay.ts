@@ -32,7 +32,7 @@ export type InlineValue = {
 };
 
 type MeasureConfig = {
-  type: `${MapOverlayDisplayType}` | 'popup-only';
+  type: `${MeasureType}` | 'popup-only';
   measureLevel?: EntityLevel;
   values?: InlineValue[];
   sortOrder?: number;
@@ -72,7 +72,7 @@ export enum ScaleType {
   GPI = 'gpi',
 }
 
-export enum MapOverlayDisplayType {
+export enum MeasureType {
   ICON = 'icon',
   COLOR = 'color',
   RADIUS = 'radius',
@@ -173,26 +173,26 @@ type CustomColors = string | null;
 export type SpectrumMapOverlayConfig = BaseMapOverlayConfig & {
   scaleType: `${ScaleType}`;
   scaleColorScheme: MeasureColorScheme;
-  displayType: MapOverlayDisplayType.SPECTRUM | MapOverlayDisplayType.SHADED_SPECTRUM;
+  displayType: MeasureType.SPECTRUM | MeasureType.SHADED_SPECTRUM;
 };
 
 export type IconMapOverlayConfig = BaseMapOverlayConfig & {
-  displayType: MapOverlayDisplayType.ICON;
+  displayType: MeasureType.ICON;
   icon: IconKey;
 };
 
 export type RadiusMapOverlayConfig = BaseMapOverlayConfig & {
-  displayType: MapOverlayDisplayType.RADIUS;
+  displayType: MeasureType.RADIUS;
 };
 
 export type ColorMapOverlayConfig = BaseMapOverlayConfig & {
-  displayType: MapOverlayDisplayType.COLOR;
+  displayType: MeasureType.COLOR;
   customColors?: CustomColors;
   scaleType?: ScaleType;
 };
 
 export type ShadingMapOverlayConfig = BaseMapOverlayConfig & {
-  displayType: MapOverlayDisplayType.SHADING;
+  displayType: MeasureType.SHADING;
   customColors?: CustomColors;
 };
 
