@@ -46,10 +46,10 @@ const StyledForm = styled(Form)`
 `;
 
 const TermsText = styled.span`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${({ theme }) => theme.palette.text.primary};
 
   .MuiTypography-root.MuiFormControlLabel-label & a {
-    color: ${props => props.theme.palette.text.primary};
+    color: ${({ theme }) => theme.palette.text.primary};
     font-size: inherit; // override any font-size set elsewhere
   }
 `;
