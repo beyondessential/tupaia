@@ -1,20 +1,22 @@
-import { VALUE_TYPES } from '@tupaia/utils';
-import { IconKey } from '@tupaia/types';
-import { ColorScheme } from '../utils';
-import { MeasureTypeLiteral, OrgUnitCode, ScaleTypeLiteral } from './types';
-import { ValueOf } from './helpers';
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
 
-const ValueTypes = { ...VALUE_TYPES } as const;
-export type Value = string | number | null | undefined;
+import {
+  ColorMapOverlayConfig,
+  IconMapOverlayConfig,
+  InlineValue,
+  MapOverlayConfig,
+  MapOverlayDisplayType,
+  RadiusMapOverlayConfig,
+  ShadingMapOverlayConfig,
+  SpectrumMapOverlayConfig,
+} from '@tupaia/types';
+import { OrgUnitCode } from './types';
 
-export type SeriesValue = {
-  value: Value | Value[];
-  name: string;
-  hideFromLegend?: boolean;
-  icon?: IconKey;
-  color: string;
+export type SeriesValue = InlineValue & {
   label?: string;
-  hideFromPopup?: boolean;
 };
 
 export type SeriesValueMapping = {
@@ -22,42 +24,66 @@ export type SeriesValueMapping = {
   [key: string]: SeriesValue;
 };
 
-export type BaseSeries = {
-  name: string;
+export type BaseSeries = Pick<
+  MapOverlayConfig,
+  'name' | 'hideFromLegend' | 'hideByDefault' | 'displayedValueKey' | 'hideFromPopup' | 'valueType'
+> & {
   key: string;
   values: SeriesValue[];
   valueMapping: SeriesValueMapping;
-  hideFromLegend?: boolean;
-  type: MeasureTypeLiteral;
-  hideByDefault?: Record<string, boolean>;
-  displayedValueKey?: string;
   color: string;
-  radius?: number;
-  hideFromPopup?: boolean;
   metadata: object;
   organisationUnit?: OrgUnitCode;
   sortOrder: number;
   popupHeaderFormat?: string;
-  valueType?: ValueOf<typeof ValueTypes>;
   startDate: string;
   endDate: string;
 };
 
-export type MarkerSeries = BaseSeries & {
-  icon?: IconKey;
+export type RadiusSeries = BaseSeries & {
+  radius: number;
+  type: RadiusMapOverlayConfig['displayType'];
 };
 
-export type SpectrumSeries = BaseSeries & {
-  scaleColorScheme: ColorScheme;
-  min: number;
-  max: number;
-  scaleType: ScaleTypeLiteral;
-  dataKey?: string;
-  noDataColour?: string;
-  scaleBounds?: {
-    left: number;
-    right: number;
+export type IconSeries = BaseSeries & {
+  type: IconMapOverlayConfig['displayType'];
+  icon: IconMapOverlayConfig['icon'];
+};
+
+export type SpectrumSeries = BaseSeries &
+  Pick<
+    SpectrumMapOverlayConfig,
+    'scaleType' | 'scaleBounds' | 'noDataColour' | 'scaleColorScheme'
+  > & {
+    min: number;
+    max: number;
+    dataKey?: string;
+    type: SpectrumMapOverlayConfig['displayType'];
   };
+
+export type ColorSeries = BaseSeries & {
+  type: ColorMapOverlayConfig['displayType'];
 };
 
-export type Series = MarkerSeries & SpectrumSeries;
+export type ShadingSeries = BaseSeries & {
+  type: ShadingMapOverlayConfig['displayType'];
+};
+
+export type PopupOnlySeries = BaseSeries & {
+  type: 'popup-only';
+};
+
+export type Series =
+  | SpectrumSeries
+  | RadiusSeries
+  | IconSeries
+  | ColorSeries
+  | ShadingSeries
+  | PopupOnlySeries;
+
+export type MarkerSeries =
+  | RadiusSeries
+  | IconSeries
+  | ColorSeries
+  | ShadingSeries
+  | PopupOnlySeries;

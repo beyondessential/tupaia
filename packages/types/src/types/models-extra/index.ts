@@ -49,6 +49,12 @@ export {
   MapOverlayDisplayType,
   ScaleType,
   MeasureColorScheme,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
 } from './mapOverlay';
 export {
   SurveyScreenComponentConfig,

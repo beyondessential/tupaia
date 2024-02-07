@@ -22,7 +22,7 @@ type ReferenceObject = {
   text?: string;
 };
 
-type InlineValue = {
+export type InlineValue = {
   color?: string;
   hideFromLegend?: boolean;
   hideFromPopup?: boolean;
@@ -32,7 +32,7 @@ type InlineValue = {
 };
 
 type MeasureConfig = {
-  type: MapOverlayDisplayType | 'popup-only';
+  type: `${MapOverlayDisplayType}` | 'popup-only';
   measureLevel?: EntityLevel;
   values?: InlineValue[];
   sortOrder?: number;
@@ -117,11 +117,7 @@ export enum MeasureColorScheme {
   GPI = 'gpi',
 }
 
-export type MapOverlayConfig = {
-  /**
-   * @description A comma separated list of colours, e.g 'Green,red,Blue,cyan'
-   */
-  customColors?: string | null;
+export type BaseMapOverlayConfig = {
   customLabel?: string | null;
   datePickerLimits?: {
     start?: DateOffsetSpec;
@@ -131,7 +127,6 @@ export type MapOverlayConfig = {
   disableRenameLegend?: boolean;
   displayLevel?: EntityLevel;
   displayOnLevel?: EntityLevel;
-  displayType: MapOverlayDisplayType;
   displayedValueKey?: DisplayedValueType;
   /**
    * @description This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default
@@ -140,7 +135,6 @@ export type MapOverlayConfig = {
   hideFromLegend?: boolean;
   hideFromMenu?: boolean;
   hideFromPopup?: boolean;
-  icon?: IconKey;
   info?: {
     reference?: ReferenceObject;
   };
@@ -167,8 +161,44 @@ export type MapOverlayConfig = {
       max: number | 'auto';
     };
   };
-  scaleColorScheme?: MeasureColorScheme;
-  scaleType?: ScaleType;
   valueType?: MeasureValueType;
   values?: InlineValue[];
 };
+
+/**
+ * @description A comma separated list of colours, e.g 'Green,red,Blue,cyan'
+ */
+type CustomColors = string | null;
+
+export type SpectrumMapOverlayConfig = BaseMapOverlayConfig & {
+  scaleType: `${ScaleType}`;
+  scaleColorScheme: MeasureColorScheme;
+  displayType: MapOverlayDisplayType.SPECTRUM | MapOverlayDisplayType.SHADED_SPECTRUM;
+};
+
+export type IconMapOverlayConfig = BaseMapOverlayConfig & {
+  displayType: MapOverlayDisplayType.ICON;
+  icon: IconKey;
+};
+
+export type RadiusMapOverlayConfig = BaseMapOverlayConfig & {
+  displayType: MapOverlayDisplayType.RADIUS;
+};
+
+export type ColorMapOverlayConfig = BaseMapOverlayConfig & {
+  displayType: MapOverlayDisplayType.COLOR;
+  customColors?: CustomColors;
+  scaleType?: ScaleType;
+};
+
+export type ShadingMapOverlayConfig = BaseMapOverlayConfig & {
+  displayType: MapOverlayDisplayType.SHADING;
+  customColors?: CustomColors;
+};
+
+export type MapOverlayConfig =
+  | SpectrumMapOverlayConfig
+  | IconMapOverlayConfig
+  | RadiusMapOverlayConfig
+  | ColorMapOverlayConfig
+  | ShadingMapOverlayConfig;
