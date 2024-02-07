@@ -27,9 +27,9 @@ import { PrivateRoute } from './PrivateRoute';
 import { SurveyRoutes } from './SurveyRoutes';
 
 /**
- * If the user is logged in and tries to access the login page, redirect to the home page
+ * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
-const LoggedInRedirect = ({ children }) => {
+const AuthViewLoggedInRedirect = ({ children }) => {
   const { isLoggedIn, ...user } = useCurrentUser();
   const from = useFromLocation();
 
@@ -64,7 +64,6 @@ export const Routes = () => {
             element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}
           >
             <Route element={<CentredLayout />}>
-              <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
               <Route path={ROUTES.SURVEY_SELECT} element={<SurveySelectPage />} />
             </Route>
           </Route>
@@ -91,15 +90,15 @@ export const Routes = () => {
             <BackgroundPageLayout backgroundImage="/auth-background.svg" headerBorderHidden />
           }
         >
-          <Route path="/" element={<CentredLayout />}>
-            <Route
-              path={ROUTES.LOGIN}
-              element={
-                <LoggedInRedirect>
-                  <LoginPage />
-                </LoggedInRedirect>
-              }
-            />
+          <Route
+            path="/"
+            element={
+              <AuthViewLoggedInRedirect>
+                <CentredLayout />
+              </AuthViewLoggedInRedirect>
+            }
+          >
+            <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
             <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
             <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />

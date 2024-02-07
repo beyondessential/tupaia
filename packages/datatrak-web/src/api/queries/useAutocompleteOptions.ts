@@ -11,12 +11,23 @@ import { useSurveyForm } from '../../features';
 export const useAutocompleteOptions = (
   optionSetId?: string | null,
   attributeFilters?: Record<string, any>,
+  searchText?: string,
 ) => {
   const { getAnswerByQuestionId } = useSurveyForm();
   return useQuery(
-    ['autocompleteOptions', optionSetId],
+    ['autocompleteOptions', optionSetId, searchText],
     (): Promise<Option[]> =>
       get(`optionSets/${optionSetId}/options`, {
+        params: {
+          filter: searchText
+            ? JSON.stringify({
+                value: {
+                  comparator: 'ilike',
+                  comparisonValue: `%${searchText}%`,
+                },
+              })
+            : undefined,
+        },
         enabled: !!optionSetId,
       }),
     {

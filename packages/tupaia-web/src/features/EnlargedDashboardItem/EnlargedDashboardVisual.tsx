@@ -65,8 +65,7 @@ const ContentWrapper = styled.div`
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
-  padding-top: 1rem;
-  padding-bottom: 0.3rem;
+  padding-block: 1rem 0.3rem;
 `;
 interface EnlargedDashboardVisualProps {
   entityName?: Entity['name'];
