@@ -37,9 +37,15 @@ export async function addRecentEntities(
       allRecentEntities[countryCode][entityType] = [];
     }
 
-    const recentEntities = allRecentEntities[countryCode][entityType];
+    let recentEntities = allRecentEntities[countryCode][entityType];
     // If the recent entities already contains this value exit early
     if (recentEntities.includes(entityId)) {
+      const index = recentEntities.indexOf(entityId);
+      recentEntities = [
+        entityId,
+        ...recentEntities.slice(0, index),
+        ...recentEntities.slice(index + 1),
+      ];
       continue;
     }
     const updatedEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
