@@ -41,7 +41,7 @@ const updateOrCreateDataElementInGroup = async (
     // Data Element doesn't exist, create it
     dataElement = await models.dataElement.create({
       code: dataElementCode,
-      service_type: 'tupaia', // set a default value for now, will update in a second pass in updateDataElementsConfig()
+      service_type: dataGroup.service_type, // set this to be the same as the data group so that when the data element goes through updateDataElementsConfig() it gets the correct config. If we always set it to Tupaia here, then it won't update because Tupaia data elements can be in either DHIS or Tupaia data groups
       config: {}, // set a default value for now, will update in a second pass in updateDataElementsConfig()
       permission_groups: [surveyPermissionGroup.name], // Use the permission group of the survey as the default for the data element
     });
@@ -77,7 +77,6 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   if (!survey) {
     throw new DatabaseError(`Survey required`);
   }
-  const { name: surveyName } = survey;
 
   const workbook = xlsx.readFile(file.path);
 

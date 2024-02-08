@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { assertDataElementMustMatchDataGroupServiceType } from './assertDataElementMustMatchDataGroupServiceType';
+
 const areBothDefinedAndDifferent = (a, b) => a !== undefined && b !== undefined && a !== b;
 
 const constructErrorMessage = ({
@@ -32,7 +34,7 @@ export const assertCanAddDataElementInGroup = async (
 
     // Tupaia data elements can be in either dhis or tupaia data groups
     if (
-      dataElement.service_type !== 'tupaia' &&
+      assertDataElementMustMatchDataGroupServiceType(dataElement.service_type) &&
       areBothDefinedAndDifferent(otherServiceType, newServiceType)
     ) {
       throw new Error(
