@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -10,13 +9,13 @@ import userEvent from '@testing-library/user-event';
 import moment from 'moment';
 import {
   DEFAULT_MIN_DATE,
-  GRANULARITY_CONFIG,
-  GRANULARITIES_WITH_ONE_DATE,
-  momentToDateDisplayString,
   GRANULARITIES,
+  GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_CONFIG,
+  momentToDateDisplayString,
 } from '@tupaia/utils';
 import { render } from '../../../../helpers/testingRenderer';
-import { DateRangePicker } from '../../../components/DateRangePicker';
+import { DateRangePicker } from '../../../components';
 
 const MAX_MOMENT_DATE = moment();
 
