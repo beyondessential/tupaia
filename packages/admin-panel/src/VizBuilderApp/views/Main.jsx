@@ -6,11 +6,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useBeforeunload } from 'react-beforeunload';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
-import { MuiThemeProvider } from '@material-ui/core/styles';
 import { useDashboardVisualisation } from '../api';
 import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
 import {
@@ -21,7 +20,6 @@ import {
 } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
-import { theme } from '../theme';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -92,22 +90,18 @@ export const Main = () => {
 
   return (
     <VizConfigErrorProvider>
-      <MuiThemeProvider theme={theme}>
-        <ThemeProvider theme={theme}>
-          <Toolbar />
-          <Container maxWidth="xl">
-            <PreviewDataProvider>
-              <TabPanelProvider>
-                <Panel />
-              </TabPanelProvider>
-              <RightCol>
-                <PreviewOptions />
-                <PreviewSection />
-              </RightCol>
-            </PreviewDataProvider>
-          </Container>
-        </ThemeProvider>
-      </MuiThemeProvider>
+      <Toolbar />
+      <Container maxWidth="xl">
+        <PreviewDataProvider>
+          <TabPanelProvider>
+            <Panel />
+          </TabPanelProvider>
+          <RightCol>
+            <PreviewOptions />
+            <PreviewSection />
+          </RightCol>
+        </PreviewDataProvider>
+      </Container>
     </VizConfigErrorProvider>
   );
 };

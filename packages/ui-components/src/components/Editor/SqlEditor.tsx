@@ -26,7 +26,7 @@ const AceEditor = styled(BaseAceEditor).attrs({
     enableBasicAutocompletion: true,
   },
 })`
-  border: 1px solid #dedee0;
+  border: 1px solid #dedee0; // GREY_DE from admin-panel
   border-radius: 3px;
   // font-size set by fontSize prop
   line-height: 1.5;
