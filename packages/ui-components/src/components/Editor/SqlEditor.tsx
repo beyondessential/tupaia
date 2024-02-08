@@ -15,14 +15,14 @@ import type { Ace } from 'ace-builds';
 const editorName = 'sqlEditor';
 
 const AceEditor = styled(BaseAceEditor).attrs({
-  setOptions: {
-    enableLiveAutocompletion: true,
-    enableBasicAutocompletion: true,
-  },
   showPrintMargin: false,
   tabSize: 2,
   theme: 'github',
   width: '100%',
+  setOptions: {
+    enableLiveAutocompletion: true,
+    enableBasicAutocompletion: true,
+  },
 })`
   // font-size set by fontSize prop
   line-height: 1.5;
