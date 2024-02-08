@@ -5,7 +5,6 @@
 
 import React, { Dispatch, createContext, useContext, useEffect, useReducer } from 'react';
 import { useMatch, useParams } from 'react-router-dom';
-import moment from 'moment';
 import { ROUTES } from '../../../constants';
 import { SurveyParams } from '../../../types';
 import { useSurvey } from '../../../api';
@@ -73,9 +72,11 @@ export const SurveyContext = ({ children }) => {
       );
       dispatch({ type: ACTION_TYPES.SET_FORM_DATA, payload: initialFormData });
       // update the start time when a survey is started, so that it can be passed on when submitting the survey
+
+      const currentDate = new Date();
       dispatch({
         type: ACTION_TYPES.SET_SURVEY_START_TIME,
-        payload: moment().toISOString(),
+        payload: currentDate.toISOString(),
       });
     };
 
