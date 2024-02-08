@@ -90,21 +90,23 @@ export const Main = () => {
   }
 
   return (
-    <>
-      <VizConfigErrorProvider>
-        <Toolbar />
-        <Container maxWidth="xl">
-          <PreviewDataProvider>
-            <TabPanelProvider>
-              <Panel />
-            </TabPanelProvider>
-            <RightCol>
-              <PreviewOptions />
-              <PreviewSection />
-            </RightCol>
-          </PreviewDataProvider>
-        </Container>
-      </VizConfigErrorProvider>
-    </>
+    <VizConfigErrorProvider>
+      <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <Toolbar />
+          <Container maxWidth="xl">
+            <PreviewDataProvider>
+              <TabPanelProvider>
+                <Panel />
+              </TabPanelProvider>
+              <RightCol>
+                <PreviewOptions />
+                <PreviewSection />
+              </RightCol>
+            </PreviewDataProvider>
+          </Container>
+        </ThemeProvider>
+      </MuiThemeProvider>
+    </VizConfigErrorProvider>
   );
 };
