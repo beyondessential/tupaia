@@ -5,7 +5,7 @@
 
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { FormHelperText, Box, Fab, AvatarProps } from '@material-ui/core';
+import { AvatarProps, Box, Fab, FormHelperText } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ConfirmDeleteModal, ConfirmDeleteModalProps } from '../ConfirmDeleteModal';
 import { FlexStart } from '../Layout';
@@ -165,10 +165,10 @@ export const ImageUploadField = React.memo(
       const { height, width } = await getImageSize(file);
 
       if ((maxHeight && height > maxHeight) || (maxWidth && width > maxWidth)) {
-        return 'Image size is too large';
+        return `Image is too large (max. dimensions ${maxWidth} × ${maxHeight})`;
       }
       if ((minHeight && height < minHeight) || (minWidth && width < minWidth)) {
-        return 'Image size is too small';
+        return `Image is too small (min. dimensions ${minWidth} × ${minHeight})`;
       }
       return null;
     };
