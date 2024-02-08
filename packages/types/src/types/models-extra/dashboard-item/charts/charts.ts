@@ -24,12 +24,18 @@ export type GaugeChartConfig = BaseChartConfig & {
   chartType: ChartType.Gauge;
 };
 
+export const isGaugeChartConfig = (config: BaseChartConfig): config is GaugeChartConfig =>
+  config.chartType === ChartType.Gauge;
+
 /**
  * @description Line Chart
  */
 export type LineChartConfig = CartesianChartConfig & {
   chartType: ChartType.Line;
 };
+
+export const isLineChartConfig = (config: BaseChartConfig): config is LineChartConfig =>
+  config.chartType === ChartType.Line;
 
 export type ChartConfig =
   | GaugeChartConfig

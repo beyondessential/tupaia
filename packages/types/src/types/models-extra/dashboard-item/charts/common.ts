@@ -64,6 +64,10 @@ export type BaseChartConfig = BaseConfig & {
   renderLegendForOneItem?: boolean;
 };
 
+export const isChartConfig = (config: BaseConfig): config is BaseChartConfig => {
+  return 'type' in config && config.type === 'chart';
+};
+
 export type CartesianChartPresentationOptions = ExportPresentationOptions & {
   /**
    * @description This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values
@@ -91,7 +95,8 @@ export type ChartConfigObject = ReferenceLinesConfig & {
   valueType?: ValueType;
   yAxisOrientation?: 'left' | 'right';
 };
-type ChartConfigT = {
+
+export type ChartConfigT = {
   /**
    * @description key of column name or special marker '$all' for all columns
    */

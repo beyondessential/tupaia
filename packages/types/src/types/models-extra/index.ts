@@ -18,6 +18,12 @@ export type {
   ChartData,
 } from './report';
 export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   DashboardItemConfig,
   BarChartConfig,
   ComposedChartConfig,
@@ -53,8 +59,8 @@ export {
   ChartType,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigT,
   ChartConfigObject,
-  ComposedChartConfigObject,
   ComponentConfig,
 } from './dashboard-item';
 export {

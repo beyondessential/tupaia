@@ -3,7 +3,13 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-import { BaseChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
+import {
+  BaseChartConfig,
+  ChartConfigObject,
+  ChartConfigT,
+  ChartData,
+  ChartType,
+} from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
 import { LooseObject, UnparsedChartViewContent } from '../types';
 import { isDataKey } from './utils';
@@ -15,11 +21,23 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-export const parseChartConfig = (viewContent: UnparsedChartViewContent) => {
-  const { chartType, data, colorPalette: paletteName } = viewContent;
+type ChartConfigFromUnparsedT<T> = T extends { chartConfig: unknown }
+  ? T['chartConfig']
+  : Record<string, never>;
 
-  const chartConfig =
-    'chartConfig' in viewContent && viewContent.chartConfig ? viewContent.chartConfig : {};
+export const parseChartConfig = <T extends UnparsedChartViewContent>(
+  viewContent: T,
+): ChartConfigFromUnparsedT<T> => {
+  const { chartType, data, colorPalette: paletteName } = viewContent;
+  if (!('chartConfig' in viewContent)) {
+    return {} as ChartConfigFromUnparsedT<T>;
+  }
+
+  if (!viewContent.chartConfig) {
+    return {} as ChartConfigFromUnparsedT<T>;
+  }
+
+  const { chartConfig } = viewContent;
   const configForAllKeys = ADD_TO_ALL_KEY in chartConfig ? chartConfig[ADD_TO_ALL_KEY] : null;
 
   // Remove '$all' key and the 'name' from chart config - we can't use a spread here because some types don't have this key, so we need to filter it out and use a type guard above to get the '$all' config
@@ -40,7 +58,9 @@ export const parseChartConfig = (viewContent: UnparsedChartViewContent) => {
     .map(sortChartConfigByLegendOrder)
     .map(addDefaultColors)
     .map(setOpacityValues)[0];
-  return parsedChartConfig;
+
+  // Forced to explicitly cast here as the types in this function are too messy to manage
+  return parsedChartConfig as ChartConfigFromUnparsedT<T>;
 };
 
 /**
@@ -58,7 +78,7 @@ const setOpacityValues = (chartConfig: LooseObject) => {
     const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
     newConfig[key] = { ...configItem, opacity: newOpacity };
   });
-  return newConfig as BaseChartConfig;
+  return newConfig as ChartConfigT;
 };
 
 // Adds default colors for every element with no color defined

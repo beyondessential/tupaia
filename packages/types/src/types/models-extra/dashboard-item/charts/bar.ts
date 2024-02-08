@@ -4,6 +4,7 @@
  */
 import { CssColor } from '../../../css';
 import {
+  BaseChartConfig,
   CartesianChartConfig,
   CartesianChartPresentationOptions,
   ChartType,
@@ -28,3 +29,6 @@ export type BarChartConfig = CartesianChartConfig & {
   chartType: ChartType.Bar;
   presentationOptions: BarChartPresentationOptions;
 };
+
+export const isBarChartConfig = (config: BaseChartConfig): config is BarChartConfig =>
+  config.chartType === ChartType.Bar;

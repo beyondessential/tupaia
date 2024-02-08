@@ -5,9 +5,7 @@
 import {
   BarChartConfig,
   CartesianChartConfig,
-  ChartConfig,
   ChartData,
-  ChartType,
   ComposedChartConfig,
   GaugeChartConfig,
   LineChartConfig,
@@ -42,10 +40,6 @@ export type UnparsedViewContentT<T> = T & {
 export type ParsedViewContentT<T> = T & {
   colorPalette?: string;
   data: ChartData[];
-  /**
-   * @description parseChartConfig merges the existing chartConfig with the overall chart config
-   */
-  chartConfig: T & ChartConfig;
 };
 
 export type ParsedBarChartViewContent = ParsedViewContentT<BarChartConfig>;

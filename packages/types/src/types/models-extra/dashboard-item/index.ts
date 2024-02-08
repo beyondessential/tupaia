@@ -28,7 +28,13 @@ import type {
 } from './views';
 
 export { ChartType } from './charts';
-export type {
+export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   BarChartConfig,
   ComposedChartConfig,
   GaugeChartConfig,
@@ -40,8 +46,8 @@ export type {
   BarChartPresentationOptions,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigT,
   ChartConfigObject,
-  ComposedChartConfigObject,
 } from './charts';
 /**
  * The master list of viz types.

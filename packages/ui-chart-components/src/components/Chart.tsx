@@ -7,15 +7,16 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
-import { ChartType } from '@tupaia/types';
-import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
 import {
-  LegendPosition,
-  ParsedGaugeChartViewContent,
-  ParsedPieChartViewContent,
-  ParsedCartesianChartViewContent,
-  UnparsedChartViewContent,
-} from '../types';
+  ChartType,
+  isBarChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
+} from '@tupaia/types';
+import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
+import { LegendPosition, UnparsedChartViewContent } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
 
@@ -52,7 +53,7 @@ const removeNonNumericData = (data: any[]) =>
 const sortData = (data: any[]): any[] =>
   getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
-const getViewContent = (viewContent: ChartProps['viewContent']) => {
+const parseViewContent = <T extends UnparsedChartViewContent>(viewContent: T): T => {
   const { data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : undefined;
@@ -65,21 +66,21 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-interface ChartProps {
-  viewContent: UnparsedChartViewContent;
+interface ChartProps<T extends UnparsedChartViewContent> {
+  viewContent: T;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
   legendPosition?: LegendPosition;
 }
 
-export const Chart = ({
+export const Chart = <T extends UnparsedChartViewContent>({
   viewContent,
   isExporting = false,
   isEnlarged = true,
   onItemClick = () => {},
   legendPosition = 'bottom',
-}: ChartProps) => {
+}: ChartProps<T>) => {
   const { chartType } = viewContent;
 
   if (!Object.values(ChartType).includes(chartType)) {
@@ -90,8 +91,6 @@ export const Chart = ({
     return <NoData viewContent={viewContent} />;
   }
 
-  const viewContentConfig = getViewContent(viewContent);
-
   const commonProps = {
     isEnlarged,
     isExporting,
@@ -99,26 +98,22 @@ export const Chart = ({
     legendPosition,
   };
 
-  // Each of these has a quite different type for viewContent, so we need to cast it
-  switch (chartType) {
-    case ChartType.Pie:
-      return (
-        <PieChart viewContent={viewContentConfig as ParsedPieChartViewContent} {...commonProps} />
-      );
+  if (isPieChartConfig(viewContent)) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <PieChart viewContent={viewContentConfig} {...commonProps} />;
+  }
 
-    case ChartType.Gauge:
-      return (
-        <GaugeChart
-          viewContent={viewContentConfig as ParsedGaugeChartViewContent}
-          {...commonProps}
-        />
-      );
-    default:
-      return (
-        <CartesianChart
-          viewContent={viewContentConfig as ParsedCartesianChartViewContent}
-          {...commonProps}
-        />
-      );
+  if (isGaugeChartConfig(viewContent)) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <GaugeChart viewContent={viewContentConfig} {...commonProps} />;
+  }
+
+  if (
+    isBarChartConfig(viewContent) ||
+    isLineChartConfig(viewContent) ||
+    isComposedChartConfig(viewContent)
+  ) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <CartesianChart viewContent={viewContentConfig} {...commonProps} />;
   }
 };

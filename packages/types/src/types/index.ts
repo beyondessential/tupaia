@@ -6,6 +6,12 @@
 
 export * from './models';
 export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   StandardReportConfig,
   CustomReportConfig,
   DashboardItemConfig,
@@ -68,8 +74,8 @@ export {
   ChartData,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
+  ChartConfigT,
   ChartConfigObject,
-  ComposedChartConfigObject,
   ComponentConfig,
 } from './models-extra';
 export * from './requests';

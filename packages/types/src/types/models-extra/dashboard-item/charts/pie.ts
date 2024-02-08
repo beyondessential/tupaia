@@ -21,3 +21,6 @@ export type PieChartConfig = BaseChartConfig & {
   chartType: ChartType.Pie;
   presentationOptions?: PieChartPresentationOptions;
 };
+
+export const isPieChartConfig = (config: BaseChartConfig): config is PieChartConfig =>
+  config.chartType === ChartType.Pie;
