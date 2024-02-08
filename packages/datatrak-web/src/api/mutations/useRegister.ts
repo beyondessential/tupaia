@@ -20,7 +20,12 @@ type RegisterUserBody = {
 export const useRegister = () => {
   return useMutation<any, Error, RegisterUserBody, unknown>(
     (data: RegisterUserBody) => {
-      return post('signup', { data });
+      return post('signup', {
+        data: {
+          ...data,
+          primaryPlatform: 'datatrak', // tells the backend to send verification email with datatrak link
+        },
+      });
     },
     {
       meta: {

@@ -58656,6 +58656,7 @@ export const UserAccountSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -58720,6 +58721,7 @@ export const UserAccountCreateSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -58785,6 +58787,7 @@ export const UserAccountUpdateSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -59050,6 +59053,7 @@ export const QuestionTypeSchema = {
 
 export const PrimaryPlatformSchema = {
 	"enum": [
+		"datatrak",
 		"lesmis",
 		"tupaia"
 	],
