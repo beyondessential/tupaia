@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -8,9 +8,9 @@ import MuiMenuIcon from '@material-ui/icons/Menu';
 import { IconButton, useTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import { ErrorBoundary } from '@tupaia/ui-components';
-import { MODAL_ROUTES } from '../../constants';
 import { useLandingPage, useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
+import { MODAL_ROUTES } from '../../constants';
 import { PopoverMenu } from './PopoverMenu';
 import { DrawerMenu } from './DrawerMenu';
 import { MenuItem } from './MenuList';
@@ -52,7 +52,7 @@ export const UserMenu = () => {
     landingPage: { primaryHexcode, secondaryHexcode },
   } = useLandingPage();
 
-  const { isLoggedIn, data } = useUser();
+  const { data: user, isLoggedIn } = useUser();
 
   // Create the menu items
   const BaseMenuItem = ({ children, ...props }: any) => (
@@ -63,7 +63,7 @@ export const UserMenu = () => {
 
   const VisitMainSite = (
     <BaseMenuItem key="mainSite" href="https://www.tupaia.org" externalLink>
-      Visit&nbsp;<span>tupaia.org</span>
+      Visit tupaia.org
     </BaseMenuItem>
   );
 
@@ -76,6 +76,13 @@ export const UserMenu = () => {
   const ViewProjects = (
     <BaseMenuItem key="projects" modal={MODAL_ROUTES.PROJECTS}>
       View projects
+    </BaseMenuItem>
+  );
+
+  const datatrakUrl = process.env.REACT_APP_DATATRAK_REDIRECT_URL || 'https://datatrak.tupaia.org';
+  const SubmitData = (
+    <BaseMenuItem key="submitData" href={datatrakUrl} externalLink>
+      Submit data
     </BaseMenuItem>
   );
 
@@ -95,22 +102,20 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
+  const RequestCountryAccess = (
+    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
+      Request country access
+    </BaseMenuItem>
+  );
+
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
     ? [VisitMainSite, HelpCentre, ChangePassword, Logout]
     : [VisitMainSite, HelpCentre];
 
   const baseMenuItems = isLoggedIn
-    ? [
-        ViewProjects,
-        HelpCentre,
-        ChangePassword,
-        <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
-          Request country access
-        </BaseMenuItem>,
-        Logout,
-      ]
-    : [ViewProjects, HelpCentre];
+    ? [SubmitData, ViewProjects, HelpCentre, ChangePassword, RequestCountryAccess, Logout]
+    : [SubmitData, ViewProjects, HelpCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
@@ -121,7 +126,7 @@ export const UserMenu = () => {
     <ErrorBoundary>
       <UserMenuContainer>
         <UserInfo
-          currentUserUsername={data?.name}
+          currentUserUsername={user?.name}
           isLoggedIn={isLoggedIn}
           isLandingPage={isLandingPage}
           secondaryColor={menuSecondaryColor}
@@ -149,7 +154,7 @@ export const UserMenu = () => {
           isLoggedIn={isLoggedIn}
           primaryColor={menuPrimaryColor}
           secondaryColor={menuSecondaryColor}
-          currentUserUsername={data?.name}
+          currentUserUsername={user?.name}
         >
           {menuItems}
         </DrawerMenu>
