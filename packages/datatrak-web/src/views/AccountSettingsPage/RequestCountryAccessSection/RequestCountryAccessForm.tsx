@@ -109,8 +109,8 @@ export const RequestCountryAccessForm = () => {
   } = formContext;
 
   /*
-   * Semantically, this belongs in RequestableCountryChecklist (child of this component), but
-   * setSelectedCountries is used here to circumvent some quirks of how React Hook Form +
+   * Semantically, this belongs in `RequestableCountryChecklist` (child of this component), but
+   * `setSelectedCountries` is used here to circumvent some quirks of how React Hook Form +
    * MUI checkboxes (mis-)handle multiple checkboxes with the same control name.
    */
   const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
