@@ -47,10 +47,10 @@ describe('addRecentEntities', () => {
     });
   });
   it('Moves an entry to the top of the recent entities list if it already exists in the list', async () => {
-    await addRecentEntities(mockModels as any, 'user', ['DL_1', 'DL_2', 'DL_3']);
-    await addRecentEntities(mockModels as any, 'user', ['DL_2', 'DL_3']);
+    await addRecentEntities(mockModels as any, 'user', ['DL_3', 'DL_2', 'DL_1']);
+    await addRecentEntities(mockModels as any, 'user', ['DL_3', 'DL_4']);
     expect(mockUser).toMatchObject({
-      preferences: { recent_entities: { DL: { district: ['DL_3', 'DL_2', 'DL_1'] } } },
+      preferences: { recent_entities: { DL: { district: ['DL_4', 'DL_3', 'DL_1'] } } },
     });
   });
   it('Adds multiple entries to the recent entities list if it already exists in the list', async () => {

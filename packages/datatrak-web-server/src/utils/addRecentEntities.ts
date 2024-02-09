@@ -37,19 +37,18 @@ export async function addRecentEntities(
       allRecentEntities[countryCode][entityType] = [];
     }
 
-    let recentEntities = allRecentEntities[countryCode][entityType];
+    let recentEntities = [...allRecentEntities[countryCode][entityType]];
     // If the recent entities already contains this value exit early
     if (recentEntities.includes(entityId)) {
       const index = recentEntities.indexOf(entityId);
-      recentEntities = [
-        entityId,
-        ...recentEntities.slice(0, index),
-        ...recentEntities.slice(index + 1),
-      ];
-      continue;
+      const prev = recentEntities.slice(0, index);
+      const post = recentEntities.slice(index + 1);
+
+      recentEntities = [entityId, ...prev, ...post];
+    } else {
+      recentEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
     }
-    const updatedEntities = [entityId, ...recentEntities.splice(0, MAX_RECENT_ENTITIES - 1)];
-    allRecentEntities[countryCode][entityType] = updatedEntities;
+    allRecentEntities[countryCode][entityType] = recentEntities;
   }
 
   // Add the latest entity to front of array, cycle out the last entity if we are over the max
