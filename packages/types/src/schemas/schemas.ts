@@ -2933,7 +2933,76 @@ export const ChartConfigObjectSchema = {
 		"legendOrder": {
 			"type": "number"
 		},
-		"yAxisDomain": {},
+		"yAxisDomain": {
+			"type": "object",
+			"properties": {
+				"max": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -2955,6 +3024,46 @@ export const ChartConfigObjectSchema = {
 				"right"
 			],
 			"type": "string"
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"yName": {
+			"type": "string"
+		},
+		"labelType": {
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"chartType": {
+			"description": "These are the common chart config options that are shared between several chart types",
+			"enum": [
+				"area",
+				"bar",
+				"composed",
+				"gauge",
+				"line",
+				"pie"
+			],
+			"type": "string"
+		},
+		"opacity": {
+			"anyOf": [
+				{
+					"enum": [
+						"ascending",
+						"descending"
+					],
+					"type": "string"
+				},
+				{
+					"type": "number"
+				}
+			]
 		}
 	}
 } 
@@ -2984,7 +3093,76 @@ export const ChartConfigTSchema = {
 			"legendOrder": {
 				"type": "number"
 			},
-			"yAxisDomain": {},
+			"yAxisDomain": {
+				"type": "object",
+				"properties": {
+					"max": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"enum": [
+									"clamp",
+									"number",
+									"scale",
+									"string"
+								],
+								"type": "string"
+							},
+							"value": {
+								"type": [
+									"string",
+									"number"
+								]
+							},
+							"min": {
+								"type": "number"
+							},
+							"max": {
+								"type": "number"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					},
+					"min": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"enum": [
+									"clamp",
+									"number",
+									"scale",
+									"string"
+								],
+								"type": "string"
+							},
+							"value": {
+								"type": [
+									"string",
+									"number"
+								]
+							},
+							"min": {
+								"type": "number"
+							},
+							"max": {
+								"type": "number"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"max",
+					"min"
+				]
+			},
 			"valueType": {
 				"enum": [
 					"boolean",
@@ -3006,6 +3184,46 @@ export const ChartConfigTSchema = {
 					"right"
 				],
 				"type": "string"
+			},
+			"hideFromLegend": {
+				"type": "boolean"
+			},
+			"yName": {
+				"type": "string"
+			},
+			"labelType": {
+				"enum": [
+					"fraction",
+					"fractionAndPercentage",
+					"number"
+				],
+				"type": "string"
+			},
+			"chartType": {
+				"description": "These are the common chart config options that are shared between several chart types",
+				"enum": [
+					"area",
+					"bar",
+					"composed",
+					"gauge",
+					"line",
+					"pie"
+				],
+				"type": "string"
+			},
+			"opacity": {
+				"anyOf": [
+					{
+						"enum": [
+							"ascending",
+							"descending"
+						],
+						"type": "string"
+					},
+					{
+						"type": "number"
+					}
+				]
 			}
 		}
 	}
@@ -3537,7 +3755,76 @@ export const CartesianChartConfigSchema = {
 					"legendOrder": {
 						"type": "number"
 					},
-					"yAxisDomain": {},
+					"yAxisDomain": {
+						"type": "object",
+						"properties": {
+							"max": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"min": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"max",
+							"min"
+						]
+					},
 					"valueType": {
 						"enum": [
 							"boolean",
@@ -3559,6 +3846,46 @@ export const CartesianChartConfigSchema = {
 							"right"
 						],
 						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"yName": {
+						"type": "string"
+					},
+					"labelType": {
+						"enum": [
+							"fraction",
+							"fractionAndPercentage",
+							"number"
+						],
+						"type": "string"
+					},
+					"chartType": {
+						"description": "These are the common chart config options that are shared between several chart types",
+						"enum": [
+							"area",
+							"bar",
+							"composed",
+							"gauge",
+							"line",
+							"pie"
+						],
+						"type": "string"
+					},
+					"opacity": {
+						"anyOf": [
+							{
+								"enum": [
+									"ascending",
+									"descending"
+								],
+								"type": "string"
+							},
+							{
+								"type": "number"
+							}
+						]
 					}
 				}
 			}
@@ -4616,7 +4943,76 @@ export const BarChartConfigSchema = {
 					"legendOrder": {
 						"type": "number"
 					},
-					"yAxisDomain": {},
+					"yAxisDomain": {
+						"type": "object",
+						"properties": {
+							"max": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"min": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"max",
+							"min"
+						]
+					},
 					"valueType": {
 						"enum": [
 							"boolean",
@@ -4638,6 +5034,46 @@ export const BarChartConfigSchema = {
 							"right"
 						],
 						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"yName": {
+						"type": "string"
+					},
+					"labelType": {
+						"enum": [
+							"fraction",
+							"fractionAndPercentage",
+							"number"
+						],
+						"type": "string"
+					},
+					"chartType": {
+						"description": "These are the common chart config options that are shared between several chart types",
+						"enum": [
+							"area",
+							"bar",
+							"composed",
+							"gauge",
+							"line",
+							"pie"
+						],
+						"type": "string"
+					},
+					"opacity": {
+						"anyOf": [
+							{
+								"enum": [
+									"ascending",
+									"descending"
+								],
+								"type": "string"
+							},
+							{
+								"type": "number"
+							}
+						]
 					}
 				}
 			}
@@ -4698,7 +5134,7 @@ export const BarChartConfigSchema = {
 	]
 } 
 
-export const ComposedChartConfigObjectSchema = {
+export const LineChartChartConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
@@ -4720,7 +5156,76 @@ export const ComposedChartConfigObjectSchema = {
 		"legendOrder": {
 			"type": "number"
 		},
-		"yAxisDomain": {},
+		"yAxisDomain": {
+			"type": "object",
+			"properties": {
+				"max": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
 		"valueType": {
 			"enum": [
 				"boolean",
@@ -4743,78 +5248,913 @@ export const ComposedChartConfigObjectSchema = {
 			],
 			"type": "string"
 		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"yName": {
+			"type": "string"
+		},
+		"labelType": {
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"chartType": {
+			"description": "These are the common chart config options that are shared between several chart types",
+			"enum": [
+				"area",
+				"bar",
+				"composed",
+				"gauge",
+				"line",
+				"pie"
+			],
+			"type": "string"
+		},
+		"opacity": {
+			"anyOf": [
+				{
+					"enum": [
+						"ascending",
+						"descending"
+					],
+					"type": "string"
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"dot": {
+			"type": "boolean"
+		},
+		"connectNulls": {
+			"type": "boolean"
+		},
+		"strokeDasharray": {
+			"type": "string"
+		}
+	}
+} 
+
+export const LineChartConfigSchema = {
+	"description": "Line Chart",
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"label": {},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"color": {
+			"description": "Some chart types take 'color' as an option",
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"defaultTimePeriod": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"offset": {
+							"type": "number"
+						},
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"end",
+						"start"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "ISO Date Time",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"start"
+					]
+				}
+			]
+		},
+		"datePickerLimits": {
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"type": "number"
+						},
+						"modifier": {
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"type": "object",
+			"properties": {
+				"keyLink": {
+					"type": "string"
+				},
+				"itemCode": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"type": "object",
+			"properties": {
+				"link": {
+					"description": "url",
+					"type": "string"
+				},
+				"name": {
+					"description": "label",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"link",
+				"name"
+			]
+		},
+		"displayOnEntityConditions": {
+			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"attributes": {
+							"type": "object",
+							"additionalProperties": {
+								"type": [
+									"string",
+									"number",
+									"boolean"
+								]
+							}
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"attributes"
+					]
+				},
+				{
+					"type": "object",
+					"additionalProperties": {
+						"type": [
+							"string",
+							"number",
+							"boolean"
+						]
+					}
+				}
+			]
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
+		"chartType": {
+			"type": "string",
+			"enum": [
+				"line"
+			]
+		},
+		"ticks": {},
+		"startDate": {
+			"type": "string"
+		},
+		"endDate": {
+			"type": "string"
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"showPeriodRange": {
+			"type": "string",
+			"enum": [
+				"all"
+			]
+		},
+		"displayOnLevel": {},
+		"labelType": {
+			"description": "Some charts can have their label customised",
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
+		"measureLevel": {},
+		"renderLegendForOneItem": {
+			"type": "boolean"
+		},
+		"xName": {
+			"description": "The label on the x-axis",
+			"type": "string"
+		},
+		"yName": {
+			"description": "The label on the y-axis",
+			"type": "string"
+		},
+		"yAxisDomain": {
+			"description": "Configuration options for the y-axis",
+			"type": "object",
+			"properties": {
+				"max": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
+		"presentationOptions": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"type": "boolean"
+				},
+				"periodTickFormat": {
+					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"type": "string"
+				},
+				"hideAverage": {
+					"type": "boolean"
+				}
+			}
+		},
+		"chartConfig": {
+			"type": "object",
+			"additionalProperties": {
+				"additionalProperties": false,
+				"type": "object",
+				"properties": {
+					"referenceValue": {
+						"type": "number"
+					},
+					"referenceLabel": {
+						"type": "string"
+					},
+					"color": {
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"stackId": {
+						"type": "number"
+					},
+					"legendOrder": {
+						"type": "number"
+					},
+					"yAxisDomain": {
+						"type": "object",
+						"properties": {
+							"max": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"min": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"max",
+							"min"
+						]
+					},
+					"valueType": {
+						"enum": [
+							"boolean",
+							"color",
+							"currency",
+							"fraction",
+							"fractionAndPercentage",
+							"number",
+							"oneDecimalPlace",
+							"percentage",
+							"text",
+							"view"
+						],
+						"type": "string"
+					},
+					"yAxisOrientation": {
+						"enum": [
+							"left",
+							"right"
+						],
+						"type": "string"
+					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"yName": {
+						"type": "string"
+					},
+					"labelType": {
+						"enum": [
+							"fraction",
+							"fractionAndPercentage",
+							"number"
+						],
+						"type": "string"
+					},
+					"chartType": {
+						"description": "These are the common chart config options that are shared between several chart types",
+						"enum": [
+							"area",
+							"bar",
+							"composed",
+							"gauge",
+							"line",
+							"pie"
+						],
+						"type": "string"
+					},
+					"opacity": {
+						"anyOf": [
+							{
+								"enum": [
+									"ascending",
+									"descending"
+								],
+								"type": "string"
+							},
+							{
+								"type": "number"
+							}
+						]
+					},
+					"dot": {
+						"type": "boolean"
+					},
+					"connectNulls": {
+						"type": "boolean"
+					},
+					"strokeDasharray": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	},
+	"required": [
+		"chartType",
+		"name",
+		"type"
+	]
+} 
+
+export const ComposedChartConfigObjectSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"referenceValue": {
+			"type": "number"
+		},
+		"referenceLabel": {
+			"type": "string"
+		},
+		"color": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		},
+		"stackId": {
+			"type": "number"
+		},
+		"legendOrder": {
+			"type": "number"
+		},
+		"yAxisDomain": {
+			"type": "object",
+			"properties": {
+				"max": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				},
+				"min": {
+					"type": "object",
+					"properties": {
+						"type": {
+							"enum": [
+								"clamp",
+								"number",
+								"scale",
+								"string"
+							],
+							"type": "string"
+						},
+						"value": {
+							"type": [
+								"string",
+								"number"
+							]
+						},
+						"min": {
+							"type": "number"
+						},
+						"max": {
+							"type": "number"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"type"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"max",
+				"min"
+			]
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"yAxisOrientation": {
+			"enum": [
+				"left",
+				"right"
+			],
+			"type": "string"
+		},
+		"hideFromLegend": {
+			"type": "boolean"
+		},
+		"yName": {
+			"type": "string"
+		},
+		"labelType": {
+			"enum": [
+				"fraction",
+				"fractionAndPercentage",
+				"number"
+			],
+			"type": "string"
+		},
 		"chartType": {
 			"enum": [
 				"bar",
 				"line"
 			],
 			"type": "string"
+		},
+		"opacity": {
+			"anyOf": [
+				{
+					"enum": [
+						"ascending",
+						"descending"
+					],
+					"type": "string"
+				},
+				{
+					"type": "number"
+				}
+			]
+		},
+		"dot": {
+			"type": "boolean"
+		},
+		"connectNulls": {
+			"type": "boolean"
+		},
+		"strokeDasharray": {
+			"type": "string"
 		}
 	},
 	"required": [
 		"chartType"
 	]
-} 
-
-export const ComposedChartChildConfigSchema = {
-	"type": "object",
-	"additionalProperties": {
-		"additionalProperties": false,
-		"type": "object",
-		"properties": {
-			"referenceValue": {
-				"type": "number"
-			},
-			"referenceLabel": {
-				"type": "string"
-			},
-			"color": {
-				"type": "string"
-			},
-			"label": {
-				"type": "string"
-			},
-			"stackId": {
-				"type": "number"
-			},
-			"legendOrder": {
-				"type": "number"
-			},
-			"yAxisDomain": {},
-			"valueType": {
-				"enum": [
-					"boolean",
-					"color",
-					"currency",
-					"fraction",
-					"fractionAndPercentage",
-					"number",
-					"oneDecimalPlace",
-					"percentage",
-					"text",
-					"view"
-				],
-				"type": "string"
-			},
-			"yAxisOrientation": {
-				"enum": [
-					"left",
-					"right"
-				],
-				"type": "string"
-			},
-			"chartType": {
-				"enum": [
-					"bar",
-					"line"
-				],
-				"type": "string"
-			}
-		},
-		"required": [
-			"chartType"
-		]
-	}
 } 
 
 export const ComposedChartConfigSchema = {
@@ -5358,7 +6698,76 @@ export const ComposedChartConfigSchema = {
 					"legendOrder": {
 						"type": "number"
 					},
-					"yAxisDomain": {},
+					"yAxisDomain": {
+						"type": "object",
+						"properties": {
+							"max": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							},
+							"min": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"enum": [
+											"clamp",
+											"number",
+											"scale",
+											"string"
+										],
+										"type": "string"
+									},
+									"value": {
+										"type": [
+											"string",
+											"number"
+										]
+									},
+									"min": {
+										"type": "number"
+									},
+									"max": {
+										"type": "number"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"max",
+							"min"
+						]
+					},
 					"valueType": {
 						"enum": [
 							"boolean",
@@ -5381,11 +6790,48 @@ export const ComposedChartConfigSchema = {
 						],
 						"type": "string"
 					},
+					"hideFromLegend": {
+						"type": "boolean"
+					},
+					"yName": {
+						"type": "string"
+					},
+					"labelType": {
+						"enum": [
+							"fraction",
+							"fractionAndPercentage",
+							"number"
+						],
+						"type": "string"
+					},
 					"chartType": {
 						"enum": [
 							"bar",
 							"line"
 						],
+						"type": "string"
+					},
+					"opacity": {
+						"anyOf": [
+							{
+								"enum": [
+									"ascending",
+									"descending"
+								],
+								"type": "string"
+							},
+							{
+								"type": "number"
+							}
+						]
+					},
+					"dot": {
+						"type": "boolean"
+					},
+					"connectNulls": {
+						"type": "boolean"
+					},
+					"strokeDasharray": {
 						"type": "string"
 					}
 				},
@@ -5817,582 +7263,6 @@ export const GaugeChartConfigSchema = {
 		"measureLevel": {},
 		"renderLegendForOneItem": {
 			"type": "boolean"
-		}
-	},
-	"required": [
-		"chartType",
-		"name",
-		"type"
-	]
-} 
-
-export const LineChartConfigSchema = {
-	"description": "Line Chart",
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"name": {
-			"type": "string"
-		},
-		"description": {
-			"description": "A short description that appears above a viz",
-			"type": "string"
-		},
-		"periodGranularity": {
-			"enum": [
-				"day",
-				"month",
-				"one_day_at_a_time",
-				"one_month_at_a_time",
-				"one_quarter_at_a_time",
-				"one_week_at_a_time",
-				"one_year_at_a_time",
-				"quarter",
-				"week",
-				"year"
-			],
-			"type": "string"
-		},
-		"defaultTimePeriod": {
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"offset": {
-							"type": "number"
-						},
-						"unit": {
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"end",
-						"start"
-					]
-				},
-				{
-					"type": "object",
-					"properties": {
-						"start": {
-							"description": "ISO Date Time",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"start"
-					]
-				}
-			]
-		},
-		"datePickerLimits": {
-			"type": "object",
-			"properties": {
-				"start": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"type": "number"
-						},
-						"modifier": {
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
-					]
-				},
-				"end": {
-					"type": "object",
-					"properties": {
-						"unit": {
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"offset": {
-							"type": "number"
-						},
-						"modifier": {
-							"enum": [
-								"end_of",
-								"start_of"
-							],
-							"type": "string"
-						},
-						"modifierUnit": {
-							"enum": [
-								"day",
-								"month",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"offset",
-						"unit"
-					]
-				}
-			},
-			"additionalProperties": false
-		},
-		"exportConfig": {
-			"description": "Extra config options for exporting",
-			"type": "object",
-			"properties": {
-				"dataElementHeader": {
-					"description": "Sets the header for the data element in xls exports",
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"noDataMessage": {
-			"description": "Message which shows if no data is found",
-			"type": "string"
-		},
-		"noDataFetch": {
-			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-			"default": false,
-			"type": "boolean"
-		},
-		"drillDown": {
-			"type": "object",
-			"properties": {
-				"keyLink": {
-					"type": "string"
-				},
-				"itemCode": {
-					"type": "string"
-				},
-				"parameterLink": {
-					"type": "string"
-				},
-				"itemCodeByEntry": {
-					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
-				}
-			},
-			"additionalProperties": false
-		},
-		"entityHeader": {
-			"description": "",
-			"type": "string"
-		},
-		"reference": {
-			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
-				},
-				"name": {
-					"description": "label",
-					"type": "string"
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
-			]
-		},
-		"source": {
-			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
-		"weekDisplayFormat": {
-			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-			"default": "'WEEK_COMMENCING_ABBR'",
-			"enum": [
-				"ISO_WEEK_NUMBER",
-				"WEEK_COMMENCING",
-				"WEEK_COMMENCING_ABBR",
-				"WEEK_ENDING",
-				"WEEK_ENDING_ABBR"
-			],
-			"type": "string"
-		},
-		"type": {
-			"type": "string",
-			"enum": [
-				"chart"
-			]
-		},
-		"chartType": {
-			"type": "string",
-			"enum": [
-				"line"
-			]
-		},
-		"ticks": {},
-		"startDate": {
-			"type": "string"
-		},
-		"endDate": {
-			"type": "string"
-		},
-		"valueType": {
-			"enum": [
-				"boolean",
-				"color",
-				"currency",
-				"fraction",
-				"fractionAndPercentage",
-				"number",
-				"oneDecimalPlace",
-				"percentage",
-				"text",
-				"view"
-			],
-			"type": "string"
-		},
-		"showPeriodRange": {
-			"type": "string",
-			"enum": [
-				"all"
-			]
-		},
-		"color": {
-			"description": "Some chart types take 'color' as an option",
-			"type": "string"
-		},
-		"displayOnLevel": {},
-		"label": {},
-		"labelType": {
-			"description": "Some charts can have their label customised",
-			"enum": [
-				"fraction",
-				"fractionAndPercentage",
-				"number"
-			],
-			"type": "string"
-		},
-		"measureLevel": {},
-		"renderLegendForOneItem": {
-			"type": "boolean"
-		},
-		"xName": {
-			"description": "The label on the x-axis",
-			"type": "string"
-		},
-		"yName": {
-			"description": "The label on the y-axis",
-			"type": "string"
-		},
-		"yAxisDomain": {
-			"description": "Configuration options for the y-axis",
-			"type": "object",
-			"properties": {
-				"max": {
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				},
-				"min": {
-					"type": "object",
-					"properties": {
-						"type": {
-							"enum": [
-								"clamp",
-								"number",
-								"scale",
-								"string"
-							],
-							"type": "string"
-						},
-						"value": {
-							"type": [
-								"string",
-								"number"
-							]
-						},
-						"min": {
-							"type": "number"
-						},
-						"max": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"type"
-					]
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"max",
-				"min"
-			]
-		},
-		"chartConfig": {
-			"type": "object",
-			"additionalProperties": {
-				"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-				"additionalProperties": false,
-				"type": "object",
-				"properties": {
-					"referenceValue": {
-						"type": "number"
-					},
-					"referenceLabel": {
-						"type": "string"
-					},
-					"color": {
-						"type": "string"
-					},
-					"label": {
-						"type": "string"
-					},
-					"stackId": {
-						"type": "number"
-					},
-					"legendOrder": {
-						"type": "number"
-					},
-					"yAxisDomain": {},
-					"valueType": {
-						"enum": [
-							"boolean",
-							"color",
-							"currency",
-							"fraction",
-							"fractionAndPercentage",
-							"number",
-							"oneDecimalPlace",
-							"percentage",
-							"text",
-							"view"
-						],
-						"type": "string"
-					},
-					"yAxisOrientation": {
-						"enum": [
-							"left",
-							"right"
-						],
-						"type": "string"
-					}
-				}
-			}
-		},
-		"presentationOptions": {
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"type": "boolean"
-				},
-				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-					"type": "string"
-				},
-				"hideAverage": {
-					"type": "boolean"
-				}
-			}
 		}
 	},
 	"required": [
@@ -7362,7 +8232,76 @@ export const ChartConfigSchema = {
 							"legendOrder": {
 								"type": "number"
 							},
-							"yAxisDomain": {},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
 							"valueType": {
 								"enum": [
 									"boolean",
@@ -7384,6 +8323,46 @@ export const ChartConfigSchema = {
 									"right"
 								],
 								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
+							"chartType": {
+								"description": "These are the common chart config options that are shared between several chart types",
+								"enum": [
+									"area",
+									"bar",
+									"composed",
+									"gauge",
+									"line",
+									"pie"
+								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
 							}
 						}
 					}
@@ -7440,6 +8419,698 @@ export const ChartConfigSchema = {
 				"chartType",
 				"name",
 				"presentationOptions",
+				"type"
+			]
+		},
+		{
+			"description": "Line Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"label": {},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+					"type": "string"
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"description": "A short description that appears above a viz",
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"defaultTimePeriod": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"offset": {
+									"type": "number"
+								},
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"end",
+								"start"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"description": "ISO Date Time",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"start"
+							]
+						}
+					]
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"exportConfig": {
+					"description": "Extra config options for exporting",
+					"type": "object",
+					"properties": {
+						"dataElementHeader": {
+							"description": "Sets the header for the data element in xls exports",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"noDataMessage": {
+					"description": "Message which shows if no data is found",
+					"type": "string"
+				},
+				"noDataFetch": {
+					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+					"default": false,
+					"type": "boolean"
+				},
+				"drillDown": {
+					"type": "object",
+					"properties": {
+						"keyLink": {
+							"type": "string"
+						},
+						"itemCode": {
+							"type": "string"
+						},
+						"parameterLink": {
+							"type": "string"
+						},
+						"itemCodeByEntry": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							}
+						}
+					},
+					"additionalProperties": false
+				},
+				"entityHeader": {
+					"description": "",
+					"type": "string"
+				},
+				"reference": {
+					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+					"type": "object",
+					"properties": {
+						"link": {
+							"description": "url",
+							"type": "string"
+						},
+						"name": {
+							"description": "label",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				},
+				"displayOnEntityConditions": {
+					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"attributes": {
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"attributes"
+							]
+						},
+						{
+							"type": "object",
+							"additionalProperties": {
+								"type": [
+									"string",
+									"number",
+									"boolean"
+								]
+							}
+						}
+					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"line"
+					]
+				},
+				"ticks": {},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"displayOnLevel": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"measureLevel": {},
+				"renderLegendForOneItem": {
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"type": "boolean"
+						}
+					}
+				},
+				"chartConfig": {
+					"type": "object",
+					"additionalProperties": {
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"referenceValue": {
+								"type": "number"
+							},
+							"referenceLabel": {
+								"type": "string"
+							},
+							"color": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							},
+							"stackId": {
+								"type": "number"
+							},
+							"legendOrder": {
+								"type": "number"
+							},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
+							"valueType": {
+								"enum": [
+									"boolean",
+									"color",
+									"currency",
+									"fraction",
+									"fractionAndPercentage",
+									"number",
+									"oneDecimalPlace",
+									"percentage",
+									"text",
+									"view"
+								],
+								"type": "string"
+							},
+							"yAxisOrientation": {
+								"enum": [
+									"left",
+									"right"
+								],
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
+							"chartType": {
+								"description": "These are the common chart config options that are shared between several chart types",
+								"enum": [
+									"area",
+									"bar",
+									"composed",
+									"gauge",
+									"line",
+									"pie"
+								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
+							},
+							"dot": {
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"type": "boolean"
+							},
+							"strokeDasharray": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
 				"type"
 			]
 		},
@@ -7984,7 +9655,76 @@ export const ChartConfigSchema = {
 							"legendOrder": {
 								"type": "number"
 							},
-							"yAxisDomain": {},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
 							"valueType": {
 								"enum": [
 									"boolean",
@@ -8007,11 +9747,48 @@ export const ChartConfigSchema = {
 								],
 								"type": "string"
 							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
 							"chartType": {
 								"enum": [
 									"bar",
 									"line"
 								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
+							},
+							"dot": {
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"type": "boolean"
+							},
+							"strokeDasharray": {
 								"type": "string"
 							}
 						},
@@ -8442,581 +10219,6 @@ export const ChartConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				}
-			},
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Line Chart",
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"description": {
-					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"periodGranularity": {
-					"enum": [
-						"day",
-						"month",
-						"one_day_at_a_time",
-						"one_month_at_a_time",
-						"one_quarter_at_a_time",
-						"one_week_at_a_time",
-						"one_year_at_a_time",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"defaultTimePeriod": {
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"offset": {
-									"type": "number"
-								},
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"end",
-								"start"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"description": "ISO Date Time",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"start"
-							]
-						}
-					]
-				},
-				"datePickerLimits": {
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportConfig": {
-					"description": "Extra config options for exporting",
-					"type": "object",
-					"properties": {
-						"dataElementHeader": {
-							"description": "Sets the header for the data element in xls exports",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"noDataMessage": {
-					"description": "Message which shows if no data is found",
-					"type": "string"
-				},
-				"noDataFetch": {
-					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-					"default": false,
-					"type": "boolean"
-				},
-				"drillDown": {
-					"type": "object",
-					"properties": {
-						"keyLink": {
-							"type": "string"
-						},
-						"itemCode": {
-							"type": "string"
-						},
-						"parameterLink": {
-							"type": "string"
-						},
-						"itemCodeByEntry": {
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
-						}
-					},
-					"additionalProperties": false
-				},
-				"entityHeader": {
-					"description": "",
-					"type": "string"
-				},
-				"reference": {
-					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
-						},
-						"name": {
-							"description": "label",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
-				"weekDisplayFormat": {
-					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-					"default": "'WEEK_COMMENCING_ABBR'",
-					"enum": [
-						"ISO_WEEK_NUMBER",
-						"WEEK_COMMENCING",
-						"WEEK_COMMENCING_ABBR",
-						"WEEK_ENDING",
-						"WEEK_ENDING_ABBR"
-					],
-					"type": "string"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"line"
-					]
-				},
-				"ticks": {},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"displayOnLevel": {},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"measureLevel": {},
-				"renderLegendForOneItem": {
-					"type": "boolean"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"chartConfig": {
-					"type": "object",
-					"additionalProperties": {
-						"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-						"additionalProperties": false,
-						"type": "object",
-						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
-							"color": {
-								"type": "string"
-							},
-							"label": {
-								"type": "string"
-							},
-							"stackId": {
-								"type": "number"
-							},
-							"legendOrder": {
-								"type": "number"
-							},
-							"yAxisDomain": {},
-							"valueType": {
-								"enum": [
-									"boolean",
-									"color",
-									"currency",
-									"fraction",
-									"fractionAndPercentage",
-									"number",
-									"oneDecimalPlace",
-									"percentage",
-									"text",
-									"view"
-								],
-								"type": "string"
-							},
-							"yAxisOrientation": {
-								"enum": [
-									"left",
-									"right"
-								],
-								"type": "string"
-							}
-						}
-					}
-				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						},
-						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"type": "boolean"
-						}
-					}
 				}
 			},
 			"required": [
@@ -19888,7 +21090,76 @@ export const DashboardItemConfigSchema = {
 							"legendOrder": {
 								"type": "number"
 							},
-							"yAxisDomain": {},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
 							"valueType": {
 								"enum": [
 									"boolean",
@@ -19910,6 +21181,46 @@ export const DashboardItemConfigSchema = {
 									"right"
 								],
 								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
+							"chartType": {
+								"description": "These are the common chart config options that are shared between several chart types",
+								"enum": [
+									"area",
+									"bar",
+									"composed",
+									"gauge",
+									"line",
+									"pie"
+								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
 							}
 						}
 					}
@@ -19966,6 +21277,698 @@ export const DashboardItemConfigSchema = {
 				"chartType",
 				"name",
 				"presentationOptions",
+				"type"
+			]
+		},
+		{
+			"description": "Line Chart",
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"label": {},
+				"source": {
+					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+					"type": "string"
+				},
+				"color": {
+					"description": "Some chart types take 'color' as an option",
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"description": "A short description that appears above a viz",
+					"type": "string"
+				},
+				"periodGranularity": {
+					"enum": [
+						"day",
+						"month",
+						"one_day_at_a_time",
+						"one_month_at_a_time",
+						"one_quarter_at_a_time",
+						"one_week_at_a_time",
+						"one_year_at_a_time",
+						"quarter",
+						"week",
+						"year"
+					],
+					"type": "string"
+				},
+				"defaultTimePeriod": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"offset": {
+									"type": "number"
+								},
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"end",
+								"start"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"start": {
+									"description": "ISO Date Time",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"start"
+							]
+						}
+					]
+				},
+				"datePickerLimits": {
+					"type": "object",
+					"properties": {
+						"start": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						},
+						"end": {
+							"type": "object",
+							"properties": {
+								"unit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								},
+								"offset": {
+									"type": "number"
+								},
+								"modifier": {
+									"enum": [
+										"end_of",
+										"start_of"
+									],
+									"type": "string"
+								},
+								"modifierUnit": {
+									"enum": [
+										"day",
+										"month",
+										"quarter",
+										"week",
+										"year"
+									],
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"offset",
+								"unit"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				"exportConfig": {
+					"description": "Extra config options for exporting",
+					"type": "object",
+					"properties": {
+						"dataElementHeader": {
+							"description": "Sets the header for the data element in xls exports",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"noDataMessage": {
+					"description": "Message which shows if no data is found",
+					"type": "string"
+				},
+				"noDataFetch": {
+					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+					"default": false,
+					"type": "boolean"
+				},
+				"drillDown": {
+					"type": "object",
+					"properties": {
+						"keyLink": {
+							"type": "string"
+						},
+						"itemCode": {
+							"type": "string"
+						},
+						"parameterLink": {
+							"type": "string"
+						},
+						"itemCodeByEntry": {
+							"type": "object",
+							"additionalProperties": {
+								"type": "string"
+							}
+						}
+					},
+					"additionalProperties": false
+				},
+				"entityHeader": {
+					"description": "",
+					"type": "string"
+				},
+				"reference": {
+					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+					"type": "object",
+					"properties": {
+						"link": {
+							"description": "url",
+							"type": "string"
+						},
+						"name": {
+							"description": "label",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
+				},
+				"displayOnEntityConditions": {
+					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"attributes": {
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"attributes"
+							]
+						},
+						{
+							"type": "object",
+							"additionalProperties": {
+								"type": [
+									"string",
+									"number",
+									"boolean"
+								]
+							}
+						}
+					]
+				},
+				"weekDisplayFormat": {
+					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+					"default": "'WEEK_COMMENCING_ABBR'",
+					"enum": [
+						"ISO_WEEK_NUMBER",
+						"WEEK_COMMENCING",
+						"WEEK_COMMENCING_ABBR",
+						"WEEK_ENDING",
+						"WEEK_ENDING_ABBR"
+					],
+					"type": "string"
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
+				"chartType": {
+					"type": "string",
+					"enum": [
+						"line"
+					]
+				},
+				"ticks": {},
+				"startDate": {
+					"type": "string"
+				},
+				"endDate": {
+					"type": "string"
+				},
+				"valueType": {
+					"enum": [
+						"boolean",
+						"color",
+						"currency",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"oneDecimalPlace",
+						"percentage",
+						"text",
+						"view"
+					],
+					"type": "string"
+				},
+				"showPeriodRange": {
+					"type": "string",
+					"enum": [
+						"all"
+					]
+				},
+				"displayOnLevel": {},
+				"labelType": {
+					"description": "Some charts can have their label customised",
+					"enum": [
+						"fraction",
+						"fractionAndPercentage",
+						"number"
+					],
+					"type": "string"
+				},
+				"measureLevel": {},
+				"renderLegendForOneItem": {
+					"type": "boolean"
+				},
+				"xName": {
+					"description": "The label on the x-axis",
+					"type": "string"
+				},
+				"yName": {
+					"description": "The label on the y-axis",
+					"type": "string"
+				},
+				"yAxisDomain": {
+					"description": "Configuration options for the y-axis",
+					"type": "object",
+					"properties": {
+						"max": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						},
+						"min": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"enum": [
+										"clamp",
+										"number",
+										"scale",
+										"string"
+									],
+									"type": "string"
+								},
+								"value": {
+									"type": [
+										"string",
+										"number"
+									]
+								},
+								"min": {
+									"type": "number"
+								},
+								"max": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"type"
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"presentationOptions": {
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"exportWithLabels": {
+							"type": "boolean"
+						},
+						"exportWithTable": {
+							"type": "boolean"
+						},
+						"exportWithTableDisabled": {
+							"type": "boolean"
+						},
+						"periodTickFormat": {
+							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"type": "string"
+						},
+						"hideAverage": {
+							"type": "boolean"
+						}
+					}
+				},
+				"chartConfig": {
+					"type": "object",
+					"additionalProperties": {
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"referenceValue": {
+								"type": "number"
+							},
+							"referenceLabel": {
+								"type": "string"
+							},
+							"color": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							},
+							"stackId": {
+								"type": "number"
+							},
+							"legendOrder": {
+								"type": "number"
+							},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
+							"valueType": {
+								"enum": [
+									"boolean",
+									"color",
+									"currency",
+									"fraction",
+									"fractionAndPercentage",
+									"number",
+									"oneDecimalPlace",
+									"percentage",
+									"text",
+									"view"
+								],
+								"type": "string"
+							},
+							"yAxisOrientation": {
+								"enum": [
+									"left",
+									"right"
+								],
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
+							"chartType": {
+								"description": "These are the common chart config options that are shared between several chart types",
+								"enum": [
+									"area",
+									"bar",
+									"composed",
+									"gauge",
+									"line",
+									"pie"
+								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
+							},
+							"dot": {
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"type": "boolean"
+							},
+							"strokeDasharray": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"required": [
+				"chartType",
+				"name",
 				"type"
 			]
 		},
@@ -20510,7 +22513,76 @@ export const DashboardItemConfigSchema = {
 							"legendOrder": {
 								"type": "number"
 							},
-							"yAxisDomain": {},
+							"yAxisDomain": {
+								"type": "object",
+								"properties": {
+									"max": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									},
+									"min": {
+										"type": "object",
+										"properties": {
+											"type": {
+												"enum": [
+													"clamp",
+													"number",
+													"scale",
+													"string"
+												],
+												"type": "string"
+											},
+											"value": {
+												"type": [
+													"string",
+													"number"
+												]
+											},
+											"min": {
+												"type": "number"
+											},
+											"max": {
+												"type": "number"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"type"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"max",
+									"min"
+								]
+							},
 							"valueType": {
 								"enum": [
 									"boolean",
@@ -20533,11 +22605,48 @@ export const DashboardItemConfigSchema = {
 								],
 								"type": "string"
 							},
+							"hideFromLegend": {
+								"type": "boolean"
+							},
+							"yName": {
+								"type": "string"
+							},
+							"labelType": {
+								"enum": [
+									"fraction",
+									"fractionAndPercentage",
+									"number"
+								],
+								"type": "string"
+							},
 							"chartType": {
 								"enum": [
 									"bar",
 									"line"
 								],
+								"type": "string"
+							},
+							"opacity": {
+								"anyOf": [
+									{
+										"enum": [
+											"ascending",
+											"descending"
+										],
+										"type": "string"
+									},
+									{
+										"type": "number"
+									}
+								]
+							},
+							"dot": {
+								"type": "boolean"
+							},
+							"connectNulls": {
+								"type": "boolean"
+							},
+							"strokeDasharray": {
 								"type": "string"
 							}
 						},
@@ -20968,581 +23077,6 @@ export const DashboardItemConfigSchema = {
 				"measureLevel": {},
 				"renderLegendForOneItem": {
 					"type": "boolean"
-				}
-			},
-			"required": [
-				"chartType",
-				"name",
-				"type"
-			]
-		},
-		{
-			"description": "Line Chart",
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"description": {
-					"description": "A short description that appears above a viz",
-					"type": "string"
-				},
-				"periodGranularity": {
-					"enum": [
-						"day",
-						"month",
-						"one_day_at_a_time",
-						"one_month_at_a_time",
-						"one_quarter_at_a_time",
-						"one_week_at_a_time",
-						"one_year_at_a_time",
-						"quarter",
-						"week",
-						"year"
-					],
-					"type": "string"
-				},
-				"defaultTimePeriod": {
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"offset": {
-									"type": "number"
-								},
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"end",
-								"start"
-							]
-						},
-						{
-							"type": "object",
-							"properties": {
-								"start": {
-									"description": "ISO Date Time",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"start"
-							]
-						}
-					]
-				},
-				"datePickerLimits": {
-					"type": "object",
-					"properties": {
-						"start": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						},
-						"end": {
-							"type": "object",
-							"properties": {
-								"unit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								},
-								"offset": {
-									"type": "number"
-								},
-								"modifier": {
-									"enum": [
-										"end_of",
-										"start_of"
-									],
-									"type": "string"
-								},
-								"modifierUnit": {
-									"enum": [
-										"day",
-										"month",
-										"quarter",
-										"week",
-										"year"
-									],
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"offset",
-								"unit"
-							]
-						}
-					},
-					"additionalProperties": false
-				},
-				"exportConfig": {
-					"description": "Extra config options for exporting",
-					"type": "object",
-					"properties": {
-						"dataElementHeader": {
-							"description": "Sets the header for the data element in xls exports",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"noDataMessage": {
-					"description": "Message which shows if no data is found",
-					"type": "string"
-				},
-				"noDataFetch": {
-					"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-					"default": false,
-					"type": "boolean"
-				},
-				"drillDown": {
-					"type": "object",
-					"properties": {
-						"keyLink": {
-							"type": "string"
-						},
-						"itemCode": {
-							"type": "string"
-						},
-						"parameterLink": {
-							"type": "string"
-						},
-						"itemCodeByEntry": {
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
-						}
-					},
-					"additionalProperties": false
-				},
-				"entityHeader": {
-					"description": "",
-					"type": "string"
-				},
-				"reference": {
-					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
-						},
-						"name": {
-							"description": "label",
-							"type": "string"
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
-					]
-				},
-				"source": {
-					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
-				"weekDisplayFormat": {
-					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-					"default": "'WEEK_COMMENCING_ABBR'",
-					"enum": [
-						"ISO_WEEK_NUMBER",
-						"WEEK_COMMENCING",
-						"WEEK_COMMENCING_ABBR",
-						"WEEK_ENDING",
-						"WEEK_ENDING_ABBR"
-					],
-					"type": "string"
-				},
-				"type": {
-					"type": "string",
-					"enum": [
-						"chart"
-					]
-				},
-				"chartType": {
-					"type": "string",
-					"enum": [
-						"line"
-					]
-				},
-				"ticks": {},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"valueType": {
-					"enum": [
-						"boolean",
-						"color",
-						"currency",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"oneDecimalPlace",
-						"percentage",
-						"text",
-						"view"
-					],
-					"type": "string"
-				},
-				"showPeriodRange": {
-					"type": "string",
-					"enum": [
-						"all"
-					]
-				},
-				"color": {
-					"description": "Some chart types take 'color' as an option",
-					"type": "string"
-				},
-				"displayOnLevel": {},
-				"label": {},
-				"labelType": {
-					"description": "Some charts can have their label customised",
-					"enum": [
-						"fraction",
-						"fractionAndPercentage",
-						"number"
-					],
-					"type": "string"
-				},
-				"measureLevel": {},
-				"renderLegendForOneItem": {
-					"type": "boolean"
-				},
-				"xName": {
-					"description": "The label on the x-axis",
-					"type": "string"
-				},
-				"yName": {
-					"description": "The label on the y-axis",
-					"type": "string"
-				},
-				"yAxisDomain": {
-					"description": "Configuration options for the y-axis",
-					"type": "object",
-					"properties": {
-						"max": {
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						},
-						"min": {
-							"type": "object",
-							"properties": {
-								"type": {
-									"enum": [
-										"clamp",
-										"number",
-										"scale",
-										"string"
-									],
-									"type": "string"
-								},
-								"value": {
-									"type": [
-										"string",
-										"number"
-									]
-								},
-								"min": {
-									"type": "number"
-								},
-								"max": {
-									"type": "number"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"type"
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"chartConfig": {
-					"type": "object",
-					"additionalProperties": {
-						"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-						"additionalProperties": false,
-						"type": "object",
-						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
-							"color": {
-								"type": "string"
-							},
-							"label": {
-								"type": "string"
-							},
-							"stackId": {
-								"type": "number"
-							},
-							"legendOrder": {
-								"type": "number"
-							},
-							"yAxisDomain": {},
-							"valueType": {
-								"enum": [
-									"boolean",
-									"color",
-									"currency",
-									"fraction",
-									"fractionAndPercentage",
-									"number",
-									"oneDecimalPlace",
-									"percentage",
-									"text",
-									"view"
-								],
-								"type": "string"
-							},
-							"yAxisOrientation": {
-								"enum": [
-									"left",
-									"right"
-								],
-								"type": "string"
-							}
-						}
-					}
-				},
-				"presentationOptions": {
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"exportWithLabels": {
-							"type": "boolean"
-						},
-						"exportWithTable": {
-							"type": "boolean"
-						},
-						"exportWithTableDisabled": {
-							"type": "boolean"
-						},
-						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-							"type": "string"
-						},
-						"hideAverage": {
-							"type": "boolean"
-						}
-					}
 				}
 			},
 			"required": [
@@ -26267,7 +27801,7 @@ export const ChartDataSchema = {
 			]
 		},
 		"timestamp": {
-			"type": "string"
+			"type": "number"
 		}
 	},
 	"additionalProperties": false,
@@ -26317,7 +27851,7 @@ export const ChartReportSchema = {
 						]
 					},
 					"timestamp": {
-						"type": "string"
+						"type": "number"
 					}
 				},
 				"additionalProperties": false,
@@ -26546,7 +28080,7 @@ export const DashboardItemReportSchema = {
 								]
 							},
 							"timestamp": {
-								"type": "string"
+								"type": "number"
 							}
 						},
 						"additionalProperties": false,
@@ -30662,7 +32196,76 @@ export const DashboardItemSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -30684,6 +32287,46 @@ export const DashboardItemSchema = {
 											"right"
 										],
 										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
 									}
 								}
 							}
@@ -30740,6 +32383,698 @@ export const DashboardItemSchema = {
 						"chartType",
 						"name",
 						"presentationOptions",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"line"
+							]
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"displayOnLevel": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"type": "boolean"
+								}
+							}
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"referenceValue": {
+										"type": "number"
+									},
+									"referenceLabel": {
+										"type": "string"
+									},
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"yAxisOrientation": {
+										"enum": [
+											"left",
+											"right"
+										],
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
 						"type"
 					]
 				},
@@ -31284,7 +33619,76 @@ export const DashboardItemSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -31307,11 +33711,48 @@ export const DashboardItemSchema = {
 										],
 										"type": "string"
 									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
 									"chartType": {
 										"enum": [
 											"bar",
 											"line"
 										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
 										"type": "string"
 									}
 								},
@@ -31742,581 +34183,6 @@ export const DashboardItemSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						}
-					},
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"defaultTimePeriod": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"offset": {
-											"type": "number"
-										},
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										},
-										"end": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"end",
-										"start"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "ISO Date Time",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"start"
-									]
-								}
-							]
-						},
-						"datePickerLimits": {
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"type": "object",
-							"properties": {
-								"keyLink": {
-									"type": "string"
-								},
-								"itemCode": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
-								},
-								"name": {
-									"description": "label",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"line"
-							]
-						},
-						"ticks": {},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"displayOnLevel": {},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"measureLevel": {},
-						"renderLegendForOneItem": {
-							"type": "boolean"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"chartConfig": {
-							"type": "object",
-							"additionalProperties": {
-								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
-								"type": "object",
-								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
-									"color": {
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									},
-									"stackId": {
-										"type": "number"
-									},
-									"legendOrder": {
-										"type": "number"
-									},
-									"yAxisDomain": {},
-									"valueType": {
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"yAxisOrientation": {
-										"enum": [
-											"left",
-											"right"
-										],
-										"type": "string"
-									}
-								}
-							}
-						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"type": "boolean"
-								}
-							}
 						}
 					},
 					"required": [
@@ -38425,7 +40291,76 @@ export const DashboardItemCreateSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -38447,6 +40382,46 @@ export const DashboardItemCreateSchema = {
 											"right"
 										],
 										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
 									}
 								}
 							}
@@ -38503,6 +40478,698 @@ export const DashboardItemCreateSchema = {
 						"chartType",
 						"name",
 						"presentationOptions",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"line"
+							]
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"displayOnLevel": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"type": "boolean"
+								}
+							}
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"referenceValue": {
+										"type": "number"
+									},
+									"referenceLabel": {
+										"type": "string"
+									},
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"yAxisOrientation": {
+										"enum": [
+											"left",
+											"right"
+										],
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
 						"type"
 					]
 				},
@@ -39047,7 +41714,76 @@ export const DashboardItemCreateSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -39070,11 +41806,48 @@ export const DashboardItemCreateSchema = {
 										],
 										"type": "string"
 									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
 									"chartType": {
 										"enum": [
 											"bar",
 											"line"
 										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
 										"type": "string"
 									}
 								},
@@ -39505,581 +42278,6 @@ export const DashboardItemCreateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						}
-					},
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"defaultTimePeriod": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"offset": {
-											"type": "number"
-										},
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										},
-										"end": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"end",
-										"start"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "ISO Date Time",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"start"
-									]
-								}
-							]
-						},
-						"datePickerLimits": {
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"type": "object",
-							"properties": {
-								"keyLink": {
-									"type": "string"
-								},
-								"itemCode": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
-								},
-								"name": {
-									"description": "label",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"line"
-							]
-						},
-						"ticks": {},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"displayOnLevel": {},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"measureLevel": {},
-						"renderLegendForOneItem": {
-							"type": "boolean"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"chartConfig": {
-							"type": "object",
-							"additionalProperties": {
-								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
-								"type": "object",
-								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
-									"color": {
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									},
-									"stackId": {
-										"type": "number"
-									},
-									"legendOrder": {
-										"type": "number"
-									},
-									"yAxisDomain": {},
-									"valueType": {
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"yAxisOrientation": {
-										"enum": [
-											"left",
-											"right"
-										],
-										"type": "string"
-									}
-								}
-							}
-						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"type": "boolean"
-								}
-							}
 						}
 					},
 					"required": [
@@ -46182,7 +48380,76 @@ export const DashboardItemUpdateSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -46204,6 +48471,46 @@ export const DashboardItemUpdateSchema = {
 											"right"
 										],
 										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
 									}
 								}
 							}
@@ -46260,6 +48567,698 @@ export const DashboardItemUpdateSchema = {
 						"chartType",
 						"name",
 						"presentationOptions",
+						"type"
+					]
+				},
+				{
+					"description": "Line Chart",
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"label": {},
+						"source": {
+							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+							"type": "string"
+						},
+						"color": {
+							"description": "Some chart types take 'color' as an option",
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"description": {
+							"description": "A short description that appears above a viz",
+							"type": "string"
+						},
+						"periodGranularity": {
+							"enum": [
+								"day",
+								"month",
+								"one_day_at_a_time",
+								"one_month_at_a_time",
+								"one_quarter_at_a_time",
+								"one_week_at_a_time",
+								"one_year_at_a_time",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"defaultTimePeriod": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"offset": {
+											"type": "number"
+										},
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										},
+										"end": {
+											"type": "object",
+											"properties": {
+												"unit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												},
+												"offset": {
+													"type": "number"
+												},
+												"modifier": {
+													"enum": [
+														"end_of",
+														"start_of"
+													],
+													"type": "string"
+												},
+												"modifierUnit": {
+													"enum": [
+														"day",
+														"month",
+														"quarter",
+														"week",
+														"year"
+													],
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"offset",
+												"unit"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"end",
+										"start"
+									]
+								},
+								{
+									"type": "object",
+									"properties": {
+										"start": {
+											"description": "ISO Date Time",
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"start"
+									]
+								}
+							]
+						},
+						"datePickerLimits": {
+							"type": "object",
+							"properties": {
+								"start": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								"end": {
+									"type": "object",
+									"properties": {
+										"unit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"type": "number"
+										},
+										"modifier": {
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								}
+							},
+							"additionalProperties": false
+						},
+						"exportConfig": {
+							"description": "Extra config options for exporting",
+							"type": "object",
+							"properties": {
+								"dataElementHeader": {
+									"description": "Sets the header for the data element in xls exports",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						},
+						"noDataMessage": {
+							"description": "Message which shows if no data is found",
+							"type": "string"
+						},
+						"noDataFetch": {
+							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+							"default": false,
+							"type": "boolean"
+						},
+						"drillDown": {
+							"type": "object",
+							"properties": {
+								"keyLink": {
+									"type": "string"
+								},
+								"itemCode": {
+									"type": "string"
+								},
+								"parameterLink": {
+									"type": "string"
+								},
+								"itemCodeByEntry": {
+									"type": "object",
+									"additionalProperties": {
+										"type": "string"
+									}
+								}
+							},
+							"additionalProperties": false
+						},
+						"entityHeader": {
+							"description": "",
+							"type": "string"
+						},
+						"reference": {
+							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+							"type": "object",
+							"properties": {
+								"link": {
+									"description": "url",
+									"type": "string"
+								},
+								"name": {
+									"description": "label",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
+						},
+						"displayOnEntityConditions": {
+							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"attributes": {
+											"type": "object",
+											"additionalProperties": {
+												"type": [
+													"string",
+													"number",
+													"boolean"
+												]
+											}
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"attributes"
+									]
+								},
+								{
+									"type": "object",
+									"additionalProperties": {
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								}
+							]
+						},
+						"weekDisplayFormat": {
+							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+							"default": "'WEEK_COMMENCING_ABBR'",
+							"enum": [
+								"ISO_WEEK_NUMBER",
+								"WEEK_COMMENCING",
+								"WEEK_COMMENCING_ABBR",
+								"WEEK_ENDING",
+								"WEEK_ENDING_ABBR"
+							],
+							"type": "string"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"chart"
+							]
+						},
+						"chartType": {
+							"type": "string",
+							"enum": [
+								"line"
+							]
+						},
+						"ticks": {},
+						"startDate": {
+							"type": "string"
+						},
+						"endDate": {
+							"type": "string"
+						},
+						"valueType": {
+							"enum": [
+								"boolean",
+								"color",
+								"currency",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"oneDecimalPlace",
+								"percentage",
+								"text",
+								"view"
+							],
+							"type": "string"
+						},
+						"showPeriodRange": {
+							"type": "string",
+							"enum": [
+								"all"
+							]
+						},
+						"displayOnLevel": {},
+						"labelType": {
+							"description": "Some charts can have their label customised",
+							"enum": [
+								"fraction",
+								"fractionAndPercentage",
+								"number"
+							],
+							"type": "string"
+						},
+						"measureLevel": {},
+						"renderLegendForOneItem": {
+							"type": "boolean"
+						},
+						"xName": {
+							"description": "The label on the x-axis",
+							"type": "string"
+						},
+						"yName": {
+							"description": "The label on the y-axis",
+							"type": "string"
+						},
+						"yAxisDomain": {
+							"description": "Configuration options for the y-axis",
+							"type": "object",
+							"properties": {
+								"max": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								},
+								"min": {
+									"type": "object",
+									"properties": {
+										"type": {
+											"enum": [
+												"clamp",
+												"number",
+												"scale",
+												"string"
+											],
+											"type": "string"
+										},
+										"value": {
+											"type": [
+												"string",
+												"number"
+											]
+										},
+										"min": {
+											"type": "number"
+										},
+										"max": {
+											"type": "number"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"type"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"max",
+								"min"
+							]
+						},
+						"presentationOptions": {
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"exportWithLabels": {
+									"type": "boolean"
+								},
+								"exportWithTable": {
+									"type": "boolean"
+								},
+								"exportWithTableDisabled": {
+									"type": "boolean"
+								},
+								"periodTickFormat": {
+									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"type": "string"
+								},
+								"hideAverage": {
+									"type": "boolean"
+								}
+							}
+						},
+						"chartConfig": {
+							"type": "object",
+							"additionalProperties": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"referenceValue": {
+										"type": "number"
+									},
+									"referenceLabel": {
+										"type": "string"
+									},
+									"color": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"stackId": {
+										"type": "number"
+									},
+									"legendOrder": {
+										"type": "number"
+									},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"yAxisOrientation": {
+										"enum": [
+											"left",
+											"right"
+										],
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"chartType": {
+										"description": "These are the common chart config options that are shared between several chart types",
+										"enum": [
+											"area",
+											"bar",
+											"composed",
+											"gauge",
+											"line",
+											"pie"
+										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					},
+					"required": [
+						"chartType",
+						"name",
 						"type"
 					]
 				},
@@ -46804,7 +49803,76 @@ export const DashboardItemUpdateSchema = {
 									"legendOrder": {
 										"type": "number"
 									},
-									"yAxisDomain": {},
+									"yAxisDomain": {
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
 									"valueType": {
 										"enum": [
 											"boolean",
@@ -46827,11 +49895,48 @@ export const DashboardItemUpdateSchema = {
 										],
 										"type": "string"
 									},
+									"hideFromLegend": {
+										"type": "boolean"
+									},
+									"yName": {
+										"type": "string"
+									},
+									"labelType": {
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
 									"chartType": {
 										"enum": [
 											"bar",
 											"line"
 										],
+										"type": "string"
+									},
+									"opacity": {
+										"anyOf": [
+											{
+												"enum": [
+													"ascending",
+													"descending"
+												],
+												"type": "string"
+											},
+											{
+												"type": "number"
+											}
+										]
+									},
+									"dot": {
+										"type": "boolean"
+									},
+									"connectNulls": {
+										"type": "boolean"
+									},
+									"strokeDasharray": {
 										"type": "string"
 									}
 								},
@@ -47262,581 +50367,6 @@ export const DashboardItemUpdateSchema = {
 						"measureLevel": {},
 						"renderLegendForOneItem": {
 							"type": "boolean"
-						}
-					},
-					"required": [
-						"chartType",
-						"name",
-						"type"
-					]
-				},
-				{
-					"description": "Line Chart",
-					"additionalProperties": false,
-					"type": "object",
-					"properties": {
-						"name": {
-							"type": "string"
-						},
-						"description": {
-							"description": "A short description that appears above a viz",
-							"type": "string"
-						},
-						"periodGranularity": {
-							"enum": [
-								"day",
-								"month",
-								"one_day_at_a_time",
-								"one_month_at_a_time",
-								"one_quarter_at_a_time",
-								"one_week_at_a_time",
-								"one_year_at_a_time",
-								"quarter",
-								"week",
-								"year"
-							],
-							"type": "string"
-						},
-						"defaultTimePeriod": {
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"offset": {
-											"type": "number"
-										},
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										},
-										"end": {
-											"type": "object",
-											"properties": {
-												"unit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												},
-												"offset": {
-													"type": "number"
-												},
-												"modifier": {
-													"enum": [
-														"end_of",
-														"start_of"
-													],
-													"type": "string"
-												},
-												"modifierUnit": {
-													"enum": [
-														"day",
-														"month",
-														"quarter",
-														"week",
-														"year"
-													],
-													"type": "string"
-												}
-											},
-											"additionalProperties": false,
-											"required": [
-												"offset",
-												"unit"
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"end",
-										"start"
-									]
-								},
-								{
-									"type": "object",
-									"properties": {
-										"start": {
-											"description": "ISO Date Time",
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"start"
-									]
-								}
-							]
-						},
-						"datePickerLimits": {
-							"type": "object",
-							"properties": {
-								"start": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								},
-								"end": {
-									"type": "object",
-									"properties": {
-										"unit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										},
-										"offset": {
-											"type": "number"
-										},
-										"modifier": {
-											"enum": [
-												"end_of",
-												"start_of"
-											],
-											"type": "string"
-										},
-										"modifierUnit": {
-											"enum": [
-												"day",
-												"month",
-												"quarter",
-												"week",
-												"year"
-											],
-											"type": "string"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"offset",
-										"unit"
-									]
-								}
-							},
-							"additionalProperties": false
-						},
-						"exportConfig": {
-							"description": "Extra config options for exporting",
-							"type": "object",
-							"properties": {
-								"dataElementHeader": {
-									"description": "Sets the header for the data element in xls exports",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false
-						},
-						"noDataMessage": {
-							"description": "Message which shows if no data is found",
-							"type": "string"
-						},
-						"noDataFetch": {
-							"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-							"default": false,
-							"type": "boolean"
-						},
-						"drillDown": {
-							"type": "object",
-							"properties": {
-								"keyLink": {
-									"type": "string"
-								},
-								"itemCode": {
-									"type": "string"
-								},
-								"parameterLink": {
-									"type": "string"
-								},
-								"itemCodeByEntry": {
-									"type": "object",
-									"additionalProperties": {
-										"type": "string"
-									}
-								}
-							},
-							"additionalProperties": false
-						},
-						"entityHeader": {
-							"description": "",
-							"type": "string"
-						},
-						"reference": {
-							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
-								},
-								"name": {
-									"description": "label",
-									"type": "string"
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
-							]
-						},
-						"source": {
-							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
-						"weekDisplayFormat": {
-							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-							"default": "'WEEK_COMMENCING_ABBR'",
-							"enum": [
-								"ISO_WEEK_NUMBER",
-								"WEEK_COMMENCING",
-								"WEEK_COMMENCING_ABBR",
-								"WEEK_ENDING",
-								"WEEK_ENDING_ABBR"
-							],
-							"type": "string"
-						},
-						"type": {
-							"type": "string",
-							"enum": [
-								"chart"
-							]
-						},
-						"chartType": {
-							"type": "string",
-							"enum": [
-								"line"
-							]
-						},
-						"ticks": {},
-						"startDate": {
-							"type": "string"
-						},
-						"endDate": {
-							"type": "string"
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"color",
-								"currency",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"oneDecimalPlace",
-								"percentage",
-								"text",
-								"view"
-							],
-							"type": "string"
-						},
-						"showPeriodRange": {
-							"type": "string",
-							"enum": [
-								"all"
-							]
-						},
-						"color": {
-							"description": "Some chart types take 'color' as an option",
-							"type": "string"
-						},
-						"displayOnLevel": {},
-						"label": {},
-						"labelType": {
-							"description": "Some charts can have their label customised",
-							"enum": [
-								"fraction",
-								"fractionAndPercentage",
-								"number"
-							],
-							"type": "string"
-						},
-						"measureLevel": {},
-						"renderLegendForOneItem": {
-							"type": "boolean"
-						},
-						"xName": {
-							"description": "The label on the x-axis",
-							"type": "string"
-						},
-						"yName": {
-							"description": "The label on the y-axis",
-							"type": "string"
-						},
-						"yAxisDomain": {
-							"description": "Configuration options for the y-axis",
-							"type": "object",
-							"properties": {
-								"max": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								},
-								"min": {
-									"type": "object",
-									"properties": {
-										"type": {
-											"enum": [
-												"clamp",
-												"number",
-												"scale",
-												"string"
-											],
-											"type": "string"
-										},
-										"value": {
-											"type": [
-												"string",
-												"number"
-											]
-										},
-										"min": {
-											"type": "number"
-										},
-										"max": {
-											"type": "number"
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"type"
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"chartConfig": {
-							"type": "object",
-							"additionalProperties": {
-								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
-								"type": "object",
-								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
-									"color": {
-										"type": "string"
-									},
-									"label": {
-										"type": "string"
-									},
-									"stackId": {
-										"type": "number"
-									},
-									"legendOrder": {
-										"type": "number"
-									},
-									"yAxisDomain": {},
-									"valueType": {
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"yAxisOrientation": {
-										"enum": [
-											"left",
-											"right"
-										],
-										"type": "string"
-									}
-								}
-							}
-						},
-						"presentationOptions": {
-							"additionalProperties": false,
-							"type": "object",
-							"properties": {
-								"exportWithLabels": {
-									"type": "boolean"
-								},
-								"exportWithTable": {
-									"type": "boolean"
-								},
-								"exportWithTableDisabled": {
-									"type": "boolean"
-								},
-								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-									"type": "string"
-								},
-								"hideAverage": {
-									"type": "boolean"
-								}
-							}
 						}
 					},
 					"required": [
@@ -62105,7 +64635,76 @@ export const DashboardWithMetadataSchema = {
 												"legendOrder": {
 													"type": "number"
 												},
-												"yAxisDomain": {},
+												"yAxisDomain": {
+													"type": "object",
+													"properties": {
+														"max": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														},
+														"min": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"max",
+														"min"
+													]
+												},
 												"valueType": {
 													"enum": [
 														"boolean",
@@ -62127,6 +64726,46 @@ export const DashboardWithMetadataSchema = {
 														"right"
 													],
 													"type": "string"
+												},
+												"hideFromLegend": {
+													"type": "boolean"
+												},
+												"yName": {
+													"type": "string"
+												},
+												"labelType": {
+													"enum": [
+														"fraction",
+														"fractionAndPercentage",
+														"number"
+													],
+													"type": "string"
+												},
+												"chartType": {
+													"description": "These are the common chart config options that are shared between several chart types",
+													"enum": [
+														"area",
+														"bar",
+														"composed",
+														"gauge",
+														"line",
+														"pie"
+													],
+													"type": "string"
+												},
+												"opacity": {
+													"anyOf": [
+														{
+															"enum": [
+																"ascending",
+																"descending"
+															],
+															"type": "string"
+														},
+														{
+															"type": "number"
+														}
+													]
 												}
 											}
 										}
@@ -62183,6 +64822,698 @@ export const DashboardWithMetadataSchema = {
 									"chartType",
 									"name",
 									"presentationOptions",
+									"type"
+								]
+							},
+							{
+								"description": "Line Chart",
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"label": {},
+									"source": {
+										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+										"type": "string"
+									},
+									"color": {
+										"description": "Some chart types take 'color' as an option",
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"description": "A short description that appears above a viz",
+										"type": "string"
+									},
+									"periodGranularity": {
+										"enum": [
+											"day",
+											"month",
+											"one_day_at_a_time",
+											"one_month_at_a_time",
+											"one_quarter_at_a_time",
+											"one_week_at_a_time",
+											"one_year_at_a_time",
+											"quarter",
+											"week",
+											"year"
+										],
+										"type": "string"
+									},
+									"defaultTimePeriod": {
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"offset": {
+														"type": "number"
+													},
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierUnit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													},
+													"end": {
+														"type": "object",
+														"properties": {
+															"unit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															},
+															"offset": {
+																"type": "number"
+															},
+															"modifier": {
+																"enum": [
+																	"end_of",
+																	"start_of"
+																],
+																"type": "string"
+															},
+															"modifierUnit": {
+																"enum": [
+																	"day",
+																	"month",
+																	"quarter",
+																	"week",
+																	"year"
+																],
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"offset",
+															"unit"
+														]
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"end",
+													"start"
+												]
+											},
+											{
+												"type": "object",
+												"properties": {
+													"start": {
+														"description": "ISO Date Time",
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"start"
+												]
+											}
+										]
+									},
+									"datePickerLimits": {
+										"type": "object",
+										"properties": {
+											"start": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierUnit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											},
+											"end": {
+												"type": "object",
+												"properties": {
+													"unit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													},
+													"offset": {
+														"type": "number"
+													},
+													"modifier": {
+														"enum": [
+															"end_of",
+															"start_of"
+														],
+														"type": "string"
+													},
+													"modifierUnit": {
+														"enum": [
+															"day",
+															"month",
+															"quarter",
+															"week",
+															"year"
+														],
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"offset",
+													"unit"
+												]
+											}
+										},
+										"additionalProperties": false
+									},
+									"exportConfig": {
+										"description": "Extra config options for exporting",
+										"type": "object",
+										"properties": {
+											"dataElementHeader": {
+												"description": "Sets the header for the data element in xls exports",
+												"type": "string"
+											}
+										},
+										"additionalProperties": false
+									},
+									"noDataMessage": {
+										"description": "Message which shows if no data is found",
+										"type": "string"
+									},
+									"noDataFetch": {
+										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+										"default": false,
+										"type": "boolean"
+									},
+									"drillDown": {
+										"type": "object",
+										"properties": {
+											"keyLink": {
+												"type": "string"
+											},
+											"itemCode": {
+												"type": "string"
+											},
+											"parameterLink": {
+												"type": "string"
+											},
+											"itemCodeByEntry": {
+												"type": "object",
+												"additionalProperties": {
+													"type": "string"
+												}
+											}
+										},
+										"additionalProperties": false
+									},
+									"entityHeader": {
+										"description": "",
+										"type": "string"
+									},
+									"reference": {
+										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+										"type": "object",
+										"properties": {
+											"link": {
+												"description": "url",
+												"type": "string"
+											},
+											"name": {
+												"description": "label",
+												"type": "string"
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"link",
+											"name"
+										]
+									},
+									"displayOnEntityConditions": {
+										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"attributes": {
+														"type": "object",
+														"additionalProperties": {
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"attributes"
+												]
+											},
+											{
+												"type": "object",
+												"additionalProperties": {
+													"type": [
+														"string",
+														"number",
+														"boolean"
+													]
+												}
+											}
+										]
+									},
+									"weekDisplayFormat": {
+										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+										"default": "'WEEK_COMMENCING_ABBR'",
+										"enum": [
+											"ISO_WEEK_NUMBER",
+											"WEEK_COMMENCING",
+											"WEEK_COMMENCING_ABBR",
+											"WEEK_ENDING",
+											"WEEK_ENDING_ABBR"
+										],
+										"type": "string"
+									},
+									"type": {
+										"type": "string",
+										"enum": [
+											"chart"
+										]
+									},
+									"chartType": {
+										"type": "string",
+										"enum": [
+											"line"
+										]
+									},
+									"ticks": {},
+									"startDate": {
+										"type": "string"
+									},
+									"endDate": {
+										"type": "string"
+									},
+									"valueType": {
+										"enum": [
+											"boolean",
+											"color",
+											"currency",
+											"fraction",
+											"fractionAndPercentage",
+											"number",
+											"oneDecimalPlace",
+											"percentage",
+											"text",
+											"view"
+										],
+										"type": "string"
+									},
+									"showPeriodRange": {
+										"type": "string",
+										"enum": [
+											"all"
+										]
+									},
+									"displayOnLevel": {},
+									"labelType": {
+										"description": "Some charts can have their label customised",
+										"enum": [
+											"fraction",
+											"fractionAndPercentage",
+											"number"
+										],
+										"type": "string"
+									},
+									"measureLevel": {},
+									"renderLegendForOneItem": {
+										"type": "boolean"
+									},
+									"xName": {
+										"description": "The label on the x-axis",
+										"type": "string"
+									},
+									"yName": {
+										"description": "The label on the y-axis",
+										"type": "string"
+									},
+									"yAxisDomain": {
+										"description": "Configuration options for the y-axis",
+										"type": "object",
+										"properties": {
+											"max": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											},
+											"min": {
+												"type": "object",
+												"properties": {
+													"type": {
+														"enum": [
+															"clamp",
+															"number",
+															"scale",
+															"string"
+														],
+														"type": "string"
+													},
+													"value": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"min": {
+														"type": "number"
+													},
+													"max": {
+														"type": "number"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"type"
+												]
+											}
+										},
+										"additionalProperties": false,
+										"required": [
+											"max",
+											"min"
+										]
+									},
+									"presentationOptions": {
+										"additionalProperties": false,
+										"type": "object",
+										"properties": {
+											"exportWithLabels": {
+												"type": "boolean"
+											},
+											"exportWithTable": {
+												"type": "boolean"
+											},
+											"exportWithTableDisabled": {
+												"type": "boolean"
+											},
+											"periodTickFormat": {
+												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"type": "string"
+											},
+											"hideAverage": {
+												"type": "boolean"
+											}
+										}
+									},
+									"chartConfig": {
+										"type": "object",
+										"additionalProperties": {
+											"additionalProperties": false,
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												},
+												"color": {
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												},
+												"stackId": {
+													"type": "number"
+												},
+												"legendOrder": {
+													"type": "number"
+												},
+												"yAxisDomain": {
+													"type": "object",
+													"properties": {
+														"max": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														},
+														"min": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"max",
+														"min"
+													]
+												},
+												"valueType": {
+													"enum": [
+														"boolean",
+														"color",
+														"currency",
+														"fraction",
+														"fractionAndPercentage",
+														"number",
+														"oneDecimalPlace",
+														"percentage",
+														"text",
+														"view"
+													],
+													"type": "string"
+												},
+												"yAxisOrientation": {
+													"enum": [
+														"left",
+														"right"
+													],
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"type": "boolean"
+												},
+												"yName": {
+													"type": "string"
+												},
+												"labelType": {
+													"enum": [
+														"fraction",
+														"fractionAndPercentage",
+														"number"
+													],
+													"type": "string"
+												},
+												"chartType": {
+													"description": "These are the common chart config options that are shared between several chart types",
+													"enum": [
+														"area",
+														"bar",
+														"composed",
+														"gauge",
+														"line",
+														"pie"
+													],
+													"type": "string"
+												},
+												"opacity": {
+													"anyOf": [
+														{
+															"enum": [
+																"ascending",
+																"descending"
+															],
+															"type": "string"
+														},
+														{
+															"type": "number"
+														}
+													]
+												},
+												"dot": {
+													"type": "boolean"
+												},
+												"connectNulls": {
+													"type": "boolean"
+												},
+												"strokeDasharray": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								},
+								"required": [
+									"chartType",
+									"name",
 									"type"
 								]
 							},
@@ -62727,7 +66058,76 @@ export const DashboardWithMetadataSchema = {
 												"legendOrder": {
 													"type": "number"
 												},
-												"yAxisDomain": {},
+												"yAxisDomain": {
+													"type": "object",
+													"properties": {
+														"max": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														},
+														"min": {
+															"type": "object",
+															"properties": {
+																"type": {
+																	"enum": [
+																		"clamp",
+																		"number",
+																		"scale",
+																		"string"
+																	],
+																	"type": "string"
+																},
+																"value": {
+																	"type": [
+																		"string",
+																		"number"
+																	]
+																},
+																"min": {
+																	"type": "number"
+																},
+																"max": {
+																	"type": "number"
+																}
+															},
+															"additionalProperties": false,
+															"required": [
+																"type"
+															]
+														}
+													},
+													"additionalProperties": false,
+													"required": [
+														"max",
+														"min"
+													]
+												},
 												"valueType": {
 													"enum": [
 														"boolean",
@@ -62750,11 +66150,48 @@ export const DashboardWithMetadataSchema = {
 													],
 													"type": "string"
 												},
+												"hideFromLegend": {
+													"type": "boolean"
+												},
+												"yName": {
+													"type": "string"
+												},
+												"labelType": {
+													"enum": [
+														"fraction",
+														"fractionAndPercentage",
+														"number"
+													],
+													"type": "string"
+												},
 												"chartType": {
 													"enum": [
 														"bar",
 														"line"
 													],
+													"type": "string"
+												},
+												"opacity": {
+													"anyOf": [
+														{
+															"enum": [
+																"ascending",
+																"descending"
+															],
+															"type": "string"
+														},
+														{
+															"type": "number"
+														}
+													]
+												},
+												"dot": {
+													"type": "boolean"
+												},
+												"connectNulls": {
+													"type": "boolean"
+												},
+												"strokeDasharray": {
 													"type": "string"
 												}
 											},
@@ -63185,581 +66622,6 @@ export const DashboardWithMetadataSchema = {
 									"measureLevel": {},
 									"renderLegendForOneItem": {
 										"type": "boolean"
-									}
-								},
-								"required": [
-									"chartType",
-									"name",
-									"type"
-								]
-							},
-							{
-								"description": "Line Chart",
-								"additionalProperties": false,
-								"type": "object",
-								"properties": {
-									"name": {
-										"type": "string"
-									},
-									"description": {
-										"description": "A short description that appears above a viz",
-										"type": "string"
-									},
-									"periodGranularity": {
-										"enum": [
-											"day",
-											"month",
-											"one_day_at_a_time",
-											"one_month_at_a_time",
-											"one_quarter_at_a_time",
-											"one_week_at_a_time",
-											"one_year_at_a_time",
-											"quarter",
-											"week",
-											"year"
-										],
-										"type": "string"
-									},
-									"defaultTimePeriod": {
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"offset": {
-														"type": "number"
-													},
-													"unit": {
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"offset",
-													"unit"
-												]
-											},
-											{
-												"type": "object",
-												"properties": {
-													"start": {
-														"type": "object",
-														"properties": {
-															"unit": {
-																"enum": [
-																	"day",
-																	"month",
-																	"quarter",
-																	"week",
-																	"year"
-																],
-																"type": "string"
-															},
-															"offset": {
-																"type": "number"
-															},
-															"modifier": {
-																"enum": [
-																	"end_of",
-																	"start_of"
-																],
-																"type": "string"
-															},
-															"modifierUnit": {
-																"enum": [
-																	"day",
-																	"month",
-																	"quarter",
-																	"week",
-																	"year"
-																],
-																"type": "string"
-															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"offset",
-															"unit"
-														]
-													},
-													"end": {
-														"type": "object",
-														"properties": {
-															"unit": {
-																"enum": [
-																	"day",
-																	"month",
-																	"quarter",
-																	"week",
-																	"year"
-																],
-																"type": "string"
-															},
-															"offset": {
-																"type": "number"
-															},
-															"modifier": {
-																"enum": [
-																	"end_of",
-																	"start_of"
-																],
-																"type": "string"
-															},
-															"modifierUnit": {
-																"enum": [
-																	"day",
-																	"month",
-																	"quarter",
-																	"week",
-																	"year"
-																],
-																"type": "string"
-															}
-														},
-														"additionalProperties": false,
-														"required": [
-															"offset",
-															"unit"
-														]
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"end",
-													"start"
-												]
-											},
-											{
-												"type": "object",
-												"properties": {
-													"start": {
-														"description": "ISO Date Time",
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"start"
-												]
-											}
-										]
-									},
-									"datePickerLimits": {
-										"type": "object",
-										"properties": {
-											"start": {
-												"type": "object",
-												"properties": {
-													"unit": {
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													},
-													"offset": {
-														"type": "number"
-													},
-													"modifier": {
-														"enum": [
-															"end_of",
-															"start_of"
-														],
-														"type": "string"
-													},
-													"modifierUnit": {
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"offset",
-													"unit"
-												]
-											},
-											"end": {
-												"type": "object",
-												"properties": {
-													"unit": {
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													},
-													"offset": {
-														"type": "number"
-													},
-													"modifier": {
-														"enum": [
-															"end_of",
-															"start_of"
-														],
-														"type": "string"
-													},
-													"modifierUnit": {
-														"enum": [
-															"day",
-															"month",
-															"quarter",
-															"week",
-															"year"
-														],
-														"type": "string"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"offset",
-													"unit"
-												]
-											}
-										},
-										"additionalProperties": false
-									},
-									"exportConfig": {
-										"description": "Extra config options for exporting",
-										"type": "object",
-										"properties": {
-											"dataElementHeader": {
-												"description": "Sets the header for the data element in xls exports",
-												"type": "string"
-											}
-										},
-										"additionalProperties": false
-									},
-									"noDataMessage": {
-										"description": "Message which shows if no data is found",
-										"type": "string"
-									},
-									"noDataFetch": {
-										"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
-										"default": false,
-										"type": "boolean"
-									},
-									"drillDown": {
-										"type": "object",
-										"properties": {
-											"keyLink": {
-												"type": "string"
-											},
-											"itemCode": {
-												"type": "string"
-											},
-											"parameterLink": {
-												"type": "string"
-											},
-											"itemCodeByEntry": {
-												"type": "object",
-												"additionalProperties": {
-													"type": "string"
-												}
-											}
-										},
-										"additionalProperties": false
-									},
-									"entityHeader": {
-										"description": "",
-										"type": "string"
-									},
-									"reference": {
-										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
-											},
-											"name": {
-												"description": "label",
-												"type": "string"
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
-										]
-									},
-									"source": {
-										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
-										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
-									"weekDisplayFormat": {
-										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
-										"default": "'WEEK_COMMENCING_ABBR'",
-										"enum": [
-											"ISO_WEEK_NUMBER",
-											"WEEK_COMMENCING",
-											"WEEK_COMMENCING_ABBR",
-											"WEEK_ENDING",
-											"WEEK_ENDING_ABBR"
-										],
-										"type": "string"
-									},
-									"type": {
-										"type": "string",
-										"enum": [
-											"chart"
-										]
-									},
-									"chartType": {
-										"type": "string",
-										"enum": [
-											"line"
-										]
-									},
-									"ticks": {},
-									"startDate": {
-										"type": "string"
-									},
-									"endDate": {
-										"type": "string"
-									},
-									"valueType": {
-										"enum": [
-											"boolean",
-											"color",
-											"currency",
-											"fraction",
-											"fractionAndPercentage",
-											"number",
-											"oneDecimalPlace",
-											"percentage",
-											"text",
-											"view"
-										],
-										"type": "string"
-									},
-									"showPeriodRange": {
-										"type": "string",
-										"enum": [
-											"all"
-										]
-									},
-									"color": {
-										"description": "Some chart types take 'color' as an option",
-										"type": "string"
-									},
-									"displayOnLevel": {},
-									"label": {},
-									"labelType": {
-										"description": "Some charts can have their label customised",
-										"enum": [
-											"fraction",
-											"fractionAndPercentage",
-											"number"
-										],
-										"type": "string"
-									},
-									"measureLevel": {},
-									"renderLegendForOneItem": {
-										"type": "boolean"
-									},
-									"xName": {
-										"description": "The label on the x-axis",
-										"type": "string"
-									},
-									"yName": {
-										"description": "The label on the y-axis",
-										"type": "string"
-									},
-									"yAxisDomain": {
-										"description": "Configuration options for the y-axis",
-										"type": "object",
-										"properties": {
-											"max": {
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											},
-											"min": {
-												"type": "object",
-												"properties": {
-													"type": {
-														"enum": [
-															"clamp",
-															"number",
-															"scale",
-															"string"
-														],
-														"type": "string"
-													},
-													"value": {
-														"type": [
-															"string",
-															"number"
-														]
-													},
-													"min": {
-														"type": "number"
-													},
-													"max": {
-														"type": "number"
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"type"
-												]
-											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"max",
-											"min"
-										]
-									},
-									"chartConfig": {
-										"type": "object",
-										"additionalProperties": {
-											"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-											"additionalProperties": false,
-											"type": "object",
-											"properties": {
-												"referenceValue": {
-													"type": "number"
-												},
-												"referenceLabel": {
-													"type": "string"
-												},
-												"color": {
-													"type": "string"
-												},
-												"label": {
-													"type": "string"
-												},
-												"stackId": {
-													"type": "number"
-												},
-												"legendOrder": {
-													"type": "number"
-												},
-												"yAxisDomain": {},
-												"valueType": {
-													"enum": [
-														"boolean",
-														"color",
-														"currency",
-														"fraction",
-														"fractionAndPercentage",
-														"number",
-														"oneDecimalPlace",
-														"percentage",
-														"text",
-														"view"
-													],
-													"type": "string"
-												},
-												"yAxisOrientation": {
-													"enum": [
-														"left",
-														"right"
-													],
-													"type": "string"
-												}
-											}
-										}
-									},
-									"presentationOptions": {
-										"additionalProperties": false,
-										"type": "object",
-										"properties": {
-											"exportWithLabels": {
-												"type": "boolean"
-											},
-											"exportWithTable": {
-												"type": "boolean"
-											},
-											"exportWithTableDisabled": {
-												"type": "boolean"
-											},
-											"periodTickFormat": {
-												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
-												"type": "string"
-											},
-											"hideAverage": {
-												"type": "boolean"
-											}
-										}
 									}
 								},
 								"required": [
