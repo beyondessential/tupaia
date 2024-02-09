@@ -6,7 +6,7 @@
 import { ChartType } from '@tupaia/types';
 import { ADD_TO_ALL_KEY, parseChartConfig } from '../utils';
 import { CHART_COLOR_PALETTE, EXPANDED_CHART_COLOR_PALETTE } from '../constants';
-import { UnparsedBarChartViewContent } from '../types';
+import { ViewContent } from '../types';
 
 const testChartConfig = {
   type: 'chart',
@@ -36,7 +36,7 @@ describe('parseChartConfig', () => {
       parseChartConfig({
         ...testViewJson,
         chartConfig,
-      } as UnparsedBarChartViewContent),
+      } as ViewContent),
     ).toEqual({
       metric1: { stackId: 1, color: CHART_COLOR_PALETTE.blue },
       metric2: { stackId: 2, color: CHART_COLOR_PALETTE.red },
@@ -49,9 +49,7 @@ describe('parseChartConfig', () => {
       metric1: { stackId: 1 },
       metric2: { stackId: 2 },
     };
-    expect(
-      parseChartConfig({ ...testViewJson, chartConfig } as UnparsedBarChartViewContent),
-    ).toEqual({
+    expect(parseChartConfig({ ...testViewJson, chartConfig } as ViewContent)).toEqual({
       metric1: { stackId: 1, color: CHART_COLOR_PALETTE.blue, test: 'hi' },
       metric2: { stackId: 2, color: CHART_COLOR_PALETTE.red, test: 'hi' },
       value: {
@@ -68,9 +66,7 @@ describe('parseChartConfig', () => {
       metric1: { stackId: 1, legendOrder: 5 },
       metric2: { stackId: 2, legendOrder: -2 },
     };
-    expect(
-      parseChartConfig({ ...testViewJson, chartConfig } as UnparsedBarChartViewContent),
-    ).toEqual({
+    expect(parseChartConfig({ ...testViewJson, chartConfig } as ViewContent)).toEqual({
       metric1: { stackId: 1, legendOrder: 5, color: CHART_COLOR_PALETTE.red },
       metric2: { stackId: 2, legendOrder: -2, color: CHART_COLOR_PALETTE.blue },
     });
@@ -86,7 +82,7 @@ describe('parseChartConfig', () => {
         ...testViewJson,
         chartConfig,
         colorPalette: 'EXPANDED_CHART_COLOR_PALETTE',
-      } as UnparsedBarChartViewContent),
+      } as ViewContent),
     ).toEqual({
       metric1: { stackId: 1, color: EXPANDED_CHART_COLOR_PALETTE.maroon },
       metric2: { stackId: 2, color: EXPANDED_CHART_COLOR_PALETTE.red },
