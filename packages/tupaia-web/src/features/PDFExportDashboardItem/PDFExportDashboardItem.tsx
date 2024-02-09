@@ -10,6 +10,7 @@ import { Typography } from '@material-ui/core';
 import {
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
+  getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
 import { BaseReport, DashboardItemConfig, VizPeriodGranularity } from '@tupaia/types';
