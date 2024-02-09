@@ -13,6 +13,7 @@ import {
   getAdminPanelAllowedCountryCodes,
   getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from '../utilities';
+import { assertUserAccountPermissions } from '../userAccounts/assertUserAccountPermissions';
 
 export const assertUserEntityPermissionPermissions = async (
   accessPolicy,
@@ -69,7 +70,7 @@ export const assertUserEntityPermissionEditPermissions = async (
 export const assertUserEntityPermissionUpsertPermissions = async (
   accessPolicy,
   models,
-  { permission_group_id: permissionGroupId, entity_id: entityId },
+  { user_id: userId, permission_group_id: permissionGroupId, entity_id: entityId },
 ) => {
   // Check we're not trying to give someone:
   // BES admin access
@@ -87,6 +88,8 @@ export const assertUserEntityPermissionUpsertPermissions = async (
   if (!accessPolicy.allows(entity.code, permissionGroup.name)) {
     throw new Error(`Need ${permissionGroup.name} access to ${entity.code}`);
   }
+
+  await assertUserAccountPermissions(accessPolicy, models, userId);
 };
 
 /**

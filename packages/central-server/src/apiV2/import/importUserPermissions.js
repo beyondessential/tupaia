@@ -48,19 +48,26 @@ async function create(req, transactingModels, items) {
     excelRowNumber++;
     await validator.validate(item, constructImportValidationError);
 
-    const { user_email, entity_code, permission_group_name } = item;
+    const {
+      user_email: email,
+      entity_code: entityCode,
+      permission_group_name: permissionGroupName,
+    } = item;
 
-    const user = await transactingModels.user.findOne({ email: user_email });
-    const entity = await transactingModels.entity.findOne({ code: entity_code });
+    const user = await transactingModels.user.findOne({ email });
+    const entity = await transactingModels.entity.findOne({ code: entityCode });
     const permissionGroup = await transactingModels.permissionGroup.findOne({
-      name: permission_group_name,
+      name: permissionGroupName,
     });
-
-    const existingRecord = await transactingModels.userEntityPermission.findOne({
+    const userEntityPermissionData = {
       user_id: user.id,
       entity_id: entity.id,
       permission_group_id: permissionGroup.id,
-    });
+    };
+
+    const existingRecord = await transactingModels.userEntityPermission.findOne(
+      userEntityPermissionData,
+    );
     if (existingRecord) {
       // Already added
       console.info(
@@ -69,10 +76,11 @@ async function create(req, transactingModels, items) {
       continue;
     } else {
       const createUserEntityPermissionChecker = async accessPolicy => {
-        await assertUserEntityPermissionUpsertPermissions(accessPolicy, transactingModels, {
-          permission_group_id: permissionGroup.id,
-          entity_id: entity.id,
-        });
+        await assertUserEntityPermissionUpsertPermissions(
+          accessPolicy,
+          transactingModels,
+          userEntityPermissionData,
+        );
       };
 
       try {
@@ -83,11 +91,7 @@ async function create(req, transactingModels, items) {
         throw constructImportValidationError(error.message);
       }
 
-      await transactingModels.userEntityPermission.create({
-        user_id: user.id,
-        entity_id: entity.id,
-        permission_group_id: permissionGroup.id,
-      });
+      await transactingModels.userEntityPermission.create(userEntityPermissionData);
     }
   }
 }
