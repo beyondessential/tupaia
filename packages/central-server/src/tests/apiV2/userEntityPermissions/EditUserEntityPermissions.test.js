@@ -55,11 +55,11 @@ describe('Permissions checker for EditUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'EditUserEntityPermissions',
     });
     const userAccount2 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Bruce',
-      last_name: 'Wayne',
+      last_name: 'EditUserEntityPermissions',
     });
     userAccountId2 = userAccount2.id;
 

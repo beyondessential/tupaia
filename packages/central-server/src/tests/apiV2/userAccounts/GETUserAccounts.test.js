@@ -57,15 +57,15 @@ describe('Permissions checker for GETUserAccounts', async () => {
     // Create test users
     userAccount1 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'GETUserAccounts',
     });
     userAccount2 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Bruce',
-      last_name: 'Wayne',
+      last_name: 'GETUserAccounts',
     });
     userAccount3 = await findOrCreateDummyRecord(models.user, {
       first_name: 'Diana',
-      last_name: 'Prince',
+      last_name: 'GETUserAccounts',
     });
 
     // Give the test users some permissions

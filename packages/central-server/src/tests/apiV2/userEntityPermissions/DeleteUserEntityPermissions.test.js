@@ -49,7 +49,7 @@ describe('Permissions checker for DeleteUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'DeleteUserEntityPermissions',
     });
 
     // Give the test user some permissions
