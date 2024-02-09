@@ -16,11 +16,14 @@ import {
 } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { VerifiedEmail } from '@tupaia/types';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  hasTupaiaAdminPanelAccessToCountry,
+} from '../../permissions';
 
 export async function importUsers(req, res) {
-  await req.assertPermissions(assertBESAdminAccess);
-
   try {
     const { models } = req;
     if (!req.file) {
@@ -70,6 +73,23 @@ export async function importUsers(req, res) {
               countryName,
             );
           }
+
+          const createUserPermissionChecker = accessPolicy => {
+            if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, countryEntity.code)) {
+              throw new Error(
+                `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${countryEntity.name}`,
+              );
+            }
+
+            if (!accessPolicy.allows(countryEntity.code, permissionGroup.name)) {
+              throw new Error(`Need ${permissionGroup.name} access to ${countryEntity.name}`);
+            }
+          };
+
+          await req.assertPermissions(
+            assertAnyPermissions([assertBESAdminAccess, createUserPermissionChecker]),
+          );
+
           await transactingModels.userEntityPermission.findOrCreate({
             user_id: user.id,
             entity_id: countryEntity.id,
