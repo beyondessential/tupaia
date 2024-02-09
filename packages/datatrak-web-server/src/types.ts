@@ -7,6 +7,7 @@ import {
   ModelRegistry,
   EntityModel,
   EntityType as BaseEntityType,
+  SurveyModel,
   OneTimeLoginModel,
   OneTimeLoginType as BaseOneTimeLoginType,
   UserType as BaseUserType,
@@ -25,6 +26,7 @@ export interface DatatrakWebServerModelRegistry extends ModelRegistry {
   readonly entity: Model<EntityModel, Entity, EntityType>;
   readonly surveyResponse: SurveyResponseModel;
   readonly feedItem: FeedItemModel;
+  readonly survey: SurveyModel;
   readonly user: Model<UserModel, UserAccount, UserType>;
   readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginType>;
 }
