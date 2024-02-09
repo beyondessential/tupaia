@@ -1,22 +1,22 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import { useEffect } from 'react';
 import moment, { Moment } from 'moment';
 import {
-  getDefaultDates,
   DEFAULT_MIN_DATE,
+  getDefaultDates,
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
-  WEEK_DISPLAY_CONFIG,
   momentToDateDisplayString,
-  roundStartEndDates,
-  roundStartDate,
   roundEndDate,
+  roundStartDate,
+  roundStartEndDates,
   toStandardDateString,
+  WEEK_DISPLAY_CONFIG,
 } from '@tupaia/utils';
 import { GranularityType, ModifierType } from '../../types';
 
@@ -47,7 +47,7 @@ const getDatesAsString = (
   );
   const formattedEndDate = momentToDateDisplayString(endDate, granularity, rangeFormat, modifier!);
 
-  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
+  return isSingleDate ? formattedEndDate : `${formattedStartDate} – ${formattedEndDate}`; // En dash
 };
 
 /**
