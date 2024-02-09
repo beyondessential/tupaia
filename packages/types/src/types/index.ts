@@ -77,6 +77,7 @@ export {
   ChartConfigT,
   ChartConfigObject,
   ComponentConfig,
+  LineChartChartConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -16,12 +16,12 @@ import {
   TooltipProps,
   LegendProps,
 } from 'recharts';
-import { PieChartConfig, PieChartPresentationOptions } from '@tupaia/types';
+import { PieChartPresentationOptions } from '@tupaia/types';
 import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
 import { getPieLegend } from '../Reference/Legend';
 import { isMobile } from '../../utils';
 import { TooltipContainer } from '../Reference';
-import { ParsedViewContent, LegendPosition, ParsedPieChartViewContent } from '../../types';
+import { ViewContent, LegendPosition, PieChartViewContent } from '../../types';
 
 const Heading = styled(Typography)`
   font-weight: 500;
@@ -60,7 +60,7 @@ const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean
   return { verticalAlign: 'top', align: 'left' };
 };
 
-const getFormattedValue = (viewContent: ParsedViewContent, data: any) => {
+const getFormattedValue = (viewContent: ViewContent, data: any) => {
   const { valueType, labelType } = viewContent;
   const valueTypeForLabel = labelType || valueType;
   const { name, value, originalItem } = data;
@@ -70,7 +70,7 @@ const getFormattedValue = (viewContent: ParsedViewContent, data: any) => {
 };
 
 const makeCustomTooltip =
-  (viewContent: ParsedViewContent) =>
+  (viewContent: ViewContent) =>
   ({ active, payload }: TooltipProps) => {
     if (!active || !payload || !payload.length) {
       return null;
@@ -91,7 +91,7 @@ const makeCustomTooltip =
   };
 
 const makeLabel =
-  (viewContent: ParsedViewContent) =>
+  (viewContent: ViewContent) =>
   ({ payload }: any) => {
     return getFormattedValue(viewContent, payload.payload);
   };
@@ -107,7 +107,7 @@ const getHeight = (isExporting: boolean, isEnlarged: boolean, isMobileSize: bool
 };
 
 interface PieChartProps {
-  viewContent: ParsedPieChartViewContent;
+  viewContent: PieChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -219,7 +219,6 @@ export const PieChart = ({
           verticalAlign={verticalAlign as LegendProps['verticalAlign']}
           align={align as LegendProps['align']}
           content={getPieLegend({
-            chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
             isExporting,
             legendPosition,

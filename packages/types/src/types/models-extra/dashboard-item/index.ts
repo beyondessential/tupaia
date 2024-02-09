@@ -48,6 +48,7 @@ export {
   ReferenceLinesConfig,
   ChartConfigT,
   ChartConfigObject,
+  LineChartChartConfig,
 } from './charts';
 /**
  * The master list of viz types.

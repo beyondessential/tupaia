@@ -28,63 +28,45 @@ export type LegendPosition = 'top' | 'bottom';
 /**
  * @description  This is the shape of the ViewContent object before it has been parsed by parseChartConfig
  */
-export type UnparsedViewContentT<T> = T & {
+export type ViewContentT<T> = T & {
   colorPalette?: string;
   data: ChartData[];
 };
+
+export type BarChartViewContent = ViewContentT<BarChartConfig>;
+export type LineChartViewContent = ViewContentT<LineChartConfig>;
+export type PieChartViewContent = ViewContentT<PieChartConfig>;
+export type GaugeChartViewContent = ViewContentT<GaugeChartConfig>;
+export type ComposedChartViewContent = ViewContentT<ComposedChartConfig>;
 
 /**
- * @description View Content is the data structure that is passed to the chart components. It contains both the
- * data and the configuration for the chart. It only exists on the front end. It includes the outcome of parseChartConfig
+ * @description A union of all the different chart types' view content
  */
-export type ParsedViewContentT<T> = T & {
-  colorPalette?: string;
-  data: ChartData[];
-};
-
-export type ParsedBarChartViewContent = ParsedViewContentT<BarChartConfig>;
-export type ParsedLineChartViewContent = ParsedViewContentT<LineChartConfig>;
-export type ParsedPieChartViewContent = ParsedViewContentT<PieChartConfig>;
-export type ParsedCartesianViewContentT = ParsedViewContentT<CartesianChartConfig>;
-export type ParsedGaugeChartViewContent = ParsedViewContentT<GaugeChartConfig>;
-export type ParsedComposedChartViewContent = ParsedViewContentT<ComposedChartConfig>;
-
+export type ViewContent =
+  | LineChartViewContent
+  | PieChartViewContent
+  | GaugeChartViewContent
+  | BarChartViewContent
+  | ComposedChartViewContent;
 /**
  * @description A union of all the different cartesian chart types' view content
  */
-export type ParsedCartesianChartViewContent =
-  | ParsedComposedChartViewContent
-  | ParsedBarChartViewContent
-  | ParsedLineChartViewContent;
-
+export type CartesianChartViewContent =
+  | ComposedChartViewContent
+  | BarChartViewContent
+  | LineChartViewContent;
 /**
  * @description A union of all the different chart types' view content
  */
-export type ParsedViewContent =
-  | ParsedLineChartViewContent
-  | ParsedPieChartViewContent
-  | ParsedGaugeChartViewContent
-  | ParsedBarChartViewContent
-  | ParsedComposedChartViewContent;
+export type ChartViewContent =
+  | LineChartViewContent
+  | PieChartViewContent
+  | GaugeChartViewContent
+  | BarChartViewContent
+  | ComposedChartViewContent;
 
-export type UnparsedBarChartViewContent = UnparsedViewContentT<BarChartConfig>;
-type UnparsedLineChartViewContent = UnparsedViewContentT<LineChartConfig>;
-type UnparsedPieChartViewContent = UnparsedViewContentT<PieChartConfig>;
-type UnparsedGaugeChartViewContent = UnparsedViewContentT<GaugeChartConfig>;
-type UnparsedComposedChartViewContent = UnparsedViewContentT<ComposedChartConfig>;
-
-/**
- * @description A union of all the different chart types' view content
- */
-export type UnparsedChartViewContent =
-  | UnparsedLineChartViewContent
-  | UnparsedPieChartViewContent
-  | UnparsedGaugeChartViewContent
-  | UnparsedBarChartViewContent
-  | UnparsedComposedChartViewContent;
-
-export type UnparsedViewViewContent = Omit<UnparsedViewContentT<ViewConfig>, 'data'> & {
+export type ViewViewContent = Omit<ViewContentT<ViewConfig>, 'data'> & {
   data?: ViewDataItem[];
 };
 
-export type ExportViewContent = UnparsedViewViewContent | UnparsedChartViewContent;
+export type ExportViewContent = ViewViewContent | ChartViewContent;

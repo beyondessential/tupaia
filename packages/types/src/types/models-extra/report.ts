@@ -69,7 +69,7 @@ export type MatrixReport = Omit<BaseReport, 'data'> & {
 export interface ChartData {
   name?: string;
   value: string | number;
-  timestamp?: string;
+  timestamp?: number;
 }
 
 export type ChartReport = Omit<BaseReport, 'data'> & {

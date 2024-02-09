@@ -5,18 +5,18 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BaseChartConfig, ValueType, ChartType } from '@tupaia/types';
+import { ValueType, ChartType } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ExportViewContent, LooseObject, TableAccessor, UnparsedChartViewContent } from '../types';
+import { ExportViewContent, LooseObject, TableAccessor, ChartViewContent } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
-const sanitizeValueType = (valueType: ValueType): ValueType => {
+const sanitizeValueType = (valueType?: ValueType): ValueType | undefined => {
   return valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 };
-const getFormattedValue = (value: string | undefined, valueType: ValueType) =>
+const getFormattedValue = (value: string | undefined, valueType?: ValueType) =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
 const FirstColumnCell = styled.span`
@@ -42,7 +42,7 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: UnparsedChartViewContent, sortByTimestamp: Function) => {
+const processColumns = (viewContent: ChartViewContent, sortByTimestamp: Function) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -85,11 +85,11 @@ const processColumns = (viewContent: UnparsedChartViewContent, sortByTimestamp: 
       id: columnKey,
       Header: (props: LooseObject) => {
         const columnId = props.column.id;
-        return chartConfig[columnId as keyof BaseChartConfig]?.label || columnId;
+        return chartConfig[columnId]?.label || columnId;
       },
       accessor: (row: LooseObject) => {
         const rowValue = row[columnKey];
-        const columnConfig = chartConfig[columnKey as keyof BaseChartConfig];
+        const columnConfig = chartConfig[columnKey];
         const valueType = columnConfig?.valueType || viewContent.valueType;
         return getFormattedValue(rowValue, valueType);
       },
@@ -104,7 +104,7 @@ const sortDates = (dateA: Date, dateB: Date) => {
   return dateAMoreRecent ? 1 : -1;
 };
 
-const processData = (viewContent: UnparsedChartViewContent) => {
+const processData = (viewContent: ChartViewContent) => {
   if (!viewContent?.data) {
     return [];
   }

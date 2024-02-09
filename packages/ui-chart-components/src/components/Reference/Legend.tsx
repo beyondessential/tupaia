@@ -9,8 +9,7 @@ import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { TooltipPayload } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { CartesianChartConfig, PieChartConfig } from '@tupaia/types';
-import { LegendPosition, ParsedViewContent } from '../../types';
+import { CartesianChartViewContent, LegendPosition, PieChartViewContent } from '../../types';
 import { isMobile } from '../../utils';
 
 const LegendContainer = styled.div<{
@@ -103,21 +102,20 @@ const Text = styled.span`
   line-height: 1.4;
 `;
 
-function isPieChartConfig(config: PieChartConfig | {}): config is PieChartConfig {
-  return (config as PieChartConfig).chartType === 'pie';
+interface PieLegendProps {
+  isEnlarged?: boolean;
+  isExporting?: boolean;
+  legendPosition?: LegendPosition;
+  viewContent: PieChartViewContent;
 }
 
 const getPieLegendDisplayValue = (
-  chartConfig: PieChartConfig | {},
-  value: string,
+  value: TooltipPayload['value'],
   item: any,
-  viewContent: ParsedViewContent,
-  isEnlarged?: boolean,
+  viewContent: PieLegendProps['viewContent'],
+  isEnlarged?: PieLegendProps['isEnlarged'],
   isMobileSize?: boolean,
 ) => {
-  if (isPieChartConfig(chartConfig) && chartConfig[value as keyof PieChartConfig]?.label) {
-    return chartConfig[value as keyof PieChartConfig].label;
-  }
   const metadata = item[`${value}_metadata`];
   const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
 
@@ -125,24 +123,15 @@ const getPieLegendDisplayValue = (
   return isMobileSize && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
-interface PieLegendProps {
-  chartConfig: PieChartConfig | {};
-  isEnlarged?: boolean;
-  isExporting?: boolean;
-  legendPosition?: LegendPosition;
-  viewContent: ParsedViewContent;
-}
-
 export const getPieLegend =
-  ({ chartConfig = {}, isEnlarged, isExporting, legendPosition, viewContent }: PieLegendProps) =>
+  ({ isEnlarged, isExporting, legendPosition, viewContent }: PieLegendProps) =>
   ({ payload }: any) => {
     const isMobileSize = isMobile(isExporting);
     return (
       <PieLegendContainer $position={legendPosition} $isExporting={isExporting}>
         {payload.map(({ color, value, payload: item }: TooltipPayload) => {
           const displayValue = getPieLegendDisplayValue(
-            chartConfig,
-            value as string,
+            value,
             item,
             viewContent,
             isEnlarged,
@@ -151,7 +140,7 @@ export const getPieLegend =
 
           return (
             <LegendItem
-              key={value as string}
+              key={String(value)}
               isExporting={isExporting}
               className={isEnlarged && !isMobileSize ? 'enlarged' : 'small'}
               disabled
@@ -171,7 +160,7 @@ export const getPieLegend =
   };
 
 interface CartesianLegendProps {
-  chartConfig: CartesianChartConfig;
+  chartConfig: CartesianChartViewContent['chartConfig'];
   onClick: Function;
   getIsActiveKey: Function;
   isExporting?: boolean;
@@ -185,11 +174,13 @@ export const getCartesianLegend =
     return (
       <LegendContainer $position={legendPosition} $isExporting={isExporting}>
         {payload.map(({ color, value, dataKey }: TooltipPayload) => {
-          const displayValue = chartConfig[value as keyof CartesianChartConfig]?.label || value;
+          // check the type here because according to TooltipPayload, value can be a number or a readonly string | number array
+          const displayValue = (typeof value === 'string' && chartConfig?.[value]?.label) || value;
 
           return (
             <LegendItem
-              key={value as string}
+              // parse to a string because the key can't be an array
+              key={String(value)}
               onClick={() => onClick(dataKey)}
               isExporting={isExporting}
               className={isMobileSize ? 'small' : 'enlarged'}

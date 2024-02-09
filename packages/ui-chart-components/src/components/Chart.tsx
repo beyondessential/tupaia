@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import {
+  ChartData,
   ChartType,
   isBarChartConfig,
   isComposedChartConfig,
@@ -16,7 +17,7 @@ import {
   isPieChartConfig,
 } from '@tupaia/types';
 import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
-import { LegendPosition, UnparsedChartViewContent } from '../types';
+import { LegendPosition, ChartViewContent } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
 
@@ -50,10 +51,18 @@ const removeNonNumericData = (data: any[]) =>
     return filteredDataSeries;
   });
 
-const sortData = (data: any[]): any[] =>
-  getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
+const sortData = (data: ChartData[]) =>
+  getIsTimeSeries(data)
+    ? data.sort((a, b) => {
+        const { timestamp: timestampA } = a;
+        const { timestamp: timestampB } = b;
+        // If either timestamp is undefined, return 0, which will almost never happen because we are already checking for timestamp fields in the getIsTimeSeries function, but TS doesn't seem to pickup on that
+        if (timestampA === undefined || timestampB === undefined) return 0;
+        return timestampA - timestampB;
+      })
+    : data;
 
-const parseViewContent = <T extends UnparsedChartViewContent>(viewContent: T): T => {
+const parseViewContent = <T extends ChartViewContent>(viewContent: T): T => {
   const { data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
   const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : undefined;
@@ -66,7 +75,7 @@ const parseViewContent = <T extends UnparsedChartViewContent>(viewContent: T): T
     : { ...viewContent, data: massagedData };
 };
 
-interface ChartProps<T extends UnparsedChartViewContent> {
+interface ChartProps<T extends ChartViewContent> {
   viewContent: T;
   isEnlarged?: boolean;
   isExporting?: boolean;
@@ -74,7 +83,7 @@ interface ChartProps<T extends UnparsedChartViewContent> {
   legendPosition?: LegendPosition;
 }
 
-export const Chart = <T extends UnparsedChartViewContent>({
+export const Chart = <T extends ChartViewContent>({
   viewContent,
   isExporting = false,
   isEnlarged = true,
@@ -116,4 +125,6 @@ export const Chart = <T extends UnparsedChartViewContent>({
     const viewContentConfig = parseViewContent(viewContent);
     return <CartesianChart viewContent={viewContentConfig} {...commonProps} />;
   }
+  // if the chart is an unsupported type, return null. Very unlikely to happen, but we need to handle it
+  return null;
 };

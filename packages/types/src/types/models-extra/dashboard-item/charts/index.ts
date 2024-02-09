@@ -16,4 +16,5 @@ export {
   ChartConfigT,
   ChartConfigObject,
 } from './common';
+export * from './line';
 export { isComposedChartConfig, ComposedChartConfig } from './composed';

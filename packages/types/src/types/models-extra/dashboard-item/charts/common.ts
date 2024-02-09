@@ -91,9 +91,14 @@ export type ChartConfigObject = ReferenceLinesConfig & {
   label?: string;
   stackId?: number;
   legendOrder?: number;
-  yAxisDomain?: any;
+  yAxisDomain?: YAxisDomain;
   valueType?: ValueType;
   yAxisOrientation?: 'left' | 'right';
+  hideFromLegend?: boolean;
+  yName?: string;
+  labelType?: BaseChartConfig['labelType'];
+  chartType?: ChartType | never;
+  opacity?: 'ascending' | 'descending' | number;
 };
 
 export type ChartConfigT = {

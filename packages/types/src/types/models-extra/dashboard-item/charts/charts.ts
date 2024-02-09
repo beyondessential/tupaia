@@ -4,14 +4,10 @@
  */
 
 import { PieChartConfig, PieChartPresentationOptions } from './pie';
-import {
-  BaseChartConfig,
-  CartesianChartConfig,
-  CartesianChartPresentationOptions,
-  ChartType,
-} from './common';
+import { BaseChartConfig, CartesianChartPresentationOptions, ChartType } from './common';
 import { BarChartConfig, BarChartPresentationOptions } from './bar';
 import { ComposedChartConfig } from './composed';
+import { LineChartConfig } from './line';
 
 /**
  * These are all the different chart config types. Anything that is more than the generic chart config has it's own file
@@ -26,16 +22,6 @@ export type GaugeChartConfig = BaseChartConfig & {
 
 export const isGaugeChartConfig = (config: BaseChartConfig): config is GaugeChartConfig =>
   config.chartType === ChartType.Gauge;
-
-/**
- * @description Line Chart
- */
-export type LineChartConfig = CartesianChartConfig & {
-  chartType: ChartType.Line;
-};
-
-export const isLineChartConfig = (config: BaseChartConfig): config is LineChartConfig =>
-  config.chartType === ChartType.Line;
 
 export type ChartConfig =
   | GaugeChartConfig

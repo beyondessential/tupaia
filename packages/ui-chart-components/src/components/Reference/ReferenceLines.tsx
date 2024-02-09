@@ -6,16 +6,16 @@
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BaseChartConfig, ChartType } from '@tupaia/types';
+import { ChartConfigObject, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { ParsedViewContent } from '../../types';
+import { CartesianChartViewContent, ViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 
 const ReferenceLineLabel = ({
   referenceLineLabel,
   isExporting,
 }: {
-  referenceLineLabel: string;
+  referenceLineLabel?: string;
   isExporting?: boolean;
 }) => {
   if (referenceLineLabel === undefined) return undefined;
@@ -36,29 +36,23 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
-  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation?: 'left' | 'right'): number =>
+  (orientation && Y_AXIS_IDS[orientation]) || DEFAULT_Y_AXIS.id;
 
-interface ChartConfig extends BaseChartConfig {
-  referenceValue?: string | number;
-  yAxisOrientation?: string | number;
-  referenceLabel?: string | number;
-}
-
-function isChartConfig(config: ChartConfig | {}): config is ChartConfig {
-  return (config as ChartConfig).referenceValue !== undefined;
+function hasReferenceValue(chartConfig?: ChartConfigObject) {
+  return chartConfig && chartConfig?.referenceValue !== undefined;
 }
 
 const ValueReferenceLine = ({
   viewContent,
   isExporting,
 }: {
-  viewContent: { chartConfig: ChartConfig };
+  viewContent: CartesianChartViewContent;
   isExporting?: boolean;
 }) => {
-  const { chartConfig = {} } = viewContent;
+  const { chartConfig } = viewContent;
 
-  if (!isChartConfig(chartConfig)) {
+  if (!chartConfig || !hasReferenceValue(chartConfig)) {
     return [];
   }
 
@@ -87,7 +81,7 @@ const ValueReferenceLine = ({
 };
 
 interface ReferenceLineProps {
-  viewContent: ParsedViewContent;
+  viewContent: CartesianChartViewContent;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
@@ -119,15 +113,13 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
 };
 
 const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  const presentationOptions =
-    'presentationOptions' in viewContent && viewContent.presentationOptions;
-  const referenceLines =
-    presentationOptions &&
-    'referenceLines' in presentationOptions &&
-    presentationOptions.referenceLines;
-  if (referenceLines) {
+  if (
+    viewContent?.presentationOptions &&
+    'referenceLines' in viewContent.presentationOptions &&
+    viewContent?.presentationOptions.referenceLines
+  ) {
     return ValueReferenceLine({
-      viewContent: { chartConfig: { ...viewContent.chartConfig, ...referenceLines } },
+      viewContent,
       isExporting,
     });
   }

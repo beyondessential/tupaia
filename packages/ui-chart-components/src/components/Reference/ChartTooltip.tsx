@@ -8,8 +8,8 @@ import get from 'lodash.get';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BaseChartConfig, ChartType, ValueType, VizPeriodGranularity } from '@tupaia/types';
-import { ParsedCartesianChartViewContent, LooseObject } from '../../types';
+import { ChartType, ValueType, VizPeriodGranularity } from '@tupaia/types';
+import { CartesianChartViewContent, LooseObject } from '../../types';
 import { formatTimestampForChart, getIsTimeSeries } from '../../utils';
 import { TooltipContainer } from './TooltipContainer';
 
@@ -62,7 +62,7 @@ const Box = styled.div`
 
 interface ChartTooltipProps
   extends Pick<
-    ParsedCartesianChartViewContent,
+    CartesianChartViewContent,
     | 'presentationOptions'
     | 'chartConfig'
     | 'chartType'
@@ -100,7 +100,7 @@ const MultiValueTooltip = ({
   }
 
   const valueLabels = payload.map(({ dataKey, value, color }) => {
-    const options = chartConfig && chartConfig[dataKey as keyof BaseChartConfig];
+    const options = chartConfig && chartConfig[dataKey];
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType ||

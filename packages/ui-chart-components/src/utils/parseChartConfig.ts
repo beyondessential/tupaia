@@ -11,7 +11,7 @@ import {
   ChartType,
 } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { LooseObject, UnparsedChartViewContent } from '../types';
+import { LooseObject, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
@@ -21,20 +21,10 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-type ChartConfigFromUnparsedT<T> = T extends { chartConfig: unknown }
-  ? T['chartConfig']
-  : Record<string, never>;
-
-export const parseChartConfig = <T extends UnparsedChartViewContent>(
-  viewContent: T,
-): ChartConfigFromUnparsedT<T> => {
+export const parseChartConfig = (viewContent: ViewContent) => {
   const { chartType, data, colorPalette: paletteName } = viewContent;
-  if (!('chartConfig' in viewContent)) {
-    return {} as ChartConfigFromUnparsedT<T>;
-  }
-
-  if (!viewContent.chartConfig) {
-    return {} as ChartConfigFromUnparsedT<T>;
+  if (!('chartConfig' in viewContent) || !viewContent.chartConfig) {
+    return {};
   }
 
   const { chartConfig } = viewContent;
@@ -60,7 +50,7 @@ export const parseChartConfig = <T extends UnparsedChartViewContent>(
     .map(setOpacityValues)[0];
 
   // Forced to explicitly cast here as the types in this function are too messy to manage
-  return parsedChartConfig as ChartConfigFromUnparsedT<T>;
+  return parsedChartConfig;
 };
 
 /**
@@ -146,19 +136,20 @@ const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
 
 const createDynamicConfig = (
   chartConfig: ChartConfigObject,
-  dynamicChartConfig: ChartConfigObject,
+  configForAllKeys: ChartConfigObject,
   data: ChartData[],
 ) => {
   // Just find keys. Doesn't include keys which end in _metadata.
-  const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
+  const dataKeys = data.map(dataKey => Object.keys(dataKey).filter(isDataKey)).flat();
   const keys = new Set(dataKeys);
 
   // Add config to each key
   const newChartConfig: LooseObject = {};
   keys.forEach(key => {
+    const keyConfig = chartConfig[key as keyof ChartConfigObject] || {};
     newChartConfig[key] = {
-      ...dynamicChartConfig,
-      ...chartConfig[key as keyof ChartConfigObject],
+      ...configForAllKeys,
+      ...keyConfig,
     };
   });
   return newChartConfig;

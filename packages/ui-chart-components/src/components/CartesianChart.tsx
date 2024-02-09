@@ -14,9 +14,9 @@ import {
   Tooltip,
   LegendProps,
 } from 'recharts';
-import { CartesianChartConfig, ChartType } from '@tupaia/types';
+import { CartesianChartConfig, ChartType, isComposedChartConfig } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ParsedViewContent, LegendPosition, ParsedCartesianChartViewContent } from '../types';
+import { LegendPosition, CartesianChartViewContent } from '../types';
 import { isMobile } from '../utils';
 import {
   BarChart as BarChartComponent,
@@ -68,10 +68,13 @@ const CHART_TYPE_TO_CHART = {
   [Line]: LineChartComponent,
 };
 
-const getRealDataKeys = (chartConfig: CartesianChartConfig | {}) =>
-  Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
+const getRealDataKeys = (chartConfig: CartesianChartConfig['chartConfig'] | {}) =>
+  chartConfig ? Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY) : [];
 
-const getLegendAlignment = (legendPosition: LegendPosition, isExporting: boolean) => {
+const getLegendAlignment = (
+  legendPosition: LegendPosition,
+  isExporting: boolean,
+): Pick<LegendProps, 'align' | 'verticalAlign' | 'layout'> => {
   if (isExporting) {
     return { verticalAlign: 'top', align: 'right', layout: 'vertical' };
   }
@@ -108,7 +111,7 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
 type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
 
 interface CartesianChartProps {
-  viewContent: ParsedCartesianChartViewContent;
+  viewContent: CartesianChartViewContent;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
@@ -152,8 +155,17 @@ export const CartesianChart = ({
     const newChartConfig = { ...chartConfig };
 
     if (hasDisabledData && !(LEGEND_ALL_DATA_KEY in newChartConfig)) {
-      const allChartType = Object.values(chartConfig)[0].chartType || defaultChartType || 'line';
-      newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
+      const getChartType = () => {
+        const firstChartConfig = Object.values(chartConfig)[0];
+        if (isComposedChartConfig(viewContent) && 'chartType' in firstChartConfig)
+          return firstChartConfig.chartType;
+        return defaultChartType || ChartType.Line;
+      };
+      const allChartType = getChartType();
+      newChartConfig[LEGEND_ALL_DATA_KEY] = {
+        ...LEGEND_ALL_DATA,
+        chartType: allChartType,
+      };
       setChartConfig(newChartConfig);
     } else if (!hasDisabledData && chartConfig.hasOwnProperty(LEGEND_ALL_DATA_KEY)) {
       delete newChartConfig[LEGEND_ALL_DATA_KEY];
@@ -223,7 +235,7 @@ export const CartesianChart = ({
         reverseStackOrder={isExporting}
       >
         {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged } as any)}
+        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}
         <Tooltip
           filterNull={false}
           content={
@@ -239,9 +251,9 @@ export const CartesianChart = ({
         />
         {hasLegend && isEnlarged && (
           <Legend
-            verticalAlign={verticalAlign as LegendProps['verticalAlign']}
-            align={align as LegendProps['align']}
-            layout={layout as LegendProps['layout']}
+            verticalAlign={verticalAlign}
+            align={align}
+            layout={layout}
             content={getCartesianLegend({
               chartConfig,
               getIsActiveKey,
@@ -270,7 +282,7 @@ export const CartesianChart = ({
               exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
-        {ReferenceLines({ viewContent: viewContent as ParsedViewContent, isExporting, isEnlarged })}
+        {ReferenceLines({ viewContent, isExporting, isEnlarged })}
       </ChartContainer>
     </ResponsiveContainer>
   );
