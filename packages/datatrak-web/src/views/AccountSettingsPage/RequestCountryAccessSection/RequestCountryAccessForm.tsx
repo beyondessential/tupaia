@@ -51,7 +51,7 @@ const CountryChecklistWrapper = styled.div`
   overflow: hidden;
 `;
 
-/** Matches styling of .FormLabel-root in ui-components TextField */
+/** Matches styling of `.FormLabel-root` in ui-components `TextField` */
 const StyledFormLabel = styled(FormLabel)`
   font-size: 0.9375rem;
   line-height: 1.125rem;
