@@ -86,9 +86,18 @@ export async function importUsers(req, res) {
             }
           };
 
-          await req.assertPermissions(
-            assertAnyPermissions([assertBESAdminAccess, createUserPermissionChecker]),
-          );
+          try {
+            await req.assertPermissions(
+              assertAnyPermissions([assertBESAdminAccess, createUserPermissionChecker]),
+            );
+          } catch (error) {
+            throw new ImportValidationError(
+              error.message,
+              excelRowNumber,
+              'permission_group',
+              countryName,
+            );
+          }
 
           await transactingModels.userEntityPermission.findOrCreate({
             user_id: user.id,
