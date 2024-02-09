@@ -31,7 +31,7 @@ const MatrixWrapper = css`
   max-width: 90vw;
   padding: 0 0.5rem;
   width: auto;
-  @media (max-width: 600px) {
+  ${({ theme }) => theme.breakpoints.down('sm')} {
     min-width: 45rem;
   }
 `;
