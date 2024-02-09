@@ -6,7 +6,7 @@
 import { ChartType } from '@tupaia/types';
 import { ADD_TO_ALL_KEY, parseChartConfig } from '../utils';
 import { CHART_COLOR_PALETTE, EXPANDED_CHART_COLOR_PALETTE } from '../constants';
-import { ViewContent } from '../types';
+import { BarChartViewContent, ViewContent } from '../types';
 
 const testChartConfig = {
   type: 'chart',
@@ -17,14 +17,14 @@ const testChartConfig = {
 const testViewJson = {
   ...testChartConfig,
   data: [
-    { name: '1', timestamp: '1230000', metric1: 3, metric2: 5, value: 10 },
-    { name: '2', timestamp: '1240000', metric1: 4, metric2: 4, value: 20 },
-    { name: '3', timestamp: '1250000', metric1: 5, metric2: 3, value: 30 },
-    { name: '4', timestamp: '1260000', metric1: 6, metric2: 2, value: 40 },
-    { name: '5', timestamp: '1270000', metric1: 7, metric2: 1, value: 50 },
+    { name: '1', timestamp: 1230000, metric1: 3, metric2: 5, value: 10 },
+    { name: '2', timestamp: 1240000, metric1: 4, metric2: 4, value: 20 },
+    { name: '3', timestamp: 1250000, metric1: 5, metric2: 3, value: 30 },
+    { name: '4', timestamp: 1260000, metric1: 6, metric2: 2, value: 40 },
+    { name: '5', timestamp: 1270000, metric1: 7, metric2: 1, value: 50 },
   ],
   chartConfig: {},
-};
+} as BarChartViewContent;
 
 describe('parseChartConfig', () => {
   it('should add correct colors based on default color palette', () => {
@@ -36,7 +36,7 @@ describe('parseChartConfig', () => {
       parseChartConfig({
         ...testViewJson,
         chartConfig,
-      } as ViewContent),
+      }),
     ).toEqual({
       metric1: { stackId: 1, color: CHART_COLOR_PALETTE.blue },
       metric2: { stackId: 2, color: CHART_COLOR_PALETTE.red },

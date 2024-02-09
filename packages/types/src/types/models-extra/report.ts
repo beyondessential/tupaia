@@ -66,7 +66,7 @@ export type MatrixReport = Omit<BaseReport, 'data'> & {
 /**
  * @description This is the shape of a report when type is 'chart'
  */
-export interface ChartData {
+export interface ChartData extends Record<string, unknown> {
   name?: string;
   value: string | number;
   timestamp?: number;
