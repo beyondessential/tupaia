@@ -58,7 +58,7 @@ const StyledFormLabel = styled(FormLabel)`
   margin-block-end: 0.1875rem;
 `;
 
-const StyledDiv = styled.div`
+const Flexbox = styled.div`
   display: block flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -154,7 +154,7 @@ export const RequestCountryAccessForm = () => {
             disabled={!project}
           />
         </CountryChecklistWrapper>
-        <StyledDiv>
+        <Flexbox>
           <StyledFormInput
             disabled={!project}
             id="message"
@@ -175,7 +175,7 @@ export const RequestCountryAccessForm = () => {
           >
             {buttonLabel}
           </Button>
-        </StyledDiv>
+        </Flexbox>
       </StyledFieldset>
     </StyledForm>
   );
