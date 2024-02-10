@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { AccessGrantedCountryList } from './AccessGrantedCountryList.tsx';
-import { AccountSettingsSection } from '../AccountSettingsSection.tsx';
 import { ChangeProjectButton } from '../../../components';
-import { RequestCountryAccessForm } from './RequestCountryAccessForm.tsx';
+import { AccountSettingsSection } from '../AccountSettingsSection';
+import { RequestCountryAccessForm } from './RequestCountryAccessForm';
+import { AccessGrantedCountryList } from './AccessGrantedCountryList';
 
 export const RequestCountryAccessSection = () => {
   const title = (
