@@ -55,7 +55,7 @@ export const UserMenu = () => {
   const { data: user, isLoggedIn } = useUser();
 
   // Create the menu items
-  const BaseMenuItem = ({ children, isExternal, ...props }: any) => (
+  const BaseMenuItem = ({ children, ...props }: any) => (
     <MenuItem onCloseMenu={onCloseMenu} {...props} secondaryColor={secondaryHexcode}>
       {children}
     </MenuItem>
