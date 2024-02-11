@@ -76,6 +76,12 @@ export const DASHBOARD_RELATION_COLUMNS = [
     Header: 'Sort Order',
     source: 'sort_order',
   },
+  {
+    Header: 'Attributes Filter',
+    source: 'attributes_filter',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+  },
 ];
 
 const FIELDS = [
