@@ -53602,6 +53602,7 @@ export const EntitySchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -53676,6 +53677,7 @@ export const EntityCreateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -53752,6 +53754,7 @@ export const EntityUpdateSchema = {
 		"type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -56975,6 +56978,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -57050,6 +57054,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -57122,6 +57127,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 		"entity_type": {
 			"enum": [
 				"asset",
+				"business",
 				"case",
 				"case_contact",
 				"catchment",
@@ -58798,6 +58804,7 @@ export const UserAccountSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -58862,6 +58869,7 @@ export const UserAccountCreateSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -58927,6 +58935,7 @@ export const UserAccountUpdateSchema = {
 		"preferences": {},
 		"primary_platform": {
 			"enum": [
+				"datatrak",
 				"lesmis",
 				"tupaia"
 			],
@@ -59192,6 +59201,7 @@ export const QuestionTypeSchema = {
 
 export const PrimaryPlatformSchema = {
 	"enum": [
+		"datatrak",
 		"lesmis",
 		"tupaia"
 	],
@@ -59212,6 +59222,7 @@ export const PeriodGranularitySchema = {
 export const EntityTypeSchema = {
 	"enum": [
 		"asset",
+		"business",
 		"case",
 		"case_contact",
 		"catchment",
@@ -59443,6 +59454,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"type": {
 						"enum": [
 							"asset",
+							"business",
 							"case",
 							"case_contact",
 							"catchment",
