@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, ListItem, Link, ListItemProps } from '@material-ui/core';
+import { Button, Link, ListItem, ListItemProps } from '@material-ui/core';
 import { RouterLink } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 
@@ -97,7 +97,7 @@ export const MenuItem = ({
   if (externalLink) {
     return (
       <MenuListItem $secondaryColor={secondaryColor}>
-        <MenuItemLink href={href} onClick={handleClickMenuItem}>
+        <MenuItemLink href={href} onClick={handleClickMenuItem} target="_blank">
           {children}
         </MenuItemLink>
       </MenuListItem>
