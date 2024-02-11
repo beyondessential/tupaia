@@ -152,8 +152,10 @@ const resetInvisibleQuestions = (
   screenComponents?.forEach(component => {
     const { questionId, visibilityCriteria } = component;
 
+    // if the question is not visible and is not set to always be hidden and has a value, reset the value
     if (
       visibilityCriteria &&
+      !visibilityCriteria.hidden &&
       !getIsQuestionVisible(component, updatedFormData) &&
       updatedFormData.hasOwnProperty(questionId)
     ) {

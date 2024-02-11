@@ -118,8 +118,8 @@ export const SurveySideMenu = () => {
     const screens = visibleScreens?.map(screen => {
       const { surveyScreenComponents, id } = screen;
       const { text } = surveyScreenComponents[0];
-      const screenNumber = getSurveyScreenNumber(visibleScreens, screen);
-      return { id, text, screenNumber };
+      const visibleScreenNumber = getSurveyScreenNumber(visibleScreens, screen);
+      return { id, text, screenNumber: visibleScreenNumber };
     });
     return screens;
   };
