@@ -28,6 +28,25 @@ export class DashboardRelationType extends DatabaseType {
   ];
 }
 
+const assertRelationAttributesMatchEntity = (entityAttribute, attributeFilter) => {
+  if (!attributeFilter) return true;
+  const comparisonValue = (
+    Array.isArray(attributeFilter) ? attributeFilter : [attributeFilter]
+  ).map(v => String(v).toLowerCase());
+
+  if (comparisonValue.includes('no')) {
+    return entityAttribute === 'no' || !entityAttribute;
+  }
+  return comparisonValue.includes(entityAttribute);
+};
+
+const filterByAttributes = (entity, relation) => {
+  if (!relation.attributes_filter || !Object.keys(relation.attributes_filter).length) return true;
+  return Object.entries(relation.attributes_filter).every(([key, value]) => {
+    return assertRelationAttributesMatchEntity(entity.attributes?.[key], value);
+  });
+};
+
 export class DashboardRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return DashboardRelationType;
@@ -57,5 +76,41 @@ export class DashboardRelationModel extends DatabaseModel {
         ],
       },
     );
+  }
+
+  /**
+   *
+   * @param {string[]} dashboardIds
+   * @param {string} entityCode
+   * @param {string} projectCode
+   *
+   * @description Filters the dashboard relations to only include those that are relevant to the given dashboardIds, entityCode and projectCodes, and also filters out relations that don't match the root entity's attributes
+   */
+  async findDashboardRelationsForEntityAndProject(dashboardIds, entityCode, projectCode) {
+    if (!dashboardIds || !dashboardIds.length) throw new Error('Dashboard IDs are required');
+    if (!entityCode) throw new Error('Entity code is required');
+    if (!projectCode) throw new Error('Project code is required');
+
+    const rootEntity = await this.otherModels.entity.findOne({ code: entityCode });
+
+    if (!rootEntity) throw new Error(`Entity with code '${entityCode}' not found`);
+
+    const dashboardRelations = await this.find({
+      // Attached to the given dashboards
+      dashboard_id: dashboardIds,
+      // For the root entity type
+      entity_types: {
+        comparator: '@>',
+        comparisonValue: [rootEntity.type],
+      },
+      // Within the selected project
+      project_codes: {
+        comparator: '@>',
+        comparisonValue: [projectCode],
+      },
+    });
+
+    // Filter out relations that don't match the root entity's attributes
+    return dashboardRelations.filter(relation => filterByAttributes(rootEntity, relation));
   }
 }
