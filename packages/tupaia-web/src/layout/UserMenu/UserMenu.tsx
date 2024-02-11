@@ -55,7 +55,7 @@ export const UserMenu = () => {
   const { data: user, isLoggedIn } = useUser();
 
   // Create the menu items
-  const BaseMenuItem = ({ children, ...props }: any) => (
+  const BaseMenuItem = ({ children, isExternal, ...props }: any) => (
     <MenuItem onCloseMenu={onCloseMenu} {...props} secondaryColor={secondaryHexcode}>
       {children}
     </MenuItem>
@@ -88,9 +88,9 @@ export const UserMenu = () => {
 
   const HelpCentre = (
     <BaseMenuItem
-      key="help"
       externalLink
       href="https://beyond-essential.slab.com/topics/support-and-resources-g6piq0i1"
+      key="help"
     >
       Help centre
     </BaseMenuItem>
@@ -114,8 +114,8 @@ export const UserMenu = () => {
     : [VisitMainSite, HelpCentre];
 
   const baseMenuItems = isLoggedIn
-    ? [SubmitData, ViewProjects, HelpCentre, ChangePassword, RequestCountryAccess, Logout]
-    : [SubmitData, ViewProjects, HelpCentre];
+    ? [ViewProjects, SubmitData, HelpCentre, ChangePassword, RequestCountryAccess, Logout]
+    : [ViewProjects, SubmitData, HelpCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
