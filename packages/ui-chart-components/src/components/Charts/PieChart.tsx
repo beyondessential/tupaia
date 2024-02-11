@@ -139,10 +139,14 @@ export const PieChart = ({
     setActiveIndex(-1);
   };
 
-  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
-    !!presentationOptions &&
-    presentationOptions.hasOwnProperty(key) &&
-    presentationOptions[key as keyof PresentationOptions][option];
+  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) => {
+    if (!presentationOptions || !(key in presentationOptions)) return undefined;
+
+    const keyValue = presentationOptions[key as keyof PresentationOptions];
+    if (typeof keyValue !== 'object' || !(option in keyValue)) return undefined;
+
+    return keyValue[option as keyof typeof keyValue];
+  };
 
   const getValidData = () =>
     data
