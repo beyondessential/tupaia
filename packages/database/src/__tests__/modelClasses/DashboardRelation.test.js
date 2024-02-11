@@ -75,7 +75,7 @@ describe('DashboardRelationModel', () => {
     const entityResult = await findOrCreateDummyCountryEntity(models, {
       code: 'test',
       name: 'Test Entity',
-      attributes: { test: 'yes' },
+      attributes: { test: 'Yes' },
     });
 
     testEntity = entityResult.entity;
@@ -136,7 +136,7 @@ describe('DashboardRelationModel', () => {
         // Add dashboard relations
         await Promise.all(
           dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { test: ['yes'] } : {}),
+            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { test: ['yes', 'no'] } : {}),
           ),
         );
 

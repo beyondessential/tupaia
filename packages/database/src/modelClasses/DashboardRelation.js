@@ -34,10 +34,14 @@ const assertRelationAttributesMatchEntity = (entityAttribute, attributeFilter) =
     Array.isArray(attributeFilter) ? attributeFilter : [attributeFilter]
   ).map(v => String(v).toLowerCase());
 
-  if (comparisonValue.includes('no')) {
-    return entityAttribute === 'no' || !entityAttribute;
-  }
-  return comparisonValue.includes(entityAttribute);
+  const entityValue = entityAttribute?.toLowerCase() ?? undefined;
+
+  return comparisonValue.some(v => {
+    if (v === 'no') {
+      return entityValue === 'no' || !entityAttribute;
+    }
+    return v === entityValue;
+  });
 };
 
 const filterByAttributes = (entity, relation) => {
