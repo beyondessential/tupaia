@@ -161,8 +161,14 @@ export const RequestCountryAccessForm = () => {
             Input={TextField}
             inputProps={{
               enterKeyHint: 'done',
-              // Make <textarea> scroll upon overflow. MUI uses inline styling (element.style) to
-              // resize it to fit an integer number of lines, so we must do the same to override it.
+              /*
+               * Make <textarea> scroll upon overflow.
+               *
+               * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
+               * number of lines. This behaviour is desirable in single-column layouts, which we use
+               * in smaller size classes. In a multi-column grid it causes misalignment, so we
+               * override it, also with inline styling.
+               */
               style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
             }}
             label="Reason for access"
