@@ -52178,6 +52178,7 @@ export const DashboardMailingListEntryUpdateSchema = {
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -52218,6 +52219,7 @@ export const DashboardRelationSchema = {
 export const DashboardRelationCreateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -52254,6 +52256,7 @@ export const DashboardRelationCreateSchema = {
 export const DashboardRelationUpdateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
