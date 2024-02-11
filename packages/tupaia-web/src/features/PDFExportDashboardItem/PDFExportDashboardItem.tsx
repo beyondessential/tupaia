@@ -46,6 +46,14 @@ const ExportPeriod = styled(Typography)`
   line-height: 1;
 `;
 
+const Description = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  margin-block: 1rem;
+  margin-inline: auto;
+  max-width: 70ch;
+  text-align: center;
+`;
+
 const ExportContent = styled.div<{
   $hasData?: boolean;
 }>`
@@ -135,8 +143,7 @@ export const PDFExportDashboardItem = ({
       exportWithTable: true,
     },
   } as DashboardItemConfig;
-
-  const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
+  const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;
 
   const { data: project } = useProject(projectCode);
   const projectLogoUrl = project?.logoUrl ?? undefined;
@@ -161,6 +168,7 @@ export const PDFExportDashboardItem = ({
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
+        {description && <Description>{description}</Description>}
         <ExportContent $hasData={data && data?.length > 0}>
           <DashboardItemContext.Provider
             value={{

@@ -51,8 +51,10 @@ const TitleWrapper = styled(FlexColumn)`
 const Subheading = styled(Typography).attrs({
   variant: 'h3',
 })`
+  color: ${({ theme }) => theme.palette.text.secondary};
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 `;
 
 const ContentWrapper = styled.div`
