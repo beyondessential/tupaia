@@ -7,16 +7,15 @@ import {
   DashboardRelationType as BaseDashboardRelationType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
+import { DashboardRelation } from '@tupaia/types';
 
-type DashboardRelationFields = Readonly<{
-  id: string;
-  dashboard_id: string;
-  child_id: string;
-  entity_types: string[];
-  project_codes: string[];
-  permission_groups: string[];
-  sort_order: number;
-}>;
+type DashboardRelationFields = Readonly<
+  Omit<DashboardRelation, 'entity_types' | 'project_codes' | 'permission_groups'> & {
+    entity_types: string[];
+    project_codes: string[];
+    permission_groups: string[];
+  }
+>;
 
 export interface DashboardRelationType
   extends DashboardRelationFields,

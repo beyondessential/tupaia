@@ -93,7 +93,7 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
-    // Fetch all dashboard relations
+    // Fetch all dashboard relations for the given dashboards, project code and root entity type. This is so we can then filter the dashboard items by the permissions of the root entity and the entity attributes, which means we can determine whether to show a 'no access' dashboard item or not
     const dashboardRelations = await this.req.models.dashboardRelation.find({
       // Attached to the given dashboards
       dashboard_id: dashboards.map(d => d.id),
@@ -128,12 +128,32 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const mergedItemRelations = orderBy(
       dashboardRelations
         .filter(relation =>
-          // We run a permissions filter here instead of in the central fetch so we
-          // know whether the "no data" or "no permission" dashboard is more appropriate
           relation.permission_groups.some(permissionGroup =>
             rootEntityPermissions.includes(permissionGroup),
           ),
         )
+        .filter(relation => {
+          if (!relation.attributes_filter || !Object.keys(relation.attributes_filter).length)
+            return true;
+          // if there are attribute filters, check that the root entity has the required attributes
+
+          // check that the root entity has all the required attributes
+          return Object.entries(relation.attributes_filter).every(([key, value]) => {
+            // transform the values to lowercase to ensure case insensitivity, as sometimes the values are entered in lowercase and sometimes in sentence case.
+            // Values can either be a single value or an array of values, so we need to handle both cases
+            const comparisonValue = (Array.isArray(value) ? value : [value]).map(v =>
+              String(v).toLowerCase(),
+            );
+            const entityValue = rootEntity?.attributes?.[key]?.toLowerCase();
+
+            // if the comparison value is 'no', then we want to check if the entity value is 'no' or undefined, which means it doesn't have the attribute, so it should pass
+            if (comparisonValue.includes('no')) {
+              return entityValue === 'no' || !entityValue;
+            }
+            // otherwise, we want to check if the entity value is the same as the comparison value
+            return comparisonValue.includes(entityValue);
+          });
+        })
         .map(relation => ({
           relation,
           item: ensure(dashboardItems.find(di => di.id === relation.child_id)),
