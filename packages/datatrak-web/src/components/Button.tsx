@@ -17,7 +17,7 @@ const StyledButton = styled(UIButton)`
   }
 `;
 
-const TooltipButtonWrapper = styled.span`
+export const TooltipButtonWrapper = styled.span`
   display: flex;
   flex-direction: column;
   vertical-align: baseline;
@@ -38,7 +38,7 @@ const ButtonWrapper = ({
 }) => {
   if (!tooltip) return children;
   return (
-    // we need to wrap the button in a span so that there is not a console error about tooltips on disabled buttons
+    // Wrap the button in a <span> to suppress console error about tooltips on disabled buttons
     <Tooltip title={tooltip} arrow enterDelay={1000}>
       <TooltipButtonWrapper>{children}</TooltipButtonWrapper>
     </Tooltip>

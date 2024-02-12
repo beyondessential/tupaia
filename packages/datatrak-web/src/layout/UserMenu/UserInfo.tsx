@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const Details = styled.div`
+export const UserDetails = styled.div`
   align-items: baseline;
   display: flex;
   gap: 0.5rem;
@@ -89,14 +89,14 @@ export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void })
   return (
     <Wrapper>
       {user.isLoggedIn ? (
-        <Details>
+        <UserDetails>
           <UserName>{user.userName}</UserName>
           {user.projectId && (
             <ProjectButton onClick={openProjectModal} tooltip="Change project">
               {user.project?.name}
             </ProjectButton>
           )}
-        </Details>
+        </UserDetails>
       ) : (
         <AuthButtons>
           <AuthLink variant="text" to={ROUTES.REGISTER}>
