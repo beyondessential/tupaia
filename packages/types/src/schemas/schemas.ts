@@ -52207,6 +52207,7 @@ export const DashboardRelationSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes_filter",
 		"child_id",
 		"dashboard_id",
 		"entity_types",
