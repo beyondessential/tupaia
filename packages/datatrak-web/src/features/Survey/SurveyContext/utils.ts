@@ -152,8 +152,10 @@ const resetInvisibleQuestions = (
   screenComponents?.forEach(component => {
     const { questionId, visibilityCriteria } = component;
 
+    // if the question is not visible and is not set to always be hidden and has a value, reset the value
     if (
       visibilityCriteria &&
+      !visibilityCriteria.hidden &&
       !getIsQuestionVisible(component, updatedFormData) &&
       updatedFormData.hasOwnProperty(questionId)
     ) {
@@ -188,9 +190,10 @@ const updateDependentQuestions = (
   const booleanExpressionParser = new BooleanExpressionParser();
 
   screenComponents?.forEach(question => {
+    if (!question.config) return;
+    const { questionId } = question;
     if (hasConditionConfig(question)) {
-      const { config, questionId } = question;
-      const { conditions } = config.condition;
+      const { conditions } = question.config.condition;
       const result = Object.keys(conditions).find(resultValue =>
         getConditionIsMet(booleanExpressionParser, formDataCopy, conditions[resultValue]),
       );
@@ -199,22 +202,34 @@ const updateDependentQuestions = (
       }
     }
     if (hasArithmeticConfig(question)) {
-      const { config, questionId } = question;
-      const result = getArithmeticResult(expressionParser, formDataCopy, config.arithmetic);
+      const { arithmetic } = question.config;
+      const result = getArithmeticResult(expressionParser, formDataCopy, arithmetic);
       if (result !== undefined && result !== null) {
         formDataCopy[questionId] = result;
       }
     }
-    if (hasCodeGeneratorConfig(question)) {
-      const { config, questionId } = question;
+  });
+
+  return formDataCopy;
+};
+
+export const generateCodeForCodeGeneratorQuestions = (
+  screenComponents: SurveyScreenComponent[],
+  formData: Record<string, any>,
+) => {
+  const formDataCopy = { ...formData };
+  screenComponents?.forEach(question => {
+    if (!question.config) return;
+    const { config, questionId } = question;
+    const { codeGenerator } = config as {
+      codeGenerator: CodeGeneratorQuestionConfig;
+    };
+    if (hasCodeGeneratorConfig(question) && !formDataCopy[questionId]) {
       const code =
-        config.codeGenerator.type === 'shortid'
-          ? generateShortId(config.codeGenerator)
-          : generateMongoId();
+        codeGenerator.type === 'shortid' ? generateShortId(codeGenerator) : generateMongoId();
       formDataCopy[questionId] = code;
     }
   });
-
   return formDataCopy;
 };
 

@@ -16,7 +16,7 @@ const Container = styled.footer`
     color: #c4c4c4;
     font-size: 12px;
     line-height: 14px;
-    margin-right: 1rem;
+    margin-inline-end: 1rem;
   }
 `;
 
@@ -25,7 +25,7 @@ const date = new Date();
 export const Footer = () => (
   <Container>
     <MuiContainer maxWidth="xl">
-      <span>&copy;{date.getFullYear()} Beyond Essential</span>
+      <span>&copy;&nbsp;{date.getFullYear()} Beyond Essential</span>
       <MuiLink href="https://tupaia.org">tupaia.org</MuiLink>
     </MuiContainer>
   </Container>

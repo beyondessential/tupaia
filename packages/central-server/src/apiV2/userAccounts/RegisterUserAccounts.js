@@ -16,14 +16,6 @@ import { CreateUserAccounts } from './CreateUserAccounts';
 import { sendEmailVerification } from '../utilities/emailVerification';
 import { allowNoPermissions } from '../../permissions';
 
-const PLATFORM_CONFIGS = {
-  'lesmis-server@tupaia.org': {
-    primaryPlatform: 'lesmis',
-    permissionGroupName: 'LESMIS Public',
-    countryName: 'Laos',
-  },
-};
-
 /**
  * Handles POST endpoint for registering user:
  * - /user
@@ -82,9 +74,10 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
+      primaryPlatform,
     } = this.newRecordData;
 
-    let userData = {
+    const userData = {
       firstName,
       lastName,
       emailAddress,
@@ -92,18 +85,11 @@ export class RegisterUserAccounts extends CreateUserAccounts {
       position,
       contactNumber,
       password,
+      primaryPlatform,
     };
 
-    // Get one of the non-default platform configs if it exists
-    const email = this.req?.apiClientUser?.email;
-    const platformConfig = email in PLATFORM_CONFIGS ? PLATFORM_CONFIGS[email] : null;
+    const { id: userId } = await this.createUserRecord(this.models, userData);
 
-    if (platformConfig) {
-      const { permissionGroupName, countryName, primaryPlatform } = platformConfig;
-      userData = { ...userData, permissionGroupName, countryName, primaryPlatform };
-    }
-
-    const { userId } = await this.createUserRecord(userData);
     const user = await this.models.user.findById(userId);
     await sendEmailVerification(user);
 

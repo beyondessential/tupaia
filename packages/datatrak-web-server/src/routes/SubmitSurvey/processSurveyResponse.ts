@@ -15,6 +15,7 @@ import { buildUpsertEntity } from './buildUpsertEntity';
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   qr_codes_to_create?: Entity[];
+  recent_entities: string[];
 };
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
 type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
@@ -59,6 +60,7 @@ export const processSurveyResponse = async (
     timezone,
     entities_upserted: [],
     qr_codes_to_create: [],
+    recent_entities: [],
     options_created: [],
     answers: [],
   };
@@ -70,23 +72,23 @@ export const processSurveyResponse = async (
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
-    // If the question is an entity question and an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
-    if (
-      [QuestionType.PrimaryEntity, QuestionType.Entity].includes(type) &&
-      isUpsertEntityQuestion(config)
-    ) {
-      const entityObj = (await buildUpsertEntity(
-        config,
-        questionId,
-        answers,
-        countryId,
-        findEntityById,
-      )) as Entity;
-      if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
-      answer = entityObj?.id;
-      if (config.entity?.generateQrCode) {
-        surveyResponse.qr_codes_to_create?.push(entityObj);
+    if ([QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)) {
+      // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
+      if (isUpsertEntityQuestion(config)) {
+        const entityObj = (await buildUpsertEntity(
+          config,
+          questionId,
+          answers,
+          countryId,
+          findEntityById,
+        )) as Entity;
+        if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
+        answer = entityObj?.id;
+        if (config.entity?.generateQrCode) {
+          surveyResponse.qr_codes_to_create?.push(entityObj);
+        }
       }
+      surveyResponse.recent_entities.push(answer as string);
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;
