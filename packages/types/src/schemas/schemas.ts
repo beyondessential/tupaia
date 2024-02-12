@@ -59516,9 +59516,6 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"name": {
-			"type": "string"
-		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -59527,6 +59524,15 @@ export const ProjectResponseSchema = {
 		},
 		"homeEntityCode": {
 			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"names": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		}
 	},
 	"required": [
@@ -59594,9 +59600,6 @@ export const ResBodySchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"name": {
-			"type": "string"
-		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -59605,6 +59608,15 @@ export const ResBodySchema = {
 		},
 		"homeEntityCode": {
 			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"names": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		}
 	},
 	"required": [
