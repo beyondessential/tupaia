@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { assertDataElementMustMatchDataGroupServiceType } from '../assertDataElementMustMatchDataGroupServiceType';
+import { dataElementMustMatchDataGroupServiceType } from '../dataElementMustMatchDataGroupServiceType';
 
 const { assertCanAddDataElementInGroup } = require('../assertCanAddDataElementInGroup');
 
@@ -26,7 +26,7 @@ export const updateDataElementsConfig = async (models, dataGroup) => {
     });
 
     // Only update the data element service type if we have to, i.e. if it is not a Tupaia data element. This is because if we update all the data elements to have the same service type as the data group when they don't need to, if the data element service type has been changed manually, then we can unintentionally break visualisations when we reimport survey questions.
-    if (!assertDataElementMustMatchDataGroupServiceType(dataElement.service_type)) return;
+    if (!dataElementMustMatchDataGroupServiceType(dataElement.service_type)) return;
 
     dataElement.service_type = serviceType;
     dataElement.config = config;
