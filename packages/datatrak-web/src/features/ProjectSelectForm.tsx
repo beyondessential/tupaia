@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -31,9 +31,9 @@ const ListWrapper = styled.div<{
   flex-direction: column;
   overflow: auto;
 
-  max-height: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
+  max-block-size: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    max-height: 35rem;
+    max-block-size: 35rem;
   }
 
   // Keep body text styling, even if component is child of a paragraph/heading

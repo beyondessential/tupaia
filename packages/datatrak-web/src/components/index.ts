@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export * from './Icons';
@@ -16,4 +16,4 @@ export { TextInput } from './TextInput';
 export { Tile, LoadingTile } from './Tile';
 export { Toast } from './Toast';
 export { TopProgressBar } from './TopProgressBar';
-export { ChangeProjectButton } from './ChangeProjectButton.tsx';
+export { ChangeProjectButton } from './ChangeProjectButton';
