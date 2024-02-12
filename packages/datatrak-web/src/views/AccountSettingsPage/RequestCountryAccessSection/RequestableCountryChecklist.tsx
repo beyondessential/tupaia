@@ -11,9 +11,6 @@ import { Entity, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/type
 import { theme } from '../../../theme';
 
 const Container = styled.fieldset`
-  margin: 0;
-  padding-block: 0;
-
   border-radius: 0.1875rem;
   border: 1px solid ${theme.palette.grey[400]};
   block-size: 100%;
