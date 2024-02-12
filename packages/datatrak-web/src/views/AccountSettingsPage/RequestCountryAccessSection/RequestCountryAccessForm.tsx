@@ -162,7 +162,7 @@ export const RequestCountryAccessForm = () => {
             inputProps={{
               enterKeyHint: 'done',
               /*
-               * Make <textarea> scroll upon overflow.
+               * Make `<textarea>` scroll upon overflow.
                *
                * MUI uses inline styling (element.style) to resize `<textarea>`s to fit an integer
                * number of lines. This behaviour is desirable in single-column layouts, which we use
