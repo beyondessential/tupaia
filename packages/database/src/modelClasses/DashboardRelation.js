@@ -3,9 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { isNotNullish } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+
+const toSentenceCase = string => string.charAt(0).toUpperCase() + string.slice(1);
 
 export class DashboardRelationType extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_RELATION;
@@ -26,30 +30,54 @@ export class DashboardRelationType extends DatabaseType {
       joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
     },
   ];
+
+  async attributesFilterMatchesEntity(entity) {
+    const { attributes_filter: attributesFilter } = this;
+
+    if (!attributesFilter || !Object.keys(attributesFilter).length) return true;
+
+    const attributesDbFilter = Object.entries(attributesFilter).reduce((result, [key, value]) => {
+      // The filter value can be either a single value or an array of values, and in some cases the entity attribute is in lowercase and in some cases it's in sentence case, so we need to filter for both
+      const values = (Array.isArray(value) ? value : [value])
+        .map(v => [toSentenceCase(v), v.toLowerCase()])
+        .flat();
+
+      const attributeFilterKey = `attributes->>${key}`;
+
+      const filter = {
+        comparator: 'IN',
+        comparisonValue: values,
+      };
+
+      // if 'no' is not in the values, just filter by the values
+      if (!values.includes('no')) {
+        return {
+          ...result,
+          [attributeFilterKey]: filter,
+        };
+      }
+
+      // if 'no' is in the values, filter by the values and also include the null values
+      return {
+        ...result,
+        [attributeFilterKey]: filter,
+        [QUERY_CONJUNCTIONS.OR]: {
+          [attributeFilterKey]: {
+            comparator: 'IS',
+            comparisonValue: null,
+          },
+        },
+      };
+    }, {});
+
+    const filteredEntity = await this.otherModels.entity.findOne({
+      id: entity.id,
+      [QUERY_CONJUNCTIONS.AND]: attributesDbFilter,
+    });
+
+    return isNotNullish(filteredEntity);
+  }
 }
-
-const assertRelationAttributesMatchEntity = (entityAttribute, attributeFilter) => {
-  if (!attributeFilter) return true;
-  const comparisonValue = (
-    Array.isArray(attributeFilter) ? attributeFilter : [attributeFilter]
-  ).map(v => String(v).toLowerCase());
-
-  const entityValue = entityAttribute?.toLowerCase() ?? undefined;
-
-  return comparisonValue.some(v => {
-    if (v === 'no') {
-      return entityValue === 'no' || !entityAttribute;
-    }
-    return v === entityValue;
-  });
-};
-
-const filterByAttributes = (entity, relation) => {
-  if (!relation.attributes_filter || !Object.keys(relation.attributes_filter).length) return true;
-  return Object.entries(relation.attributes_filter).every(([key, value]) => {
-    return assertRelationAttributesMatchEntity(entity.attributes?.[key], value);
-  });
-};
 
 export class DashboardRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
@@ -115,6 +143,12 @@ export class DashboardRelationModel extends DatabaseModel {
     });
 
     // Filter out relations that don't match the root entity's attributes
-    return dashboardRelations.filter(relation => filterByAttributes(rootEntity, relation));
+    // Because the attributesFilterMatchesEntity method is async, we need to use Promise.all to wait for all the promises to resolve, and then filter out the null values, otherwise the result is an array of promises, which is an array of all truthy values and gives us false positives
+    return Promise.all(
+      dashboardRelations.map(async relation => {
+        const entityMatchesFilter = await relation.attributesFilterMatchesEntity(rootEntity);
+        return entityMatchesFilter ? relation : null;
+      }),
+    ).then(relations => relations.filter(isNotNullish));
   }
 }

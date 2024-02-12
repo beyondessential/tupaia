@@ -18,6 +18,7 @@ exports.up = function (db) {
   return db.addColumn('dashboard_relation', 'attributes_filter', {
     type: 'jsonb',
     defaultValue: '{}',
+    notNull: true,
   });
 };
 

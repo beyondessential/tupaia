@@ -39,7 +39,7 @@ const DASHBOARD_ITEMS = [
   },
 ];
 
-const getResultChildIds = result => result.map(r => r.child_id);
+const getResultChildIds = result => result.map(r => r.child_id).sort();
 
 describe('DashboardRelationModel', () => {
   const models = getTestModels();
@@ -129,7 +129,7 @@ describe('DashboardRelationModel', () => {
           'testProject',
         );
 
-        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id));
+        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
       });
 
       it('should return dashboard items that match entity and project when dashboard relation filters are array values', async () => {
@@ -146,7 +146,7 @@ describe('DashboardRelationModel', () => {
           'testProject',
         );
 
-        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id));
+        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
       });
 
       it('should exclude relations when filter is "no" and corresponding entity attribute exists but is not "no"', async () => {
@@ -180,7 +180,7 @@ describe('DashboardRelationModel', () => {
           'testProject',
         );
 
-        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id));
+        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
       });
 
       it('should exclude relations when filter is set (but is not "no") and corresponding entity attribute is undefined', async () => {

@@ -60,6 +60,12 @@ export const DASHBOARD_RELATION_COLUMNS = [
     },
   },
   {
+    Header: 'Attributes Filter',
+    source: 'attributes_filter',
+    type: 'jsonTooltip',
+    editConfig: { type: 'jsonEditor' },
+  },
+  {
     Header: 'Project Codes',
     source: 'project_codes',
     Filter: ArrayFilter,
@@ -75,12 +81,6 @@ export const DASHBOARD_RELATION_COLUMNS = [
   {
     Header: 'Sort Order',
     source: 'sort_order',
-  },
-  {
-    Header: 'Attributes Filter',
-    source: 'attributes_filter',
-    type: 'jsonTooltip',
-    editConfig: { type: 'jsonEditor' },
   },
 ];
 
