@@ -37,14 +37,6 @@ export default defineConfig(({ command, mode }) => {
       },
     },
 
-    assetsInclude: [
-      /**
-       * For Universal Links and Shared Web Credentials on Apple platforms
-       * @see https://developer.apple.com/documentation/xcode/supporting-associated-domains
-       */
-      // '/**/.well-known/apple-app-site-association',
-      // '/**/.well-known/apple-app-site-association.*',
-    ],
     plugins: [
       ViteEjsPlugin(), // Enables use of EJS templates in the index.html file, for analytics scripts etc
       viteCompression(),
