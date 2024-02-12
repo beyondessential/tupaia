@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 `;
 
 const Details = styled.div`
-  align-items: center;
+  align-items: baseline;
   display: flex;
   gap: 0.5rem;
   padding-inline: 0.5rem;
