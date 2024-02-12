@@ -8,7 +8,7 @@
 - We can now use the facility importer to automatically set up the GeoJSON for a whole new country/district.
 - The country level GeoJSON is handled by the sheet name of the import spreadsheet, so if the sheet name is “Laos” then the importer will automatically detect the GeoJSON for Laos and use that.
 - GeoJSON can be detected automatically too based on the names in the District and Subdistrict columns.
-- This is the default way to use this importer, but district and subdistricts can be specified by the importer too, documented below in [Case 1.1](#case11-importing-specific-geojson-for-a-totally-new-country--district).
+- This is the default way to use this importer, but district and subdistricts can be specified by the importer too, documented below in [Case 1.1](#case11-importing-specific-geojson-for-a-totally-new-countrydistrict).
 
 ### Case 1.1: Importing specific GeoJSON for a totally new country/district
 
@@ -29,4 +29,4 @@ This is similar to the previous case but with a few extra steps beforehand.
 - In the database we need to first go into the `entity` table, find the district we want to update and delete whatever is in the `region` column (so it now says `NULL`).
 - Then we need to delete the cached GeoJSON. To do this SSH into **central-server**, go to `uploads/GeoJSON/Laos` (or whatever the country you want to update is).
 - Typing `ls` should list the documents in this folder. Find the districts you want to update and delete their cached GeoJSON with `rm LA_Xayabury.geojson` (except with whatever the district you want to replace is called).
-- Once this is done you can use the importer like in [Case 1.1](#case11-importing-specific-geojson-for-a-totally-new-country--district).
+- Once this is done you can use the importer like in [Case 1.1](#case11-importing-specific-geojson-for-a-totally-new-countrydistrict).
