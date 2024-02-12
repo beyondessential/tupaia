@@ -1,12 +1,11 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import styled from 'styled-components';
-import { Box } from '@material-ui/core';
 
-export const AccountSettingsColumn = styled(Box)`
+export const AccountSettingsColumn = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
