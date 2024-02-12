@@ -1,14 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, TooltipButtonWrapper } from './Button';
 import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
 import { useCurrentUser } from '../api';
 import { UserDetails as NavbarUserDetails } from '../layout/UserMenu/UserInfo';
+import { Button, TooltipButtonWrapper } from './Button';
 
 /**
  * Manages how this “Change Project button” component is laid out. Under normal circumstances, it
