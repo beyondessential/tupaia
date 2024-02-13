@@ -12,9 +12,9 @@ import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
-  padding-left: 1rem;
+  padding-inline-start: 1rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
-    padding-left: 1.5rem;
+    padding-inline-start: 1.5rem;
   }
 `;
 
@@ -41,7 +41,7 @@ const LoginLink = styled(AuthLink).attrs({
   variant: 'outlined',
 })`
   border-radius: 4rem;
-  border-color: ${props => props.theme.palette.text.primary};
+  border-color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const UserName = styled(Typography)`
