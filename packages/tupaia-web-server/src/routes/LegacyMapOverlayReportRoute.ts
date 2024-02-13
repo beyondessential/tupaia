@@ -19,6 +19,7 @@ export class LegacyMapOverlayReportRoute extends Route<LegacyMapOverlayReportReq
     const { query, ctx } = this.req;
     const { mapOverlayCode, legacy } = this.req.params;
 
+    // TODO: Set latest value with data here
     return ctx.services.webConfig.fetchMeasureData(mapOverlayCode, { legacy, ...query });
   }
 }

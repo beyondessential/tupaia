@@ -19,6 +19,7 @@ export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportReque
   public async buildResponse() {
     const { query, ctx } = this.req;
     const { reportCode } = this.req.params;
+    // TODO: Set latest value with data here
 
     return ctx.services.webConfig.fetchReport(reportCode, {
       legacy: 'true',
