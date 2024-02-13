@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
@@ -11,8 +11,7 @@ import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList } from '../components';
-import { useEditUser } from '../api/mutations';
-import { useProjects } from '../api/queries';
+import { useEditUser, useProjects } from '../api';
 import { ROUTES } from '../constants';
 
 const LoadingContainer = styled.div`
