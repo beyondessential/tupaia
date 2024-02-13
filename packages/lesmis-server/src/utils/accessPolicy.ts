@@ -20,6 +20,6 @@ export const hasLesmisAccess = (policy: AccessPolicy) => {
   return hasAccess;
 };
 
-export const isLesmisAdmin = (policy: Record<string, string[]>) => {
+export const hasAdminPanelAccess = (policy: Record<string, string[]>) => {
   return new AccessPolicy(policy).allows(LESMIS_COUNTRY_CODE, ADMIN_PANEL_PERMISSION_GROUP);
 };

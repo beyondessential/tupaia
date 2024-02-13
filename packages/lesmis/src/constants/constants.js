@@ -9,7 +9,7 @@ export const PROJECT_CODE = 'laos_schools';
 export const COUNTRY_CODE = 'LA';
 
 // Permissions
-export const ADMIN_PERMISSION_GROUP = 'Tupaia Admin Panel';
+export const ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
 
 // Dashboard Tab View Names
 export const DASHBOARD_REPORT_TAB_VIEW = 'DashboardReportTabView';
