@@ -57,6 +57,7 @@ export const DateTimeQuestion = ({
       error={invalid}
       required={required}
       helperText={detailLabel}
+      format="P p" // locale date time format
     />
   );
 };

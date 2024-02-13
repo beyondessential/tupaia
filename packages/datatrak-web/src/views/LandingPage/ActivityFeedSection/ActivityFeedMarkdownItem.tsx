@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import { MarkdownFeedItem } from '../../../types';
+import { displayDate } from '../../../utils';
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,7 +49,7 @@ const Logo = styled.img.attrs({
 
 export const ActivityFeedMarkdownItem = ({ feedItem }: { feedItem: MarkdownFeedItem }) => {
   const { templateVariables, creationDate } = feedItem;
-  const formattedDate = creationDate ? new Date(creationDate as Date).toLocaleDateString() : '';
+  const formattedDate = displayDate(creationDate as Date);
   return (
     <Wrapper>
       <Header>
