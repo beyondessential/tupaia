@@ -6,8 +6,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
-import { Paper } from '@material-ui/core';
-import { Check } from '@material-ui/icons';
 import { createFilterOptions } from '@material-ui/lab';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
