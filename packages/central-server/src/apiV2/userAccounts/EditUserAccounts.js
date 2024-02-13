@@ -18,7 +18,12 @@ import { assertUserAccountPermissions } from './assertUserAccountPermissions';
  * - /users/:userId
  */
 
-const USER_PREFERENCES_FIELDS = ['project_id', 'country_id', 'delete_account_requested'];
+const USER_PREFERENCES_FIELDS = [
+  'project_id',
+  'country_id',
+  'delete_account_requested',
+  'recent_entities',
+];
 
 export class EditUserAccounts extends EditHandler {
   async assertUserHasAccess() {
@@ -73,6 +78,10 @@ export class EditUserAccounts extends EditHandler {
       const updatedPreferenceFields = updatedUserPreferences.reduce((obj, [key, value]) => {
         return { ...obj, [key]: value };
       }, preferences);
+      // If we change the selected project, we clear out the recent entities
+      if (updatedPreferenceFields.project_id) {
+        updatedPreferenceFields.recentEntities = {};
+      }
 
       updatedFields = {
         preferences: updatedPreferenceFields,

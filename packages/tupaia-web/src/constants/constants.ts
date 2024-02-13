@@ -19,7 +19,7 @@ export const FORM_FIELD_VALIDATION = {
     },
   },
   PASSWORD: {
-    minLength: { value: 9, message: 'Must be over 8 characters long' },
+    minLength: { value: 8, message: 'Must be at least 8 characters long' },
   },
   CONTACT_NUMBER: {
     pattern: {
