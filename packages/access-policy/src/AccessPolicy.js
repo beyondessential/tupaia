@@ -15,9 +15,6 @@ export class AccessPolicy {
       throw new Error('Cannot instantiate an AccessPolicy without providing the policy details');
     }
     const permissionGroupLists = Object.values(this.policy);
-    if (permissionGroupLists.length === 0) {
-      throw new Error('At least one entity should be specified in an access policy');
-    }
     if (permissionGroupLists.some(permissionGroups => !Array.isArray(permissionGroups))) {
       throw new Error(
         'Each entity should contain an array of permissionGroups for which the user has access',

@@ -194,7 +194,7 @@ export class ApiBuilder {
   }
 
   public async initialiseApiClient(
-    permissions: { entityCode: string; permissionGroupName: string }[],
+    permissions: { entityCode: string; permissionGroupName: string }[] = [],
   ) {
     await initialiseApiClient(this.models, permissions);
     return this;

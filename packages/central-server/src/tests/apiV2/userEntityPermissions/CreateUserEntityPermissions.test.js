@@ -55,7 +55,7 @@ describe('Permissions checker for CreateUserEntityPermissions', async () => {
     // Create test users
     const userAccount = await findOrCreateDummyRecord(models.user, {
       first_name: 'Clark',
-      last_name: 'Kent',
+      last_name: 'CreateUserEntityPermissions',
     });
     userAccountId = userAccount.id;
   });
