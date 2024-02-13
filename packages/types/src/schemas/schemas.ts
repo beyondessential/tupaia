@@ -57581,6 +57581,18 @@ export const ReportSchema = {
 		},
 		"permission_group_id": {
 			"type": "string"
+		},
+		"recent_data_config": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"constructor"
+			]
 		}
 	},
 	"additionalProperties": false,
@@ -57643,6 +57655,18 @@ export const ReportCreateSchema = {
 		},
 		"permission_group_id": {
 			"type": "string"
+		},
+		"recent_data_config": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"constructor"
+			]
 		}
 	},
 	"additionalProperties": false,
@@ -57707,6 +57731,18 @@ export const ReportUpdateSchema = {
 		},
 		"permission_group_id": {
 			"type": "string"
+		},
+		"recent_data_config": {
+			"type": "object",
+			"properties": {
+				"constructor": {
+					"$ref": "#/definitions/Function"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"constructor"
+			]
 		}
 	},
 	"additionalProperties": false
