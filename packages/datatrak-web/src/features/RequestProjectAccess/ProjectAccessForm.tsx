@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import styled from 'styled-components';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -19,28 +20,30 @@ import {
   SpinningLoader,
   TextField,
 } from '@tupaia/ui-components';
-import { useCountryAccessList } from '../../api/queries';
-import { useRequestProjectAccess } from '../../api/mutations';
+import { useCountryAccessList, useRequestProjectAccess } from '../../api';
 import { Button } from '../../components';
 
 const FormControl = styled(BaseFormControl).attrs({
   component: 'fieldset',
   required: true,
 })`
-  margin-bottom: 2rem;
+  margin-block-end: 2rem;
 `;
 
 const Checkbox = styled(BaseCheckbox).attrs({
   color: 'primary',
 })`
   margin: 0;
-  font-size: 0.875rem;
+
+  &,
+  .MuiFormControlLabel-label span // When checkbox has a tooltip
+  {
+    font-size: 0.875rem;
+  }
+
   .MuiSvgIcon-root {
     width: 1.2rem;
     height: 1.2rem;
-  }
-  .MuiFormControlLabel-label span {
-    font-size: 0.875rem;
   }
 `;
 
@@ -52,9 +55,9 @@ const TextArea = styled(TextField).attrs({
 })`
   .MuiFormLabel-root {
     color: ${({ theme }) => theme.palette.text.primary};
-    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+    margin-block-end: 0.5rem;
   }
   .MuiInputBase-input {
     font-size: 0.875rem;
@@ -69,8 +72,7 @@ const TextArea = styled(TextField).attrs({
 
 const SuccessWrapper = styled.div`
   display: flex;
-  margin-top: 1.5rem;
-  margin-bottom: 7rem;
+  margin-block: 1.5rem 7rem;
   p:first-child {
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     margin-bottom: 0.5rem;
@@ -82,8 +84,8 @@ const SuccessWrapper = styled.div`
 
 const SuccessIcon = styled(CheckCircle)`
   color: ${({ theme }) => theme.palette.success.main};
-  margin-right: 1rem;
   font-size: 2rem;
+  margin-inline-end: 1rem;
 `;
 
 const LoaderWrapper = styled.div`
@@ -109,10 +111,11 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
   const formContext = useForm({
     mode: 'onChange',
   });
-  const { register } = formContext;
+  const {
+    formState: { isValid },
+    register,
+  } = formContext;
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
-
-  const { isValid } = formContext.formState;
 
   // the countries that are applicable to this project
   const projectCountries = countries?.filter((c: any) => project?.names?.includes(c.name));
@@ -128,7 +131,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
   // On success, show a success message to the user and direct them back to the projects list
   if (isSuccess)
     return (
-      <div>
+      <>
         <SuccessWrapper>
           <SuccessIcon />
           <div>
@@ -143,7 +146,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
         <DialogActions>
           <Button onClick={onClose}>Back to Projects</Button>
         </DialogActions>
-      </div>
+      </>
     );
 
   // While the request is being processed, show a loading spinner
@@ -162,15 +165,15 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
             const hasRequestedAccess = country.accessRequests.includes(projectCode);
             return (
               <Checkbox
+                id={country.id}
                 inputRef={register({
-                  validate: v => {
-                    return v.length > 0;
-                  },
+                  validate: value => value.length > 0,
                 })}
+                disabled={hasRequestedAccess}
+                key={country.id}
                 label={country.name}
                 name="entityIds"
                 value={country.id}
-                disabled={hasRequestedAccess}
                 tooltip={
                   hasRequestedAccess
                     ? 'You have already requested access to this country'
@@ -182,18 +185,18 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
         </FormGroup>
       </FormControl>
       <FormInput Input={TextArea} name="message" />
-      <DialogActions>
+      <StyledDialogActions>
         <Button variant="outlined" onClick={onClose}>
           Back
         </Button>
         <Button
           type="submit"
           disabled={!isValid}
-          tooltip={!isValid ? 'Please select one or more countries to proceed' : ''}
+          tooltip={isValid ? undefined : 'Select one or more countries to proceed'}
         >
-          Request Access
+          Request access
         </Button>
-      </DialogActions>
+      </StyledDialogActions>
     </Form>
   );
 };
