@@ -7,7 +7,6 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   LESMIS_ADMIN_PERMISSION_GROUP,
-  VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from './constants';
 
 /**
@@ -62,9 +61,6 @@ export const hasLESMISAdminAccess = accessPolicy =>
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
-export const hasVizBuilderAccess = accessPolicy =>
-  accessPolicy.allowsSome(undefined, VIZ_BUILDER_USER_PERMISSION_GROUP);
-
 export const hasPermissionGroupAccess = (accessPolicy, permissionGroup) =>
   accessPolicy.allowsSome(undefined, permissionGroup);
 
@@ -108,14 +104,6 @@ export const assertAdminPanelAccess = accessPolicy => {
   }
 
   throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access`);
-};
-
-export const assertVizBuilderAccess = accessPolicy => {
-  if (hasVizBuilderAccess(accessPolicy)) {
-    return true;
-  }
-
-  throw new Error(`Need ${VIZ_BUILDER_USER_PERMISSION_GROUP} access`);
 };
 
 export const assertPermissionGroupAccess = (accessPolicy, permissionGroupName) => {
