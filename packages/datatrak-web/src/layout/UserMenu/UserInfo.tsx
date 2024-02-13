@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
-import { Button } from '../../components';
+import { Button, ChangeProjectButton } from '../../components';
 import { useCurrentUser } from '../../api';
 import { ROUTES } from '../../constants';
 
@@ -29,31 +29,6 @@ export const UserDetails = styled.div`
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
-  }
-`;
-
-const ProjectButton = styled(Button).attrs({
-  variant: 'text',
-})`
-  padding-inline: 0;
-  justify-content: center;
-  .MuiButton-label {
-    font-size: 1rem;
-    line-height: 1.4;
-    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
-  }
-  color: ${props => props.theme.palette.text.secondary};
-  &:hover {
-    background: none;
-    color: ${props => props.theme.palette.action.hover};
-    text-decoration: underline;
-  }
-
-  &:before {
-    content: '';
-    border-left: 1px solid ${props => props.theme.palette.text.secondary};
-    height: 1.2rem;
-    margin-inline-end: 0.5rem;
   }
 `;
 
@@ -80,22 +55,19 @@ const AuthButtons = styled.div`
     display: none;
   }
 `;
+
 /**
  * This is the displayed user name OR the login/register buttons on desktop
  */
-export const UserInfo = ({ openProjectModal }: { openProjectModal: () => void }) => {
-  const user = useCurrentUser();
+export const UserInfo = () => {
+  const { isLoggedIn, projectId, userName } = useCurrentUser();
 
   return (
     <Wrapper>
-      {user.isLoggedIn ? (
+      {isLoggedIn ? (
         <UserDetails>
-          <UserName>{user.userName}</UserName>
-          {user.projectId && (
-            <ProjectButton onClick={openProjectModal} tooltip="Change project">
-              {user.project?.name}
-            </ProjectButton>
-          )}
+          <UserName>{userName}</UserName>
+          {projectId && <ChangeProjectButton />}
         </UserDetails>
       ) : (
         <AuthButtons>
