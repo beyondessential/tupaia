@@ -54,3 +54,22 @@ export const getAdminPanelAllowedCountryIds = async (accessPolicy, models) => {
 
   return entities.map(e => e.id);
 };
+
+/**
+ * Get a mapping of countryIds to permissionGroupIds for countries that the user has Tupaia Admin Panel access to
+ */
+export const getAdminPanelAllowedPermissionGroupIdsByCountryIds = async (accessPolicy, models) => {
+  const allowedCountryCodes = getAdminPanelAllowedCountryCodes(accessPolicy);
+  return Object.fromEntries(
+    await Promise.all(
+      allowedCountryCodes.map(async countryCode => [
+        (await models.entity.findOne({ code: countryCode })).id,
+        (
+          await models.permissionGroup.find({
+            name: accessPolicy.getPermissionGroups([countryCode]),
+          })
+        ).map(({ id }) => id),
+      ]),
+    ),
+  );
+};

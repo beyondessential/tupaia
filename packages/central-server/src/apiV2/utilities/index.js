@@ -14,6 +14,7 @@ export { fetchRequestingMeditrakDevice } from '../meditrakApp/utilities/fetchReq
 export {
   getAdminPanelAllowedCountryIds,
   getAdminPanelAllowedCountryCodes,
+  getAdminPanelAllowedPermissionGroupIdsByCountryIds,
 } from './getAdminPanelAllowedCountries';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { hasAccessToEntityForVisualisation } from './hasAccessToEntityForVisualisation';
