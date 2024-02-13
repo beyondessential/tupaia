@@ -90,6 +90,15 @@ const LoaderWrapper = styled.div`
   padding: 1rem 0 2rem 0;
 `;
 
+/** Fixes janky spacing changes when 'Request access' button is enabled or disabled */
+const StyledDialogActions = styled(DialogActions)`
+  gap: 1rem;
+
+  & > :not(:first-child) {
+    margin-inline-start: 0;
+  }
+`;
+
 interface ProjectAccessFormProps {
   project: any;
   onClose?: () => void;
