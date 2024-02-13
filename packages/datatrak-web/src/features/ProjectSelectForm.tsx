@@ -137,7 +137,7 @@ export const ProjectSelectForm = ({
           color="primary"
           isLoading={isConfirming}
           disabled={!selectedProjectId}
-          tooltip={selectedProjectId ? '' : 'Select project to proceed'}
+          tooltip={selectedProjectId ? undefined : 'Select a project to proceed'}
         >
           Confirm
         </Button>
