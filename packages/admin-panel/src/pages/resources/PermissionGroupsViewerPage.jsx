@@ -29,15 +29,21 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   }
 `;
 
-function getDescendantData(parentNodeId, data) {
-  return data
-    .filter(node => node.parent_id === parentNodeId)
+const getRootLevelNodes = data =>
+  data.filter(({ parent_id: parentId }) => !data.some(({ id }) => id === parentId)); // Cannot find parent
+
+const getChildrenOfNode = (data, nodeId) =>
+  data.filter(({ parent_id: parentId }) => parentId === nodeId);
+
+const getDescendantData = (parentNodeId, data) => {
+  const nodes = !parentNodeId ? getRootLevelNodes(data) : getChildrenOfNode(data, parentNodeId);
+  return nodes
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(node => {
       const children = data.filter(childNode => childNode.parent_id === node.id);
       return { id: node.id, name: node.name, children };
     });
-}
+};
 
 const usePermissionGroups = () => {
   const { isLoading, data } = useQuery(

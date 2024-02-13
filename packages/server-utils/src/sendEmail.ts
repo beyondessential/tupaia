@@ -1,7 +1,8 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import nodemailer from 'nodemailer';
 import { getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 import Mail from 'nodemailer/lib/mailer';
@@ -28,7 +29,7 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
 
   if (text && html) {
-    throw new Error('Only text or html can be sent in an email, not both');
+    throw new Error('Only text or HTML can be sent in an email, not both');
   }
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASSWORD || !SITE_EMAIL_ADDRESS) {
@@ -52,7 +53,8 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
   const fullHtml = html ? `${html}<br>${signOff}` : undefined;
 
   return transporter.sendMail({
-    from: SITE_EMAIL_ADDRESS,
+    from: `Tupaia <${SITE_EMAIL_ADDRESS}>`,
+    sender: SITE_EMAIL_ADDRESS,
     to: sendTo,
     subject,
     attachments,

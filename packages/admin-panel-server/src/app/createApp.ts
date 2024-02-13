@@ -145,7 +145,7 @@ export async function createApp() {
     .use('hierarchies', forwardToEntityApi)
     .use('*', forwardRequest(CENTRAL_API_URL));
 
-  await builder.initialiseApiClient([{ entityCode: 'DL', permissionGroupName: 'Public' }]);
+  await builder.initialiseApiClient();
 
   const app = builder.build();
 

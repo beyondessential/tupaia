@@ -61,6 +61,7 @@ describe('processSurveyResponse', () => {
     options_created: [],
     entities_upserted: [],
     qr_codes_to_create: [],
+    recent_entities: [],
   };
 
   it('should process the survey response with standard question types', async () => {
@@ -132,6 +133,7 @@ describe('processSurveyResponse', () => {
       ...processedResponseData,
       entity_id: 'answer1',
       answers: [],
+      recent_entities: ['answer1'],
     });
   });
 
@@ -298,6 +300,7 @@ describe('processSurveyResponse', () => {
           body: 'answer1',
         },
       ],
+      recent_entities: ['answer1'],
     });
   });
 
@@ -347,6 +350,7 @@ describe('processSurveyResponse', () => {
           id: 'answer1',
         },
       ],
+      recent_entities: ['answer1'],
     });
   });
 
@@ -403,6 +407,7 @@ describe('processSurveyResponse', () => {
           id: 'answer1',
         },
       ],
+      recent_entities: ['answer1'],
     });
   });
 
@@ -446,6 +451,51 @@ describe('processSurveyResponse', () => {
           id: generateId(),
         },
       ],
+      recent_entities: [generateId()],
+    });
+  });
+
+  it('should use the country id for new entities if parent id is not filled in', async () => {
+    const result = await processSurveyResponse(
+      {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            type: QuestionType.PrimaryEntity,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            config: {
+              entity: {
+                createNew: true,
+                fields: {
+                  parentId: {
+                    questionId: 'question2',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        answers: {
+          question2: '',
+        },
+      },
+      mockFindEntityById,
+    );
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      entity_id: generateId(),
+      answers: [],
+      entities_upserted: [
+        {
+          parent_id: (await mockFindEntityById('theCountryId')).id,
+          id: generateId(),
+        },
+      ],
+      recent_entities: [generateId()],
     });
   });
   it('should handle when question type is File', async () => {

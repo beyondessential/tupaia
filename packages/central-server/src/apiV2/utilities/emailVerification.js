@@ -6,7 +6,7 @@
 import { encryptPassword } from '@tupaia/auth';
 import { sendEmail } from '@tupaia/server-utils';
 
-const { TUPAIA_FRONT_END_URL, LESMIS_FRONT_END_URL } = process.env;
+const { TUPAIA_FRONT_END_URL, LESMIS_FRONT_END_URL, DATATRAK_FRONT_END_URL } = process.env;
 
 const EMAILS = {
   tupaia: {
@@ -15,6 +15,14 @@ const EMAILS = {
       'Thank you for registering with tupaia.org.\n' +
       'Please click on the following link to register your email address.\n\n' +
       `${TUPAIA_FRONT_END_URL}/verify-email?verifyEmailToken=${token}\n\n` +
+      'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
+  },
+  datatrak: {
+    subject: 'Tupaia Datatrak email verification',
+    body: token =>
+      'Thank you for registering with datatrak.tupaia.org.\n' +
+      'Please click on the following link to register your email address.\n\n' +
+      `${DATATRAK_FRONT_END_URL}/verify-email?verifyEmailToken=${token}\n\n` +
       'If you believe this email was sent to you in error, please contact us immediately at admin@tupaia.org.\n',
   },
   lesmis: {

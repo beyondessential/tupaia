@@ -29,6 +29,7 @@ export const useRegisterUser = () => {
           password,
           passwordConfirm,
           deviceName: window.navigator.userAgent,
+          primaryPlatform: 'lesmis',
         },
       }),
   );

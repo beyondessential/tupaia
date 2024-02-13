@@ -33,5 +33,7 @@ content-type: {{contentType}}
 ### Get user
 GET {{host}}/getUser HTTP/1.1
 content-type: {{contentType}}
-
  
+### Get survey
+GET {{host}}/surveys/TAR HTTP/1.1
+content-type: {{contentType}}
