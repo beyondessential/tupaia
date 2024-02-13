@@ -4,12 +4,12 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { COUNTRY_CODE, LESMIS_ADMIN_PERMISSION_GROUP } from '../constants';
+import { COUNTRY_CODE, ADMIN_PERMISSION_GROUP } from '../constants';
 
 export const isLesmisAdmin = user => {
   if (!user?.accessPolicy) {
     return false;
   }
 
-  return new AccessPolicy(user.accessPolicy).allows(COUNTRY_CODE, LESMIS_ADMIN_PERMISSION_GROUP);
+  return new AccessPolicy(user.accessPolicy).allows(COUNTRY_CODE, ADMIN_PERMISSION_GROUP);
 };

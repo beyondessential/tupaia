@@ -6,7 +6,6 @@
 import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  LESMIS_ADMIN_PERMISSION_GROUP,
   VIZ_BUILDER_USER_PERMISSION_GROUP,
 } from './constants';
 
@@ -56,9 +55,6 @@ export const assertAnyPermissions = (assertions, errorMessage) => async accessPo
 /**
  * specific permissions assertions
  */
-export const hasLESMISAdminAccess = accessPolicy =>
-  accessPolicy.allowsSome(undefined, LESMIS_ADMIN_PERMISSION_GROUP);
-
 export const hasBESAdminAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP);
 
@@ -103,7 +99,7 @@ export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
   accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
 export const assertAdminPanelAccess = accessPolicy => {
-  if (hasTupaiaAdminPanelAccess(accessPolicy) || hasLESMISAdminAccess(accessPolicy)) {
+  if (hasTupaiaAdminPanelAccess(accessPolicy)) {
     return true;
   }
 

@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import camelcaseKeys from 'camelcase-keys';
-import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 import { isLesmisAdmin } from '../utils';
+import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
