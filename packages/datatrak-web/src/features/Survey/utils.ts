@@ -60,9 +60,7 @@ export const formatSurveyScreenQuestions = (
 };
 
 export const getAllSurveyComponents = (surveyScreens?: SurveyScreen[]) => {
-  return surveyScreens?.reduce((components, screen) => {
-    return [...components, ...screen.surveyScreenComponents];
-  }, [] as SurveyScreenComponent[]);
+  return surveyScreens?.map(({ surveyScreenComponents }) => surveyScreenComponents)?.flat() ?? [];
 };
 
 export const getErrorsByScreen = (

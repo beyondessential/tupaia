@@ -27,10 +27,12 @@ export const useEditUser = (onSuccess?: () => void) => {
         project_id?: Project['id'];
         country_id?: Entity['id'];
         delete_account_requested?: boolean;
+        recent_entities?: Record<string, unknown>;
       };
 
       if (projectId) {
         updates.project_id = projectId;
+        updates.recent_entities = {}; // Clear recent entities when changing project
       }
 
       if (countryId) {
@@ -45,8 +47,12 @@ export const useEditUser = (onSuccess?: () => void) => {
       });
     },
     {
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         queryClient.invalidateQueries('getUser');
+        // If the user changes their project, we need to invalidate the entity descendants query so that recent entities are updated if they change back to the previous project without refreshing the page
+        if (variables.projectId) {
+          queryClient.invalidateQueries('entityDescendants');
+        }
         if (onSuccess) onSuccess();
       },
     },
