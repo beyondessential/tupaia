@@ -7,8 +7,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
-import { Lock, WatchLater } from '@material-ui/icons';
-import { SpinningLoader, Button as UIButton } from '@tupaia/ui-components';
+import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
+import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList } from '../components';
 import { useEditUser } from '../api/mutations';
@@ -79,8 +79,8 @@ export const ProjectSelectForm = ({
   };
 
   const getProjectIcon = (hasAccess: boolean, hasPendingAccess: boolean) => {
-    if (hasPendingAccess) return <WatchLater />;
-    if (!hasAccess) return <Lock />;
+    if (hasPendingAccess) return <ClockIcon />;
+    if (!hasAccess) return <LockIcon />;
     return null;
   };
 
