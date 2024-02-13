@@ -99,6 +99,9 @@ export const assertBESAdminAccess = accessPolicy => {
 export const hasTupaiaAdminPanelAccess = accessPolicy =>
   accessPolicy.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
 
+export const hasTupaiaAdminPanelAccessToCountry = (accessPolicy, countryCode) =>
+  accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP);
+
 export const assertAdminPanelAccess = accessPolicy => {
   if (hasTupaiaAdminPanelAccess(accessPolicy) || hasLESMISAdminAccess(accessPolicy)) {
     return true;
