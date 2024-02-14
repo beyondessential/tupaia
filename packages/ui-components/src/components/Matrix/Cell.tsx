@@ -18,4 +18,5 @@ export const Cell = styled(TableCell)<{
       ? '20ch'
       : '14ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
   max-width: 30ch; // don't let the text take up too much space;
+  word-break: break-word;
 `;

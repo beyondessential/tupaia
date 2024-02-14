@@ -31,9 +31,6 @@ const MatrixWrapper = css`
   max-width: 90vw;
   padding: 0 0.5rem;
   width: auto;
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    min-width: 45rem;
-  }
 `;
 
 // BigChartWrapper is a wrapper that sets the chart to be full width when there is a lot of data. This needs to be separate from MatrixWrapper because recharts needs a fixed width to expand because it calculates the svg width based on the width of the parent div
