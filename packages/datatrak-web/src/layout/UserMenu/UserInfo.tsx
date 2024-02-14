@@ -21,11 +21,11 @@ const Wrapper = styled.div`
 export const UserDetails = styled.div`
   align-items: baseline;
   display: flex;
+  font-size: 1.2em;
   gap: 0.5rem;
   padding-inline: 0.5rem;
   > span {
     color: ${props => props.theme.palette.text.primary};
-    font-size: 1.2em;
   }
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: none;
