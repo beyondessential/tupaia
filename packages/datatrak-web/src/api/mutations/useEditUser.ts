@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { useMutation, useQueryClient } from 'react-query';
@@ -28,7 +28,7 @@ export const useEditUser = (onSuccess?: () => void) => {
     async (userDetails: UserAccountDetails) => {
       if (!userDetails) return;
 
-      // mobile_number field in database is nullable; don't just store an empty string
+      // `mobile_number` field in database is nullable; don't just store an empty string
       if (!userDetails?.mobileNumber) {
         userDetails.mobileNumber = null;
       }
@@ -41,8 +41,12 @@ export const useEditUser = (onSuccess?: () => void) => {
       await put('me', { data: updates });
     },
     {
-      onSuccess: () => {
+      onSuccess: (_, variables) => {
         queryClient.invalidateQueries('getUser');
+        // If the user changes their project, we need to invalidate the entity descendants query so that recent entities are updated if they change back to the previous project without refreshing the page
+        if (variables.projectId) {
+          queryClient.invalidateQueries('entityDescendants');
+        }
         if (onSuccess) onSuccess();
       },
     },
