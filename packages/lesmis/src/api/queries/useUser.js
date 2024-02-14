@@ -17,8 +17,8 @@ export const useUser = options => {
 
   const user = query.data;
   const isLoggedIn = user && Object.keys(user).length > 0;
-  const isLesmisAdmin = user && user.isLesmisAdmin;
+  const hasAdminPanelAccess = user && user.hasAdminPanelAccess;
   const userId = user && user.id;
 
-  return { ...query, isLoggedIn, isLesmisAdmin, userId };
+  return { ...query, isLoggedIn, hasAdminPanelAccess, userId };
 };
