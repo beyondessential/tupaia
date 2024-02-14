@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { fireEvent, screen } from '@testing-library/react';
 import { rest } from 'msw';
@@ -58,12 +58,12 @@ describe('Login', () => {
   });
 
   it('Redirects back where it came from', async () => {
-    renderPage('/account-settings');
+    renderPage('/survey');
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent('Log in');
 
     server.use(mockUserRequest({ email: 'john@gmail.com', projectId: 'foo' }));
     await doLogin();
 
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Account settings/i);
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(/Select survey/i);
   });
 });
