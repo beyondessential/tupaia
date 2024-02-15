@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { periodToMoment, utcMoment } from '@tupaia/tsutils';
@@ -71,10 +71,30 @@ const ANALYTICS = generateFakeAnalytics();
 
 const EVENTS: Record<
   string,
-  { orgUnit: string; eventDate: string; dataValues: Record<string, unknown> }[]
+  { orgUnit: string; eventDate: string; orgUnitName: string; dataValues: Record<string, unknown> }[]
 > = {
-  BCD: [{ orgUnit: 'TO', eventDate: '2020-01-01', dataValues: { BCD1: 7, BCD2: 8 } }],
-  ABC: [{ orgUnit: 'TO', eventDate: '2020-01-01', dataValues: { ABC1: 7, ABC2: 8 } }],
+  BCD: [
+    {
+      orgUnit: 'TO',
+      eventDate: '2020-01-01',
+      orgUnitName: 'Tonga',
+      dataValues: { BCD1: 7, BCD2: 8 },
+    },
+  ],
+  ABC: [
+    {
+      orgUnit: 'TO',
+      eventDate: '2020-01-01',
+      orgUnitName: 'Tonga',
+      dataValues: { ABC1: 7, ABC2: 8 },
+    },
+    {
+      orgUnit: 'TO_village',
+      eventDate: '2020-01-01',
+      orgUnitName: 'Village 1',
+      dataValues: { ABC1: 9, ABC2: 10 },
+    },
+  ],
 };
 
 const analyticsParamsValidator = yup.object({
@@ -109,13 +129,8 @@ const eventsParamsValidator = yup.object({
 export const eventsDataTable = {
   fetchData: (parameters: Record<string, unknown>) => {
     const validParameters = eventsParamsValidator.validateSync(parameters);
-    const {
-      dataGroupCode,
-      dataElementCodes,
-      organisationUnitCodes,
-      startDate,
-      endDate,
-    } = validParameters;
+    const { dataGroupCode, dataElementCodes, organisationUnitCodes, startDate, endDate } =
+      validParameters;
     const eventsForDataGroup = EVENTS[dataGroupCode];
     const eventsMatchingFilters = eventsForDataGroup.filter(
       event =>

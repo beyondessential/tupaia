@@ -4,10 +4,8 @@
  */
 
 import { Request } from 'express';
-
 import { Aggregator } from '@tupaia/aggregator';
 import { Route } from '@tupaia/server-boilerplate';
-
 import { DataBroker } from '@tupaia/data-broker';
 import { ReportServerAggregator } from '../aggregator';
 import { ReportBuilder, BuiltReport } from '../reportBuilder';
@@ -63,6 +61,7 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     };
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
+
     return reportBuilder.build();
   }
 }
