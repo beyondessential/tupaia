@@ -7,6 +7,7 @@ import React from 'react';
 import { ChangeProjectButton } from '../../../components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { AccessGrantedCountryList } from './AccessGrantedCountryList';
+import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 
 export const RequestCountryAccessSection = () => {
   const title = (
@@ -22,5 +23,9 @@ export const RequestCountryAccessSection = () => {
     </>
   );
 
-  return <AccountSettingsSection title={title} description={description}></AccountSettingsSection>;
+  return (
+    <AccountSettingsSection title={title} description={description}>
+      <RequestCountryAccessForm />
+    </AccountSettingsSection>
+  );
 };
