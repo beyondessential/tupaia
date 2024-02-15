@@ -11,5 +11,9 @@ then
     exit 0
 fi
 
-echo -e "Error: $DB_NAME database does not exist!\n\nTo create it, please get the .env file from lastpass then run:\nyarn workspace @tupaia/database setup-test-database\n"
+echo -e "\033[31mError: $DB_NAME database does not exist!\033[m"
+echo    "To create it, get the .env file from LastPass then run:"
+echo    ""
+echo -e "  \033[1myarn workspace @tupaia/database setup-test-database\033[m"
+echo    ""
 exit 1
