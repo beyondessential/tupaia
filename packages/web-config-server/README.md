@@ -26,8 +26,8 @@ If you want to connect to a local aggregation server/DHIS2 instance, clone the [
 Entry point for the app, using [Express](https://expressjs.com). Initialises server and sets middlewares’ use:
 
 - `morgan('dev')` → simple console logger
-- `bodyParser` → auto parse request body as json
-- `checkBadJson` → adequately deal with incorrect json requests (this should be tied in with error handler, and be logged via email)
+- `bodyParser` → auto parse request body as JSON
+- `checkBadJson` → adequately deal with incorrect JSON requests (this should be tied in with error handler, and be logged via email)
 - After that, initialise database and continue →
 - `authInit` → sets up cookie sessions
 - `auth` → check each request for appropriate authorisation
@@ -44,8 +44,8 @@ Router is defined here, to introduce new route under `/api/v1`:
 
 ```js
 export default () => (req, res, next) => {
-  // Do something with req.body (as json)
-  // Send response via res.send(response json)
+  // Do something with req.body (as JSON)
+  // Send response via res.send(response JSON)
 };
 ```
 
@@ -53,20 +53,20 @@ export default () => (req, res, next) => {
 
 Authentication functions.
 
-|:--|:--|
+|:-----------|:-------------------------------------------------------------------------------------------------------------------------------|
 | `authInit` | first middleware for request, from 'client-sessions', deals with decrypting session and setting sessions further down the line |
 
 ### [./src/appServer](appServer)
 
 API connect for Tupaia App server.
 
-|:--|:--|
-| `auth` | Second middleware for request, checks to see if session (cookie) exists |
-| `authLogin` | Checks user’s password, username matches DB |
-| `authCreateUser` | Creates a new user using a set of fields |
-| `authChangePassword` | Changes the password of an existing user |
-| `authGetCountryAccessList` | Gets the user’s access to the available countries |
-| `authRequestCountryAccess` | Requests user access to specified countries |
+|:---------------------------|:------------------------------------------------------------------------|
+| `auth`                     | Second middleware for request, checks to see if session (cookie) exists |
+| `authLogin`                | Checks user’s password, username matches DB                             |
+| `authCreateUser`           | Creates a new user using a set of fields                                |
+| `authChangePassword`       | Changes the password of an existing user                                |
+| `authGetCountryAccessList` | Gets the user’s access to the available countries                       |
+| `authRequestCountryAccess` | Requests user access to specified countries                             |
 
 ### [./src/dhis](src/dhis)
 
