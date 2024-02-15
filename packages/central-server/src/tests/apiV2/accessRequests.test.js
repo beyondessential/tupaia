@@ -1,6 +1,6 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
@@ -55,7 +55,7 @@ describe('Access Requests', () => {
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.body).to.deep.equal({ message: 'Country access requested' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
@@ -88,7 +88,7 @@ describe('Access Requests', () => {
 
       const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
-      expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
+      expect(response1.body).to.deep.equal({ message: 'Country access requested' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,

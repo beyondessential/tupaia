@@ -1,7 +1,8 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
@@ -69,7 +70,7 @@ export const requestCountryAccess = async (req, res) => {
   const { countryIds, entityIds, message = '', projectCode } = requestBody;
 
   if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
-    throw new ValidationError('Please select at least one country.');
+    throw new ValidationError('Please select at least one country');
   }
   const entities = await fetchEntities(models, entityIds, countryIds);
   const userId = requestUserId || params.userId;
@@ -87,5 +88,5 @@ export const requestCountryAccess = async (req, res) => {
   const countryNames = entities.map(e => e.name);
   await sendRequest(userInfo, countryNames, message, project);
 
-  respond(res, { message: 'Country access requested.' }, 200);
+  respond(res, { message: 'Country access requested' }, 200);
 };
