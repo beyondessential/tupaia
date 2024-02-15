@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { DashboardItemConfig } from '../../types';
+import { DashboardItemConfig } from '@tupaia/types';
 
 const LoadingContainer = styled.div<{
   $isExporting?: boolean;
