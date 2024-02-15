@@ -64,8 +64,8 @@ export type BaseChartConfig = BaseConfig & {
   renderLegendForOneItem?: boolean;
 };
 
-export const isChartConfig = (config: BaseConfig): config is BaseChartConfig => {
-  return 'type' in config && config.type === 'chart';
+export const isChartConfig = (config?: BaseConfig): config is BaseChartConfig => {
+  return (config && 'type' in config && config.type === 'chart') ?? false;
 };
 
 export type CartesianChartPresentationOptions = ExportPresentationOptions & {
