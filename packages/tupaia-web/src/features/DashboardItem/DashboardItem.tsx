@@ -9,8 +9,8 @@ import { Moment } from 'moment';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import { getDefaultDates } from '@tupaia/utils';
-import { MultiValueViewConfig } from '@tupaia/types';
-import { DashboardItem as DashboardItemType, DashboardItemConfig } from '../../types';
+import { DashboardItemConfig } from '@tupaia/types';
+import { DashboardItem as DashboardItemType } from '../../types';
 import { useReport } from '../../api/queries';
 import { useDashboard } from '../Dashboard';
 import { DashboardItemContent } from './DashboardItemContent';
@@ -44,20 +44,26 @@ const Title = styled(Typography).attrs({
   text-align: center;
 `;
 
-const getShowDashboardItemTitle = (config: DashboardItemConfig, legacy?: boolean) => {
-  const { presentationOptions, type, viewType, name } = config;
+const getShowDashboardItemTitle = (config?: DashboardItemConfig, legacy?: boolean) => {
+  if (!config) return false;
+  const { type, name } = config;
   if (!name) return false;
-  if (viewType === 'multiValue') {
-    // if report is legacy, show title because it won't have the config set
-    return (
-      (presentationOptions as MultiValueViewConfig['presentationOptions'])?.isTitleVisible || legacy
-    );
+  if (type === 'component') return false;
+  if (type === 'view') {
+    const { viewType } = config;
+    if (
+      viewType === 'multiValue' &&
+      'presentationOptions' in config &&
+      config.presentationOptions
+    ) {
+      const { presentationOptions } = config;
+      // if report is legacy, show title because it won't have the config set
+      return presentationOptions?.isTitleVisible || legacy;
+    }
+    if (viewType?.includes('Download') || viewType === 'multiSingleValue') return false;
   }
-  return !(
-    viewType?.includes('Download') ||
-    type === 'component' ||
-    viewType === 'multiSingleValue'
-  );
+
+  return true;
 };
 
 /**
@@ -88,7 +94,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
     legacy: dashboardItem?.legacy,
   });
 
-  const { config = {}, legacy } = dashboardItem;
+  const { config, legacy } = dashboardItem;
 
   const showTitle = getShowDashboardItemTitle(config, legacy);
 

@@ -17,10 +17,10 @@ import {
 } from '@material-ui/core';
 import { DateRange, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { GRANULARITIES, GRANULARITY_SHAPE } from '@tupaia/utils';
-import { useDateRangePicker } from './useDateRangePicker';
-import { DatePickerDialog } from './DatePickerDialog';
 import { FlexStart } from '../Layout';
 import { WeekDisplayFormatType } from '../../types';
+import { useDateRangePicker } from './useDateRangePicker';
+import { DatePickerDialog } from './DatePickerDialog';
 
 const IconButton = styled(MuiIconButton)`
   background: white;
@@ -74,8 +74,8 @@ const Label = styled(Typography)`
 `;
 
 interface DateRangePickerProps {
-  startDate?: Moment;
-  endDate?: Moment;
+  startDate?: Moment | string;
+  endDate?: Moment | string;
   minDate?: string;
   maxDate?: string;
   granularity?: typeof GRANULARITY_SHAPE;
