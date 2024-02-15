@@ -15,14 +15,14 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.addColumn('report', 'recent_data_config', {
+  return db.addColumn('report', 'latest_data_parameters', {
     type: 'json',
     defaultValue: '{}',
   });
 };
 
 exports.down = function (db) {
-  return db.removeColumn('report', 'recent_data_config');
+  return db.removeColumn('report', 'latest_data_parameters');
 };
 
 exports._meta = {
