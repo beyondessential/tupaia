@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { useQuery } from 'react-query';
@@ -12,6 +12,7 @@ export const useCountryAccessList = () => {
     'countryAccessList',
     (): Promise<TupaiaWebCountryAccessListRequest.ResBody> => get('me/countries'),
     {
+      initialData: [],
       placeholderData: [],
       staleTime: 0, // Disable cache so that if we go back to the request access view, the country list is up to date
     },
