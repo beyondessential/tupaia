@@ -140,11 +140,15 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
  */
 
 const MatrixVisual = () => {
-  const { config, report, isEnlarged } = useContext(DashboardItemContext);
+  const context = useContext(DashboardItemContext);
+  const { report, isEnlarged } = context;
+  // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
+  const config = context.config as MatrixConfig;
+  // casting here because we know that the report is a MatrixReport and it has a different shape than reports of other types
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
+  const { periodGranularity, drillDown, valueType } = config;
 
   const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, valueType);
   const parsedColumns = parseColumns(columns);
@@ -176,7 +180,8 @@ const MatrixVisual = () => {
   return (
     <>
       <MatrixComponent
-        {...config}
+        // casting here because we know that the config is a MatrixConfig and it has a different shape than configs of other types, and while we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context
+        {...(config as MatrixConfig)}
         rows={parsedRows}
         columns={parsedColumns}
         disableExpand={!!searchFilter}

@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { DashboardItemConfig } from '../../../types';
 import { ConditionalPresentationOptions, MatrixConfig } from '@tupaia/types';
 import { getIsUsingDots } from '@tupaia/ui-components';
 import styled from 'styled-components';
@@ -33,8 +32,10 @@ const getPlaceholderImage = ({
   return '/images/matrix-placeholder-dot-only.png';
 };
 
-export const MatrixPreview = ({ config }: { config?: DashboardItemConfig | null }) => {
-  const placeholderImage = getPlaceholderImage(config as MatrixConfig);
+export const MatrixPreview = ({ config }: { config?: MatrixConfig | null }) => {
+  if (!config) return null;
+
+  const placeholderImage = getPlaceholderImage(config);
   return (
     <PlaceholderWrapper>
       <PlaceholderImage src={placeholderImage} alt="Matrix Placeholder" />

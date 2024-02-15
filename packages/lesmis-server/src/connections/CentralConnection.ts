@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import camelcaseKeys from 'camelcase-keys';
+import { hasAdminPanelAccess } from '../utils';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
-import { isLesmisAdmin } from '../utils';
 
 const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
@@ -22,7 +22,7 @@ export class CentralConnection extends SessionHandlingApiConnection {
       return {};
     }
     const user = await this.get('me');
-    return { ...camelcaseKeys(user), isLesmisAdmin: isLesmisAdmin(user.accessPolicy) };
+    return { ...camelcaseKeys(user), hasAdminPanelAccess: hasAdminPanelAccess(user.accessPolicy) };
   }
 
   public registerUser(userData: RequestBody) {
