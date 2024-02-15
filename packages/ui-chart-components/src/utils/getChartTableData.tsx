@@ -5,7 +5,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, ChartType } from '@tupaia/types';
+import { ValueType, ChartType, isChartConfig } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
 import { ExportViewContent, LooseObject, TableAccessor, ChartViewContent } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
@@ -123,24 +123,24 @@ const processData = (viewContent: ChartViewContent) => {
 };
 
 export const getChartTableData = (viewContent?: ExportViewContent) => {
-  // tables only work for charts
-  if (!viewContent || viewContent.type !== 'chart') {
-    return {
-      columns: [],
-      data: [],
-    };
-  }
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
-  // the other useMemo hooks
+  // the other useMemo hooks. All values need to be memoized, even default values, otherwise it will
+  // cause a potentially infinite loop of re-renders.
+  // See: [https://github.com/TanStack/table/issues/2369](this issue on GitHub for more information)
   const sortByTimestamp = useMemo(
     () => (rowA: any, rowB: any) => sortDates(rowA.original.timestamp, rowB.original.timestamp),
     undefined,
   );
-  const columns = useMemo(
-    () => processColumns(viewContent, sortByTimestamp),
-    [JSON.stringify(viewContent)],
-  );
-  const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
+
+  const isChart = isChartConfig(viewContent);
+  const columns = useMemo(() => {
+    // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
+    return isChart ? processColumns(viewContent, sortByTimestamp) : [];
+  }, [JSON.stringify(viewContent)]);
+  const data = useMemo(() => {
+    // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
+    return isChart ? processData(viewContent) : [];
+  }, [JSON.stringify(viewContent)]);
   return {
     columns,
     data,
