@@ -7,9 +7,6 @@ import { isNotNullish } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
-
-const toSentenceCase = string => string.charAt(0).toUpperCase() + string.slice(1);
 
 export class DashboardRelationType extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_RELATION;
@@ -37,42 +34,15 @@ export class DashboardRelationType extends DatabaseType {
     if (!attributesFilter || !Object.keys(attributesFilter).length) return true;
 
     const attributesDbFilter = Object.entries(attributesFilter).reduce((result, [key, value]) => {
-      // The filter value can be either a single value or an array of values, and in some cases the entity attribute is in lowercase and in some cases it's in sentence case, so we need to filter for both
-      const values = (Array.isArray(value) ? value : [value])
-        .map(v => [toSentenceCase(v), v.toLowerCase()])
-        .flat();
-
-      const attributeFilterKey = `attributes->>${key}`;
-
-      const filter = {
-        comparator: 'IN',
-        comparisonValue: values,
-      };
-
-      // if 'no' is not in the values, just filter by the values
-      if (!values.includes('no')) {
-        return {
-          ...result,
-          [attributeFilterKey]: filter,
-        };
-      }
-
-      // if 'no' is in the values, filter by the values and also include the null values
       return {
         ...result,
-        [attributeFilterKey]: filter,
-        [QUERY_CONJUNCTIONS.OR]: {
-          [attributeFilterKey]: {
-            comparator: 'IS',
-            comparisonValue: null,
-          },
-        },
+        [`attributes->>${key}`]: value,
       };
     }, {});
 
     const filteredEntity = await this.otherModels.entity.findOne({
       id: entity.id,
-      [QUERY_CONJUNCTIONS.AND]: attributesDbFilter,
+      ...attributesDbFilter,
     });
 
     return isNotNullish(filteredEntity);

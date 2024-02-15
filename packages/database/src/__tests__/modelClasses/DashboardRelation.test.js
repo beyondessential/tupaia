@@ -75,7 +75,7 @@ describe('DashboardRelationModel', () => {
     const entityResult = await findOrCreateDummyCountryEntity(models, {
       code: 'test',
       name: 'Test Entity',
-      attributes: { test: 'Yes' },
+      attributes: { test1: 'yes', test2: 'maybe', test3: 'no' },
     });
 
     testEntity = entityResult.entity;
@@ -115,11 +115,15 @@ describe('DashboardRelationModel', () => {
         expect(result).toHaveLength(2);
       });
 
-      it('should return dashboard items that match entity and project when dashboard relation filters are single values', async () => {
+      it('should return dashboard items that match entity and project when dashboard relation filters are set', async () => {
         // Add dashboard relations
         await Promise.all(
           dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { test: 'yes' } : {}),
+            addRelation(
+              dashboards[i].id,
+              dashboardItem,
+              i === 0 ? { test1: 'yes', test2: ['maybe', 'no'], test3: 'no' } : {},
+            ),
           ),
         );
 
@@ -130,74 +134,6 @@ describe('DashboardRelationModel', () => {
         );
 
         expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
-      });
-
-      it('should return dashboard items that match entity and project when dashboard relation filters are array values', async () => {
-        // Add dashboard relations
-        await Promise.all(
-          dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { test: ['yes', 'no'] } : {}),
-          ),
-        );
-
-        const result = await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
-          dashboardIds,
-          testEntity.code,
-          'testProject',
-        );
-
-        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
-      });
-
-      it('should exclude relations when filter is "no" and corresponding entity attribute exists but is not "no"', async () => {
-        // Add dashboard relations
-        await Promise.all(
-          dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { test: ['no'] } : {}),
-          ),
-        );
-
-        const result = await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
-          dashboardIds,
-          testEntity.code,
-          'testProject',
-        );
-
-        expect(getResultChildIds(result)).toEqual([dashboardItems[1].id]);
-      });
-
-      it('should include relations when filter is "no" and corresponding entity attribute is undefined', async () => {
-        // Add dashboard relations
-        await Promise.all(
-          dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { someThing: ['no'] } : {}),
-          ),
-        );
-
-        const result = await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
-          dashboardIds,
-          testEntity.code,
-          'testProject',
-        );
-
-        expect(getResultChildIds(result)).toEqual(dashboardItems.map(d => d.id).sort());
-      });
-
-      it('should exclude relations when filter is set (but is not "no") and corresponding entity attribute is undefined', async () => {
-        // Add dashboard relations
-        await Promise.all(
-          dashboardItems.map((dashboardItem, i) =>
-            addRelation(dashboards[i].id, dashboardItem, i === 0 ? { someThing: ['hi'] } : {}),
-          ),
-        );
-
-        const result = await models.dashboardRelation.findDashboardRelationsForEntityAndProject(
-          dashboardIds,
-          testEntity.code,
-          'testProject',
-        );
-
-        expect(getResultChildIds(result)).toEqual([dashboardItems[1].id]);
       });
     });
 
