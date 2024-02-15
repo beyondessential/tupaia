@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ComponentType, ReactNode, useState } from 'react';
@@ -78,7 +78,6 @@ export const MenuList = ({
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
-  // The help centre link is the same for both logged-in and logged-out users
   const supportCentreItem = {
     label: 'Support centre',
     href: 'https://bes-support.zendesk.com',
