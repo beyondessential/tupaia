@@ -12,7 +12,8 @@ import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 export const RequestCountryAccessSection = () => {
   const title = (
     <>
-      Request country access <ChangeProjectButton />
+      Request country access
+      <ChangeProjectButton />
     </>
   );
 
