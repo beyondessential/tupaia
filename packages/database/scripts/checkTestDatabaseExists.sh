@@ -16,4 +16,5 @@ echo    "To create it, get the .env file from LastPass then run:"
 echo    ""
 echo -e "  \033[1myarn workspace @tupaia/database setup-test-database\033[m"
 echo    ""
+
 exit 1
