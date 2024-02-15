@@ -18,7 +18,6 @@ export class ReportApi extends BaseApi {
   }
 
   public async fetchReport(reportCode: string, query?: QueryParameters | null) {
-    // TODO: Set latest value with data here
     return this.connection.get(`fetchReport/${reportCode}`, query);
   }
 }

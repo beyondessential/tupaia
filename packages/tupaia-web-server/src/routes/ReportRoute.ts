@@ -30,18 +30,10 @@ export class ReportRoute extends Route<ReportRequest> {
       endDate,
     };
 
-    // TODO: Set latest value with data here
     const { results } = await ctx.services.report.fetchReport(reportCode, params);
 
     // format to be the same as the legacy report results, so that the FE can handle accordingly
     const reportData = Array.isArray(results) ? { data: results } : { ...results };
-
-    if (reportData?.data || results.rows) {
-      const allData = reportData?.data || results.rows;
-      if (allData.length) {
-        // there is data so we can pre-populate the start and end date
-      }
-    }
 
     return {
       ...reportData,
