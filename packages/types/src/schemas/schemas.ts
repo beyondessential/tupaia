@@ -57579,10 +57579,7 @@ export const ReportSchema = {
 		"id": {
 			"type": "string"
 		},
-		"permission_group_id": {
-			"type": "string"
-		},
-		"recent_data_config": {
+		"latest_data_parameters": {
 			"type": "object",
 			"properties": {
 				"constructor": {
@@ -57593,6 +57590,9 @@ export const ReportSchema = {
 			"required": [
 				"constructor"
 			]
+		},
+		"permission_group_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -57653,10 +57653,7 @@ export const ReportCreateSchema = {
 				}
 			]
 		},
-		"permission_group_id": {
-			"type": "string"
-		},
-		"recent_data_config": {
+		"latest_data_parameters": {
 			"type": "object",
 			"properties": {
 				"constructor": {
@@ -57667,6 +57664,9 @@ export const ReportCreateSchema = {
 			"required": [
 				"constructor"
 			]
+		},
+		"permission_group_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false,
@@ -57729,10 +57729,7 @@ export const ReportUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"permission_group_id": {
-			"type": "string"
-		},
-		"recent_data_config": {
+		"latest_data_parameters": {
 			"type": "object",
 			"properties": {
 				"constructor": {
@@ -57743,6 +57740,9 @@ export const ReportUpdateSchema = {
 			"required": [
 				"constructor"
 			]
+		},
+		"permission_group_id": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false

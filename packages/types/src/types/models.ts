@@ -1341,21 +1341,21 @@ export interface Report {
   'code': string;
   'config': ReportConfig;
   'id': string;
+  'latest_data_parameters'?: Object | null;
   'permission_group_id': string;
-  'recent_data_config'?: Object | null;
 }
 export interface ReportCreate {
   'code': string;
   'config': ReportConfig;
+  'latest_data_parameters'?: Object | null;
   'permission_group_id': string;
-  'recent_data_config'?: Object | null;
 }
 export interface ReportUpdate {
   'code'?: string;
   'config'?: ReportConfig;
   'id'?: string;
+  'latest_data_parameters'?: Object | null;
   'permission_group_id'?: string;
-  'recent_data_config'?: Object | null;
 }
 export interface Setting {
   'id': string;

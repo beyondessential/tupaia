@@ -19,6 +19,14 @@ export class ReportType extends DatabaseType {
     );
     return permissionGroup.name;
   }
+
+  /**
+   *
+   * @param {*} parameters - object containing the latest data parameters
+   */
+  async setLatestDataParameters(parameters = {}) {
+    await this.model.updateById(this.id, { latest_data_parameters: parameters });
+  }
 }
 
 export class ReportModel extends DatabaseModel {
