@@ -86,7 +86,7 @@ export const UserMenu = () => {
     </BaseMenuItem>
   );
 
-  const HelpCentre = (
+  const SupportCentre = (
     <BaseMenuItem externalLink href="https://bes-support.zendesk.com" key="support">
       Support centre
     </BaseMenuItem>
@@ -106,12 +106,12 @@ export const UserMenu = () => {
 
   // The custom landing pages need different menu items to the other views
   const customLandingPageMenuItems = isLoggedIn
-    ? [VisitMainSite, HelpCentre, ChangePassword, Logout]
-    : [VisitMainSite, HelpCentre];
+    ? [VisitMainSite, SupportCentre, ChangePassword, Logout]
+    : [VisitMainSite, SupportCentre];
 
   const baseMenuItems = isLoggedIn
-    ? [ViewProjects, SubmitData, HelpCentre, ChangePassword, RequestCountryAccess, Logout]
-    : [ViewProjects, SubmitData, HelpCentre];
+    ? [ViewProjects, SubmitData, SupportCentre, ChangePassword, RequestCountryAccess, Logout]
+    : [ViewProjects, SubmitData, SupportCentre];
 
   const menuItems = isLandingPage ? customLandingPageMenuItems : baseMenuItems;
 
