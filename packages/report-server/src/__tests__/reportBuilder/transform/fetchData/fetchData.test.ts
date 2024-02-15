@@ -7,8 +7,9 @@ import MockDate from 'mockdate';
 import { EARLIEST_DATA_DATE_STRING } from '@tupaia/utils';
 import { buildTestTransform } from '../../testUtils';
 import { TransformTable } from '../../../../reportBuilder/transform';
-import { CURRENT_DATE_STUB, analyticsDataTable, eventsDataTable } from '../../../testUtils';
+import { CURRENT_DATE_STUB, eventsDataTable } from '../../../fixtures';
 import { getContext } from './getContext';
+import { analyticsDataTable } from './fixtures';
 
 describe('fetchData', () => {
   const defaultStartDate = EARLIEST_DATA_DATE_STRING;

@@ -137,7 +137,6 @@ export { CountryModel, CountryType } from './Country';
 export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
 export { DataElementModel, DataElementType } from './DataElement';
-export { DataElementDataGroupModel } from './DataElementDataGroup';
 export { DataGroupModel, DataGroupType } from './DataGroup';
 export { DataServiceSyncGroupModel, DataServiceSyncGroupType } from './DataServiceSyncGroup';
 export { DataTableModel, DataTableType } from './DataTable';

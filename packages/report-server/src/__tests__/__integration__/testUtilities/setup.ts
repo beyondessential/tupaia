@@ -4,23 +4,15 @@
  */
 import { hashAndSaltPassword } from '@tupaia/auth';
 import { TestableServer } from '@tupaia/server-boilerplate';
-
-import {
-  getTestModels,
-  EntityHierarchyCacher,
-  getTestDatabase,
-  findOrCreateDummyRecord,
-} from '@tupaia/database';
+import { getTestModels, getTestDatabase, findOrCreateDummyRecord } from '@tupaia/database';
 import { createBasicHeader } from '@tupaia/utils';
 import { MockDataTableApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { TestModelRegistry } from '../../types';
 import { createApp } from '../../../app';
-import { analyticsDataTable, eventsDataTable } from '../../testUtils';
+import { eventsDataTable } from '../../fixtures';
 import { PUBLIC_PERMISSION_GROUP, REPORT } from './integration.fixtures';
 
 export const models = getTestModels() as TestModelRegistry;
-const hierarchyCacher = new EntityHierarchyCacher(models);
-hierarchyCacher.setDebounceTime(50); // short debounce time so tests run more quickly
 
 const userAccountEmail = 'ash-ketchum@pokemon.org';
 const userAccountPassword = 'test';
@@ -32,7 +24,7 @@ jest.mock('@tupaia/api-client', () => {
     ...actual,
     TupaiaApiClient: jest.fn().mockImplementation(() => {
       return new MockTupaiaApiClient({
-        dataTable: new MockDataTableApi({ analytics: analyticsDataTable, events: eventsDataTable }),
+        dataTable: new MockDataTableApi({ events: eventsDataTable }),
       });
     }),
   };
