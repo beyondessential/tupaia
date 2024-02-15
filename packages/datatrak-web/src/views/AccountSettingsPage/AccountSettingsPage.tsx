@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 import { Settings } from '@material-ui/icons';
 import { PersonalDetailsSection } from './PersonalDetailsSection';
 import { ChangePasswordSection } from './ChangePasswordSection';
-import { RequestCountryAccessSection } from './RequestCountryAccessSection';
+import { RequestCountryAccessSection } from './RequestCountryAccessSection/RequestCountryAccessSection.tsx';
 import { DeleteAccountSection } from './DeleteAccountSection';
 import { PageContainer } from '../../components';
 
