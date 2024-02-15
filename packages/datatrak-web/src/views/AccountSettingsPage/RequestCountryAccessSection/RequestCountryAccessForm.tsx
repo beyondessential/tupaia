@@ -125,8 +125,8 @@ export const RequestCountryAccessForm = () => {
     onSuccess: response => successToast(response.message),
   });
 
-  const theme = useTheme();
-  const sizeClassIsMdOrLarger = useMediaQuery(theme.breakpoints.up('sm'));
+  const { breakpoints } = useTheme();
+  const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
 
   const formIsNotSubmissible =
     !project ||
@@ -175,7 +175,7 @@ export const RequestCountryAccessForm = () => {
                * in smaller size classes. In a multi-column grid it causes misalignment, so we
                * override it, also with inline styling.
                */
-              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : {},
+              style: sizeClassIsMdOrLarger ? { height: '100%', overflow: 'auto' } : undefined,
             }}
             label="Reason for access"
             name="message"
