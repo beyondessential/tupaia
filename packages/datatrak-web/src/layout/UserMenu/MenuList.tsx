@@ -79,9 +79,9 @@ export const MenuList = ({
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
   // The help centre link is the same for both logged-in and logged-out users
-  const helpCentreItem = {
-    label: 'Help centre',
-    href: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+  const supportCentreItem = {
+    label: 'Support centre',
+    href: 'https://bes-support.zendesk.com',
     isExternal: true,
     component: Link,
   };
@@ -98,7 +98,7 @@ export const MenuList = ({
 
     const items: MenuItem[] = [];
     if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
-    items.push(helpCentreItem);
+    items.push(supportCentreItem);
     if (isLoggedIn) items.push(logOutItem);
 
     return items;
