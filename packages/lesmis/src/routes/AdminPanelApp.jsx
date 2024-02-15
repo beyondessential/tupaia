@@ -38,7 +38,7 @@ import {
 } from '../views/AdminPanel/SurveyResponsesView';
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n, isLesmisAdmin } from '../utils';
+import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
 
 const getRoutes = (adminUrl, translate) => {
   return [
@@ -187,7 +187,7 @@ const AdminPanelApp = ({ user }) => {
   const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
-  const userIsLesmisAdmin = isLesmisAdmin(user);
+  const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
   const getHeaderEl = () => {
     return headerEl;
@@ -203,7 +203,7 @@ const AdminPanelApp = ({ user }) => {
       <Route path={`${path}/logout`} exact>
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
-      <LesmisAdminRoute path={`${path}/viz-builder`} isLESMISAdmin={userIsLesmisAdmin}>
+      <LesmisAdminRoute path={`${path}/viz-builder`} hasAdminPanelAccess={userHasAdminPanelAccess}>
         <VizBuilderApp
           Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
         />
@@ -216,7 +216,7 @@ const AdminPanelApp = ({ user }) => {
             <LesmisAdminRoute
               key={route.to}
               path={`${route.to}`}
-              isLESMISAdmin={userIsLesmisAdmin}
+              hasAdminPanelAccess={userHasAdminPanelAccess}
               render={({ match }) => {
                 return (
                   <>

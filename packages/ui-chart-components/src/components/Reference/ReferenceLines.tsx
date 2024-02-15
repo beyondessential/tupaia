@@ -6,18 +6,20 @@
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { ChartType, ViewContent } from '../../types';
+import { CartesianChartViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 
 interface ReferenceLineProps {
-  viewContent: ViewContent;
+  viewContent: CartesianChartViewContent;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
 
 const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
-  if (!viewContent.presentationOptions?.referenceLines?.targetLine) return null;
+  const hasReferenceLine = !!viewContent.presentationOptions?.referenceLines?.targetLine;
+  if (!hasReferenceLine) return null;
 
   const { referenceLabel, referenceValue } =
     viewContent.presentationOptions.referenceLines.targetLine;
@@ -44,15 +46,16 @@ const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) =>
  * }
  */
 const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
-  const { valueType, data, presentationOptions } = viewContent;
+  const { valueType, data } = viewContent;
+  const presentationOptions =
+    'presentationOptions' in viewContent && viewContent.presentationOptions;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
   const average = data.reduce((acc: number, row) => acc + (row.value as number), 0) / data.length;
 
-  if (!average || shouldHideReferenceLine) {
-    return null;
-  }
+  if (!average || shouldHideReferenceLine) return null;
+
   return (
     <ReferenceLine
       y={average}

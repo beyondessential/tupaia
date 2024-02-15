@@ -17,10 +17,10 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts';
-import { PieChartConfig } from '@tupaia/types';
+import { PieChartPresentationOptions } from '@tupaia/types';
 import { CHART_COLOR_PALETTE, OFF_WHITE } from '../../constants';
 import { isMobile } from '../../utils';
-import { LegendPosition, PresentationOptions, ViewContent } from '../../types';
+import { LegendPosition, PieChartViewContent, ViewContent } from '../../types';
 import { getPieLegend, TooltipContainer } from '../Reference';
 
 const Heading = styled(Typography)`
@@ -101,7 +101,7 @@ const getHeight = (isExporting: boolean, isEnlarged: boolean, isMobileSize: bool
 };
 
 interface PieChartProps {
-  viewContent: ViewContent;
+  viewContent: PieChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -115,7 +115,9 @@ export const PieChart = ({
   legendPosition = 'bottom',
 }: PieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
-  const { presentationOptions, data } = viewContent;
+  const { data } = viewContent;
+  const presentationOptions =
+    'presentationOptions' in viewContent ? viewContent.presentationOptions : undefined;
   const [, setLoaded] = useState(false);
 
   const isMobileSize = isMobile(isExporting);
@@ -131,13 +133,12 @@ export const PieChart = ({
   const handleMouseEnter = (event: MouseEvent, index: number) => setActiveIndex(index);
   const handleMouseOut = () => setActiveIndex(-1);
 
-  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) => {
-    if (!presentationOptions || !(key in presentationOptions)) return undefined;
-
-    const keyValue = presentationOptions[key as keyof PresentationOptions];
-    if (typeof keyValue !== 'object' || !(option in keyValue)) return undefined;
-
-    return keyValue[option as keyof typeof keyValue];
+  const getPresentationOption = (
+    key?: keyof PieChartPresentationOptions,
+    option?: keyof PieChartPresentationOptions[string],
+  ) => {
+    if (!key || !option || !presentationOptions) return undefined;
+    return presentationOptions.hasOwnProperty(key) && presentationOptions[key][option];
   };
 
   const getValidData = () =>
@@ -201,7 +202,6 @@ export const PieChart = ({
           verticalAlign={verticalAlign as LegendProps['verticalAlign']}
           align={align as LegendProps['align']}
           content={getPieLegend({
-            chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
             isExporting,
             legendPosition,
