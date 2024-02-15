@@ -8,18 +8,15 @@ import {
   CartesianChartConfig,
   CartesianChartPresentationOptions,
   ChartType,
-  ReferenceLinesConfig,
 } from './common';
 
 export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
   color?: CssColor;
   /**
-   * @description This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}
+   * @description This can be anything from the [Numeral.js]{@link http://numeraljs.com/#format}
+   * library.
    */
   valueFormat?: string;
-  referenceLines?: {
-    targetLine?: ReferenceLinesConfig;
-  };
 };
 
 /**

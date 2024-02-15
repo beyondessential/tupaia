@@ -67,17 +67,20 @@ export const isChartConfig = (config?: BaseConfig): config is BaseChartConfig =>
   return (config && 'type' in config && config.type === 'chart') ?? false;
 };
 
+export type ReferenceLinesConfig = {
+  referenceValue: number;
+  referenceLabel: string;
+};
+
 export type CartesianChartPresentationOptions = ExportPresentationOptions & {
   /**
    * @description This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values
    */
   periodTickFormat?: string;
   hideAverage?: boolean;
-};
-
-export type ReferenceLinesConfig = {
-  referenceValue: number;
-  referenceLabel: string;
+  referenceLines?: {
+    targetLine?: ReferenceLinesConfig;
+  };
 };
 
 type Key = string | '$all';
