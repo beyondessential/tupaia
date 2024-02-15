@@ -87,12 +87,8 @@ export const UserMenu = () => {
   );
 
   const HelpCentre = (
-    <BaseMenuItem
-      externalLink
-      href="https://beyond-essential.slab.com/topics/support-and-resources-g6piq0i1"
-      key="help"
-    >
-      Help centre
+    <BaseMenuItem externalLink href="https://bes-support.zendesk.com" key="support">
+      Support centre
     </BaseMenuItem>
   );
 
