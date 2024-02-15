@@ -18,8 +18,7 @@ interface ReferenceLineProps {
 }
 
 const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
-  const hasReferenceLine = !!viewContent.presentationOptions?.referenceLines?.targetLine;
-  if (!hasReferenceLine) return null;
+  if (!viewContent.presentationOptions?.referenceLines?.targetLine) return null;
 
   const { referenceLabel, referenceValue } =
     viewContent.presentationOptions.referenceLines.targetLine;
