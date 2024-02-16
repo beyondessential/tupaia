@@ -53,14 +53,14 @@ export default () => (req, res, next) => {
 
 Authentication functions.
 
-|:-----------|:-------------------------------------------------------------------------------------------------------------------------------|
+| :--------- | :----------------------------------------------------------------------------------------------------------------------------- |
 | `authInit` | first middleware for request, from 'client-sessions', deals with decrypting session and setting sessions further down the line |
 
 ### [./src/appServer](appServer)
 
 API connect for Tupaia App server.
 
-|:---------------------------|:------------------------------------------------------------------------|
+| :------------------------- | :---------------------------------------------------------------------- |
 | `auth`                     | Second middleware for request, checks to see if session (cookie) exists |
 | `authLogin`                | Checks user’s password, username matches DB                             |
 | `authCreateUser`           | Creates a new user using a set of fields                                |
