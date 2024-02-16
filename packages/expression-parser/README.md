@@ -7,7 +7,7 @@ Read more about Math.js: https://mathjs.org/docs/expressions/syntax.html
 ## Usage
 
 > [!TIP]
-> Creating a new `ExpressionParser` instance is relatively expensive (15–40ms), so we suggest using a singleton pattern where possible.
+> Creating a new `ExpressionParser` instance is relatively expensive (15–40 ms), so we suggest using a singleton pattern where possible.
 
 Evaluating an arithmetic expression:
 
