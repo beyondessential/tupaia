@@ -7,10 +7,10 @@
 In the monorepo root, you can run:
 
 | :------------------------------------ | :--------------------------------------------------------------------------- |
-| `yarn start-stack lesmis   `            | Runs the app and the backend servers in development mode                     |
-| `yarn workspace @tupaia/lesmis start`                          | Runs the app in development mode                                             |
-| `yarn workspace @tupaia/lesmis test`  | Launches [Jest](https://jestjs.io) test runner in the interactive watch mode |
-| `yarn workspace @tupaia/lesmis build` | Builds the app for production to the `build/` folder                         |
+| `yarn start-stack lesmis   `            | Run the app and the backend servers in development mode                     |
+| `yarn workspace @tupaia/lesmis start`                          | Run the app in development mode                                             |
+| `yarn workspace @tupaia/lesmis test`  | Launch [Jest](https://jestjs.io) test runner in the interactive watch mode |
+| `yarn workspace @tupaia/lesmis build` | Build the app for production to the `build/` folder                         |
 
 ## High-level overview
 
