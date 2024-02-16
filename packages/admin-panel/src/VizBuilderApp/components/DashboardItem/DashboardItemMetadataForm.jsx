@@ -10,7 +10,7 @@ import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
 
-export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
 
@@ -19,10 +19,8 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { name, code, permissionGroup } = defaults;
   const [searchInput, setSearchInput] = useState(permissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
@@ -79,7 +77,7 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   );
 };
 
-DashboardMetadataForm.propTypes = {
+DashboardItemMetadataForm.propTypes = {
   Header: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
   Footer: PropTypes.node.isRequired,
