@@ -38,5 +38,7 @@ expressionParser.evaluate('a < 2');  // returns true
 expressionParser.evaluate('a > 2');  // returns false
 ```
 
+## Limitations
+
 > [!WARNING]
-> Variable names cannot start with a number because the Math.js parser will parse it as implicit multiplication. For example, `5abc` ≡ `5 * abc`.
+> Variable names cannot start with a number because the Math.js parser will parse it as implicit multiplication. For example, `5abc` ≡ `5 * abc`.
