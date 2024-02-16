@@ -88,7 +88,7 @@ type Key = string | '$all';
 /**
  * @description The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns
  */
-export type ChartConfigObject = ReferenceLinesConfig & {
+export type ChartConfigObject = {
   color?: CssColor;
   label?: string;
   stackId?: number;
