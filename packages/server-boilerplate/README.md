@@ -2,8 +2,10 @@
 
 Generic boilerplate for back end microservice and orchestration servers.
 
-See entity-server for a typical example of microservice implementation.
-See lesmis-server for a typical example of orchestrator implementation.
+See:
+
+- [entity-server](../entity-server/README.md) for a typical example of microservice implementation.
+- [lesmis-server](../lesmis-server/README.md) for a typical example of orchestrator implementation.
 
 ## API creation
 
@@ -18,7 +20,7 @@ Instantiate an API for a server by using either the `MicroServiceApiBuilder` or 
 
 - `/v1/test`, `/v1/login`, and `/v1/logout` routes are automatically added.
 - The session model needs to be specified for the API. This can be done by passing in the desired SessionModel class into the `useSessionModel` method.
-- You may wish to provide an optional `verifyLogin` function which consumes a user’s access policy and ensures that have access to the app. This function will be run upon completing a successful login, as well as each time the logged in user hits an endpoint.
+- You may wish to provide an optional `verifyLogin` function which consumes a user’s access policy and ensures that have access to the app. This function will be run upon completing a successful login, as well as each time the logged-in user hits an endpoint.
 
 #### Adding routes to the app
 
@@ -28,7 +30,7 @@ Instantiate an API for a server by using either the `MicroServiceApiBuilder` or 
 - Middleware: Add middleware to the API via the use method.
   e.g. `new OrchestratorApiBuilder(db, apiName).use('/v1', attachContext).build();`
 
-## Defining new Routes
+## Defining new routes
 
 - Includes `Route` which is base class with useful functionality for handling responses.
 - `Route` is a generic class which takes an optional Request and Response type parameters. Use this if your route uses specific parameters, eg:
@@ -36,7 +38,7 @@ Instantiate an API for a server by using either the `MicroServiceApiBuilder` or 
 
 ## Environment variables
 
-The following environment variables need to be added to the server implementaion package.
+The following environment variables need to be added to the server implementation package.
 
 - For the sessionCookie util, you will need to add the following environment variable:
   - `SESSION_COOKIE_SECRET`
@@ -45,4 +47,4 @@ The following environment variables need to be added to the server implementaion
   - `API_CLIENT_PASSWORD`
   - `CENTRAL_API_URL`
 - You will also need to include any environment variables associated with any additional connections that are added.
-  See `.env.example`
+  See [.env.example](.env.example)
