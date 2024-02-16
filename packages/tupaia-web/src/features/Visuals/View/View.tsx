@@ -6,9 +6,8 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DashboardItemReport, DashboardItemConfig } from '../../../types';
-import { DashboardItemContext } from '../../DashboardItem';
-import { DashboardInfoHover } from '../../DashboardItem';
+import { DashboardItemReport } from '../../../types';
+import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
 import { SingleValue } from './SingleValue';
@@ -32,7 +31,7 @@ const MultiSingleValueWrapper = styled.div`
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
   customReport?: DashboardItemReport;
-  customConfig?: DashboardItemConfig;
+  customConfig?: ViewConfig;
 }
 
 const VIEWS = {
@@ -98,7 +97,7 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
               customConfig={
                 {
                   ...config,
-                  viewType: (datum.viewType || 'singleValue') as ViewConfig['viewType'],
+                  viewType: datum.viewType || 'singleValue',
                 } as ViewConfig
               }
             />

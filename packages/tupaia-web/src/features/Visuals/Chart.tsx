@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { BarChart, GridOn } from '@material-ui/icons';
 import { Tabs, darken, lighten, Tab } from '@material-ui/core';
 import { TabContext, TabPanel } from '@material-ui/lab';
-import { Chart as ChartComponent, ChartTable, ViewContent } from '@tupaia/ui-chart-components';
+import { Chart as ChartComponent, ChartTable } from '@tupaia/ui-chart-components';
 import { A4Page, ErrorBoundary } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { DashboardItemContext } from '../DashboardItem';
@@ -137,33 +137,40 @@ const ContentWrapper = styled.div<{
   }
 `;
 
-const DISPLAY_TYPE_VIEWS = [
+type View = {
+  value: 'chart' | 'table';
+  Icon: React.ElementType;
+  label: string;
+  Component: React.ElementType;
+};
+
+const DISPLAY_TYPE_VIEWS: View[] = [
   {
     value: 'chart',
     Icon: BarChart,
     label: 'View chart',
-    display: ChartComponent,
+    Component: ChartComponent,
   },
   {
     value: 'table',
     Icon: GridOn,
     label: 'View table',
-    display: ScreenChartTable,
+    Component: ScreenChartTable,
   },
 ];
 
-const EXPORT_DISPLAY_TYPE_VIEWS = [
+const EXPORT_DISPLAY_TYPE_VIEWS: View[] = [
   {
     value: 'chart',
     Icon: BarChart,
     label: 'View chart',
-    display: ChartComponent,
+    Component: ChartComponent,
   },
   {
     value: 'table',
     Icon: GridOn,
     label: 'View table',
-    display: ExportingStyledTable,
+    Component: ExportingStyledTable,
   },
 ];
 
@@ -174,7 +181,23 @@ export const Chart = () => {
     setDisplayType(value);
   };
   const shouldUseTabs = isEnlarged && !isExport;
-  const showTable = isEnlarged ? !isExport || config?.presentationOptions?.exportWithTable : false;
+
+  const getShowTable = () => {
+    if (!isEnlarged) return false;
+    if (!isExport) return true;
+    // type guard because presentationOptions is not on all viz types and not all vizes with presentationOptions have exportWithTable as an option
+    if (
+      config &&
+      'presentationOptions' in config &&
+      config.presentationOptions &&
+      'exportWithTable' in config.presentationOptions
+    ) {
+      const { exportWithTable } = config.presentationOptions;
+      return exportWithTable === true;
+    }
+    return false;
+  };
+  const showTable = getShowTable();
 
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   const availableDisplayTypes = showTable ? views : [views[0]];
@@ -182,7 +205,7 @@ export const Chart = () => {
   const viewContent = {
     ...report,
     ...config,
-  } as unknown as ViewContent;
+  };
 
   return (
     <ErrorBoundary>
@@ -202,7 +225,7 @@ export const Chart = () => {
               </TabsGroup>
             </TabsWrapper>
           )}
-          {availableDisplayTypes.map(({ value, display: Content }) => (
+          {availableDisplayTypes.map(({ value, Component }) => (
             <ContentWrapper
               key={value}
               value={value}
@@ -210,7 +233,7 @@ export const Chart = () => {
               $isEnlarged={isEnlarged}
               $isExporting={isExport}
             >
-              <Content
+              <Component
                 viewContent={viewContent}
                 isEnlarged={!!isEnlarged}
                 isExporting={!!isExport}
