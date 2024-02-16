@@ -26,7 +26,7 @@ The **lesmis** frontend talks to two APIs:
 
 #### Views
 
-A view is a component that connects to a route (ie. react-router Route).
+A view is a component that connects to a route (i.e. react-router Route).
 
 ## Environment variables
 
