@@ -1,11 +1,12 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 
 interface ReferenceLabelProps {
-  value: string;
+  value?: string;
   fill: string;
   viewBox?: {
     width: number;

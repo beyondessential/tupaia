@@ -68,7 +68,7 @@ export const isChartConfig = (config?: BaseConfig): config is BaseChartConfig =>
 };
 
 export type ReferenceLinesConfig = {
-  referenceValue?: number;
+  referenceValue: number;
   referenceLabel?: string;
 };
 

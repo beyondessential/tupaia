@@ -17,6 +17,24 @@ interface ReferenceLineProps {
   isEnlarged?: boolean;
 }
 
+/**
+ * Returns a labelled `ReferenceLine`, which may be used in Cartesian charts.
+ *
+ * @example
+ * "presentationOptions": {
+ *   "referenceLines": {
+ *     "targetLine": {
+ *       "referenceLabel": "Total Beds",
+ *       "referenceValue": 43
+ *     }
+ *   }
+ * }
+ *
+ * @remarks Strictly speaking, `referenceLabel` is optional, but its inclusion is encouraged.
+ *
+ * @see https://recharts.org/en-US/api/ReferenceLine
+ * @see https://recharts.org/en-US/examples/LineChartWithReferenceLines
+ */
 const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
   if (!viewContent.presentationOptions?.referenceLines?.targetLine) return null;
 
@@ -78,22 +96,6 @@ const BarReferenceLine = (props: ReferenceLineProps) =>
     ? ValueReferenceLine(props)
     : AverageReferenceLine(props);
 
-/**
- * Returns a labelled `ReferenceLine`, which may be used in Cartesian charts.
- *
- * @example
- * "presentationOptions": {
- *   "referenceLines": {
- *     "targetLine": {
- *       "referenceLabel": "Total Beds",
- *       "referenceValue": 43
- *     }
- *   }
- * }
- *
- * @see https://recharts.org/en-US/api/ReferenceLine
- * @see https://recharts.org/en-US/examples/LineChartWithReferenceLines
- */
 export const ReferenceLines = (props: ReferenceLineProps) => {
   return props.viewContent.chartType === ChartType.Bar
     ? BarReferenceLine(props)
