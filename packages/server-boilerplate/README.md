@@ -1,15 +1,15 @@
 # @tupaia/server-boilerplate
 
-Generic boilerplate for back end micro-service and orchestration servers.
+Generic boilerplate for back end microservice and orchestration servers.
 
-See entity-server for a typical example of micro-service implementation.
+See entity-server for a typical example of microservice implementation.
 See lesmis-server for a typical example of orchestrator implementation.
 
 ## Api creation
 
 Instantiate an api for a server by using either the `MicroServiceApiBuilder` or the `OrchestratorApiBuilder` and providing a TupaiaDatabase connection.
 
-#### Micro-service Api
+#### Microservice Api
 
 - `/v1/test` route is automatically added.
 - Basic/Bearer auth can be enabled via the `useBasicBearerAuth` method.

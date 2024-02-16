@@ -1,6 +1,6 @@
 # @tupaia/report-server
 
-Micro service for building reports within Tupaia.
+Microservice for building reports within Tupaia.
 
 ## Reports
 
