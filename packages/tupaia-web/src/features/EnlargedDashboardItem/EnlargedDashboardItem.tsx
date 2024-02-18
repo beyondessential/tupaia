@@ -6,7 +6,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
-import { BaseReport, ViewConfig } from '@tupaia/types';
+import { BaseReport, ChartPresentationOptions, ViewConfig } from '@tupaia/types';
 import { URL_SEARCH_PARAMS } from '../../constants';
 import { Modal } from '../../components';
 import { Entity } from '../../types';
@@ -57,13 +57,28 @@ export const EnlargedDashboardItem = ({ entityName }: { entityName?: Entity['nam
   const { reportCode, currentDashboardItem, isLoadingDashboards, reportData } =
     useEnlargedDashboardItem();
 
-  const { type, presentationOptions } = currentDashboardItem?.config || {};
+  const { type } = currentDashboardItem?.config || {};
 
-  const {
-    exportWithLabels = false,
-    exportWithTable = true,
-    exportWithTableDisabled = false,
-  } = presentationOptions || {};
+  const getPresentationOptions = () => {
+    if (currentDashboardItem?.config && 'presentationOptions' in currentDashboardItem?.config) {
+      return currentDashboardItem?.config?.presentationOptions;
+    }
+    return {};
+  };
+
+  const presentationOptions = getPresentationOptions();
+
+  // not all dashboard item types have these export settings. Realistically, only charts use these
+  const getExportSetting = (setting: keyof ChartPresentationOptions, defaultValue: boolean) => {
+    if (presentationOptions && setting in presentationOptions) {
+      return presentationOptions[setting];
+    }
+    return defaultValue;
+  };
+
+  const exportWithLabels = getExportSetting('exportWithLabels', false);
+  const exportWithTable = getExportSetting('exportWithTable', true);
+  const exportWithTableDisabled = getExportSetting('exportWithTableDisabled', false);
 
   if (!reportCode || (!isLoadingDashboards && !currentDashboardItem)) return null;
 
