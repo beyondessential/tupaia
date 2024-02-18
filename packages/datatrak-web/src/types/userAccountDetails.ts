@@ -1,10 +1,10 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity } from '.';
 import { Project } from '@tupaia/types';
+import { Entity } from '.';
 
 /**
  * DTO type which carries the subset of attribute values from the `user_account` relation that are
