@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-## This file runs on appcenter automated builds
+## This file runs on App Center automated builds
 
-## Move environment variables saved by appcenter as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
-echo "Setting up environment variables"
+## Move environment variables saved by App Center as USER-DEFINED_VARIABLE_NAME into .env, ready for react-native-dotenv
+echo -e "\033[32mSetting up environment variables\033m"
 env | grep "USER-DEFINED_.*" | awk -F "USER-DEFINED_" '{print $2}' > .env
 
-# install nvm, yarn
+# Install nvm, Yarn
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -17,13 +17,13 @@ npm install -g yarn
 
 set -x
 
-# install meditrak-app and root (for shared scripts)
+# Install meditrak-app and root (for shared scripts)
 SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn workspaces focus tupaia @tupaia/meditrak-app
 
-# build meditrak-app deps
+# Build meditrak-app deps
 yarn workspace @tupaia/access-policy build-dev
 yarn workspace @tupaia/expression-parser build-dev
 
-## Appcenter does not support yarn workspaces (https://github.com/microsoft/appcenter/issues/278)
-## Workaround: symlink npm to echo so it doesnt run (appcenter will call `npm install` -> `echo install`)
+## App Center does not support Yarn workspaces (https://github.com/microsoft/appcenter/issues/278)
+## Workaround: symlink `npm` to `echo` so it doesnt run (App Center will call `npm install` -> `echo install`)
 ln -sf $(which echo) $(which npm)
