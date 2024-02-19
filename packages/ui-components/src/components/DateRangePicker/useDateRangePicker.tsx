@@ -61,8 +61,8 @@ const getDatesAsString = (
  */
 const getCurrentDates = (
   granularity: GranularityType,
-  startDate: Moment,
-  endDate: Moment,
+  startDate: Moment | string,
+  endDate: Moment | string,
   defaultStartDate: Moment,
   defaultEndDate: Moment,
 ) => ({
@@ -83,8 +83,8 @@ const getCurrentDates = (
  */
 
 interface UseDateRangePickerProps {
-  startDate?: Moment;
-  endDate?: Moment;
+  startDate?: Moment | string;
+  endDate?: Moment | string;
   minDate?: Moment | string;
   maxDate?: Moment | string;
   granularity?: GranularityType;
