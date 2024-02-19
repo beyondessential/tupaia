@@ -42,7 +42,7 @@ const DataCell = styled(Cell)`
 `;
 
 const DataCellContent = styled.div`
-  padding: 0.25rem;
+  padding: 0.5rem;
   height: 100%;
   width: 100%;
   display: flex;
@@ -118,11 +118,12 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   let CellComponent;
   if (onClick) {
     CellComponent = CellButton;
-  } else if (isDots) {
+    // if no value, don't render as a button because it won't do anything
+  } else if (isDots && value !== undefined) {
     CellComponent = ExpandButton;
   }
   return (
-    <DataCell>
+    <DataCell $characterLength={isDots ? 0 : String(displayValue).length}>
       <DataCellContent
         as={CellComponent}
         onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}

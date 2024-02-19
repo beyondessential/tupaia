@@ -147,12 +147,3 @@ export function getFlattenedColumns(columns: MatrixColumnType[]): MatrixColumnTy
     return [...cols, column];
   }, [] as MatrixColumnType[]);
 }
-
-// This function returns the displayed columns, based on the start column and max columns
-export function getDisplayedColumns(
-  columns: MatrixColumnType[],
-  startColumn: number,
-  maxColumns: number,
-) {
-  return getFlattenedColumns(columns).slice(startColumn, startColumn + maxColumns);
-}
