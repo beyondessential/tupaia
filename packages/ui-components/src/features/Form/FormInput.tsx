@@ -42,12 +42,13 @@ export const FormInput = ({
   const verifyIsNonwhitespace = (value: string) => !!value.trim() || 'Required';
   const validateConfig =
     typeof validate === 'function'
-      ? // `validate` is a single function, so wrap it in an object of named functions where the
-        // second function is `verifyIsNonwhitespace`
+      ? // `validate` is a single function (type `Validate`), so wrap it in an object of named
+        // functions with it and `verifyIsNonwhitespace`
         {
           validate: shouldTrimToValidate ? { validate, verifyIsNonwhitespace } : { validate },
         }
-      : // `validate` is an object of named functions, so simply add `verifyIsNonwhiteapce` to it
+      : // `validate` is an object of named functions (type `Record<string, Validate>`), so simply
+        // add `verifyIsNonwhiteapce` to it
         {
           validate: shouldTrimToValidate ? { ...validate, verifyIsNonwhitespace } : validate,
         };
