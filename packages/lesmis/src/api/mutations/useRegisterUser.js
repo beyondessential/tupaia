@@ -30,8 +30,6 @@ export const useRegisterUser = () => {
           passwordConfirm,
           deviceName: window.navigator.userAgent,
           primaryPlatform: 'lesmis',
-          permissionGroupName: 'LESMIS Public',
-          countryName: 'Laos',
         },
       }),
   );

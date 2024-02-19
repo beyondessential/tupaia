@@ -27,8 +27,8 @@ const Title = styled(Typography).attrs({
   variant: 'h2',
 })`
   font-size: 1rem;
-  margin-bottom: 0.6rem;
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  margin-block-end: 0.6rem;
 `;
 
 interface AccountSettingsSectionProps {

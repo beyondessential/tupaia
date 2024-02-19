@@ -57,10 +57,9 @@ describe('/user', () => {
       });
     });
 
-    it('should have only Demo Land UserEntityPermission model in database', async () => {
+    it('should have no UserEntityPermission model in database', async () => {
       const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
-      expect(userEntityPermissions.length).to.equal(1);
-      expect(userEntityPermissions[0].entity_code).to.equal('DL');
+      expect(userEntityPermissions.length).to.equal(0);
     });
   });
 });
