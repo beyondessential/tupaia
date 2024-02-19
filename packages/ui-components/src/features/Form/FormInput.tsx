@@ -13,9 +13,7 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
   Input: ComponentType<any>;
   required?: boolean;
   type?: React.InputHTMLAttributes<unknown>['type'];
-  validate?:
-    | ((value: string) => boolean | string)
-    | Record<string, (value: string) => boolean | string>;
+  validate?: RegisterOptions['validate'];
 };
 
 /**
@@ -51,7 +49,7 @@ export const FormInput = ({
         }
       : // `validate` is an object of named functions, so simply add `verifyIsNonwhiteapce` to it
         {
-          validate: shouldTrimToValidate ? { ...validate, verifyIsNonwhitespace } : { ...validate },
+          validate: shouldTrimToValidate ? { ...validate, verifyIsNonwhitespace } : validate,
         };
 
   const registerOptions = {
