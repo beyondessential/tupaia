@@ -38,6 +38,7 @@ const DataCell = styled(Cell)`
   z-index: 1;
   padding: 0;
   height: 100%;
+  word-break: break-word;
 `;
 
 const DataCellContent = styled.div`
@@ -59,7 +60,7 @@ const ExpandButton = styled(Button)`
   }
 `;
 
-interface MatrixRowProps {
+interface MatrixCellProps {
   value: any;
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
@@ -70,7 +71,7 @@ interface MatrixRowProps {
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixRowProps) => {
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixCellProps) => {
   const {
     presentationOptions = {},
     categoryPresentationOptions = {},
