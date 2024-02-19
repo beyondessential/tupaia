@@ -149,7 +149,7 @@ export const RegisterForm = ({
               required
               options={{
                 validate: (value: string) =>
-                  value === formContext.getValues('password') || 'Passwords do not match.',
+                  value === getValues('password') || 'Passwords do not match',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               }}
               Input={AuthFormTextField}
