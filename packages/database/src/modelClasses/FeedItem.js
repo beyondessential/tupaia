@@ -6,6 +6,7 @@
 import moment from 'moment';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { FeedItemTypes } from '@tupaia/types';
+import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
@@ -28,6 +29,48 @@ export class FeedItemModel extends DatabaseModel {
     return FeedItemType;
   }
 
+  async createAccessPolicyQueryClause(accessPolicy) {
+    const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
+    const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
+
+    return {
+      sql: `(${Object.entries(countryIdsByPermissionGroup)
+        .map(([_, countryIds]) => {
+          return `
+          (
+            permission_group_id = ? AND 
+            country_id IN (${countryIds.map(_ => `?`).join(',')})
+          )
+        `;
+        })
+        .join(' OR ')})`,
+      parameters: params,
+    };
+  }
+
+  async getCountryIdsByPermissionGroup(accessPolicy) {
+    const permissionGroupNames = accessPolicy.getPermissionGroups();
+
+    const countries = await this.otherModels.country.find({});
+
+    const permissionGroups = await this.otherModels.permissionGroup.find({
+      name: permissionGroupNames,
+    });
+
+    const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
+
+    const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
+    return permissionGroupNames.reduce((result, permissionGroupName) => {
+      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+      const permissionGroupId = permissionGroupIdByName[permissionGroupName];
+      const countryIds = countryCodes.map(code => countryIdByCode[code]);
+      return {
+        ...result,
+        [permissionGroupId]: countryIds,
+      };
+    }, {});
+  }
+
   /**
    *
    * @param {AccessPolicy} accessPolicy
@@ -36,45 +79,35 @@ export class FeedItemModel extends DatabaseModel {
    * @param {string[]} [dbOptions.sort]
    * @param {number} [dbOptions.pageLimit]
    * @param {number} [dbOptions.page]
+   * @param {string} [dbOptions.joinWith]
+   * @param {string[]} [dbOptions.joinCondition]
+   * @param {string} [dbOptions.joinType]
    * @returns
    */
   async findByAccessPolicy(accessPolicy, customDbConditions = {}, dbOptions = {}) {
-    const { project_id: projectIdFilter, ...dbConditions } = customDbConditions;
-    const surveys = await this.otherModels.survey.findByAccessPolicy(
-      accessPolicy,
-      projectIdFilter
-        ? {
-            project_id: projectIdFilter,
-          }
-        : {},
-    );
-
-    const { sort = ['creation_date DESC'], pageLimit = 20, page = 0 } = dbOptions;
+    const { sort = ['creation_date DESC'], pageLimit = 20, page = 0, ...options } = dbOptions;
 
     // get an extra item to see if there are more pages of results
     const limit = pageLimit + 1;
     const offset = page * pageLimit;
-    const surveyIds = surveys.map(survey => survey.id);
+
+    const permissionsClause = await this.createAccessPolicyQueryClause(accessPolicy);
 
     const feedItems = await this.find(
       {
-        'survey_response.survey_id': {
-          comparator: 'IN',
-          comparisonValue: surveyIds,
-        },
+        // also limit to the user's country-level permissions, because in some cases we filter the surveys by projectId
+        [QUERY_CONJUNCTIONS.RAW]: permissionsClause,
+        ...customDbConditions,
         [QUERY_CONJUNCTIONS.OR]: {
           type: FeedItemTypes.Markdown,
         },
-        ...dbConditions,
       },
       {
         sort,
         limit,
         offset,
-        joinWith: TYPES.SURVEY_RESPONSE,
-        joinCondition: [`${TYPES.FEED_ITEM}.record_id`, `${TYPES.SURVEY_RESPONSE}.id`],
-        joinType: JOIN_TYPES.LEFT,
         columns: [`${TYPES.FEED_ITEM}.*`],
+        ...options,
       },
     );
 

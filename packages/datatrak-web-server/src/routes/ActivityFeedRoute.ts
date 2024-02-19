@@ -7,6 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
+import { JOIN_TYPES, TYPES } from '@tupaia/database';
 
 export type ActivityFeedRequest = Request<
   DatatrakWebActivityFeedRequest.Params,
@@ -57,8 +58,14 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
     const pinned = page === 0 ? await this.getPinnedItem() : undefined;
 
-    const conditions = {
+    const surveys = await models.survey.find({
       project_id: projectId,
+    });
+    const conditions = {
+      'survey_response.survey_id': {
+        comparator: 'IN',
+        comparisonValue: surveys.map(s => s.id),
+      },
     } as Record<string, unknown>;
 
     // if there is a pinned item, exclude it from the rest of the feed items
@@ -75,6 +82,9 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       {
         page,
         pageLimit: NUMBER_PER_PAGE,
+        joinWith: TYPES.SURVEY_RESPONSE,
+        joinCondition: [`${TYPES.FEED_ITEM}.record_id`, `${TYPES.SURVEY_RESPONSE}.id`],
+        joinType: JOIN_TYPES.LEFT,
       },
     );
 
