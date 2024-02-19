@@ -23,6 +23,7 @@ import { MatrixPreview } from './MatrixPreview';
 
 const SearchInput = styled(TextField)`
   margin-bottom: 0;
+  min-width: 10rem;
   .MuiInputBase-root {
     background-color: transparent;
   }
