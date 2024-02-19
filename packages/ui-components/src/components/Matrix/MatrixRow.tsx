@@ -4,15 +4,16 @@
  */
 
 import React, { useContext } from 'react';
-import { ButtonProps, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
+import { Button } from '../Button';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { getDisplayedColumns } from './utils';
 import { CellButton } from './CellButton';
-import { Button } from '../Button';
+import { Cell } from './Cell';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded?: boolean;
@@ -31,7 +32,7 @@ const TableRow = styled(MuiTableRow)<{
     $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
 `;
 
-const HeaderCell = styled(TableCell).attrs({
+const HeaderCell = styled(Cell).attrs({
   component: 'th',
 })`
   padding: 0;
@@ -179,9 +180,13 @@ const RowHeaderCell = ({
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title, onClick } = row;
-  const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
-    MatrixContext,
-  );
+  const {
+    columns,
+    startColumn,
+    maxColumns,
+    expandedRows,
+    disableExpand = false,
+  } = useContext(MatrixContext);
 
   const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
 

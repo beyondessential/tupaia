@@ -17,18 +17,16 @@ import { EnlargedMatrixCell } from './EnlargedMatrixCell';
 import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
-  border-collapse: collapse;
   border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   color: ${({ theme }) => theme.palette.text.primary};
   table-layout: fixed; // this is to allow us to set max-widths on the columns
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
 `;
 
-// this is a scrollable container
-const Wrapper = styled.div`
-  max-height: 100%;
-  width: 100%;
-  overflow: auto;
+const ScrollContainer = styled.div`
+  max-height: inherit;
+  overflow-y: auto;
+  flex: 1;
 `;
 
 interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
@@ -70,22 +68,22 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
   }, [tableEl?.current?.offsetWidth, columns]);
 
   return (
-    <Wrapper>
-      <MatrixContext.Provider
-        value={{
-          ...config,
-          columns,
-          rows,
-          startColumn,
-          maxColumns,
-          expandedRows,
-          enlargedCell,
-          disableExpand,
-        }}
-      >
-        <MatrixDispatchContext.Provider value={dispatch}>
-          <MatrixNavButtons />
-          <EnlargedMatrixCell />
+    <MatrixContext.Provider
+      value={{
+        ...config,
+        columns,
+        rows,
+        startColumn,
+        maxColumns,
+        expandedRows,
+        enlargedCell,
+        disableExpand,
+      }}
+    >
+      <MatrixDispatchContext.Provider value={dispatch}>
+        <MatrixNavButtons />
+        <EnlargedMatrixCell />
+        <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
             <MatrixHeader />
             <TableBody>
@@ -95,9 +93,9 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
               ))}
             </TableBody>
           </Table>
-          <MatrixLegend />
-        </MatrixDispatchContext.Provider>
-      </MatrixContext.Provider>
-    </Wrapper>
+        </ScrollContainer>
+        <MatrixLegend />
+      </MatrixDispatchContext.Provider>
+    </MatrixContext.Provider>
   );
 };

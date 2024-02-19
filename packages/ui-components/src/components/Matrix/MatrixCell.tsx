@@ -4,9 +4,10 @@
  */
 
 import React, { useContext } from 'react';
-import { TableCell, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import styled from 'styled-components';
 import { ConditionalPresentationOptions } from '@tupaia/types';
+import { MatrixColumnType, MatrixRowType } from '../../types';
 import {
   checkIfApplyDotStyle,
   getFlattenedColumns,
@@ -15,8 +16,8 @@ import {
   getFullHex,
 } from './utils';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { MatrixColumnType, MatrixRowType } from '../../types';
 import { CellButton } from './CellButton';
+import { Cell } from './Cell';
 
 export const Dot = styled.div<{ $color?: string }>`
   width: 2rem;
@@ -31,13 +32,12 @@ export const Dot = styled.div<{ $color?: string }>`
   margin: 0 auto;
 `;
 
-const DataCell = styled(TableCell)`
+const DataCell = styled(Cell)`
   vertical-align: middle;
   position: relative;
   z-index: 1;
   padding: 0;
   height: 100%;
-  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   word-break: break-word;
 `;
 
@@ -60,7 +60,7 @@ const ExpandButton = styled(Button)`
   }
 `;
 
-interface MatrixRowProps {
+interface MatrixCellProps {
   value: any;
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
@@ -71,10 +71,12 @@ interface MatrixRowProps {
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixRowProps) => {
-  const { presentationOptions = {}, categoryPresentationOptions = {}, columns } = useContext(
-    MatrixContext,
-  );
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixCellProps) => {
+  const {
+    presentationOptions = {},
+    categoryPresentationOptions = {},
+    columns,
+  } = useContext(MatrixContext);
   const dispatch = useContext(MatrixDispatchContext)!;
   // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
 
