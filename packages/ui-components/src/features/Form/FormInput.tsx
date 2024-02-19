@@ -21,7 +21,7 @@ type HookFormInputWrapperProps = Record<string, unknown> & {
  * that makes them self-registering for React Hook Form.
  *
  * @remarks Remember to explicitly set the `type` prop when `Input` is not some form of a text
- * field. It can takes the same values as the `type` attribute on vanilla HTML’s `<input>` element.
+ * field. It can take the same values as the `type` attribute on vanilla HTML’s `<input>` element.
  * Otherwise, it defaults to `'text'`, and you will likely see unwanted behaviour (such as an
  * uncheckable checkbox).
  */
