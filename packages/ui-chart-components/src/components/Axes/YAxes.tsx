@@ -8,7 +8,7 @@ import { VALUE_TYPES, formatDataValueByType } from '@tupaia/utils';
 import { ValueType } from '@tupaia/types';
 import { YAxis as YAxisComponent, YAxisProps } from 'recharts';
 import { DARK_BLUE } from '../../constants';
-import { LooseObject, ViewContent } from '../../types';
+import { CartesianChartViewContent, LooseObject, ViewContent } from '../../types';
 import { getContrastTextColor } from '../../utils';
 
 interface AxisDomainProps {
@@ -125,9 +125,9 @@ const getDefaultNumberFormat = (data: any[], dataKeys: string[]) => {
 };
 
 interface YAxisComponentProps {
-  config: any;
-  viewContent: any;
-  chartDataConfig: any;
+  config?: any;
+  viewContent: CartesianChartViewContent;
+  chartDataConfig: CartesianChartViewContent['chartConfig'];
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
@@ -149,7 +149,7 @@ const YAxis = ({
   } = config;
 
   const { yName, presentationOptions, ticks } = viewContent;
-  const dataKeys = config.dataKeys || Object.keys(chartDataConfig);
+  const dataKeys = config.dataKeys || (chartDataConfig && Object.keys(chartDataConfig)) || [];
   const valueType = viewContent.valueType || config.valueType;
   const width = getAxisWidth(viewContent.data, dataKeys, valueType);
 
@@ -178,7 +178,11 @@ const YAxis = ({
             metadata: {
               presentationOptions: {
                 ...(presentationOptions || {}),
-                valueFormat: presentationOptions?.valueFormat || defaultFormatter,
+                valueFormat:
+                  (presentationOptions &&
+                    'valueFormat' in presentationOptions &&
+                    presentationOptions?.valueFormat) ||
+                  defaultFormatter,
               },
             },
           },
@@ -192,39 +196,34 @@ const YAxis = ({
   );
 };
 
-interface YAxesProps {
-  yAxisConfigs: any[];
-  orientation: 'left' | 'right';
-  valueType: string;
-  yName: string;
-}
-
 export const YAxes = ({
   viewContent,
   chartDataConfig,
   isExporting = false,
   isEnlarged = false,
 }: YAxisComponentProps) => {
-  const { chartConfig = {} }: { chartConfig: YAxesProps | {} } = viewContent;
+  const { chartConfig } = viewContent;
 
   const axisPropsById: { [p: number]: LooseObject } = {
     [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
     [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
   };
 
-  Object.entries(chartConfig).forEach(
-    ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
-      const axisId = Y_AXIS_IDS[orientation as 'left' | 'right'] || DEFAULT_Y_AXIS.id;
-      axisPropsById[axisId].dataKeys.push(dataKey);
-      if (valueType) {
-        axisPropsById[axisId].valueType = valueType;
-      }
-      if (yName) {
-        axisPropsById[axisId].yName = yName;
-      }
-      axisPropsById[axisId].yAxisDomain = yAxisDomain;
-    },
-  );
+  if (chartConfig) {
+    Object.entries(chartConfig).forEach(
+      ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain, yName }]) => {
+        const axisId = Y_AXIS_IDS[orientation as 'left' | 'right'] || DEFAULT_Y_AXIS.id;
+        axisPropsById[axisId].dataKeys.push(dataKey);
+        if (valueType) {
+          axisPropsById[axisId].valueType = valueType;
+        }
+        if (yName) {
+          axisPropsById[axisId].yName = yName;
+        }
+        axisPropsById[axisId].yAxisDomain = yAxisDomain;
+      },
+    );
+  }
 
   const axesProps = Object.values(axisPropsById).filter(({ dataKeys }) => dataKeys.length > 0);
   const baseProps = { viewContent, chartDataConfig, isExporting, isEnlarged };
@@ -232,5 +231,5 @@ export const YAxes = ({
   // If no custom axes provided, render the  default y axis
   return axesProps.length > 0
     ? axesProps.map(props => YAxis({ config: props, ...baseProps }))
-    : YAxis(baseProps as any);
+    : YAxis(baseProps);
 };

@@ -16,14 +16,10 @@ import {
 } from 'recharts';
 import { BLUE, TRANS_BLACK, WHITE } from '../../constants';
 import { isMobile } from '../../utils';
-import { ViewContent } from '../../types';
-
-interface CustomViewContent extends Omit<ViewContent, 'data'> {
-  data: { value: string | number }[];
-}
+import { GaugeChartViewContent } from '../../types';
 
 interface GaugeChartProps {
-  viewContent: CustomViewContent;
+  viewContent: GaugeChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -68,11 +64,10 @@ export const GaugeChart = ({
   };
 
   const { elements, cellComponents } = useMemo(() => generateElements(), [data]);
-  const height = useMemo(() => getHeight(isExporting, isEnlarged, isMobileSize), [
-    isExporting,
-    isEnlarged,
-    isMobileSize,
-  ]);
+  const height = useMemo(
+    () => getHeight(isExporting, isEnlarged, isMobileSize),
+    [isExporting, isEnlarged, isMobileSize],
+  );
 
   const responsiveStyle = isEnlarged || isMobileSize || isExporting ? 1.5 : 1;
   const innerRadius = 60 * responsiveStyle;

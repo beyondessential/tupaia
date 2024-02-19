@@ -23,9 +23,21 @@ import { MatrixPreview } from './MatrixPreview';
 
 const SearchInput = styled(TextField)`
   margin-bottom: 0;
+  min-width: 10rem;
   .MuiInputBase-root {
     background-color: transparent;
   }
+`;
+
+const Wrapper = styled.div`
+  overflow: hidden;
+  max-height: clamp(
+    20rem,
+    70vh,
+    60rem
+  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
+  display: flex;
+  flex-direction: column;
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -35,18 +47,18 @@ const NoResultsMessage = styled(Typography)`
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
-  categoryId?: MatrixReportRow['categoryId'],
-  searchFilter?: string,
-  drillDown?: MatrixConfig['drillDown'],
-  valueType?: MatrixConfig['valueType'],
+  categoryId: MatrixReportRow['categoryId'] | undefined,
+  searchFilter: string | undefined,
+  drillDown: MatrixConfig['drillDown'] | undefined,
+  valueType: MatrixConfig['valueType'] | undefined,
+  urlSearchParams: URLSearchParams,
+  setUrlSearchParams: (searchParams: URLSearchParams) => void,
 ): MatrixRowType[] => {
-  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-
   const onDrillDown = row => {
     if (!drillDown) return;
     const { itemCode } = drillDown;
-    urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
-    urlSearchParams.set(
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
+    urlSearchParams?.set(
       URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID,
       row[drillDown?.parameterLink!] as string,
     );
@@ -70,7 +82,15 @@ const parseRows = (
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
-      const children = parseRows(rows, category, searchFilter, drillDown, valueTypeToUse);
+      const children = parseRows(
+        rows,
+        category,
+        searchFilter,
+        drillDown,
+        valueTypeToUse,
+        urlSearchParams,
+        setUrlSearchParams,
+      );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
       return [
@@ -140,13 +160,28 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
  */
 
 const MatrixVisual = () => {
-  const { config, report, isEnlarged } = useContext(DashboardItemContext);
+  const context = useContext(DashboardItemContext);
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+
+  const { report, isEnlarged } = context;
+
+  // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
+  const config = context.config as MatrixConfig;
+  // casting here because we know that the report is a MatrixReport and it has a different shape than reports of other types
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
+  const { periodGranularity, drillDown, valueType } = config;
 
-  const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, valueType);
+  const parsedRows = parseRows(
+    rows,
+    undefined,
+    searchFilter,
+    drillDown,
+    valueType,
+    urlSearchParams,
+    setUrlSearchParams,
+  );
   const parsedColumns = parseColumns(columns);
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,8 +209,9 @@ const MatrixVisual = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       <MatrixComponent
+        // casting here because we know that the config is a MatrixConfig and it has a different shape than configs of other types, and while we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context
         {...config}
         rows={parsedRows}
         columns={parsedColumns}
@@ -202,7 +238,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </>
+    </Wrapper>
   );
 };
 

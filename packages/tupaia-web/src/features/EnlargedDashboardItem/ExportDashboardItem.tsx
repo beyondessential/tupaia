@@ -7,7 +7,7 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Button as BaseButton, SpinningLoader } from '@tupaia/ui-components';
-import { DashboardItemVizTypes, ViewVizTypes } from '../../constants';
+import { ViewVizTypes } from '../../constants';
 import { Entity } from '../../types';
 import { DisplayOptionsSettings, ExportFormatSettings, ExportFormats } from '../ExportSettings';
 import {
@@ -75,14 +75,27 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
     },
   ];
 
-  const { type, viewType } = currentDashboardItem?.config ?? {};
-  const isChart = type === DashboardItemVizTypes.Chart;
+  const isChart = currentDashboardItem?.config?.type === 'chart';
 
   // PNG export is not available for matrix reports
-  const availableExportOptions =
-    isChart || viewType === ViewVizTypes.MultiValue
-      ? exportOptions
-      : exportOptions.filter(option => option.value !== ExportFormats.PNG);
+  const getHasPNGExportOption = () => {
+    if (!currentDashboardItem?.config) return false;
+    const { type } = currentDashboardItem?.config;
+    if (isChart) {
+      return true;
+    }
+    if (type === 'view') {
+      const { viewType } = currentDashboardItem?.config;
+      return viewType === ViewVizTypes.MultiValue;
+    }
+    return false;
+  };
+
+  const hasPNGExportOption = getHasPNGExportOption();
+
+  const availableExportOptions = hasPNGExportOption
+    ? exportOptions
+    : exportOptions.filter(option => option.value !== ExportFormats.PNG);
 
   return (
     <Wrapper>

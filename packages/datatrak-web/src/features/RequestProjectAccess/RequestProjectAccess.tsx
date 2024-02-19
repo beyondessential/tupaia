@@ -48,7 +48,7 @@ export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAcc
 
   return (
     <Wrapper>
-      <Typography variant="h1">Request Project Access</Typography>
+      <Typography variant="h1">Request project access</Typography>
       <BodyText>Complete the form below to request access to this project</BodyText>
       <Container>
         {showLoading ? (
