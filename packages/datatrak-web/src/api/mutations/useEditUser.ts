@@ -33,9 +33,8 @@ export const useEditUser = (onSuccess?: () => void) => {
         userDetails.mobileNumber = null;
       }
 
-      const updates = Object.entries(userDetails).reduce(
-        (obj, [key, value]) => ({ ...obj, [camelToSnakeCase(key)]: value }),
-        {},
+      const updates = Object.fromEntries(
+        Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
       );
 
       await put('me', { data: updates });
