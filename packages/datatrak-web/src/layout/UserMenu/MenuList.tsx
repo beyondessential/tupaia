@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { ComponentType, ReactNode, useState } from 'react';
@@ -89,10 +89,9 @@ export const MenuList = ({
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
-  // The help centre link is the same for both logged-in and logged-out users
-  const helpCentreItem = {
-    label: 'Help centre',
-    href: 'https://beyond-essential.slab.com/posts/tupaia-instruction-manuals-05nke1dm',
+  const supportCentreItem = {
+    label: 'Support centre',
+    href: 'https://bes-support.zendesk.com',
     isExternal: true,
     component: Link,
   };
@@ -108,14 +107,14 @@ export const MenuList = ({
 
   const getLoggedInMenuItems = () => {
     const items: MenuItem[] = [];
-    if (hasProjectSelected) items.push(accountSettingsItem);
+    if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
     if (hasAdminPanelAccess) items.push(reportsItem);
-    return [...items, helpCentreItem, logOutItem];
+    return [...items, supportCentreItem, logOutItem];
   };
   const getMenuItems = () => {
     if (isLoggedIn) return getLoggedInMenuItems();
 
-    return [helpCentreItem];
+    return [supportCentreItem];
   };
   const menuItems = getMenuItems() as MenuItem[];
 

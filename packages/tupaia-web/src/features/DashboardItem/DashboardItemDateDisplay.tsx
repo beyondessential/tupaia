@@ -26,8 +26,9 @@ export const DashboardItemDateDisplay = () => {
 
   if (!config || !report || isExport || isLoading) return null;
 
+  const { type } = config;
   const { period } = report!;
-  const { showPeriodRange } = config;
+  const showPeriodRange = type === 'chart' ? config?.showPeriodRange : null;
 
   if (!period || !period?.latestAvailable) return null;
   const showLatestAvailable = isEnlarged ? showPeriodRange === 'all' : !!showPeriodRange;
