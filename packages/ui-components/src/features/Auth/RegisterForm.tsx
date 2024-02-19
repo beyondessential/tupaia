@@ -62,12 +62,23 @@ const termsAndConditionsLabel = (
   </TermsText>
 );
 
+interface RegisterFormFields {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  contactNumber?: string | null;
+  password: string;
+  passwordConfirm: string;
+  employer: string;
+  position: string;
+  hasAgreed: boolean;
+}
+
 interface RegisterFormProps {
   onSubmit: SubmitHandler<any>;
   isLoading: boolean;
   isSuccess?: boolean;
   error?: Error | null;
-  formContext: ReturnType<typeof useForm>;
   loginLink: string;
   successMessage: string;
   verifyResendLink: string;
@@ -79,12 +90,17 @@ export const RegisterForm = ({
   isLoading,
   isSuccess,
   error,
-  formContext,
   loginLink,
   successMessage,
   verifyResendLink,
   className,
 }: RegisterFormProps) => {
+  const formContext = useForm<RegisterFormFields>({ mode: 'onBlur' });
+  const {
+    formState: { isSubmitting, isValid, isValidating },
+    getValues,
+  } = formContext;
+
   return (
     <Wrapper
       title={isSuccess ? 'Your account has been registered' : 'Register an account'}
@@ -96,7 +112,10 @@ export const RegisterForm = ({
       ) : (
         <>
           {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
-          <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
+          <StyledForm
+            formContext={formContext}
+            onSubmit={onSubmit as SubmitHandler<RegisterFormFields>}
+          >
             <FormInput
               autocomplete="given-name"
               id="firstName"
@@ -180,7 +199,11 @@ export const RegisterForm = ({
               />
             </FullWidthColumn>
             <ButtonColumn>
-              <AuthSubmitButton type="submit" isLoading={isLoading}>
+              <AuthSubmitButton
+                type="submit"
+                disabled={isValidating || !isValid || isLoading || isSubmitting}
+                isLoading={isLoading}
+              >
                 Register account
               </AuthSubmitButton>
               <AuthLink>
