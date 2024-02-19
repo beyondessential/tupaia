@@ -4,15 +4,15 @@
  */
 
 import React, { useContext } from 'react';
-import { ButtonProps, TableRow as MuiTableRow, TableCell, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow, lighten } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
+import { Button } from '../Button';
 import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { getDisplayedColumns } from './utils';
 import { CellButton } from './CellButton';
-import { Button } from '../Button';
+import { Cell } from './Cell';
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded?: boolean;
@@ -31,11 +31,17 @@ const TableRow = styled(MuiTableRow)<{
     $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
 `;
 
-const HeaderCell = styled(TableCell).attrs({
+const HeaderCell = styled(Cell).attrs({
   component: 'th',
 })`
   padding: 0;
-  max-width: 25%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: ${({ theme }) =>
+    theme.palette.background
+      .default}; // set the background color to the same as the table background so that the cells that scroll under it don't show through
 `;
 
 const RowHeaderCellContent = styled.div<{
@@ -61,6 +67,7 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
 })<ButtonProps>`
   text-transform: none;
   text-align: left;
+  min-width: 10rem; // so that the cell doesn't wrap too much on small screens
   svg {
     margin-right: 0.5rem;
   }
@@ -168,7 +175,7 @@ const RowHeaderCell = ({
     );
 
   return (
-    <HeaderCell>
+    <HeaderCell $characterLength={typeof children === 'string' ? rowTitle?.length : 0}>
       <RowHeaderCellContent $depth={depth}>{children}</RowHeaderCellContent>
     </HeaderCell>
   );
@@ -179,11 +186,7 @@ const RowHeaderCell = ({
  */
 export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
   const { children, title, onClick } = row;
-  const { columns, startColumn, maxColumns, expandedRows, disableExpand = false } = useContext(
-    MatrixContext,
-  );
-
-  const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
+  const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
 
   const isExpanded = expandedRows.includes(title) || disableExpand;
   const isVisible = parents.every(parent => expandedRows.includes(parent)) || disableExpand;
@@ -205,7 +208,7 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
         >
           {title}
         </RowHeaderCell>
-        {displayedColumns.map(({ key, title: cellTitle }) => (
+        {columns.map(({ key, title: cellTitle }) => (
           <MatrixCell
             key={`column-${key || cellTitle}-row-${title}-value`}
             value={row[key as string]}
