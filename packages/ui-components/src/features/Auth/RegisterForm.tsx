@@ -62,12 +62,23 @@ const termsAndConditionsLabel = (
   </TermsText>
 );
 
+interface RegisterFormFields {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  contactNumber?: string | null;
+  password: string;
+  passwordConfirm: string;
+  employer: string;
+  position: string;
+  hasAgreed: boolean;
+}
+
 interface RegisterFormProps {
   onSubmit: SubmitHandler<any>;
   isLoading: boolean;
   isSuccess?: boolean;
   error?: Error | null;
-  formContext: ReturnType<typeof useForm>;
   loginLink: string;
   successMessage: string;
   verifyResendLink: string;
@@ -79,12 +90,14 @@ export const RegisterForm = ({
   isLoading,
   isSuccess,
   error,
-  formContext,
   loginLink,
   successMessage,
   verifyResendLink,
   className,
 }: RegisterFormProps) => {
+  const formContext = useForm<RegisterFormFields>({ mode: 'onBlur' });
+  const { getValues, trigger: triggerValidationOf } = formContext;
+
   return (
     <Wrapper
       title={isSuccess ? 'Your account has been registered' : 'Register an account'}
@@ -96,7 +109,10 @@ export const RegisterForm = ({
       ) : (
         <>
           {error && <AuthErrorMessage>{error.message}</AuthErrorMessage>}
-          <StyledForm formContext={formContext} onSubmit={onSubmit as SubmitHandler<any>}>
+          <StyledForm
+            formContext={formContext}
+            onSubmit={onSubmit as SubmitHandler<RegisterFormFields>}
+          >
             <FormInput
               autocomplete="given-name"
               id="firstName"
@@ -149,7 +165,7 @@ export const RegisterForm = ({
               required
               options={{
                 validate: (value: string) =>
-                  value === formContext.getValues('password') || 'Passwords do not match.',
+                  value === getValues('password') || 'Passwords do not match',
                 ...FORM_FIELD_VALIDATION.PASSWORD,
               }}
               Input={AuthFormTextField}
@@ -178,6 +194,15 @@ export const RegisterForm = ({
                 required
                 color="primary"
                 Input={Checkbox}
+                type="checkbox"
+                onClick={
+                  /*
+                   * Don’t wait for blur event on this checkbox to revalidate the form, otherwise
+                   * thesubmit button doesn’t “know” to enable itself until user clicks somewhere
+                   * other than this element
+                   */
+                  () => triggerValidationOf('hasAgreed')
+                }
               />
             </FullWidthColumn>
             <ButtonColumn>
