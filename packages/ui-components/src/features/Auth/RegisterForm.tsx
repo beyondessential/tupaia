@@ -96,11 +96,7 @@ export const RegisterForm = ({
   className,
 }: RegisterFormProps) => {
   const formContext = useForm<RegisterFormFields>({ mode: 'onBlur' });
-  const {
-    formState: { isSubmitting, isValid, isValidating },
-    getValues,
-    trigger: triggerValidationOf,
-  } = formContext;
+  const { getValues, trigger: triggerValidationOf } = formContext;
 
   return (
     <Wrapper
@@ -210,11 +206,7 @@ export const RegisterForm = ({
               />
             </FullWidthColumn>
             <ButtonColumn>
-              <AuthSubmitButton
-                type="submit"
-                disabled={isValidating || !isValid || isLoading || isSubmitting}
-                isLoading={isLoading}
-              >
+              <AuthSubmitButton type="submit" isLoading={isLoading}>
                 Register account
               </AuthSubmitButton>
               <AuthLink>
