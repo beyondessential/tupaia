@@ -99,6 +99,7 @@ export const RegisterForm = ({
   const {
     formState: { isSubmitting, isValid, isValidating },
     getValues,
+    trigger: triggerValidationOf,
   } = formContext;
 
   return (
@@ -190,12 +191,22 @@ export const RegisterForm = ({
               Input={AuthFormTextField}
             />
             <FullWidthColumn>
-              <Checkbox
+              <FormInput
                 id="hasAgreed"
                 name="hasAgreed"
                 label={termsAndConditionsLabel}
                 required
                 color="primary"
+                Input={Checkbox}
+                type="checkbox"
+                onClick={
+                  /*
+                   * Don’t wait for blur event on this checkbox to revalidate the form, otherwise
+                   * thesubmit button doesn’t “know” to enable itself until user clicks somewhere
+                   * other than this element
+                   */
+                  () => triggerValidationOf('hasAgreed')
+                }
               />
             </FullWidthColumn>
             <ButtonColumn>
