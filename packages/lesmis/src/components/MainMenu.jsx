@@ -108,7 +108,7 @@ const AdminPanelLink = () => {
 
 export const MainMenu = () => {
   const [open, setOpen] = useState(false);
-  const { isLesmisAdmin } = useUser();
+  const { hasAdminPanelAccess } = useUser();
 
   const toggleDrawer = isOpen => () => {
     setOpen(isOpen);
@@ -151,7 +151,7 @@ export const MainMenu = () => {
             </ListItemIcon>
             <ListItemText primary={<I18n t="home.contactUs" />} />
           </LocaleListItemLink>
-          {isLesmisAdmin && <AdminPanelLink />}
+          {hasAdminPanelAccess && <AdminPanelLink />}
           <Subheader component="div">
             <I18n t="home.onlineQuestionnaires" />
           </Subheader>

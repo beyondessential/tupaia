@@ -5,19 +5,18 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BaseChartConfig, ValueType } from '@tupaia/types';
+import { ValueType, ChartType, isChartConfig } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { ChartType, LooseObject, TableAccessor } from '../types';
+import { ExportViewContent, LooseObject, TableAccessor, ChartViewContent } from '../types';
 import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
-import { ViewContent } from '../types';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
 // we don't want to show multiple values a table cell
-const sanitizeValueType = (valueType: ValueType): ValueType => {
+const sanitizeValueType = (valueType?: ValueType): ValueType | undefined => {
   return valueType === 'fractionAndPercentage' ? 'percentage' : valueType;
 };
-const getFormattedValue = (value: string | undefined, valueType: ValueType) =>
+const getFormattedValue = (value: string | undefined, valueType?: ValueType) =>
   value === undefined ? 'No Data' : formatDataValueByType({ value }, sanitizeValueType(valueType));
 
 const FirstColumnCell = styled.span`
@@ -43,12 +42,23 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * Use the keys in chartConfig to determine which columns to render, and if chartConfig doesn't exist
  * use value as the only column
  */
-const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => {
+const processColumns = (viewContent: ChartViewContent, sortByTimestamp: Function) => {
   if (!viewContent?.data) {
     return [];
   }
 
-  const { data, xName, periodGranularity } = viewContent;
+  const { data, periodGranularity, chartType } = viewContent;
+
+  const getXName = () => {
+    return chartType === ChartType.Bar ||
+      chartType === ChartType.Line ||
+      chartType === ChartType.Composed
+      ? viewContent.xName
+      : undefined;
+  };
+
+  const xName = getXName();
+
   const hasNamedData = data[0]?.name;
   const hasTimeSeriesData = getIsTimeSeries(data) && periodGranularity;
   let firstColumn = null;
@@ -75,11 +85,11 @@ const processColumns = (viewContent: ViewContent, sortByTimestamp: Function) => 
       id: columnKey,
       Header: (props: LooseObject) => {
         const columnId = props.column.id;
-        return chartConfig[columnId as keyof BaseChartConfig]?.label || columnId;
+        return chartConfig[columnId]?.label || columnId;
       },
       accessor: (row: LooseObject) => {
         const rowValue = row[columnKey];
-        const columnConfig = chartConfig[columnKey as keyof BaseChartConfig];
+        const columnConfig = chartConfig[columnKey];
         const valueType = columnConfig?.valueType || viewContent.valueType;
         return getFormattedValue(rowValue, valueType);
       },
@@ -94,7 +104,7 @@ const sortDates = (dateA: Date, dateB: Date) => {
   return dateAMoreRecent ? 1 : -1;
 };
 
-const processData = (viewContent: ViewContent) => {
+const processData = (viewContent: ChartViewContent) => {
   if (!viewContent?.data) {
     return [];
   }
@@ -112,17 +122,25 @@ const processData = (viewContent: ViewContent) => {
   return data;
 };
 
-export const getChartTableData = (viewContent: ViewContent) => {
+export const getChartTableData = (viewContent?: ExportViewContent) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
-  // the other useMemo hooks
+  // the other useMemo hooks. All values need to be memoized, even default values, otherwise it will
+  // cause a potentially infinite loop of re-renders.
+  // See: [https://github.com/TanStack/table/issues/2369](this issue on GitHub for more information)
   const sortByTimestamp = useMemo(
     () => (rowA: any, rowB: any) => sortDates(rowA.original.timestamp, rowB.original.timestamp),
     undefined,
   );
-  const columns = useMemo(() => processColumns(viewContent, sortByTimestamp), [
-    JSON.stringify(viewContent),
-  ]);
-  const data = useMemo(() => processData(viewContent), [JSON.stringify(viewContent)]);
+
+  const isChart = isChartConfig(viewContent);
+  const columns = useMemo(() => {
+    // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
+    return isChart ? processColumns(viewContent, sortByTimestamp) : [];
+  }, [JSON.stringify(viewContent)]);
+  const data = useMemo(() => {
+    // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
+    return isChart ? processData(viewContent) : [];
+  }, [JSON.stringify(viewContent)]);
   return {
     columns,
     data,

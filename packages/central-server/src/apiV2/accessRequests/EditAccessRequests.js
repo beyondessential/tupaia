@@ -46,9 +46,13 @@ export class EditAccessRequests extends BulkEditHandler {
 
   async checkPermissionForRecord(models, recordId, updatedRecord) {
     const accessRequest = await models.accessRequest.findById(recordId);
+    const accessRequestData = await accessRequest.getData();
     // Check Permissions
     const accessRequestChecker = accessPolicy =>
-      assertAccessRequestEditPermissions(accessPolicy, models, recordId, updatedRecord);
+      assertAccessRequestEditPermissions(accessPolicy, models, recordId, {
+        ...accessRequestData,
+        ...updatedRecord,
+      });
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, accessRequestChecker]),
     );

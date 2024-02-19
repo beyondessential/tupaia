@@ -141,6 +141,28 @@ const CREATE_CONFIG = {
     fields: [
       ...EDIT_FIELDS,
       {
+        Header: 'Country',
+        source: 'countryName',
+        editConfig: {
+          sourceKey: 'countryName',
+          optionsEndpoint: 'countries',
+          optionLabelKey: 'name',
+          optionValueKey: 'name',
+          secondaryLabel: 'Select the country to grant this user access to',
+        },
+      },
+      {
+        Header: 'Permission Group',
+        source: 'permissionGroupName',
+        editConfig: {
+          sourceKey: 'permissionGroupName',
+          optionsEndpoint: 'permissionGroups',
+          optionLabelKey: 'name',
+          optionValueKey: 'name',
+          secondaryLabel: 'Select the permission group to grant this user access to',
+        },
+      },
+      {
         Header: 'Api Client (Not required for most users, see Readme of admin-panel for usage)',
         source: 'is_api_client',
         type: 'boolean',

@@ -8,15 +8,14 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import { Typography } from '@material-ui/core';
 import {
-  getDefaultDates,
-  GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   GRANULARITY_CONFIG,
+  getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import { BaseReport } from '@tupaia/types';
-import { A4_PAGE_WIDTH_PX, A4Page, ReferenceTooltip } from '@tupaia/ui-components';
-import { Dashboard, DashboardItem, DashboardItemConfig, Entity } from '../../types';
+import { BaseReport, DashboardItemConfig, VizPeriodGranularity } from '@tupaia/types';
+import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
+import { Dashboard, DashboardItem, Entity } from '../../types';
 import { useProject, useReport } from '../../api/queries';
 import { DashboardItemContent, DashboardItemContext } from '../DashboardItem';
 import { PDFExportHeader } from './PDFExportHeader';
@@ -46,6 +45,14 @@ const ExportPeriod = styled(Typography)`
   line-height: 1;
 `;
 
+const Description = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  margin-block: 1rem;
+  margin-inline: auto;
+  max-width: 70ch;
+  text-align: center;
+`;
+
 const ExportContent = styled.div<{
   $hasData?: boolean;
 }>`
@@ -61,12 +68,13 @@ const DashboardName = styled.h2`
 `;
 
 export const getDatesAsString = (
-  granularity?: keyof typeof GRANULARITIES,
+  granularity?: `${VizPeriodGranularity}`,
   startDate?: Moment,
   endDate?: Moment,
 ) => {
   if (!granularity) return null;
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+  // TS complains that there are some values in VizPeriodGranularity that are not in GRANULARITY_CONFIG, although that's not actually true, so we need to cast it in order to use as a key
   const { rangeFormat } = GRANULARITY_CONFIG[granularity as keyof typeof GRANULARITY_CONFIG];
 
   const formattedStartDate = momentToDateDisplayString(
@@ -127,16 +135,18 @@ export const PDFExportDashboardItem = ({
   });
 
   const { config = {} as DashboardItemConfig } = dashboardItem || ({} as DashboardItem);
+
+  const presentationOptions =
+    config && 'presentationOptions' in config ? config.presentationOptions : undefined;
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
-      ...config?.presentationOptions,
+      ...(presentationOptions || {}),
       exportWithLabels: false,
       exportWithTable: true,
     },
   } as DashboardItemConfig;
-
-  const { reference, name, entityHeader, periodGranularity } = dashboardItemConfig;
+  const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;
 
   const { data: project } = useProject(projectCode);
   const projectLogoUrl = project?.logoUrl ?? undefined;
@@ -161,6 +171,7 @@ export const PDFExportDashboardItem = ({
         <Title>{title}</Title>
         {reference && <ReferenceTooltip reference={reference} />}
         {period && <ExportPeriod>{period}</ExportPeriod>}
+        {description && <Description>{description}</Description>}
         <ExportContent $hasData={data && data?.length > 0}>
           <DashboardItemContext.Provider
             value={{

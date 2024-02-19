@@ -67,18 +67,29 @@ export class RegisterUserAccounts extends CreateUserAccounts {
 
   async createRecord() {
     const {
-      accessPolicy,
-      body: { countryName = 'Demo Land', permissionGroupName = 'Public' },
-    } = this.req;
-    const country = await this.models.entity.findOne({ name: countryName, type: 'country' });
-    if (!country) {
-      throw new Error(`No such country: ${countryName}`);
-    }
-    // check the api client has access to the country they are trying to register a user for
-    if (!accessPolicy.allows(country.code, permissionGroupName)) {
-      throw new Error(`User does not have ${permissionGroupName} access to ${countryName}`);
-    }
-    const { userId } = await this.createUserRecord(this.newRecordData);
+      firstName,
+      lastName,
+      emailAddress,
+      employer,
+      position,
+      contactNumber,
+      password,
+      primaryPlatform,
+    } = this.newRecordData;
+
+    const userData = {
+      firstName,
+      lastName,
+      emailAddress,
+      employer,
+      position,
+      contactNumber,
+      password,
+      primaryPlatform,
+    };
+
+    const { id: userId } = await this.createUserRecord(this.models, userData);
+
     const user = await this.models.user.findById(userId);
     await sendEmailVerification(user);
 
