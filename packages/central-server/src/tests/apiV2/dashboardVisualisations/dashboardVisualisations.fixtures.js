@@ -10,7 +10,7 @@ const permissionGroupId = generateTestId();
 const DASHBOARD_ITEMS = [
   {
     id: generateTestId(),
-    code: 'Modern_Dashboard_Item',
+    code: 'Modern_Report',
     config: { name: 'Modern Dashboard Item', type: 'view', viewType: 'singleValue' },
     report_code: 'Modern_Report',
     legacy: false,
@@ -18,7 +18,7 @@ const DASHBOARD_ITEMS = [
   },
   {
     id: generateTestId(),
-    code: 'Legacy_Dashboard_Item',
+    code: 'Legacy_Report',
     config: { name: 'Legacy Dashboard Item', type: 'chart', chartType: 'bar' },
     report_code: 'Legacy_Report',
     legacy: true,
@@ -27,12 +27,14 @@ const DASHBOARD_ITEMS = [
   {
     id: generateTestId(),
     code: 'Dashboard_Item_No_Report',
+    legacy: true,
     config: {},
   },
   {
     id: generateTestId(),
     code: 'Dashboard_Item_Invalid_Report',
     config: {},
+    legacy: true,
     report_code: 'Invalid_Report',
   },
 ];
