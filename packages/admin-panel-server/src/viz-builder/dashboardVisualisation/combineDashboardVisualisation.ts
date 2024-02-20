@@ -46,6 +46,8 @@ export function combineDashboardVisualisation(
   };
   if (!dashboardItem.legacy) {
     visualisation.permissionGroup = (report as Report).permissionGroup;
+    visualisation.latestDataParameters =
+      'latestDataParameters' in report ? report.latestDataParameters : {};
   }
 
   return visualisation as DashboardViz;

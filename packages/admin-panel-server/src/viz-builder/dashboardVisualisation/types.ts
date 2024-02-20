@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { Report as BaseReportType } from '@tupaia/types';
 import { CamelKeysToSnake, LegacyReport, Report, VizData } from '../types';
 
 // TODO: use DashboardItem['config']
@@ -18,6 +19,7 @@ type DashboardVisualisation = {
   data: VizData;
   presentation: Presentation;
   permissionGroup: string;
+  latestDataParameters?: BaseReportType['latest_data_parameters'];
 };
 
 type LegacyDashboardVisualisation = {
@@ -30,6 +32,7 @@ type LegacyDashboardVisualisation = {
     config: LegacyReport['config'];
   };
   presentation: Presentation;
+  latestDataParameters: never;
 };
 
 export type DashboardViz = DashboardVisualisation | LegacyDashboardVisualisation;

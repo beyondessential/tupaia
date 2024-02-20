@@ -9,12 +9,12 @@ import debounce from 'lodash.debounce';
 import { get } from '../api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../constants';
 
-const useQueryResponse = (project, search) =>
+const useQueryResponse = (projectCode, search) =>
   useQuery(
-    ['hierarchy', project, search],
+    ['hierarchy', projectCode, search],
     () =>
-      project
-        ? get(`hierarchy/${project}/${project}`, {
+      projectCode
+        ? get(`hierarchy/${projectCode}/${projectCode}`, {
             params: { search, fields: 'name,code' },
           })
         : [],

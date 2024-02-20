@@ -38,6 +38,7 @@ export function combineMapOverlayVisualisation(
     data,
     presentation,
     reportPermissionGroup: (report as Report).permissionGroup,
+    latestDataParameters: report?.latestDataParameters ?? {},
     ...rest,
   };
 
