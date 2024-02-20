@@ -23,55 +23,41 @@ const DatePicker = styled(DatePickerComponent)`
   }
 `;
 
-const StartDateField = () => {
-  const [{ startDate, visualisation }, { setStartDate }] = useVizConfig();
+export const DateRangeField = () => {
+  const [{ startDate, endDate, visualisation }, { setStartDate, setEndDate }] = useVizConfig();
   const defaultStartDate = visualisation?.latestDataParameters?.startDate;
+  const defaultEndDate = visualisation?.latestDataParameters?.endDate;
 
   useEffect(() => {
     // Set the default start date if it exists and the start date is not set
     if (defaultStartDate && !startDate) {
       setStartDate(defaultStartDate);
     }
-  }, [defaultStartDate, startDate]);
-
-  const handleChangeStartDate = date => {
-    const newDate = date ? date.toISOString() : null;
-    setStartDate(newDate);
-  };
-  return (
-    <DatePicker
-      placeholder="Select start date"
-      value={startDate}
-      onChange={handleChangeStartDate}
-    />
-  );
-};
-
-const EndDateField = () => {
-  const [{ endDate, visualisation }, { setEndDate }] = useVizConfig();
-  const defaultEndDate = visualisation?.latestDataParameters?.endDate;
-
-  useEffect(() => {
-    // Set the default start date if it exists and the start date is not set
+    // Set the default end date if it exists and the end date is not set
     if (defaultEndDate && !endDate) {
       setEndDate(defaultEndDate);
     }
-  }, [defaultEndDate, endDate]);
+  }, [defaultStartDate, startDate, defaultEndDate, endDate]);
+
+  const convertDateToIsoString = date => (date ? date.toISOString() : null);
+
+  const handleChangeStartDate = date => {
+    const newDate = convertDateToIsoString(date);
+    setStartDate(newDate);
+  };
 
   const handleChangeEndDate = date => {
-    const newDate = date ? date.toISOString() : null;
+    const newDate = convertDateToIsoString(date);
     setEndDate(newDate);
   };
   return (
-    <DatePicker placeholder="Select end date" value={endDate} onChange={handleChangeEndDate} />
-  );
-};
-
-export const DateRangeField = () => {
-  return (
     <>
-      <StartDateField />
-      <EndDateField />
+      <DatePicker
+        placeholder="Select start date"
+        value={startDate}
+        onChange={handleChangeStartDate}
+      />
+      <DatePicker placeholder="Select end date" value={endDate} onChange={handleChangeEndDate} />
     </>
   );
 };
