@@ -24,8 +24,8 @@ const useQueryResponse = (projectCode, search) =>
     },
   );
 
-export const useLocations = (project, search) => {
-  const queryResponse = useQueryResponse(project, search);
+export const useLocations = (projectCode, search) => {
+  const queryResponse = useQueryResponse(projectCode, search);
   const { refetch } = queryResponse;
   useEffect(() => {
     const debouncedSearch = debounce(() => {
@@ -33,7 +33,7 @@ export const useLocations = (project, search) => {
     }, 100);
     debouncedSearch();
     return debouncedSearch.cancel;
-  }, [project, search]);
+  }, [projectCode, search]);
 
   return queryResponse;
 };
