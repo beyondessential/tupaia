@@ -5,15 +5,16 @@
 
 import { generateId } from '@tupaia/database';
 import { DatatrakWebSubmitSurveyRequest, Entity, SurveyScreenComponentConfig } from '@tupaia/types';
+import { DatatrakWebServerModelRegistry } from '../../types';
 
 type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
 
 export const buildUpsertEntity = async (
+  models: DatatrakWebServerModelRegistry,
   config: SurveyScreenComponentConfig,
   questionId: string,
   answers: Answers,
   countryId: Entity['id'],
-  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const entityId = (answers[questionId] || generateId()) as Entity['id'];
   const entity = { id: entityId } as Entity;
@@ -30,20 +31,20 @@ export const buildUpsertEntity = async (
     if (fieldName === 'parentId') {
       // If the parentId field is not answered, use the country id
       const parentValue = (fieldValue as string) || countryId;
-      const entityRecord = await findEntityById(parentValue);
+      const entityRecord = await models.entity.findById(parentValue);
       entity.parent_id = entityRecord.id;
     } else {
       entity[fieldName as keyof Entity] = fieldValue;
     }
   }
 
-  const isUpdate = await findEntityById(entityId);
+  const isUpdate = await models.entity.findById(entityId);
 
   if (isUpdate) {
     return entity;
   }
 
-  const selectedCountry = await findEntityById(countryId);
+  const selectedCountry = await models.entity.findById(countryId);
   if (!entity.country_code) {
     entity.country_code = selectedCountry.code;
   }
