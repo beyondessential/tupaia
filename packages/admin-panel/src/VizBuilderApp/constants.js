@@ -3,6 +3,25 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import {
+  BarChartConfigSchema,
+  ComposedChartConfigSchema,
+  DataDownloadViewConfigSchema,
+  DownloadFilesViewConfigSchema,
+  GaugeChartConfigSchema,
+  LineChartConfigSchema,
+  MatrixConfigSchema,
+  MultiPhotographViewConfigSchema,
+  MultiSingleValueViewConfigSchema,
+  MultiValueRowViewConfigSchema,
+  MultiValueViewConfigSchema,
+  PieChartConfigSchema,
+  QRCodeViewConfigSchema,
+  SingleDateViewConfigSchema,
+  SingleDownloadLinkViewConfigSchema,
+  SingleValueViewConfigSchema,
+} from '@tupaia/types';
+
 export const MODAL_STATUS = {
   INITIAL: 'initial',
   LOADING: 'loading',
@@ -13,4 +32,162 @@ export const MODAL_STATUS = {
 export const DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM = {
   DASHBOARD_ITEM: 'dashboard-item',
   MAP_OVERLAY: 'map-overlay',
+};
+
+export const VIZ_TYPES = {
+  // Charts
+  PIE_CHART: {
+    name: 'Pie Chart',
+    schema: PieChartConfigSchema,
+    initialConfig: {
+      type: 'chart',
+      chartType: 'pie',
+      name: '',
+    },
+  },
+  LINE_CHART: {
+    name: 'Line Chart',
+    schema: LineChartConfigSchema,
+    initialConfig: {
+      type: 'chart',
+      chartType: 'line',
+      name: '',
+    },
+  },
+  BAR_CHART: {
+    name: 'Bar Chart',
+    schema: BarChartConfigSchema,
+    initialConfig: {
+      type: 'chart',
+      chartType: 'bar',
+      name: '',
+    },
+  },
+  GAUGE_CHART: {
+    name: 'Gauge Chart',
+    schema: GaugeChartConfigSchema,
+    initialConfig: {
+      type: 'chart',
+      chartType: 'gauge',
+      name: '',
+    },
+  },
+  COMPOSED_CHART: {
+    name: 'Composed Chart',
+    schema: ComposedChartConfigSchema,
+    initialConfig: {
+      type: 'chart',
+      chartType: 'composed',
+      name: '',
+    },
+  },
+
+  // Views
+  SINGE_VALUE_VIEW: {
+    name: 'Single Value View',
+    schema: SingleValueViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'singleValue',
+      name: '',
+    },
+  },
+  MULTI_VALUE_VIEW: {
+    name: 'Multi Value View',
+    schema: MultiValueViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'multiValue',
+      name: '',
+    },
+  },
+  MULTI_VALUE_ROW_VIEW: {
+    name: 'Multi Value Row View',
+    schema: MultiValueRowViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'multiValueRow',
+      name: '',
+    },
+  },
+  MULTI_PHOTOGRAPH_VIEW: {
+    name: 'Multi Photograph View',
+    schema: MultiPhotographViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'multiPhotograph',
+      name: '',
+    },
+  },
+  MULTI_SINGLE_VALUE_VALUE: {
+    name: 'Multi Single Value View',
+    schema: MultiSingleValueViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'multiSingleValue',
+      name: '',
+    },
+  },
+  SINGLE_DOWNLOAD_LINK_VIEW: {
+    name: 'Single Download Link View',
+    schema: SingleDownloadLinkViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'singleDownloadLink',
+      name: '',
+    },
+  },
+  DATA_DOWNLOAD_VIEW: {
+    name: 'Data Download View',
+    schema: DataDownloadViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'dataDownload',
+      name: '',
+    },
+  },
+  SINGLE_DATE_VIEW: {
+    name: 'Single Date View',
+    schema: SingleDateViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'singleDate',
+      name: '',
+    },
+  },
+  DOWNLOAD_FILES_VIEW: {
+    name: 'Download Files View',
+    schema: DownloadFilesViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'downloadFiles',
+      name: '',
+    },
+  },
+  QR_CODE_VIEW: {
+    name: 'QR Code View',
+    schema: QRCodeViewConfigSchema,
+    initialConfig: {
+      type: 'view',
+      viewType: 'qrCodeVisual',
+      name: '',
+    },
+  },
+
+  // Matrix
+  MATRIX: {
+    name: 'Matrix',
+    schema: MatrixConfigSchema,
+    initialConfig: {
+      type: 'matrix',
+      name: '',
+    },
+  },
+
+  // This must be defined at the bottom of this object
+  OTHER: {
+    name: 'Other',
+    schema: { type: 'object' },
+    initialConfig: {},
+  },
 };
