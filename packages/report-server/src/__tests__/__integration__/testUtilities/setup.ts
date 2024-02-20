@@ -30,6 +30,11 @@ jest.mock('@tupaia/api-client', () => {
   };
 });
 
+// mock out the data broker
+jest.mock('@tupaia/data-broker', () => ({
+  DataBroker: jest.fn().mockImplementation(() => ({})),
+}));
+
 export const setupTestData = async () => {
   const permissionGroup = await findOrCreateDummyRecord(
     models.permissionGroup,
@@ -38,6 +43,7 @@ export const setupTestData = async () => {
     },
     PUBLIC_PERMISSION_GROUP,
   );
+
   // add report
   await findOrCreateDummyRecord(
     models.report,
