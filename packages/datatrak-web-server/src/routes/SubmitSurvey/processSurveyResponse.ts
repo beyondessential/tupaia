@@ -143,9 +143,13 @@ export const processSurveyResponse = async (
         const options = (await apiClient.central.fetchResources(
           `optionSets/${optionSetId}/options`,
         )) as Option[];
-        const isNew = options.some(({ value }) => value === answer);
+        const isNew = !options.map(({ value }) => value).includes(answer);
         // if the answer is a new option, add it to the options_created array to be added to the DB
         if (isNew) {
+          if (!config.autocomplete?.createNew) {
+            throw new Error(`Cannot create new options for question: ${questionCode}`);
+          }
+
           surveyResponse.options_created!.push({
             option_set_id: optionSetId,
             value: answer,

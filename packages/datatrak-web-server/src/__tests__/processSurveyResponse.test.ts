@@ -2,20 +2,12 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { MockCentralApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { EntityType, QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
-import { MockCentralApi, MockTupaiaApiClient } from '@tupaia/api-client';
-
-// Mock out moment so that that toISOString returns a consistent value for our tests
-jest.mock('moment', () => {
-  const mMoment = {
-    toISOString: jest.fn(() => 'theISOString'),
-  };
-  return jest.fn(() => mMoment);
-});
 
 const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
@@ -204,11 +196,13 @@ describe('processSurveyResponse', () => {
       questions: [
         {
           questionId: 'question1',
+          code: 'question1',
           type: QuestionType.Autocomplete,
           componentNumber: 1,
           text: 'question1',
           screenId: 'screen1',
           optionSetId,
+          config: { autocomplete: { createNew: true } },
         },
       ],
       answers: {
@@ -241,11 +235,13 @@ describe('processSurveyResponse', () => {
       questions: [
         {
           questionId: 'question1',
+          code: 'question1',
           type: QuestionType.Autocomplete,
           componentNumber: 1,
           text: 'question1',
           screenId: 'screen1',
           optionSetId,
+          config: {},
         },
       ],
       answers: {
@@ -255,6 +251,7 @@ describe('processSurveyResponse', () => {
 
     expect(result).toEqual({
       ...processedResponseData,
+      options_created: [],
       answers: [
         {
           question_id: 'question1',
@@ -263,6 +260,29 @@ describe('processSurveyResponse', () => {
         },
       ],
     });
+  });
+
+  it('should throw an error when type is "Autocomplete" and answer is not in the optionSet but createNew is not true', async () => {
+    await expect(() =>
+      processSurveyResponse(mockModels, mockApiClient, {
+        ...responseData,
+        questions: [
+          {
+            questionId: 'question1',
+            code: 'question1',
+            type: QuestionType.Autocomplete,
+            componentNumber: 1,
+            text: 'question1',
+            screenId: 'screen1',
+            optionSetId,
+            config: {},
+          },
+        ],
+        answers: {
+          question1: '3',
+        },
+      }),
+    ).rejects.toThrow('Cannot create new options for question: question1');
   });
 
   it('should not add to entities_upserted when type is "Entity" and a create config is not set', async () => {
