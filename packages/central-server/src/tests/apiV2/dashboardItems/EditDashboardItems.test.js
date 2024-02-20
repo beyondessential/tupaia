@@ -12,7 +12,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for EditDashboardItems', async () => {
+describe('EditDashboardItems', async () => {
   const DEFAULT_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
@@ -40,6 +40,8 @@ describe('Permissions checker for EditDashboardItems', async () => {
   let dashboardItemDLPublicLAAdmin;
   let dashboardItemDLPublicSBAdmin;
   let dashboardItemKIAdmin;
+  let reportKIAdmin;
+  let legacyDashboardItemKIAdmin;
 
   before(async () => {
     const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
@@ -110,6 +112,19 @@ describe('Permissions checker for EditDashboardItems', async () => {
       report_code: 'FAV_PKMN',
       config: { name: 'Favourite Pokemon' },
       legacy: false,
+    });
+
+    legacyDashboardItemKIAdmin = await findOrCreateDummyRecord(models.dashboardItem, {
+      code: 'LEGACY_FAV_PKMN',
+      report_code: 'LEGACY_FAV_PKMN',
+      config: { name: 'Favourite Pokemon' },
+      legacy: true,
+    });
+
+    reportKIAdmin = await findOrCreateDummyRecord(models.report, {
+      code: 'ALT_FAV_PKMN',
+      permission_group_id: publicPermissionGroup.id,
+      config: {},
     });
 
     // Give the test users some permissions
@@ -247,6 +262,35 @@ describe('Permissions checker for EditDashboardItems', async () => {
         );
 
         expect(result).to.have.keys('error');
+      });
+    });
+
+    describe('Validation', async () => {
+      it('Does not allow editing of report_code if it does not match an existing report and the dashboard viz is not a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {
+          body: { code: 'new code', report_code: 'new code' },
+        });
+        const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal(dashboardItemKIAdmin.code);
+      });
+
+      it('Allows editing of report_code if it matches an existing report and the dashboard viz is not a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${dashboardItemKIAdmin.id}`, {
+          body: { code: reportKIAdmin.code, report_code: reportKIAdmin.code },
+        });
+        const result = await models.dashboardItem.findById(dashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal(reportKIAdmin.code);
+      });
+
+      it('Allows editing of report_code if it does not match an existing report and the dashboard viz is a legacy viz', async () => {
+        await app.grantAccess(DEFAULT_POLICY);
+        await app.put(`dashboardItems/${legacyDashboardItemKIAdmin.id}`, {
+          body: { code: 'new code', report_code: 'new code' },
+        });
+        const result = await models.dashboardItem.findById(legacyDashboardItemKIAdmin.id);
+        expect(result.report_code).to.equal('new code');
       });
     });
   });

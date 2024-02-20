@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -106,7 +106,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
 
   return (
     <Wrapper>
-      {/** render the item in the dashboard */}
+      {/* Render the item in the dashboard */}
       <Container>
         <DashboardItemContext.Provider
           value={{

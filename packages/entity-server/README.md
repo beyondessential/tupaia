@@ -1,6 +1,6 @@
 # @tupaia/entity-server
 
-Micro service for fetching entity and entity hierarchy information within Tupaia.
+Microservice for fetching entity and entity hierarchy information within Tupaia.
 
 ## Entities
 
