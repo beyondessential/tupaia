@@ -1,18 +1,17 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Typography } from '@material-ui/core';
-import { Lock, WatchLater } from '@material-ui/icons';
+import { Lock as LockIcon, WatchLater as ClockIcon } from '@material-ui/icons';
 import { Button as UIButton, SpinningLoader } from '@tupaia/ui-components';
 import { Project } from '@tupaia/types';
 import { Button, SelectList } from '../components';
-import { useEditUser } from '../api/mutations';
-import { useProjects } from '../api/queries';
+import { useEditUser, useProjects } from '../api';
 import { ROUTES } from '../constants';
 
 const LoadingContainer = styled.div`
@@ -86,8 +85,8 @@ export const ProjectSelectForm = ({
   };
 
   const getProjectIcon = (hasAccess: boolean, hasPendingAccess: boolean) => {
-    if (hasPendingAccess) return <WatchLater />;
-    if (!hasAccess) return <Lock />;
+    if (hasPendingAccess) return <ClockIcon />;
+    if (!hasAccess) return <LockIcon />;
     return null;
   };
 
@@ -145,7 +144,7 @@ export const ProjectSelectForm = ({
           color="primary"
           isLoading={isConfirming}
           disabled={!selectedProjectId}
-          tooltip={selectedProjectId ? '' : 'Select project to proceed'}
+          tooltip={selectedProjectId ? undefined : 'Select a project to proceed'}
         >
           Confirm
         </Button>

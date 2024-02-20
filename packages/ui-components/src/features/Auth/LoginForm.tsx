@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -11,7 +11,7 @@ import { AuthViewWrapper } from './AuthViewWrapper';
 import { AuthFormTextField } from './AuthFormTextField';
 import { FORM_FIELD_VALIDATION } from '../../constants';
 import { RouterLink } from '../RouterLink';
-import { FormInput, Form } from '../Form';
+import { Form, FormInput } from '../Form';
 import { EmailVerificationDisplay, Message } from './EmailVerificationDisplay';
 import { AuthSubmitButton } from './AuthSubmitButton';
 import { AuthLink } from './AuthLink';
@@ -65,6 +65,7 @@ export const LoginForm = ({
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
         <FormInput
+          autoFocus
           id="email"
           name="email"
           type="email"
