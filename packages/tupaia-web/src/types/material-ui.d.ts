@@ -14,6 +14,11 @@ type CustomPalette = {
       data: React.CSSProperties['color'];
     };
   };
+  black?: {
+    light: React.CSSProperties['color'];
+    dark: React.CSSProperties['color'];
+    super: React.CSSProperties['color'];
+  };
 };
 
 // Augment the Palette interface so that we can add our custom properties

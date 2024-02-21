@@ -28,7 +28,7 @@ const TableRow = styled(MuiTableRow)<{
   display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
   height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   background-color: ${({ theme, $highlighted }) =>
-    $highlighted ? lighten(theme.palette.background.default, 0.1) : 'transparent'};
+    $highlighted && lighten(theme.palette.background.default, 0.1)};
 `;
 
 const HeaderCell = styled(Cell).attrs({
@@ -39,9 +39,6 @@ const HeaderCell = styled(Cell).attrs({
   top: 0;
   left: 0;
   z-index: 2;
-  background-color: ${({ theme }) =>
-    theme.palette.background
-      .default}; // set the background color to the same as the table background so that the cells that scroll under it don't show through
 `;
 
 const RowHeaderCellContent = styled.div<{

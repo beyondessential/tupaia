@@ -1,5 +1,9 @@
 import { createMuiTheme } from '@material-ui/core';
 
+const LIGHT_BLACK = '#2e2f33';
+const DARK_BLACK = '#202124';
+const SUPER_DARK_BLACK = '#171717';
+
 export const theme = createMuiTheme({
   typography: {
     fontSize: 16, // this needs to be 16 to correctly calculate the axis labels in recharts
@@ -39,6 +43,25 @@ export const theme = createMuiTheme({
         fontSize: '1.5rem',
       },
     },
+    MuiTableRow: {
+      root: {
+        backgroundColor: LIGHT_BLACK,
+        ['&:nth-of-type(even)']: {
+          backgroundColor: DARK_BLACK,
+        },
+      },
+      head: {
+        backgroundColor: '#424448',
+      },
+    },
+    MuiTableCell: {
+      root: {
+        backgroundColor: 'inherit',
+      },
+      stickyHeader: {
+        backgroundColor: 'inherit',
+      },
+    },
   },
   palette: {
     type: 'dark',
@@ -49,8 +72,8 @@ export const theme = createMuiTheme({
       main: '#ee6230', // Tupaia Orange
     },
     background: {
-      default: '#2e2f33', // Light black
-      paper: '#202124', // Dark Black
+      default: LIGHT_BLACK,
+      paper: DARK_BLACK,
     },
     text: {
       secondary: '#9ba0a6',
@@ -70,6 +93,11 @@ export const theme = createMuiTheme({
       multiValue: {
         data: '#22c7fc',
       },
+    },
+    black: {
+      light: LIGHT_BLACK,
+      dark: DARK_BLACK,
+      super: SUPER_DARK_BLACK,
     },
   },
 });
