@@ -35,7 +35,7 @@ const StyledFieldset = styled.fieldset`
     grid-template: auto / 1fr 1fr;
   }
 
-  // In single-column layout, disregard gridlines and honour AccountSettingsSection’s flex layout
+  // In single-column layout, disregard gridlines and honour {@link StyledForm}’s flex layout
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: contents;
   }
