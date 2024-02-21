@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { CssColor } from '../../css';
-import type { BaseConfig, ExportPresentationOptions, ValueType } from './common';
+import type { BaseConfig, ValueType } from './common';
 
 /**
  * @description Matrix viz type
@@ -24,16 +24,35 @@ export type MatrixConfig = BaseConfig & {
   /**
    * @description Allows for conditional styling
    */
-  presentationOptions?: PresentationOptions;
+  presentationOptions?: MatrixPresentationOptions;
 
   /**
    * @description Category header rows can have values just like real rows, this is how you style them
    */
-  categoryPresentationOptions?: PresentationOptions;
+  categoryPresentationOptions?: MatrixPresentationOptions;
   /**
    * @description Specify the valueType for formatting of the value in the matrix
    */
   valueType?: ValueType;
+  /**
+   * @description A url to an image to be used when a matrix is collapsed.
+   */
+  placeholder?: string;
+};
+
+type BasePresentationOption = {
+  /**
+   * @description Specify the color of the display item
+   */
+  color?: CssColor;
+  /**
+   * @description Specify the text for the legend item. Also used in the enlarged cell view
+   */
+  description?: string;
+  /**
+   * @description Specify if you want a label to appear above the enlarged
+   */
+  label?: string;
 };
 
 export type ConditionalPresentationOptions = {
@@ -60,23 +79,6 @@ export type RangePresentationOptions = Record<CssColor, PresentationOptionRange>
   showRawValue?: boolean;
 };
 
-export type PresentationOptions = ExportPresentationOptions &
-  (ConditionalPresentationOptions | RangePresentationOptions);
-
-type BasePresentationOption = {
-  /**
-   * @description Specify the color of the display item
-   */
-  color?: CssColor;
-  /**
-   * @description Specify the text for the legend item. Also used in the enlarged cell view
-   */
-  description?: string;
-  /**
-   * @description Specify if you want a label to appear above the enlarged
-   */
-  label?: string;
-};
 export type PresentationOptionCondition = BasePresentationOption & {
   key: string;
   /**
@@ -100,3 +102,5 @@ export enum ConditionType {
   '>=' = '>=',
   '<=' = '<=',
 }
+
+export type MatrixPresentationOptions = ConditionalPresentationOptions | RangePresentationOptions;

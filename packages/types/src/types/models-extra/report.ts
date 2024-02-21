@@ -62,3 +62,18 @@ export type MatrixReport = Omit<BaseReport, 'data'> & {
   columns?: MatrixReportColumn[];
   rows?: MatrixReportRow[];
 };
+
+/**
+ * @description This is the shape of a report when type is 'chart'
+ */
+export interface ChartData extends Record<string, unknown> {
+  name?: string;
+  value: string | number;
+  timestamp?: number;
+}
+
+export type ChartReport = Omit<BaseReport, 'data'> & {
+  data?: ChartData[];
+};
+
+export type DashboardItemReport = ViewReport | MatrixReport | ChartReport | BaseReport;

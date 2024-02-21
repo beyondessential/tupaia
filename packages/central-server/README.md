@@ -1,6 +1,6 @@
 # @tupaia/central-server
 
-Central micro service for performing system operations. Primary responsibilities are:
+Central microservice for performing system operations. Primary responsibilities are:
 
 - Permissions based CRUD
 - Survey response management
