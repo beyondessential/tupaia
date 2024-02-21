@@ -15,7 +15,8 @@ const useQueryResponse = (projectCode, search) =>
     () =>
       projectCode
         ? get(`hierarchy/${projectCode}/${projectCode}`, {
-            params: { search, fields: 'name,code' },
+            // limit to 1000 locations for performance
+            params: { search, fields: 'name,code', pageSize: 1000 },
           })
         : [],
     {

@@ -34,7 +34,7 @@ const UploadedFile = ({ children, onRemove }) => (
   <UploadedFileContainer>
     <FlexStart>
       <InsertDriveFileIcon color="primary">{children}</InsertDriveFileIcon>
-      <span>{children}</span>
+      {children}
     </FlexStart>
     <FlexEnd>
       <LinkButton onClick={onRemove}>Remove</LinkButton>

@@ -26,14 +26,13 @@ export const LocationField = () => {
     locationQuery,
   );
 
-  const limitedLocations = locations.slice(0, 1000); // limit the number of locations to 1000 for performance
   return (
     <Autocomplete
       id="location"
       placeholder="Select Location"
       defaultValue={defaultLocation}
       value={location}
-      options={limitedLocations}
+      options={locations}
       loading={isLoadingLocations}
       onInputChange={(_, newValue) => {
         setLocationSearch(newValue);
