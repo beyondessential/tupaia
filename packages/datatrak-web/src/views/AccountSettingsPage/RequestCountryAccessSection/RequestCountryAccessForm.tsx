@@ -3,18 +3,21 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
 import { Entity } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
-import { ensure } from '@tupaia/tsutils';
+import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
-import { useCurrentUser, useRequestProjectAccess } from '../../../api';
+import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  gap: 1.56rem;
   inline-size: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
     max-inline-size: 44.25rem;
@@ -30,6 +33,11 @@ const StyledFieldset = styled.fieldset`
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
     grid-template: auto / 1fr 1fr;
+  }
+
+  // In single-column layout, disregard gridlines and honour AccountSettingsSection’s flex layout
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: contents;
   }
 
   .MuiFormLabel-root {
@@ -82,6 +90,20 @@ const StyledFormInput = styled(FormInput).attrs({
   }
 `;
 
+/**
+ * @privateRemarks TODO: Import this from @tupaia/tsutils.
+ *
+ * This is more or less replicated from `typeGuards.ts` in tsutils, because importing it here seems
+ * to indirectly cause DataTrak to crash on remote deployments.
+ *
+ * @see https://beyondessential.slack.com/archives/C032DCHKTGR/p1708553985766539?thread_ts=1707443585.079349&cid=C032DCHKTGR
+ */
+function assertIsNotNullish<T>(val: T): asserts val is NonNullable<T> {
+  if (val === undefined || val === null) {
+    throw new Error(`Expected project to be defined, but got ${val}`);
+  }
+}
+
 interface RequestCountryAccessFormFields {
   entityIds: Entity['id'][];
   message?: string;
@@ -89,10 +111,14 @@ interface RequestCountryAccessFormFields {
 
 export const RequestCountryAccessForm = () => {
   const { project } = useCurrentUser();
-  const projectCode = ensure(project?.code);
 
-  // const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
-  // const applicableCountries = countries.filter(country => project?.names?.includes(country.name));
+  // If `RequestCountryAccessForm` is being rendered, the user should already have a project
+  // selected. Otherwise, they should’ve been redirected to select a project by now.
+  assertIsNotNullish(project);
+  const projectCode = project.code;
+
+  const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
+  const applicableCountries = countries.filter(country => project.names?.includes(country.name));
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -112,10 +138,10 @@ export const RequestCountryAccessForm = () => {
    * `setSelectedCountries` is used here to circumvent some quirks of how React Hook Form +
    * MUI checkboxes (mis-)handle multiple checkboxes with the same control name.
    */
-  // const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
+  const [selectedCountries, setSelectedCountries] = useState([] as Entity['id'][]);
   const resetForm = () => {
     reset();
-    // setSelectedCountries([]);
+    setSelectedCountries([]);
   };
 
   const { mutate: requestCountryAccess, isLoading: requestIsLoading } = useRequestProjectAccess({
@@ -128,13 +154,9 @@ export const RequestCountryAccessForm = () => {
   const { breakpoints } = useTheme();
   const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
 
-  const formIsNotSubmissible =
-    !project ||
-    isValidating ||
-    !isValid ||
-    isSubmitting /*accessListIsLoading ||*/ ||
-    requestIsLoading;
-  const buttonLabel = isSubmitting || requestIsLoading ? 'Submitting request' : 'Request access';
+  const formIsSubmitting = isSubmitting || requestIsLoading;
+  const formIsInsubmissible =
+    !project || isValidating || !isValid || accessListIsLoading || formIsSubmitting;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -146,19 +168,16 @@ export const RequestCountryAccessForm = () => {
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={isSubmitting || requestIsLoading}>
+      <StyledFieldset disabled={formIsSubmitting}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
-          {/*<RequestableCountryChecklist*/}
-          {/*  projectCode={projectCode}*/}
-          {/*  countries={applicableCountries}*/}
-          {/*  selectedCountries={selectedCountries}*/}
-          {/*  setSelectedCountries={setSelectedCountries}*/}
-          {/*  disabled={!project}*/}
-          {/*/>*/}
-          <p>
-            <em>Placeholder</em>
-          </p>
+          <RequestableCountryChecklist
+            projectCode={projectCode}
+            countries={applicableCountries}
+            selectedCountries={selectedCountries}
+            setSelectedCountries={setSelectedCountries}
+            disabled={!project}
+          />
         </CountryChecklistWrapper>
         <Flexbox>
           <StyledFormInput
@@ -181,11 +200,11 @@ export const RequestCountryAccessForm = () => {
             name="message"
           />
           <Button
-            disabled={formIsNotSubmissible}
+            disabled={formIsInsubmissible}
             tooltip={isValid ? undefined : 'Select countries to request access'}
             type="submit"
           >
-            {buttonLabel}
+            {formIsSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
         </Flexbox>
       </StyledFieldset>
