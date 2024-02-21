@@ -30,7 +30,7 @@ const StyledTable = styled(Table)<{
 const PositiveIcon = styled(CheckCircle)<{
   $color?: string;
 }>`
-  color: ${({ $color, theme }) => $color || theme.dashboardItem.multiValue.data};
+  color: ${({ $color, theme }) => $color || theme.palette.dashboardItem.multiValue.data};
   height: 1.25rem;
 `;
 
@@ -66,7 +66,7 @@ const TableCell = styled(MuiTableCell)`
   font-size: 1rem;
   line-height: 1.2;
   &:nth-child(2) {
-    color: ${({ theme }) => theme.dashboardItem.multiValue.data};
+    color: ${({ theme }) => theme.palette.dashboardItem.multiValue.data};
     font-weight: ${({ theme }) => theme.typography.fontWeightBold};
     text-align: right;
   }
