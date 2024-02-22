@@ -22,22 +22,20 @@ import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 
 const SearchInput = styled(TextField)`
-  margin-bottom: 0;
+  margin: 0;
   min-width: 10rem;
+
   .MuiInputBase-root {
     background-color: transparent;
+    font-size: inherit; // override this to inherit the font size from the cell
   }
-`;
-
-const Wrapper = styled.div`
-  overflow: hidden;
-  max-height: clamp(
-    20rem,
-    70vh,
-    60rem
-  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
-  display: flex;
-  flex-direction: column;
+  .MuiInputBase-input {
+    font-size: inherit; // override this to inherit the font size from the cell
+  }
+  .MuiTableCell-root:has(&) {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+  }
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -209,7 +207,7 @@ const MatrixVisual = () => {
   }
 
   return (
-    <Wrapper>
+    <>
       <MatrixComponent
         // casting here because we know that the config is a MatrixConfig and it has a different shape than configs of other types, and while we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context
         {...config}
@@ -238,7 +236,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </Wrapper>
+    </>
   );
 };
 

@@ -1,8 +1,10 @@
 import { createMuiTheme } from '@material-ui/core';
 
+// MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
 const LIGHT_BLACK = '#2e2f33';
 const DARK_BLACK = '#202124';
 const SUPER_DARK_BLACK = '#171717';
+const LIGHT_GREY = '#9BA0A6';
 
 export const theme = createMuiTheme({
   typography: {
@@ -43,6 +45,23 @@ export const theme = createMuiTheme({
         fontSize: '1.5rem',
       },
     },
+    MuiTable: {
+      root: {
+        border: `1px solid ${LIGHT_GREY}`,
+      },
+      // when the table scrolls, the table container gets a border instead, because otherwise the top and left borders of the table can't be seen on scroll
+      stickyHeader: {
+        border: 'none',
+      },
+    },
+    MuiTableContainer: {
+      root: {
+        border: `1px solid ${LIGHT_GREY}`, // add the border to the container so that when scrolling, the top and left borders of the table can still be seen
+        ['&:has(.MuiTable-stickyHeader)']: {
+          maxHeight: 'clamp(20rem,70vh,60rem)', // when the table has a sticky header, set a max height so that it can scroll
+        },
+      },
+    },
     MuiTableRow: {
       root: {
         backgroundColor: LIGHT_BLACK,
@@ -57,9 +76,19 @@ export const theme = createMuiTheme({
     MuiTableCell: {
       root: {
         backgroundColor: 'inherit',
+        padding: '0.8rem 1.56rem',
+        fontSize: '0.875rem',
+        lineHeight: '1.4',
+        borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
+        ['&.MuiTableCell-row-head']: {
+          borderRight: `1px solid ${LIGHT_GREY}`, // border right for the row header cells
+        },
+      },
+      head: {
+        borderBottom: `1px solid ${LIGHT_GREY}`, // header cells have a bottom border
       },
       stickyHeader: {
-        backgroundColor: 'inherit',
+        backgroundColor: 'inherit', // make the sticky header cells have the row's background color
       },
     },
   },
@@ -76,7 +105,7 @@ export const theme = createMuiTheme({
       paper: DARK_BLACK,
     },
     text: {
-      secondary: '#9ba0a6',
+      secondary: LIGHT_GREY,
     },
     success: {
       main: '#25d366',

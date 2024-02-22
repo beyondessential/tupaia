@@ -33,8 +33,8 @@ const TableRow = styled(MuiTableRow)<{
 
 const HeaderCell = styled(Cell).attrs({
   component: 'th',
+  className: 'MuiTableCell-row-head',
 })`
-  padding: 0;
   position: sticky;
   top: 0;
   left: 0;
@@ -50,11 +50,7 @@ const RowHeaderCellContent = styled.div<{
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  padding-right: 1rem;
-  padding-left: ${({ $depth, $isGrouped }) =>
-    $isGrouped ? `${1.5 + $depth * 1.5}rem` : `${0.5 + $depth * 1.5}rem`};
+  padding-left: ${({ $depth, $isGrouped }) => $isGrouped && `${1.5 + $depth * 1.5}rem`};
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({

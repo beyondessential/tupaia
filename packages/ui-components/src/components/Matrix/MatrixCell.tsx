@@ -36,19 +36,15 @@ const DataCell = styled(Cell)`
   vertical-align: middle;
   position: relative;
   z-index: 1;
-  padding: 0;
   height: 100%;
   word-break: break-word;
 `;
 
 const DataCellContent = styled.div`
-  padding: 0.5rem;
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
-  text-align: center;
-  justify-content: center;
   white-space: pre-line;
 `;
 
