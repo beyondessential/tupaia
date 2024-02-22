@@ -15,9 +15,8 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { ResBody as CountryAccessList } from '@tupaia/types/src/types/requests/tupaia-web-server/CountryAccessListRequest';
+import { ProjectResponse, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { UseQueryResult } from 'react-query';
-import { ProjectResponse } from '@tupaia/types';
 
 const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,
@@ -38,7 +37,7 @@ const StyledTableContainer = styled(TableContainer).attrs({
     background-color: ${({ theme }) => theme.palette.background.paper};
     // Shadow because border disappears when table body is scrolled
     box-shadow: 0 1px 0 0 ${({ theme }) => theme.palette.divider};
-    // Fix table header appearing over modeals
+    // Fix table header appearing over modals
     z-index: auto;
   }
 
@@ -52,7 +51,7 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 `;
 
 interface AccessGrantedCountryListProps {
-  countryAccessList: UseQueryResult<CountryAccessList>;
+  countryAccessList: UseQueryResult<TupaiaWebCountryAccessListRequest.ResBody>;
   project: ProjectResponse;
 }
 

@@ -7,8 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
-import { Entity, ProjectResponse } from '@tupaia/types';
-import { ResBody as CountryAccessList } from '@tupaia/types/src/types/requests/tupaia-web-server/CountryAccessListRequest';
+import { Entity, ProjectResponse, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
@@ -86,7 +85,7 @@ const StyledFormInput = styled(FormInput).attrs({
 `;
 
 interface RequestCountryAccessFormProps {
-  countryAccessList: UseQueryResult<CountryAccessList>;
+  countryAccessList: UseQueryResult<TupaiaWebCountryAccessListRequest.ResBody>;
   project: ProjectResponse;
 }
 
