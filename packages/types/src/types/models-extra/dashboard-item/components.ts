@@ -17,6 +17,5 @@ enum VizComponentName {
  */
 export type ComponentConfig = BaseConfig & {
   type: 'component';
-
-  componentName: VizComponentName;
+  componentName: `${VizComponentName}`;
 };

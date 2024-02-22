@@ -1,13 +1,13 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { useLogin } from '../api/mutations';
-import { AuthModalBody, AuthModalButton, TextField, RouterLink, Form } from '../components';
+import { AuthModalBody, AuthModalButton, Form, RouterLink, TextField } from '../components';
 import { FORM_FIELD_VALIDATION, MODAL_ROUTES } from '../constants';
 import { EmailVerificationModal } from './EmailVerificationModal';
 
@@ -54,6 +54,7 @@ export const LoginModal = () => {
       )}
       <StyledForm onSubmit={login as SubmitHandler<any>} formContext={formContext}>
         <TextField
+          autoFocus
           name="email"
           label="Email"
           type="email"
