@@ -95,11 +95,13 @@ export class FeedItemModel extends DatabaseModel {
 
     const feedItems = await this.find(
       {
-        // also limit to the user's country-level permissions, because in some cases we filter the surveys by projectId
-        [QUERY_CONJUNCTIONS.RAW]: permissionsClause,
         ...customDbConditions,
-        [QUERY_CONJUNCTIONS.OR]: {
-          type: FeedItemTypes.Markdown,
+        [QUERY_CONJUNCTIONS.AND]: {
+          // also limit to the user's country-level permissions, because in some cases we filter the surveys by projectId
+          [QUERY_CONJUNCTIONS.RAW]: permissionsClause,
+          [QUERY_CONJUNCTIONS.OR]: {
+            type: FeedItemTypes.Markdown,
+          },
         },
       },
       {
