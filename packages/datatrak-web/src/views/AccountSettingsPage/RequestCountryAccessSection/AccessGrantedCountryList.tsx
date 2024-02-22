@@ -15,7 +15,9 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { useCountryAccessList } from '../../../api';
+import { ResBody as CountryAccessList } from '@tupaia/types/src/types/requests/tupaia-web-server/CountryAccessListRequest';
+import { UseQueryResult } from 'react-query';
+import { ProjectResponse } from '@tupaia/types';
 
 const StyledTableContainer = styled(TableContainer).attrs({
   elevation: 0,
@@ -49,9 +51,22 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
   font-size: inherit;
 `;
 
-export const AccessGrantedCountryList = () => {
-  const { data: countries = [], isFetched, isLoading } = useCountryAccessList();
-  const grantedCountries = countries.filter(country => country.hasAccess);
+interface AccessGrantedCountryListProps {
+  countryAccessList: UseQueryResult<CountryAccessList>;
+  project: ProjectResponse;
+}
+
+export const AccessGrantedCountryList = ({
+  countryAccessList,
+  project,
+}: AccessGrantedCountryListProps) => {
+  const { data: countries = [], isFetched, isLoading } = countryAccessList;
+
+  // “Applicable” here refers to countries that a project concerns
+  const grantedApplicableCountries = countries.filter(
+    country => country.hasAccess && project.names?.includes(country.name),
+  );
+
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
@@ -63,8 +78,8 @@ export const AccessGrantedCountryList = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {grantedCountries.length > 0 ? (
-            grantedCountries.map(({ id, name }) => (
+          {grantedApplicableCountries.length > 0 ? (
+            grantedApplicableCountries.map(({ id, name }) => (
               <TableRow key={id}>
                 <TableCell>{name}</TableCell>
               </TableRow>

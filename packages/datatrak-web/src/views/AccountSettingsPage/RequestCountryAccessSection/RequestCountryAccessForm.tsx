@@ -7,12 +7,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
-import { Entity } from '@tupaia/types';
+import { Entity, ProjectResponse } from '@tupaia/types';
+import { ResBody as CountryAccessList } from '@tupaia/types/src/types/requests/tupaia-web-server/CountryAccessListRequest';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
-import { useCountryAccessList, useCurrentUser, useRequestProjectAccess } from '../../../api';
+import { useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
+import { UseQueryResult } from 'react-query';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
@@ -83,18 +85,9 @@ const StyledFormInput = styled(FormInput).attrs({
   }
 `;
 
-/**
- * @privateRemarks TODO: Import this from @tupaia/tsutils.
- *
- * This is more or less replicated from `typeGuards.ts` in tsutils, because importing it here seems
- * to indirectly cause DataTrak to crash on remote deployments.
- *
- * @see https://beyondessential.slack.com/archives/C032DCHKTGR/p1708553985766539?thread_ts=1707443585.079349&cid=C032DCHKTGR
- */
-function assertIsNotNullish<T>(val: T): asserts val is NonNullable<T> {
-  if (val === undefined || val === null) {
-    throw new Error(`Expected project to be defined, but got ${val}`);
-  }
+interface RequestCountryAccessFormProps {
+  countryAccessList: UseQueryResult<CountryAccessList>;
+  project: ProjectResponse;
 }
 
 interface RequestCountryAccessFormFields {
@@ -102,16 +95,15 @@ interface RequestCountryAccessFormFields {
   message?: string;
 }
 
-export const RequestCountryAccessForm = () => {
-  const { project } = useCurrentUser();
-
-  // If `RequestCountryAccessForm` is being rendered, the user should already have a project
-  // selected. Otherwise, they should’ve been redirected to select a project by now.
-  assertIsNotNullish(project);
+export const RequestCountryAccessForm = ({
+  countryAccessList,
+  project,
+}: RequestCountryAccessFormProps) => {
+  console.log('BEGIN RequestCountryAccessForm');
+  const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
   const projectCode = project.code;
-
-  const { data: countries = [], isLoading: accessListIsLoading } = useCountryAccessList();
-  const applicableCountries = countries.filter(country => project.names?.includes(country.name));
+  const applicableCountries =
+    countries?.filter(country => project.names?.includes(country.name)) ?? [];
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -148,8 +140,7 @@ export const RequestCountryAccessForm = () => {
   const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
 
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const formIsInsubmissible =
-    !project || isValidating || !isValid || accessListIsLoading || formIsSubmitting;
+  const formIsInsubmissible = isValidating || !isValid || accessListIsLoading || formIsSubmitting;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -169,12 +160,10 @@ export const RequestCountryAccessForm = () => {
             countries={applicableCountries}
             selectedCountries={selectedCountries}
             setSelectedCountries={setSelectedCountries}
-            disabled={!project}
           />
         </CountryChecklistWrapper>
         <Flexbox>
           <StyledFormInput
-            disabled={!project}
             id="message"
             Input={TextField}
             inputProps={{
