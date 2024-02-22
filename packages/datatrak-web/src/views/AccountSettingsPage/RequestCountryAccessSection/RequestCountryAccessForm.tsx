@@ -15,12 +15,16 @@ import { errorToast, successToast } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
 
 const StyledForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  gap: 1.56rem;
   inline-size: 100%;
+
   ${({ theme }) => theme.breakpoints.up('md')} {
     max-inline-size: 44.25rem;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: flex;
+    flex-direction: column;
+    gap: 1.56rem;
   }
 `;
 
@@ -35,7 +39,7 @@ const StyledFieldset = styled.fieldset`
     grid-template: auto / 1fr 1fr;
   }
 
-  // In single-column layout, disregard gridlines and honour {@link StyledForm}’s flex layout
+  //In single-column layout, disregard gridlines and honour {@link StyledForm}’s flex layout
   ${({ theme }) => theme.breakpoints.down('sm')} {
     display: contents;
   }
