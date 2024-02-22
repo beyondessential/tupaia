@@ -150,12 +150,7 @@ describe('Autocomplete Question', () => {
     const displayOption = await screen.findByRole('option', { name: 'Add "Purple"' });
     userEvent.click(displayOption);
 
-    expect(onChange).toHaveBeenCalledWith({
-      label: 'Purple',
-      value: 'Purple',
-      isNew: true,
-      optionSetId: props.optionSetId,
-    });
+    expect(onChange).toHaveBeenCalledWith('Purple');
   });
 
   it('Calls the onChange method with the option when an existing option is selected', async () => {
@@ -167,6 +162,6 @@ describe('Autocomplete Question', () => {
     const displayOption = await screen.findByRole('option', { name: options[0].label });
     userEvent.click(displayOption);
 
-    expect(onChange).toHaveBeenCalledWith(options[0]);
+    expect(onChange).toHaveBeenCalledWith(options[0].value);
   });
 });
