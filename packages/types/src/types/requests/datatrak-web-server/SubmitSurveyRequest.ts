@@ -5,26 +5,12 @@
 import { UserAccount, Survey, Entity } from '../../models';
 import { SurveyScreenComponent } from './SurveyRequest';
 
-export type AutocompleteAnswer = {
-  isNew?: boolean;
-  optionSetId: string;
-  value: string;
-  label: string;
-};
-
 export type FileUploadAnswer = {
   name: string;
   value: string;
 };
 
-export type Answer =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | AutocompleteAnswer
-  | FileUploadAnswer;
+export type Answer = string | number | boolean | null | undefined | FileUploadAnswer;
 
 export type Answers = Record<string, Answer>;
 
