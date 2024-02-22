@@ -20,28 +20,17 @@ const StyledForm = styled(Form)`
   ${({ theme }) => theme.breakpoints.up('md')} {
     max-inline-size: 44.25rem;
   }
-
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: flex;
-    flex-direction: column;
-    gap: 1.56rem;
-  }
 `;
 
 const StyledFieldset = styled.fieldset`
-  block-size: 18.32rem;
   display: grid;
   gap: 1.25rem;
   grid-auto-flow: column;
   grid-template: auto auto / auto;
 
   ${({ theme }) => theme.breakpoints.up('sm')} {
+    block-size: 18.32rem;
     grid-template: auto / 1fr 1fr;
-  }
-
-  // In single-column layout, disregard gridlines and honour {@link StyledForm}’s flex layout
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: contents;
   }
 
   .MuiFormLabel-root {

@@ -20,7 +20,7 @@ const Container = styled.fieldset`
 
   // Prevent overbearingly tall list on mobile (where parent gridlines are not used to limit height)
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    max-block-size: 12rem;
+    max-block-size: 16.875rem;
   }
 
   // Match styling of ui-components TextField
