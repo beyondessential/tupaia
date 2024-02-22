@@ -8,7 +8,6 @@ import parser from 'js-sql-parser';
 import BaseAceEditor from 'react-ace';
 import styled from 'styled-components';
 import 'ace-builds/src-noconflict/mode-pgsql';
-import 'ace-builds/src-noconflict/theme-xcode';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import type { Ace } from 'ace-builds';
 
@@ -19,7 +18,7 @@ const AceEditor = styled(BaseAceEditor).attrs({
   minLines: 6,
   showPrintMargin: false,
   tabSize: 2,
-  theme: 'github',
+  theme: 'xcode',
   width: '100%',
   setOptions: {
     enableLiveAutocompletion: true,
@@ -30,6 +29,16 @@ const AceEditor = styled(BaseAceEditor).attrs({
   border-radius: 3px;
   // font-size set by fontSize prop
   line-height: 1.5;
+
+  /* 
+   * Prevent caret drift in some browsers, including Safari.
+   * 
+   * Ace uses CSS properties to calculate the width of characters and lines, which determines where 
+   * the caret should appear. However, when a font style isn’t provided by the font files, and the
+   * browser attempts to synthesize it, this can cause the caret to lag behind or lead ahead of the
+   * actual insertion point.
+   */
+  font-synthesis: none;
 
   .ace_placeholder {
     font-family: inherit;
