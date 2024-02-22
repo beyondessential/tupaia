@@ -42,7 +42,7 @@ const updateOrCreateDataElementInGroup = async (
     dataElement = await models.dataElement.create({
       code: dataElementCode,
       service_type: dataGroup.service_type, // set this to be the same as the data group so that when the data element goes through updateDataElementsConfig() it gets the correct config. If we always set it to Tupaia here, then it won't update because Tupaia data elements can be in either DHIS or Tupaia data groups
-      config: {}, // set this to be a default empty object so that when the data element goes through updateDataElementsConfig() it gets the correct config
+      config: dataGroup.config, // set this to be the same as the data group so that when the data element goes through updateDataElementsConfig() it gets the correct config
       permission_groups: [surveyPermissionGroup.name], // Use the permission group of the survey as the default for the data element
     });
 
