@@ -174,13 +174,25 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    const newDate = date ? date.toISOString() : null;
+    if (!date) {
+      setSelectedStartDate(null);
+      setStartDate(null);
+    }
+
+    const timestamp = date.setHours(0, 0, 0, 0); // Query from beginning of selected day, local time
+    const newDate = new Date(timestamp).toISOString();
     setSelectedStartDate(newDate);
     setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    const newDate = date ? date.toISOString() : null;
+    if (!date) {
+      setSelectedStartDate(null);
+      setStartDate(null);
+    }
+
+    const timestamp = date.setHours(23, 59, 59, 999); // Query to end of selected day, local time
+    const newDate = new Date(timestamp).toISOString();
     setSelectedEndDate(newDate);
     setEndDate(newDate);
   };
