@@ -12,4 +12,5 @@ export type {
 } from './surveys';
 export * from './activityFeed';
 export * from './entity';
+export * from './userAccountDetails';
 export * from './userRewards';

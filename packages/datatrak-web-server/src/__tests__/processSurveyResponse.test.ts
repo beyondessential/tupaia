@@ -2,24 +2,35 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
+import { MockCentralApi, MockTupaiaApiClient } from '@tupaia/api-client';
 import { EntityType, QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
 import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
-
-// Mock out moment so that that toISOString returns a consistent value for our tests
-jest.mock('moment', () => {
-  const mMoment = {
-    toISOString: jest.fn(() => 'theISOString'),
-  };
-  return jest.fn(() => mMoment);
-});
+import { DatatrakWebServerModelRegistry } from '../types';
 
 const mockFindEntityById = async (id: string) => ({
   id: 'theEntityId',
   code: 'theEntityCode',
   name: 'The Entity Name',
   type: 'facility' as EntityType,
+});
+
+const optionSetId = 'optionSetId';
+
+const mockModels = {
+  entity: {
+    findById: mockFindEntityById,
+  },
+} as DatatrakWebServerModelRegistry;
+
+const mockApiClient = new MockTupaiaApiClient({
+  central: new MockCentralApi({
+    [`optionSets/${optionSetId}/options`]: [
+      { label: 'One', value: '1' },
+      { label: 'Two', value: '2' },
+    ],
+  }),
 });
 
 jest.mock('@tupaia/database', () => ({
@@ -65,32 +76,29 @@ describe('processSurveyResponse', () => {
   };
 
   it('should process the survey response with standard question types', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.FreeText,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-          {
-            questionId: 'question2',
-            type: QuestionType.Number,
-            text: 'question2',
-            screenId: 'screen2',
-            componentNumber: 2,
-          },
-        ],
-        answers: {
-          question1: 'answer1',
-          question2: 'answer2',
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.FreeText,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
         },
+        {
+          questionId: 'question2',
+          type: QuestionType.Number,
+          text: 'question2',
+          screenId: 'screen2',
+          componentNumber: 2,
+        },
+      ],
+      answers: {
+        question1: 'answer1',
+        question2: 'answer2',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -110,24 +118,21 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the entity_id as the answer when question type is "PrimaryEntity"', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.PrimaryEntity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: 'answer1',
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.PrimaryEntity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
         },
+      ],
+      answers: {
+        question1: 'answer1',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -138,24 +143,21 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the data_time as the answer when question type is "DateOfData"', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.DateOfData,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: '2022-01-01',
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.DateOfData,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
         },
+      ],
+      answers: {
+        question1: '2022-01-01',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -165,24 +167,21 @@ describe('processSurveyResponse', () => {
   });
 
   it('should set the data_time as the answer when question type is "SubmissionDate"', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.SubmissionDate,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: '2022-01-01',
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.SubmissionDate,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
         },
+      ],
+      answers: {
+        question1: '2022-01-01',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -191,105 +190,117 @@ describe('processSurveyResponse', () => {
     });
   });
 
-  it('should add new options to options_created when type is "Autocomplete" and answer is marked as "isNew"', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.Autocomplete,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: {
-            isNew: true,
-            value: 'answer1',
-            label: 'answer1',
-            optionSetId: 'optionSetId',
-          },
+  it('should add new options to options_created when type is "Autocomplete" and answer not in the optionSet', async () => {
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          code: 'question1',
+          type: QuestionType.Autocomplete,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          optionSetId,
+          config: { autocomplete: { createNew: true } },
         },
+      ],
+      answers: {
+        question1: '3',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
       options_created: [
         {
-          option_set_id: 'optionSetId',
-          value: 'answer1',
-          label: 'answer1',
+          option_set_id: optionSetId,
+          value: '3',
+          label: '3',
         },
       ],
       answers: [
         {
           question_id: 'question1',
           type: QuestionType.Autocomplete,
-          body: 'answer1',
+          body: '3',
         },
       ],
     });
   });
 
-  it('should not add new options to options_created when type is "Autocomplete" and answer is not marked as "isNew"', async () => {
-    const result = await processSurveyResponse(
-      {
+  it('should not add new options to options_created when type is "Autocomplete" and answer is in the optionSet', async () => {
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          code: 'question1',
+          type: QuestionType.Autocomplete,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          optionSetId,
+          config: {},
+        },
+      ],
+      answers: {
+        question1: '2',
+      },
+    });
+
+    expect(result).toEqual({
+      ...processedResponseData,
+      options_created: [],
+      answers: [
+        {
+          question_id: 'question1',
+          type: QuestionType.Autocomplete,
+          body: '2',
+        },
+      ],
+    });
+  });
+
+  it('should throw an error when type is "Autocomplete" and answer is not in the optionSet but createNew is not true', async () => {
+    await expect(() =>
+      processSurveyResponse(mockModels, mockApiClient, {
         ...responseData,
         questions: [
           {
             questionId: 'question1',
+            code: 'question1',
             type: QuestionType.Autocomplete,
             componentNumber: 1,
             text: 'question1',
             screenId: 'screen1',
+            optionSetId,
+            config: {},
           },
         ],
         answers: {
-          question1: {
-            value: 'answer1',
-            label: 'answer1',
-            optionSetId: 'optionSetId',
-          },
+          question1: '3',
         },
-      },
-      mockFindEntityById,
-    );
-
-    expect(result).toEqual({
-      ...processedResponseData,
-      answers: [
-        {
-          question_id: 'question1',
-          type: QuestionType.Autocomplete,
-          body: 'answer1',
-        },
-      ],
-    });
+      }),
+    ).rejects.toThrow('Cannot create new options for question: question1');
   });
 
   it('should not add to entities_upserted when type is "Entity" and a create config is not set', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.Entity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: 'answer1',
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.Entity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
         },
+      ],
+      answers: {
+        question1: 'answer1',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -305,35 +316,32 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to entities_upserted when type is "Entity" and a create config is set', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.Entity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-            config: {
-              entity: {
-                createNew: true,
-                fields: {
-                  code: {
-                    questionId: 'question2',
-                  },
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.Entity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          config: {
+            entity: {
+              createNew: true,
+              fields: {
+                code: {
+                  questionId: 'question2',
                 },
               },
             },
           },
-        ],
-        answers: {
-          question1: 'answer1',
-          question2: 'answer2',
         },
+      ],
+      answers: {
+        question1: 'answer1',
+        question2: 'answer2',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -355,36 +363,33 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to qr_codes_to_create when type is "Entity" and a generateQRCode config is set', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.Entity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-            config: {
-              entity: {
-                createNew: true,
-                generateQrCode: true,
-                fields: {
-                  code: {
-                    questionId: 'question2',
-                  },
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.Entity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          config: {
+            entity: {
+              createNew: true,
+              generateQrCode: true,
+              fields: {
+                code: {
+                  questionId: 'question2',
                 },
               },
             },
           },
-        ],
-        answers: {
-          question1: 'answer1',
-          question2: 'answer2',
         },
+      ],
+      answers: {
+        question1: 'answer1',
+        question2: 'answer2',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -412,34 +417,31 @@ describe('processSurveyResponse', () => {
   });
 
   it('should add to entities_upserted when type is "PrimaryEntity" and a create config is set', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.PrimaryEntity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-            config: {
-              entity: {
-                createNew: true,
-                fields: {
-                  code: {
-                    questionId: 'question2',
-                  },
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.PrimaryEntity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          config: {
+            entity: {
+              createNew: true,
+              fields: {
+                code: {
+                  questionId: 'question2',
                 },
               },
             },
           },
-        ],
-        answers: {
-          question2: 'answer2',
         },
+      ],
+      answers: {
+        question2: 'answer2',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -456,34 +458,31 @@ describe('processSurveyResponse', () => {
   });
 
   it('should use the country id for new entities if parent id is not filled in', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.PrimaryEntity,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-            config: {
-              entity: {
-                createNew: true,
-                fields: {
-                  parentId: {
-                    questionId: 'question2',
-                  },
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.PrimaryEntity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          config: {
+            entity: {
+              createNew: true,
+              fields: {
+                parentId: {
+                  questionId: 'question2',
                 },
               },
             },
           },
-        ],
-        answers: {
-          question2: '',
         },
+      ],
+      answers: {
+        question2: '',
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
@@ -499,27 +498,24 @@ describe('processSurveyResponse', () => {
     });
   });
   it('should handle when question type is File', async () => {
-    const result = await processSurveyResponse(
-      {
-        ...responseData,
-        questions: [
-          {
-            questionId: 'question1',
-            type: QuestionType.File,
-            componentNumber: 1,
-            text: 'question1',
-            screenId: 'screen1',
-          },
-        ],
-        answers: {
-          question1: {
-            value: 'theEncodedFile',
-            name: 'theFileName',
-          },
+    const result = await processSurveyResponse(mockModels, mockApiClient, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.File,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+        },
+      ],
+      answers: {
+        question1: {
+          value: 'theEncodedFile',
+          name: 'theFileName',
         },
       },
-      mockFindEntityById,
-    );
+    });
 
     expect(result).toEqual({
       ...processedResponseData,
