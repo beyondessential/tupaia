@@ -45,21 +45,16 @@ function configReducer(state, action) {
   switch (type) {
     case SET_LOCATION:
       return set(state, 'location', action.value);
-    case SET_PROJECT: {
+    case SET_PROJECT:
       return set(state, 'project', action.value);
-    }
-    case SET_START_DATE: {
+    case SET_START_DATE:
       return set(state, 'startDate', action.value);
-    }
-    case SET_END_DATE: {
+    case SET_END_DATE:
       return set(state, 'endDate', action.value);
-    }
-    case SET_TEST_DATA: {
+    case SET_TEST_DATA:
       return set(state, 'testData', action.value);
-    }
-    case SET_VISUALISATION: {
+    case SET_VISUALISATION:
       return set(state, 'visualisation', action.value);
-    }
     case SET_VISUALISATION_VALUE: {
       const { key, value } = action;
       return {
@@ -149,14 +144,9 @@ const amendStepsToBaseConfig = visualisation => {
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
   const filteredTransform = Array.isArray(transform)
-    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
-        if (restOfConfig.alias) {
-          return restOfConfig.transform;
-        }
-        return {
-          ...restOfConfig,
-        };
-      })
+    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) =>
+        restOfConfig.alias ? restOfConfig.transform : { ...restOfConfig },
+      )
     : transform;
 
   const filteredData = { ...data, transform: filteredTransform };
