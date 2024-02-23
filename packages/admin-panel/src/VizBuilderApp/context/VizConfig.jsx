@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useReducer, createContext, useContext } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 /**
  * This store is designed to hold the state for the vizBuilderConfig
@@ -91,7 +91,7 @@ function configReducer(state, action) {
       };
     }
     default:
-      throw new Error('Type not found');
+      throw new Error(`Expected known type but got “${type}”`);
   }
 }
 
