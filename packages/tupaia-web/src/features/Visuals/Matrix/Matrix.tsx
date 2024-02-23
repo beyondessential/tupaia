@@ -21,6 +21,21 @@ import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 
+const Wrapper = styled.div`
+  // override the base table styles to handle expanded rows, which need to be done with classes and JS because nth-child will not handle skipped rows
+  tbody .MuiTableRow-root {
+    &.odd {
+      background-color: ${({ theme }) => theme.palette.table.odd};
+    }
+    &.even {
+      background-color: ${({ theme }) => theme.palette.table.even};
+    }
+    &.highlighted {
+      background-color: ${({ theme }) => theme.palette.table.highlighted};
+    }
+  }
+`;
+
 const SearchInput = styled(TextField)`
   margin: 0;
   min-width: 10rem;
@@ -171,6 +186,11 @@ const MatrixVisual = () => {
 
   const { periodGranularity, drillDown, valueType } = config;
 
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) {
+    return <MatrixPreview config={config} />;
+  }
+
   const parsedRows = parseRows(
     rows,
     undefined,
@@ -201,13 +221,8 @@ const MatrixVisual = () => {
     );
   }
 
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
-  }
-
   return (
-    <>
+    <Wrapper>
       <MatrixComponent
         // casting here because we know that the config is a MatrixConfig and it has a different shape than configs of other types, and while we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context
         {...config}
@@ -236,7 +251,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </>
+    </Wrapper>
   );
 };
 

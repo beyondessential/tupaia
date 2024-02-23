@@ -60,9 +60,14 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
             <MatrixHeader />
             <TableBody>
-              {rows.map(row => (
+              {rows.map((row, i) => (
                 // add a random key to avoid bugs with re-rendering
-                <MatrixRow row={row} key={`${row.title}_${Math.random() * 1000}`} parents={[]} />
+                <MatrixRow
+                  row={row}
+                  key={`${row.title}_${Math.random() * 1000}`}
+                  parents={[]}
+                  index={i + 1}
+                />
               ))}
             </TableBody>
           </Table>

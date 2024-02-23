@@ -20,8 +20,6 @@ export const StyledTable = styled(MuiTable)`
 
   th,
   td {
-    padding-top: 1.125rem;
-    padding-bottom: 1.125rem;
     color: ${props => props.theme.palette.text.primary};
   }
 

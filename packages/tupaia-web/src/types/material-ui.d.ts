@@ -14,12 +14,10 @@ type CustomPalette = {
       data: React.CSSProperties['color'];
     };
   };
-  black?: {
-    light: React.CSSProperties['color'];
-    dark: React.CSSProperties['color'];
-    super: React.CSSProperties['color'];
-  };
-  matrix?: {
+  table?: {
+    odd: React.CSSProperties['color'];
+    even: React.CSSProperties['color'];
+    highlighted: React.CSSProperties['color'];
     header: React.CSSProperties['color'];
   };
 };

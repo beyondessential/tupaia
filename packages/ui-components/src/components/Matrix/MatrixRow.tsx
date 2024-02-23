@@ -4,7 +4,7 @@
  */
 
 import React, { useContext } from 'react';
-import { ButtonProps, TableRow as MuiTableRow, lighten } from '@material-ui/core';
+import { ButtonProps, TableRow as MuiTableRow } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import styled from 'styled-components';
 import { MatrixRowType } from '../../types';
@@ -21,36 +21,26 @@ const ExpandIcon = styled(KeyboardArrowRight)<{
   transition: transform 0.3s ease-in-out;
 `;
 
-const TableRow = styled(MuiTableRow)<{
-  $highlighted?: boolean;
-  $visible?: boolean;
-}>`
-  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
-  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
-  background-color: ${({ theme, $highlighted }) =>
-    $highlighted && lighten(theme.palette.background.default, 0.1)};
-`;
-
-const HeaderCell = styled(Cell).attrs({
-  component: 'th',
-  className: 'MuiTableCell-row-head',
-})`
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 2;
-`;
-
-const RowHeaderCellContent = styled.div<{
-  $depth: number;
-  $isGrouped?: boolean;
-}>`
+const RowHeaderCellContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-  padding-left: ${({ $depth, $isGrouped }) => $isGrouped && `${1.5 + $depth * 1.5}rem`};
+  padding-right: 1.5rem;
+  padding-top: 0.7rem;
+`;
+
+const TableRow = styled(MuiTableRow)<{
+  $visible?: boolean;
+  $isChild?: boolean;
+}>`
+  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
+  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
+  td,
+  ${RowHeaderCellContent} {
+    border-top: ${({ $isChild, theme }) => $isChild && `1px solid ${theme.palette.divider}`};
+  }
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -58,6 +48,10 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   variant: 'text',
   color: 'default',
 })<ButtonProps>`
+  // override the padding to match the padding of the cell, so that the button fills the whole cell
+  .MuiTableCell-root:has(&) {
+    padding: 0;
+  }
   text-transform: none;
   text-align: left;
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
@@ -72,10 +66,26 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   }
 `;
 
+const HeaderCell = styled(Cell).attrs({
+  component: 'th',
+  className: 'MuiTableCell-row-head',
+})<{
+  $depth: number;
+}>`
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding-top: 0;
+  padding-left: ${({ $depth }) => $depth > 0 && `${2.5 + $depth * 2}rem`};
+  padding-right: 0; // we want to apply the padding to the content, not the cell so that we can have indented content with a top border that covers the remaining width of the cell
+`;
+
 type MatrixRowTitle = MatrixRowType['title'];
 interface MatrixRowProps {
   row: MatrixRowType;
   parents: MatrixRowTitle[];
+  index?: number;
 }
 
 type MatrixRowHeaderProps = {
@@ -98,11 +108,9 @@ const ExpandableRowHeaderCell = ({
   toggleExpandedRows: () => void;
 }) => {
   return (
-    <HeaderCell>
+    <HeaderCell $depth={depth}>
       <ExpandableRowHeaderCellContent
-        $depth={depth}
         aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
-        $isGrouped
         onClick={toggleExpandedRows}
         disabled={disableExpandButton}
       >
@@ -119,8 +127,8 @@ const ClickableRowHeaderCell = ({
   depth,
 }: Pick<MatrixRowHeaderProps, 'children' | 'onClick' | 'depth'>) => {
   return (
-    <HeaderCell>
-      <RowHeaderCellContent $depth={depth} onClick={onClick} as={CellButton}>
+    <HeaderCell $depth={depth}>
+      <RowHeaderCellContent onClick={onClick} as={CellButton}>
         {children}
       </RowHeaderCellContent>
     </HeaderCell>
@@ -168,8 +176,11 @@ const RowHeaderCell = ({
     );
 
   return (
-    <HeaderCell $characterLength={typeof children === 'string' ? rowTitle?.length : 0}>
-      <RowHeaderCellContent $depth={depth}>{children}</RowHeaderCellContent>
+    <HeaderCell
+      $characterLength={typeof children === 'string' ? rowTitle?.length : 0}
+      $depth={depth}
+    >
+      <RowHeaderCellContent>{children}</RowHeaderCellContent>
     </HeaderCell>
   );
 };
@@ -177,7 +188,7 @@ const RowHeaderCell = ({
 /**
  * This is a recursive component that renders a row in the matrix. It renders a MatrixRowGroup component if the row has children, otherwise it renders a regular row.
  */
-export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
+export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const { children, title, onClick } = row;
   const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
 
@@ -187,10 +198,21 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
 
   const isCategory = children ? children.length > 0 : false;
 
-  // render a regular row with the title cell and the values
+  const getClassNames = () => {
+    const highlightedClass = 'highlighted';
+    const matrixClass = 'matrix';
+
+    const baseClass = isExpanded || depth > 0 ? `${matrixClass} ${highlightedClass}` : matrixClass;
+    if (depth > 0 || index === undefined) return baseClass;
+    if (index % 2 === 0) return `${baseClass} even`;
+    return `${baseClass} odd`;
+  };
+
+  const classNames = getClassNames();
+
   return (
     <>
-      <TableRow $visible={isVisible} $highlighted={depth > 0}>
+      <TableRow $visible={isVisible} className={classNames} $isChild={depth > 0}>
         <RowHeaderCell
           isExpanded={isExpanded}
           depth={depth}
@@ -211,9 +233,11 @@ export const MatrixRow = ({ row, parents = [] }: MatrixRowProps) => {
           />
         ))}
       </TableRow>
-      {children?.map(child => (
-        <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
-      ))}
+      {children &&
+        isExpanded && // if the row has children and is expanded, render the children
+        children?.map(child => (
+          <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
+        ))}
     </>
   );
 };

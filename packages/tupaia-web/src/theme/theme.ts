@@ -14,86 +14,9 @@ export const theme = createMuiTheme({
     },
   },
   // these overrides are needed to make up for the base font-size being 16px
-  overrides: {
-    MuiPaper: {
-      root: {
-        fontSize: '0.875rem',
-      },
-    },
-    MuiCssBaseline: {
-      '@global': {
-        fieldset: {
-          border: 0,
-          margin: 0,
-          minWidth: 0,
-          padding: 0,
-        },
-      },
-    },
-    MuiCardHeader: {
-      root: {
-        fontSize: '0.875rem',
-      },
-    },
-    MuiCheckbox: {
-      root: {
-        fontSize: '1.5rem',
-      },
-    },
-    MuiSvgIcon: {
-      root: {
-        fontSize: '1.5rem',
-      },
-    },
-    MuiTable: {
-      root: {
-        border: `1px solid ${LIGHT_GREY}`,
-      },
-      // when the table scrolls, the table container gets a border instead, because otherwise the top and left borders of the table can't be seen on scroll
-      stickyHeader: {
-        border: 'none',
-      },
-    },
-    MuiTableContainer: {
-      root: {
-        border: `1px solid ${LIGHT_GREY}`, // add the border to the container so that when scrolling, the top and left borders of the table can still be seen
-        ['&:has(.MuiTable-stickyHeader)']: {
-          maxHeight: 'clamp(20rem,70vh,60rem)', // when the table has a sticky header, set a max height so that it can scroll
-        },
-      },
-    },
-    MuiTableRow: {
-      root: {
-        backgroundColor: LIGHT_BLACK,
-        ['&:nth-of-type(even)']: {
-          backgroundColor: DARK_BLACK,
-        },
-      },
-      head: {
-        backgroundColor: '#424448',
-      },
-    },
-    MuiTableCell: {
-      root: {
-        backgroundColor: 'inherit',
-        padding: '0.8rem 1.56rem',
-        fontSize: '0.875rem',
-        lineHeight: '1.4',
-        borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
-        ['&.MuiTableCell-row-head']: {
-          borderRight: `1px solid ${LIGHT_GREY}`, // border right for the row header cells
-        },
-      },
-      head: {
-        borderBottom: `1px solid ${LIGHT_GREY}`, // header cells have a bottom border
-      },
-      stickyHeader: {
-        backgroundColor: 'inherit', // make the sticky header cells have the row's background color
-      },
-    },
-  },
   palette: {
     type: 'dark',
+    divider: LIGHT_GREY,
     primary: {
       main: '#1978D4', // Main blue (as seen on primary buttons)
     },
@@ -123,10 +46,93 @@ export const theme = createMuiTheme({
         data: '#22c7fc',
       },
     },
-    black: {
-      light: LIGHT_BLACK,
-      dark: DARK_BLACK,
-      super: SUPER_DARK_BLACK,
+    table: {
+      odd: LIGHT_BLACK,
+      even: DARK_BLACK,
+      highlighted: SUPER_DARK_BLACK,
+      header: '#424448',
     },
   },
 });
+
+// separate the overrides from the theme definition so that we can use the theme variables here, which is not possible with mui v4
+theme.overrides = {
+  MuiPaper: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiCssBaseline: {
+    '@global': {
+      fieldset: {
+        border: 0,
+        margin: 0,
+        minWidth: 0,
+        padding: 0,
+      },
+    },
+  },
+  MuiCardHeader: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiCheckbox: {
+    root: {
+      fontSize: '1.5rem',
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      fontSize: '1.5rem',
+    },
+  },
+  MuiTable: {
+    root: {
+      border: `1px solid ${theme.palette.table?.border}`,
+    },
+    // when the table scrolls, the table container gets a border instead, because otherwise the top and left borders of the table can't be seen on scroll
+    stickyHeader: {
+      border: 'none',
+    },
+  },
+  MuiTableContainer: {
+    root: {
+      border: `1px solid ${theme.palette.divider}`, // add the border to the container so that when scrolling, the top and left borders of the table can still be seen
+      ['&:has(.MuiTable-stickyHeader)']: {
+        maxHeight: 'clamp(20rem,70vh,60rem)', // when the table has a sticky header, set a max height so that it can scroll
+      },
+    },
+  },
+  MuiTableRow: {
+    root: {
+      backgroundColor: theme.palette.table?.odd,
+      // non expanded rows alternate background color
+      ['&:nth-child(even)']: {
+        backgroundColor: theme.palette.table?.even,
+      },
+    },
+    head: {
+      backgroundColor: theme.palette.table?.header,
+    },
+  },
+  MuiTableCell: {
+    root: {
+      backgroundColor: 'inherit',
+      fontSize: '0.875rem',
+      padding: '0.8rem 1.56rem',
+      lineHeight: '1.4',
+      borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
+      ['&.MuiTableCell-row-head']: {
+        borderRight: `1px solid ${theme.palette.divider}`, // border right for the row header cells
+        fontWeight: theme.typography.fontWeightMedium,
+      },
+    },
+    head: {
+      borderBottom: `1px solid ${theme.palette.divider}`, // header cells have a bottom border
+    },
+    stickyHeader: {
+      backgroundColor: 'inherit', // make the sticky header cells have the row's background color
+    },
+  },
+};

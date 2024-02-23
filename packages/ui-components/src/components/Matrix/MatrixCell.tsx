@@ -85,16 +85,24 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
     getIsUsingDots(presentationOptionsForCell) &&
     checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
   const presentation = getPresentationOption(presentationOptionsForCell, value);
-  const displayValue = isDots ? (
-    <Dot
-      $color={presentation?.color}
-      aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
-        value || 'No value'
-      }`}
-    />
-  ) : (
-    value
-  );
+
+  const getDisplayValue = () => {
+    if (isDots) {
+      return (
+        <Dot
+          $color={presentation?.color}
+          aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
+            value || 'No value'
+          }`}
+        />
+      );
+    }
+    if (value === null || value === undefined) {
+      return '-';
+    }
+    return value;
+  };
+  const displayValue = getDisplayValue();
 
   const onClickCellButton = () => {
     dispatch({
