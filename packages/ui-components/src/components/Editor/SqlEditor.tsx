@@ -81,7 +81,7 @@ type SqlEditorProps = {
 export const SqlEditor = ({
   customKeywords = [],
   fontSize = 14,
-  mode = 'sql',
+  mode = 'pgsql', // sql and mysql modes don’t seem to have syntax highlighting
   onChange,
   placeholder = 'SELECT * FROM tablename',
   tables = [],
