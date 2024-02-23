@@ -45,6 +45,8 @@ const BASIC_SURVEY_CREATE_PAYLOAD = {
   'data_group.config': {},
 };
 
+const EXISTING_QUESTION_CODES = ['fdfuu42a22321c123a8_test', 'fdfzz42a66321c123a8_test'];
+
 describe('Create and Edit Surveys', () => {
   const app = new TestableApp();
   const { models } = app;
@@ -56,10 +58,13 @@ describe('Create and Edit Surveys', () => {
 
   let survey1_id;
 
+  let dhis2SurveyId;
+
   let project;
 
   before(async () => {
     await resetTestData();
+
     adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
       name: 'Admin',
     });
@@ -93,8 +98,20 @@ describe('Create and Edit Surveys', () => {
       );
 
     // Questions used for all the surveys
-    await addQuestion('fdfuu42a22321c123a8_test', 'FreeText');
-    await addQuestion('fdfzz42a66321c123a8_test', 'FreeText');
+    await Promise.all(EXISTING_QUESTION_CODES.map(code => addQuestion(code, 'FreeText')));
+
+    // explicitly create the data elements
+    await Promise.all(
+      EXISTING_QUESTION_CODES.map(code =>
+        findOrCreateDummyRecord(
+          models.dataElement,
+          { code },
+          {
+            service_type: 'tupaia',
+          },
+        ),
+      ),
+    );
 
     const { survey: s1 } = await buildAndInsertSurvey(models, {
       code: EXISTING_TEST_SURVEY_CODE_1,
@@ -107,6 +124,23 @@ describe('Create and Edit Surveys', () => {
       },
     });
     survey1_id = s1.id;
+
+    // create the dhis survey
+    const { survey: dhis2survey } = await buildAndInsertSurvey(models, {
+      code: 'test_survey',
+      name: 'test_survey',
+      permission_group_id: adminPermissionGroup.id,
+      country_ids: [vanuatuCountry.id],
+      project_id: project.id,
+      dataGroup: {
+        service_type: 'dhis',
+        config: {
+          dhisInstanceCode: 'test_instance',
+        },
+      },
+    });
+
+    dhis2SurveyId = dhis2survey.id;
   });
 
   afterEach(() => {
@@ -375,6 +409,88 @@ describe('Create and Edit Surveys', () => {
       });
       expect(response.statusCode).to.equal(500);
       expect(response.body.error).to.equal('Internal server error: Surveys must have a project');
+    });
+  });
+
+  describe('Data Element Validation', () => {
+    it('Data elements retain their service type on reimporting of a survey when they are "tupaia" and the survey has a service_type of "dhis"', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      // update the survey and import the questions
+      const response = await app.multipartPut({
+        endpoint: `surveys/${dhis2SurveyId}`,
+        payload: {},
+        filesByMultipartKey: {
+          surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importAnExistingSurvey.xlsx`),
+        },
+      });
+
+      const { statusCode } = response;
+      expect(statusCode).to.equal(200);
+
+      // check the the data elements have retained their service_type
+      EXISTING_QUESTION_CODES.forEach(async code => {
+        const dataElement = await models.dataElement.findOne({ code });
+        expect(dataElement.service_type).to.equal('tupaia');
+      });
+    });
+
+    it('Data elements retain their service type when it matches the data group service type when questions are reimported', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      // update the data elements to have a service type of 'dhis'
+      await Promise.all(
+        EXISTING_QUESTION_CODES.map(code =>
+          models.dataElement.update(
+            {
+              code,
+            },
+            {
+              service_type: 'dhis',
+              config: {
+                dhisInstanceCode: 'test_instance',
+              },
+            },
+          ),
+        ),
+      );
+
+      // update the survey and reimport the questions
+      const response = await app.multipartPut({
+        endpoint: `surveys/${dhis2SurveyId}`,
+        payload: {},
+        filesByMultipartKey: {
+          surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importAnExistingSurvey.xlsx`),
+        },
+      });
+
+      const { statusCode } = response;
+      expect(statusCode).to.equal(200);
+
+      // check the the data elements have retained their service_type
+      EXISTING_QUESTION_CODES.forEach(async code => {
+        const dataElement = await models.dataElement.findOne({ code });
+        expect(dataElement.service_type).to.equal('dhis');
+      });
+    });
+
+    it('Throws an error when data element has a different service_type to survey data_group and the data_element service_type is NOT "tupaia"', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      // update the survey and reimport the questions
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {},
+        filesByMultipartKey: {
+          surveyQuestions: path.resolve(`${TEST_DATA_FOLDER}/surveys/importAnExistingSurvey.xlsx`),
+        },
+      });
+
+      const { statusCode } = response;
+      expect(statusCode).to.equal(500);
+      expect(response.body.error).to.equal(
+        `Internal server error: Cannot set service type to 'tupaia': data element 'fdfuu42a22321c123a8_test' is included in data group 'test_survey', which has service type: 'dhis'. These must match.`,
+      );
     });
   });
 });
