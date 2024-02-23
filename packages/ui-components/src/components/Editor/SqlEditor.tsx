@@ -81,7 +81,7 @@ type SqlEditorProps = {
 export const SqlEditor = ({
   customKeywords = [],
   fontSize = 14,
-  mode = 'pgsql',
+  mode = 'sql',
   onChange,
   placeholder = 'SELECT * FROM tablename',
   tables = [],
