@@ -14,7 +14,7 @@ import type { Ace } from 'ace-builds';
 const editorName = 'sqlEditor';
 
 const AceEditor = styled(BaseAceEditor).attrs({
-  maxLines: 20,
+  maxLines: 30,
   minLines: 6,
   showPrintMargin: false,
   tabSize: 2,
