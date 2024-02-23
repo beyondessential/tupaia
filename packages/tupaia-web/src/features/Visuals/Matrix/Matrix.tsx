@@ -46,6 +46,7 @@ const SearchInput = styled(TextField)`
   }
   .MuiInputBase-input {
     font-size: inherit; // override this to inherit the font size from the cell
+    padding: 0.875rem;
   }
   .MuiTableCell-root:has(&) {
     padding-right: 0.7rem;
