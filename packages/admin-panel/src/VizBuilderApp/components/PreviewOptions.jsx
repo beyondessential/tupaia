@@ -177,6 +177,7 @@ export const PreviewOptions = () => {
     if (!date) {
       setSelectedStartDate(null);
       setStartDate(null);
+      return;
     }
 
     const timestamp = date.setHours(0, 0, 0, 0); // Query from beginning of selected day, local time
@@ -189,6 +190,7 @@ export const PreviewOptions = () => {
     if (!date) {
       setSelectedStartDate(null);
       setStartDate(null);
+      return;
     }
 
     const timestamp = date.setHours(23, 59, 59, 999); // Query to end of selected day, local time
