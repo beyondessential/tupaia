@@ -13,14 +13,7 @@ import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
 
-type AutocompleteAnswer = {
-  isNew?: boolean;
-  optionSetId: string;
-  value: string;
-  label: string;
-};
-
-type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+type Answer = string | number | boolean | null | undefined;
 
 export type AnswersT = Record<string, Answer>;
 
