@@ -10,8 +10,9 @@ import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 
 const HeaderCell = styled(Cell)`
+  z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
   &:first-child {
-    z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
+    z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
     max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
   }
 `;

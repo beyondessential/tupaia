@@ -14,6 +14,8 @@ import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixCont
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
 
+const depthCalc = (depth: number) => `${2.5 + depth * 2}rem`;
+
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded?: boolean;
 }>`
@@ -30,22 +32,11 @@ const RowHeaderCellContent = styled.div`
   padding: 0.7rem 1.5rem;
 `;
 
-const TableRow = styled(MuiTableRow)<{
-  $visible?: boolean;
-  $isChild?: boolean;
-}>`
-  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
-  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
-  td,
-  ${RowHeaderCellContent} {
-    border-top: ${({ $isChild, theme }) => $isChild && `1px solid ${theme.palette.divider}`};
-  }
-`;
-
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   as: Button,
   variant: 'text',
   color: 'default',
+  disableRipple: true,
 })<ButtonProps>`
   text-transform: none;
   text-align: left;
@@ -59,6 +50,68 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
     padding: 0.4rem;
     .MuiButton-label span {
       word-break: break-word;
+    }
+  }
+  &:focus,
+  &:hover {
+    background-color: initial;
+  }
+`;
+
+const TableRow = styled(MuiTableRow)<{
+  $visible?: boolean;
+  $isChild?: boolean;
+  $depth: number;
+}>`
+  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
+  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
+  position: relative; // this is so that the hover border can be positioned absolutely over just the row
+
+  // set the border for the child rows - do this here so that we can apply it to both the content and the sibling cells without repeating the styles
+
+  // apply a border to the top of the child rows using pseudo classes so we can control the width and the still see the border when the row is scrolled horizontally
+  ${Cell} {
+    :before {
+      content: ${({ $isChild }) => $isChild && '""'};
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      border-top: 1px solid ${({ theme }) => theme.palette.divider};
+      pointer-events: none;
+      :is(th) {
+        width: ${({ $depth }) => `calc(100% - ${depthCalc($depth)})`};
+      }
+    }
+  }
+  &:has(${ExpandableRowHeaderCellContent}:hover),
+  &:has(${ExpandableRowHeaderCellContent}:focus) {
+    // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
+    ${Cell} {
+      :before {
+        content: '';
+        width: 100%;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-color: ${({ theme }) => theme.palette.text.primary};
+        :is(th) {
+          border-left-width: 1px;
+          border-left-style: solid;
+        }
+        :is(td:last-child) {
+          border-right-width: 1px;
+          border-right-style: solid;
+        }
+      }
+    }
+    // remove the top border of the following row's cells to fix a slight gap between the rows when the hover border is applied
+    + tr {
+      ${Cell} {
+        :before {
+          border-top: none;
+        }
+      }
     }
   }
 `;
@@ -76,7 +129,7 @@ const HeaderCell = styled(Cell).attrs({
   left: 0;
   z-index: 2;
   // indent each nested level slightly more
-  padding-left: ${({ $depth }) => ($depth > 0 ? `${2.5 + $depth * 2}rem` : 0)};
+  padding-left: ${({ $depth }) => ($depth > 0 ? depthCalc($depth) : 0)};
   // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell
   padding-top: 0;
   padding-bottom: 0;
@@ -214,7 +267,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
 
   return (
     <>
-      <TableRow $visible={isVisible} className={classNames} $isChild={depth > 0}>
+      <TableRow $visible={isVisible} className={classNames} $isChild={depth > 0} $depth={depth}>
         <RowHeaderCell
           isExpanded={isExpanded}
           depth={depth}
@@ -235,11 +288,9 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
           />
         ))}
       </TableRow>
-      {children &&
-        isExpanded && // if the row has children and is expanded, render the children
-        children?.map(child => (
-          <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
-        ))}
+      {children?.map(child => (
+        <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
+      ))}
     </>
   );
 };
