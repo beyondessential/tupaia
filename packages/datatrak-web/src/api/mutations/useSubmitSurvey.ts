@@ -39,7 +39,7 @@ export const useSubmitSurvey = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
-  const { resetForm, surveyScreens } = useSurveyForm();
+  const { resetForm } = useSurveyForm();
   const user = useCurrentUser();
   const { data: survey } = useSurvey(params.surveyCode);
 
