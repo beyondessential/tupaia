@@ -10,6 +10,7 @@ import {
   SOCIAL_FEED_FAILURE,
 } from './constants';
 import {arrayWithIdsToObject} from '../utilities/arrayWithIdsToObject';
+import {LOGIN_REQUEST} from '../authentication';
 
 const defaultState = {
   feedItems: [],
@@ -21,6 +22,11 @@ const defaultState = {
 };
 
 const stateChanges = {
+  [LOGIN_REQUEST]: () => ({
+    currentPage: 0,
+    feedItems: [],
+    latestFeedItemDate: 0,
+  }),
   [SOCIAL_FEED_REQUEST]: () => ({
     isLoading: true,
   }),
