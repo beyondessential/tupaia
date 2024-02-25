@@ -27,8 +27,7 @@ const RowHeaderCellContent = styled.div`
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-  padding-right: 1.5rem;
-  padding-top: 0.7rem;
+  padding: 0.7rem 1.5rem;
 `;
 
 const TableRow = styled(MuiTableRow)<{
@@ -48,12 +47,10 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   variant: 'text',
   color: 'default',
 })<ButtonProps>`
-  // override the padding to match the padding of the cell, so that the button fills the whole cell
-  .MuiTableCell-root:has(&) {
-    padding: 0;
-  }
   text-transform: none;
   text-align: left;
+  border-radius: 0;
+  padding-left: 0.7rem; // reduce this on expand buttons because the icon makes the button look like it has extra padding
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
   svg {
     margin-right: 0.5rem;
@@ -72,13 +69,18 @@ const HeaderCell = styled(Cell).attrs({
 })<{
   $depth: number;
 }>`
+  word-break: break-word;
   position: sticky;
+  min-width: 12rem; // set a min-width so that nested row headers don't end up wrapping too much
   top: 0;
   left: 0;
   z-index: 2;
+  // indent each nested level slightly more
+  padding-left: ${({ $depth }) => ($depth > 0 ? `${2.5 + $depth * 2}rem` : 0)};
+  // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell
   padding-top: 0;
-  padding-left: ${({ $depth }) => $depth > 0 && `${2.5 + $depth * 2}rem`};
-  padding-right: 0; // we want to apply the padding to the content, not the cell so that we can have indented content with a top border that covers the remaining width of the cell
+  padding-bottom: 0;
+  padding-right: 0;
 `;
 
 type MatrixRowTitle = MatrixRowType['title'];
