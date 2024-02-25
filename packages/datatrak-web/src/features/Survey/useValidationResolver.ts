@@ -16,14 +16,6 @@ const getBaseSchema = (type: QuestionType) => {
   switch (type) {
     case QuestionType.Number:
       return yup.number().transform(transformNumberValue).nullable();
-    case QuestionType.Autocomplete:
-      return yup
-        .object()
-        .shape({
-          value: yup.string(),
-        })
-        .nullable()
-        .default(null); // Allow this value to be empty to stop a typeError. The mandatory validation will handle this instead
     case QuestionType.Date:
     case QuestionType.SubmissionDate:
     case QuestionType.DateOfData:
