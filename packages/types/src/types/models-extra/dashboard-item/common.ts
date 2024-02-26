@@ -75,11 +75,6 @@ export type BaseConfig = {
   source?: 'dhis' | 'mSupply' | string;
 
   /**
-   * @description If specified will only show this viz if the conditions are met against the current Entity.
-   */
-  displayOnEntityConditions?: DisplayOnEntityConditions;
-
-  /**
    * @description Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'
    * @default 'WEEK_COMMENCING_ABBR'
    */
@@ -151,18 +146,6 @@ enum OffsetModifier {
   start_of = 'start_of',
   end_of = 'end_of',
 }
-
-type DisplayOnEntityConditions =
-  | DisplayOnEntityAttributeConditions
-  | DisplayOnEntityOtherConditions;
-type DisplayOnEntityAttributeConditions = {
-  attributes: {
-    [key: string]: string | number | boolean;
-  };
-};
-type DisplayOnEntityOtherConditions = {
-  [key: string]: string | number | boolean;
-};
 
 export type ExportPresentationOptions = {
   exportWithLabels?: boolean;
