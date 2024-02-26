@@ -18,8 +18,6 @@ const clearRecords = async models => {
 };
 
 describe('POST dashboard visualisations', () => {
-  // const getVizId = code => findTestRecordByCode('dashboardItem', code).id;
-
   const app = new TestableApp();
   const { models } = app;
 
@@ -97,6 +95,19 @@ describe('POST dashboard visualisations', () => {
         body: TEST_VISUALISATION,
       });
       expectSuccess(response);
+    });
+
+    it('Throws an error when a dashboard item code does not match the report_code when the visualisation is not a legacy viz', async () => {
+      const response = await app.post('dashboardVisualisations/', {
+        body: {
+          ...TEST_VISUALISATION,
+          dashboardItem: {
+            ...TEST_VISUALISATION.dashboardItem,
+            code: 'test_visualisation_wrong_code',
+          },
+        },
+      });
+      expect(response.status).to.equal(500);
     });
   });
 });
