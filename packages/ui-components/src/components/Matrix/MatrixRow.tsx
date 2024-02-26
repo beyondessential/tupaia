@@ -67,51 +67,53 @@ const TableRow = styled(MuiTableRow)<{
   height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   position: relative; // this is so that the hover border can be positioned absolutely over just the row
 
-  // set the border for the child rows - do this here so that we can apply it to both the content and the sibling cells without repeating the styles
-
   // apply a border to the top of the child rows using pseudo classes so we can control the width and the still see the border when the row is scrolled horizontally
-  ${Cell} {
-    :before {
-      content: ${({ $isChild }) => $isChild && '""'};
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      border-top: 1px solid ${({ theme }) => theme.palette.divider};
-      pointer-events: none;
+  ${Cell}:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-style: solid;
+    border-color: ${({ theme }) => theme.palette.divider};
+    border-width: ${({ $isChild }) => ($isChild ? '1px 0 0 0' : '0')};
+    :is(th) {
+      width: ${({ $depth }) => `calc(100% - ${depthCalc($depth)})`}; // the row header is indented
+    }
+  }
+  // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
+  &.child + &.parent.highlighted {
+    ${Cell}:before {
+      border-width: 1px 0 0 0;
       :is(th) {
-        width: ${({ $depth }) => `calc(100% - ${depthCalc($depth)})`};
+        width: calc(
+          100% - ${depthCalc(1)}
+        ); // give the illusion that the border belongs to the bottom of the previous row, because we can't select a prev sibling in css
       }
     }
   }
-  &:has(${ExpandableRowHeaderCellContent}:hover),
-  &:has(${ExpandableRowHeaderCellContent}:focus) {
-    // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
+
+  // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
+  &:has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible)) {
     ${Cell} {
       :before {
-        content: '';
+        content: ''; // set this to an empty string so the border always shows when the button is hovered
         width: 100%;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
         border-color: ${({ theme }) => theme.palette.text.primary};
-        :is(th) {
-          border-left-width: 1px;
-          border-left-style: solid;
-        }
-        :is(td:last-child) {
-          border-right-width: 1px;
-          border-right-style: solid;
-        }
+        border-width: 1px 0;
+      }
+      :first-child:before {
+        border-left-width: 1px; // add a left border to the first cell of the row
+      }
+      :last-child:before {
+        border-right-width: 1px; // add a right border to the last cell of the row
       }
     }
-    // remove the top border of the following row's cells to fix a slight gap between the rows when the hover border is applied
-    + tr {
-      ${Cell} {
-        :before {
-          border-top: none;
-        }
-      }
+    // remove the top border from the first cell of the next row to fix the double border issue
+    + tr ${Cell}:before {
+      border-top: none;
     }
   }
 `;
@@ -254,10 +256,11 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const isCategory = children ? children.length > 0 : false;
 
   const getClassNames = () => {
-    const highlightedClass = 'highlighted';
+    const highlightedClass = isExpanded || depth > 0 ? 'highlighted' : '';
     const matrixClass = 'matrix';
+    const childClass = depth > 0 ? 'child' : 'parent';
 
-    const baseClass = isExpanded || depth > 0 ? `${matrixClass} ${highlightedClass}` : matrixClass;
+    const baseClass = `${matrixClass} ${highlightedClass} ${childClass}`;
     if (depth > 0 || index === undefined) return baseClass;
     if (index % 2 === 0) return `${baseClass} even`;
     return `${baseClass} odd`;
@@ -288,9 +291,10 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
           />
         ))}
       </TableRow>
-      {children?.map(child => (
-        <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
-      ))}
+      {isExpanded &&
+        children?.map(child => (
+          <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
+        ))}
     </>
   );
 };
