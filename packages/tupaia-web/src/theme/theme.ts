@@ -3,7 +3,6 @@ import { createMuiTheme } from '@material-ui/core';
 // MUI v4 doesn't support callbacks for theme overrides, so since these shades get used in multiple places, we need to define them here
 const LIGHT_BLACK = '#2e2f33';
 const DARK_BLACK = '#202124';
-const SUPER_DARK_BLACK = '#171717';
 const LIGHT_GREY = '#9BA0A6';
 
 export const theme = createMuiTheme({
@@ -49,7 +48,7 @@ export const theme = createMuiTheme({
     table: {
       odd: LIGHT_BLACK,
       even: DARK_BLACK,
-      highlighted: SUPER_DARK_BLACK,
+      highlighted: '#171717',
       header: '#424448',
     },
   },
@@ -89,7 +88,7 @@ theme.overrides = {
   },
   MuiTable: {
     root: {
-      border: `1px solid ${theme.palette.table?.border}`,
+      border: `1px solid ${theme.palette.divider}`,
     },
     // when the table scrolls, the table container gets a border instead, because otherwise the top and left borders of the table can't be seen on scroll
     stickyHeader: {
