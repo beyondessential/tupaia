@@ -57,7 +57,10 @@ const ExportingStyledTable = styled(ChartTable)`
 
   // table body
   tbody {
-    tr {
+    .MuiTableRow-root {
+      &:nth-of-type(even) {
+        background: transparent;
+      }
       &:nth-of-type(odd) {
         background: ${GREY_FB};
       }
