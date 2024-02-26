@@ -28,13 +28,15 @@ const BASE_DASHBOARD_RELATION = {
 
 const DASHBOARD_ITEMS = [
   {
-    code: 'dashboardItem1',
+    code: 'item1',
     name: 'Dashboard Item 1',
+    report_code: 'item1',
     legacy: false,
   },
   {
-    code: 'dashboardItem2',
+    code: 'item2',
     name: 'Dashboard Item 2',
+    report_code: 'item2',
     legacy: false,
   },
 ];
@@ -44,7 +46,17 @@ const getResultChildIds = result => result.map(r => r.child_id).sort();
 describe('DashboardRelationModel', () => {
   const models = getTestModels();
 
-  const addDashboardItems = item => {
+  const addDashboardItems = async (item, permissionGroupId) => {
+    await findOrCreateDummyRecord(
+      models.report,
+      {
+        code: item.report_code,
+      },
+      {
+        config: {},
+        permission_group_id: permissionGroupId,
+      },
+    );
     return findOrCreateDummyRecord(
       models.dashboardItem,
       {
@@ -72,6 +84,9 @@ describe('DashboardRelationModel', () => {
   let dashboardItems;
 
   beforeAll(async () => {
+    const publicPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Public',
+    });
     const entityResult = await findOrCreateDummyCountryEntity(models, {
       code: 'test',
       name: 'Test Entity',
@@ -91,7 +106,9 @@ describe('DashboardRelationModel', () => {
     dashboardIds = dashboards.map(d => d.id);
 
     dashboardItems = await Promise.all(
-      DASHBOARD_ITEMS.map(dashboardItem => addDashboardItems(dashboardItem)),
+      DASHBOARD_ITEMS.map(dashboardItem =>
+        addDashboardItems(dashboardItem, publicPermissionGroup.id),
+      ),
     );
   });
 
