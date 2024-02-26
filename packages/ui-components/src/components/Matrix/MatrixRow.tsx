@@ -75,7 +75,7 @@ const TableRow = styled(MuiTableRow)<{
     right: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none;
+    pointer-events: none; // don't let the cell interfere with the button events
     border-style: solid;
     border-color: ${({ theme }) => theme.palette.divider};
     border-width: ${({ $isChild }) => ($isChild ? '1px 0 0 0' : '0')};
