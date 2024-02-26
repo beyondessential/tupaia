@@ -121,7 +121,8 @@ theme.overrides = {
     root: {
       backgroundColor: 'inherit',
       fontSize: '0.875rem',
-      padding: '0.8rem 1.56rem',
+      paddingBlock: '0.8rem',
+      paddingLinline: '1.56rem',
       lineHeight: '1.4',
       borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
       ['&.MuiTableCell-row-head']: {

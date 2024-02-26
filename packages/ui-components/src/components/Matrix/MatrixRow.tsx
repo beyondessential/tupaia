@@ -29,7 +29,8 @@ const RowHeaderCellContent = styled.div`
   justify-content: flex-start;
   height: 100%;
   width: 100%;
-  padding: 0.7rem 1.5rem;
+  padding-block: 0.7rem;
+  padding-inline: 1.5rem;
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -41,10 +42,10 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   text-transform: none;
   text-align: left;
   border-radius: 0;
-  padding-left: 0.7rem; // reduce this on expand buttons because the icon makes the button look like it has extra padding
+  padding-inline-start: 0.7rem; // reduce this on expand buttons because the icon makes the button look like it has extra padding
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
   svg {
-    margin-right: 0.5rem;
+    margin-inline-end: 0.5rem;
   }
   @media screen and (max-width: 600px) {
     padding: 0.4rem;
@@ -131,11 +132,11 @@ const HeaderCell = styled(Cell).attrs({
   left: 0;
   z-index: 2;
   // indent each nested level slightly more
-  padding-left: ${({ $depth }) => ($depth > 0 ? depthCalc($depth) : 0)};
+  padding-inline-start: ${({ $depth }) => ($depth > 0 ? depthCalc($depth) : 0)};
   // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-right: 0;
+  padding-block-start: 0;
+  padding-block-end: 0;
+  padding-inline-end: 0;
 `;
 
 type MatrixRowTitle = MatrixRowType['title'];
