@@ -9,7 +9,7 @@ import { JsonEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
-import { useTabPanel, useVizConfig, useVisualisation, useVizConfigError } from '../context';
+import { useVizConfig, useVisualisation, useVizConfigError, usePreviewData } from '../context';
 import { TransformDataLibrary } from './DataLibrary';
 
 const Container = styled(FlexColumn)`
@@ -43,7 +43,7 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const { setDataError } = useVizConfigError();
-  const { jsonToggleEnabled } = useTabPanel();
+  const { jsonToggleEnabled } = usePreviewData();
   const [
     {
       visualisation: { data: dataWithConfig },

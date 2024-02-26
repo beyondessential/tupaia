@@ -12,12 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 import { useDashboardVisualisation } from '../api';
 import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
-import {
-  PreviewDataProvider,
-  TabPanelProvider,
-  useVizConfig,
-  VizConfigErrorProvider,
-} from '../context';
+import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
@@ -93,9 +88,7 @@ export const Main = () => {
       <Toolbar />
       <Container maxWidth="xl">
         <PreviewDataProvider>
-          <TabPanelProvider>
-            <Panel />
-          </TabPanelProvider>
+          <Panel />
           <RightCol>
             <PreviewOptions />
             <PreviewSection />
