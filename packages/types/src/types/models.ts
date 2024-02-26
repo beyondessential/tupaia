@@ -1638,21 +1638,21 @@ export interface UserAccountUpdate {
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserEntityPermission {
-  'entity_id'?: string | null;
+  'entity_id': string;
   'id': string;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'permission_group_id': string;
+  'user_id': string;
 }
 export interface UserEntityPermissionCreate {
-  'entity_id'?: string | null;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'entity_id': string;
+  'permission_group_id': string;
+  'user_id': string;
 }
 export interface UserEntityPermissionUpdate {
-  'entity_id'?: string | null;
+  'entity_id'?: string;
   'id'?: string;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'permission_group_id'?: string;
+  'user_id'?: string;
 }
 export interface UserFavouriteDashboardItem {
   'dashboard_item_id': string;

@@ -73,6 +73,8 @@ export const constructForSingle = (models, recordType) => {
         last_name: [hasContent],
         email: [hasContent, isEmail],
         password: [isValidPassword],
+        countryName: [hasContent],
+        permissionGroupName: [hasContent],
       };
     case TYPES.FEED_ITEM:
       return {

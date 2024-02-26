@@ -6,9 +6,9 @@ import React, { useContext } from 'react';
 import { Typography } from '@material-ui/core';
 import Markdown from 'markdown-to-jsx';
 import styled from 'styled-components';
-import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { Dialog, DialogFooter, DialogHeader, DialogContent } from '../Dialog';
 import { Button } from '../Button';
+import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 
 const Content = styled(DialogContent)`
   display: flex;

@@ -7,10 +7,19 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { NoData } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import {
+  ChartData,
+  ChartType,
+  isBarChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
+} from '@tupaia/types';
+import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
+import { LegendPosition, ChartViewContent } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
-import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
-import { ChartType, ViewContent, LegendPosition } from '../types';
 
 const UnknownChartTitle = styled(Typography)`
   position: relative;
@@ -42,12 +51,21 @@ const removeNonNumericData = (data: any[]) =>
     return filteredDataSeries;
   });
 
-const sortData = (data: any[]): any[] =>
-  getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
+const sortData = (data: ChartData[]) =>
+  getIsTimeSeries(data)
+    ? data.sort((a, b) => {
+        const { timestamp: timestampA } = a;
+        const { timestamp: timestampB } = b;
+        // If either timestamp is undefined, return 0, which will almost never happen because we are already checking for timestamp fields in the getIsTimeSeries function, but TS doesn't seem to pickup on that
+        if (timestampA === undefined || timestampB === undefined) return 0;
+        return timestampA - timestampB;
+      })
+    : data;
 
-const getViewContent = (viewContent: ChartProps['viewContent']) => {
-  const { chartConfig, data } = viewContent;
+const parseViewContent = <T extends ChartViewContent>(viewContent: T): T => {
+  const { data } = viewContent;
   const massagedData = sortData(removeNonNumericData(data));
+  const chartConfig = 'chartConfig' in viewContent ? viewContent.chartConfig : undefined;
   return chartConfig
     ? {
         ...viewContent,
@@ -57,32 +75,21 @@ const getViewContent = (viewContent: ChartProps['viewContent']) => {
     : { ...viewContent, data: massagedData };
 };
 
-const getChartComponent = (chartType: ChartType) => {
-  switch (chartType) {
-    case ChartType.Pie:
-      return PieChart;
-    case ChartType.Gauge:
-      return GaugeChart;
-    default:
-      return CartesianChart;
-  }
-};
-
-interface ChartProps {
-  viewContent: ViewContent;
+interface ChartProps<T extends ChartViewContent> {
+  viewContent: T;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
   legendPosition?: LegendPosition;
 }
 
-export const Chart = ({
+export const Chart = <T extends ChartViewContent>({
   viewContent,
   isExporting = false,
   isEnlarged = true,
   onItemClick = () => {},
   legendPosition = 'bottom',
-}: ChartProps) => {
+}: ChartProps<T>) => {
   const { chartType } = viewContent;
 
   if (!Object.values(ChartType).includes(chartType)) {
@@ -93,16 +100,31 @@ export const Chart = ({
     return <NoData viewContent={viewContent} />;
   }
 
-  const viewContentConfig = getViewContent(viewContent);
-  const ChartComponent = getChartComponent(chartType);
+  const commonProps = {
+    isEnlarged,
+    isExporting,
+    onItemClick,
+    legendPosition,
+  };
 
-  return (
-    <ChartComponent
-      isEnlarged={isEnlarged}
-      isExporting={isExporting}
-      viewContent={viewContentConfig}
-      onItemClick={onItemClick}
-      legendPosition={legendPosition}
-    />
-  );
+  if (isPieChartConfig(viewContent)) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <PieChart viewContent={viewContentConfig} {...commonProps} />;
+  }
+
+  if (isGaugeChartConfig(viewContent)) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <GaugeChart viewContent={viewContentConfig} {...commonProps} />;
+  }
+
+  if (
+    isBarChartConfig(viewContent) ||
+    isLineChartConfig(viewContent) ||
+    isComposedChartConfig(viewContent)
+  ) {
+    const viewContentConfig = parseViewContent(viewContent);
+    return <CartesianChart viewContent={viewContentConfig} {...commonProps} />;
+  }
+  // if the chart is an unsupported type, return null. Very unlikely to happen, but we need to handle it
+  return null;
 };
