@@ -61,13 +61,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
             <MatrixHeader />
             <TableBody>
               {rows.map((row, i) => (
-                // add a random key to avoid bugs with re-rendering
-                <MatrixRow
-                  row={row}
-                  key={`${row.title}_${Math.random() * 1000}`}
-                  parents={[]}
-                  index={i + 1}
-                />
+                <MatrixRow row={row} key={row.title} parents={[]} index={i + 1} />
               ))}
             </TableBody>
           </Table>
