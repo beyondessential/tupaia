@@ -15,6 +15,7 @@ import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
 import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
+import { findVizType } from '../utils';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -53,7 +54,7 @@ export const Main = () => {
   };
 
   // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisation }] = useVizConfig();
+  const [_, { setVisualisation, setVizType }] = useVizConfig();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useViz();
   const { visualisation } = data;
@@ -61,6 +62,7 @@ export const Main = () => {
   useEffect(() => {
     if (visualisation) {
       setVisualisation(visualisation);
+      setVizType(findVizType(visualisation));
       setVisualisationLoaded(true);
     }
   }, [visualisation]);
