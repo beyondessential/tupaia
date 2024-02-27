@@ -11,6 +11,7 @@ import { MatrixColumnType, MatrixRowType } from '../../types';
 import { MatrixHeader } from './MatrixHeader';
 import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixRow } from './MatrixRow';
+import { EnlargedMatrixCell } from './EnlargedMatrixCell';
 import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
@@ -35,8 +36,9 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
 }
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
-  const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
+  const [{ expandedRows, enlargedCell }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
+    enlargedCell: null,
   });
   const tableEl = useRef<HTMLTableElement | null>(null);
 
@@ -47,12 +49,14 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
         columns,
         rows,
         expandedRows,
+        enlargedCell,
         disableExpand,
       }}
     >
       <MatrixDispatchContext.Provider value={dispatch}>
-        <MatrixLegend />
         <ScrollContainer>
+          {/** The opened enlarged cell, present on some matrices */}
+          <EnlargedMatrixCell />
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
             <MatrixHeader />
             <TableBody>
@@ -62,6 +66,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
             </TableBody>
           </Table>
         </ScrollContainer>
+        <MatrixLegend />
       </MatrixDispatchContext.Provider>
     </MatrixContext.Provider>
   );
