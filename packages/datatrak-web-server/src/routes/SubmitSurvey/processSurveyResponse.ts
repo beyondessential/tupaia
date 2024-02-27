@@ -2,13 +2,11 @@
  * Tupaia
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { TupaiaApiClient } from '@tupaia/api-client';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import {
   DatatrakWebSubmitSurveyRequest,
   Entity,
   MeditrakSurveyResponseRequest,
-  Option,
   QuestionType,
   SurveyScreenComponentConfig,
 } from '@tupaia/types';
@@ -36,7 +34,6 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
   models: DatatrakWebServerModelRegistry,
-  apiClient: TupaiaApiClient,
   surveyResponseData: SurveyRequestT,
 ) => {
   const {
@@ -140,10 +137,10 @@ export const processSurveyResponse = async (
           throw new Error(`Autocomplete answers must be a plain string value, got: ${answer}`);
         }
 
-        const options = (await apiClient.central.fetchResources(
-          `optionSets/${optionSetId}/options`,
-        )) as Option[];
-        const isNew = !options.map(({ value }) => value).includes(answer);
+        const isNew = (await models.option.findOne({ option_set_id: optionSetId, value: answer }))
+          ? false
+          : true;
+
         // if the answer is a new option, add it to the options_created array to be added to the DB
         if (isNew) {
           if (!config.autocomplete?.createNew) {

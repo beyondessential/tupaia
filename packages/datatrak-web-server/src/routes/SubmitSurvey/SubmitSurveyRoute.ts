@@ -19,10 +19,10 @@ export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
   public async buildResponse() {
     const surveyResponseData = this.req.body;
     const { central: centralApi } = this.req.ctx.services;
-    const { session, models, ctx } = this.req;
+    const { session, models } = this.req;
 
     const { qr_codes_to_create, recent_entities, ...processedResponse } =
-      await processSurveyResponse(models, ctx.services, surveyResponseData);
+      await processSurveyResponse(models, surveyResponseData);
 
     await centralApi.createSurveyResponses(
       [processedResponse],
