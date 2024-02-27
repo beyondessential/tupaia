@@ -19,6 +19,10 @@ export type PieChartPresentationOptions = ExportPresentationOptions & {
  */
 export type PieChartConfig = BaseChartConfig & {
   chartType: ChartType.Pie;
+
+  /**
+   * @description Common options for configuring the chart presentation
+   */
   presentationOptions?: PieChartPresentationOptions;
 };
 
