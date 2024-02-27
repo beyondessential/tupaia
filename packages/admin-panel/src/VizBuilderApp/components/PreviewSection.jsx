@@ -9,12 +9,13 @@ import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import { FlexSpaceBetween, FetchLoader, DataGrid } from '@tupaia/ui-components';
 import { Chart } from '@tupaia/ui-chart-components';
-import { JsonEditor } from '../../widgets';
+import { JsonEditor, JsonTreeEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
 import { getColumns, getRows } from '../../utilities';
+import { VIZ_TYPES } from '../constants';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -98,14 +99,16 @@ const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
-  const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
+  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
   const [
-    { project, location, startDate, endDate, testData, visualisation },
+    { vizType, project, location, startDate, endDate, testData, visualisation },
     { setPresentation },
   ] = useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
+
+  const presentationSchema = VIZ_TYPES[vizType]?.schema;
 
   const [viewContent, setViewContent] = useState(null);
 
@@ -197,13 +200,25 @@ export const PreviewSection = () => {
             )}
           </ChartContainer>
           <EditorContainer>
-            <JsonEditor
-              value={visualisation.presentation}
-              onChange={setPresentationValue}
-              onInvalidChange={handleInvalidPresentationChange}
-              mode="code"
-              mainMenuBar={false}
-            />
+            {!jsonToggleEnabled && presentationSchema ? (
+              <JsonTreeEditor
+                name="presentation"
+                value={visualisation.presentation}
+                onChange={setPresentationValue}
+                onInvalidChange={handleInvalidPresentationChange}
+                mainMenuBar={false}
+                schema={presentationSchema}
+              />
+            ) : (
+              <JsonEditor
+                value={visualisation.presentation}
+                onChange={setPresentationValue}
+                onInvalidChange={handleInvalidPresentationChange}
+                mode="code"
+                mainMenuBar={false}
+                schema={presentationSchema}
+              />
+            )}
           </EditorContainer>
         </Container>
       </TabPanel>
