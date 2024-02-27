@@ -18,7 +18,6 @@ const initialConfigState = {
   testData: null,
   visualisation: {
     id: null,
-    name: null,
     code: null,
     permissionGroup: null,
     data: {
@@ -38,6 +37,7 @@ const SET_VISUALISATION = 'SET_VISUALISATION';
 const SET_VISUALISATION_VALUE = 'SET_VISUALISATION_VALUE';
 const SET_DATA_CONFIG = 'SET_DATA_CONFIG';
 const SET_PRESENTATION_CONFIG = 'SET_PRESENTATION_CONFIG';
+const SET_PRESENTATION_CONFIG_VALUE = 'SET_PRESENTATION_CONFIG_VALUE';
 
 const set = (object, key, value) => (object[key] === value ? object : { ...object, [key]: value });
 
@@ -95,6 +95,19 @@ function configReducer(state, action) {
         },
       };
     }
+    case SET_PRESENTATION_CONFIG_VALUE: {
+      const { key, value } = action;
+      return {
+        ...state,
+        visualisation: {
+          ...state.visualisation,
+          presentation: {
+            ...state.visualisation.presentation,
+            [key]: value,
+          },
+        },
+      };
+    }
     default:
       throw new Error('Type not found');
   }
@@ -129,6 +142,8 @@ const useConfigStore = () => {
   const setVisualisationValue = (key, value) =>
     dispatch({ type: SET_VISUALISATION_VALUE, key, value });
   const setPresentation = value => dispatch({ type: SET_PRESENTATION_CONFIG, value });
+  const setPresentationValue = (key, value) =>
+    dispatch({ type: SET_PRESENTATION_CONFIG_VALUE, key, value });
   const setDataConfig = (key, value) => dispatch({ type: SET_DATA_CONFIG, key, value });
 
   return [
@@ -144,6 +159,7 @@ const useConfigStore = () => {
       setVisualisationValue,
       setDataConfig,
       setPresentation,
+      setPresentationValue,
     },
   ];
 };

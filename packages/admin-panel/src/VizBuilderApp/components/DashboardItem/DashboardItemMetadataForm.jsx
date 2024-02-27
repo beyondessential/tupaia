@@ -17,12 +17,14 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
     label: name,
   }));
   const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation, vizType }, { setVisualisationValue, setVizType, setPresentation }] =
-    useVizConfig();
+  const [
+    { visualisation, vizType },
+    { setVisualisationValue, setVizType, setPresentation, setPresentationValue },
+  ] = useVizConfig();
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
-  const { name, code, permissionGroup, presentation } = defaults;
+  const { code, permissionGroup, presentation } = defaults;
   const [permissionGroupSearchInput, setPermissionGroupSearchInput] = useState(
     permissionGroup || '',
   );
@@ -32,7 +34,6 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
-    setVisualisationValue('name', data.name);
     setVisualisationValue('permissionGroup', data.permissionGroup);
     const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;
     setVizType(selectedVizType);
@@ -40,6 +41,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
       // If no presentation config exists, set the initial config by vizType
       setPresentation(VIZ_TYPES[selectedVizType].initialConfig);
     }
+    setPresentationValue('name', data.name);
     onSubmit();
   };
 
@@ -60,7 +62,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
         <TextField
           name="name"
           label="Name"
-          defaultValue={name}
+          defaultValue={presentation.name}
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
