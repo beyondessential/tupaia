@@ -12,6 +12,7 @@ const StyledTable = styled(Table)<{
   $isExport?: boolean;
   $isEnlarged?: boolean;
 }>`
+  border: none;
   max-width: 30rem;
   margin: ${({ $isEnlarged, $isExport }) => {
     if (!$isEnlarged) return 0;
@@ -24,6 +25,13 @@ const StyledTable = styled(Table)<{
   th.MuiTableCell-root,
   td.MuiTableCell-root {
     ${props => props.$isExport && 'color: currentColor;'}
+  }
+`;
+
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
   }
 `;
 
@@ -78,7 +86,7 @@ export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: M
     <StyledTable $isExport={isExport} $isEnlarged={isEnlarged}>
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={i}>
+          <Row key={i}>
             <TableCell component="th">{datum.name}</TableCell>
             <TableCell>
               {valueType === 'boolean' ? (
@@ -90,7 +98,7 @@ export const MultiValue = ({ report: { data }, config, isExport, isEnlarged }: M
                 datum.value
               )}
             </TableCell>
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
     </StyledTable>
