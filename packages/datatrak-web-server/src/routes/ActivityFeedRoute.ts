@@ -70,7 +70,7 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
 
     // if there is a pinned item, exclude it from the rest of the feed items
     if (pinned) {
-      conditions['id'] = {
+      conditions['feed_item.id'] = {
         comparator: '<>',
         comparisonValue: pinned.id,
       };
