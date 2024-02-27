@@ -29,10 +29,6 @@ export const findByKey = (
   find(collection, (value, valueKey) => areStringsEqual(key, valueKey, caseSensitive));
 
 /** Functions used to get matrix chart dot colors from presentation options */
-const PRESENTATION_TYPES = {
-  RANGE: 'range',
-  CONDITION: 'condition',
-};
 
 const CONDITION_CHECK_METHOD = {
   '=': (value: any, filterValue: ConditionValue) => {
@@ -106,14 +102,9 @@ export const getPresentationOptionFromRange = (options: RangePresentationOptions
 // This function returns the applicable presentation option from the presentation options, for the value
 export const getPresentationOption = (options?: MatrixPresentationOptions, value?: any) => {
   if (!options) return null;
-  switch (options.type) {
-    case PRESENTATION_TYPES.RANGE:
-      return getPresentationOptionFromRange(options as RangePresentationOptions, value);
-    case PRESENTATION_TYPES.CONDITION:
-      return getPresentationOptionFromCondition(options as ConditionalPresentationOptions, value);
-    default:
-      return getPresentationOptionFromKey(options?.conditions, value);
-  }
+  if (options.type === 'range') return getPresentationOptionFromRange(options, value);
+  if (options.type === 'condition') return getPresentationOptionFromCondition(options, value);
+  return getPresentationOptionFromKey(options?.conditions, value);
 };
 
 export function getIsUsingColouredCells(presentationOptions?: MatrixPresentationOptions) {
