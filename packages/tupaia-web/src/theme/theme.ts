@@ -107,21 +107,20 @@ theme.overrides = {
     root: {
       backgroundColor: theme.palette.table?.odd,
       // non expanded rows alternate background color - only apply this when in a modal, ie not on a multi row viz
-      ['.MuiDialog-root &:nth-child(even)']: {
+      ['&:nth-child(even)']: {
         backgroundColor: theme.palette.table?.even,
       },
     },
     head: {
-      ['.MuiDialog-root &']: {
-        backgroundColor: theme.palette.table?.header,
-      },
+      backgroundColor: theme.palette.table?.header,
     },
   },
   MuiTableCell: {
     root: {
       backgroundColor: 'inherit',
       fontSize: '0.875rem',
-      padding: '0.8rem 1.56rem',
+      paddingBlock: '0.8rem',
+      paddingLinline: '1.56rem',
       lineHeight: '1.4',
       borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below
       ['&.MuiTableCell-row-head']: {
