@@ -20,14 +20,6 @@ export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
     .toString()
     .localeCompare(b.toString(), undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
 
-// If the hex is shortened, double up each character. This is for cases like '#fff'
-export const getFullHex = (hex: string) => {
-  let hexString = hex.replace('#', '');
-  const isShortened = hexString.length === 3;
-  if (isShortened) hexString = hexString.replace(/(.)/g, '$1$1');
-  return `#${hexString}`;
-};
-
 export const findByKey = (
   collection: MatrixPresentationOptions['conditions'],
   key: string,
@@ -112,7 +104,8 @@ export const getPresentationOptionFromRange = (options: RangePresentationOptions
 };
 
 // This function returns the applicable presentation option from the presentation options, for the value
-export const getPresentationOption = (options: MatrixPresentationOptions, value: any) => {
+export const getPresentationOption = (options?: MatrixPresentationOptions, value?: any) => {
+  if (!options) return null;
   switch (options.type) {
     case PRESENTATION_TYPES.RANGE:
       return getPresentationOptionFromRange(options as RangePresentationOptions, value);
@@ -123,19 +116,23 @@ export const getPresentationOption = (options: MatrixPresentationOptions, value:
   }
 };
 
-export function getIsUsingDots(presentationOptions: MatrixPresentationOptions = {}) {
-  return (
-    Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length > 0
-  );
+export function getIsUsingColouredCells(presentationOptions?: MatrixPresentationOptions) {
+  return presentationOptions
+    ? Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length >
+        0
+    : false;
 }
 
-export function checkIfApplyDotStyle(
-  presentationOptions: ConditionalPresentationOptions = {},
-  columnIndex: number,
+export function checkIfApplyColouredCellStyle(
+  presentationOptions?: MatrixPresentationOptions,
+  columnIndex?: number,
 ) {
-  const appliedLocations = presentationOptions?.applyLocation?.columnIndexes;
-  if (!appliedLocations) return true;
-  return appliedLocations.includes(columnIndex);
+  if (!presentationOptions || columnIndex === undefined) return false;
+  const { applyLocation } = presentationOptions;
+  if (applyLocation && 'columnIndexes' in applyLocation && applyLocation?.columnIndexes) {
+    return applyLocation.columnIndexes.includes(columnIndex);
+  }
+  return true;
 }
 
 // This function returns a flattened array of columns, NOT including the parent columns

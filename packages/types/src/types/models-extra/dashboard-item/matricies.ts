@@ -56,7 +56,7 @@ type BasePresentationOption = {
 };
 
 export type ConditionalPresentationOptions = {
-  type?: 'condition'; // optional key it seems like
+  type: 'condition';
   conditions?: PresentationOptionCondition[];
   /**
    * @default false
