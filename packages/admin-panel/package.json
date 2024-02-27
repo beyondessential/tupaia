@@ -32,6 +32,7 @@
     "@material-ui/lab": "^4.0.0-alpha.47",
     "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "workspace:*",
+    "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-chart-components": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
