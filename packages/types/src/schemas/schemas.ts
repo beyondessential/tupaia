@@ -62406,30 +62406,6 @@ export const CamelCasedSurveyScreenSchema = {
 	]
 } 
 
-export const AutocompleteAnswerSchema = {
-	"type": "object",
-	"properties": {
-		"isNew": {
-			"type": "boolean"
-		},
-		"optionSetId": {
-			"type": "string"
-		},
-		"value": {
-			"type": "string"
-		},
-		"label": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"label",
-		"optionSetId",
-		"value"
-	]
-} 
-
 export const FileUploadAnswerSchema = {
 	"type": "object",
 	"properties": {

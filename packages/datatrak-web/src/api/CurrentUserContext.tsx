@@ -8,11 +8,11 @@ import { FullPageLoader } from '@tupaia/ui-components';
 import { ErrorDisplay } from '../components';
 import { useUser } from './queries';
 
-type CurrentUserContextType = (DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean }) | null;
+export type CurrentUserContextType = DatatrakWebUserRequest.ResBody & { isLoggedIn: boolean };
 
-const CurrentUserContext = createContext<CurrentUserContextType>(null);
+const CurrentUserContext = createContext<CurrentUserContextType | null>(null);
 
-export const useCurrentUser = () => {
+export const useCurrentUser = (): CurrentUserContextType => {
   const currentUser = useContext(CurrentUserContext);
   if (!currentUser) {
     throw new Error('useCurrentUser must be used within a CurrentUserContextProvider');
