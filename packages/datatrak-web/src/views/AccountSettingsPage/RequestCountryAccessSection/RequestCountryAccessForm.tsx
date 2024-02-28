@@ -98,7 +98,6 @@ export const RequestCountryAccessForm = ({
   countryAccessList,
   project,
 }: RequestCountryAccessFormProps) => {
-  console.log('BEGIN RequestCountryAccessForm');
   const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
   const projectCode = project.code;
   const applicableCountries =
