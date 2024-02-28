@@ -10,7 +10,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
-import { JOIN_TYPES, QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 export class FeedItemType extends DatabaseType {
   static databaseType = TYPES.FEED_ITEM;
@@ -34,16 +34,17 @@ export class FeedItemModel extends DatabaseModel {
     const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
 
     return {
-      sql: `(${Object.entries(countryIdsByPermissionGroup)
+      sql: `((${Object.entries(countryIdsByPermissionGroup)
         .map(([_, countryIds]) => {
           return `
           (
-            permission_group_id = ? AND 
-            country_id IN (${countryIds.map(_ => `?`).join(',')})
+            feed_item.permission_group_id = ? AND 
+            feed_item.country_id IN (${countryIds.map(_ => `?`).join(',')})
           )
         `;
         })
-        .join(' OR ')})`,
+        // add the markdown type to the query here so that it always gets wrapped in brackets with the permissions query in the final query, regardless of what other custom conditions are added
+        .join(' OR ')}) OR feed_item.type = '${FeedItemTypes.Markdown}')`,
       parameters: params,
     };
   }
@@ -96,13 +97,8 @@ export class FeedItemModel extends DatabaseModel {
     const feedItems = await this.find(
       {
         ...customDbConditions,
-        [QUERY_CONJUNCTIONS.AND]: {
-          // also limit to the user's country-level permissions, because in some cases we filter the surveys by projectId
-          [QUERY_CONJUNCTIONS.RAW]: permissionsClause,
-          [QUERY_CONJUNCTIONS.OR]: {
-            type: FeedItemTypes.Markdown,
-          },
-        },
+        // also limit to the user's country-level permissions, because in some cases we filter the surveys by projectId
+        [QUERY_CONJUNCTIONS.RAW]: permissionsClause,
       },
       {
         sort,

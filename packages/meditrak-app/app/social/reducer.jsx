@@ -8,6 +8,7 @@ import {
   SOCIAL_FEED_REQUEST,
   SOCIAL_FEED_SUCCESS,
   SOCIAL_FEED_FAILURE,
+  SOCIAL_FEED_RESET,
 } from './constants';
 import {arrayWithIdsToObject} from '../utilities/arrayWithIdsToObject';
 import {LOGIN_REQUEST} from '../authentication';
@@ -82,6 +83,11 @@ const stateChanges = {
   [SOCIAL_FEED_FAILURE]: ({errorMessage}) => ({
     isLoading: false,
     errorMessage,
+  }),
+  [SOCIAL_FEED_RESET]: () => ({
+    currentPage: 0,
+    feedItems: [],
+    latestFeedItemDate: 0,
   }),
 };
 

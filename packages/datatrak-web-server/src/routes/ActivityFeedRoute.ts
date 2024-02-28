@@ -8,6 +8,7 @@ import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
 import { JOIN_TYPES, TYPES } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type ActivityFeedRequest = Request<
   DatatrakWebActivityFeedRequest.Params,
@@ -65,6 +66,10 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       'survey_response.survey_id': {
         comparator: 'IN',
         comparisonValue: surveys.map(s => s.id),
+      },
+      // add this in here so that the survey id query is only applicable to survey response feed items
+      [QUERY_CONJUNCTIONS.OR]: {
+        'feed_item.type': FeedItemTypes.Markdown,
       },
     } as Record<string, unknown>;
 
