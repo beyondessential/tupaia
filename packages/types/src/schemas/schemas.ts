@@ -322,40 +322,6 @@ export const BaseConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -738,71 +704,6 @@ export const OffsetModifierSchema = {
 	"type": "string"
 } 
 
-export const DisplayOnEntityConditionsSchema = {
-	"anyOf": [
-		{
-			"type": "object",
-			"properties": {
-				"attributes": {
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"attributes"
-			]
-		},
-		{
-			"type": "object",
-			"additionalProperties": {
-				"type": [
-					"string",
-					"number",
-					"boolean"
-				]
-			}
-		}
-	]
-} 
-
-export const DisplayOnEntityAttributeConditionsSchema = {
-	"type": "object",
-	"properties": {
-		"attributes": {
-			"type": "object",
-			"additionalProperties": {
-				"type": [
-					"string",
-					"number",
-					"boolean"
-				]
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"attributes"
-	]
-} 
-
-export const DisplayOnEntityOtherConditionsSchema = {
-	"type": "object",
-	"additionalProperties": {
-		"type": [
-			"string",
-			"number",
-			"boolean"
-		]
-	}
-} 
-
 export const ExportPresentationOptionsSchema = {
 	"type": "object",
 	"properties": {
@@ -1129,40 +1030,6 @@ export const MatrixConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -2256,40 +2123,6 @@ export const ComponentConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -2750,40 +2583,6 @@ export const BaseChartConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -3540,40 +3339,6 @@ export const CartesianChartConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -4247,40 +4012,6 @@ export const PieChartConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -4733,40 +4464,6 @@ export const BarChartConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -5616,40 +5313,6 @@ export const LineChartConfigSchema = {
 				"name"
 			]
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -6473,40 +6136,6 @@ export const ComposedChartConfigSchema = {
 				"name"
 			]
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -7159,40 +6788,6 @@ export const GaugeChartConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -7584,40 +7179,6 @@ export const ChartConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -8022,40 +7583,6 @@ export const ChartConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -8738,40 +8265,6 @@ export const ChartConfigSchema = {
 						"name"
 					]
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -9430,40 +8923,6 @@ export const ChartConfigSchema = {
 						"name"
 					]
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -10115,40 +9574,6 @@ export const ChartConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -10629,40 +10054,6 @@ export const BaseViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -11053,40 +10444,6 @@ export const MultiValueViewConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -11581,40 +10938,6 @@ export const MultiValueRowViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -12061,40 +11384,6 @@ export const SingleValueViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -12460,40 +11749,6 @@ export const MultiPhotographViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -12854,40 +12109,6 @@ export const MultiSingleValueViewConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -13250,40 +12471,6 @@ export const SingleDownloadLinkViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -13644,40 +12831,6 @@ export const DataDownloadViewConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -14040,40 +13193,6 @@ export const SingleDateViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -14435,40 +13554,6 @@ export const DownloadFilesViewConfigSchema = {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
 		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
-		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 			"default": "'WEEK_COMMENCING_ABBR'",
@@ -14829,40 +13914,6 @@ export const QRCodeViewConfigSchema = {
 		"source": {
 			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 			"type": "string"
-		},
-		"displayOnEntityConditions": {
-			"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-			"anyOf": [
-				{
-					"type": "object",
-					"properties": {
-						"attributes": {
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"attributes"
-					]
-				},
-				{
-					"type": "object",
-					"additionalProperties": {
-						"type": [
-							"string",
-							"number",
-							"boolean"
-						]
-					}
-				}
-			]
 		},
 		"weekDisplayFormat": {
 			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -15226,40 +14277,6 @@ export const ViewConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -15633,40 +14650,6 @@ export const ViewConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -16113,40 +15096,6 @@ export const ViewConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -16511,40 +15460,6 @@ export const ViewConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -16904,40 +15819,6 @@ export const ViewConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -17299,40 +16180,6 @@ export const ViewConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -17692,40 +16539,6 @@ export const ViewConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -18087,40 +16900,6 @@ export const ViewConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -18481,40 +17260,6 @@ export const ViewConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -18874,40 +17619,6 @@ export const ViewConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -19378,40 +18089,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -20064,40 +18741,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -20442,40 +19085,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -20880,40 +19489,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -21596,40 +20171,6 @@ export const DashboardItemConfigSchema = {
 						"name"
 					]
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -22288,40 +20829,6 @@ export const DashboardItemConfigSchema = {
 						"name"
 					]
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -22973,40 +21480,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -23395,40 +21868,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -23801,40 +22240,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -24281,40 +22686,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -24679,40 +23050,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -25072,40 +23409,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -25467,40 +23770,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -25860,40 +24129,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -26255,40 +24490,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -26649,40 +24850,6 @@ export const DashboardItemConfigSchema = {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
 				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
-				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 					"default": "'WEEK_COMMENCING_ABBR'",
@@ -27042,40 +25209,6 @@ export const DashboardItemConfigSchema = {
 				"source": {
 					"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 					"type": "string"
-				},
-				"displayOnEntityConditions": {
-					"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-					"anyOf": [
-						{
-							"type": "object",
-							"properties": {
-								"attributes": {
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"attributes"
-							]
-						},
-						{
-							"type": "object",
-							"additionalProperties": {
-								"type": [
-									"string",
-									"number",
-									"boolean"
-								]
-							}
-						}
-					]
 				},
 				"weekDisplayFormat": {
 					"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -30485,40 +28618,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -31170,40 +29269,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -31548,40 +29613,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -31986,40 +30017,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -32702,40 +30699,6 @@ export const DashboardItemSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -33394,40 +31357,6 @@ export const DashboardItemSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -34079,40 +32008,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -34501,40 +32396,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -34907,40 +32768,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -35387,40 +33214,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -35785,40 +33578,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -36178,40 +33937,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -36573,40 +34298,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -36966,40 +34657,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -37361,40 +35018,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -37755,40 +35378,6 @@ export const DashboardItemSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -38148,40 +35737,6 @@ export const DashboardItemSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -38580,40 +36135,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -39265,40 +36786,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -39643,40 +37130,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -40081,40 +37534,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -40797,40 +38216,6 @@ export const DashboardItemCreateSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -41489,40 +38874,6 @@ export const DashboardItemCreateSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -42174,40 +39525,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -42596,40 +39913,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -43002,40 +40285,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -43482,40 +40731,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -43880,40 +41095,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -44273,40 +41454,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -44668,40 +41815,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -45061,40 +42174,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -45456,40 +42535,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -45850,40 +42895,6 @@ export const DashboardItemCreateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -46243,40 +43254,6 @@ export const DashboardItemCreateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -46669,40 +43646,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -47354,40 +44297,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -47732,40 +44641,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -48170,40 +45045,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -48886,40 +45727,6 @@ export const DashboardItemUpdateSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -49578,40 +46385,6 @@ export const DashboardItemUpdateSchema = {
 								"name"
 							]
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -50263,40 +47036,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -50685,40 +47424,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -51091,40 +47796,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -51571,40 +48242,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -51969,40 +48606,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -52362,40 +48965,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -52757,40 +49326,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -53150,40 +49685,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -53545,40 +50046,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -53938,40 +50405,6 @@ export const DashboardItemUpdateSchema = {
 						"source": {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
-						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
 						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -54333,40 +50766,6 @@ export const DashboardItemUpdateSchema = {
 							"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 							"type": "string"
 						},
-						"displayOnEntityConditions": {
-							"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-							"anyOf": [
-								{
-									"type": "object",
-									"properties": {
-										"attributes": {
-											"type": "object",
-											"additionalProperties": {
-												"type": [
-													"string",
-													"number",
-													"boolean"
-												]
-											}
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"attributes"
-									]
-								},
-								{
-									"type": "object",
-									"additionalProperties": {
-										"type": [
-											"string",
-											"number",
-											"boolean"
-										]
-									}
-								}
-							]
-						},
 						"weekDisplayFormat": {
 							"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 							"default": "'WEEK_COMMENCING_ABBR'",
@@ -54601,6 +51000,7 @@ export const DashboardMailingListEntryUpdateSchema = {
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -54629,6 +51029,7 @@ export const DashboardRelationSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes_filter",
 		"child_id",
 		"dashboard_id",
 		"entity_types",
@@ -54641,6 +51042,7 @@ export const DashboardRelationSchema = {
 export const DashboardRelationCreateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -54677,6 +51079,7 @@ export const DashboardRelationCreateSchema = {
 export const DashboardRelationUpdateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -62908,40 +59311,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -63593,40 +59962,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -63971,40 +60306,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -64409,40 +60710,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -65125,40 +61392,6 @@ export const DashboardWithMetadataSchema = {
 											"name"
 										]
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -65817,40 +62050,6 @@ export const DashboardWithMetadataSchema = {
 											"name"
 										]
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -66502,40 +62701,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -66924,40 +63089,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -67330,40 +63461,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -67810,40 +63907,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -68208,40 +64271,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -68601,40 +64630,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -68996,40 +64991,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -69389,40 +65350,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
@@ -69784,40 +65711,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -70178,40 +66071,6 @@ export const DashboardWithMetadataSchema = {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
 									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
-									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
 										"default": "'WEEK_COMMENCING_ABBR'",
@@ -70571,40 +66430,6 @@ export const DashboardWithMetadataSchema = {
 									"source": {
 										"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
 										"type": "string"
-									},
-									"displayOnEntityConditions": {
-										"description": "If specified will only show this viz if the conditions are met against the current Entity.",
-										"anyOf": [
-											{
-												"type": "object",
-												"properties": {
-													"attributes": {
-														"type": "object",
-														"additionalProperties": {
-															"type": [
-																"string",
-																"number",
-																"boolean"
-															]
-														}
-													}
-												},
-												"additionalProperties": false,
-												"required": [
-													"attributes"
-												]
-											},
-											{
-												"type": "object",
-												"additionalProperties": {
-													"type": [
-														"string",
-														"number",
-														"boolean"
-													]
-												}
-											}
-										]
 									},
 									"weekDisplayFormat": {
 										"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
