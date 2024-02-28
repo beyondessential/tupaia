@@ -86,7 +86,7 @@ const StyledFormInput = styled(FormInput).attrs({
 
 interface RequestCountryAccessFormProps {
   countryAccessList: UseQueryResult<TupaiaWebCountryAccessListRequest.ResBody>;
-  project: ProjectResponse;
+  project?: ProjectResponse | null;
 }
 
 interface RequestCountryAccessFormFields {
@@ -99,9 +99,9 @@ export const RequestCountryAccessForm = ({
   project,
 }: RequestCountryAccessFormProps) => {
   const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
-  const projectCode = project.code;
+  const projectCode = project?.code;
   const applicableCountries =
-    countries?.filter(country => project.names?.includes(country.name)) ?? [];
+    countries?.filter(country => project?.names?.includes(country.name)) ?? [];
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -137,25 +137,32 @@ export const RequestCountryAccessForm = ({
   const { breakpoints } = useTheme();
   const sizeClassIsMdOrLarger = useMediaQuery(breakpoints.up('sm'));
 
+  const getTooltip = () => {
+    if (!project) return 'Select a project to request country access';
+    return isValid ? undefined : 'Select countries to request access';
+  };
+
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const formIsInsubmissible = isValidating || !isValid || accessListIsLoading || formIsSubmitting;
+  const formIsInsubmissible =
+    !project || isValidating || !isValid || accessListIsLoading || formIsSubmitting;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
       entityIds,
       message,
-      projectCode,
+      projectCode, // Should not be undefined by this point, but TS can’t pick up that form is disabled if project is undefined
     });
   }
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={formIsSubmitting}>
+      <StyledFieldset disabled={!project || formIsSubmitting}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <RequestableCountryChecklist
             projectCode={projectCode}
             countries={applicableCountries}
+            disabled={formIsSubmitting}
             selectedCountries={selectedCountries}
             setSelectedCountries={setSelectedCountries}
           />
@@ -179,11 +186,7 @@ export const RequestCountryAccessForm = ({
             label="Reason for access"
             name="message"
           />
-          <Button
-            disabled={formIsInsubmissible}
-            tooltip={isValid ? undefined : 'Select countries to request access'}
-            type="submit"
-          >
+          <Button disabled={formIsInsubmissible} tooltip={getTooltip()} type="submit">
             {formIsSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
         </Flexbox>

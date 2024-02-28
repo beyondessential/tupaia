@@ -52,7 +52,7 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 
 interface AccessGrantedCountryListProps {
   countryAccessList: UseQueryResult<TupaiaWebCountryAccessListRequest.ResBody>;
-  project: ProjectResponse;
+  project?: ProjectResponse | null;
 }
 
 export const AccessGrantedCountryList = ({
@@ -63,7 +63,7 @@ export const AccessGrantedCountryList = ({
 
   // “Applicable” here refers to countries that a project concerns
   const grantedApplicableCountries = countries.filter(
-    country => country.hasAccess && project.names?.includes(country.name),
+    country => country.hasAccess && project?.names?.includes(country.name),
   );
 
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';

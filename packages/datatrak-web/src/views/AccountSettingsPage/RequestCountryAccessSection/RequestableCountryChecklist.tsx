@@ -45,7 +45,7 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
 `;
 
 interface RequestableCountryChecklistProps {
-  projectCode: Project['code'];
+  projectCode?: Project['code'];
   countries: TupaiaWebCountryAccessListRequest.ResBody;
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
@@ -73,26 +73,28 @@ export const RequestableCountryChecklist = ({
 
   return (
     <Container disabled={disabled}>
-      {countries.map(({ id, name, hasAccess, accessRequests }) => {
-        const hasRequestedAccess = accessRequests.includes(projectCode);
-        const isSelected = selectedCountries.includes(id);
-        const tooltip = getTooltip(hasAccess, hasRequestedAccess);
+      {!projectCode
+        ? null
+        : countries.map(({ id, name, hasAccess, accessRequests }) => {
+            const hasRequestedAccess = accessRequests.includes(projectCode);
+            const isSelected = selectedCountries.includes(id);
+            const tooltip = getTooltip(hasAccess, hasRequestedAccess);
 
-        return (
-          <StyledCheckbox
-            checked={isSelected}
-            disabled={hasAccess || hasRequestedAccess}
-            id="entityIds"
-            inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
-            key={id}
-            label={name}
-            name="entityIds"
-            onChange={() => selectCountry(id, !isSelected)}
-            tooltip={tooltip}
-            value={id}
-          />
-        );
-      })}
+            return (
+              <StyledCheckbox
+                checked={isSelected}
+                disabled={hasAccess || hasRequestedAccess}
+                id="entityIds"
+                inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
+                key={id}
+                label={name}
+                name="entityIds"
+                onChange={() => selectCountry(id, !isSelected)}
+                tooltip={tooltip}
+                value={id}
+              />
+            );
+          })}
     </Container>
   );
 };
