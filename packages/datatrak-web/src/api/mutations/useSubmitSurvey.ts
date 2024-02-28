@@ -69,6 +69,18 @@ export const useSubmitSurvey = () => {
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
         queryClient.invalidateQueries('entityDescendants'); // Refresh recent entities
+
+        const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
+          question => question?.config?.autocomplete?.createNew,
+        );
+
+        // invalidate optionSet queries for questions that have createNew enabled so that the new options are fetched
+        if (createNewAutocompleteQuestions?.length > 0) {
+          createNewAutocompleteQuestions.forEach(question => {
+            const { optionSetId } = question;
+            queryClient.invalidateQueries(['autocompleteOptions', optionSetId]);
+          });
+        }
         resetForm();
         successToast("Congratulations! You've earned a coconut", Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes
