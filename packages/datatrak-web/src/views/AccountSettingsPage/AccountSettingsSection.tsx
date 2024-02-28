@@ -18,6 +18,7 @@ const Wrapper = styled(Paper).attrs({
   flex-direction: column;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
+    gap: 2.5rem;
     justify-content: space-between;
     padding: 2.5rem;
   }
@@ -46,7 +47,7 @@ export const AccountSettingsSection = ({
     <Wrapper>
       <AccountSettingsColumn>
         <Title>{title}</Title>
-        {description}
+        <Typography color="textSecondary">{description}</Typography>
       </AccountSettingsColumn>
       {children}
     </Wrapper>
