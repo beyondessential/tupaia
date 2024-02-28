@@ -90,8 +90,8 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     // If the report has more than one result, update the report.latest_data_parameters with the request parameters
     if (this.getHasData(results)) {
       await report.setLatestDataParameters({
-        projectCode: hierarchy,
-        entityCodes: reportQuery.organisationUnitCodes,
+        hierarchy,
+        organisationUnitCodes,
         ...restOfParams,
       });
     }

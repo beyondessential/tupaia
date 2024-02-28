@@ -15,7 +15,7 @@ import { getVizOutputConfig } from '../utils';
 
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
-  ReportValidator extends yup.AnyObjectSchema
+  ReportValidator extends yup.AnyObjectSchema,
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
   private readonly mapOverlayValidator: MapOverlayValidator;
@@ -99,6 +99,7 @@ export class MapOverlayVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

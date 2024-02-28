@@ -12,10 +12,11 @@ export const LocationField = () => {
   const [locationSearch, setLocationSearch] = useState('');
   const [{ visualisation, project, location }, { setLocation }] = useVizConfig();
 
-  const { data: defaultLocation } = useEntityByCode(
-    visualisation?.latestDataParameters?.entityCodes?.[0],
-    data => setLocation(data),
-  );
+  const entityCodes = visualisation?.latestDataParameters?.organisationUnitCodes ?? '';
+
+  const firstEntityCode = Array.isArray(entityCodes) ? entityCodes[0] : entityCodes;
+
+  const { data: defaultLocation } = useEntityByCode(firstEntityCode, data => setLocation(data));
 
   // Show the default options in the dropdown when an item is selected.
   // Otherwise it shows no options

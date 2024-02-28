@@ -19,14 +19,15 @@ describe('ReportModel', () => {
       code: 'BCD',
       config: {},
       permission_group_id: publicPermissionGroup.id,
+      latest_data_parameters: {},
     });
   });
 
   describe('setLatestDataParameters()', () => {
     it('should set the latest data parameters', async () => {
       const parameters = {
-        projectCode: 'explore',
-        entityCodes: ['TO'],
+        hierarchy: 'explore',
+        organisationUnitCodes: ['TO'],
         startDate: '2020-01-01',
         endDate: '2020-31-12',
       };

@@ -15,7 +15,7 @@ import { getVizOutputConfig } from '../utils';
 
 export class DashboardVisualisationExtractor<
   DashboardItemValidator extends yup.AnyObjectSchema,
-  ReportValidator extends yup.AnyObjectSchema
+  ReportValidator extends yup.AnyObjectSchema,
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
   private readonly dashboardItemValidator: DashboardItemValidator;
@@ -86,6 +86,7 @@ export class DashboardVisualisationExtractor<
         },
         code,
         permissionGroup,
+        latestDataParameters: {},
       };
     }
 
@@ -104,6 +105,7 @@ export class DashboardVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

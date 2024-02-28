@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { Report as BaseReportType } from '@tupaia/types';
 import { CamelKeysToSnake, Report, VizData } from '../types';
 
 type Presentation = Record<string, unknown>;
@@ -74,11 +73,7 @@ export type MapOverlayGroupRelationRecord = CamelKeysToSnake<
   child_id: string;
 };
 
-type MapOverlayReport = Report & {
-  latestDataParameters: BaseReportType['latest_data_parameters'];
-};
-
-export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: MapOverlayReport };
+export type MapOverlayVisualisationResource = { mapOverlay: MapOverlay; report: Report };
 //
 // export type LegacyMapOverlayVisualisationResource = {
 //   mapOverlayItem: MapOverlayItem;

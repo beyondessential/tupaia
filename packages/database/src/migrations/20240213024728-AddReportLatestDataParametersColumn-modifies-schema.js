@@ -16,8 +16,9 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db) {
   return db.addColumn('report', 'latest_data_parameters', {
-    type: 'json',
+    type: 'jsonb',
     defaultValue: '{}',
+    notNull: true,
   });
 };
 

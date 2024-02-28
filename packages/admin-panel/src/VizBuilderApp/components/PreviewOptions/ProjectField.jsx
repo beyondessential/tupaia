@@ -11,7 +11,7 @@ export const ProjectField = () => {
   const [{ visualisation, project }, { setProject }] = useVizConfig();
 
   const { data: defaultProject } = useProject(
-    visualisation?.latestDataParameters?.projectCode,
+    visualisation?.latestDataParameters?.hierarchy,
     data => setProject(data),
   );
 
