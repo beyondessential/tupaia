@@ -8,7 +8,7 @@ import moment from 'moment';
 import { blue, red, green } from '@material-ui/core/colors';
 import { ScaleType, MeasureColorScheme } from '@tupaia/types';
 import { BREWER_PALETTE, HEATMAP_UNKNOWN_COLOR } from '../constants';
-import { Color, ColorKey, ScaleTypeLiteral } from '../types';
+import { Color, ColorKey } from '../types';
 
 const COLOR_SCHEME_TO_FUNCTION = {
   [MeasureColorScheme.DEFAULT]: getHeatmapColor,
@@ -34,7 +34,7 @@ export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
  *
  */
 export function resolveSpectrumColour(
-  scaleType: ScaleTypeLiteral,
+  scaleType: `${ScaleType}`,
   scaleColorScheme: ColorScheme,
   value: number | null, // a number in range [0..1] representing percentage or a string of a date within a range specified by [min, max]
   min: number | string, // the lowest number or a string representing earliest date in a range
@@ -77,7 +77,7 @@ export function resolveSpectrumColour(
   }
 }
 
-const normaliseToPercentage = (value: number, min: number = 0, max: number = 1) => {
+const normaliseToPercentage = (value: number, min = 0, max = 1) => {
   // Always clamp the result between 0 and 1
   if (value < min) return 0;
   if (value > max) return 1;

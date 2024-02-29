@@ -1,4 +1,4 @@
-/**
+/*
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
@@ -9,7 +9,6 @@ import { BaseConfig, ExportPresentationOptions, ValueType } from '../common';
 /**
  * These are the common chart config options that are shared between several chart types
  */
-
 export enum ChartType {
   Area = 'area',
   Bar = 'bar',
@@ -68,25 +67,28 @@ export const isChartConfig = (config?: BaseConfig): config is BaseChartConfig =>
   return (config && 'type' in config && config.type === 'chart') ?? false;
 };
 
-export type CartesianChartPresentationOptions = ExportPresentationOptions & {
-  /**
-   * @description This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values
-   */
-  periodTickFormat?: string;
-  hideAverage?: boolean;
-};
-
 export type ReferenceLinesConfig = {
-  referenceValue?: number;
+  referenceValue: number;
   referenceLabel?: string;
 };
 
+export type CartesianChartPresentationOptions = ExportPresentationOptions & {
+  /**
+   * @description This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values
+   */
+  periodTickFormat?: string;
+  hideAverage?: boolean;
+  referenceLines?: {
+    targetLine?: ReferenceLinesConfig;
+  };
+};
+
 type Key = string | '$all';
+
 /**
  * @description The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns
  */
-
-export type ChartConfigObject = ReferenceLinesConfig & {
+export type ChartConfigObject = {
   color?: CssColor;
   label?: string;
   stackId?: number;
@@ -108,7 +110,6 @@ export type ChartConfigT = {
   [key: Key]: ChartConfigObject;
 };
 
-/**
 /**
  * @description A Cartesian chart has an area with axes e.g. bar, line. It extends the base chart config
  */
