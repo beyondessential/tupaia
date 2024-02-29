@@ -9,8 +9,8 @@ import { useParams, generatePath } from 'react-router-dom';
 import { Tooltip } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { CopyIcon } from '../../../components';
-import { successToast } from '../../../utils';
 import { ROUTES } from '../../../constants';
+import { successToast } from '../../../utils';
 
 const StyledTooltip = styled(Tooltip)`
   text-align: center;

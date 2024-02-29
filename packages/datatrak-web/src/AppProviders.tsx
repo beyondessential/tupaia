@@ -8,10 +8,11 @@ import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 import { SnackbarProvider } from 'notistack';
+import { Toast } from '@tupaia/ui-components';
 import { theme } from './theme';
-import { Toast } from './components';
-import { errorToast } from './utils';
 import { CurrentUserContextProvider } from './api';
+import { errorToast } from './utils';
+import { SuccessToast } from './components';
 
 const defaultQueryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -54,7 +55,7 @@ export const AppProviders = ({ children, queryClient = defaultQueryClient }: App
             <CssBaseline />
             <SnackbarProvider
               Components={{
-                success: Toast,
+                success: SuccessToast,
                 error: Toast,
                 warning: Toast,
                 info: Toast,

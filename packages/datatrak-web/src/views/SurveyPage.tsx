@@ -12,6 +12,7 @@ import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } fr
 import { SurveyParams } from '../types';
 import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
 import { successToast } from '../utils';
+
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
   display: flex;

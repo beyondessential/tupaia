@@ -5,9 +5,9 @@
 
 import React from 'react';
 import { Link, Typography } from '@material-ui/core';
+import { SpinningLoader } from '@tupaia/ui-components';
 import { SmallModal } from '../../../components';
 import { useRequestDeleteAccount } from '../../../api/mutations';
-import { SpinningLoader } from '@tupaia/ui-components';
 import { successToast } from '../../../utils';
 
 interface ConfirmDeleteModalProps {

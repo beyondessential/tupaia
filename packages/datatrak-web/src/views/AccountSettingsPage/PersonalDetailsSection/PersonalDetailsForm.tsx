@@ -10,8 +10,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { UserAccountDetails } from '../../../types';
-import { successToast } from '../../../utils';
 import { CurrentUserContextType, useCurrentUser, useEditUser } from '../../../api';
+import { successToast } from '../../../utils';
 
 type PersonalDetailsFormFields = Pick<
   UserAccountDetails,

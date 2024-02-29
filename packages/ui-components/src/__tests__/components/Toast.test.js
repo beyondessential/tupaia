@@ -14,28 +14,18 @@ const exampleStringRegex = /success message/i;
 
 describe('toast', () => {
   it('renders', async () => {
-    render(<Toast>{exampleString}</Toast>);
+    render(<Toast message={exampleString} variant="success" />);
 
     expect(screen.getByText(exampleStringRegex)).toBeInTheDocument();
   });
 
   it('disappears when the close button is clicked', async () => {
-    render(<Toast>{exampleString}</Toast>);
+    render(<Toast message={exampleString} variant="success" />);
 
     expect(screen.getByText(exampleStringRegex)).toBeVisible();
 
-    const closeBtn = screen.getByRole('button', { name: /close/i });
+    const closeBtn = screen.getByRole('button', { name: /Close toast message/i });
     userEvent.click(closeBtn);
-
-    await waitFor(() => {
-      expect(screen.queryByText(exampleStringRegex)).not.toBeVisible();
-    });
-  });
-
-  it('disappears when the timeout is set', async () => {
-    render(<Toast timeout={300}>{exampleString}</Toast>);
-
-    expect(screen.getByText(exampleStringRegex)).toBeVisible();
 
     await waitFor(() => {
       expect(screen.queryByText(exampleStringRegex)).not.toBeVisible();

@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Form, FORM_FIELD_VALIDATION, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
-import { errorToast, successToast } from '../../../utils';
 import { ResetPasswordParams, useResetPassword } from '../../../api';
+import { errorToast, successToast } from '../../../utils';
 
 const StyledForm = styled(Form)`
   width: 100%;

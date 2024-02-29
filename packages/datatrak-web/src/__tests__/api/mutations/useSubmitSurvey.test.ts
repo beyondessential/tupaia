@@ -9,9 +9,9 @@ import { rest } from 'msw';
 import { QuestionType } from '@tupaia/types';
 import { useSubmitSurvey } from '../../../api/mutations';
 import { renderMutation } from '../../helpers/render';
-import { successToast } from '../../../utils';
 import { Coconut } from '../../../components';
 import { ROUTES } from '../../../constants';
+import { successToast } from '../../../utils';
 
 jest.mock('../../../api/queries', () => {
   return {
