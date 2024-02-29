@@ -98,7 +98,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
       );
     }
     if (value === null || value === undefined) {
-      return '-';
+      return '—'; // em dash
     }
     return value;
   };
