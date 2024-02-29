@@ -62,12 +62,17 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
   ViewPresentationOptions,
   ChartPresentationOptions,
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
-  VizPeriodGranularity,
   ChartType,
   ChartReport,
   DashboardItemReport,
@@ -78,6 +83,7 @@ export {
   ChartConfigObject,
   ComponentConfig,
   LineChartChartConfig,
+  VizPeriodGranularity,
 } from './models-extra';
 export * from './requests';
 export * from './css';

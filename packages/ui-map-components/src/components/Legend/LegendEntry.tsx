@@ -36,7 +36,7 @@ const Label = styled.div`
 
 interface LegendEntryProps {
   marker: React.ReactNode;
-  label: string;
+  label?: string;
   value: Value;
   dataKey?: string;
   onClick?: LegendProps['setValueHidden'];
