@@ -13,7 +13,12 @@ import {
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import { BaseReport, DashboardItemConfig, VizPeriodGranularity } from '@tupaia/types';
+import {
+  BaseReport,
+  DashboardItemConfig,
+  VizPeriodGranularity,
+  TupaiaWebExportDashboardRequest,
+} from '@tupaia/types';
 import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, Entity } from '../../types';
 import { useProject, useReport } from '../../api/queries';
@@ -143,7 +148,7 @@ export const PDFExportDashboardItem = ({
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
-      ...(config?.presentationOptions || {}),
+      ...presentationOptions,
       ...settings,
     },
   } as DashboardItemConfig;
