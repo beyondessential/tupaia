@@ -33,8 +33,8 @@ describe('FetchReportRoute', () => {
     );
     const report = await models.report.findOne({ code: REPORT.code });
     expect(report.latest_data_parameters).toEqual({
-      projectCode: 'explore',
-      entityCodes: ['TO'],
+      hierarchy: 'explore',
+      organisationUnitCodes: 'TO',
       startDate: '2020-01-01',
       endDate: '2020-31-12',
     });
