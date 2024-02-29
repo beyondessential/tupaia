@@ -7,20 +7,17 @@ import {
   DashboardRelationType as BaseDashboardRelationType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
-
-type DashboardRelationFields = Readonly<{
-  id: string;
-  dashboard_id: string;
-  child_id: string;
-  entity_types: string[];
-  project_codes: string[];
-  permission_groups: string[];
-  sort_order: number;
-}>;
+import { Dashboard, DashboardRelation, Entity, Project } from '@tupaia/types';
 
 export interface DashboardRelationType
-  extends DashboardRelationFields,
+  extends DashboardRelation,
     Omit<BaseDashboardRelationType, 'id'> {}
 
 export interface DashboardRelationModel
-  extends Model<BaseDashboardRelationModel, DashboardRelationFields, DashboardRelationType> {}
+  extends Model<BaseDashboardRelationModel, DashboardRelation, DashboardRelationType> {
+  findDashboardRelationsForEntityAndProject: (
+    dashboardIds: Dashboard['id'][],
+    entityCode: Entity['code'],
+    projectCode: Project['code'],
+  ) => Promise<DashboardRelation[]>;
+}

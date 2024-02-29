@@ -10,9 +10,9 @@ import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { ScaleType } from '@tupaia/types';
 import { resolveSpectrumColour } from '../../utils';
+import { SpectrumLegendProps, SpectrumSeries, Value } from '../../types';
 import { LEGEND_SHADING_ICON, getMarkerForOption } from '../Markers/markerIcons';
 import { LegendEntry } from './LegendEntry';
-import { ScaleTypeLiteral, SpectrumLegendProps, SpectrumSeries, Value } from '../../types';
 
 const FlexCenter = styled(MuiBox)`
   display: flex;
@@ -46,7 +46,7 @@ const LabelRight = styled.div`
 `;
 
 const getSpectrumLabels = (
-  scaleType: ScaleTypeLiteral,
+  scaleType: `${ScaleType}`,
   min: number,
   max: number,
   valueType?: SpectrumSeries['valueType'],
