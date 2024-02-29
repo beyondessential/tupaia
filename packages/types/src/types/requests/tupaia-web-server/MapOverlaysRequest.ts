@@ -4,7 +4,7 @@
  */
 
 import { MapOverlay } from '../../models';
-import { MapOverlayConfig, ReferenceProps } from '../../models-extra';
+import { MapOverlayConfig, ReferenceObject } from '../../models-extra';
 import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {
@@ -23,7 +23,7 @@ export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
   sortOrder?: number | null;
-  info?: { reference?: ReferenceProps };
+  info?: { reference?: ReferenceObject };
 }
 export type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 export interface ResBody {

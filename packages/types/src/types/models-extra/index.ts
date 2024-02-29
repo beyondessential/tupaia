@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export { ReferenceProps, PlaintextReferenceProps, LinkReferenceProps } from './common';
+export { ReferenceObject, PlaintextReferenceProps, LinkReferenceProps } from './common';
 export type {
   ReportConfig,
   StandardReportConfig,
