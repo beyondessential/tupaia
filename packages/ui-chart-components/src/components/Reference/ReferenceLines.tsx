@@ -6,17 +6,16 @@
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
+import { ChartConfigObject, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { BaseChartConfig, PieChartConfig } from '@tupaia/types';
-import { ChartType, DataProps } from '../../types';
+import { CartesianChartViewContent, ViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
-import { ViewContent } from '../../types';
 
 const ReferenceLineLabel = ({
   referenceLineLabel,
   isExporting,
 }: {
-  referenceLineLabel: string;
+  referenceLineLabel?: string;
   isExporting?: boolean;
 }) => {
   if (referenceLineLabel === undefined) return undefined;
@@ -37,29 +36,23 @@ const DEFAULT_Y_AXIS = {
   },
 };
 
-const orientationToYAxisId = (orientation: 'left' | 'right'): number =>
-  Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
+const orientationToYAxisId = (orientation?: 'left' | 'right'): number =>
+  (orientation && Y_AXIS_IDS[orientation]) || DEFAULT_Y_AXIS.id;
 
-interface ChartConfig extends BaseChartConfig {
-  referenceValue?: string | number;
-  yAxisOrientation?: string | number;
-  referenceLabel?: string | number;
-}
-
-function isChartConfig(config: ChartConfig | {}): config is ChartConfig {
-  return (config as ChartConfig).referenceValue !== undefined;
+function hasReferenceValue(chartConfig?: ChartConfigObject) {
+  return chartConfig && chartConfig?.referenceValue !== undefined;
 }
 
 const ValueReferenceLine = ({
   viewContent,
   isExporting,
 }: {
-  viewContent: { chartConfig: ChartConfig };
+  viewContent: CartesianChartViewContent;
   isExporting?: boolean;
 }) => {
-  const { chartConfig = {} } = viewContent;
+  const { chartConfig } = viewContent;
 
-  if (!isChartConfig(chartConfig)) {
+  if (!chartConfig || !hasReferenceValue(chartConfig)) {
     return [];
   }
 
@@ -74,25 +67,29 @@ const ValueReferenceLine = ({
 
   return referenceLines.map(referenceLine => (
     <ReferenceLine
+      key={referenceLine.key}
+      y={referenceLine.y}
+      yAxisId={referenceLine.yAxisId}
       stroke={isExporting ? '#000000' : '#ffffff'}
       strokeDasharray="3 3"
       label={ReferenceLineLabel({
         referenceLineLabel: referenceLine.referenceLineLabel,
         isExporting,
       })}
-      {...referenceLine}
     />
   ));
 };
 
 interface ReferenceLineProps {
-  viewContent: ViewContent;
+  viewContent: CartesianChartViewContent;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
 
 const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
-  const { valueType, data, presentationOptions } = viewContent;
+  const { valueType, data } = viewContent;
+  const presentationOptions =
+    'presentationOptions' in viewContent && viewContent.presentationOptions;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
@@ -116,9 +113,15 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
 };
 
 const BarReferenceLine = ({ viewContent, isExporting, isEnlarged }: ReferenceLineProps) => {
-  const { referenceLines } = viewContent.presentationOptions || {};
-  if (referenceLines) {
-    return ValueReferenceLine({ viewContent: { chartConfig: { ...referenceLines } }, isExporting });
+  if (
+    viewContent?.presentationOptions &&
+    'referenceLines' in viewContent.presentationOptions &&
+    viewContent?.presentationOptions.referenceLines
+  ) {
+    return ValueReferenceLine({
+      viewContent,
+      isExporting,
+    });
   }
   return AverageReferenceLine({ viewContent, isExporting, isEnlarged });
 };

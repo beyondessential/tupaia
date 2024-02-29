@@ -11,6 +11,7 @@ import {
   SurveyScreenComponentConfig,
 } from '@tupaia/types';
 import { buildUpsertEntity } from './buildUpsertEntity';
+import { DatatrakWebServerModelRegistry } from '../../types';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
@@ -18,7 +19,6 @@ type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
   recent_entities: string[];
 };
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
-type AutocompleteAnswerT = DatatrakWebSubmitSurveyRequest.AutocompleteAnswer;
 type FileUploadAnswerT = DatatrakWebSubmitSurveyRequest.FileUploadAnswer;
 
 export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => {
@@ -33,8 +33,8 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
+  models: DatatrakWebServerModelRegistry,
   surveyResponseData: SurveyRequestT,
-  findEntityById: (id: string) => Promise<Entity>,
 ) => {
   const {
     surveyId,
@@ -68,7 +68,7 @@ export const processSurveyResponse = async (
   const answersToSubmit = [] as Record<string, unknown>[];
 
   for (const question of questions) {
-    const { questionId, type } = question;
+    const { questionId, code: questionCode, type, optionSetId } = question;
     let answer = answers[questionId] as AnswerT | Entity;
     const config = question?.config as SurveyScreenComponentConfig;
 
@@ -76,11 +76,11 @@ export const processSurveyResponse = async (
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (isUpsertEntityQuestion(config)) {
         const entityObj = (await buildUpsertEntity(
+          models,
           config,
           questionId,
           answers,
           countryId,
-          findEntityById,
         )) as Entity;
         if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
         answer = entityObj?.id;
@@ -129,18 +129,33 @@ export const processSurveyResponse = async (
         break;
       }
       case QuestionType.Autocomplete: {
+        if (!optionSetId) {
+          throw new Error(`Autocomplete question ${questionCode} does not have an optionSetId`);
+        }
+
+        if (typeof answer !== 'string') {
+          throw new Error(`Autocomplete answers must be a plain string value, got: ${answer}`);
+        }
+
+        const isNew = (await models.option.findOne({ option_set_id: optionSetId, value: answer }))
+          ? false
+          : true;
+
         // if the answer is a new option, add it to the options_created array to be added to the DB
-        const { isNew, value, label, optionSetId } = answer as AutocompleteAnswerT;
         if (isNew) {
+          if (!config.autocomplete?.createNew) {
+            throw new Error(`Cannot create new options for question: ${questionCode}`);
+          }
+
           surveyResponse.options_created!.push({
             option_set_id: optionSetId,
-            value,
-            label,
+            value: answer,
+            label: answer,
           });
         }
         answersToSubmit.push({
           ...answerObject,
-          body: value,
+          body: answer,
         });
         break;
       }

@@ -3,36 +3,40 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-import { BaseChartConfig } from '@tupaia/types';
+import {
+  BaseChartConfig,
+  ChartConfigObject,
+  ChartConfigT,
+  ChartData,
+  ChartType,
+} from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { ChartType, DataProps, LooseObject, ViewContent } from '../types';
+import { LooseObject, ViewContent } from '../types';
 import { isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
 
-export const getLayeredOpacity = (
-  numberOfLayers: number,
-  index: number,
-  ascending: boolean = false,
-) => (ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers);
-
-interface ChartConfig extends BaseChartConfig {
-  [ADD_TO_ALL_KEY]?: any;
-}
+export const getLayeredOpacity = (numberOfLayers: number, index: number, ascending = false) =>
+  ascending ? (index + 1) / numberOfLayers : 1 - index / numberOfLayers;
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
-  const {
-    chartType,
-    chartConfig = {} as ChartConfig,
-    data,
-    colorPalette: paletteName,
-  } = viewContent;
-  const { [ADD_TO_ALL_KEY]: configForAllKeys, name, ...restOfConfig } = chartConfig;
+export const parseChartConfig = (viewContent: ViewContent) => {
+  const { chartType, data, colorPalette: paletteName } = viewContent;
+  if (!('chartConfig' in viewContent) || !viewContent.chartConfig) {
+    return {};
+  }
+
+  const { chartConfig } = viewContent;
+  const configForAllKeys = ADD_TO_ALL_KEY in chartConfig ? chartConfig[ADD_TO_ALL_KEY] : null;
+
+  // Remove '$all' key and the 'name' from chart config - we can't use a spread here because some types don't have this key, so we need to filter it out and use a type guard above to get the '$all' config
+  const restOfConfig = Object.fromEntries(
+    Object.entries(chartConfig).filter(([key]) => key !== ADD_TO_ALL_KEY && key !== 'name'),
+  );
 
   const baseConfig = configForAllKeys
-    ? createDynamicConfig(restOfConfig as BaseChartConfig, configForAllKeys, data)
+    ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
   const addDefaultColors = (config: any) =>
@@ -40,10 +44,13 @@ export const parseChartConfig = (viewContent: ViewContent<ChartConfig>) => {
 
   const chartConfigs = [baseConfig];
 
-  return chartConfigs
+  const parsedChartConfig = chartConfigs
     .map(sortChartConfigByLegendOrder)
     .map(addDefaultColors)
-    .map(setOpacityValues)[0]; // must remove from array after mapping
+    .map(setOpacityValues)[0];
+
+  // Forced to explicitly cast here as the types in this function are too messy to manage
+  return parsedChartConfig;
 };
 
 /**
@@ -61,7 +68,7 @@ const setOpacityValues = (chartConfig: LooseObject) => {
     const newOpacity = getLayeredOpacity(array.length, index, opacity === 'ascending');
     newConfig[key] = { ...configItem, opacity: newOpacity };
   });
-  return newConfig as BaseChartConfig;
+  return newConfig as ChartConfigT;
 };
 
 // Adds default colors for every element with no color defined
@@ -128,18 +135,22 @@ const sortChartConfigByLegendOrder = (chartConfig: LooseObject) => {
 };
 
 const createDynamicConfig = (
-  chartConfig: BaseChartConfig,
-  dynamicChartConfig: BaseChartConfig,
-  data: DataProps[],
+  chartConfig: ChartConfigObject,
+  configForAllKeys: ChartConfigObject,
+  data: ChartData[],
 ) => {
   // Just find keys. Doesn't include keys which end in _metadata.
-  const dataKeys = data.map(dataPoint => Object.keys(dataPoint).filter(isDataKey)).flat();
+  const dataKeys = data.map(dataKey => Object.keys(dataKey).filter(isDataKey)).flat();
   const keys = new Set(dataKeys);
 
   // Add config to each key
   const newChartConfig: LooseObject = {};
   keys.forEach(key => {
-    newChartConfig[key] = { ...dynamicChartConfig, ...chartConfig[key as keyof BaseChartConfig] };
+    const keyConfig = chartConfig[key as keyof ChartConfigObject] || {};
+    newChartConfig[key] = {
+      ...configForAllKeys,
+      ...keyConfig,
+    };
   });
   return newChartConfig;
 };

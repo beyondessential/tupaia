@@ -1,50 +1,43 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { Project } from '@tupaia/types';
+import { UserAccountDetails } from '../../types';
 import { put } from '../api';
-import { Entity } from '../../types';
 
-type UserPreferences = {
-  projectId?: Project['id'];
-  countryId?: Entity['id'];
-  deleteAccountRequested?: boolean;
-};
+/**
+ * Converts a string from camel case to snake case.
+ *
+ * @remarks
+ * Ignores whitespace characters, including wordspaces and newlines. Does not handle fully-
+ * uppercase acronyms/initialisms. e.g. 'HTTPRequest' -> 'h_t_t_p_request'.
+ */
+function camelToSnakeCase(camelCaseString: string): string {
+  return camelCaseString
+    ?.split(/\.?(?=[A-Z])/)
+    .join('_')
+    .toLowerCase();
+}
 
 export const useEditUser = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
-  return useMutation<any, Error, UserPreferences, unknown>(
-    async ({ projectId, countryId, deleteAccountRequested }: UserPreferences) => {
-      if (!projectId && !countryId && deleteAccountRequested === undefined) {
-        return;
+  return useMutation<any, Error, UserAccountDetails, unknown>(
+    async (userDetails: UserAccountDetails) => {
+      if (!userDetails) return;
+
+      // `mobile_number` field in database is nullable; don't just store an empty string
+      if (!userDetails?.mobileNumber) {
+        userDetails.mobileNumber = null;
       }
 
-      const updates = {} as {
-        project_id?: Project['id'];
-        country_id?: Entity['id'];
-        delete_account_requested?: boolean;
-        recent_entities?: Record<string, unknown>;
-      };
+      const updates = Object.fromEntries(
+        Object.entries(userDetails).map(([key, value]) => [camelToSnakeCase(key), value]),
+      );
 
-      if (projectId) {
-        updates.project_id = projectId;
-        updates.recent_entities = {}; // Clear recent entities when changing project
-      }
-
-      if (countryId) {
-        updates.country_id = countryId;
-      }
-
-      if (deleteAccountRequested !== undefined) {
-        updates.delete_account_requested = deleteAccountRequested;
-      }
-      await put('me', {
-        data: updates,
-      });
+      await put('me', { data: updates });
     },
     {
       onSuccess: (_, variables) => {
