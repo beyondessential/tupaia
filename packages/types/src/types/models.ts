@@ -353,6 +353,7 @@ export interface DashboardMailingListEntryUpdate {
   'unsubscribed_time'?: Date | null;
 }
 export interface DashboardRelation {
+  'attributes_filter': any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -362,6 +363,7 @@ export interface DashboardRelation {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationCreate {
+  'attributes_filter'?: any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -370,6 +372,7 @@ export interface DashboardRelationCreate {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationUpdate {
+  'attributes_filter'?: any;
   'child_id'?: string;
   'dashboard_id'?: string;
   'entity_types'?: any;
@@ -1341,20 +1344,17 @@ export interface Report {
   'code': string;
   'config': ReportConfig;
   'id': string;
-  'latest_data_parameters': any;
   'permission_group_id': string;
 }
 export interface ReportCreate {
   'code': string;
   'config': ReportConfig;
-  'latest_data_parameters'?: any;
   'permission_group_id': string;
 }
 export interface ReportUpdate {
   'code'?: string;
   'config'?: ReportConfig;
   'id'?: string;
-  'latest_data_parameters'?: any;
   'permission_group_id'?: string;
 }
 export interface Setting {

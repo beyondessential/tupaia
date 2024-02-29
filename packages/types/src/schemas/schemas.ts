@@ -56384,6 +56384,7 @@ export const DashboardMailingListEntryUpdateSchema = {
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -56412,6 +56413,7 @@ export const DashboardRelationSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes_filter",
 		"child_id",
 		"dashboard_id",
 		"entity_types",
@@ -56424,6 +56426,7 @@ export const DashboardRelationSchema = {
 export const DashboardRelationCreateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -56460,6 +56463,7 @@ export const DashboardRelationCreateSchema = {
 export const DashboardRelationUpdateSchema = {
 	"type": "object",
 	"properties": {
+		"attributes_filter": {},
 		"child_id": {
 			"type": "string"
 		},
@@ -68127,7 +68131,6 @@ export const ReportSchema = {
 		"id": {
 			"type": "string"
 		},
-		"latest_data_parameters": {},
 		"permission_group_id": {
 			"type": "string"
 		}
@@ -68137,7 +68140,6 @@ export const ReportSchema = {
 		"code",
 		"config",
 		"id",
-		"latest_data_parameters",
 		"permission_group_id"
 	]
 } 
@@ -68191,7 +68193,6 @@ export const ReportCreateSchema = {
 				}
 			]
 		},
-		"latest_data_parameters": {},
 		"permission_group_id": {
 			"type": "string"
 		}
@@ -68256,7 +68257,6 @@ export const ReportUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"latest_data_parameters": {},
 		"permission_group_id": {
 			"type": "string"
 		}
