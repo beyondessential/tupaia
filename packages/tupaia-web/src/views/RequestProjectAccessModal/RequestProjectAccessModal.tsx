@@ -48,9 +48,11 @@ export const RequestProjectAccessModal = () => {
 
   // Get the project code from the URL search params, or from the URL params if not otherwise set
   const altProjectCode = urlSearchParams.get(URL_SEARCH_PARAMS.PROJECT);
-  const projectCode = altProjectCode || params?.projectCode;
+  const requestingProjectCode = altProjectCode || params?.projectCode;
 
-  const { data: project, isLoading } = useProject(projectCode!);
+  const { data: requestingProject, isLoading } = useProject(requestingProjectCode!);
+  // the project loaded behind the modal, based on the url project code
+  const { data: backgroundProject } = useProject(params?.projectCode);
 
   useEffect(() => {
     // if user is not already logged in, redirect to login page first, and then redirect back to this page
@@ -69,10 +71,10 @@ export const RequestProjectAccessModal = () => {
       );
     };
     checkLogin();
-  }, [isLoggedIn, isLoadingUser, isFetching, project]);
+  }, [isLoggedIn, isLoadingUser, isFetching, requestingProject]);
 
   const { data: countries = [], isFetching: isLoadingCountryAccessList } =
-    useProjectCountryAccessList(projectCode!);
+    useProjectCountryAccessList(requestingProjectCode!);
 
   const countriesWithAccess = countries?.filter((c: CountryAccessListItem) => c.hasAccess);
 
@@ -92,26 +94,33 @@ export const RequestProjectAccessModal = () => {
   // Show the requested countries if there are any, and the user has not opted to request additional countries
   const showRequestedCountries = requestedCountries?.length > 0 && !requestAdditionalCountries;
 
+  // if the project code is the same as the selected project and the user has access, then we are not returning to the projects page, we just want to close the modal
+  const isReturningToProjects = !(
+    (!altProjectCode || altProjectCode === params?.projectCode) &&
+    requestingProject?.hasAccess
+  );
+
   const getBaseCloseLocation = () => {
-    // if the user has accessed a forbidden entity directly, either direct them to the home entity if they have any access, or to the default URL + projects modal if they don't have project access
-    if (!altProjectCode || altProjectCode === params?.projectCode) {
-      if (project?.hasAccess)
-        return {
-          ...location,
-          pathname: generatePath(ROUTE_STRUCTURE, {
-            projectCode: project?.code,
-            entityCode: project?.homeEntityCode,
-            dashboardName: project?.dashboardGroupName as string | undefined,
-          }),
-        };
-      else
-        return {
-          ...location,
-          pathname: DEFAULT_URL,
-          hash: MODAL_ROUTES.PROJECTS,
-        };
+    // if the user has accessed the request access modal and does have access to that project in some way, then return to the project. This would happen if the user went directly to the project with the request access modal details in the url
+    if (
+      (!altProjectCode || altProjectCode === params?.projectCode) &&
+      requestingProject?.hasAccess
+    ) {
+      return {
+        ...location,
+        pathname: generatePath(ROUTE_STRUCTURE, {
+          projectCode: requestingProject?.code,
+          entityCode: requestingProject?.homeEntityCode,
+          dashboardName: requestingProject?.dashboardGroupName as string | undefined,
+        }),
+      };
     }
-    return location;
+    return {
+      ...location,
+      // if the user has access to the project in the background, then return to the project with the project modal open, otherwise return to the default url with the project modal open
+      pathname: backgroundProject?.hasAccess ? location.pathname : DEFAULT_URL,
+      hash: MODAL_ROUTES.PROJECTS,
+    };
   };
 
   const getCloseLocation = () => {
@@ -134,8 +143,8 @@ export const RequestProjectAccessModal = () => {
       <ModalBody>
         <LoadingScreen isLoading={isLoading} />
         <ModalHeader isLandingPage={isLandingPage} baseCloseLocation={closeLocation} />
-        <ProjectHero project={project} />
-        <ProjectDetails project={project} />
+        <ProjectHero project={requestingProject} />
+        <ProjectDetails project={requestingProject} />
         {isLoadingCountryAccessList ? (
           <SpinningLoader />
         ) : (
@@ -153,14 +162,10 @@ export const RequestProjectAccessModal = () => {
             {showForm && (
               <ProjectAccessForm
                 availableCountries={availableCountries}
-                projectName={project?.name}
+                projectName={requestingProject?.name}
                 isLandingPage={isLandingPage}
                 onCloseModal={onCloseModal}
-                closeButtonText={
-                  projectCode === project?.code && project?.hasAccess
-                    ? 'Close'
-                    : 'Return to projects'
-                }
+                closeButtonText={isReturningToProjects ? 'Return to projects' : 'Close'}
               />
             )}
           </>
