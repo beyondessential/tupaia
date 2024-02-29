@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import JSONEditor from 'jsoneditor/dist/jsoneditor';
-import 'jsoneditor/dist/jsoneditor.css'; 
+import 'jsoneditor/dist/jsoneditor.css';
 import Ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-github';
@@ -72,7 +72,8 @@ modes.allValues = values;
  * @property {object} [htmlElementProps] - html element custom props
  * @property {Function} [innerRef] - callback to get html element reference
  * @property {boolean} [sortObjectKeys=false] If true, object keys in 'tree',
- * 'view' or 'form' mode list be listed alphabetically instead by their insertion order..
+ * 'view' or 'form' mode list be listed alphabetically instead by their insertion order.
+ * @property {Function} [editorRef] - callback to get the json editor instance, to programmatically change values, for example
  */
 export class JsonEditor extends Component {
   constructor(props) {
@@ -89,15 +90,8 @@ export class JsonEditor extends Component {
   }
 
   componentDidMount() {
-    const {
-      allowedModes,
-      innerRef,
-      htmlElementProps,
-      tag,
-      onChange,
-      onInvalidChange,
-      ...rest
-    } = this.props;
+    const { allowedModes, innerRef, htmlElementProps, tag, onChange, onInvalidChange, ...rest } =
+      this.props;
 
     this.createEditor({
       ...rest,
@@ -117,6 +111,7 @@ export class JsonEditor extends Component {
     tag,
     onChange,
     onInvalidChange,
+    value,
     ...rest
   }) {
     if (this.jsonEditor) {
@@ -165,6 +160,10 @@ export class JsonEditor extends Component {
       onChange: this.handleChange,
       ...rest,
     });
+
+    if (this.props.editorRef) {
+      this.props.editorRef(this.jsonEditor);
+    }
 
     this.jsonEditor.set(value);
   }
@@ -257,6 +256,7 @@ JsonEditor.propTypes = {
   tag: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
   htmlElementProps: PropTypes.object,
   innerRef: PropTypes.func,
+  editorRef: PropTypes.func,
 };
 
 JsonEditor.defaultProps = {
@@ -281,6 +281,7 @@ JsonEditor.defaultProps = {
   tag: 'div',
   htmlElementProps: undefined,
   innerRef: undefined,
+  editorRef: undefined,
 };
 
 /**
