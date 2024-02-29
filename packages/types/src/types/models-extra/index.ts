@@ -55,7 +55,6 @@ export {
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
-  VizPeriodGranularity,
   ChartType,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
@@ -92,3 +91,4 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
+export { VizPeriodGranularity } from './common';
