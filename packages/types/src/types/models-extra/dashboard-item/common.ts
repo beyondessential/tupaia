@@ -11,12 +11,7 @@ export type BaseConfig = {
    */
   description?: string;
 
-  /**
-   * @description A url to an image to be used when a viz is collapsed. Some vizes display small, others display a placeholder.
-   */
-  placeholder?: string;
-
-  periodGranularity?: VizPeriodGranularity;
+  periodGranularity?: `${VizPeriodGranularity}`;
 
   defaultTimePeriod?: DefaultTimePeriod;
 
@@ -28,7 +23,12 @@ export type BaseConfig = {
   /**
    * @description Extra config options for exporting
    */
-  exportConfig?: any;
+  exportConfig?: {
+    /**
+     * @description Sets the header for the data element in xls exports
+     */
+    dataElementHeader?: string;
+  };
 
   /**
    * @description Message which shows if no data is found
@@ -73,11 +73,6 @@ export type BaseConfig = {
    * @description If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. "Requires mSupply".
    */
   source?: 'dhis' | 'mSupply' | string;
-
-  /**
-   * @description If specified will only show this viz if the conditions are met against the current Entity.
-   */
-  displayOnEntityConditions?: DisplayOnEntityConditions;
 
   /**
    * @description Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'
@@ -151,18 +146,6 @@ enum OffsetModifier {
   start_of = 'start_of',
   end_of = 'end_of',
 }
-
-type DisplayOnEntityConditions =
-  | DisplayOnEntityAttributeConditions
-  | DisplayOnEntityOtherConditions;
-type DisplayOnEntityAttributeConditions = {
-  attributes: {
-    [key: string]: string | number | boolean;
-  };
-};
-type DisplayOnEntityOtherConditions = {
-  [key: string]: string | number | boolean;
-};
 
 export type ExportPresentationOptions = {
   exportWithLabels?: boolean;

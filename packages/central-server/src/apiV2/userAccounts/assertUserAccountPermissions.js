@@ -5,11 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 import { QUERY_CONJUNCTIONS, SqlQuery } from '@tupaia/database';
-import {
-  hasBESAdminAccess,
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  LESMIS_ADMIN_PERMISSION_GROUP,
-} from '../../permissions';
+import { hasBESAdminAccess, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 export const assertUserAccountPermissions = async (accessPolicy, models, userAccountId) => {
   const userAccount = await models.user.findById(userAccountId);
@@ -47,10 +43,9 @@ export const assertUserAccountPermissions = async (accessPolicy, models, userAcc
 };
 
 const buildUserAccountRawSqlFilter = accessPolicy => {
-  const accessibleCountryCodes = [
-    ...accessPolicy.getEntitiesAllowed(TUPAIA_ADMIN_PANEL_PERMISSION_GROUP),
-    ...accessPolicy.getEntitiesAllowed(LESMIS_ADMIN_PERMISSION_GROUP),
-  ];
+  const accessibleCountryCodes = accessPolicy.getEntitiesAllowed(
+    TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  );
   const permissionsByCountryCode = accessibleCountryCodes.reduce(
     (obj, countryCode) => ({
       ...obj,

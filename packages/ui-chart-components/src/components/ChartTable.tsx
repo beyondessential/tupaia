@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiTableContainer from '@material-ui/core/TableContainer';
 import { DataTable, NoData } from '@tupaia/ui-components';
-import { ViewContent } from '../types';
+import { ChartViewContent } from '../types';
 import { getChartTableData, getIsChartData } from '../utils';
 
 const TableContainer = styled(MuiTableContainer)`
@@ -14,7 +14,7 @@ const TableContainer = styled(MuiTableContainer)`
 `;
 
 interface ChartTableProps {
-  viewContent: ViewContent;
+  viewContent: ChartViewContent;
   className?: string;
 }
 
