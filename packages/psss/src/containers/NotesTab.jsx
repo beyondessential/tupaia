@@ -12,9 +12,8 @@ import {
   UserMessage,
   UserMessageHeader,
   CardTabPanel,
-  Toast,
 } from '@tupaia/ui-components';
-import { ComingSoon, FetchLoader } from '../components';
+import { ComingSoon, FetchLoader, Toast } from '../components';
 import { createNote, updateNote, deleteNote } from '../api';
 import * as COLORS from '../constants/colors';
 
@@ -26,14 +25,6 @@ const Container = styled.div`
 
 const StyledUserMessage = styled(UserMessage)`
   margin-bottom: 1.5rem;
-`;
-
-const PositionedToast = styled(Toast)`
-  position: absolute;
-  bottom: 100%;
-  left: 1.25rem;
-  right: 1.25rem;
-  margin-bottom: 1.25rem;
 `;
 
 const GreySection = styled.div`
@@ -88,13 +79,11 @@ export const NotesTab = ({ state }) => {
         </FetchLoader>
       </CardTabPanel>
       <GreySection>
-        {status === STATUS.ERROR && (
-          <PositionedToast severity="error">A Server Error has occurred</PositionedToast>
-        )}
+        {status === STATUS.ERROR && <Toast severity="error">A Server Error has occurred</Toast>}
         {status === STATUS.SUCCESS && (
-          <PositionedToast severity="success" timeout={3000}>
+          <Toast severity="success" timeout={3000}>
             Note Successfully added
-          </PositionedToast>
+          </Toast>
         )}
         <form onSubmit={handleSubmit(handleSubmitNote)}>
           <TextField
