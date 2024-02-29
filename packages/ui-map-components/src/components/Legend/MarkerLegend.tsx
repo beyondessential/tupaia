@@ -9,6 +9,7 @@ import { useTheme } from '@material-ui/core/styles';
 import MuiBox from '@material-ui/core/Box';
 import { IconKey } from '@tupaia/types';
 import { UNKNOWN_COLOR } from '../../constants';
+import { SeriesValue, MarkerLegendProps, MarkerSeries, Value } from '../../types';
 import {
   DEFAULT_ICON,
   HIDDEN_ICON,
@@ -25,7 +26,6 @@ import {
   MEASURE_VALUE_OTHER,
 } from '../../utils';
 import { LegendEntry } from './LegendEntry';
-import { SeriesValue, MarkerLegendProps, MarkerSeries, Value } from '../../types';
 
 const Container = styled(MuiBox)`
   display: flex;
@@ -118,7 +118,8 @@ export const MarkerLegend = React.memo(
     hasRadiusLayer,
     hasColorLayer,
   }: MarkerLegendProps) => {
-    const { type, values, key: dataKey, valueMapping, icon } = series;
+    const { type, values, key: dataKey, valueMapping } = series;
+    const icon = 'icon' in series ? series.icon : null;
 
     const keys = values
       .filter(v => !v.hideFromLegend)
