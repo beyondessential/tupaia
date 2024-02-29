@@ -50,6 +50,7 @@ export const DateQuestion = ({
   return (
     <DatePicker
       onChange={onChange}
+      format="P" // locale date format
       value={value}
       label={label}
       id={id}

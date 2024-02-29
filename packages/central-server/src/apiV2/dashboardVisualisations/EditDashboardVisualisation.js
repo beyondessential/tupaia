@@ -4,7 +4,11 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
+import {
+  ObjectValidator,
+  constructRecordExistsWithCode,
+  constructRecordExistsWithId,
+} from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
 import {
@@ -69,12 +73,21 @@ export class EditDashboardVisualisation extends EditHandler {
   }
 
   async validateRecordExists() {
+    const { legacy } = this.updatedFields.dashboardItem;
     const validationCriteria = {
       id: [constructRecordExistsWithId(this.database, TYPES.DASHBOARD_ITEM)],
     };
 
+    const validationData = { id: this.recordId };
+
+    // if not a legacy dashboard item, check that the report exists. If it's a legacy report, sometimes there are cases where the report won't exist, e.g. in the case of component type dashboard items
+    if (!legacy) {
+      validationCriteria.code = [constructRecordExistsWithCode(this.models.report)]; // check that a record with the same code exists
+      validationData.code = this.updatedFields.dashboardItem.code;
+    }
+
     const validator = new ObjectValidator(validationCriteria);
-    return validator.validate({ id: this.recordId }); // Will throw an error if not valid
+    return validator.validate(validationData); // Will throw an error if not valid
   }
 
   async updateDashboardItem(transactingModels, dashboardItem, dashboardItemRecord) {

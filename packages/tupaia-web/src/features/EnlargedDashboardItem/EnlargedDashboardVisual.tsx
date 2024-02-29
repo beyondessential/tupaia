@@ -51,8 +51,10 @@ const TitleWrapper = styled(FlexColumn)`
 const Subheading = styled(Typography).attrs({
   variant: 'h3',
 })`
+  color: ${({ theme }) => theme.palette.text.secondary};
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 `;
 
 const ContentWrapper = styled.div`
@@ -65,8 +67,7 @@ const ContentWrapper = styled.div`
 const ExportDate = styled(Typography)`
   color: #333333;
   font-size: 0.75rem;
-  padding-top: 1rem;
-  padding-bottom: 0.3rem;
+  padding-block: 1rem 0.3rem;
 `;
 interface EnlargedDashboardVisualProps {
   entityName?: Entity['name'];
@@ -115,6 +116,32 @@ export const EnlargedDashboardVisual = ({
 
   // today's date for export
   const date = String(moment());
+
+  const getMergedConfig = () => {
+    // gauge charts don't have presentation options
+    if (config?.type !== 'chart' || config?.chartType === 'gauge') return config;
+    // only apply these changes to chart types, as they are not relevant to other types
+    if ('presentationOptions' in currentDashboardItem?.config) {
+      return {
+        ...config,
+        presentationOptions: {
+          ...config?.presentationOptions,
+          exportWithLabels,
+          exportWithTable,
+        },
+      };
+    }
+    return {
+      ...config,
+      presentationOptions: {
+        exportWithLabels,
+        exportWithTable,
+      },
+    };
+  };
+
+  const mergedConfig = getMergedConfig();
+
   return (
     <Container $isExportMode={isExportMode}>
       <TitleWrapper>
@@ -144,14 +171,7 @@ export const EnlargedDashboardVisual = ({
             isEnlarged: true,
             isExport: isPreview,
             reportCode: currentDashboardItem?.reportCode,
-            config: {
-              ...currentDashboardItem?.config,
-              presentationOptions: {
-                ...currentDashboardItem?.config?.presentationOptions,
-                exportWithLabels,
-                exportWithTable,
-              },
-            },
+            config: mergedConfig,
           }}
         >
           <DashboardItemContent />

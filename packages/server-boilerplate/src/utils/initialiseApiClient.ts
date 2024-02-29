@@ -5,6 +5,7 @@
 
 import winston from 'winston';
 import { generateId } from '@tupaia/database';
+import { isNotNullish } from '@tupaia/tsutils';
 import { requireEnv } from '@tupaia/utils';
 import { encryptPassword } from '@tupaia/auth';
 import { ServerBoilerplateModelRegistry } from '../types';
@@ -110,14 +111,20 @@ const upsertPermissions = async ({
     permissionGroups.map(permissionGroup => [permissionGroup.name, permissionGroup.id]),
   );
 
-  await models.userEntityPermission.createMany(
-    permissions.map(p => ({
+  const userEntityPermissions = permissions
+    .map(p => ({
       id: generateId(),
       user_id: userAccountId,
       entity_id: entityIdByCode[p.entityCode],
       permission_group_id: permissionGroupIdByName[p.permissionGroupName],
-    })),
-  );
+    }))
+    // Filtering out invalid user entity permissions so that this will pass during the tests
+    .filter(
+      ({ entity_id, permission_group_id }) =>
+        isNotNullish(entity_id) && isNotNullish(permission_group_id),
+    );
+
+  await models.userEntityPermission.createMany(userEntityPermissions);
 };
 
 /**

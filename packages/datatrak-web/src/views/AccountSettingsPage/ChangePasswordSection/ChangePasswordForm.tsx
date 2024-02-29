@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { Form, FormInput, TextField } from '@tupaia/ui-components';
+import { Form, FORM_FIELD_VALIDATION, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { ResetPasswordParams, useResetPassword } from '../../../api';
@@ -88,7 +88,7 @@ export const ChangePasswordForm = () => {
     onSuccess: response => successToast(response.message),
   });
 
-  const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting;
+  const formIsInsubmissible = isValidating || !isValid || isSubmitting;
 
   return (
     <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
@@ -109,7 +109,7 @@ export const ChangePasswordForm = () => {
           inputProps={{ enterKeyHint: 'next' }}
           label="New password"
           name="newPassword"
-          options={{ minLength: { value: 9, message: 'Must be over 8 characters long' } }}
+          options={FORM_FIELD_VALIDATION.PASSWORD}
           placeholder="New password"
           required
           type="password"
@@ -128,7 +128,7 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledButton type="submit" disabled={submissionShouldBeDisabled} fullWidth>
+        <StyledButton type="submit" disabled={formIsInsubmissible} fullWidth>
           {isSubmitting ? 'Changing' : 'Change password'}
         </StyledButton>
       </StyledFieldset>

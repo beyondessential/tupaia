@@ -7,8 +7,8 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { useCurrentUser, useCurrentUserSurveyResponses } from '../../api';
+import { displayDate } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
-import { shortDate } from '../../utils';
 import { SectionHeading } from './SectionHeading';
 
 const Container = styled.section`
@@ -69,7 +69,7 @@ export const SurveyResponsesSection = () => {
                     }
                     Icon={SurveyTickIcon}
                   >
-                    {countryName}, {shortDate(dataTime)}
+                    {countryName}, {displayDate(dataTime)}
                   </Tile>
                 ),
               )

@@ -353,6 +353,7 @@ export interface DashboardMailingListEntryUpdate {
   'unsubscribed_time'?: Date | null;
 }
 export interface DashboardRelation {
+  'attributes_filter': any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -362,6 +363,7 @@ export interface DashboardRelation {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationCreate {
+  'attributes_filter'?: any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -370,6 +372,7 @@ export interface DashboardRelationCreate {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationUpdate {
+  'attributes_filter'?: any;
   'child_id'?: string;
   'dashboard_id'?: string;
   'entity_types'?: any;
@@ -1635,21 +1638,21 @@ export interface UserAccountUpdate {
   'verified_email'?: VerifiedEmail | null;
 }
 export interface UserEntityPermission {
-  'entity_id'?: string | null;
+  'entity_id': string;
   'id': string;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'permission_group_id': string;
+  'user_id': string;
 }
 export interface UserEntityPermissionCreate {
-  'entity_id'?: string | null;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'entity_id': string;
+  'permission_group_id': string;
+  'user_id': string;
 }
 export interface UserEntityPermissionUpdate {
-  'entity_id'?: string | null;
+  'entity_id'?: string;
   'id'?: string;
-  'permission_group_id'?: string | null;
-  'user_id'?: string | null;
+  'permission_group_id'?: string;
+  'user_id'?: string;
 }
 export interface UserFavouriteDashboardItem {
   'dashboard_item_id': string;
@@ -1731,6 +1734,7 @@ export enum QuestionType {
 export enum PrimaryPlatform {
   'tupaia' = 'tupaia',
   'lesmis' = 'lesmis',
+  'datatrak' = 'datatrak',
 }
 export enum PeriodGranularity {
   'yearly' = 'yearly',

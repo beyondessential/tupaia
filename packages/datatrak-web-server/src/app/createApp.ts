@@ -76,7 +76,10 @@ export async function createApp() {
     .get<RecentSurveysRequest>('recentSurveys', handleWith(RecentSurveysRoute))
     .get<ActivityFeedRequest>('activityFeed', handleWith(ActivityFeedRoute))
     .get<SingleSurveyResponseRequest>('surveyResponse/:id', handleWith(SingleSurveyResponseRoute))
+    // Forward auth requests to web-config
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
+    .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
+    .use('verifyEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     // Forward everything else to central server
     .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
 

@@ -4,7 +4,7 @@
  */
 
 import { GETHandler } from './GETHandler';
-import { assertAdminPanelAccess, hasTupaiaAdminPanelAccess } from '../permissions';
+import { assertAdminPanelAccess, hasBESAdminAccess } from '../permissions';
 
 export class GETPermissionGroups extends GETHandler {
   permissionsFilteredInternally = true;
@@ -22,7 +22,7 @@ export class GETPermissionGroups extends GETHandler {
   }
 
   async getPermissionsFilter(dbConditions, dbOptions) {
-    if (hasTupaiaAdminPanelAccess(this.accessPolicy)) {
+    if (hasBESAdminAccess(this.accessPolicy)) {
       return { dbConditions, dbOptions };
     }
 

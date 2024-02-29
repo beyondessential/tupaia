@@ -5,9 +5,9 @@
 
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
-import { BaseReport } from '@tupaia/types';
+import { BaseReport, DashboardItemConfig } from '@tupaia/types';
 import { FetchErrorAlert } from '../../components';
-import { DashboardItemReport, DashboardItemConfig } from '../../types';
+import { DashboardItemReport } from '../../types';
 import {
   View,
   Chart,
@@ -30,7 +30,7 @@ const DisplayComponents = {
   NoDataAtLevelDashboard,
 };
 
-const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['type']) => {
+const getHasNoData = (report: DashboardItemReport, type?: DashboardItemConfig['type']) => {
   // If there is no report, if means it is loading or there is an error, which is handled elsewhere
   if (!report) return false;
   if (type === 'view' || type === 'chart') {
@@ -44,9 +44,17 @@ const getHasNoData = (report: DashboardItemReport, type: DashboardItemConfig['ty
 export const DashboardItemContent = () => {
   const { config, report, isExport, isLoading, error, refetch } = useContext(DashboardItemContext);
 
-  const { type, componentName } = config || {};
+  const getComponentKey = () => {
+    if (config?.type === 'component' && config) {
+      const { componentName } = config;
+      if (componentName) {
+        return componentName;
+      }
+    }
+    return config?.type;
+  };
 
-  const componentKey = componentName || type;
+  const componentKey = getComponentKey();
 
   const DisplayComponent = DisplayComponents[componentKey as keyof typeof DisplayComponents];
 
@@ -58,7 +66,7 @@ export const DashboardItemContent = () => {
     return <DashboardItemLoader name={config?.name} isExport={isExport} />;
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = isLoading ? false : getHasNoData(report!, type);
+  const showNoDataMessage = isLoading ? false : getHasNoData(report!, config?.type);
 
   return (
     <>
