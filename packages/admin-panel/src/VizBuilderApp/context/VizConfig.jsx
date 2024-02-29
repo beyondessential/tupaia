@@ -86,7 +86,7 @@ function configReducer(state, action) {
       };
     }
     default:
-      throw new Error(`Expected known type but got “${type}”`);
+      throw new Error(`Expected known type but got ‘${type}’`);
   }
 }
 
@@ -145,7 +145,7 @@ const amendStepsToBaseConfig = visualisation => {
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
   const filteredTransform = Array.isArray(transform)
     ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) =>
-        restOfConfig.alias ? restOfConfig.transform : { ...restOfConfig },
+        restOfConfig.alias ? restOfConfig.transform : restOfConfig,
       )
     : transform;
 
