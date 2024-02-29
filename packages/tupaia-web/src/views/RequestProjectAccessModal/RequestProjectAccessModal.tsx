@@ -101,6 +101,7 @@ export const RequestProjectAccessModal = () => {
   );
 
   const getBaseCloseLocation = () => {
+    if (isLandingPage) return location;
     // if the user has accessed the request access modal and does have access to that project in some way, then return to the project. This would happen if the user went directly to the project with the request access modal details in the url
     if (
       (!altProjectCode || altProjectCode === params?.projectCode) &&
