@@ -56,7 +56,6 @@ export {
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
-  VizPeriodGranularity,
   ChartType,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
@@ -71,6 +70,12 @@ export {
   MeasureType,
   ScaleType,
   MeasureColorScheme,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
 } from './mapOverlay';
 export {
   SurveyScreenComponentConfig,
@@ -87,3 +92,4 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
+export { VizPeriodGranularity } from './common';
