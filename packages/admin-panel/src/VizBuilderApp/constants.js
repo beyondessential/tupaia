@@ -42,7 +42,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'chart',
       chartType: 'pie',
-      name: '',
     },
   },
   LINE_CHART: {
@@ -51,7 +50,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'chart',
       chartType: 'line',
-      name: '',
     },
   },
   BAR_CHART: {
@@ -60,7 +58,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'chart',
       chartType: 'bar',
-      name: '',
     },
   },
   GAUGE_CHART: {
@@ -69,7 +66,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'chart',
       chartType: 'gauge',
-      name: '',
     },
   },
   COMPOSED_CHART: {
@@ -78,7 +74,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'chart',
       chartType: 'composed',
-      name: '',
     },
   },
 
@@ -89,7 +84,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'singleValue',
-      name: '',
     },
   },
   MULTI_VALUE_VIEW: {
@@ -98,7 +92,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'multiValue',
-      name: '',
     },
   },
   MULTI_VALUE_ROW_VIEW: {
@@ -107,7 +100,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'multiValueRow',
-      name: '',
     },
   },
   MULTI_PHOTOGRAPH_VIEW: {
@@ -116,7 +108,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'multiPhotograph',
-      name: '',
     },
   },
   MULTI_SINGLE_VALUE_VALUE: {
@@ -125,7 +116,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'multiSingleValue',
-      name: '',
     },
   },
   SINGLE_DOWNLOAD_LINK_VIEW: {
@@ -134,7 +124,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'singleDownloadLink',
-      name: '',
     },
   },
   DATA_DOWNLOAD_VIEW: {
@@ -143,7 +132,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'dataDownload',
-      name: '',
     },
   },
   SINGLE_DATE_VIEW: {
@@ -152,7 +140,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'singleDate',
-      name: '',
     },
   },
   DOWNLOAD_FILES_VIEW: {
@@ -161,7 +148,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'downloadFiles',
-      name: '',
     },
   },
   QR_CODE_VIEW: {
@@ -170,7 +156,6 @@ export const VIZ_TYPES = {
     initialConfig: {
       type: 'view',
       viewType: 'qrCodeVisual',
-      name: '',
     },
   },
 
@@ -180,7 +165,6 @@ export const VIZ_TYPES = {
     schema: MatrixConfigSchema,
     initialConfig: {
       type: 'matrix',
-      name: '',
     },
   },
 
