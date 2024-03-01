@@ -31,10 +31,10 @@ enum OffsetModifier {
 export type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 /**
- * One of the two shapes which {@link ReferenceObject} can take.
+ * One of the two shapes which {@link ReferenceProps} can take.
  *
  * @see LinkReferenceProps
- * @see ReferenceObject
+ * @see ReferenceProps
  */
 export interface PlaintextReferenceProps {
   text: string;
@@ -43,10 +43,10 @@ export interface PlaintextReferenceProps {
 }
 
 /**
- * One of the two shapes which {@link ReferenceObject} can take.
+ * One of the two shapes which {@link ReferenceProps} can take.
  *
  * @see PlaintextReferenceProps
- * @see ReferenceObject
+ * @see ReferenceProps
  */
 export interface LinkReferenceProps {
   text?: never;
@@ -58,4 +58,4 @@ export interface LinkReferenceProps {
  * Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece
  * of plaintext to display in the tooltip, or a named link; but not both.
  */
-export type ReferenceObject = PlaintextReferenceProps | LinkReferenceProps;
+export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;

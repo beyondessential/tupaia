@@ -4,7 +4,7 @@
  */
 
 import { CssColor } from '../css';
-import { DateOffsetSpec, ReferenceObject, VizPeriodGranularity } from './common';
+import { DateOffsetSpec, ReferenceProps, VizPeriodGranularity } from './common';
 
 /**
  * @description A key that can be used to reference a value in a measureConfig, or to reference all values
@@ -130,7 +130,7 @@ export type BaseMapOverlayConfig = {
   hideFromMenu?: boolean;
   hideFromPopup?: boolean;
   info?: {
-    reference?: ReferenceObject;
+    reference?: ReferenceProps;
   };
   isTimePeriodEditable?: boolean;
   /**

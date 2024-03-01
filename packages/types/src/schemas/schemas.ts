@@ -85,7 +85,7 @@ export const PeriodUnitSchema = {
 } 
 
 export const PlaintextReferencePropsSchema = {
-	"description": "One of the two shapes which {@link ReferenceObject} can take.",
+	"description": "One of the two shapes which {@link ReferenceProps} can take.",
 	"type": "object",
 	"properties": {
 		"text": {
@@ -99,7 +99,7 @@ export const PlaintextReferencePropsSchema = {
 } 
 
 export const LinkReferencePropsSchema = {
-	"description": "One of the two shapes which {@link ReferenceObject} can take.",
+	"description": "One of the two shapes which {@link ReferenceProps} can take.",
 	"type": "object",
 	"properties": {
 		"name": {
@@ -116,11 +116,11 @@ export const LinkReferencePropsSchema = {
 	]
 } 
 
-export const ReferenceObjectSchema = {
+export const ReferencePropsSchema = {
 	"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 	"anyOf": [
 		{
-			"description": "One of the two shapes which {@link ReferenceObject} can take.",
+			"description": "One of the two shapes which {@link ReferenceProps} can take.",
 			"type": "object",
 			"properties": {
 				"text": {
@@ -133,7 +133,7 @@ export const ReferenceObjectSchema = {
 			]
 		},
 		{
-			"description": "One of the two shapes which {@link ReferenceObject} can take.",
+			"description": "One of the two shapes which {@link ReferenceProps} can take.",
 			"type": "object",
 			"properties": {
 				"name": {
@@ -26889,7 +26889,7 @@ export const BaseMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -26902,7 +26902,7 @@ export const BaseMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -27406,7 +27406,7 @@ export const SpectrumMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -27419,7 +27419,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -27950,7 +27950,7 @@ export const IconMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -27963,7 +27963,7 @@ export const IconMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -28495,7 +28495,7 @@ export const RadiusMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -28508,7 +28508,7 @@ export const RadiusMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -29015,7 +29015,7 @@ export const ColorMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -29028,7 +29028,7 @@ export const ColorMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -29550,7 +29550,7 @@ export const ShadingMapOverlayConfigSchema = {
 					"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 					"anyOf": [
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"text": {
@@ -29563,7 +29563,7 @@ export const ShadingMapOverlayConfigSchema = {
 							]
 						},
 						{
-							"description": "One of the two shapes which {@link ReferenceObject} can take.",
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
 							"type": "object",
 							"properties": {
 								"name": {
@@ -30076,7 +30076,7 @@ export const MapOverlayConfigSchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -30089,7 +30089,7 @@ export const MapOverlayConfigSchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -30619,7 +30619,7 @@ export const MapOverlayConfigSchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -30632,7 +30632,7 @@ export const MapOverlayConfigSchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -31163,7 +31163,7 @@ export const MapOverlayConfigSchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -31176,7 +31176,7 @@ export const MapOverlayConfigSchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -31682,7 +31682,7 @@ export const MapOverlayConfigSchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -31695,7 +31695,7 @@ export const MapOverlayConfigSchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -32216,7 +32216,7 @@ export const MapOverlayConfigSchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -32229,7 +32229,7 @@ export const MapOverlayConfigSchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -59350,7 +59350,7 @@ export const MapOverlaySchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -59363,7 +59363,7 @@ export const MapOverlaySchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -59893,7 +59893,7 @@ export const MapOverlaySchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -59906,7 +59906,7 @@ export const MapOverlaySchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -60437,7 +60437,7 @@ export const MapOverlaySchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -60450,7 +60450,7 @@ export const MapOverlaySchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -60956,7 +60956,7 @@ export const MapOverlaySchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -60969,7 +60969,7 @@ export const MapOverlaySchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -61490,7 +61490,7 @@ export const MapOverlaySchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -61503,7 +61503,7 @@ export const MapOverlaySchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -62069,7 +62069,7 @@ export const MapOverlayCreateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -62082,7 +62082,7 @@ export const MapOverlayCreateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -62612,7 +62612,7 @@ export const MapOverlayCreateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -62625,7 +62625,7 @@ export const MapOverlayCreateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -63156,7 +63156,7 @@ export const MapOverlayCreateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -63169,7 +63169,7 @@ export const MapOverlayCreateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -63675,7 +63675,7 @@ export const MapOverlayCreateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -63688,7 +63688,7 @@ export const MapOverlayCreateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -64209,7 +64209,7 @@ export const MapOverlayCreateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -64222,7 +64222,7 @@ export const MapOverlayCreateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -64782,7 +64782,7 @@ export const MapOverlayUpdateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -64795,7 +64795,7 @@ export const MapOverlayUpdateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -65325,7 +65325,7 @@ export const MapOverlayUpdateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -65338,7 +65338,7 @@ export const MapOverlayUpdateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -65869,7 +65869,7 @@ export const MapOverlayUpdateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -65882,7 +65882,7 @@ export const MapOverlayUpdateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -66388,7 +66388,7 @@ export const MapOverlayUpdateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -66401,7 +66401,7 @@ export const MapOverlayUpdateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -66922,7 +66922,7 @@ export const MapOverlayUpdateSchema = {
 									"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 									"anyOf": [
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"text": {
@@ -66935,7 +66935,7 @@ export const MapOverlayUpdateSchema = {
 											]
 										},
 										{
-											"description": "One of the two shapes which {@link ReferenceObject} can take.",
+											"description": "One of the two shapes which {@link ReferenceProps} can take.",
 											"type": "object",
 											"properties": {
 												"name": {
@@ -79160,7 +79160,7 @@ export const TranslatedMapOverlaySchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -79173,7 +79173,7 @@ export const TranslatedMapOverlaySchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -79718,7 +79718,7 @@ export const TranslatedMapOverlaySchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -79731,7 +79731,7 @@ export const TranslatedMapOverlaySchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -80277,7 +80277,7 @@ export const TranslatedMapOverlaySchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -80290,7 +80290,7 @@ export const TranslatedMapOverlaySchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -80811,7 +80811,7 @@ export const TranslatedMapOverlaySchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -80824,7 +80824,7 @@ export const TranslatedMapOverlaySchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {
@@ -81360,7 +81360,7 @@ export const TranslatedMapOverlaySchema = {
 							"description": "Props for the reference prop of the `ReferenceTooltip` ui-component. It can have either a piece\nof plaintext to display in the tooltip, or a named link; but not both.",
 							"anyOf": [
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"text": {
@@ -81373,7 +81373,7 @@ export const TranslatedMapOverlaySchema = {
 									]
 								},
 								{
-									"description": "One of the two shapes which {@link ReferenceObject} can take.",
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
 									"type": "object",
 									"properties": {
 										"name": {

@@ -61,7 +61,7 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
-  ReferenceObject,
+  ReferenceProps,
   PlaintextReferenceProps,
   LinkReferenceProps,
   InlineValue,
