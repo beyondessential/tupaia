@@ -2669,6 +2669,22 @@ export const BaseChartConfigSchema = {
 	]
 } 
 
+export const ReferenceLinesConfigSchema = {
+	"type": "object",
+	"properties": {
+		"referenceValue": {
+			"type": "number"
+		},
+		"referenceLabel": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"referenceValue"
+	]
+} 
+
 export const CartesianChartPresentationOptionsSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -2683,26 +2699,34 @@ export const CartesianChartPresentationOptionsSchema = {
 			"type": "boolean"
 		},
 		"periodTickFormat": {
-			"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+			"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 			"type": "string"
 		},
 		"hideAverage": {
 			"type": "boolean"
+		},
+		"referenceLines": {
+			"type": "object",
+			"properties": {
+				"targetLine": {
+					"type": "object",
+					"properties": {
+						"referenceValue": {
+							"type": "number"
+						},
+						"referenceLabel": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"referenceValue"
+					]
+				}
+			},
+			"additionalProperties": false
 		}
 	}
-} 
-
-export const ReferenceLinesConfigSchema = {
-	"type": "object",
-	"properties": {
-		"referenceValue": {
-			"type": "number"
-		},
-		"referenceLabel": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
 } 
 
 export const KeySchema = {
@@ -2711,15 +2735,8 @@ export const KeySchema = {
 
 export const ChartConfigObjectSchema = {
 	"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"referenceValue": {
-			"type": "number"
-		},
-		"referenceLabel": {
-			"type": "string"
-		},
 		"color": {
 			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
@@ -2865,22 +2882,16 @@ export const ChartConfigObjectSchema = {
 				}
 			]
 		}
-	}
+	},
+	"additionalProperties": false
 } 
 
 export const ChartConfigTSchema = {
 	"type": "object",
 	"additionalProperties": {
 		"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-		"additionalProperties": false,
 		"type": "object",
 		"properties": {
-			"referenceValue": {
-				"type": "number"
-			},
-			"referenceLabel": {
-				"type": "string"
-			},
 			"color": {
 				"description": "A CSS color string e.g. green or #abc123",
 				"type": "string"
@@ -3026,7 +3037,8 @@ export const ChartConfigTSchema = {
 					}
 				]
 			}
-		}
+		},
+		"additionalProperties": false
 	}
 } 
 
@@ -3501,15 +3513,8 @@ export const CartesianChartConfigSchema = {
 			"type": "object",
 			"additionalProperties": {
 				"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"referenceValue": {
-						"type": "number"
-					},
-					"referenceLabel": {
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -3655,7 +3660,8 @@ export const CartesianChartConfigSchema = {
 							}
 						]
 					}
-				}
+				},
+				"additionalProperties": false
 			}
 		},
 		"presentationOptions": {
@@ -3672,11 +3678,32 @@ export const CartesianChartConfigSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
+				},
+				"referenceLines": {
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"type": "number"
+								},
+								"referenceLabel": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
 				}
 			}
 		}
@@ -4123,19 +4150,11 @@ export const BarChartPresentationOptionsSchema = {
 			"type": "boolean"
 		},
 		"periodTickFormat": {
-			"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+			"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 			"type": "string"
 		},
 		"hideAverage": {
 			"type": "boolean"
-		},
-		"color": {
-			"description": "A CSS color string e.g. green or #abc123",
-			"type": "string"
-		},
-		"valueFormat": {
-			"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-			"type": "string"
 		},
 		"referenceLines": {
 			"type": "object",
@@ -4150,10 +4169,21 @@ export const BarChartPresentationOptionsSchema = {
 							"type": "string"
 						}
 					},
-					"additionalProperties": false
+					"additionalProperties": false,
+					"required": [
+						"referenceValue"
+					]
 				}
 			},
 			"additionalProperties": false
+		},
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
+		},
+		"valueFormat": {
+			"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+			"type": "string"
 		}
 	}
 } 
@@ -4623,15 +4653,8 @@ export const BarChartConfigSchema = {
 			"type": "object",
 			"additionalProperties": {
 				"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"referenceValue": {
-						"type": "number"
-					},
-					"referenceLabel": {
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -4777,7 +4800,8 @@ export const BarChartConfigSchema = {
 							}
 						]
 					}
-				}
+				},
+				"additionalProperties": false
 			}
 		},
 		"presentationOptions": {
@@ -4794,19 +4818,11 @@ export const BarChartConfigSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
-				},
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
-				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
 				},
 				"referenceLines": {
 					"type": "object",
@@ -4821,10 +4837,21 @@ export const BarChartConfigSchema = {
 									"type": "string"
 								}
 							},
-							"additionalProperties": false
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
 						}
 					},
 					"additionalProperties": false
+				},
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
+					"type": "string"
+				},
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+					"type": "string"
 				}
 			}
 		}
@@ -4841,12 +4868,6 @@ export const LineChartChartConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"referenceValue": {
-			"type": "number"
-		},
-		"referenceLabel": {
-			"type": "string"
-		},
 		"color": {
 			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
@@ -5479,11 +5500,32 @@ export const LineChartConfigSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
+				},
+				"referenceLines": {
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"type": "number"
+								},
+								"referenceLabel": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
 				}
 			}
 		},
@@ -5493,12 +5535,6 @@ export const LineChartConfigSchema = {
 				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"referenceValue": {
-						"type": "number"
-					},
-					"referenceLabel": {
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -5668,12 +5704,6 @@ export const ComposedChartConfigObjectSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
-		"referenceValue": {
-			"type": "number"
-		},
-		"referenceLabel": {
-			"type": "string"
-		},
 		"color": {
 			"description": "A CSS color string e.g. green or #abc123",
 			"type": "string"
@@ -6304,11 +6334,32 @@ export const ComposedChartConfigSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
+				},
+				"referenceLines": {
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"type": "number"
+								},
+								"referenceLabel": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
 				}
 			}
 		},
@@ -6318,12 +6369,6 @@ export const ComposedChartConfigSchema = {
 				"additionalProperties": false,
 				"type": "object",
 				"properties": {
-					"referenceValue": {
-						"type": "number"
-					},
-					"referenceLabel": {
-						"type": "string"
-					},
 					"color": {
 						"description": "A CSS color string e.g. green or #abc123",
 						"type": "string"
@@ -7748,15 +7793,8 @@ export const ChartConfigSchema = {
 					"type": "object",
 					"additionalProperties": {
 						"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -7902,7 +7940,8 @@ export const ChartConfigSchema = {
 									}
 								]
 							}
-						}
+						},
+						"additionalProperties": false
 					}
 				},
 				"presentationOptions": {
@@ -7919,19 +7958,11 @@ export const ChartConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
-						},
-						"color": {
-							"description": "A CSS color string e.g. green or #abc123",
-							"type": "string"
-						},
-						"valueFormat": {
-							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-							"type": "string"
 						},
 						"referenceLines": {
 							"type": "object",
@@ -7946,10 +7977,21 @@ export const ChartConfigSchema = {
 											"type": "string"
 										}
 									},
-									"additionalProperties": false
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
 								}
 							},
 							"additionalProperties": false
+						},
+						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
+							"type": "string"
+						},
+						"valueFormat": {
+							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+							"type": "string"
 						}
 					}
 				}
@@ -8436,11 +8478,32 @@ export const ChartConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
+						},
+						"referenceLines": {
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"type": "number"
+										},
+										"referenceLabel": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
 						}
 					}
 				},
@@ -8450,12 +8513,6 @@ export const ChartConfigSchema = {
 						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -9095,11 +9152,32 @@ export const ChartConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
+						},
+						"referenceLines": {
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"type": "number"
+										},
+										"referenceLabel": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
 						}
 					}
 				},
@@ -9109,12 +9187,6 @@ export const ChartConfigSchema = {
 						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -9685,11 +9757,32 @@ export const ChartPresentationOptionsSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
+				},
+				"referenceLines": {
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"type": "number"
+								},
+								"referenceLabel": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
 				}
 			}
 		},
@@ -9722,19 +9815,11 @@ export const ChartPresentationOptionsSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
-				},
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
-				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
 				},
 				"referenceLines": {
 					"type": "object",
@@ -9749,10 +9834,21 @@ export const ChartPresentationOptionsSchema = {
 									"type": "string"
 								}
 							},
-							"additionalProperties": false
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
 						}
 					},
 					"additionalProperties": false
+				},
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
+					"type": "string"
+				},
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+					"type": "string"
 				}
 			}
 		}
@@ -19684,15 +19780,8 @@ export const DashboardItemConfigSchema = {
 					"type": "object",
 					"additionalProperties": {
 						"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -19838,7 +19927,8 @@ export const DashboardItemConfigSchema = {
 									}
 								]
 							}
-						}
+						},
+						"additionalProperties": false
 					}
 				},
 				"presentationOptions": {
@@ -19855,19 +19945,11 @@ export const DashboardItemConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
-						},
-						"color": {
-							"description": "A CSS color string e.g. green or #abc123",
-							"type": "string"
-						},
-						"valueFormat": {
-							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-							"type": "string"
 						},
 						"referenceLines": {
 							"type": "object",
@@ -19882,10 +19964,21 @@ export const DashboardItemConfigSchema = {
 											"type": "string"
 										}
 									},
-									"additionalProperties": false
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
 								}
 							},
 							"additionalProperties": false
+						},
+						"color": {
+							"description": "A CSS color string e.g. green or #abc123",
+							"type": "string"
+						},
+						"valueFormat": {
+							"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+							"type": "string"
 						}
 					}
 				}
@@ -20372,11 +20465,32 @@ export const DashboardItemConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
+						},
+						"referenceLines": {
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"type": "number"
+										},
+										"referenceLabel": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
 						}
 					}
 				},
@@ -20386,12 +20500,6 @@ export const DashboardItemConfigSchema = {
 						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -21031,11 +21139,32 @@ export const DashboardItemConfigSchema = {
 							"type": "boolean"
 						},
 						"periodTickFormat": {
-							"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+							"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 							"type": "string"
 						},
 						"hideAverage": {
 							"type": "boolean"
+						},
+						"referenceLines": {
+							"type": "object",
+							"properties": {
+								"targetLine": {
+									"type": "object",
+									"properties": {
+										"referenceValue": {
+											"type": "number"
+										},
+										"referenceLabel": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"referenceValue"
+									]
+								}
+							},
+							"additionalProperties": false
 						}
 					}
 				},
@@ -21045,12 +21174,6 @@ export const DashboardItemConfigSchema = {
 						"additionalProperties": false,
 						"type": "object",
 						"properties": {
-							"referenceValue": {
-								"type": "number"
-							},
-							"referenceLabel": {
-								"type": "string"
-							},
 							"color": {
 								"description": "A CSS color string e.g. green or #abc123",
 								"type": "string"
@@ -25468,11 +25591,32 @@ export const PresentationOptionsSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
+				},
+				"referenceLines": {
+					"type": "object",
+					"properties": {
+						"targetLine": {
+							"type": "object",
+							"properties": {
+								"referenceValue": {
+									"type": "number"
+								},
+								"referenceLabel": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
+						}
+					},
+					"additionalProperties": false
 				}
 			}
 		},
@@ -25505,19 +25649,11 @@ export const PresentationOptionsSchema = {
 					"type": "boolean"
 				},
 				"periodTickFormat": {
-					"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 					"type": "string"
 				},
 				"hideAverage": {
 					"type": "boolean"
-				},
-				"color": {
-					"description": "A CSS color string e.g. green or #abc123",
-					"type": "string"
-				},
-				"valueFormat": {
-					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-					"type": "string"
 				},
 				"referenceLines": {
 					"type": "object",
@@ -25532,10 +25668,21 @@ export const PresentationOptionsSchema = {
 									"type": "string"
 								}
 							},
-							"additionalProperties": false
+							"additionalProperties": false,
+							"required": [
+								"referenceValue"
+							]
 						}
 					},
 					"additionalProperties": false
+				},
+				"color": {
+					"description": "A CSS color string e.g. green or #abc123",
+					"type": "string"
+				},
+				"valueFormat": {
+					"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+					"type": "string"
 				}
 			}
 		},
@@ -35526,15 +35673,8 @@ export const DashboardItemSchema = {
 							"type": "object",
 							"additionalProperties": {
 								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -35680,7 +35820,8 @@ export const DashboardItemSchema = {
 											}
 										]
 									}
-								}
+								},
+								"additionalProperties": false
 							}
 						},
 						"presentationOptions": {
@@ -35697,19 +35838,11 @@ export const DashboardItemSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
-								},
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
 								},
 								"referenceLines": {
 									"type": "object",
@@ -35724,10 +35857,21 @@ export const DashboardItemSchema = {
 													"type": "string"
 												}
 											},
-											"additionalProperties": false
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
 										}
 									},
 									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
 								}
 							}
 						}
@@ -36214,11 +36358,32 @@ export const DashboardItemSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -36228,12 +36393,6 @@ export const DashboardItemSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -36873,11 +37032,32 @@ export const DashboardItemSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -36887,12 +37067,6 @@ export const DashboardItemSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -43053,15 +43227,8 @@ export const DashboardItemCreateSchema = {
 							"type": "object",
 							"additionalProperties": {
 								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -43207,7 +43374,8 @@ export const DashboardItemCreateSchema = {
 											}
 										]
 									}
-								}
+								},
+								"additionalProperties": false
 							}
 						},
 						"presentationOptions": {
@@ -43224,19 +43392,11 @@ export const DashboardItemCreateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
-								},
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
 								},
 								"referenceLines": {
 									"type": "object",
@@ -43251,10 +43411,21 @@ export const DashboardItemCreateSchema = {
 													"type": "string"
 												}
 											},
-											"additionalProperties": false
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
 										}
 									},
 									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
 								}
 							}
 						}
@@ -43741,11 +43912,32 @@ export const DashboardItemCreateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -43755,12 +43947,6 @@ export const DashboardItemCreateSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -44400,11 +44586,32 @@ export const DashboardItemCreateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -44414,12 +44621,6 @@ export const DashboardItemCreateSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -50574,15 +50775,8 @@ export const DashboardItemUpdateSchema = {
 							"type": "object",
 							"additionalProperties": {
 								"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -50728,7 +50922,8 @@ export const DashboardItemUpdateSchema = {
 											}
 										]
 									}
-								}
+								},
+								"additionalProperties": false
 							}
 						},
 						"presentationOptions": {
@@ -50745,19 +50940,11 @@ export const DashboardItemUpdateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
-								},
-								"color": {
-									"description": "A CSS color string e.g. green or #abc123",
-									"type": "string"
-								},
-								"valueFormat": {
-									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-									"type": "string"
 								},
 								"referenceLines": {
 									"type": "object",
@@ -50772,10 +50959,21 @@ export const DashboardItemUpdateSchema = {
 													"type": "string"
 												}
 											},
-											"additionalProperties": false
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
 										}
 									},
 									"additionalProperties": false
+								},
+								"color": {
+									"description": "A CSS color string e.g. green or #abc123",
+									"type": "string"
+								},
+								"valueFormat": {
+									"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+									"type": "string"
 								}
 							}
 						}
@@ -51262,11 +51460,32 @@ export const DashboardItemUpdateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -51276,12 +51495,6 @@ export const DashboardItemUpdateSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -51921,11 +52134,32 @@ export const DashboardItemUpdateSchema = {
 									"type": "boolean"
 								},
 								"periodTickFormat": {
-									"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+									"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 									"type": "string"
 								},
 								"hideAverage": {
 									"type": "boolean"
+								},
+								"referenceLines": {
+									"type": "object",
+									"properties": {
+										"targetLine": {
+											"type": "object",
+											"properties": {
+												"referenceValue": {
+													"type": "number"
+												},
+												"referenceLabel": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"referenceValue"
+											]
+										}
+									},
+									"additionalProperties": false
 								}
 							}
 						},
@@ -51935,12 +52169,6 @@ export const DashboardItemUpdateSchema = {
 								"additionalProperties": false,
 								"type": "object",
 								"properties": {
-									"referenceValue": {
-										"type": "number"
-									},
-									"referenceLabel": {
-										"type": "string"
-									},
 									"color": {
 										"description": "A CSS color string e.g. green or #abc123",
 										"type": "string"
@@ -72591,15 +72819,8 @@ export const DashboardWithMetadataSchema = {
 										"type": "object",
 										"additionalProperties": {
 											"description": "The chartConfig property is different to the general config options. It is keyed by column name OR the special marker '$all' for all columns",
-											"additionalProperties": false,
 											"type": "object",
 											"properties": {
-												"referenceValue": {
-													"type": "number"
-												},
-												"referenceLabel": {
-													"type": "string"
-												},
 												"color": {
 													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
@@ -72745,7 +72966,8 @@ export const DashboardWithMetadataSchema = {
 														}
 													]
 												}
-											}
+											},
+											"additionalProperties": false
 										}
 									},
 									"presentationOptions": {
@@ -72762,19 +72984,11 @@ export const DashboardWithMetadataSchema = {
 												"type": "boolean"
 											},
 											"periodTickFormat": {
-												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 												"type": "string"
 											},
 											"hideAverage": {
 												"type": "boolean"
-											},
-											"color": {
-												"description": "A CSS color string e.g. green or #abc123",
-												"type": "string"
-											},
-											"valueFormat": {
-												"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
-												"type": "string"
 											},
 											"referenceLines": {
 												"type": "object",
@@ -72789,10 +73003,21 @@ export const DashboardWithMetadataSchema = {
 																"type": "string"
 															}
 														},
-														"additionalProperties": false
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
 													}
 												},
 												"additionalProperties": false
+											},
+											"color": {
+												"description": "A CSS color string e.g. green or #abc123",
+												"type": "string"
+											},
+											"valueFormat": {
+												"description": "This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}",
+												"type": "string"
 											}
 										}
 									}
@@ -73279,11 +73504,32 @@ export const DashboardWithMetadataSchema = {
 												"type": "boolean"
 											},
 											"periodTickFormat": {
-												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 												"type": "string"
 											},
 											"hideAverage": {
 												"type": "boolean"
+											},
+											"referenceLines": {
+												"type": "object",
+												"properties": {
+													"targetLine": {
+														"type": "object",
+														"properties": {
+															"referenceValue": {
+																"type": "number"
+															},
+															"referenceLabel": {
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
+													}
+												},
+												"additionalProperties": false
 											}
 										}
 									},
@@ -73293,12 +73539,6 @@ export const DashboardWithMetadataSchema = {
 											"additionalProperties": false,
 											"type": "object",
 											"properties": {
-												"referenceValue": {
-													"type": "number"
-												},
-												"referenceLabel": {
-													"type": "string"
-												},
 												"color": {
 													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
@@ -73938,11 +74178,32 @@ export const DashboardWithMetadataSchema = {
 												"type": "boolean"
 											},
 											"periodTickFormat": {
-												"description": "This string is one of the [momentjs format]{@link https://momentjs.com/docs/#/displaying/format/} values",
+												"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
 												"type": "string"
 											},
 											"hideAverage": {
 												"type": "boolean"
+											},
+											"referenceLines": {
+												"type": "object",
+												"properties": {
+													"targetLine": {
+														"type": "object",
+														"properties": {
+															"referenceValue": {
+																"type": "number"
+															},
+															"referenceLabel": {
+																"type": "string"
+															}
+														},
+														"additionalProperties": false,
+														"required": [
+															"referenceValue"
+														]
+													}
+												},
+												"additionalProperties": false
 											}
 										}
 									},
@@ -73952,12 +74213,6 @@ export const DashboardWithMetadataSchema = {
 											"additionalProperties": false,
 											"type": "object",
 											"properties": {
-												"referenceValue": {
-													"type": "number"
-												},
-												"referenceLabel": {
-													"type": "string"
-												},
 												"color": {
 													"description": "A CSS color string e.g. green or #abc123",
 													"type": "string"
