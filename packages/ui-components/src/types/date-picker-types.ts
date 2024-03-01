@@ -1,7 +1,6 @@
 import { Moment } from 'moment';
 import { GRANULARITIES, WEEK_DISPLAY_FORMATS } from '@tupaia/utils';
-
-type ValueOf<T> = T[keyof T];
+import { ValueOf } from './helpers';
 
 export type BaseDatePickerProps = {
   momentDateValue: Moment;
