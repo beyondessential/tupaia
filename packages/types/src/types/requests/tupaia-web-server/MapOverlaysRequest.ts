@@ -1,11 +1,11 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { MapOverlay } from '../../models';
-import { MapOverlayConfig } from '../../models-extra';
-import { KeysToCamelCase } from '../../../utils/casing';
+import { MapOverlayConfig, ReferenceProps } from '../../models-extra';
+import { KeysToCamelCase } from '../../../utils';
 
 export interface Params {
   projectCode: string;
@@ -23,7 +23,7 @@ export interface TranslatedMapOverlayGroup {
   name: string;
   children: OverlayChild[];
   sortOrder?: number | null;
-  info?: { reference?: { text?: string } };
+  info?: { reference?: ReferenceProps };
 }
 export type OverlayChild = TranslatedMapOverlayGroup | TranslatedMapOverlay;
 export interface ResBody {
