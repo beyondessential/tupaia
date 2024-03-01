@@ -1,7 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export * from './models';
@@ -62,6 +61,9 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
+  ReferenceProps,
+  PlaintextReferenceProps,
+  LinkReferenceProps,
   InlineValue,
   SpectrumMapOverlayConfig,
   IconMapOverlayConfig,
