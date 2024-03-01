@@ -38,7 +38,15 @@ const EditorContainer = styled.div`
   }
 
   // We're hiding the button when not hovering on that field
-  table.jsoneditor-tree > tbody > tr:not(:hover) button.jsoneditor-contextmenu-button {
+  table.jsoneditor-tree > tbody > tr:hover {
+    background-color: #e9f5ff;
+  }
+
+  // We're hiding the button when not hovering on that field
+  table.jsoneditor-tree
+    > tbody
+    > tr:has(.jsoneditor-removable):not(:hover)
+    button.jsoneditor-contextmenu-button {
     visibility: hidden;
   }
 
