@@ -4,7 +4,7 @@
  */
 
 import { CssColor } from '../css';
-import { DateOffsetSpec, VizPeriodGranularity } from './common';
+import { DateOffsetSpec, ReferenceProps, VizPeriodGranularity } from './common';
 
 /**
  * @description A key that can be used to reference a value in a measureConfig, or to reference all values
@@ -14,12 +14,6 @@ type ValueKey = string | '$all';
 type DefaultTimePeriod = DateOffsetSpec & {
   start?: string | DateOffsetSpec;
   end?: string | DateOffsetSpec;
-};
-
-type ReferenceObject = {
-  link?: string;
-  name?: string;
-  text?: string;
 };
 
 export type InlineValue = {
@@ -136,7 +130,7 @@ export type BaseMapOverlayConfig = {
   hideFromMenu?: boolean;
   hideFromPopup?: boolean;
   info?: {
-    reference?: ReferenceObject;
+    reference?: ReferenceProps;
   };
   isTimePeriodEditable?: boolean;
   /**
