@@ -86,7 +86,7 @@ function configReducer(state, action) {
       };
     }
     default:
-      throw new Error(`Expected known type but got ‘${type}’`);
+      throw new Error(`Unexpected viz type: ‘${type}’`);
   }
 }
 
