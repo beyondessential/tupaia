@@ -50,7 +50,7 @@ const convertNumberRangeToText = (condition: Record<ConditionType, ConditionValu
 
     return `${operator} ${sortedValues[0]}`;
   }
-  return sortedValues.join(' - ');
+  return sortedValues.join('&thinsp;–&thinsp;’); // en dash
 };
 
 const convertConditionToText = (condition: PresentationOptionCondition['condition']) => {
