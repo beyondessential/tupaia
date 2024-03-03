@@ -4,7 +4,7 @@
  *
  */
 
-export { MeditrakSurveyResponseRequest } from './central-server/MeditrakSurveyResponseRequest';
+export { MeditrakSurveyResponseRequest, CountryAccessResponse } from './central-server';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
 export {
   DatatrakWebEntitiesRequest,
@@ -18,11 +18,11 @@ export {
   DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebLeaderboardRequest,
   DatatrakWebActivityFeedRequest,
+  DatatrakWebCountryAccessListRequest,
   DatatrakWebGenerateLoginTokenRequest,
 } from './datatrak-web-server';
 export {
   TupaiaWebChangePasswordRequest,
-  TupaiaWebCountryAccessListRequest,
   TupaiaWebDashboardsRequest,
   TupaiaWebEmailDashboardRequest,
   TupaiaWebExportDashboardRequest,
@@ -36,6 +36,7 @@ export {
   TupaiaWebReportRequest,
   TupaiaWebRequestCountryAccessRequest,
   TupaiaWebUserRequest,
+  TupaiaWebProjectCountryAccessListRequest,
   TupaiaWebSubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardRequest,
   TupaiaWebUnsubscribeDashboardMailingListRequest,

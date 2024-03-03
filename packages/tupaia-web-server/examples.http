@@ -40,7 +40,7 @@ content-type: {{contentType}}
 
 
 ### Fetch country access list
-GET {{host}}/countryAccessList
+GET {{host}}/countryAccessList/pacmossi
 content-type: {{contentType}}
 
 ### Fetch legacy report

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  *
  */
-export { useCountryAccessList } from './useCountryAccessList';
+export { useProjectCountryAccessList } from './useProjectCountryAccessList';
 export { useLandingPage } from './useLandingPage';
 export { useProject } from './useProject';
 export { useProjects } from './useProjects';
