@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { DateOffsetSpec, PeriodUnit, VizPeriodGranularity } from '../common';
+
 export type BaseConfig = {
   name: string;
 
@@ -75,29 +77,11 @@ export type BaseConfig = {
   source?: 'dhis' | 'mSupply' | string;
 
   /**
-   * @description If specified will only show this viz if the conditions are met against the current Entity.
-   */
-  displayOnEntityConditions?: DisplayOnEntityConditions;
-
-  /**
    * @description Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'
    * @default 'WEEK_COMMENCING_ABBR'
    */
   weekDisplayFormat?: WeekDisplayFormat;
 };
-
-export enum VizPeriodGranularity {
-  'DAY' = 'day',
-  'SINGLE_DAY' = 'one_day_at_a_time',
-  'WEEK' = 'week',
-  'SINGLE_WEEK' = 'one_week_at_a_time',
-  'MONTH' = 'month',
-  'SINGLE_MONTH' = 'one_month_at_a_time',
-  'QUARTER' = 'quarter',
-  'SINGLE_QUARTER' = 'one_quarter_at_a_time',
-  'YEAR' = 'year',
-  'SINGLE_YEAR' = 'one_year_at_a_time',
-}
 
 export type ValueType =
   | 'boolean'
@@ -119,8 +103,6 @@ export enum WeekDisplayFormat {
   ISO_WEEK_NUMBER = 'ISO_WEEK_NUMBER',
 }
 
-type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
-
 type DefaultTimePeriod =
   | DefaultTimePeriodShort
   | DefaultTimePeriodLong
@@ -138,30 +120,6 @@ type DefaultTimePeriodWithAbsoluteDate = {
    * @description ISO Date Time
    */
   start: string;
-};
-
-export type DateOffsetSpec = {
-  unit: PeriodUnit;
-  offset: number;
-  modifier?: OffsetModifier;
-  modifierUnit?: PeriodUnit;
-};
-
-enum OffsetModifier {
-  start_of = 'start_of',
-  end_of = 'end_of',
-}
-
-type DisplayOnEntityConditions =
-  | DisplayOnEntityAttributeConditions
-  | DisplayOnEntityOtherConditions;
-type DisplayOnEntityAttributeConditions = {
-  attributes: {
-    [key: string]: string | number | boolean;
-  };
-};
-type DisplayOnEntityOtherConditions = {
-  [key: string]: string | number | boolean;
 };
 
 export type ExportPresentationOptions = {
