@@ -7,6 +7,13 @@ import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 
 /**
+ * @returns ISO date string in the format "yyyy-mm-dd", or `null` if the input date object is
+ * invalid.
+ */
+export const getIsoDate = (date: Date) =>
+  isNaN(date.getTime()) ? null : date.toISOString().slice(1, 10);
+
+/**
  * @returns utcOffset in format: "+05:00"
  */
 const getUtcOffsetFromTimestamp = (timestamp: string) => moment.parseZone(timestamp).format('Z');

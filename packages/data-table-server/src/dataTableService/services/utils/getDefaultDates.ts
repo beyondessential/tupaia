@@ -4,12 +4,7 @@
  */
 
 import { convertPeriodStringToDateRange, getDefaultPeriod } from '@tupaia/utils';
-
-/**
- * Returns an ISO date string, without a time, as in the ‘yyyy-mm-dd’ part of
- * ‘yyyy-mm-ddThh:mm:ss[.mmm]’. If the input date object is invalid, returns null.
- */
-const getIsoDate = (date: Date) => (isNaN(date.getTime()) ? null : date.toISOString().slice(1, 10));
+import { getIsoDate } from '@tupaia/tsutils';
 
 export const getDefaultStartDate = () =>
   new Date(convertPeriodStringToDateRange(getDefaultPeriod())[0]);
