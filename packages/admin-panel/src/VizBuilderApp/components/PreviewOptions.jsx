@@ -17,6 +17,7 @@ import {
   FlexStart,
   ImportModal,
 } from '@tupaia/ui-components';
+import { getIsoDateString } from '@tupaia/tsutils';
 import { useLocations, useProjects, useUploadTestData } from '../api';
 import { usePreviewData, useVizConfig } from '../context';
 import { LinkButton } from './LinkButton';
@@ -174,13 +175,13 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    const newDate = !date ? null : getIsoDateString(date);
+    const newDate = date ? getIsoDateString(date) : null;
     setSelectedStartDate(newDate);
     setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    const newDate = !date ? null : getIsoDateString(date);
+    const newDate = date ? getIsoDateString(date) : null;
     setSelectedEndDate(newDate);
     setEndDate(newDate);
   };
