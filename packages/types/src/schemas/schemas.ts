@@ -61970,6 +61970,7 @@ export const MapOverlaySchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
@@ -62002,6 +62003,7 @@ export const MapOverlaySchema = {
 	"required": [
 		"code",
 		"config",
+		"entity_attributes_filter",
 		"id",
 		"legacy",
 		"name",
@@ -64689,6 +64691,7 @@ export const MapOverlayCreateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -67402,6 +67405,7 @@ export const MapOverlayUpdateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
