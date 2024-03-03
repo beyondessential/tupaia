@@ -4,7 +4,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import type { MeditrakSurveyResponseRequest, CountryAccessResponse } from '@tupaia/types';
 import { CentralApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
 
@@ -57,6 +57,9 @@ export class MockCentralApi implements CentralApiInterface {
     this.mockData = mockData;
   }
   public getUser(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+  public getCountryAccessList(): Promise<CountryAccessResponse[]> {
     throw new Error('Method not implemented.');
   }
   public registerUserAccount(

@@ -1,10 +1,10 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import {
   BarChartConfig,
-  CartesianChartConfig,
   ChartData,
   ComposedChartConfig,
   GaugeChartConfig,
@@ -21,12 +21,12 @@ export interface LooseObject {
 }
 
 /**
- * This is a tupaia specific setting rather than a recharts config option.
+ * A Tupaia-specific setting, not a Recharts config option.
  */
 export type LegendPosition = 'top' | 'bottom';
 
 /**
- * @description  This is the shape of the ViewContent object before it has been parsed by parseChartConfig
+ * The shape of the `ViewContent` object before it has been parsed by {@link parseChartConfig}.
  */
 export type ViewContentT<T> = T & {
   colorPalette?: string;
