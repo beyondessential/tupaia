@@ -8,6 +8,7 @@ import { TupaiaApiClient } from '@tupaia/api-client';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import { yup } from '@tupaia/utils';
+import { ISO_DATE_PATTERN } from '@tupaia/tsutils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
 import {
@@ -16,14 +17,12 @@ import {
   mapProjectEntitiesToCountries,
 } from './utils';
 
-const isoDatePattern = /\d{4}-\d{2}-\d{2}/;
-
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.string().matches(isoDatePattern).default(getDefaultStartDateString),
-  endDate: yup.string().matches(isoDatePattern).default(getDefaultEndDateString),
+  startDate: yup.string().matches(ISO_DATE_PATTERN).default(getDefaultStartDateString),
+  endDate: yup.string().matches(ISO_DATE_PATTERN).default(getDefaultEndDateString),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
