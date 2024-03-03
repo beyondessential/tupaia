@@ -12,7 +12,7 @@ import {
 } from '@tupaia/types';
 import styled from 'styled-components';
 import { MatrixContext } from './MatrixContext';
-import { getIsUsingColouredCells } from './utils';
+import { getIsUsingPillCell } from './utils';
 import { Pill } from './Pill';
 
 const Wrapper = styled.div`
@@ -20,21 +20,12 @@ const Wrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-block: 1rem;
-  > * {
-    :not(:last-child) {
-      margin-inline-end: 1rem; // add spacing between the pills
-    }
-  }
+  gap: 0.8rem 1rem;
+
   // at mobile size, display the pills in a column so that they don't overflow the container
   ${({ theme }) => theme.breakpoints.down('xs')} {
     flex-direction: column;
     align-items: flex-start;
-    > * {
-      :not(:last-child) {
-        margin-inline-end: 0;
-        margin-block-end: 0.8rem;
-      }
-    }
   }
 `;
 
@@ -50,7 +41,7 @@ const convertNumberRangeToText = (condition: Record<ConditionType, ConditionValu
 
     return `${operator} ${sortedValues[0]}`;
   }
-  return sortedValues.join('&thinsp;–&thinsp;’); // en dash
+  return sortedValues.join(' – '); // en dash
 };
 
 const convertConditionToText = (condition: PresentationOptionCondition['condition']) => {
@@ -73,7 +64,7 @@ export const MatrixLegend = () => {
   const { presentationOptions } = useContext(MatrixContext);
 
   // Only render if the matrix is using dots. Otherwise, return null
-  if (!presentationOptions || !getIsUsingColouredCells(presentationOptions)) return null;
+  if (!presentationOptions || !getIsUsingPillCell(presentationOptions)) return null;
 
   const { conditions } = presentationOptions as ConditionalPresentationOptions;
 
@@ -86,7 +77,7 @@ export const MatrixLegend = () => {
       {legendConditions?.map(({ color, legendLabel, condition }) => {
         const text = convertConditionToText(condition);
 
-        const showTooltip = legendLabel && text !== legendLabel ? true : false;
+        const showTooltip = !!legendLabel && text !== legendLabel;
         return (
           <Pill key={legendLabel} color={color} tooltip={showTooltip ? legendLabel : null}>
             {text}

@@ -9,9 +9,9 @@ import { PresentationOptionCondition, PresentationOptionRange } from '@tupaia/ty
 import Markdown from 'markdown-to-jsx';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import {
-  checkIfApplyColouredCellStyle,
+  checkIfApplyPillCellStyle,
   getFlattenedColumns,
-  getIsUsingColouredCells,
+  getIsUsingPillCell,
   getPresentationOption,
 } from './utils';
 import { MatrixContext } from './MatrixContext';
@@ -129,13 +129,13 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
 
   const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
 
-  const isColouredCell =
-    getIsUsingColouredCells(presentationOptionsForCell) &&
-    checkIfApplyColouredCellStyle(presentationOptionsForCell, colIndex);
+  const isPillCell =
+    getIsUsingPillCell(presentationOptionsForCell) &&
+    checkIfApplyPillCellStyle(presentationOptionsForCell, colIndex);
 
   const presentation = getPresentationOption(presentationOptionsForCell, value);
 
-  if (isColouredCell)
+  if (isPillCell)
     return (
       <PillCell
         rowTitle={rowTitle}
@@ -149,7 +149,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
   const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
 
   return (
-    <DataCell $characterLength={isColouredCell ? 0 : String(displayValue).length}>
+    <DataCell $characterLength={isPillCell ? 0 : String(displayValue).length}>
       <DataCellContent>{displayValue}</DataCellContent>
     </DataCell>
   );

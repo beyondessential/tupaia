@@ -107,14 +107,14 @@ export const getPresentationOption = (options?: MatrixPresentationOptions, value
   return getPresentationOptionFromKey(options?.conditions, value);
 };
 
-export function getIsUsingColouredCells(presentationOptions?: MatrixPresentationOptions) {
+export function getIsUsingPillCell(presentationOptions?: MatrixPresentationOptions) {
   return presentationOptions
     ? Object.keys(presentationOptions).filter(optionName => !optionName.includes('export')).length >
         0
     : false;
 }
 
-export function checkIfApplyColouredCellStyle(
+export function checkIfApplyPillCellStyle(
   presentationOptions?: MatrixPresentationOptions,
   columnIndex?: number,
 ) {
