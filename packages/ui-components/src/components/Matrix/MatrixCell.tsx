@@ -110,7 +110,7 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
             ) : null
           }
         >
-          {isNullish ? '-' : value}
+          {isNullish ? '—' /* em dash */ : value}
         </Pill>
       </DataCellContent>
     </DataCell>
