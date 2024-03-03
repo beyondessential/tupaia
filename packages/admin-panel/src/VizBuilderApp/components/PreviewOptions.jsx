@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -16,11 +17,9 @@ import {
   FlexStart,
   ImportModal,
 } from '@tupaia/ui-components';
-import { useLocations, useProjects } from '../api/queries';
+import { useLocations, useProjects, useUploadTestData } from '../api';
 import { usePreviewData, useVizConfig } from '../context';
 import { LinkButton } from './LinkButton';
-import { useUploadTestData } from '../api';
-import { getIsoDate } from '@tupaia/tsutils';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;
@@ -175,13 +174,13 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    const newDate = !date ? null : getIsoDate(date);
+    const newDate = !date ? null : getIsoDateString(date);
     setSelectedStartDate(newDate);
     setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    const newDate = !date ? null : getIsoDate(date);
+    const newDate = !date ? null : getIsoDateString(date);
     setSelectedEndDate(newDate);
     setEndDate(newDate);
   };

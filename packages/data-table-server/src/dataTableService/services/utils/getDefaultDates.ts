@@ -4,12 +4,12 @@
  */
 
 import { convertPeriodStringToDateRange, getDefaultPeriod } from '@tupaia/utils';
-import { getIsoDate } from '@tupaia/tsutils';
+import { getIsoDateString } from '@tupaia/tsutils';
 
 export const getDefaultStartDate = () =>
   new Date(convertPeriodStringToDateRange(getDefaultPeriod())[0]);
 export const getDefaultEndDate = () =>
   new Date(convertPeriodStringToDateRange(getDefaultPeriod())[1]);
 
-export const getDefaultStartDateString = () => getIsoDate(getDefaultStartDate());
-export const getDefaultEndDateString = () => getIsoDate(getDefaultEndDate());
+export const getDefaultStartDateString = () => getIsoDateString(getDefaultStartDate());
+export const getDefaultEndDateString = () => getIsoDateString(getDefaultEndDate());
