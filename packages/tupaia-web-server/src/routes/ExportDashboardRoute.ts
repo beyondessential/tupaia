@@ -21,7 +21,7 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
 
   public async buildResponse() {
     const { projectCode, entityCode, dashboardCode } = this.req.params;
-    const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
+    const { baseUrl, selectedDashboardItems, cookieDomain, settings } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -45,6 +45,7 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
       cookie,
       cookieDomain,
       selectedDashboardItems,
+      settings,
     );
     return { contents: buffer, type: 'application/pdf' };
   }
