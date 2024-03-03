@@ -180,10 +180,10 @@ export const PreviewOptions = () => {
       return;
     }
 
-    const timestamp = date.setHours(0, 0, 0, 0); // Query from beginning of selected day, local time
-    const newDate = new Date(timestamp).toISOString();
-    setSelectedStartDate(newDate);
-    setStartDate(newDate);
+    const dateString = date.toISOString().slice(0, 10); // 1970-01-01T00:00:00.000Z
+    //                                                     ^~~~~~~~~~ Keep only date, discard time
+    setSelectedStartDate(dateString);
+    setStartDate(dateString);
   };
 
   const handleChangeEndDate = date => {
@@ -193,10 +193,15 @@ export const PreviewOptions = () => {
       return;
     }
 
-    const timestamp = date.setHours(23, 59, 59, 999); // Query to end of selected day, local time
-    const newDate = new Date(timestamp).toISOString();
-    setSelectedEndDate(newDate);
-    setEndDate(newDate);
+    const dateString = date.toISOString().slice(0, 10); // 1970-01-01T00:00:00.000Z
+    //                                                     ^~~~~~~~~~ Keep only date, discard time
+    setSelectedEndDate(dateString);
+
+    // End date in GUI should be inclusive, but API `endDate` is exclusive
+    // const nextDateTimestamp = new Date(date).setDate(date.getDate() + 1);
+    // const nextDate = new Date(nextDateTimestamp);
+    // const nextDateString = nextDate.toISOString().slice(0, 10);
+    setEndDate(dateString);
   };
 
   const handleUploadData = async file => {
