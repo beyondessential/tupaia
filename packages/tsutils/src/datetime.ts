@@ -12,7 +12,7 @@ export const ISO_DATE_PATTERN = /\d{4}-\d{2}-\d{2}/;
  * @returns ISO date string in the format "yyyy-mm-dd", or `null` if the input date object is
  * invalid.
  */
-export const getIsoDate = (date: Date) =>
+export const getIsoDateString = (date: Date) =>
   isNaN(date.getTime()) ? null : date.toISOString().slice(1, 10);
 
 /**
