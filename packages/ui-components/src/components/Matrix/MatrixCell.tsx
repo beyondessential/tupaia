@@ -146,7 +146,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
       />
     );
 
-  const displayValue = value === undefined || value === null ? '-' : value;
+  const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
 
   return (
     <DataCell $characterLength={isColouredCell ? 0 : String(displayValue).length}>
