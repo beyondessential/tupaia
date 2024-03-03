@@ -1,8 +1,9 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+export { ReferenceProps, PlaintextReferenceProps, LinkReferenceProps } from './common';
 export type {
   ReportConfig,
   StandardReportConfig,
@@ -56,7 +57,6 @@ export {
   PieChartPresentationOptions,
   BarChartPresentationOptions,
   PresentationOptions,
-  VizPeriodGranularity,
   ChartType,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,
@@ -71,6 +71,12 @@ export {
   MeasureType,
   ScaleType,
   MeasureColorScheme,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
 } from './mapOverlay';
 export {
   SurveyScreenComponentConfig,
@@ -87,3 +93,4 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
+export { VizPeriodGranularity } from './common';

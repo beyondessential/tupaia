@@ -197,7 +197,7 @@ export class SurveyEditor {
     }
 
     /*
-     * importSurveyQuestions() will upsert data elements with default config (tupaia data service).
+     * importSurveyQuestions() will upsert data elements with matching config and service type to the data group.
      * We will then need to update these data elements to have the correct config.
      *   - The responsibility lays on SurveyEditor rather than importSurveyQuestions because
      *     importSurveyQuestions only really cares about survey screens and questions, and runs when these change,

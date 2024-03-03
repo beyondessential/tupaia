@@ -57,7 +57,7 @@ export {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType, VizPeriodGranularity } from './common';
+export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
