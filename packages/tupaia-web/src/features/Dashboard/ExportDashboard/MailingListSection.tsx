@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router';
 import BaseErrorIcon from '@material-ui/icons/ErrorOutline';
 import BaseSuccessIcon from '@material-ui/icons/CheckCircle';
+import { TupaiaWebEmailDashboardRequest } from '@tupaia/types';
 import { Button, SpinningLoader as BaseSpinningLoader } from '@tupaia/ui-components';
 import { useEmailDashboard } from '../../../api/mutations';
 import { ExportSettingLabel } from '../../ExportSettings';
@@ -76,9 +77,8 @@ const SpinningLoader = styled(BaseSpinningLoader)`
 
 export const MailingListSection = ({
   selectedDashboardItems,
-}: {
-  selectedDashboardItems: string[];
-}) => {
+  settings,
+}: Pick<TupaiaWebEmailDashboardRequest.ReqBody, 'selectedDashboardItems' | 'settings'>) => {
   const { projectCode, entityCode } = useParams();
   const { activeDashboard } = useDashboard();
   const mailingList = useDashboardMailingList();
@@ -108,6 +108,7 @@ export const MailingListSection = ({
       entityCode,
       dashboardCode: activeDashboard?.code,
       selectedDashboardItems,
+      settings,
     });
 
   return (
