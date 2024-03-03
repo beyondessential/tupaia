@@ -70756,6 +70756,39 @@ export const MeditrakSurveyResponseRequestSchema = {
 	]
 } 
 
+export const CountryAccessResponseSchema = {
+	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"accessRequests": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"code": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"accessRequests",
+		"code",
+		"hasAccess",
+		"id",
+		"name"
+	]
+} 
+
 export const DataTablePreviewRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -81870,6 +81903,31 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
 } 
 
 export const SubscribeDashboardResponseSchema = {
