@@ -10,15 +10,21 @@ import { DataBroker } from '@tupaia/data-broker';
 import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
-import { getDefaultEndDate, getDefaultStartDate, mapProjectEntitiesToCountries } from './utils';
+import {
+  getDefaultEndDateString,
+  getDefaultStartDateString,
+  mapProjectEntitiesToCountries,
+} from './utils';
+
+const isoDatePattern = /\d{4}-\d{2}-\d{2}/;
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataGroupCode: yup.string().required(),
   dataElementCodes: yup.array().of(yup.string().required()).min(1),
   organisationUnitCodes: yup.array().of(yup.string().required()).strict().required(),
-  startDate: yup.date().default(getDefaultStartDate),
-  endDate: yup.date().default(getDefaultEndDate),
+  startDate: yup.string().matches(isoDatePattern).default(getDefaultStartDateString),
+  endDate: yup.string().matches(isoDatePattern).default(getDefaultEndDateString),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -73,8 +79,8 @@ export class EventsDataTableService extends DataTableService<
     dataGroupCode: string;
     dataElementCodes?: string[];
     organisationUnitCodes: string[];
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: string;
+    endDate?: string;
     aggregations?: { type: string; config?: Record<string, unknown> }[];
   }) {
     const {
@@ -94,9 +100,6 @@ export class EventsDataTableService extends DataTableService<
       }),
     );
 
-    const startDateString = startDate ? startDate.toISOString() : undefined;
-    const endDateString = endDate ? endDate.toISOString() : undefined;
-
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
       this.ctx.apiClient,
@@ -112,8 +115,8 @@ export class EventsDataTableService extends DataTableService<
       {
         hierarchy,
         organisationUnitCodes: entityCodesForFetch,
-        startDate: startDateString,
-        endDate: endDateString,
+        startDate,
+        endDate,
         dataElementCodes: dataElementCodesForFetch,
       },
       { aggregations },

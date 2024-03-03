@@ -10,14 +10,20 @@ import { DataBroker } from '@tupaia/data-broker';
 import { yup } from '@tupaia/utils';
 import { DataTableService } from '../DataTableService';
 import { orderParametersByName } from '../utils';
-import { getDefaultEndDate, getDefaultStartDate, mapProjectEntitiesToCountries } from './utils';
+import {
+  getDefaultEndDateString,
+  getDefaultStartDateString,
+  mapProjectEntitiesToCountries,
+} from './utils';
+
+const isoDatePattern = /\d{4}-\d{2}-\d{2}/;
 
 const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.date().default(getDefaultStartDate),
-  endDate: yup.date().default(getDefaultEndDate),
+  startDate: yup.string().matches(isoDatePattern).default(getDefaultStartDateString),
+  endDate: yup.string().matches(isoDatePattern).default(getDefaultEndDateString),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
@@ -50,21 +56,13 @@ export class AnalyticsDataTableService extends DataTableService<
     hierarchy: string;
     dataElementCodes: string[];
     organisationUnitCodes: string[];
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     aggregations?: { type: string; config?: Record<string, unknown> }[];
   }) {
-    const {
-      hierarchy,
-      dataElementCodes,
-      organisationUnitCodes,
-      startDate,
-      endDate,
-      aggregations,
-    } = params;
+    const { hierarchy, dataElementCodes, organisationUnitCodes, startDate, endDate, aggregations } =
+      params;
 
-    const startDateString = startDate.toISOString();
-    const endDateString = endDate.toISOString();
 
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
@@ -85,8 +83,8 @@ export class AnalyticsDataTableService extends DataTableService<
       {
         organisationUnitCodes: entityCodesForFetch,
         hierarchy,
-        startDate: startDateString,
-        endDate: endDateString,
+        startDate,
+        endDate,
         detectDataServices: true,
       },
       { aggregations },
