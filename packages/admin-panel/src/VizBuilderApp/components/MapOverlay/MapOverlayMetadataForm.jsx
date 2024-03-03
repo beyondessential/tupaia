@@ -10,6 +10,7 @@ import Chip from '@material-ui/core/Chip';
 import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
+import { JsonEditorInputField } from '../../../widgets';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const { handleSubmit, register, errors } = useForm();
@@ -25,15 +26,15 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     mapOverlayPermissionGroup,
     projectCodes: inputProjectCodes,
     countryCodes: inputCountryCodes,
+    entityAttributesFilter: inputEntityAttributesFilter = {},
   } = defaults;
   const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
   const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
   const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
+  const [entityAttributesFilter, setEntityAttributesFilter] = useState(inputEntityAttributesFilter);
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
@@ -42,6 +43,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     setVisualisationValue('reportPermissionGroup', data.mapOverlayPermissionGroup);
     setVisualisationValue('projectCodes', projectCodes);
     setVisualisationValue('countryCodes', countryCodes);
+    setVisualisationValue('entityAttributesFilter', entityAttributesFilter);
     onSubmit();
   };
 
@@ -130,6 +132,16 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
               )),
           }}
           onChange={(thing, selected) => setCountryCodes(selected)}
+        />
+
+        <JsonEditorInputField
+          id="entityAttributesFilter"
+          name="entityAttributesFilter"
+          inputKey="entityAttributesFilter"
+          label="Entity Attributes Filter"
+          onChange={(_, value) => setEntityAttributesFilter(value)}
+          value={entityAttributesFilter}
+          stringify={false}
         />
       </Body>
       <Footer />
