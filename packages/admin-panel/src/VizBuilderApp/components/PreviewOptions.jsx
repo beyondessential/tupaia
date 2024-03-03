@@ -20,6 +20,7 @@ import { useLocations, useProjects } from '../api/queries';
 import { usePreviewData, useVizConfig } from '../context';
 import { LinkButton } from './LinkButton';
 import { useUploadTestData } from '../api';
+import { getIsoDate } from '@tupaia/tsutils';
 
 const Container = styled(FlexSpaceBetween)`
   padding: 24px 0;
@@ -174,34 +175,15 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    if (!date) {
-      setSelectedStartDate(null);
-      setStartDate(null);
-      return;
-    }
-
-    const dateString = date.toISOString().slice(0, 10); // 1970-01-01T00:00:00.000Z
-    //                                                     ^~~~~~~~~~ Keep only date, discard time
-    setSelectedStartDate(dateString);
-    setStartDate(dateString);
+    const newDate = !date ? null : getIsoDate(date);
+    setSelectedStartDate(newDate);
+    setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    if (!date) {
-      setSelectedStartDate(null);
-      setStartDate(null);
-      return;
-    }
-
-    const dateString = date.toISOString().slice(0, 10); // 1970-01-01T00:00:00.000Z
-    //                                                     ^~~~~~~~~~ Keep only date, discard time
-    setSelectedEndDate(dateString);
-
-    // End date in GUI should be inclusive, but API `endDate` is exclusive
-    // const nextDateTimestamp = new Date(date).setDate(date.getDate() + 1);
-    // const nextDate = new Date(nextDateTimestamp);
-    // const nextDateString = nextDate.toISOString().slice(0, 10);
-    setEndDate(dateString);
+    const newDate = !date ? null : getIsoDate(date);
+    setSelectedEndDate(newDate);
+    setEndDate(newDate);
   };
 
   const handleUploadData = async file => {
