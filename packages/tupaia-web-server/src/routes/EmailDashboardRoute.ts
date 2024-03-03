@@ -28,7 +28,7 @@ export type EmailDashboardRequest = Request<
 export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
   public async buildResponse() {
     const { projectCode, entityCode, dashboardCode } = this.req.params;
-    const { baseUrl, selectedDashboardItems, cookieDomain } = this.req.body;
+    const { baseUrl, selectedDashboardItems, cookieDomain, settings } = this.req.body;
     const { cookie } = this.req.headers;
 
     if (!cookie) {
@@ -107,6 +107,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       cookie,
       cookieDomain,
       selectedDashboardItems,
+      settings,
     );
 
     const emails = mailingListEntries.map(({ email }) => email);

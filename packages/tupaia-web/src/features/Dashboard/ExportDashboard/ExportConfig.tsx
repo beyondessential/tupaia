@@ -164,7 +164,13 @@ export const ExportConfig = ({ onClose, selectedDashboardItems }: ExportDashboar
                   <DisplayOptionsSettings />
                 </section>
               )}
-              <MailingListSection selectedDashboardItems={selectedDashboardItems} />
+              <MailingListSection
+                selectedDashboardItems={selectedDashboardItems}
+                settings={{
+                  exportWithTable,
+                  exportWithLabels,
+                }}
+              />
             </ExportSetting>
           </ExportSettingsContainer>
           {!isLoading && <Preview selectedDashboardItems={selectedDashboardItems} />}
