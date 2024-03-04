@@ -58,7 +58,10 @@ type JsonBKey<T extends keyof NestedFilterQueryFields> =
     : T;
 
 const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
+  // get the field name, which is always the first part of the nested field
   const field = nestedField.split(NESTED_FIELD_DELIMITER)[0];
+
+  // get the rest of the nested field, which is the nestedField without the field name and the first delimiter
   const values = nestedField.split(`${field}_`)[1];
 
   return [field, values].join(JSONB_FIELD_DELIMITER) as JsonBKey<T>;

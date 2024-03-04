@@ -302,6 +302,14 @@ describe('fieldsAndFilters', () => {
       ]);
     });
 
+    it('it can filter using nested properties that contain a "_" character', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'attributes_gym_type==test' },
+      });
+
+      expect(entities).toIncludeSameMembers(['VIRIDIAN']);
+    });
+
     it('it can filter for multiple properties', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
         query: { field: 'code', filter: 'type!=facility;name=@City' },
