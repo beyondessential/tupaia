@@ -15,6 +15,7 @@ import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 import { processMeasureData } from './processMeasureData';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 
 type EntityTypeParam = string | null | undefined;
 
@@ -40,6 +41,7 @@ const useMapOverlayEntities = (
   includeRootEntity?: boolean,
   measureLevel?: EntityTypeParam,
   keepPreviousEntitiesData?: boolean,
+  entityAttributesFilter: TupaiaWebMapOverlaysRequest.TranslatedMapOverlay['entityAttributesFilter'] = {},
 ) => {
   return useEntitiesWithLocation(
     projectCode,
@@ -49,6 +51,14 @@ const useMapOverlayEntities = (
         includeRootEntity,
         filter: {
           type: measureLevel,
+          ...Object.entries(entityAttributesFilter).reduce((result, [attribute, filterValue]) => {
+            return {
+              ...result,
+              [`attributes_${attribute}`]: Array.isArray(filterValue)
+                ? filterValue.join(',')
+                : filterValue,
+            };
+          }, {}),
         },
       },
     },
@@ -91,6 +101,7 @@ export const useMapOverlayTableData = ({
     includeRootEntity,
     selectedOverlay?.measureLevel,
     keepPreviousData,
+    selectedOverlay?.entityAttributesFilter,
   );
 
   const {
