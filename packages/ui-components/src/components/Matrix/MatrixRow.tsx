@@ -30,7 +30,7 @@ const RowHeaderCellContent = styled.div`
   height: 100%;
   width: 100%;
   padding-block: 0.7rem;
-  padding-inline: 1.5rem;
+  padding-inline: 0 1.5rem;
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -38,12 +38,19 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   variant: 'text',
   color: 'default',
   disableRipple: true,
-})<ButtonProps>`
+})<
+  ButtonProps & {
+    $depth: number;
+  }
+>`
   text-transform: none;
   text-align: left;
   border-radius: 0;
-  padding-inline-start: 0.7rem; // reduce this on expand buttons because the icon makes the button look like it has extra padding
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
+  padding-inline-start: ${({ $depth }) =>
+    $depth > 0
+      ? '0'
+      : '0.7rem'}; // only add padding for the top level expandable row header cell so it doesn't look too close to the edge
   svg {
     margin-inline-end: 0.5rem;
   }
@@ -85,7 +92,10 @@ const TableRow = styled(MuiTableRow)<{
     }
   }
   // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
-  &.child + &.parent.highlighted {
+  &.child
+    + &.parent.highlighted:not(
+      :has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible))
+    ) {
     ${Cell}:before {
       border-width: 1px 0 0 0;
       :is(th) {
@@ -98,19 +108,17 @@ const TableRow = styled(MuiTableRow)<{
 
   // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
   &:has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible)) {
-    ${Cell} {
-      :before {
-        content: ''; // set this to an empty string so the border always shows when the button is hovered
-        width: 100%;
-        border-color: ${({ theme }) => theme.palette.text.primary};
-        border-width: 1px 0;
-      }
-      :first-child:before {
-        border-left-width: 1px; // add a left border to the first cell of the row
-      }
-      :last-child:before {
-        border-right-width: 1px; // add a right border to the last cell of the row
-      }
+    ${Cell}:before {
+      content: ''; // set this to an empty string so the border always shows when the button is hovered
+      width: 100%;
+      border-color: ${({ theme }) => theme.palette.text.primary};
+      border-width: 1px 0;
+    }
+    :first-child:before {
+      border-left-width: 1px; // add a left border to the first cell of the row
+    }
+    :last-child:before {
+      border-right-width: 1px; // add a right border to the last cell of the row
     }
     // remove the top border from the first cell of the next row to fix the double border issue
     + tr ${Cell}:before {
@@ -171,6 +179,7 @@ const ExpandableRowHeaderCell = ({
         aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
         onClick={toggleExpandedRows}
         disabled={disableExpandButton}
+        $depth={depth}
       >
         <ExpandIcon $expanded={isExpanded} />
         <span>{children}</span>
