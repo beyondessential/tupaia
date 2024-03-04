@@ -96,6 +96,8 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           options={vizTypeOptions}
           getOptionLabel={option => option.label}
           getOptionSelected={option => option.value}
+          error={!!errors.vizType}
+          helperText={errors.vizType && errors.vizType.message}
           inputRef={register({
             required: 'Required',
           })}

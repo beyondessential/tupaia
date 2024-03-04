@@ -42,10 +42,12 @@ const EditorContainer = styled.div`
     background-color: #e9f5ff;
   }
 
-  // We're hiding the button when not hovering on that field
+  // We're hiding the button when not hovering on that field or focussed on its inputs
   table.jsoneditor-tree
     > tbody
-    > tr:has(.jsoneditor-removable):not(:hover)
+    > tr:has(.jsoneditor-removable):not(:hover):not(:has(.jsoneditor-field:focus)):not(
+      :has(.jsoneditor-value:focus)
+    )
     button.jsoneditor-contextmenu-button {
     visibility: hidden;
   }
@@ -91,41 +93,54 @@ const EditorContainer = styled.div`
   }
 `;
 
+/**
+ * Recursively look through the schema to find what fields are available at the given path
+ * @param {*} schema schema at current level of the path
+ * @param {*} path remaining path to drill through in the schema
+ * @param {*} currentJson json data at current level of the path (used to filter out fields currently in use)
+ */
 const getFieldAutocompleteOptions = (schema, path, currentJson) => {
   if (!schema.properties && !schema.additionalProperties) {
     return null;
   }
 
   if (path.length === 0) {
-    // Only show fields that haven't been used
-    const currentFields = Object.keys(currentJson);
-    return Object.keys(schema.properties).filter(field => !currentFields.includes(field));
+    // Recursion complete
+    const usedFields = Object.keys(currentJson);
+    const unusedFields = Object.keys(schema.properties).filter(
+      field => !usedFields.includes(field),
+    );
+    return unusedFields;
   }
 
   const [nextPathDepth, ...restOfPath] = path;
-  return getFieldAutocompleteOptions(
-    schema.properties?.[nextPathDepth] || schema.additionalProperties || {},
-    restOfPath,
-    currentJson[nextPathDepth],
-  );
+
+  // schema.additionalProperties should be used if there are no explicit fields defined at that level
+  const nextSchema = schema.properties?.[nextPathDepth] || schema.additionalProperties;
+  return getFieldAutocompleteOptions(nextSchema || {}, restOfPath, currentJson[nextPathDepth]);
 };
 
+/**
+ * Recursively look through the schema to find what options are available at the given path
+ * @param {*} schema schema at current level of the path
+ * @param {*} path remaining path to drill through in the schema
+ */
 const getValueAutocompleteOptions = (schema, path) => {
   if (path.length === 0) {
+    // Recursion complete
     if (schema.enum) {
-      return schema.enum;
+      return schema.enum; // There is a set list of options, just return these
     }
     if (schema.type === 'boolean') {
-      return ['true', 'false'];
+      return ['true', 'false']; // Booleans can only be true or false
     }
     return null;
   }
 
   const [nextPathDepth, ...restOfPath] = path;
-  return getValueAutocompleteOptions(
-    schema.properties?.[nextPathDepth] || schema.additionalProperties || {},
-    restOfPath,
-  );
+  // schema.additionalProperties should be used if there are no explicit fields defined at that level
+  const nextSchema = schema.properties?.[nextPathDepth] || schema.additionalProperties;
+  return getValueAutocompleteOptions(nextSchema || {}, restOfPath);
 };
 
 const AUTOCOMPLETE_TRIGGER_STATES = {
@@ -160,27 +175,18 @@ export const JsonTreeEditor = props => {
         : valueAutocomplete(path),
   };
   const onCreateMenu = (items, { path }) => {
-    // Remove separators and the Type, Duplicate, Extract, and Insert buttons as they aren't really needed
-    const filteredItems = items
-      .filter(({ type }) => type !== 'separator')
-      .filter(({ text }) => text !== 'Type')
-      .filter(({ text }) => text !== 'Duplicate')
-      .filter(({ text }) => text !== 'Extract')
-      .filter(({ text }) => text !== 'Append')
-      .filter(({ text }) => text !== 'Insert');
+    const menu = [];
 
-    // Strip submenu from Append button since Auto does the job
-    const mappedItems = filteredItems.map(item => {
-      if (item.text !== 'Append') return item;
-      const { submenu, ...restOfItem } = item;
-      return restOfItem;
-    });
+    // If the field can be removed, add the remove button to this list
+    const removeButton = items.find(({ text }) => text === 'Remove');
+    if (removeButton) {
+      menu.push(removeButton);
+    }
 
     const node = editorRef.current.node.findNodeByPath(path);
-
     if (node.type === 'array') {
       // Insert an item into an array
-      mappedItems.unshift({
+      menu.unshift({
         text: 'Insert',
         click: () => {
           node.setValue([...node.getValue(), '']);
@@ -191,7 +197,7 @@ export const JsonTreeEditor = props => {
 
     if (node.type === 'object') {
       // Add a key into an object
-      mappedItems.unshift({
+      menu.unshift({
         text: 'Insert',
         click: () => {
           node.setValue({ ...node.getValue(), '': '' });
@@ -202,31 +208,19 @@ export const JsonTreeEditor = props => {
     }
 
     // If just one option in the menu, we treat the menu button like it does that action
-    if (mappedItems.length === 1) {
-      mappedItems[0].click();
+    if (menu.length === 1) {
+      menu[0].click();
       return null;
     }
 
-    return mappedItems;
-  };
-
-  const getNodeFromTarget = target => {
-    let t = target;
-    while (t) {
-      if (t.node) {
-        return t.node;
-      }
-      t = t.parentNode;
-    }
-
-    return undefined;
+    return menu;
   };
 
   // Auto doesn't support converting to object, so adding the functionality here
-  const convertToObjectOrArray = event => {
+  const convertToObjectOrArray = (event, path) => {
     if (event.type !== 'input') return;
 
-    const jsonEditorNode = getNodeFromTarget(event.target);
+    const jsonEditorNode = editorRef.current.node.findNodeByPath(path);
     if (jsonEditorNode.type === 'auto') {
       if (jsonEditorNode.value === '{}') {
         jsonEditorNode.setValue({});
@@ -249,7 +243,7 @@ export const JsonTreeEditor = props => {
   const onEvent = (node, event) => {
     switch (event.type) {
       case 'input': {
-        convertToObjectOrArray(event);
+        convertToObjectOrArray(event, node.path);
         updateAutocompleteTrigger(node);
         break;
       }
