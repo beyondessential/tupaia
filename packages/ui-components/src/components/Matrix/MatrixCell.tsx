@@ -26,7 +26,7 @@ const DataCell = styled(Cell)`
 `;
 
 const DataCellContent = styled.div<{
-  $characterLength: number;
+  $characterLength?: number;
 }>`
   height: 100%;
   width: 100%;
