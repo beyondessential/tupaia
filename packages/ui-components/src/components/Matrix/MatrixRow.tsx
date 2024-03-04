@@ -14,7 +14,7 @@ import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixCont
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
 
-const depthCalc = (depth: number) => `${2.5 + depth * 2}rem`;
+const depthCalc = (depth: number) => `${1.5 + depth * 2}rem`;
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded?: boolean;
@@ -147,6 +147,12 @@ const HeaderCell = styled(Cell).attrs({
   padding-inline-end: 0;
 `;
 
+const ExpandableRowHeaderCellComponent = styled(HeaderCell)`
+  padding-inline-start: ${({ $depth }) => {
+    if ($depth === 0) return '0.3rem';
+  }};
+`;
+
 type MatrixRowTitle = MatrixRowType['title'];
 interface MatrixRowProps {
   row: MatrixRowType;
@@ -174,7 +180,7 @@ const ExpandableRowHeaderCell = ({
   toggleExpandedRows: () => void;
 }) => {
   return (
-    <HeaderCell $depth={depth}>
+    <ExpandableRowHeaderCellComponent $depth={depth}>
       <ExpandableRowHeaderCellContent
         aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
         onClick={toggleExpandedRows}
@@ -183,7 +189,7 @@ const ExpandableRowHeaderCell = ({
         <ExpandIcon $expanded={isExpanded} />
         <span>{children}</span>
       </ExpandableRowHeaderCellContent>
-    </HeaderCell>
+    </ExpandableRowHeaderCellComponent>
   );
 };
 
