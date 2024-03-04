@@ -5,10 +5,12 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { MeasureType } from '@tupaia/types';
+import { LegendProps as BaseLegendProps, Series, SpectrumSeries } from '../../types';
 import { MarkerLegend } from './MarkerLegend';
 import { SpectrumLegend } from './SpectrumLegend';
-import { MeasureType } from '@tupaia/types';
-import { LegendProps as BaseLegendProps, Series, MeasureTypeLiteral } from '../../types';
+
+type MeasureTypeLiteral = `${MeasureType}` | 'popup-only';
 
 const LegendFrame = styled.div<{
   isDisplayed: boolean;
@@ -33,25 +35,9 @@ const LegendName = styled.div`
   margin: auto 0.6rem;
 `;
 
-const coloredMeasureTypes = [MeasureType.COLOR, MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM];
-
 // This is a workaround for type errors we get when trying to use Array.includes with a subset of a union type. This solution comes from https://github.com/microsoft/TypeScript/issues/51881
 const checkMeasureType = (item: MeasureTypeLiteral, subset: MeasureTypeLiteral[]) =>
   (subset as ReadonlyArray<MeasureTypeLiteral>).includes(item);
-
-const NullLegend = () => null;
-
-const getLegendComponent = (measureType: MeasureTypeLiteral) => {
-  switch (measureType) {
-    case MeasureType.SHADED_SPECTRUM:
-    case MeasureType.SPECTRUM:
-      return SpectrumLegend;
-    case MeasureType.RADIUS:
-      return NullLegend;
-    default:
-      return MarkerLegend;
-  }
-};
 
 interface LegendProps extends BaseLegendProps {
   className?: string;
@@ -86,24 +72,24 @@ export const Legend = React.memo(
     const measureInfo = currentMapOverlayCodes.reduce((results, mapOverlayCode) => {
       // measure info for mapOverlayCode may not exist when location changes.
       const baseSerieses = baseMeasureInfo[mapOverlayCode]?.[seriesesKey] || [];
-      const serieses = baseSerieses.filter(
-        ({ type, hideFromLegend, values = [], min, max, noDataColour }: Series) => {
-          const seriesType = type as MeasureTypeLiteral;
-          // if type is radius or popup-only, don't create a legend
-          if (checkMeasureType(seriesType, [MeasureType.RADIUS, MeasureType.POPUP_ONLY]))
-            return false;
+      const serieses = baseSerieses.filter((series: Series) => {
+        const { type, hideFromLegend, values = [] } = series;
 
-          // if hideFromLegend is true, don't create a legend
-          if (hideFromLegend) return false;
+        // if type is radius or popup-only, don't create a legend
+        if (checkMeasureType(type, [MeasureType.RADIUS, 'popup-only'])) return false;
 
-          // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
-          if (checkMeasureType(seriesType, [MeasureType.SHADED_SPECTRUM, MeasureType.SPECTRUM]))
-            return noDataColour
-              ? true
-              : !(min === null || min === undefined || max === null || max === undefined);
-          return values.filter(value => !value?.hideFromLegend).length > 0;
-        },
-      );
+        // if hideFromLegend is true, don't create a legend
+        if (hideFromLegend) return false;
+
+        // if type is spectrum or shaded-spectrum, only create a legend if min and max are set OR noDataColour is set. If noDataColour is not set, that means hideNullFromLegend has been set as true in the map overlay config. Spectrum legends 'values' property will always be []
+        if (checkMeasureType(type, [MeasureType.SPECTRUM, MeasureType.SHADED_SPECTRUM])) {
+          const { min, max, noDataColour } = series as SpectrumSeries;
+          return noDataColour
+            ? true
+            : !(min === null || min === undefined || max === null || max === undefined);
+        }
+        return values.filter(value => !value?.hideFromLegend).length > 0;
+      });
       return { ...results, [mapOverlayCode]: { serieses } };
     }, {}) as {
       [mapOverlayCode: string]: {
@@ -125,7 +111,11 @@ export const Legend = React.memo(
           const hasIconLayer = baseSerieses.some(l => l.type === MeasureType.ICON);
           const hasRadiusLayer = baseSerieses.some(l => l.type === MeasureType.RADIUS);
           const hasColorLayer = baseSerieses.some(l =>
-            checkMeasureType(l.type as MeasureTypeLiteral, coloredMeasureTypes),
+            checkMeasureType(l.type, [
+              MeasureType.COLOR,
+              MeasureType.SPECTRUM,
+              MeasureType.SHADED_SPECTRUM,
+            ]),
           );
           const isDisplayed =
             !displayedMapOverlayCodes || displayedMapOverlayCodes.includes(mapOverlayCode);
@@ -133,23 +123,19 @@ export const Legend = React.memo(
           return serieses
             .sort(a => (a.type === MeasureType.COLOR ? -1 : 1)) // color series should sit at the top
             .map((series, index) => {
-              const { type } = series;
-              const LegendComponent = getLegendComponent(type as MeasureTypeLiteral);
               return (
-                <React.Fragment key={series.key}>
-                  <SeriesContainer className={className} isDisplayed={isDisplayed}>
-                    {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
-                    <LegendComponent
-                      hasIconLayer={hasIconLayer}
-                      hasRadiusLayer={hasRadiusLayer}
-                      hasColorLayer={hasColorLayer}
-                      series={series}
-                      setValueHidden={setValueHidden}
-                      hiddenValues={hiddenValues}
-                    />
-                  </SeriesContainer>
+                <SeriesContainer className={className} isDisplayed={isDisplayed} key={series.key}>
+                  {legendsHaveSameType && <LegendName>{`${series.name}: `}</LegendName>}
+                  <LegendComponent
+                    series={series}
+                    hasIconLayer={hasIconLayer}
+                    hasColorLayer={hasColorLayer}
+                    hasRadiusLayer={hasRadiusLayer}
+                    setValueHidden={setValueHidden}
+                    hiddenValues={hiddenValues}
+                  />
                   {index < serieses.length - 1 && SeriesDivider && <SeriesDivider />}
-                </React.Fragment>
+                </SeriesContainer>
               );
             });
         })}
@@ -157,3 +143,50 @@ export const Legend = React.memo(
     );
   },
 );
+
+type LegendComponentProps = {
+  series: Series;
+  hasIconLayer: boolean;
+  hasColorLayer: boolean;
+  hasRadiusLayer: boolean;
+  hiddenValues: LegendProps['hiddenValues'];
+  setValueHidden: LegendProps['setValueHidden'];
+};
+
+/**
+ * utility component for rendering the correct legend based on the series type, so that the correct props get passed to the correct legend component, and typescript doesn't complain
+ */
+const LegendComponent = ({
+  series,
+  hasIconLayer,
+  hasColorLayer,
+  hasRadiusLayer,
+  hiddenValues,
+  setValueHidden,
+}: LegendComponentProps) => {
+  const { type } = series;
+  switch (type) {
+    case MeasureType.SHADED_SPECTRUM:
+    case MeasureType.SPECTRUM:
+      return (
+        <SpectrumLegend
+          series={series}
+          setValueHidden={setValueHidden}
+          hiddenValues={hiddenValues}
+        />
+      );
+    case MeasureType.RADIUS:
+      return null;
+    default:
+      return (
+        <MarkerLegend
+          hasIconLayer={hasIconLayer}
+          hasRadiusLayer={hasRadiusLayer}
+          hasColorLayer={hasColorLayer}
+          series={series}
+          setValueHidden={setValueHidden}
+          hiddenValues={hiddenValues}
+        />
+      );
+  }
+};

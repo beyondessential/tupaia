@@ -31,6 +31,9 @@ export class UserRoute extends Route<UserRequest> {
       first_name: firstName,
       last_name: lastName,
       email,
+      employer,
+      position,
+      mobile_number: mobileNumber,
       preferences = {},
     } = await ctx.services.central.getUser();
 
@@ -55,8 +58,13 @@ export class UserRoute extends Route<UserRequest> {
 
     return {
       userName: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
       email,
       id,
+      employer,
+      position,
+      mobileNumber,
       projectId,
       project,
       country,

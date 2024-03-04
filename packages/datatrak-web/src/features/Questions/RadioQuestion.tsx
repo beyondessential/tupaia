@@ -88,7 +88,7 @@ export const RadioQuestion = ({
     <StyledRadioGroup
       aria-describedby={`question_number_${id}`}
       name={name!}
-      onChange={onChange}
+      onChange={e => onChange(e, e.target.value)}
       id={id}
       aria-invalid={invalid}
       value={value || ''}

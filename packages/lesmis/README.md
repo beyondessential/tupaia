@@ -1,48 +1,48 @@
 # @tupaia/lesmis
 
-[Lao PDR Education and Sports Management Information System](https://lesmis.edu.la/)
+[Lao PDR Education and Sports Management Information System](https://lesmis.edu.la)
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the monorepo root, you can run:
 
-- `yarn start` Runs the app in development mode.
-- `yarn start-fullstack` Runs the app and the backend servers in development mode.
-- `yarn test` Launches jest test runner in the interactive watch mode.
-- `yarn build` Builds the app for production to the `build` folder.
+| :------------------------------------ | :--------------------------------------------------------------------------- |
+| `yarn start-stack lesmis   `            | Run the app and the backend servers in development mode                     |
+| `yarn workspace @tupaia/lesmis start`                          | Run the app in development mode                                             |
+| `yarn workspace @tupaia/lesmis test`  | Launch [Jest](https://jestjs.io) test runner in the interactive watch mode |
+| `yarn workspace @tupaia/lesmis build` | Build the app for production to the `build/` folder                         |
 
-## High level overview
+## High-level overview
 
 #### Routing
 
-The lesmis frontend talks to two APIs:
+The **lesmis** frontend talks to two APIs:
 
-- **lesmis-server** for lesmis specific routes needed to run the LESMIS custom frontend.
-- **admin-panel-server** for running the LESMIS Admin Panel, including everything from auth, CRUD and all special routes e.g. viz builder.
-  - Some routes like the CRUD routes are forwarded on to central-server.
+- [**lesmis-server**](../lesmis-server/README.md) for LESMIS-specific routes needed to run the LESMIS custom frontend.
+- [**admin-panel-server**](../admin-panel-server/README.md) for running the LESMIS Admin Panel, including everything from auth, CRUD and all special routes e.g. [Viz Builder](../admin-panel/README.md#viz-builder-app).
+	- Some routes like the CRUD routes are forwarded on to [central-server](../central-server/README.md).
 
-## Coding Conventions
+## Coding conventions
 
 #### Views
 
-A view is a component that connects to a route (ie. react-router Route).
+A view is a component that connects to a route (i.e. react-router Route).
 
-## Environment Variables
+## Environment variables
 
-- You need to set your environment variables in the .env file for the app to work. Go to the .env.examples file to see a list of the required varialbes.
+You need to set your environment variables in the .env file for the app to work. Go to the [.env.example](.env.example) file to see a list of the required variables.
 
-## URL Pattern
+## URL pattern
 
+```
 lesmis.org/:language/:organisationUnitCode:/:view
+```
 
-query params
-year
-reportId
-etc
+Query params: `year`, `reportId`, etc.
 
-example url:
-lesmis.org/en/LA_Xaythany/map/?year=2020&reportId=1235
+Example URL: `lesmis.org/en/LA_Xaythany/map/?year=2020&reportId=1235`
 
-user urls
-lesmis.org/en/login
-lesmis.org/en/profile
+User URLS:
+
+- `lesmis.org/en/login`
+- `lesmis.org/en/profile`
