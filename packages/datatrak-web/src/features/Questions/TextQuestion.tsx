@@ -59,7 +59,7 @@ export const TextQuestion = ({
         label={label}
         name={name!}
         ref={ref}
-        onChange={onChange}
+        onChange={e => onChange(e, (e.target as HTMLInputElement).value)}
         value={value}
         required={required}
         invalid={invalid}

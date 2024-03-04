@@ -19,8 +19,8 @@ describe('GET dashboard visualisations', () => {
   const app = new TestableApp();
   const { models } = app;
 
-  const modernDashboardItem = findTestRecordByCode('dashboardItem', 'Modern_Dashboard_Item');
-  const legacyDashboardItem = findTestRecordByCode('dashboardItem', 'Legacy_Dashboard_Item');
+  const modernDashboardItem = findTestRecordByCode('dashboardItem', 'Modern_Report');
+  const legacyDashboardItem = findTestRecordByCode('dashboardItem', 'Legacy_Report');
   const modernReport = findTestRecordByCode('report', 'Modern_Report');
   const legacyReport = findTestRecordByCode('legacyReport', 'Legacy_Report');
 
@@ -79,13 +79,13 @@ describe('GET dashboard visualisations', () => {
     });
 
     it('Returns an existing modern dashboard visualisation', async () => {
-      const id = getVizId('Modern_Dashboard_Item');
+      const id = getVizId('Modern_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, MODERN_DASHBOARD_VISUALISATION);
     });
 
     it('Returns an existing legacy dashboard visualisation', async () => {
-      const id = getVizId('Legacy_Dashboard_Item');
+      const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
     });
@@ -93,7 +93,7 @@ describe('GET dashboard visualisations', () => {
     it('Returns an existing visualisation with only BES Admin permission', async () => {
       app.revokeAccess();
       await app.grantAccess(besAdminPolicy);
-      const id = getVizId('Legacy_Dashboard_Item');
+      const id = getVizId('Legacy_Report');
       const response = await app.get(`dashboardVisualisations/${id}`);
       expectSuccess(response, LEGACY_DASHBOARD_VISUALISATION);
     });
@@ -104,7 +104,7 @@ describe('GET dashboard visualisations', () => {
       const response = await app.get('dashboardVisualisations', {
         query: {
           filter: {
-            code: ['Modern_Dashboard_Item', 'Legacy_Dashboard_Item'],
+            code: ['Modern_Report', 'Legacy_Report'],
           },
         },
       });

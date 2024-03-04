@@ -1,8 +1,9 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+export { ReferenceProps, PlaintextReferenceProps, LinkReferenceProps } from './common';
 export type {
   ReportConfig,
   StandardReportConfig,
@@ -13,8 +14,17 @@ export type {
   BaseReport,
   ViewDataItem,
   ViewReport,
+  ChartReport,
+  DashboardItemReport,
+  ChartData,
 } from './report';
 export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   DashboardItemConfig,
   BarChartConfig,
   ComposedChartConfig,
@@ -26,14 +36,13 @@ export {
   ValueType,
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
   ViewConfig,
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -42,6 +51,18 @@ export {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
+  ChartPresentationOptions,
+  ViewPresentationOptions,
+  PieChartPresentationOptions,
+  BarChartPresentationOptions,
+  PresentationOptions,
+  ChartType,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
+  ChartConfigT,
+  ChartConfigObject,
+  ComponentConfig,
+  LineChartChartConfig,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
@@ -49,6 +70,12 @@ export {
   MeasureType,
   ScaleType,
   MeasureColorScheme,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
 } from './mapOverlay';
 export {
   SurveyScreenComponentConfig,
@@ -65,3 +92,4 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
+export { VizPeriodGranularity } from './common';

@@ -39,6 +39,7 @@ export async function getCountryAccessList(req, res, next) {
         name: country.name,
         hasAccess: permittedEntityIds.has(country.id),
         accessRequests: entityRequests[country.id] || [],
+        code: country.code,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
 

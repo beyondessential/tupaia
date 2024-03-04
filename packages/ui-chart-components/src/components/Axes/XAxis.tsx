@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { Text, XAxis as XAxisComponent } from 'recharts';
-import { CartesianChartConfig } from '@tupaia/types';
+import { ChartData, ChartType } from '@tupaia/types';
 import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
-import { VerticalTick } from './VerticalTick';
 import { DARK_BLUE } from '../../constants';
-import { ChartType, DataProps, ViewContent } from '../../types';
+import { CartesianChartViewContent } from '../../types';
+import { VerticalTick } from './VerticalTick';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -52,19 +52,19 @@ const renderXAxisLabel = (
 
 const BASE_H = 40;
 
-const calculateXAxisHeight = (data: DataProps[], isExporting: boolean) => {
+const calculateXAxisHeight = (data: ChartData[], isExporting: boolean) => {
   if (getIsTimeSeries(data)) {
     return BASE_H;
   }
 
   if (isExporting) {
-    return Math.min(BASE_H + Math.max(...data.map(item => item.name?.length)) || 5 * 6, 190);
+    return Math.min(BASE_H + Math.max(...data.map(item => item?.name?.length ?? 0)) || 5 * 6, 190);
   }
   return BASE_H;
 };
 
 interface XAxisProps {
-  viewContent: ViewContent<CartesianChartConfig>;
+  viewContent: CartesianChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
@@ -72,7 +72,7 @@ interface XAxisProps {
 export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: XAxisProps) => {
   const fillColor = isExporting ? DARK_BLUE : getContrastTextColor();
   const { Bar, Composed } = ChartType;
-  const { chartType, chartConfig = {}, data } = viewContent;
+  const { chartType, chartConfig, data } = viewContent;
   const axisHeight = calculateXAxisHeight(data, isExporting);
   const isTimeSeries = getIsTimeSeries(data);
 
@@ -94,8 +94,20 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   };
 
   const formatXAxisTick = (tickData: string) => {
-    const { periodGranularity, presentationOptions = {} } = viewContent;
-    const { periodTickFormat } = presentationOptions;
+    const periodGranularity =
+      'periodGranularity' in viewContent ? viewContent.periodGranularity : undefined;
+    const getPeriodTickFormat = () => {
+      if (
+        'presentationOptions' in viewContent &&
+        viewContent.presentationOptions &&
+        'periodTickFormat' in viewContent.presentationOptions
+      ) {
+        return viewContent.presentationOptions.periodTickFormat;
+      }
+      return undefined;
+    };
+
+    const periodTickFormat = getPeriodTickFormat();
 
     return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
@@ -133,7 +145,9 @@ export const XAxis = ({ viewContent, isExporting = false, isEnlarged = false }: 
   const getXAxisPadding = () => {
     const hasBars =
       chartType === Bar ||
-      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar);
+      (chartType === Composed &&
+        chartConfig &&
+        Object.values(chartConfig).some(({ chartType: composedType }) => composedType === Bar));
 
     if (hasBars && data.length > 1 && isTimeSeries) {
       const paddingKey = isEnlarged ? 'enlarged' : 'preview';
