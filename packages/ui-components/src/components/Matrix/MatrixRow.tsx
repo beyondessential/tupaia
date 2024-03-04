@@ -30,7 +30,7 @@ const RowHeaderCellContent = styled.div`
   height: 100%;
   width: 100%;
   padding-block: 0.7rem;
-  padding-inline: 0.7rem 1.5rem;
+  padding-inline-end: 0.7rem;
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -38,19 +38,13 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   variant: 'text',
   color: 'default',
   disableRipple: true,
-})<
-  ButtonProps & {
-    $depth: number;
-  }
->`
+})<ButtonProps>`
   text-transform: none;
   text-align: left;
   border-radius: 0;
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
-  padding-inline-start: ${({ $depth }) =>
-    $depth > 0
-      ? '0'
-      : '0.7rem'}; // only add padding for the top level expandable row header cell so it doesn't look too close to the edge
+  padding-inline-start: 0; // the button gives the visual appearance of more padding on the left so reset this to 0
+
   svg {
     margin-inline-end: 0.5rem;
   }
@@ -140,7 +134,7 @@ const HeaderCell = styled(Cell).attrs({
   left: 0;
   z-index: 2;
   // indent each nested level slightly more
-  padding-inline-start: ${({ $depth }) => ($depth > 0 ? depthCalc($depth) : 0)};
+  padding-inline-start: ${({ $depth }) => $depth > 0 && depthCalc($depth)};
   // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell
   padding-block-start: 0;
   padding-block-end: 0;
@@ -179,7 +173,6 @@ const ExpandableRowHeaderCell = ({
         aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
         onClick={toggleExpandedRows}
         disabled={disableExpandButton}
-        $depth={depth}
       >
         <ExpandIcon $expanded={isExpanded} />
         <span>{children}</span>

@@ -119,7 +119,7 @@ theme.overrides = {
     root: {
       backgroundColor: 'inherit',
       fontSize: '0.875rem',
-      paddingBlock: '0.8rem',
+      paddingBlock: '0.7rem',
       paddingInline: '1.56rem',
       lineHeight: '1.4',
       borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below

@@ -37,15 +37,19 @@ const DataCell = styled(Cell)`
   position: relative;
   z-index: 1;
   height: 100%;
-  word-break: break-word;
 `;
 
-const DataCellContent = styled.div`
+const DataCellContent = styled.div<{
+  $characterLength: number;
+}>`
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
-  white-space: pre-line;
+  min-width: ${({ $characterLength = 0 }) =>
+    $characterLength > 30
+      ? '25ch'
+      : '10ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
 `;
 
 const ExpandButton = styled(Button)`
@@ -127,8 +131,9 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
     CellComponent = ExpandButton;
   }
   return (
-    <DataCell $characterLength={isDots ? 0 : String(displayValue).length}>
+    <DataCell>
       <DataCellContent
+        $characterLength={isDots ? 0 : String(displayValue).length}
         as={CellComponent}
         onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}
       >
