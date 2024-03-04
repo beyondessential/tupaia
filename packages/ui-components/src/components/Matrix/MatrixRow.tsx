@@ -127,12 +127,18 @@ const HeaderCell = styled(Cell).attrs({
 })<{
   $depth: number;
 }>`
-  word-break: break-word;
   position: sticky;
-  min-width: 12rem; // set a min-width so that nested row headers don't end up wrapping too much
   top: 0;
   left: 0;
   z-index: 2;
+  min-width: ${({ $depth, $characterLength = 0 }) => {
+    if ($depth > 0) {
+      if ($characterLength < 30) return `calc(20ch + ${depthCalc($depth)})`; // make up for indenting the content
+      return `calc(10ch + ${depthCalc($depth)})`;
+    }
+    if ($characterLength < 30) return '20ch';
+    return '10ch';
+  }};
   // indent each nested level slightly more
   padding-inline-start: ${({ $depth }) => $depth > 0 && depthCalc($depth)};
   // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell

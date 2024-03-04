@@ -49,7 +49,7 @@ const DataCellContent = styled.div<{
   min-width: ${({ $characterLength = 0 }) =>
     $characterLength > 30
       ? '25ch'
-      : '10ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
+      : '13ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
 `;
 
 const ExpandButton = styled(Button)`
