@@ -30,7 +30,7 @@ const RowHeaderCellContent = styled.div`
   height: 100%;
   width: 100%;
   padding-block: 0.7rem;
-  padding-inline: 0 1.5rem;
+  padding-inline: 0.7rem 1.5rem;
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -266,7 +266,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const isCategory = children ? children.length > 0 : false;
 
   const getClassNames = () => {
-    const highlightedClass = isExpanded || depth > 0 ? 'highlighted' : '';
+    const highlightedClass = (isExpanded && !disableExpand) || depth > 0 ? 'highlighted' : '';
     const matrixClass = 'matrix';
     const childClass = depth > 0 ? 'child' : 'parent';
 
