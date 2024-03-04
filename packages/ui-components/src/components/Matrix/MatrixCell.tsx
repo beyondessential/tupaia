@@ -25,13 +25,17 @@ const DataCell = styled(Cell)`
   height: 100%;
 `;
 
-const DataCellContent = styled.div`
+const DataCellContent = styled.div<{
+  $characterLength: number;
+}>`
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
-  white-space: pre-line;
-  word-break: break-word;
+  min-width: ${({ $characterLength = 0 }) =>
+    $characterLength > 30
+      ? '25ch'
+      : '13ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
 `;
 
 const TooltipSubheading = styled.h3`
@@ -149,8 +153,10 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
   const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
 
   return (
-    <DataCell $characterLength={isPillCell ? 0 : String(displayValue).length}>
-      <DataCellContent>{displayValue}</DataCellContent>
+    <DataCell>
+      <DataCellContent $characterLength={isPillCell ? 0 : String(displayValue).length}>
+        {displayValue}
+      </DataCellContent>
     </DataCell>
   );
 };

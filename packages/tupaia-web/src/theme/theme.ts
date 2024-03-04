@@ -99,7 +99,7 @@ theme.overrides = {
     root: {
       border: `1px solid ${theme.palette.divider}`, // add the border to the container so that when scrolling, the top and left borders of the table can still be seen
       ['&:has(.MuiTable-stickyHeader)']: {
-        maxHeight: 'clamp(20rem,70vh,60rem)', // when the table has a sticky header, set a max height so that it can scroll
+        maxHeight: 'clamp(20rem,60rem,70vh)', // when the table has a sticky header, set a max height so that it can scroll
       },
     },
   },
@@ -119,7 +119,7 @@ theme.overrides = {
     root: {
       backgroundColor: 'inherit',
       fontSize: '0.875rem',
-      paddingBlock: '0.8rem',
+      paddingBlock: '0.7rem',
       paddingInline: '1.56rem',
       lineHeight: '1.4',
       borderBottom: 'none', // remove the bottom border from all cells, and it will be applied to the header cells below

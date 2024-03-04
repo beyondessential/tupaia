@@ -15,6 +15,10 @@ const HeaderCell = styled(Cell)`
     z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
     max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
   }
+  min-width: ${({ $characterLength = 0 }) =>
+    $characterLength > 30
+      ? '23ch'
+      : '12ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
 `;
 
 const ColGroup = styled.colgroup`

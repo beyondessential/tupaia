@@ -14,7 +14,7 @@ import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixCont
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
 
-const depthCalc = (depth: number) => `${2.5 + depth * 2}rem`;
+const depthCalc = (depth: number) => `${1.5 + depth * 2}rem`;
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
   $expanded?: boolean;
@@ -30,7 +30,7 @@ const RowHeaderCellContent = styled.div`
   height: 100%;
   width: 100%;
   padding-block: 0.7rem;
-  padding-inline: 1.5rem;
+  padding-inline-end: 0.7rem;
 `;
 
 const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
@@ -42,8 +42,9 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
   text-transform: none;
   text-align: left;
   border-radius: 0;
-  padding-inline-start: 0.7rem; // reduce this on expand buttons because the icon makes the button look like it has extra padding
   min-width: 10rem; // so that the cell doesn't wrap too much on small screens
+  padding-inline-start: 0; // the button gives the visual appearance of more padding on the left so reset this to 0
+
   svg {
     margin-inline-end: 0.5rem;
   }
@@ -85,7 +86,10 @@ const TableRow = styled(MuiTableRow)<{
     }
   }
   // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
-  &.child + &.parent.highlighted {
+  &.child
+    + &.parent.highlighted:not(
+      :has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible))
+    ) {
     ${Cell}:before {
       border-width: 1px 0 0 0;
       :is(th) {
@@ -98,19 +102,17 @@ const TableRow = styled(MuiTableRow)<{
 
   // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
   &:has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible)) {
-    ${Cell} {
-      :before {
-        content: ''; // set this to an empty string so the border always shows when the button is hovered
-        width: 100%;
-        border-color: ${({ theme }) => theme.palette.text.primary};
-        border-width: 1px 0;
-      }
-      :first-child:before {
-        border-left-width: 1px; // add a left border to the first cell of the row
-      }
-      :last-child:before {
-        border-right-width: 1px; // add a right border to the last cell of the row
-      }
+    ${Cell}:before {
+      content: ''; // set this to an empty string so the border always shows when the button is hovered
+      width: 100%;
+      border-color: ${({ theme }) => theme.palette.text.primary};
+      border-width: 1px 0;
+    }
+    :first-child:before {
+      border-left-width: 1px; // add a left border to the first cell of the row
+    }
+    :last-child:before {
+      border-right-width: 1px; // add a right border to the last cell of the row
     }
     // remove the top border from the first cell of the next row to fix the double border issue
     + tr ${Cell}:before {
@@ -125,18 +127,30 @@ const HeaderCell = styled(Cell).attrs({
 })<{
   $depth: number;
 }>`
-  word-break: break-word;
   position: sticky;
-  min-width: 12rem; // set a min-width so that nested row headers don't end up wrapping too much
   top: 0;
   left: 0;
   z-index: 2;
+  min-width: ${({ $depth, $characterLength = 0 }) => {
+    if ($depth > 0) {
+      if ($characterLength < 30) return `calc(20ch + ${depthCalc($depth)})`; // make up for indenting the content
+      return `calc(10ch + ${depthCalc($depth)})`;
+    }
+    if ($characterLength < 30) return '20ch';
+    return '10ch';
+  }};
   // indent each nested level slightly more
-  padding-inline-start: ${({ $depth }) => ($depth > 0 ? depthCalc($depth) : 0)};
+  padding-inline-start: ${({ $depth }) => $depth > 0 && depthCalc($depth)};
   // reset the padding so that we can control it in the content because we have indented content with a top border that covers the remaining width of the cell
   padding-block-start: 0;
   padding-block-end: 0;
   padding-inline-end: 0;
+`;
+
+const ExpandableRowHeaderCellComponent = styled(HeaderCell)`
+  padding-inline-start: ${({ $depth }) => {
+    if ($depth === 0) return '0.3rem';
+  }};
 `;
 
 type MatrixRowTitle = MatrixRowType['title'];
@@ -166,7 +180,7 @@ const ExpandableRowHeaderCell = ({
   toggleExpandedRows: () => void;
 }) => {
   return (
-    <HeaderCell $depth={depth}>
+    <ExpandableRowHeaderCellComponent $depth={depth}>
       <ExpandableRowHeaderCellContent
         aria-label={`${isExpanded ? 'Collapse' : 'Expand'} row`}
         onClick={toggleExpandedRows}
@@ -175,7 +189,7 @@ const ExpandableRowHeaderCell = ({
         <ExpandIcon $expanded={isExpanded} />
         <span>{children}</span>
       </ExpandableRowHeaderCellContent>
-    </HeaderCell>
+    </ExpandableRowHeaderCellComponent>
   );
 };
 
@@ -257,7 +271,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const isCategory = children ? children.length > 0 : false;
 
   const getClassNames = () => {
-    const highlightedClass = isExpanded || depth > 0 ? 'highlighted' : '';
+    const highlightedClass = (isExpanded && !disableExpand) || depth > 0 ? 'highlighted' : '';
     const matrixClass = 'matrix';
     const childClass = depth > 0 ? 'child' : 'parent';
 
