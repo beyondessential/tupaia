@@ -142,6 +142,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           onChange={(_, value) => setEntityAttributesFilter(value)}
           value={entityAttributesFilter}
           stringify={false}
+          helperText='This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. E.g. {"facility_type": "Hospital"}'
         />
       </Body>
       <Footer />
