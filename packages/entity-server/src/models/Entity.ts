@@ -16,9 +16,7 @@ export type EntityFields = Readonly<{
   region: string | null;
   point: string | null;
   bounds: string | null;
-  attributes: {
-    type?: string;
-  };
+  attributes: Record<string, unknown>;
 }>;
 
 export type EntityQueryFields = EntityFields & {

@@ -14,6 +14,8 @@ const NESTED_FIELD_DELIMITER = '_';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
+const ATTRIBUTES_FILTER_PREFIX = 'attributes_';
+
 type NestedFilterQueryFields = Flatten<
   Pick<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>>,
   typeof NESTED_FIELD_DELIMITER
@@ -38,29 +40,28 @@ const filterableFields: (keyof EntityFilterQuery)[] = [
   'name',
   'image_url',
   'type',
-  'attributes_type',
   'generational_distance',
 ];
 const isFilterableField = (field: string): field is keyof EntityFilterQuery =>
-  (filterableFields as string[]).includes(field);
+  (filterableFields as string[]).includes(field) || field.startsWith(ATTRIBUTES_FILTER_PREFIX);
 
-const nestedFields: (keyof NestedFilterQueryFields)[] = ['attributes_type'];
 const isNestedField = (field: keyof EntityFilterQuery): field is keyof NestedFilterQueryFields =>
-  (nestedFields as (keyof EntityFilterQuery)[]).includes(field);
+  field.startsWith(ATTRIBUTES_FILTER_PREFIX);
 
 const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distance'];
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
   (numericFields as (keyof EntityFilterQuery)[]).includes(field);
 
-type JsonBKey<
-  T extends keyof NestedFilterQueryFields
-> = T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
-  ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
-  : T;
+type JsonBKey<T extends keyof NestedFilterQueryFields> =
+  T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
+    ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
+    : T;
 
 const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
-  const [field, value] = nestedField.split(NESTED_FIELD_DELIMITER);
-  return [field, value].join(JSONB_FIELD_DELIMITER) as JsonBKey<T>;
+  const field = nestedField.split(NESTED_FIELD_DELIMITER)[0];
+  const values = nestedField.split(`${field}_`)[1];
+
+  return [field, values].join(JSONB_FIELD_DELIMITER) as JsonBKey<T>;
 };
 
 // Inspired by Google Analytics filter: https://developers.google.com/analytics/devguides/reporting/core/v3/reference?hl=en#filters
