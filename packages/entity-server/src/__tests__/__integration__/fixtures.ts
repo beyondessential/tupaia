@@ -95,7 +95,12 @@ export const ENTITIES: Entity[] = [
     code: 'VIRIDIAN',
     name: 'Viridian City',
     type: 'city',
-    attributes: { type: 'gym', gym_type: 'test' },
+    attributes: {
+      type: 'gym',
+      gym: {
+        type: 'fire',
+      },
+    },
   },
   {
     country_code: 'KANTO',

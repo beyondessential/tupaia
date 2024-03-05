@@ -54,7 +54,8 @@ const useMapOverlayEntities = (
           ...Object.entries(entityAttributesFilter).reduce((result, [attribute, filterValue]) => {
             return {
               ...result,
-              [`attributes_${attribute}`]: Array.isArray(filterValue)
+              // convert the filter value to a string if it is an array, so that it gets passed to the server as a comma separated string
+              [`attributes->>${attribute}`]: Array.isArray(filterValue)
                 ? filterValue.join(',')
                 : filterValue,
             };
