@@ -429,14 +429,11 @@
       { "timestamp": 1618617600000, "name": "17th Apr 2021", "cases": 21, "deaths": 0 },
       { "timestamp": 1618704000000, "name": "18th Apr 2021", "cases": 14, "deaths": 0 },
       { "timestamp": 1618790400000, "name": "19th Apr 2021", "cases": 24, "deaths": 0 }
-    ]
+    ],
+    "startDate": "2015-01-01",
+    "endDate": "2021-04-21"
   },
   "config": {
-    "viewId": "COVID_Compose_Daily_Deaths_Vs_Cases",
-    "organisationUnitCode": "AU",
-    "dashboardGroupId": "88",
-    "startDate": "2015-01-01",
-    "endDate": "2021-04-21",
     "name": "Net confirmed cases vs deaths (Daily)",
     "type": "chart",
     "chartType": "composed",
