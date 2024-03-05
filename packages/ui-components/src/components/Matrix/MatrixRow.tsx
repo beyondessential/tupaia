@@ -61,11 +61,9 @@ const ExpandableRowHeaderCellContent = styled(RowHeaderCellContent).attrs({
 `;
 
 const TableRow = styled(MuiTableRow)<{
-  $visible?: boolean;
   $isChild?: boolean;
   $depth: number;
 }>`
-  display: ${({ $visible }) => ($visible ? 'table-row' : 'none')};
   height: 100%; // this is so the modal button for the cell fills the whole height of the cell
   position: relative; // this is so that the hover border can be positioned absolutely over just the row
 
@@ -137,7 +135,7 @@ const HeaderCell = styled(Cell).attrs({
       return `calc(10ch + ${depthCalc($depth)})`;
     }
     if ($characterLength < 30) return '20ch';
-    return '10ch';
+    return '12ch';
   }};
   // indent each nested level slightly more
   padding-inline-start: ${({ $depth }) => $depth > 0 && depthCalc($depth)};
@@ -264,14 +262,14 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const { children, title, onClick } = row;
   const { columns, expandedRows, disableExpand = false } = useContext(MatrixContext);
 
-  const isExpanded = expandedRows.includes(title) || disableExpand;
-  const isVisible = parents.every(parent => expandedRows.includes(parent)) || disableExpand;
+  const isExpanded = expandedRows.includes(title);
   const depth = parents.length;
 
   const isCategory = children ? children.length > 0 : false;
 
   const getClassNames = () => {
-    const highlightedClass = (isExpanded && !disableExpand) || depth > 0 ? 'highlighted' : '';
+    const highlightedClass =
+      isExpanded || depth > 0 || (isCategory && disableExpand) ? 'highlighted' : '';
     const matrixClass = 'matrix';
     const childClass = depth > 0 ? 'child' : 'parent';
 
@@ -285,7 +283,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
 
   return (
     <>
-      <TableRow $visible={isVisible} className={classNames} $isChild={depth > 0} $depth={depth}>
+      <TableRow className={classNames} $isChild={depth > 0} $depth={depth}>
         <RowHeaderCell
           isExpanded={isExpanded}
           depth={depth}
@@ -306,7 +304,7 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
           />
         ))}
       </TableRow>
-      {isExpanded &&
+      {(isExpanded || disableExpand) &&
         children?.map(child => (
           <MatrixRow key={child.title} row={child} parents={[...parents, title]} />
         ))}

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -176,6 +176,7 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
   const { report, isEnlarged } = context;
 
@@ -210,6 +211,11 @@ const MatrixVisual = () => {
   const clearSearchFilter = () => {
     setSearchFilter('');
   };
+
+  useEffect(() => {
+    // if the drillDownId changes, then we need to clear the search filter so that it doesn't persist across different drillDowns
+    clearSearchFilter();
+  }, [activeDrillDownId]);
 
   if (!parsedRows.length && !searchFilter) {
     return (

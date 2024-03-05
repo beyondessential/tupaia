@@ -35,7 +35,7 @@ const DataCellContent = styled.div<{
   min-width: ${({ $characterLength = 0 }) =>
     $characterLength > 30
       ? '25ch'
-      : '13ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
+      : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 `;
 
 const TooltipSubheading = styled.h3`
@@ -151,12 +151,10 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
     );
 
   const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
-
+  const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
-    <DataCell>
-      <DataCellContent $characterLength={isPillCell ? 0 : String(displayValue).length}>
-        {displayValue}
-      </DataCellContent>
+    <DataCell $characterLength={characterLength}>
+      <DataCellContent $characterLength={characterLength}>{displayValue}</DataCellContent>
     </DataCell>
   );
 };
