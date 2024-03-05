@@ -61,7 +61,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
             <MatrixHeader />
             <TableBody>
               {rows.map((row, i) => (
-                <MatrixRow row={row} key={row.title} parents={[]} index={i + 1} />
+                <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />
               ))}
             </TableBody>
           </Table>

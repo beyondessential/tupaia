@@ -49,7 +49,7 @@ const DataCellContent = styled.div<{
   min-width: ${({ $characterLength = 0 }) =>
     $characterLength > 30
       ? '25ch'
-      : '13ch'}; // if the text is long, so that the cell doesn't wrap too much, make it wider
+      : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 `;
 
 const ExpandButton = styled(Button)`
@@ -130,10 +130,12 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   } else if (isDots && value !== undefined) {
     CellComponent = ExpandButton;
   }
+
+  const characterLength = isDots ? 0 : String(displayValue).length;
   return (
-    <DataCell>
+    <DataCell $characterLength={characterLength}>
       <DataCellContent
-        $characterLength={isDots ? 0 : String(displayValue).length}
+        $characterLength={characterLength}
         as={CellComponent}
         onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}
       >
