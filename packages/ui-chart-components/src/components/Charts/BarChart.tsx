@@ -6,10 +6,9 @@
 import React from 'react';
 import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
+import { BarChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
 import { BLUE } from '../../constants';
 import { getIsTimeSeries } from '../../utils';
-import { BarChartViewContent } from '../../types';
 
 interface BarChartProps extends ChartConfigObject {
   dataKey: string;
@@ -18,7 +17,7 @@ interface BarChartProps extends ChartConfigObject {
   isExporting?: boolean;
   exportWithLabels?: boolean;
   data: ChartData[];
-  chartConfig: BarChartViewContent['chartConfig'];
+  chartConfig: BarChartConfig['chartConfig'];
 }
 
 export const BarChart = ({

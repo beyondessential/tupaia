@@ -33,6 +33,8 @@ export type ViewContentT<T> = T & {
   data: ChartData[];
 };
 
+export type CartesianChartConfig = BarChartConfig | LineChartConfig | ComposedChartConfig;
+
 export type BarChartViewContent = ViewContentT<BarChartConfig>;
 export type LineChartViewContent = ViewContentT<LineChartConfig>;
 export type PieChartViewContent = ViewContentT<PieChartConfig>;

@@ -101,7 +101,7 @@ export const DownloadFilesVisual = ({
   if (!isLoading && options.length === 0) {
     return (
       <Container className={className}>
-        <NoData viewContent={config} />
+        <NoData config={config} />
       </Container>
     );
   }

@@ -14,9 +14,9 @@ import {
   Tooltip,
   LegendProps,
 } from 'recharts';
-import { CartesianChartConfig, ChartType, isComposedChartConfig } from '@tupaia/types';
+import { ChartReport, ChartType, isComposedChartConfig } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
-import { LegendPosition, CartesianChartViewContent } from '../types';
+import { LegendPosition, CartesianChartConfig } from '../types';
 import { isMobile } from '../utils';
 import {
   BarChart as BarChartComponent,
@@ -111,19 +111,23 @@ const getMargin = (isExporting: boolean, isEnlarged: boolean) => {
 type CartesianChartType = keyof typeof CHART_TYPE_TO_CONTAINER;
 
 interface CartesianChartProps {
-  viewContent: CartesianChartViewContent;
+  report: ChartReport;
+  config: CartesianChartConfig;
   legendPosition: LegendPosition;
   isEnlarged?: boolean;
   isExporting?: boolean;
 }
 
 export const CartesianChart = ({
-  viewContent,
+  report,
+  config,
   isEnlarged = false,
   isExporting = false,
   legendPosition = 'bottom',
 }: CartesianChartProps) => {
-  const [chartConfig, setChartConfig] = useState(viewContent.chartConfig || {});
+  const initialChartConfig =
+    'chartConfig' in config && config.chartConfig ? config.chartConfig : {};
+  const [chartConfig, setChartConfig] = useState(initialChartConfig);
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>([]);
   // eslint-disable-next-line no-unused-vars
   const [_, setLoaded] = useState(false);
@@ -138,13 +142,9 @@ export const CartesianChart = ({
 
   const isMobileSize = isMobile(isExporting);
 
-  const {
-    chartType: defaultChartType,
-    data,
-    valueType,
-    labelType,
-    renderLegendForOneItem,
-  } = viewContent;
+  const { chartType: defaultChartType, valueType, labelType, renderLegendForOneItem } = config;
+
+  const { data = [] } = report;
 
   const getIsActiveKey = (legendDataKey: string) =>
     activeDataKeys.length === 0 ||
@@ -157,7 +157,7 @@ export const CartesianChart = ({
     if (hasDisabledData && !(LEGEND_ALL_DATA_KEY in newChartConfig)) {
       const getChartType = () => {
         const firstChartConfig = Object.values(chartConfig)[0];
-        if (isComposedChartConfig(viewContent) && 'chartType' in firstChartConfig)
+        if (isComposedChartConfig(config) && 'chartType' in firstChartConfig)
           return firstChartConfig.chartType;
         return defaultChartType || ChartType.Line;
       };
@@ -220,8 +220,7 @@ export const CartesianChart = ({
 
   const { verticalAlign, align, layout } = getLegendAlignment(legendPosition, isExporting);
 
-  const presentationOptions =
-    'presentationOptions' in viewContent ? viewContent.presentationOptions : {};
+  const presentationOptions = 'presentationOptions' in config ? config.presentationOptions : {};
 
   /**
    * Unfortunately, recharts does not work with wrapped components called as jsx for some reason,
@@ -234,15 +233,15 @@ export const CartesianChart = ({
         margin={getMargin(isExporting, isEnlarged)}
         reverseStackOrder={isExporting}
       >
-        {XAxisComponent({ isEnlarged, isExporting, viewContent })}
-        {YAxes({ viewContent, chartDataConfig, isExporting, isEnlarged })}
+        {XAxisComponent({ isEnlarged, isExporting, config, report })}
+        {YAxes({ config, report, chartDataConfig, isExporting, isEnlarged })}
         <Tooltip
           filterNull={false}
           content={
             <CustomTooltip
               valueType={valueType}
               labelType={labelType}
-              periodGranularity={viewContent.periodGranularity}
+              periodGranularity={config.periodGranularity}
               chartConfig={chartConfig}
               presentationOptions={presentationOptions}
               chartType={defaultChartType}
@@ -282,7 +281,7 @@ export const CartesianChart = ({
               exportWithLabels: presentationOptions?.exportWithLabels,
             });
           })}
-        {ReferenceLines({ viewContent, isExporting, isEnlarged })}
+        {ReferenceLines({ report, config, isExporting, isEnlarged })}
       </ChartContainer>
     </ResponsiveContainer>
   );

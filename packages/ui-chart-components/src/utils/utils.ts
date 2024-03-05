@@ -8,6 +8,7 @@ import { useTheme } from '@material-ui/core/styles';
 import {
   CartesianChartPresentationOptions,
   ChartData,
+  ChartReport,
   ChartType,
   VizPeriodGranularity,
 } from '@tupaia/types';
@@ -54,17 +55,15 @@ export const getContrastTextColor = () => {
   return theme.palette.type === 'light' ? theme.palette.text.secondary : 'white';
 };
 
-export const getIsChartData = ({
-  chartType,
-  data,
-}: {
-  chartType: ChartType;
-  data: ChartData[];
-}): boolean => {
+export const getIsChartData = (chartType: ChartType, report: ChartReport): boolean => {
   // If all segments of a pie chart are "0", display the no data message
-  if (chartType === ChartType.Pie && data && data.every(segment => segment.value === 0)) {
+  if (
+    chartType === ChartType.Pie &&
+    report?.data &&
+    report?.data.every(segment => segment.value === 0)
+  ) {
     return false;
   }
 
-  return data && data.length > 0;
+  return (report?.data && report?.data.length > 0) || false;
 };

@@ -8,7 +8,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { SmallAlert } from './Alert';
 
-const getNoDataString = ({ noDataMessage, source, startDate, endDate }) => {
+const getNoDataString = ({ config, report }) => {
+  const { noDataMessage, source } = config;
+  const { startDate, endDate } = report;
   if (noDataMessage) {
     return noDataMessage;
   }
@@ -30,18 +32,20 @@ const StyledNoData = styled(SmallAlert)`
   margin-right: auto;
 `;
 
-export const NoData = ({ viewContent }) => {
+export const NoData = ({ config, report }) => {
   return (
     <StyledNoData severity="info" variant="standard">
-      {getNoDataString(viewContent)}
+      {getNoDataString(config, report)}
     </StyledNoData>
   );
 };
 
 NoData.propTypes = {
-  viewContent: PropTypes.object,
+  config: PropTypes.object,
+  report: PropTypes.object,
 };
 
 NoData.defaultProps = {
-  viewContent: null,
+  config: {},
+  report: {},
 };
