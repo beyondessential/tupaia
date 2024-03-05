@@ -151,7 +151,7 @@ export const PieChart = ({
         const { name, ...otherKeyValues } = item;
 
         return {
-          name: getPresentationOption(name, 'label') ?? name, // Map names to labels if available
+          name: getPresentationOption(name, 'label') || name, // Map names to labels if available
           ...otherKeyValues,
           originalItem: item,
         };
