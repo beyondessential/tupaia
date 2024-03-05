@@ -10,6 +10,8 @@ import {
   ChartData,
   ChartReport,
   ChartType,
+  DashboardItemReport,
+  ViewDataItem,
   VizPeriodGranularity,
 } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -45,7 +47,10 @@ export const formatTimestampForChart = (
   return moment.utc(timestamp).format(formatString);
 };
 
-export const getIsTimeSeries = (data: ChartData[]) => data && data.length > 0 && data[0]?.timestamp;
+export const getIsTimeSeries = (data?: ChartData[] | ViewDataItem[]) => {
+  if (!data) return false;
+  return data.length > 0 && data[0]?.timestamp;
+};
 
 export const isDataKey = (key: string) =>
   !(['name', 'timestamp'].includes(key) || key.substr(-9) === '_metadata');
@@ -66,4 +71,8 @@ export const getIsChartData = (chartType: ChartType, report: ChartReport): boole
   }
 
   return (report?.data && report?.data.length > 0) || false;
+};
+
+export const isChartReport = (report?: DashboardItemReport): report is ChartReport => {
+  return report?.type === 'chart';
 };

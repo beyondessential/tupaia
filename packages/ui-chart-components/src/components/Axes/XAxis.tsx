@@ -11,7 +11,7 @@ import {
   XAxisProps as RechartsXAxisProps,
 } from 'recharts';
 import { CartesianChartConfig, ChartData, ChartReport, ChartType } from '@tupaia/types';
-import { formatTimestampForChart, getIsTimeSeries, getContrastTextColor } from '../../utils';
+import { formatTimestampForChart, getContrastTextColor, getIsTimeSeries } from '../../utils';
 import { DARK_BLUE } from '../../constants';
 import { VerticalTick } from './VerticalTick';
 

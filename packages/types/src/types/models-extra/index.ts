@@ -63,6 +63,7 @@ export {
   ChartConfigObject,
   ComponentConfig,
   LineChartChartConfig,
+  ExportPresentationOptions,
 } from './dashboard-item';
 export {
   MapOverlayConfig,

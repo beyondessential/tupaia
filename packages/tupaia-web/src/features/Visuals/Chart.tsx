@@ -202,11 +202,6 @@ export const Chart = () => {
   const views = isExport ? EXPORT_DISPLAY_TYPE_VIEWS : DISPLAY_TYPE_VIEWS;
   const availableDisplayTypes = showTable ? views : [views[0]];
 
-  const viewContent = {
-    ...report,
-    ...config,
-  };
-
   return (
     <ErrorBoundary>
       <Wrapper>
@@ -234,7 +229,8 @@ export const Chart = () => {
               $isExporting={isExport}
             >
               <Component
-                viewContent={viewContent}
+                report={report}
+                config={config}
                 isEnlarged={!!isEnlarged}
                 isExporting={!!isExport}
               />

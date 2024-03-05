@@ -35,6 +35,7 @@ export type MatrixReportColumn = {
 };
 
 export type BaseReport = {
+  type?: string;
   data?: Record<string, unknown>[];
   startDate: string;
   endDate: string;
@@ -54,11 +55,13 @@ export type ViewDataItem = Record<string, any> & {
 
 // This is the shape of a report when type is 'view'
 export type ViewReport = Omit<BaseReport, 'data'> & {
+  type: 'view';
   data?: ViewDataItem[];
   downloadUrl?: string;
 };
 
 export type MatrixReport = Omit<BaseReport, 'data'> & {
+  type: 'matrix';
   columns?: MatrixReportColumn[];
   rows?: MatrixReportRow[];
 };
@@ -73,7 +76,8 @@ export interface ChartData extends Record<string, unknown> {
 }
 
 export type ChartReport = Omit<BaseReport, 'data'> & {
+  type: 'chart';
   data?: ChartData[];
 };
 
-export type DashboardItemReport = ViewReport | MatrixReport | ChartReport | BaseReport;
+export type DashboardItemReport = ViewReport | MatrixReport | ChartReport;

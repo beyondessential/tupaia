@@ -17,13 +17,21 @@ export type LegacyDashboardReportRequest = Request<
 
 export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
-    const { reportCode } = this.req.params;
+    const { query, ctx, models, params } = this.req;
+    const { reportCode } = params;
+    const { itemCode } = query;
 
-    return ctx.services.webConfig.fetchReport(reportCode, {
+    const dashboardItem = await models.dashboardItem.findOne({ code: itemCode });
+
+    const report = await ctx.services.webConfig.fetchReport(reportCode, {
       legacy: 'true',
       isExpanded: 'true', // Always get the data for expanded reports. The only time there is a difference is when the report is on matrix reports, and we don't show them when not expanded
       ...query,
     });
+
+    return {
+      ...report,
+      type: dashboardItem?.config?.type,
+    };
   }
 }

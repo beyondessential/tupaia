@@ -39,7 +39,7 @@ const getColumnId = ({
 
 interface DataTableProps {
   columns: any[];
-  data: object[];
+  data?: Record<string, unknown>[];
   className?: string;
   rowLimit?: number;
   total?: number;

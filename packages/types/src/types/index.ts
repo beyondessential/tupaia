@@ -86,6 +86,7 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   VizPeriodGranularity,
+  ExportPresentationOptions,
 } from './models-extra';
 export * from './requests';
 export * from './css';

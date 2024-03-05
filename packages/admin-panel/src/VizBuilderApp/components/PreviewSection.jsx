@@ -101,13 +101,11 @@ export const PreviewSection = () => {
   const { fetchEnabled, setFetchEnabled, showData } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
-  const [
-    { project, location, startDate, endDate, testData, visualisation },
-    { setPresentation },
-  ] = useVizConfig();
+  const [{ project, location, startDate, endDate, testData, visualisation }, { setPresentation }] =
+    useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
-  const [viewContent, setViewContent] = useState(null);
+  const [config, setConfig] = useState(null);
 
   const { dashboardItemOrMapOverlay } = useParams();
 
@@ -148,12 +146,16 @@ export const PreviewSection = () => {
 
   const columns = useMemo(() => (tab === 0 ? getColumns(reportData) : []), [reportData]);
   const rows = useMemo(() => (tab === 0 ? getRows(reportData) || [] : []), [reportData]);
-  const data = useMemo(() => reportData, [reportData]);
+  const report = useMemo(
+    () => ({
+      data: reportData,
+    }),
+    [reportData],
+  );
 
   // only update Chart Preview when play button is clicked
   useEffect(() => {
-    const newViewContent = { data, ...visualisation.presentation };
-    setViewContent(newViewContent);
+    setConfig(visualisation.presentation);
   }, [fetchEnabled]);
 
   return (
@@ -190,7 +192,7 @@ export const PreviewSection = () => {
           <ChartContainer>
             {showData ? (
               <FetchLoader isLoading={isLoading || isFetching} isError={isError} error={error}>
-                <Chart viewContent={viewContent} />
+                <Chart report={report} config={config} />
               </FetchLoader>
             ) : (
               <IdleMessage />

@@ -277,8 +277,8 @@ export const CartesianChart = ({
               isExporting,
               isEnlarged,
               yAxisId,
-              data,
               exportWithLabels: presentationOptions?.exportWithLabels,
+              data,
             });
           })}
         {ReferenceLines({ report, config, isExporting, isEnlarged })}

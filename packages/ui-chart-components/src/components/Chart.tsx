@@ -18,7 +18,7 @@ import {
   isLineChartConfig,
   isPieChartConfig,
 } from '@tupaia/types';
-import { getIsTimeSeries, isDataKey, parseChartConfig, getIsChartData } from '../utils';
+import { isDataKey, parseChartConfig, getIsChartData, getIsTimeSeries } from '../utils';
 import { LegendPosition } from '../types';
 import { CartesianChart } from './CartesianChart';
 import { PieChart, GaugeChart } from './Charts';
@@ -69,7 +69,7 @@ const parseConfig = <T extends ChartConfig>(config: T, report: ChartReport): T =
   return chartConfig
     ? {
         ...config,
-        chartConfig: parseChartConfig(config, report),
+        chartConfig: parseChartConfig(report, config),
       }
     : config;
 };

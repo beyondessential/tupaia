@@ -56,12 +56,10 @@ const parseRows = (
 ): MatrixRowType[] => {
   const onDrillDown = row => {
     if (!drillDown) return;
-    const { itemCode } = drillDown;
-    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
-    urlSearchParams?.set(
-      URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID,
-      row[drillDown?.parameterLink!] as string,
-    );
+    const { itemCode, parameterLink } = drillDown;
+    if (!parameterLink || !itemCode) return;
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode);
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID, row[parameterLink]);
     setUrlSearchParams(urlSearchParams);
   };
 
@@ -193,14 +191,7 @@ const MatrixVisual = () => {
   };
 
   if (!parsedRows.length && !searchFilter) {
-    return (
-      <NoData
-        viewContent={{
-          ...config,
-          ...report,
-        }}
-      />
-    );
+    return <NoData report={report} config={config} />;
   }
 
   // in the dashboard, show a placeholder image

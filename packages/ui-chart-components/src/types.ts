@@ -7,9 +7,11 @@ import {
   BarChartConfig,
   ChartData,
   ComposedChartConfig,
+  DashboardItemConfig,
   GaugeChartConfig,
   LineChartConfig,
   PieChartConfig,
+  PresentationOptions,
   ViewConfig,
   ViewDataItem,
 } from '@tupaia/types';

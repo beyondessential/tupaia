@@ -11,10 +11,15 @@ import {
   ChartData,
   ChartReport,
   ChartType,
+  DashboardItemConfig,
+  DashboardItemReport,
+  isChartConfig,
+  isGaugeChartConfig,
+  isPieChartConfig,
 } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
 import { LooseObject } from '../types';
-import { isDataKey } from './utils';
+import { isChartReport, isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
 
@@ -23,8 +28,14 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-export const parseChartConfig = (report: ChartReport, config?: ChartConfig) => {
-  if (!(config && 'chartConfig' in config) || !config.chartConfig) {
+export const parseChartConfig = (report: DashboardItemReport, config?: DashboardItemConfig) => {
+  if (
+    !isChartReport(report) ||
+    !isChartConfig(config) ||
+    isGaugeChartConfig(config) ||
+    isPieChartConfig(config) ||
+    !config.chartConfig
+  ) {
     return {};
   }
 

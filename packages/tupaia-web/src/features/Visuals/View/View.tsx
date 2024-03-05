@@ -6,7 +6,6 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { ViewConfig, ViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { DashboardItemReport } from '../../../types';
 import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
 import { SingleDate } from './SingleDate';
@@ -30,7 +29,7 @@ const MultiSingleValueWrapper = styled.div`
 `;
 interface ViewProps {
   /** This is to allow for multi value view types, which mean this component is treated as a recursive component */
-  customReport?: DashboardItemReport;
+  customReport?: ViewReport;
   customConfig?: ViewConfig;
 }
 
@@ -79,8 +78,9 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
-  const { data } = report as ViewReport;
-  if (!data) return null; // in case there is no data at all, return null
+  // add a type guard to ensure that the report is a ViewReport, even though we know it will be
+  if (report?.type !== 'view' || !report?.data) return null; // in case there is no data at all, return null
+  const { data } = report;
   if (viewType === 'multiSingleValue') {
     // for multi single values, we need to render each data point as a separate single value item
     return (

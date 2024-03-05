@@ -92,7 +92,12 @@ export const DashboardReport = React.memo(
     return (
       <Wrapper>
         <Visual
-          viewContent={{ ...config, data: reportData, startDate, endDate }}
+          config={config}
+          report={{
+            data: reportData,
+            startDate,
+            endDate,
+          }}
           isLoading={isLoading}
           isFetching={isFetching}
           isError={isError}

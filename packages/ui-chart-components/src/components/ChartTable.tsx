@@ -20,11 +20,12 @@ interface ChartTableProps {
 }
 
 export const ChartTable = ({ config, report, className }: ChartTableProps) => {
-  const { columns, data } = getChartTableData(report);
-
   if (!getIsChartData(config?.chartType, report)) {
     return <NoData report={report} config={config} />;
   }
+
+  const { columns, data } = getChartTableData(report, config);
+  console.log('columns', columns);
 
   return (
     <TableContainer className={className}>

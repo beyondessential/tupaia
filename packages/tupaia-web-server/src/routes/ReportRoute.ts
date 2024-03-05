@@ -17,10 +17,10 @@ export type ReportRequest = Request<
 
 export class ReportRoute extends Route<ReportRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
+    const { query, ctx, models } = this.req;
     const { reportCode } = this.req.params;
     // TODO: Remove reference to organisationUnitCode => entityCode
-    const { organisationUnitCode, projectCode, startDate, endDate } = query;
+    const { organisationUnitCode, projectCode, startDate, endDate, itemCode } = query;
 
     // the params for the non-legacy reports are different
     const params = {
@@ -29,6 +29,8 @@ export class ReportRoute extends Route<ReportRequest> {
       startDate,
       endDate,
     };
+
+    const dashboardItem = await models.dashboardItem.findOne({ code: itemCode });
 
     const { results } = await ctx.services.report.fetchReport(reportCode, params);
 
@@ -39,6 +41,8 @@ export class ReportRoute extends Route<ReportRequest> {
       ...reportData,
       startDate,
       endDate,
+      // return the type of the report so we can use the appropriate report types
+      type: dashboardItem?.config?.type,
     };
   }
 }

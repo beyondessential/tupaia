@@ -16,4 +16,5 @@ export interface ReqQuery {
   projectCode: string;
   startDate: string;
   endDate: string;
+  itemCode: string;
 }

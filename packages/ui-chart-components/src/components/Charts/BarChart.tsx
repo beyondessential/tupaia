@@ -6,7 +6,13 @@
 import React from 'react';
 import { Bar, LabelList } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { BarChartConfig, ChartConfigObject, ChartData, ChartType } from '@tupaia/types';
+import {
+  BarChartConfig,
+  ChartConfigObject,
+  ChartData,
+  ChartReport,
+  ChartType,
+} from '@tupaia/types';
 import { BLUE } from '../../constants';
 import { getIsTimeSeries } from '../../utils';
 
@@ -26,12 +32,12 @@ export const BarChart = ({
   yAxisId,
   stackId,
   valueType,
-  data,
   chartType,
   isEnlarged = false,
   isExporting = false,
   chartConfig,
   exportWithLabels = false,
+  data,
 }: BarChartProps) => {
   const getBarSize = () => {
     if (chartType === ChartType.Composed || data.length === 1) {

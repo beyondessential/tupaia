@@ -174,14 +174,17 @@ export const DashboardReportModal = () => {
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
-  const { isExporting, isExportLoading, exportRef, exportToImg } = useExportToImage(
-    pngExportFilename,
-  );
+  const { isExporting, isExportLoading, exportRef, exportToImg } =
+    useExportToImage(pngExportFilename);
 
   // Set up Excel export
-  const viewContent = { ...config, data: reportData, startDate, endDate };
-  const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
-  const { doExport } = useChartDataExport(viewContent, excelExportTitle);
+  const report = {
+    data: reportData,
+    startDate,
+    endDate,
+  };
+  const excelExportTitle = `${config?.name}, ${entityData?.name}`;
+  const { doExport } = useChartDataExport(config, report, excelExportTitle);
 
   // Export click handler
   const handleClickExport = async exportId => {
@@ -286,9 +289,7 @@ export const DashboardReportModal = () => {
             isEnlarged
             modalDates={{ startDate, endDate }}
           />
-          {isExporting && (
-            <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
-          )}
+          {isExporting && <ExportDate startDate={report.startDate} endDate={report.endDate} />}
         </VisualContainer>
       </Wrapper>
     </MuiDialog>

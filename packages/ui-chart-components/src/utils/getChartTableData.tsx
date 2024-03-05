@@ -5,10 +5,18 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ValueType, ChartType, isChartConfig, ChartConfig, ChartReport } from '@tupaia/types';
+import {
+  ValueType,
+  ChartType,
+  isChartConfig,
+  DashboardItemReport,
+  ChartReport,
+  ChartConfig,
+  DashboardItemConfig,
+} from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
 import { LooseObject, TableAccessor } from '../types';
-import { formatTimestampForChart, getIsTimeSeries } from './utils';
+import { formatTimestampForChart, getIsTimeSeries, isChartReport } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as
@@ -43,13 +51,14 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * use value as the only column
  */
 const processColumns = (report?: ChartReport, config?: ChartConfig, sortByTimestamp?: Function) => {
-  if (!report?.data) {
+  if (!report || !report?.data) {
     return [];
   }
 
   const { data } = report;
 
   const getXName = () => {
+    if (config?.type !== 'chart') return undefined;
     return config?.chartType === ChartType.Bar ||
       config?.chartType === ChartType.Line ||
       config?.chartType === ChartType.Composed
@@ -105,24 +114,23 @@ const sortDates = (dateA: Date, dateB: Date) => {
 };
 
 const processData = (report?: ChartReport, config?: ChartConfig) => {
-  if (!report?.data) {
+  if (!report) {
     return [];
   }
 
-  const { data } = report;
-
   if (config?.chartType === ChartType.Pie) {
-    return data.sort((a: any, b: any) => b.value - a.value);
+    return report.data?.sort((a: any, b: any) => b.value - a.value) ?? [];
   }
   // For time series, sort by timestamp so that the table is in chronological order always
-  if (getIsTimeSeries(data)) {
-    return data.sort((a: any, b: any) => sortDates(a.timestamp, b.timestamp));
-  }
+
+  const { data = [] } = report;
+  const isTimeSeries = getIsTimeSeries(data);
+  if (isTimeSeries) return data.sort((a: any, b: any) => sortDates(a.timestamp, b.timestamp));
 
   return data;
 };
 
-export const getChartTableData = (report?: ChartReport, config?: ChartConfig) => {
+export const getChartTableData = (report?: DashboardItemReport, config?: DashboardItemConfig) => {
   // Because react-table wants its sort function to be memoized, it needs to live here, outside of
   // the other useMemo hooks. All values need to be memoized, even default values, otherwise it will
   // cause a potentially infinite loop of re-renders.
@@ -132,14 +140,15 @@ export const getChartTableData = (report?: ChartReport, config?: ChartConfig) =>
     undefined,
   );
 
-  const isChart = isChartConfig(config);
+  const isChartType = isChartReport(report) && isChartConfig(config);
+  console.log('isChartType', isChartType);
   const columns = useMemo(() => {
     // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
-    return isChart ? processColumns(report, config, sortByTimestamp) : [];
+    return isChartType ? processColumns(report, config, sortByTimestamp) : [];
   }, [JSON.stringify(config), JSON.stringify(report)]);
   const data = useMemo(() => {
     // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
-    return isChart ? processData(report, config) : [];
+    return isChartType ? processData(report, config) : [];
   }, [JSON.stringify(config), JSON.stringify(report)]);
   return {
     columns,
