@@ -21,8 +21,18 @@ const requiredParamsSchema = yup.object().shape({
   hierarchy: yup.string().default('explore'),
   dataElementCodes: yup.array().of(yup.string().required()).required(),
   organisationUnitCodes: yup.array().of(yup.string().required()).required(),
-  startDate: yup.string().matches(ISO_DATE_PATTERN).default(getDefaultStartDateString),
-  endDate: yup.string().matches(ISO_DATE_PATTERN).default(getDefaultEndDateString),
+  startDate: yup
+    .string()
+    .matches(ISO_DATE_PATTERN, {
+      message: 'startDate must be a valid ISO 8601 date: YYYY-MM-DD',
+    })
+    .default(getDefaultStartDateString),
+  endDate: yup
+    .string()
+    .matches(ISO_DATE_PATTERN, {
+      message: 'endDate must be a valid ISO 8601 date: YYYY-MM-DD',
+    })
+    .default(getDefaultEndDateString),
   aggregations: yup.array().of(
     yup.object().shape({
       type: yup.string().required(),
