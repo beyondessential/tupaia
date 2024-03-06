@@ -62,7 +62,6 @@ export class AnalyticsDataTableService extends DataTableService<
     const { hierarchy, dataElementCodes, organisationUnitCodes, startDate, endDate, aggregations } =
       params;
 
-
     // Ensure that if fetching for project, we map it to the underlying countries
     const entityCodesForFetch = await mapProjectEntitiesToCountries(
       this.ctx.apiClient,
