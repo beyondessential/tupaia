@@ -145,8 +145,7 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
  * instance.
  * @param date A `Date` object.
  */
-export const getIsoDateString = date =>
-  isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
+const getIsoDateString = date => (isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10));
 
 export const PreviewOptions = () => {
   const { setShowData } = usePreviewData();
