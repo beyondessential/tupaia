@@ -8,9 +8,13 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { SmallAlert } from './Alert';
 
-const getNoDataString = ({ config, report }) => {
-  const { noDataMessage, source } = config;
-  const { startDate, endDate } = report;
+const getNoDataString = (config = {}, report = {}) => {
+  const { noDataMessage, source, startDate: configStartDate, endDate: configEndDate } = config;
+  const { startDate: reportStartDate, endDate: reportEndDate } = report;
+
+  const startDate = reportStartDate || configStartDate;
+  const endDate = reportEndDate || configEndDate;
+
   if (noDataMessage) {
     return noDataMessage;
   }

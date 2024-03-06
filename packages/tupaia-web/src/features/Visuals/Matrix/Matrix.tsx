@@ -191,7 +191,7 @@ const MatrixVisual = () => {
   };
 
   if (!parsedRows.length && !searchFilter) {
-    return <NoData report={report} config={config} />;
+    return <NoData config={config} report={report} />;
   }
 
   // in the dashboard, show a placeholder image

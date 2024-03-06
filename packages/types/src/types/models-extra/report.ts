@@ -46,12 +46,18 @@ export type BaseReport = {
   };
 };
 
-// This is the data item for a report of type 'view'
-export type ViewDataItem = Record<string, any> & {
-  value?: any;
-  total?: number;
-  viewType?: ViewConfig['viewType'];
+export type DownloadFilesVisualDataItem = {
+  uniqueFileName: string;
+  label: string;
 };
+// This is the data item for a report of type 'view'
+export type ViewDataItem =
+  | (Record<string, any> & {
+      value?: any;
+      total?: number;
+      viewType?: ViewConfig['viewType'];
+    })
+  | DownloadFilesVisualDataItem;
 
 // This is the shape of a report when type is 'view'
 export type ViewReport = Omit<BaseReport, 'data'> & {

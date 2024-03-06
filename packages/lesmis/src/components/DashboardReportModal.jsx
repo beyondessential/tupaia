@@ -289,7 +289,7 @@ export const DashboardReportModal = () => {
             isEnlarged
             modalDates={{ startDate, endDate }}
           />
-          {isExporting && <ExportDate startDate={report.startDate} endDate={report.endDate} />}
+          {isExporting && <ExportDate startDate={config.startDate} endDate={config.endDate} />}
         </VisualContainer>
       </Wrapper>
     </MuiDialog>

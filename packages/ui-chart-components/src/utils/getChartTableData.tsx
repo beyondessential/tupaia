@@ -141,7 +141,6 @@ export const getChartTableData = (report?: DashboardItemReport, config?: Dashboa
   );
 
   const isChartType = isChartReport(report) && isChartConfig(config);
-  console.log('isChartType', isChartType);
   const columns = useMemo(() => {
     // only process columns if it's a chart, otherwise return an empty array. It won't be used but we have to memoize default values
     return isChartType ? processColumns(report, config, sortByTimestamp) : [];

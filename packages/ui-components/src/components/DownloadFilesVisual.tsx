@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   FormGroup,
 } from '@material-ui/core';
-import { ViewConfig } from '@tupaia/types';
+import { ViewConfig, ViewReport } from '@tupaia/types';
 import CheckboxIcon from '@material-ui/icons/CheckBox';
 import { NoData } from './NoData';
 
@@ -48,7 +48,7 @@ const Error = styled.div`
 interface DownloadFilesVisualProps {
   downloadFiles: (uniqueFileNames: string[]) => Promise<void>;
   config?: ViewConfig;
-  data?: { uniqueFileName: string; label: string }[];
+  report?: ViewReport;
   isLoading?: boolean;
   isEnlarged?: boolean;
   onClose?: () => void;
@@ -59,13 +59,14 @@ interface DownloadFilesVisualProps {
 export const DownloadFilesVisual = ({
   downloadFiles,
   config,
-  data: options = [],
   isLoading,
   isEnlarged,
   onClose,
   className,
   error,
+  report,
 }: DownloadFilesVisualProps) => {
+  const options = report?.data ?? [];
   // selectedFiles: Map of uniqueFileName: string => isSelected: bool
   const noneSelected = Object.fromEntries(
     options.map(({ uniqueFileName }) => [uniqueFileName, false]),
@@ -101,7 +102,7 @@ export const DownloadFilesVisual = ({
   if (!isLoading && options.length === 0) {
     return (
       <Container className={className}>
-        <NoData config={config} />
+        <NoData config={config} report={report} />
       </Container>
     );
   }

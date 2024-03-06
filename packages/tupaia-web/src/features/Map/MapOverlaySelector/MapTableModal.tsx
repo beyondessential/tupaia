@@ -85,7 +85,7 @@ export const MapTableModal = ({ onClose }: any) => {
         {isLoading && <SpinningLoader />}
         {hasNoData && (
           <NoData
-            report={{
+            config={{
               startDate,
               endDate,
             }}
