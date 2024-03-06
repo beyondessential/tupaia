@@ -21,6 +21,8 @@ interface VerticalTickProps {
 }
 
 export const VerticalTick = ({ x, y, payload }: VerticalTickProps) => {
+  const stringVal =
+    payload.value !== undefined && payload.value !== null ? String(payload.value) : '';
   return (
     <g transform={`translate(${x - 5},${y + 3})`}>
       <text
@@ -30,7 +32,7 @@ export const VerticalTick = ({ x, y, payload }: VerticalTickProps) => {
         fill="#333"
         className="recharts-text recharts-cartesian-axis-tick-value"
       >
-        {truncate(payload.value, 25, true)}
+        {truncate(stringVal, 25, true)}
       </text>
     </g>
   );
