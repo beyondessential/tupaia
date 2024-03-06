@@ -50,6 +50,11 @@ export type BaseReport = {
 export type DownloadFilesVisualDataItem = {
   uniqueFileName: string;
   label: string;
+  viewType: never;
+  value: never;
+  total: never;
+  name: never;
+  value_metadata: never;
 };
 // This is the data item for a report of type 'view'
 export type ViewDataItem =
