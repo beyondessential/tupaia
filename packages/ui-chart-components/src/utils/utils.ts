@@ -74,5 +74,6 @@ export const getIsChartData = (chartType: ChartType, report: ChartReport): boole
 };
 
 export const isChartReport = (report?: DashboardItemReport): report is ChartReport => {
-  return report?.type === 'chart';
+  // If no type is provided, default to chart type report. This is to handle, for example, admin panel viz builder previews
+  return !report?.type || report?.type === 'chart';
 };

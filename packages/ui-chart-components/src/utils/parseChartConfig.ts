@@ -30,6 +30,7 @@ type ColorPalette = keyof typeof COLOR_PALETTES;
 
 export const parseChartConfig = (report: DashboardItemReport, config?: DashboardItemConfig) => {
   if (
+    // defaulting to chart type report if no type is provided, to handle, for example, admin panel viz builder previews
     !isChartReport(report) ||
     !isChartConfig(config) ||
     isGaugeChartConfig(config) ||
