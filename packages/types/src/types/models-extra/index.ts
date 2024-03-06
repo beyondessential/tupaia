@@ -41,6 +41,7 @@ export {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
   ViewConfig,
   DataDownloadViewConfig,
   MultiPhotographViewConfig,
