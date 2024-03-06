@@ -70836,13 +70836,218 @@ export const DataTablePreviewRequestSchema = {
 export const ParamsSchema = {
 	"type": "object",
 	"properties": {
+		"entityCode": {
+			"type": "string"
+		},
 		"projectCode": {
 			"type": "string"
 		}
 	},
 	"additionalProperties": false,
 	"required": [
+		"entityCode",
 		"projectCode"
+	]
+} 
+
+export const ResBodySchema = {
+	"type": "object",
+	"properties": {
+		"attributes": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"bounds": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"code": {
+			"type": "string"
+		},
+		"countryCode": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"imageUrl": {
+			"type": "string"
+		},
+		"metadata": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"name": {
+			"type": "string"
+		},
+		"parentId": {
+			"type": "string"
+		},
+		"point": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"region": {
+			"anyOf": [
+				{
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": false
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false
+				}
+			]
+		},
+		"type": {
+			"enum": [
+				"asset",
+				"business",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"id",
+		"name",
+		"type"
+	]
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"entityId": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"fields": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"filter": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
 	]
 } 
 
@@ -70928,100 +71133,6 @@ export const ProjectResponseSchema = {
 		"id",
 		"name"
 	]
-} 
-
-export const ResBodySchema = {
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"code": {
-			"type": "string"
-		},
-		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
-		},
-		"dashboardGroupName": {
-			"type": "string"
-		},
-		"defaultMeasure": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
-			"type": "string"
-		},
-		"entityId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"logoUrl": {
-			"type": "string"
-		},
-		"permissionGroups": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"sortOrder": {
-			"type": "number"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		},
-		"homeEntityCode": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"names": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
-	"required": [
-		"code",
-		"hasAccess",
-		"hasPendingAccess",
-		"homeEntityCode",
-		"id",
-		"name"
-	]
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const VisibilityCriteriaSchema = {
@@ -81915,31 +82026,6 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
-} 
-
-export const CountryAccessObjectSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
 } 
 
 export const SubscribeDashboardResponseSchema = {
