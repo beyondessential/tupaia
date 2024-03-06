@@ -14,6 +14,7 @@ import { CustomReportOutputType, customReports } from './customReports';
 
 export interface BuiltReport {
   results: OutputType | CustomReportOutputType;
+  type?: string;
 }
 
 export class ReportBuilder {

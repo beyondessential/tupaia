@@ -33,12 +33,29 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     return report;
   }
 
+  private async findItemType() {
+    const { models, query } = this.req;
+    const { itemCode } = query;
+    if (!itemCode) return null;
+
+    const dashboardItem = await models.dashboardItem.findOne({
+      code: itemCode,
+    });
+    return dashboardItem?.config?.type;
+  }
+
   public async buildResponse() {
     const { query, body } = this.req;
-    const { organisationUnitCodes, hierarchy = 'explore', ...restOfParams } = { ...query, ...body };
+    const {
+      organisationUnitCodes,
+      itemCode,
+      hierarchy = 'explore',
+      ...restOfParams
+    } = { ...query, ...body };
 
     const report = await this.findReport();
     const permissionGroupName = await report.permissionGroupName();
+    const itemType = await this.findItemType();
 
     const reportQuery = {
       organisationUnitCodes: parseOrgUnitCodes(organisationUnitCodes),
@@ -63,6 +80,12 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     };
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
-    return reportBuilder.build();
+    const reportResult = await reportBuilder.build();
+
+    return {
+      ...reportResult,
+      // add the item type son we can use the appropriate types
+      type: itemType,
+    };
   }
 }
