@@ -8,18 +8,15 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { SmallAlert } from './Alert';
 
-const getNoDataString = (config = {}, report = {}) => {
-  const { noDataMessage, source, startDate: configStartDate, endDate: configEndDate } = config;
-  const { startDate: reportStartDate, endDate: reportEndDate } = report;
+const getNoDataString = (config, report) => {
+  const startDate = report?.startDate || config?.startDate;
+  const endDate = report?.startDate || config?.endDate;
 
-  const startDate = reportStartDate || configStartDate;
-  const endDate = reportEndDate || configEndDate;
-
-  if (noDataMessage) {
-    return noDataMessage;
+  if (config?.noDataMessage) {
+    return config?.noDataMessage;
   }
 
-  if (source === 'mSupply') {
+  if (config?.source === 'mSupply') {
     return 'Requires mSupply';
   }
 

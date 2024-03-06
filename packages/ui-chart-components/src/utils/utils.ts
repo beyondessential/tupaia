@@ -48,7 +48,7 @@ export const formatTimestampForChart = (
 };
 
 export const getIsTimeSeries = (data?: ChartData[] | ViewDataItem[]) => {
-  if (!data || !data.length || !('timestamp' in data[0])) return false;
+  if (!data || !data[0] || !('timestamp' in data[0])) return false;
   return !!data[0]?.timestamp;
 };
 
@@ -74,6 +74,5 @@ export const getIsChartData = (chartType: ChartType, report: ChartReport): boole
 };
 
 export const isChartReport = (report?: DashboardItemReport): report is ChartReport => {
-  // If no type is provided, default to chart type report. This is to handle, for example, admin panel viz builder previews
-  return !report?.type || report?.type === 'chart';
+  return report?.type === 'chart';
 };

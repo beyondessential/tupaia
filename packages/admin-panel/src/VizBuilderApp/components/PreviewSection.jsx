@@ -149,6 +149,7 @@ export const PreviewSection = () => {
   const report = useMemo(
     () => ({
       data: reportData,
+      type: visualisation?.presentation?.type,
     }),
     [reportData],
   );

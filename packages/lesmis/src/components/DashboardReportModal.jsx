@@ -149,6 +149,10 @@ export const DashboardReportModal = () => {
     });
   });
 
+  const currentDashboardItem = exportableSubDashboards
+    .find(({ items }) => items.find(item => item.reportCode === reportCode))
+    ?.items?.find(item => item.reportCode === reportCode);
+
   const { startDate, endDate } = useStartAndEndDates(periodGranularity);
 
   const { data, isLoading } = useDashboardReportDataWithConfig({
@@ -156,6 +160,7 @@ export const DashboardReportModal = () => {
     reportCode,
     startDate,
     endDate,
+    itemCode: currentDashboardItem?.code,
   });
 
   const { dashboardItemConfig: config, reportData } = data;
@@ -179,10 +184,11 @@ export const DashboardReportModal = () => {
 
   // Set up Excel export
   const report = {
-    data: reportData,
+    ...reportData,
     startDate,
     endDate,
   };
+
   const excelExportTitle = `${config?.name}, ${entityData?.name}`;
   const { doExport } = useChartDataExport(config, report, excelExportTitle);
 
@@ -279,6 +285,7 @@ export const DashboardReportModal = () => {
             </Toolbar>
           </Header>
           <DashboardReport
+            itemCode={config?.code}
             name={config?.name}
             reportCode={reportCode}
             isExporting={isExporting}
