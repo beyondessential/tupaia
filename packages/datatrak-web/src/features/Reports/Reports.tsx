@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { DialogActions } from '@material-ui/core';
 import { Alert, Form as BaseForm, SpinningLoader } from '@tupaia/ui-components';
+import { stripTimezoneFromDate } from '@tupaia/utils';
 import { Button } from '../../components';
 import { useExportSurveyResponses, ExportSurveyResponsesParams } from '../../api/mutations';
 import { EntitySelectorInput, DateRangePicker, SurveysInput, EntityLevelInput } from './Inputs';
@@ -15,6 +16,9 @@ import { COUNTRY_LEVEL_ENTITY, ENTITY_LEVEL_ENTITY } from './constants';
 
 const Wrapper = styled.div`
   position: relative;
+  .MuiInputLabel-outlined {
+    z-index: 0;
+  }
 `;
 
 const Form = styled(BaseForm)<{
@@ -103,8 +107,8 @@ export const Reports = () => {
   const getSubmitFormParams = (data: DataType) => {
     const params = {
       surveyCodes: data.surveys.map(({ value }: { value: string }) => value).join(','),
-      startDate: data.startDate,
-      endDate: data.endDate,
+      startDate: stripTimezoneFromDate(data.startDate),
+      endDate: stripTimezoneFromDate(data.endDate),
     } as ExportSurveyResponsesParams;
     if (data.entityLevel === COUNTRY_LEVEL_ENTITY) {
       return {
