@@ -1,17 +1,17 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { TupaiaWebProjectCountryAccessListRequest, CountryAccessResponse } from '@tupaia/types';
+import { CountryAccessResponse, TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
 
 export type ProjectCountryAccessListRequest = Request<
-  TupaiaWebProjectCountryAccessListRequest.Params,
-  TupaiaWebProjectCountryAccessListRequest.ResBody,
-  TupaiaWebProjectCountryAccessListRequest.ReqBody,
-  TupaiaWebProjectCountryAccessListRequest.ReqQuery
+  WebServerProjectCountryAccessListRequest.Params,
+  WebServerProjectCountryAccessListRequest.ResBody,
+  WebServerProjectCountryAccessListRequest.ReqBody,
+  WebServerProjectCountryAccessListRequest.ReqQuery
 >;
 
 export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessListRequest> {
@@ -29,7 +29,7 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
 
     return names
       .sort()
-      .reduce((result: TupaiaWebProjectCountryAccessListRequest.ResBody, name: string) => {
+      .reduce((result: WebServerProjectCountryAccessListRequest.ResBody, name: string) => {
         const country = countryAccessList.find(
           ({ name: countryName }: CountryAccessResponse) => countryName === name,
         );
