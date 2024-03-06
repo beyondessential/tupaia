@@ -14,7 +14,11 @@ import { useDashboardVisualisation } from '../api';
 import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
 import { PreviewDataProvider, VizConfigErrorProvider, useVizConfig } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
-import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
+import {
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DASHBOARD_ITEM_VIZ_TYPES,
+  MAP_OVERLAY_VIZ_TYPES,
+} from '../constants';
 import { findVizType } from '../utils';
 
 const Container = styled(MuiContainer)`
@@ -62,7 +66,11 @@ export const Main = () => {
   useEffect(() => {
     if (visualisation) {
       setVisualisation(visualisation);
-      setVizType(findVizType(visualisation));
+      const vizType =
+        dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
+          ? findVizType(visualisation, DASHBOARD_ITEM_VIZ_TYPES)
+          : findVizType(visualisation, MAP_OVERLAY_VIZ_TYPES);
+      setVizType(vizType);
       setVisualisationLoaded(true);
     }
   }, [visualisation]);

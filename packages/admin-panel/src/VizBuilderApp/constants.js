@@ -5,10 +5,12 @@
 
 import {
   BarChartConfigSchema,
+  ColorMapOverlayConfigSchema,
   ComposedChartConfigSchema,
   DataDownloadViewConfigSchema,
   DownloadFilesViewConfigSchema,
   GaugeChartConfigSchema,
+  IconMapOverlayConfigSchema,
   LineChartConfigSchema,
   MatrixConfigSchema,
   MultiPhotographViewConfigSchema,
@@ -17,9 +19,12 @@ import {
   MultiValueViewConfigSchema,
   PieChartConfigSchema,
   QRCodeViewConfigSchema,
+  RadiusMapOverlayConfigSchema,
+  ShadingMapOverlayConfigSchema,
   SingleDateViewConfigSchema,
   SingleDownloadLinkViewConfigSchema,
   SingleValueViewConfigSchema,
+  SpectrumMapOverlayConfigSchema,
 } from '@tupaia/types';
 
 export const MODAL_STATUS = {
@@ -34,7 +39,7 @@ export const DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM = {
   MAP_OVERLAY: 'map-overlay',
 };
 
-export const VIZ_TYPES = {
+export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Charts
   PIE_CHART: {
     name: 'Pie Chart',
@@ -165,6 +170,54 @@ export const VIZ_TYPES = {
     schema: MatrixConfigSchema,
     initialConfig: {
       type: 'matrix',
+    },
+  },
+
+  // This must be defined at the bottom of this object
+  OTHER: {
+    name: 'Other',
+    schema: { type: 'object' },
+    initialConfig: {},
+  },
+};
+
+export const MAP_OVERLAY_VIZ_TYPES = {
+  ICON: {
+    name: 'Icon',
+    schema: IconMapOverlayConfigSchema,
+    initialConfig: {
+      displayType: 'icon',
+      icon: 'pin',
+    },
+  },
+  COLOR: {
+    name: 'Color',
+    schema: ColorMapOverlayConfigSchema,
+    initialConfig: {
+      displayType: 'color',
+    },
+  },
+  RADIUS: {
+    name: 'Radius',
+    schema: RadiusMapOverlayConfigSchema,
+    initialConfig: {
+      displayType: 'radius',
+    },
+  },
+  SHADING: {
+    name: 'Shading',
+    schema: ShadingMapOverlayConfigSchema,
+    initialConfig: {
+      displayType: 'shading',
+    },
+  },
+  SPECTRUM: {
+    name: 'Spectrum',
+    schema: SpectrumMapOverlayConfigSchema,
+    initialConfig: {
+      displayType: 'shaded-spectrum',
+      scaleColorScheme: 'default',
+      scaleType: 'gpi',
     },
   },
 

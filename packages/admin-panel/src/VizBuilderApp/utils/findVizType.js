@@ -3,11 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { VIZ_TYPES } from '../constants';
-
-export const findVizType = viz => {
+export const findVizType = (viz, vizTypes) => {
   // Check that all fields in the viz types initial config are match those in the viz
-  const vizTypeKeyAndValue = Object.entries(VIZ_TYPES).find(([, { initialConfig }]) =>
+  const vizTypeKeyAndValue = Object.entries(vizTypes).find(([, { initialConfig }]) =>
     Object.entries(initialConfig).every(([key, value]) => viz.presentation[key] === value),
   );
 

@@ -9,10 +9,10 @@ import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
-import { VIZ_TYPES } from '../../constants';
+import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
 
 export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
-  const vizTypeOptions = Object.entries(VIZ_TYPES).map(([vizType, { name }]) => ({
+  const vizTypeOptions = Object.entries(DASHBOARD_ITEM_VIZ_TYPES).map(([vizType, { name }]) => ({
     value: vizType,
     label: name,
   }));
@@ -39,7 +39,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
     setVizType(selectedVizType);
     if (Object.keys(presentation).length === 0) {
       // If no presentation config exists, set the initial config by vizType
-      setPresentation(VIZ_TYPES[selectedVizType].initialConfig);
+      setPresentation(DASHBOARD_ITEM_VIZ_TYPES[selectedVizType].initialConfig);
     }
     setPresentationValue('name', data.name);
     onSubmit();

@@ -15,7 +15,11 @@ import { useReportPreview } from '../api';
 import { usePreviewData, useVisualisation, useVizConfig, useVizConfigError } from '../context';
 import { IdleMessage } from './IdleMessage';
 import { getColumns, getRows } from '../../utilities';
-import { VIZ_TYPES } from '../constants';
+import {
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DASHBOARD_ITEM_VIZ_TYPES,
+  MAP_OVERLAY_VIZ_TYPES,
+} from '../constants';
 
 const PreviewTabs = styled(MuiTabs)`
   background: white;
@@ -99,6 +103,7 @@ const getTab = index => Object.values(TABS).find(tab => tab.index === index);
 export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
+  const { dashboardItemOrMapOverlay } = useParams();
   const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewData();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
@@ -108,11 +113,19 @@ export const PreviewSection = () => {
   ] = useVizConfig();
   const { visualisationForFetchingData } = useVisualisation();
 
-  const presentationSchema = VIZ_TYPES[vizType]?.schema;
+  const presentationSchema =
+    dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
+      ? DASHBOARD_ITEM_VIZ_TYPES[vizType]?.schema
+      : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
+  console.log(
+    'vizType',
+    dashboardItemOrMapOverlay,
+    vizType,
+    presentationSchema,
+    MAP_OVERLAY_VIZ_TYPES,
+  );
 
   const [viewContent, setViewContent] = useState(null);
-
-  const { dashboardItemOrMapOverlay } = useParams();
 
   const {
     data: reportData = { columns: [], rows: [] },
