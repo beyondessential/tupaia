@@ -3783,6 +3783,20 @@ export const CartesianChartConfigSchema = {
 	]
 } 
 
+export const PieOptionSchema = {
+	"type": "object",
+	"properties": {
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
+		},
+		"label": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const PieChartPresentationOptionsSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -25995,6 +26009,9 @@ export const MatrixReportColumnSchema = {
 export const BaseReportSchema = {
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string"
+		},
 		"data": {
 			"type": "array",
 			"items": {
@@ -26031,36 +26048,79 @@ export const BaseReportSchema = {
 	]
 } 
 
-export const ViewDataItemSchema = {
-	"additionalProperties": false,
+export const DownloadFilesVisualDataItemSchema = {
 	"type": "object",
 	"properties": {
-		"value": {},
-		"total": {
-			"type": "number"
+		"uniqueFileName": {
+			"type": "string"
 		},
-		"viewType": {
-			"enum": [
-				"dataDownload",
-				"filesDownload",
-				"multiPhotograph",
-				"multiSingleValue",
-				"multiValue",
-				"multiValueRow",
-				"qrCodeVisual",
-				"singleDate",
-				"singleDownloadLink",
-				"singleValue"
-			],
+		"label": {
 			"type": "string"
 		}
-	}
+	},
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"uniqueFileName"
+	]
+} 
+
+export const ViewDataItemSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"uniqueFileName": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"label",
+				"uniqueFileName"
+			]
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"value": {},
+				"total": {
+					"type": "number"
+				},
+				"viewType": {
+					"enum": [
+						"dataDownload",
+						"filesDownload",
+						"multiPhotograph",
+						"multiSingleValue",
+						"multiValue",
+						"multiValueRow",
+						"qrCodeVisual",
+						"singleDate",
+						"singleDownloadLink",
+						"singleValue"
+					],
+					"type": "string"
+				}
+			}
+		}
+	]
 } 
 
 export const ViewReportSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
 		"startDate": {
 			"type": "string"
 		},
@@ -26085,29 +26145,49 @@ export const ViewReportSchema = {
 		"data": {
 			"type": "array",
 			"items": {
-				"additionalProperties": false,
-				"type": "object",
-				"properties": {
-					"value": {},
-					"total": {
-						"type": "number"
+				"anyOf": [
+					{
+						"type": "object",
+						"properties": {
+							"uniqueFileName": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"label",
+							"uniqueFileName"
+						]
 					},
-					"viewType": {
-						"enum": [
-							"dataDownload",
-							"filesDownload",
-							"multiPhotograph",
-							"multiSingleValue",
-							"multiValue",
-							"multiValueRow",
-							"qrCodeVisual",
-							"singleDate",
-							"singleDownloadLink",
-							"singleValue"
-						],
-						"type": "string"
+					{
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"value": {},
+							"total": {
+								"type": "number"
+							},
+							"viewType": {
+								"enum": [
+									"dataDownload",
+									"filesDownload",
+									"multiPhotograph",
+									"multiSingleValue",
+									"multiValue",
+									"multiValueRow",
+									"qrCodeVisual",
+									"singleDate",
+									"singleDownloadLink",
+									"singleValue"
+								],
+								"type": "string"
+							}
+						}
 					}
-				}
+				]
 			}
 		},
 		"downloadUrl": {
@@ -26116,7 +26196,8 @@ export const ViewReportSchema = {
 	},
 	"required": [
 		"endDate",
-		"startDate"
+		"startDate",
+		"type"
 	]
 } 
 
@@ -26124,6 +26205,12 @@ export const MatrixReportSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"matrix"
+			]
+		},
 		"startDate": {
 			"type": "string"
 		},
@@ -26187,7 +26274,8 @@ export const MatrixReportSchema = {
 	},
 	"required": [
 		"endDate",
-		"startDate"
+		"startDate",
+		"type"
 	]
 } 
 
@@ -26218,6 +26306,12 @@ export const ChartReportSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"chart"
+			]
+		},
 		"startDate": {
 			"type": "string"
 		},
@@ -26267,54 +26361,23 @@ export const ChartReportSchema = {
 	},
 	"required": [
 		"endDate",
-		"startDate"
+		"startDate",
+		"type"
 	]
 } 
 
 export const DashboardItemReportSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {
-				"data": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"period": {
-					"type": "object",
-					"properties": {
-						"earliestAvailable": {
-							"type": "string"
-						},
-						"latestAvailable": {
-							"type": "string"
-						},
-						"requested": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"endDate",
-				"startDate"
-			]
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"view"
+					]
+				},
 				"startDate": {
 					"type": "string"
 				},
@@ -26339,29 +26402,49 @@ export const DashboardItemReportSchema = {
 				"data": {
 					"type": "array",
 					"items": {
-						"additionalProperties": false,
-						"type": "object",
-						"properties": {
-							"value": {},
-							"total": {
-								"type": "number"
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"uniqueFileName": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"label",
+									"uniqueFileName"
+								]
 							},
-							"viewType": {
-								"enum": [
-									"dataDownload",
-									"filesDownload",
-									"multiPhotograph",
-									"multiSingleValue",
-									"multiValue",
-									"multiValueRow",
-									"qrCodeVisual",
-									"singleDate",
-									"singleDownloadLink",
-									"singleValue"
-								],
-								"type": "string"
+							{
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"value": {},
+									"total": {
+										"type": "number"
+									},
+									"viewType": {
+										"enum": [
+											"dataDownload",
+											"filesDownload",
+											"multiPhotograph",
+											"multiSingleValue",
+											"multiValue",
+											"multiValueRow",
+											"qrCodeVisual",
+											"singleDate",
+											"singleDownloadLink",
+											"singleValue"
+										],
+										"type": "string"
+									}
+								}
 							}
-						}
+						]
 					}
 				},
 				"downloadUrl": {
@@ -26370,13 +26453,20 @@ export const DashboardItemReportSchema = {
 			},
 			"required": [
 				"endDate",
-				"startDate"
+				"startDate",
+				"type"
 			]
 		},
 		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"matrix"
+					]
+				},
 				"startDate": {
 					"type": "string"
 				},
@@ -26440,13 +26530,20 @@ export const DashboardItemReportSchema = {
 			},
 			"required": [
 				"endDate",
-				"startDate"
+				"startDate",
+				"type"
 			]
 		},
 		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"chart"
+					]
+				},
 				"startDate": {
 					"type": "string"
 				},
@@ -26496,7 +26593,8 @@ export const DashboardItemReportSchema = {
 			},
 			"required": [
 				"endDate",
-				"startDate"
+				"startDate",
+				"type"
 			]
 		}
 	]
