@@ -93,4 +93,4 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity } from './common';
+export { VizPeriodGranularity, DashboardItemType } from './common';

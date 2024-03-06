@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { DashboardItemType } from './common';
 import { ValueType, ViewConfig } from './dashboard-item';
 
 type Transform = string | Record<string, unknown>;
@@ -61,13 +62,13 @@ export type ViewDataItem =
 
 // This is the shape of a report when type is 'view'
 export type ViewReport = Omit<BaseReport, 'data'> & {
-  type: 'view';
+  type: `${DashboardItemType.View}`;
   data?: ViewDataItem[];
   downloadUrl?: string;
 };
 
 export type MatrixReport = Omit<BaseReport, 'data'> & {
-  type: 'matrix';
+  type: `${DashboardItemType.Matrix}`;
   columns?: MatrixReportColumn[];
   rows?: MatrixReportRow[];
 };
@@ -82,7 +83,7 @@ export interface ChartData extends Record<string, unknown> {
 }
 
 export type ChartReport = Omit<BaseReport, 'data'> & {
-  type: 'chart';
+  type: `${DashboardItemType.Chart}`;
   data?: ChartData[];
 };
 

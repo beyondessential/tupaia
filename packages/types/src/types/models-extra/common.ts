@@ -59,3 +59,10 @@ export interface LinkReferenceProps {
  * of plaintext to display in the tooltip, or a named link; but not both.
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
+
+export enum DashboardItemType {
+  View = 'view',
+  Chart = 'chart',
+  Matrix = 'matrix',
+  Component = 'component',
+}

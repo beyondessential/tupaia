@@ -87,6 +87,7 @@ export {
   LineChartChartConfig,
   VizPeriodGranularity,
   ExportPresentationOptions,
+  DashboardItemType,
 } from './models-extra';
 export * from './requests';
 export * from './css';

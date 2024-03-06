@@ -5,11 +5,9 @@
  */
 import {
   BaseChartConfig,
-  ChartConfig,
   ChartConfigObject,
   ChartConfigT,
   ChartData,
-  ChartReport,
   ChartType,
   DashboardItemConfig,
   DashboardItemReport,
