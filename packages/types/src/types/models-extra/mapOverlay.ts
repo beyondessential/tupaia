@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { PascalCase } from '../../utils';
 import { CssColor } from '../css';
+import { EntityType } from '../models';
 import { DateOffsetSpec, ReferenceProps, VizPeriodGranularity } from './common';
 
 /**
@@ -82,13 +84,7 @@ enum DisplayedValueType {
   FACILITY_TYPE_NAME = 'facilityTypeName',
 }
 
-enum EntityLevel {
-  COUNTRY = 'Country',
-  DISTRICT = 'District',
-  SUB_DISTRICT = 'SubDistrict',
-  FACILITY = 'Facility',
-  DISASTER = 'Disaster',
-}
+type EntityLevel = PascalCase<keyof typeof EntityType>;
 
 enum MeasureValueType {
   BOOLEAN = 'boolean',
