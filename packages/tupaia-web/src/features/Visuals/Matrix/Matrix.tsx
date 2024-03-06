@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -21,23 +21,37 @@ import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 
-const SearchInput = styled(TextField)`
-  margin-bottom: 0;
-  min-width: 10rem;
-  .MuiInputBase-root {
-    background-color: transparent;
+const Wrapper = styled.div`
+  // override the base table styles to handle expanded rows, which need to be done with classes and JS because nth-child will not handle skipped rows
+  tbody .MuiTableRow-root {
+    &.odd {
+      background-color: ${({ theme }) => theme.palette.table.odd};
+    }
+    &.even {
+      background-color: ${({ theme }) => theme.palette.table.even};
+    }
+    &.highlighted {
+      background-color: ${({ theme }) => theme.palette.table.highlighted};
+    }
   }
 `;
 
-const Wrapper = styled.div`
-  overflow: hidden;
-  max-height: clamp(
-    20rem,
-    70vh,
-    60rem
-  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
-  display: flex;
-  flex-direction: column;
+const SearchInput = styled(TextField)`
+  margin: 0;
+  min-width: 10rem;
+
+  .MuiInputBase-root {
+    background-color: transparent;
+    font-size: inherit; // override this to inherit the font size from the cell
+  }
+  .MuiInputBase-input {
+    font-size: inherit; // override this to inherit the font size from the cell
+    padding: 0.875rem;
+  }
+  .MuiTableCell-root:has(&) {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+  }
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -160,6 +174,7 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
   const { report, isEnlarged } = context;
 
@@ -170,6 +185,11 @@ const MatrixVisual = () => {
   const [searchFilter, setSearchFilter] = useState('');
 
   const { periodGranularity, drillDown, valueType } = config;
+
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) {
+    return <MatrixPreview config={config} />;
+  }
 
   const parsedRows = parseRows(
     rows,
@@ -190,13 +210,13 @@ const MatrixVisual = () => {
     setSearchFilter('');
   };
 
+  useEffect(() => {
+    // if the drillDownId changes, then we need to clear the search filter so that it doesn't persist across different drillDowns
+    clearSearchFilter();
+  }, [activeDrillDownId]);
+
   if (!parsedRows.length && !searchFilter) {
     return <NoData config={config} report={report} />;
-  }
-
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
   }
 
   return (

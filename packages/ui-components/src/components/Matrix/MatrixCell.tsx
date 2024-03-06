@@ -36,20 +36,20 @@ const DataCell = styled(Cell)`
   vertical-align: middle;
   position: relative;
   z-index: 1;
-  padding: 0;
   height: 100%;
-  word-break: break-word;
 `;
 
-const DataCellContent = styled.div`
-  padding: 0.5rem;
+const DataCellContent = styled.div<{
+  $characterLength: number;
+}>`
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
-  text-align: center;
-  justify-content: center;
-  white-space: pre-line;
+  min-width: ${({ $characterLength = 0 }) =>
+    $characterLength > 30
+      ? '25ch'
+      : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 `;
 
 const ExpandButton = styled(Button)`
@@ -89,16 +89,24 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
     getIsUsingDots(presentationOptionsForCell) &&
     checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
   const presentation = getPresentationOption(presentationOptionsForCell, value);
-  const displayValue = isDots ? (
-    <Dot
-      $color={presentation?.color}
-      aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
-        value || 'No value'
-      }`}
-    />
-  ) : (
-    value
-  );
+
+  const getDisplayValue = () => {
+    if (isDots) {
+      return (
+        <Dot
+          $color={presentation?.color}
+          aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
+            value || 'No value'
+          }`}
+        />
+      );
+    }
+    if (value === null || value === undefined) {
+      return '—'; // em dash
+    }
+    return value;
+  };
+  const displayValue = getDisplayValue();
 
   const onClickCellButton = () => {
     dispatch({
@@ -122,9 +130,12 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
   } else if (isDots && value !== undefined) {
     CellComponent = ExpandButton;
   }
+
+  const characterLength = isDots ? 0 : String(displayValue).length;
   return (
-    <DataCell $characterLength={isDots ? 0 : String(displayValue).length}>
+    <DataCell $characterLength={characterLength}>
       <DataCellContent
+        $characterLength={characterLength}
         as={CellComponent}
         onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}
       >
