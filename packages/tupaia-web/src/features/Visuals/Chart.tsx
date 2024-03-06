@@ -17,21 +17,28 @@ const GREY_DE = '#DEDEE0';
 const GREY_FB = '#FBF9F9';
 const TEXT_DARKGREY = '#414D55';
 
-const ScreenChartTable = styled(ChartTable)`
+const ScreenChartTable = styled(ChartTable).attrs({
+  stickyHeader: true,
+})`
   table {
     table-layout: unset;
   }
 `;
 
 const ExportingStyledTable = styled(ChartTable)`
+  max-height: none;
+  border: none;
   padding: 1.8rem 0;
-  border-bottom: none;
   overflow: unset; // so that any horizontal scroll bar is applied to the parent container, not to the table
 
   table {
     border: 1px solid ${GREY_DE};
     width: auto;
+    .MuiTableRow-root {
+      background-color: transparent;
+    }
   }
+
   ${A4Page} & {
     table {
       width: 100%;
@@ -50,17 +57,22 @@ const ExportingStyledTable = styled(ChartTable)`
 
   // table body
   tbody {
-    tr {
+    .MuiTableRow-root {
+      &:nth-of-type(even) {
+        background: transparent;
+      }
       &:nth-of-type(odd) {
         background: ${GREY_FB};
       }
     }
   }
 
-  th,
-  td {
+  .MuiTableCell-root {
     color: ${TEXT_DARKGREY};
     border-color: ${GREY_DE};
+    &:not(.MuiTableCell-head) {
+      border: 1px solid ${GREY_DE};
+    }
   }
 `;
 const Wrapper = styled.div`

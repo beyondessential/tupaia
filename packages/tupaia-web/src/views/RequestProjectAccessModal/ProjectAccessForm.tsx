@@ -14,10 +14,8 @@ import {
   LoadingScreen,
   TextField,
   AuthModalButton,
-  RouterButton,
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
-import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
 
 const Note = styled.p`
   text-align: left;
@@ -47,12 +45,16 @@ interface ProjectCountryFormProps {
   availableCountries: CountryAccessListItem[];
   projectName?: SingleProject['name'];
   isLandingPage?: boolean;
+  onCloseModal?: () => void;
+  closeButtonText?: string;
 }
 
 export const ProjectAccessForm = ({
   availableCountries,
   projectName,
   isLandingPage,
+  closeButtonText,
+  onCloseModal,
 }: ProjectCountryFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -82,13 +84,7 @@ export const ProjectAccessForm = ({
           granted.
         </Note>
         {!isLandingPage && (
-          <AuthModalButton
-            component={RouterButton}
-            modal={MODAL_ROUTES.PROJECTS}
-            searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-          >
-            Back to Projects
-          </AuthModalButton>
+          <AuthModalButton onClick={onCloseModal}>{closeButtonText}</AuthModalButton>
         )}
       </div>
     );

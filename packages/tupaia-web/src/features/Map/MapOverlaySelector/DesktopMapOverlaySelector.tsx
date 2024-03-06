@@ -75,7 +75,7 @@ const Container = styled(MaxHeightContainer)`
 
 const TitleWrapper = styled.div`
   padding: 1rem;
-  background-color: ${({ theme }) => theme.overlaySelector.overlayNameBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.overlayNameBackground};
   // Add padding between the title and the date picker when both are present
   div + div {
     padding-top: 0.5rem;
@@ -86,7 +86,7 @@ const OverlayLibraryAccordion = styled(Accordion)`
   display: flex;
   flex-direction: column;
   margin: 0 !important;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   border-radius: 0 0 5px 5px;
   &:before {
     display: none;
