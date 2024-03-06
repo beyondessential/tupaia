@@ -126,6 +126,24 @@ export const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
+  MuiTableRow: {
+    root: {
+      'tbody &:nth-of-type(odd)': {
+        backgroundColor: COLORS.GREY_F1,
+      },
+    },
+  },
+  MuiTableCell: {
+    root: {
+      padding: '1.125rem 1rem',
+    },
+    body: {
+      borderRight: `1px solid ${COLORS.GREY_DE}`,
+      '&:last-child': {
+        borderRight: 'none',
+      },
+    },
+  },
 };
 
 export const breakpoints = {
