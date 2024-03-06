@@ -152,6 +152,16 @@ export const ReferencePropsSchema = {
 	]
 } 
 
+export const DashboardItemTypeSchema = {
+	"enum": [
+		"chart",
+		"component",
+		"matrix",
+		"view"
+	],
+	"type": "string"
+} 
+
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
