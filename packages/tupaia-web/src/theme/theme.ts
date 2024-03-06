@@ -99,7 +99,7 @@ theme.overrides = {
     root: {
       border: `1px solid ${theme.palette.divider}`, // add the border to the container so that when scrolling, the top and left borders of the table can still be seen
       ['&:has(.MuiTable-stickyHeader)']: {
-        maxHeight: 'clamp(20rem,60rem,70vh)', // when the table has a sticky header, set a max height so that it can scroll
+        maxHeight: 'clamp(20rem,60rem,65vh)', // when the table has a sticky header, set a max height so that it can scroll
       },
     },
   },

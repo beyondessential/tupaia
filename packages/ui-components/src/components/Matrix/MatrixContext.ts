@@ -13,13 +13,11 @@ const defaultContextValue = {
   rows: [],
   columns: [],
   expandedRows: [],
-  enlargedCell: null,
   disableExpand: false,
 } as Omit<MatrixConfig, 'type' | 'name'> & {
   rows: MatrixRowType[];
   columns: MatrixColumnType[];
   expandedRows: RowTitle[];
-  enlargedCell: Record<string, any> | null;
   disableExpand?: boolean;
   rowHeaderColumnTitle?: ReactNode;
 };
@@ -30,17 +28,16 @@ export const MatrixContext = createContext(defaultContextValue);
 export enum ACTION_TYPES {
   EXPAND_ROW = 'EXPAND_ROW',
   COLLAPSE_ROW = 'COLLAPSE_ROW',
-  SET_ENLARGED_CELL = 'SET_ENLARGED_CELL',
 }
 interface MatrixAction {
   type: ACTION_TYPES;
-  payload?: RowTitle | number | Record<string, any> | null;
+  payload?: RowTitle | number | null;
 }
 
 // This is the context for the dispatch function of the matrix
 export const MatrixDispatchContext = createContext<Dispatch<MatrixAction> | null>(null);
 
-type MatrixReducerState = Pick<typeof defaultContextValue, 'expandedRows' | 'enlargedCell'>;
+type MatrixReducerState = Pick<typeof defaultContextValue, 'expandedRows'>;
 
 export const matrixReducer = (
   state: MatrixReducerState,
@@ -58,11 +55,6 @@ export const matrixReducer = (
         expandedRows: state.expandedRows.filter(
           (rowTitle: RowTitle) => rowTitle !== action.payload,
         ),
-      };
-    case ACTION_TYPES.SET_ENLARGED_CELL:
-      return {
-        ...state,
-        enlargedCell: action.payload as Record<string, any> | null,
       };
     default:
       return state;
