@@ -48,8 +48,8 @@ export const formatTimestampForChart = (
 };
 
 export const getIsTimeSeries = (data?: ChartData[] | ViewDataItem[]) => {
-  if (!data) return false;
-  return data.length > 0 && data[0]?.timestamp;
+  if (!data || !data.length || !('timestamp' in data[0])) return false;
+  return !!data[0]?.timestamp;
 };
 
 export const isDataKey = (key: string) =>
