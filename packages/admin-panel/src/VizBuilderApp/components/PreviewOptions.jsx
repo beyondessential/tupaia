@@ -17,7 +17,6 @@ import {
   FlexStart,
   ImportModal,
 } from '@tupaia/ui-components';
-import { getIsoDateString } from '@tupaia/tsutils';
 import { useLocations, useProjects, useUploadTestData } from '../api';
 import { usePreviewData, useVizConfig } from '../context';
 import { LinkButton } from './LinkButton';
@@ -140,6 +139,14 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
     showLoadingContainer={false}
   />
 );
+
+/**
+ * @returns ISO date string in the format "yyyy-mm-dd", or `null` if the input is not a valid `Date`
+ * instance.
+ * @param date A `Date` object.
+ */
+export const getIsoDateString = date =>
+  isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
 
 export const PreviewOptions = () => {
   const { setShowData } = usePreviewData();
