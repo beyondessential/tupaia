@@ -107,8 +107,8 @@ export const Reports = () => {
   const getSubmitFormParams = (data: DataType) => {
     const params = {
       surveyCodes: data.surveys.map(({ value }: { value: string }) => value).join(','),
-      startDate: stripTimezoneFromDate(data.startDate),
-      endDate: stripTimezoneFromDate(data.endDate),
+      startDate: data.startDate ? stripTimezoneFromDate(data.startDate) : undefined,
+      endDate: data.endDate ? stripTimezoneFromDate(data.endDate) : undefined,
     } as ExportSurveyResponsesParams;
     if (data.entityLevel === COUNTRY_LEVEL_ENTITY) {
       return {
