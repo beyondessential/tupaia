@@ -8,7 +8,7 @@ import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInB
 export class DatabaseModel {
   otherModels = {};
 
-  constructor(database, schema) {
+  constructor(database, schema = null) {
     this.database = database;
 
     // schema promise will resolve with information about the columns on the table in the database,
