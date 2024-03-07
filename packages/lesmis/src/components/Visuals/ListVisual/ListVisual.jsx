@@ -169,8 +169,8 @@ ListVisualContent.propTypes = {
 
 ListVisualContent.defaultProps = {
   drilldownPathname: null,
-  config: null,
-  report: null,
+  config: {},
+  report: {},
   reportCodes: null,
   isLoading: false,
   isFetching: false,
