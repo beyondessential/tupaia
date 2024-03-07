@@ -14,13 +14,13 @@ export class ModelRegistry {
    * @param {import('./TupaiaDatabase').TupaiaDatabase} database
    * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
    */
-  constructor(database, extraModelClasses, useNotifiers = false) {
+  constructor(database, extraModelClasses, useNotifiers = false, schemata) {
     this.database = database;
     this.modelClasses = {
       ...baseModelClasses,
       ...extraModelClasses,
     };
-    this.generateModels();
+    this.generateModels(schemata);
     if (useNotifiers) {
       this.initialiseNotifiers();
     }
@@ -36,14 +36,15 @@ export class ModelRegistry {
     return this.database.connectionPromise;
   }
 
-  generateModels() {
+  generateModels(schemata) {
     // Add models
     Object.entries(this.modelClasses).forEach(([modelName, ModelClass]) => {
       // Create a singleton instance of each model, passing through the change handler if there is
       // one statically defined on the ModelClass and this is the singleton (non transacting)
       // database instance
       const modelKey = getModelKey(modelName);
-      this[modelKey] = new ModelClass(this.database);
+      const schema = schemata && schemata[modelKey];
+      this[modelKey] = new ModelClass(this.database, schema);
     });
     // Inject other models into each model
     Object.keys(this.modelClasses).forEach(modelName => {
@@ -83,8 +84,20 @@ export class ModelRegistry {
   }
 
   async wrapInTransaction(wrappedFunction) {
-    return this.database.wrapInTransaction(transactingDatabase => {
-      const transactingModelRegistry = new ModelRegistry(transactingDatabase, this.modelClasses);
+    return this.database.wrapInTransaction(async transactingDatabase => {
+      const schemata = {};
+      await Promise.all(
+        Object.keys(this.modelClasses).map(async modelName => {
+          const modelKey = getModelKey(modelName);
+          schemata[modelKey] = await this[modelKey].fetchSchema();
+        }),
+      );
+      const transactingModelRegistry = new ModelRegistry(
+        transactingDatabase,
+        this.modelClasses,
+        false,
+        schemata,
+      );
       return wrappedFunction(transactingModelRegistry);
     });
   }

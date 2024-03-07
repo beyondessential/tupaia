@@ -8,12 +8,13 @@ import { runDatabaseFunctionInBatches } from './utilities/runDatabaseFunctionInB
 export class DatabaseModel {
   otherModels = {};
 
-  constructor(database) {
+  constructor(database, schema) {
     this.database = database;
 
     // schema promise will resolve with information about the columns on the table in the database,
     // e.g.: { id: { type: 'text', maxLength: null, nullable: false, defaultValue: null } }
-    this.schemaPromise = this.startSchemaFetch();
+
+    this.schemaPromise = schema ? Promise.resolve(schema) : this.startSchemaFetch();
 
     this.cache = {};
     this.cachedFunctionInvalidationCancellers = {};
