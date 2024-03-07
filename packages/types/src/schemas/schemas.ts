@@ -28243,12 +28243,15 @@ export const InlineValueSchema = {
 			"type": "string"
 		},
 		"hideFromLegend": {
+			"description": "Whether to hide this value from the legend",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to hide this value from the popup/tooltip",
 			"type": "boolean"
 		},
 		"icon": {
+			"description": "What icon to use for this value",
 			"enum": [
 				"checkbox",
 				"circle",
@@ -28273,9 +28276,11 @@ export const InlineValueSchema = {
 			"type": "string"
 		},
 		"name": {
+			"description": "Display name for this value",
 			"type": "string"
 		},
 		"value": {
+			"description": "The value",
 			"type": [
 				"string",
 				"number"
@@ -28284,7 +28289,6 @@ export const InlineValueSchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"icon",
 		"value"
 	]
 } 
@@ -28293,6 +28297,7 @@ export const MeasureConfigSchema = {
 	"type": "object",
 	"properties": {
 		"type": {
+			"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
 			"enum": [
 				"color",
 				"icon",
@@ -28305,6 +28310,7 @@ export const MeasureConfigSchema = {
 			"type": "string"
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -28347,6 +28353,7 @@ export const MeasureConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -28355,12 +28362,15 @@ export const MeasureConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -28385,9 +28395,11 @@ export const MeasureConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -28396,18 +28408,20 @@ export const MeasureConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
 		},
 		"sortOrder": {
+			"description": "Order to show this series in the popup/tooltip",
 			"type": "number"
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this series in the legend",
 			"type": "boolean"
 		},
 		"name": {
+			"description": "Display name of this series",
 			"type": "string"
 		},
 		"color": {
@@ -28554,9 +28568,11 @@ export const BaseMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -28651,6 +28667,7 @@ export const BaseMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -28797,51 +28814,11 @@ export const BaseMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -28884,6 +28861,7 @@ export const BaseMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -28895,18 +28873,24 @@ export const BaseMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -28948,14 +28932,156 @@ export const BaseMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -28997,14 +29123,12 @@ export const BaseMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -29020,90 +29144,11 @@ export const BaseMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -29119,6 +29164,7 @@ export const BaseMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -29127,12 +29173,15 @@ export const BaseMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -29157,9 +29206,11 @@ export const BaseMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -29168,7 +29219,6 @@ export const BaseMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -29178,7 +29228,6 @@ export const BaseMapOverlayConfigSchema = {
 } 
 
 export const CustomColorsSchema = {
-	"description": "A comma separated list of colours, e.g 'Green,red,Blue,cyan'",
 	"type": "string"
 } 
 
@@ -29187,9 +29236,11 @@ export const SpectrumMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -29284,6 +29335,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -29430,51 +29482,11 @@ export const SpectrumMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -29517,6 +29529,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -29528,18 +29541,24 @@ export const SpectrumMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -29581,14 +29600,156 @@ export const SpectrumMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -29630,14 +29791,12 @@ export const SpectrumMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -29653,90 +29812,11 @@ export const SpectrumMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -29752,6 +29832,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -29760,12 +29841,15 @@ export const SpectrumMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -29790,9 +29874,11 @@ export const SpectrumMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -29801,7 +29887,6 @@ export const SpectrumMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -29818,6 +29903,7 @@ export const SpectrumMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"scaleColorScheme": {
+			"description": "What color scheme to use for the scale",
 			"enum": [
 				"default",
 				"default-reverse",
@@ -29826,6 +29912,85 @@ export const SpectrumMapOverlayConfigSchema = {
 				"time"
 			],
 			"type": "string"
+		},
+		"scaleBounds": {
+			"description": "Limits on the min and max values for the scale",
+			"type": "object",
+			"properties": {
+				"left": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				},
+				"right": {
+					"type": "object",
+					"properties": {
+						"min": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						},
+						"max": {
+							"anyOf": [
+								{
+									"enum": [
+										"auto"
+									],
+									"type": "string"
+								},
+								{
+									"type": "number"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"max",
+						"min"
+					]
+				}
+			},
+			"additionalProperties": false
 		},
 		"displayType": {
 			"enum": [
@@ -29847,9 +30012,11 @@ export const IconMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -29944,6 +30111,7 @@ export const IconMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -30090,51 +30258,11 @@ export const IconMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -30177,6 +30305,7 @@ export const IconMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -30188,18 +30317,24 @@ export const IconMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -30241,14 +30376,156 @@ export const IconMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -30290,14 +30567,12 @@ export const IconMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -30313,90 +30588,11 @@ export const IconMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -30412,6 +30608,7 @@ export const IconMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -30420,12 +30617,15 @@ export const IconMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -30450,9 +30650,11 @@ export const IconMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -30461,7 +30663,6 @@ export const IconMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -30473,6 +30674,7 @@ export const IconMapOverlayConfigSchema = {
 			]
 		},
 		"icon": {
+			"description": "Which icon to display for this map overlay",
 			"enum": [
 				"checkbox",
 				"circle",
@@ -30508,9 +30710,11 @@ export const RadiusMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -30605,6 +30809,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -30751,51 +30956,11 @@ export const RadiusMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -30838,6 +31003,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -30849,18 +31015,24 @@ export const RadiusMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -30902,14 +31074,156 @@ export const RadiusMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -30951,14 +31265,12 @@ export const RadiusMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -30974,90 +31286,11 @@ export const RadiusMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -31073,6 +31306,7 @@ export const RadiusMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -31081,12 +31315,15 @@ export const RadiusMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -31111,9 +31348,11 @@ export const RadiusMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -31122,7 +31361,6 @@ export const RadiusMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -31144,9 +31382,11 @@ export const ColorMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -31241,6 +31481,7 @@ export const ColorMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -31387,51 +31628,11 @@ export const ColorMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -31474,6 +31675,7 @@ export const ColorMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -31485,18 +31687,24 @@ export const ColorMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -31538,14 +31746,156 @@ export const ColorMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -31587,14 +31937,12 @@ export const ColorMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -31610,90 +31958,11 @@ export const ColorMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -31709,6 +31978,7 @@ export const ColorMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -31717,12 +31987,15 @@ export const ColorMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -31747,9 +32020,11 @@ export const ColorMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -31758,7 +32033,6 @@ export const ColorMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -31795,9 +32069,11 @@ export const ShadingMapOverlayConfigSchema = {
 	"type": "object",
 	"properties": {
 		"customLabel": {
+			"description": "Override the map overlay name",
 			"type": "string"
 		},
 		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
 			"type": "object",
 			"properties": {
 				"start": {
@@ -31892,6 +32168,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"defaultTimePeriod": {
+			"description": "Initial date range for this viz",
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -32038,51 +32315,11 @@ export const ShadingMapOverlayConfigSchema = {
 			]
 		},
 		"disableRenameLegend": {
+			"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 			"type": "boolean"
 		},
-		"displayLevel": {
-			"enum": [
-				"Asset",
-				"Business",
-				"Case",
-				"CaseContact",
-				"Catchment",
-				"City",
-				"Complaint",
-				"Country",
-				"Disaster",
-				"District",
-				"Facility",
-				"Farm",
-				"FetpGraduate",
-				"FieldStation",
-				"FijiAspenFacility",
-				"Household",
-				"Incident",
-				"IncidentReported",
-				"Individual",
-				"Institute",
-				"LarvalHabitat",
-				"LocalGovernment",
-				"MedicalArea",
-				"MsupplyStore",
-				"NursingZone",
-				"Postcode",
-				"Project",
-				"RepairRequest",
-				"School",
-				"SubCatchment",
-				"SubDistrict",
-				"SubFacility",
-				"Trap",
-				"Village",
-				"WaterSample",
-				"WishSubDistrict",
-				"World"
-			],
-			"type": "string"
-		},
 		"displayOnLevel": {
+			"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 			"enum": [
 				"Asset",
 				"Business",
@@ -32125,6 +32362,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"displayedValueKey": {
+			"description": "Use to override the default column of data that we display",
 			"enum": [
 				"facilityTypeName",
 				"name",
@@ -32136,18 +32374,24 @@ export const ShadingMapOverlayConfigSchema = {
 		"hideByDefault": {
 			"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "boolean"
+			}
 		},
 		"hideFromLegend": {
+			"description": "Whether to include this map overlay in the legend",
 			"type": "boolean"
 		},
 		"hideFromMenu": {
+			"description": "Whether to include this map overlay in the map overlay selector menu",
 			"type": "boolean"
 		},
 		"hideFromPopup": {
+			"description": "Whether to map overlay in the popup/tooltip",
 			"type": "boolean"
 		},
 		"info": {
+			"description": "Configure the 'i' icon information in the map overlay menu",
 			"type": "object",
 			"properties": {
 				"reference": {
@@ -32189,14 +32433,156 @@ export const ShadingMapOverlayConfigSchema = {
 			"additionalProperties": false
 		},
 		"isTimePeriodEditable": {
+			"description": "Whether this map overlay supports a date picker",
 			"type": "boolean"
 		},
 		"measureConfig": {
-			"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+			"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 			"type": "object",
-			"additionalProperties": false
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+						"enum": [
+							"color",
+							"icon",
+							"popup-only",
+							"radius",
+							"shaded-spectrum",
+							"shading",
+							"spectrum"
+						],
+						"type": "string"
+					},
+					"measureLevel": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"enum": [
+							"Asset",
+							"Business",
+							"Case",
+							"CaseContact",
+							"Catchment",
+							"City",
+							"Complaint",
+							"Country",
+							"Disaster",
+							"District",
+							"Facility",
+							"Farm",
+							"FetpGraduate",
+							"FieldStation",
+							"FijiAspenFacility",
+							"Household",
+							"Incident",
+							"IncidentReported",
+							"Individual",
+							"Institute",
+							"LarvalHabitat",
+							"LocalGovernment",
+							"MedicalArea",
+							"MsupplyStore",
+							"NursingZone",
+							"Postcode",
+							"Project",
+							"RepairRequest",
+							"School",
+							"SubCatchment",
+							"SubDistrict",
+							"SubFacility",
+							"Trap",
+							"Village",
+							"WaterSample",
+							"WishSubDistrict",
+							"World"
+						],
+						"type": "string"
+					},
+					"values": {
+						"description": "Level of the entity hierarchy that this map overlay has data for",
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"color": {
+									"type": "string"
+								},
+								"hideFromLegend": {
+									"description": "Whether to hide this value from the legend",
+									"type": "boolean"
+								},
+								"hideFromPopup": {
+									"description": "Whether to hide this value from the popup/tooltip",
+									"type": "boolean"
+								},
+								"icon": {
+									"description": "What icon to use for this value",
+									"enum": [
+										"checkbox",
+										"circle",
+										"downArrow",
+										"empty",
+										"fade",
+										"h",
+										"healthPin",
+										"help",
+										"hidden",
+										"pentagon",
+										"pin",
+										"radius",
+										"rightArrow",
+										"ring",
+										"square",
+										"triangle",
+										"upArrow",
+										"warning",
+										"x"
+									],
+									"type": "string"
+								},
+								"name": {
+									"description": "Display name for this value",
+									"type": "string"
+								},
+								"value": {
+									"description": "The value",
+									"type": [
+										"string",
+										"number"
+									]
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"value"
+							]
+						}
+					},
+					"sortOrder": {
+						"description": "Order to show this series in the popup/tooltip",
+						"type": "number"
+					},
+					"hideFromLegend": {
+						"description": "Whether to include this series in the legend",
+						"type": "boolean"
+					},
+					"name": {
+						"description": "Display name of this series",
+						"type": "string"
+					},
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"type"
+				]
+			}
 		},
 		"measureLevel": {
+			"description": "Level of the entity hierarchy that this map overlay has data for",
 			"enum": [
 				"Asset",
 				"Business",
@@ -32238,14 +32624,12 @@ export const ShadingMapOverlayConfigSchema = {
 			],
 			"type": "string"
 		},
-		"name": {
-			"type": "string"
-		},
 		"noDataColour": {
 			"description": "The colour to use when there is no data",
 			"type": "string"
 		},
 		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 			"enum": [
 				"day",
 				"month",
@@ -32261,90 +32645,11 @@ export const ShadingMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"popupHeaderFormat": {
-			"type": "string",
-			"enum": [
-				"\"{code}: {name}\""
-			]
-		},
-		"scaleBounds": {
-			"type": "object",
-			"properties": {
-				"left": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				},
-				"right": {
-					"type": "object",
-					"properties": {
-						"min": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						},
-						"max": {
-							"anyOf": [
-								{
-									"enum": [
-										"auto"
-									],
-									"type": "string"
-								},
-								{
-									"type": "number"
-								}
-							]
-						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"max",
-						"min"
-					]
-				}
-			},
-			"additionalProperties": false
+			"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+			"type": "string"
 		},
 		"valueType": {
+			"description": "Data format of the data in this map overlay",
 			"enum": [
 				"boolean",
 				"currency",
@@ -32360,6 +32665,7 @@ export const ShadingMapOverlayConfigSchema = {
 			"type": "string"
 		},
 		"values": {
+			"description": "Configure display options for data values",
 			"type": "array",
 			"items": {
 				"type": "object",
@@ -32368,12 +32674,15 @@ export const ShadingMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"hideFromLegend": {
+						"description": "Whether to hide this value from the legend",
 						"type": "boolean"
 					},
 					"hideFromPopup": {
+						"description": "Whether to hide this value from the popup/tooltip",
 						"type": "boolean"
 					},
 					"icon": {
+						"description": "What icon to use for this value",
 						"enum": [
 							"checkbox",
 							"circle",
@@ -32398,9 +32707,11 @@ export const ShadingMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"name": {
+						"description": "Display name for this value",
 						"type": "string"
 					},
 					"value": {
+						"description": "The value",
 						"type": [
 							"string",
 							"number"
@@ -32409,7 +32720,6 @@ export const ShadingMapOverlayConfigSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"icon",
 					"value"
 				]
 			}
@@ -32437,9 +32747,11 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -32534,6 +32846,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -32680,51 +32993,11 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -32767,6 +33040,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -32778,18 +33052,24 @@ export const MapOverlayConfigSchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -32831,14 +33111,156 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -32880,14 +33302,12 @@ export const MapOverlayConfigSchema = {
 					],
 					"type": "string"
 				},
-				"name": {
-					"type": "string"
-				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -32903,12 +33323,109 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
-						"\"{code}: {name}\""
-					]
+						"boolean",
+						"currency",
+						"default",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"numberAndPercentage",
+						"oneDecimalPlace",
+						"percentage",
+						"text"
+					],
+					"type": "string"
+				},
+				"values": {
+					"description": "Configure display options for data values",
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
+								"type": "boolean"
+							},
+							"icon": {
+								"description": "What icon to use for this value",
+								"enum": [
+									"checkbox",
+									"circle",
+									"downArrow",
+									"empty",
+									"fade",
+									"h",
+									"healthPin",
+									"help",
+									"hidden",
+									"pentagon",
+									"pin",
+									"radius",
+									"rightArrow",
+									"ring",
+									"square",
+									"triangle",
+									"upArrow",
+									"warning",
+									"x"
+								],
+								"type": "string"
+							},
+							"name": {
+								"description": "Display name for this value",
+								"type": "string"
+							},
+							"value": {
+								"description": "The value",
+								"type": [
+									"string",
+									"number"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"value"
+						]
+					}
+				},
+				"scaleType": {
+					"enum": [
+						"gpi",
+						"neutral",
+						"neutralReverse",
+						"performance",
+						"performanceDesc",
+						"time"
+					],
+					"type": "string"
+				},
+				"scaleColorScheme": {
+					"description": "What color scheme to use for the scale",
+					"enum": [
+						"default",
+						"default-reverse",
+						"gpi",
+						"performance",
+						"time"
+					],
+					"type": "string"
 				},
 				"scaleBounds": {
+					"description": "Limits on the min and max values for the scale",
 					"type": "object",
 					"properties": {
 						"left": {
@@ -32985,97 +33502,6 @@ export const MapOverlayConfigSchema = {
 						}
 					},
 					"additionalProperties": false
-				},
-				"valueType": {
-					"enum": [
-						"boolean",
-						"currency",
-						"default",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"numberAndPercentage",
-						"oneDecimalPlace",
-						"percentage",
-						"text"
-					],
-					"type": "string"
-				},
-				"values": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							},
-							"hideFromLegend": {
-								"type": "boolean"
-							},
-							"hideFromPopup": {
-								"type": "boolean"
-							},
-							"icon": {
-								"enum": [
-									"checkbox",
-									"circle",
-									"downArrow",
-									"empty",
-									"fade",
-									"h",
-									"healthPin",
-									"help",
-									"hidden",
-									"pentagon",
-									"pin",
-									"radius",
-									"rightArrow",
-									"ring",
-									"square",
-									"triangle",
-									"upArrow",
-									"warning",
-									"x"
-								],
-								"type": "string"
-							},
-							"name": {
-								"type": "string"
-							},
-							"value": {
-								"type": [
-									"string",
-									"number"
-								]
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"icon",
-							"value"
-						]
-					}
-				},
-				"scaleType": {
-					"enum": [
-						"gpi",
-						"neutral",
-						"neutralReverse",
-						"performance",
-						"performanceDesc",
-						"time"
-					],
-					"type": "string"
-				},
-				"scaleColorScheme": {
-					"enum": [
-						"default",
-						"default-reverse",
-						"gpi",
-						"performance",
-						"time"
-					],
-					"type": "string"
 				},
 				"displayType": {
 					"enum": [
@@ -33096,9 +33522,11 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -33193,6 +33621,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -33339,51 +33768,11 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -33426,6 +33815,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -33437,18 +33827,24 @@ export const MapOverlayConfigSchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -33490,14 +33886,156 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -33539,14 +34077,12 @@ export const MapOverlayConfigSchema = {
 					],
 					"type": "string"
 				},
-				"name": {
-					"type": "string"
-				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -33562,90 +34098,11 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -33661,6 +34118,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -33669,12 +34127,15 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -33699,9 +34160,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -33710,7 +34173,6 @@ export const MapOverlayConfigSchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -33722,6 +34184,7 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"icon": {
+					"description": "Which icon to display for this map overlay",
 					"enum": [
 						"checkbox",
 						"circle",
@@ -33756,9 +34219,11 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -33853,6 +34318,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -33999,51 +34465,11 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -34086,6 +34512,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -34097,18 +34524,24 @@ export const MapOverlayConfigSchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -34150,14 +34583,156 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -34199,14 +34774,12 @@ export const MapOverlayConfigSchema = {
 					],
 					"type": "string"
 				},
-				"name": {
-					"type": "string"
-				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -34222,90 +34795,11 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -34321,6 +34815,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -34329,12 +34824,15 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -34359,9 +34857,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -34370,7 +34870,6 @@ export const MapOverlayConfigSchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -34391,9 +34890,11 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -34488,6 +34989,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -34634,51 +35136,11 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -34721,6 +35183,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -34732,18 +35195,24 @@ export const MapOverlayConfigSchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -34785,14 +35254,156 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -34834,14 +35445,12 @@ export const MapOverlayConfigSchema = {
 					],
 					"type": "string"
 				},
-				"name": {
-					"type": "string"
-				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -34857,90 +35466,11 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -34956,6 +35486,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -34964,12 +35495,15 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -34994,9 +35528,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -35005,7 +35541,6 @@ export const MapOverlayConfigSchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -35041,9 +35576,11 @@ export const MapOverlayConfigSchema = {
 			"type": "object",
 			"properties": {
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -35138,6 +35675,7 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -35284,51 +35822,11 @@ export const MapOverlayConfigSchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -35371,6 +35869,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -35382,18 +35881,24 @@ export const MapOverlayConfigSchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -35435,14 +35940,156 @@ export const MapOverlayConfigSchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -35484,14 +36131,12 @@ export const MapOverlayConfigSchema = {
 					],
 					"type": "string"
 				},
-				"name": {
-					"type": "string"
-				},
 				"noDataColour": {
 					"description": "The colour to use when there is no data",
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -35507,90 +36152,11 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -35606,6 +36172,7 @@ export const MapOverlayConfigSchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -35614,12 +36181,15 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -35644,9 +36214,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -35655,7 +36227,6 @@ export const MapOverlayConfigSchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -63893,9 +64464,11 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -63990,6 +64563,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -64136,51 +64710,11 @@ export const MapOverlaySchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -64223,6 +64757,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -64234,18 +64769,24 @@ export const MapOverlaySchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -64287,14 +64828,156 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -64336,14 +65019,12 @@ export const MapOverlaySchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -64359,12 +65040,109 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
-								"\"{code}: {name}\""
-							]
+								"boolean",
+								"currency",
+								"default",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"numberAndPercentage",
+								"oneDecimalPlace",
+								"percentage",
+								"text"
+							],
+							"type": "string"
+						},
+						"values": {
+							"description": "Configure display options for data values",
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
+										"type": "boolean"
+									},
+									"icon": {
+										"description": "What icon to use for this value",
+										"enum": [
+											"checkbox",
+											"circle",
+											"downArrow",
+											"empty",
+											"fade",
+											"h",
+											"healthPin",
+											"help",
+											"hidden",
+											"pentagon",
+											"pin",
+											"radius",
+											"rightArrow",
+											"ring",
+											"square",
+											"triangle",
+											"upArrow",
+											"warning",
+											"x"
+										],
+										"type": "string"
+									},
+									"name": {
+										"description": "Display name for this value",
+										"type": "string"
+									},
+									"value": {
+										"description": "The value",
+										"type": [
+											"string",
+											"number"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"value"
+								]
+							}
+						},
+						"scaleType": {
+							"enum": [
+								"gpi",
+								"neutral",
+								"neutralReverse",
+								"performance",
+								"performanceDesc",
+								"time"
+							],
+							"type": "string"
+						},
+						"scaleColorScheme": {
+							"description": "What color scheme to use for the scale",
+							"enum": [
+								"default",
+								"default-reverse",
+								"gpi",
+								"performance",
+								"time"
+							],
+							"type": "string"
 						},
 						"scaleBounds": {
+							"description": "Limits on the min and max values for the scale",
 							"type": "object",
 							"properties": {
 								"left": {
@@ -64441,97 +65219,6 @@ export const MapOverlaySchema = {
 								}
 							},
 							"additionalProperties": false
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"currency",
-								"default",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"numberAndPercentage",
-								"oneDecimalPlace",
-								"percentage",
-								"text"
-							],
-							"type": "string"
-						},
-						"values": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"type": "string"
-									},
-									"hideFromLegend": {
-										"type": "boolean"
-									},
-									"hideFromPopup": {
-										"type": "boolean"
-									},
-									"icon": {
-										"enum": [
-											"checkbox",
-											"circle",
-											"downArrow",
-											"empty",
-											"fade",
-											"h",
-											"healthPin",
-											"help",
-											"hidden",
-											"pentagon",
-											"pin",
-											"radius",
-											"rightArrow",
-											"ring",
-											"square",
-											"triangle",
-											"upArrow",
-											"warning",
-											"x"
-										],
-										"type": "string"
-									},
-									"name": {
-										"type": "string"
-									},
-									"value": {
-										"type": [
-											"string",
-											"number"
-										]
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"icon",
-									"value"
-								]
-							}
-						},
-						"scaleType": {
-							"enum": [
-								"gpi",
-								"neutral",
-								"neutralReverse",
-								"performance",
-								"performanceDesc",
-								"time"
-							],
-							"type": "string"
-						},
-						"scaleColorScheme": {
-							"enum": [
-								"default",
-								"default-reverse",
-								"gpi",
-								"performance",
-								"time"
-							],
-							"type": "string"
 						},
 						"displayType": {
 							"enum": [
@@ -64552,9 +65239,11 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -64649,6 +65338,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -64795,51 +65485,11 @@ export const MapOverlaySchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -64882,6 +65532,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -64893,18 +65544,24 @@ export const MapOverlaySchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -64946,14 +65603,156 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -64995,14 +65794,12 @@ export const MapOverlaySchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -65018,90 +65815,11 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -65117,6 +65835,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -65125,12 +65844,15 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -65155,9 +65877,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -65166,7 +65890,6 @@ export const MapOverlaySchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -65178,6 +65901,7 @@ export const MapOverlaySchema = {
 							]
 						},
 						"icon": {
+							"description": "Which icon to display for this map overlay",
 							"enum": [
 								"checkbox",
 								"circle",
@@ -65212,9 +65936,11 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -65309,6 +66035,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -65455,51 +66182,11 @@ export const MapOverlaySchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -65542,6 +66229,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -65553,18 +66241,24 @@ export const MapOverlaySchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -65606,14 +66300,156 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -65655,14 +66491,12 @@ export const MapOverlaySchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -65678,90 +66512,11 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -65777,6 +66532,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -65785,12 +66541,15 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -65815,9 +66574,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -65826,7 +66587,6 @@ export const MapOverlaySchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -65847,9 +66607,11 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -65944,6 +66706,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -66090,51 +66853,11 @@ export const MapOverlaySchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -66177,6 +66900,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -66188,18 +66912,24 @@ export const MapOverlaySchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -66241,14 +66971,156 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -66290,14 +67162,12 @@ export const MapOverlaySchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -66313,90 +67183,11 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -66412,6 +67203,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -66420,12 +67212,15 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -66450,9 +67245,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -66461,7 +67258,6 @@ export const MapOverlaySchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -66497,9 +67293,11 @@ export const MapOverlaySchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -66594,6 +67392,7 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -66740,51 +67539,11 @@ export const MapOverlaySchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -66827,6 +67586,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -66838,18 +67598,24 @@ export const MapOverlaySchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -66891,14 +67657,156 @@ export const MapOverlaySchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -66940,14 +67848,12 @@ export const MapOverlaySchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -66963,90 +67869,11 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -67062,6 +67889,7 @@ export const MapOverlaySchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -67070,12 +67898,15 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -67100,9 +67931,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -67111,7 +67944,6 @@ export const MapOverlaySchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -67194,9 +68026,11 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -67291,6 +68125,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -67437,51 +68272,11 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -67524,6 +68319,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -67535,18 +68331,24 @@ export const MapOverlayCreateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -67588,14 +68390,156 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -67637,14 +68581,12 @@ export const MapOverlayCreateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -67660,12 +68602,109 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
-								"\"{code}: {name}\""
-							]
+								"boolean",
+								"currency",
+								"default",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"numberAndPercentage",
+								"oneDecimalPlace",
+								"percentage",
+								"text"
+							],
+							"type": "string"
+						},
+						"values": {
+							"description": "Configure display options for data values",
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
+										"type": "boolean"
+									},
+									"icon": {
+										"description": "What icon to use for this value",
+										"enum": [
+											"checkbox",
+											"circle",
+											"downArrow",
+											"empty",
+											"fade",
+											"h",
+											"healthPin",
+											"help",
+											"hidden",
+											"pentagon",
+											"pin",
+											"radius",
+											"rightArrow",
+											"ring",
+											"square",
+											"triangle",
+											"upArrow",
+											"warning",
+											"x"
+										],
+										"type": "string"
+									},
+									"name": {
+										"description": "Display name for this value",
+										"type": "string"
+									},
+									"value": {
+										"description": "The value",
+										"type": [
+											"string",
+											"number"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"value"
+								]
+							}
+						},
+						"scaleType": {
+							"enum": [
+								"gpi",
+								"neutral",
+								"neutralReverse",
+								"performance",
+								"performanceDesc",
+								"time"
+							],
+							"type": "string"
+						},
+						"scaleColorScheme": {
+							"description": "What color scheme to use for the scale",
+							"enum": [
+								"default",
+								"default-reverse",
+								"gpi",
+								"performance",
+								"time"
+							],
+							"type": "string"
 						},
 						"scaleBounds": {
+							"description": "Limits on the min and max values for the scale",
 							"type": "object",
 							"properties": {
 								"left": {
@@ -67742,97 +68781,6 @@ export const MapOverlayCreateSchema = {
 								}
 							},
 							"additionalProperties": false
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"currency",
-								"default",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"numberAndPercentage",
-								"oneDecimalPlace",
-								"percentage",
-								"text"
-							],
-							"type": "string"
-						},
-						"values": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"type": "string"
-									},
-									"hideFromLegend": {
-										"type": "boolean"
-									},
-									"hideFromPopup": {
-										"type": "boolean"
-									},
-									"icon": {
-										"enum": [
-											"checkbox",
-											"circle",
-											"downArrow",
-											"empty",
-											"fade",
-											"h",
-											"healthPin",
-											"help",
-											"hidden",
-											"pentagon",
-											"pin",
-											"radius",
-											"rightArrow",
-											"ring",
-											"square",
-											"triangle",
-											"upArrow",
-											"warning",
-											"x"
-										],
-										"type": "string"
-									},
-									"name": {
-										"type": "string"
-									},
-									"value": {
-										"type": [
-											"string",
-											"number"
-										]
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"icon",
-									"value"
-								]
-							}
-						},
-						"scaleType": {
-							"enum": [
-								"gpi",
-								"neutral",
-								"neutralReverse",
-								"performance",
-								"performanceDesc",
-								"time"
-							],
-							"type": "string"
-						},
-						"scaleColorScheme": {
-							"enum": [
-								"default",
-								"default-reverse",
-								"gpi",
-								"performance",
-								"time"
-							],
-							"type": "string"
 						},
 						"displayType": {
 							"enum": [
@@ -67853,9 +68801,11 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -67950,6 +68900,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -68096,51 +69047,11 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -68183,6 +69094,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -68194,18 +69106,24 @@ export const MapOverlayCreateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -68247,14 +69165,156 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -68296,14 +69356,12 @@ export const MapOverlayCreateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -68319,90 +69377,11 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -68418,6 +69397,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -68426,12 +69406,15 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -68456,9 +69439,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -68467,7 +69452,6 @@ export const MapOverlayCreateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -68479,6 +69463,7 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"icon": {
+							"description": "Which icon to display for this map overlay",
 							"enum": [
 								"checkbox",
 								"circle",
@@ -68513,9 +69498,11 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -68610,6 +69597,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -68756,51 +69744,11 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -68843,6 +69791,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -68854,18 +69803,24 @@ export const MapOverlayCreateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -68907,14 +69862,156 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -68956,14 +70053,12 @@ export const MapOverlayCreateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -68979,90 +70074,11 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -69078,6 +70094,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -69086,12 +70103,15 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -69116,9 +70136,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -69127,7 +70149,6 @@ export const MapOverlayCreateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -69148,9 +70169,11 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -69245,6 +70268,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -69391,51 +70415,11 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -69478,6 +70462,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -69489,18 +70474,24 @@ export const MapOverlayCreateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -69542,14 +70533,156 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -69591,14 +70724,12 @@ export const MapOverlayCreateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -69614,90 +70745,11 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -69713,6 +70765,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -69721,12 +70774,15 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -69751,9 +70807,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -69762,7 +70820,6 @@ export const MapOverlayCreateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -69798,9 +70855,11 @@ export const MapOverlayCreateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -69895,6 +70954,7 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -70041,51 +71101,11 @@ export const MapOverlayCreateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -70128,6 +71148,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -70139,18 +71160,24 @@ export const MapOverlayCreateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -70192,14 +71219,156 @@ export const MapOverlayCreateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -70241,14 +71410,12 @@ export const MapOverlayCreateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -70264,90 +71431,11 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -70363,6 +71451,7 @@ export const MapOverlayCreateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -70371,12 +71460,15 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -70401,9 +71493,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -70412,7 +71506,6 @@ export const MapOverlayCreateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -70488,9 +71581,11 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -70585,6 +71680,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -70731,51 +71827,11 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -70818,6 +71874,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -70829,18 +71886,24 @@ export const MapOverlayUpdateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -70882,14 +71945,156 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -70931,14 +72136,12 @@ export const MapOverlayUpdateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -70954,12 +72157,109 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
+						},
+						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
-								"\"{code}: {name}\""
-							]
+								"boolean",
+								"currency",
+								"default",
+								"fraction",
+								"fractionAndPercentage",
+								"number",
+								"numberAndPercentage",
+								"oneDecimalPlace",
+								"percentage",
+								"text"
+							],
+							"type": "string"
+						},
+						"values": {
+							"description": "Configure display options for data values",
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"type": "string"
+									},
+									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
+										"type": "boolean"
+									},
+									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
+										"type": "boolean"
+									},
+									"icon": {
+										"description": "What icon to use for this value",
+										"enum": [
+											"checkbox",
+											"circle",
+											"downArrow",
+											"empty",
+											"fade",
+											"h",
+											"healthPin",
+											"help",
+											"hidden",
+											"pentagon",
+											"pin",
+											"radius",
+											"rightArrow",
+											"ring",
+											"square",
+											"triangle",
+											"upArrow",
+											"warning",
+											"x"
+										],
+										"type": "string"
+									},
+									"name": {
+										"description": "Display name for this value",
+										"type": "string"
+									},
+									"value": {
+										"description": "The value",
+										"type": [
+											"string",
+											"number"
+										]
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"value"
+								]
+							}
+						},
+						"scaleType": {
+							"enum": [
+								"gpi",
+								"neutral",
+								"neutralReverse",
+								"performance",
+								"performanceDesc",
+								"time"
+							],
+							"type": "string"
+						},
+						"scaleColorScheme": {
+							"description": "What color scheme to use for the scale",
+							"enum": [
+								"default",
+								"default-reverse",
+								"gpi",
+								"performance",
+								"time"
+							],
+							"type": "string"
 						},
 						"scaleBounds": {
+							"description": "Limits on the min and max values for the scale",
 							"type": "object",
 							"properties": {
 								"left": {
@@ -71036,97 +72336,6 @@ export const MapOverlayUpdateSchema = {
 								}
 							},
 							"additionalProperties": false
-						},
-						"valueType": {
-							"enum": [
-								"boolean",
-								"currency",
-								"default",
-								"fraction",
-								"fractionAndPercentage",
-								"number",
-								"numberAndPercentage",
-								"oneDecimalPlace",
-								"percentage",
-								"text"
-							],
-							"type": "string"
-						},
-						"values": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"color": {
-										"type": "string"
-									},
-									"hideFromLegend": {
-										"type": "boolean"
-									},
-									"hideFromPopup": {
-										"type": "boolean"
-									},
-									"icon": {
-										"enum": [
-											"checkbox",
-											"circle",
-											"downArrow",
-											"empty",
-											"fade",
-											"h",
-											"healthPin",
-											"help",
-											"hidden",
-											"pentagon",
-											"pin",
-											"radius",
-											"rightArrow",
-											"ring",
-											"square",
-											"triangle",
-											"upArrow",
-											"warning",
-											"x"
-										],
-										"type": "string"
-									},
-									"name": {
-										"type": "string"
-									},
-									"value": {
-										"type": [
-											"string",
-											"number"
-										]
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"icon",
-									"value"
-								]
-							}
-						},
-						"scaleType": {
-							"enum": [
-								"gpi",
-								"neutral",
-								"neutralReverse",
-								"performance",
-								"performanceDesc",
-								"time"
-							],
-							"type": "string"
-						},
-						"scaleColorScheme": {
-							"enum": [
-								"default",
-								"default-reverse",
-								"gpi",
-								"performance",
-								"time"
-							],
-							"type": "string"
 						},
 						"displayType": {
 							"enum": [
@@ -71147,9 +72356,11 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -71244,6 +72455,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -71390,51 +72602,11 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -71477,6 +72649,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -71488,18 +72661,24 @@ export const MapOverlayUpdateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -71541,14 +72720,156 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -71590,14 +72911,12 @@ export const MapOverlayUpdateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -71613,90 +72932,11 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -71712,6 +72952,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -71720,12 +72961,15 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -71750,9 +72994,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -71761,7 +73007,6 @@ export const MapOverlayUpdateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -71773,6 +73018,7 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"icon": {
+							"description": "Which icon to display for this map overlay",
 							"enum": [
 								"checkbox",
 								"circle",
@@ -71807,9 +73053,11 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -71904,6 +73152,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -72050,51 +73299,11 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -72137,6 +73346,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -72148,18 +73358,24 @@ export const MapOverlayUpdateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -72201,14 +73417,156 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -72250,14 +73608,12 @@ export const MapOverlayUpdateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -72273,90 +73629,11 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -72372,6 +73649,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -72380,12 +73658,15 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -72410,9 +73691,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -72421,7 +73704,6 @@ export const MapOverlayUpdateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -72442,9 +73724,11 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -72539,6 +73823,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -72685,51 +73970,11 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -72772,6 +74017,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -72783,18 +74029,24 @@ export const MapOverlayUpdateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -72836,14 +74088,156 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -72885,14 +74279,12 @@ export const MapOverlayUpdateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -72908,90 +74300,11 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -73007,6 +74320,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -73015,12 +74329,15 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -73045,9 +74362,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -73056,7 +74375,6 @@ export const MapOverlayUpdateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -73092,9 +74410,11 @@ export const MapOverlayUpdateSchema = {
 					"type": "object",
 					"properties": {
 						"customLabel": {
+							"description": "Override the map overlay name",
 							"type": "string"
 						},
 						"datePickerLimits": {
+							"description": "Maximum date ranges that the date picker can be used to choose from",
 							"type": "object",
 							"properties": {
 								"start": {
@@ -73189,6 +74509,7 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"defaultTimePeriod": {
+							"description": "Initial date range for this viz",
 							"additionalProperties": false,
 							"type": "object",
 							"properties": {
@@ -73335,51 +74656,11 @@ export const MapOverlayUpdateSchema = {
 							]
 						},
 						"disableRenameLegend": {
+							"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 							"type": "boolean"
 						},
-						"displayLevel": {
-							"enum": [
-								"Asset",
-								"Business",
-								"Case",
-								"CaseContact",
-								"Catchment",
-								"City",
-								"Complaint",
-								"Country",
-								"Disaster",
-								"District",
-								"Facility",
-								"Farm",
-								"FetpGraduate",
-								"FieldStation",
-								"FijiAspenFacility",
-								"Household",
-								"Incident",
-								"IncidentReported",
-								"Individual",
-								"Institute",
-								"LarvalHabitat",
-								"LocalGovernment",
-								"MedicalArea",
-								"MsupplyStore",
-								"NursingZone",
-								"Postcode",
-								"Project",
-								"RepairRequest",
-								"School",
-								"SubCatchment",
-								"SubDistrict",
-								"SubFacility",
-								"Trap",
-								"Village",
-								"WaterSample",
-								"WishSubDistrict",
-								"World"
-							],
-							"type": "string"
-						},
 						"displayOnLevel": {
+							"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 							"enum": [
 								"Asset",
 								"Business",
@@ -73422,6 +74703,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"displayedValueKey": {
+							"description": "Use to override the default column of data that we display",
 							"enum": [
 								"facilityTypeName",
 								"name",
@@ -73433,18 +74715,24 @@ export const MapOverlayUpdateSchema = {
 						"hideByDefault": {
 							"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "boolean"
+							}
 						},
 						"hideFromLegend": {
+							"description": "Whether to include this map overlay in the legend",
 							"type": "boolean"
 						},
 						"hideFromMenu": {
+							"description": "Whether to include this map overlay in the map overlay selector menu",
 							"type": "boolean"
 						},
 						"hideFromPopup": {
+							"description": "Whether to map overlay in the popup/tooltip",
 							"type": "boolean"
 						},
 						"info": {
+							"description": "Configure the 'i' icon information in the map overlay menu",
 							"type": "object",
 							"properties": {
 								"reference": {
@@ -73486,14 +74774,156 @@ export const MapOverlayUpdateSchema = {
 							"additionalProperties": false
 						},
 						"isTimePeriodEditable": {
+							"description": "Whether this map overlay supports a date picker",
 							"type": "boolean"
 						},
 						"measureConfig": {
-							"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+							"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 							"type": "object",
-							"additionalProperties": false
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+										"enum": [
+											"color",
+											"icon",
+											"popup-only",
+											"radius",
+											"shaded-spectrum",
+											"shading",
+											"spectrum"
+										],
+										"type": "string"
+									},
+									"measureLevel": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"enum": [
+											"Asset",
+											"Business",
+											"Case",
+											"CaseContact",
+											"Catchment",
+											"City",
+											"Complaint",
+											"Country",
+											"Disaster",
+											"District",
+											"Facility",
+											"Farm",
+											"FetpGraduate",
+											"FieldStation",
+											"FijiAspenFacility",
+											"Household",
+											"Incident",
+											"IncidentReported",
+											"Individual",
+											"Institute",
+											"LarvalHabitat",
+											"LocalGovernment",
+											"MedicalArea",
+											"MsupplyStore",
+											"NursingZone",
+											"Postcode",
+											"Project",
+											"RepairRequest",
+											"School",
+											"SubCatchment",
+											"SubDistrict",
+											"SubFacility",
+											"Trap",
+											"Village",
+											"WaterSample",
+											"WishSubDistrict",
+											"World"
+										],
+										"type": "string"
+									},
+									"values": {
+										"description": "Level of the entity hierarchy that this map overlay has data for",
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"type": "string"
+												},
+												"hideFromLegend": {
+													"description": "Whether to hide this value from the legend",
+													"type": "boolean"
+												},
+												"hideFromPopup": {
+													"description": "Whether to hide this value from the popup/tooltip",
+													"type": "boolean"
+												},
+												"icon": {
+													"description": "What icon to use for this value",
+													"enum": [
+														"checkbox",
+														"circle",
+														"downArrow",
+														"empty",
+														"fade",
+														"h",
+														"healthPin",
+														"help",
+														"hidden",
+														"pentagon",
+														"pin",
+														"radius",
+														"rightArrow",
+														"ring",
+														"square",
+														"triangle",
+														"upArrow",
+														"warning",
+														"x"
+													],
+													"type": "string"
+												},
+												"name": {
+													"description": "Display name for this value",
+													"type": "string"
+												},
+												"value": {
+													"description": "The value",
+													"type": [
+														"string",
+														"number"
+													]
+												}
+											},
+											"additionalProperties": false,
+											"required": [
+												"value"
+											]
+										}
+									},
+									"sortOrder": {
+										"description": "Order to show this series in the popup/tooltip",
+										"type": "number"
+									},
+									"hideFromLegend": {
+										"description": "Whether to include this series in the legend",
+										"type": "boolean"
+									},
+									"name": {
+										"description": "Display name of this series",
+										"type": "string"
+									},
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"type"
+								]
+							}
 						},
 						"measureLevel": {
+							"description": "Level of the entity hierarchy that this map overlay has data for",
 							"enum": [
 								"Asset",
 								"Business",
@@ -73535,14 +74965,12 @@ export const MapOverlayUpdateSchema = {
 							],
 							"type": "string"
 						},
-						"name": {
-							"type": "string"
-						},
 						"noDataColour": {
 							"description": "The colour to use when there is no data",
 							"type": "string"
 						},
 						"periodGranularity": {
+							"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 							"enum": [
 								"day",
 								"month",
@@ -73558,90 +74986,11 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"popupHeaderFormat": {
-							"type": "string",
-							"enum": [
-								"\"{code}: {name}\""
-							]
-						},
-						"scaleBounds": {
-							"type": "object",
-							"properties": {
-								"left": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								},
-								"right": {
-									"type": "object",
-									"properties": {
-										"min": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										},
-										"max": {
-											"anyOf": [
-												{
-													"enum": [
-														"auto"
-													],
-													"type": "string"
-												},
-												{
-													"type": "number"
-												}
-											]
-										}
-									},
-									"additionalProperties": false,
-									"required": [
-										"max",
-										"min"
-									]
-								}
-							},
-							"additionalProperties": false
+							"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+							"type": "string"
 						},
 						"valueType": {
+							"description": "Data format of the data in this map overlay",
 							"enum": [
 								"boolean",
 								"currency",
@@ -73657,6 +75006,7 @@ export const MapOverlayUpdateSchema = {
 							"type": "string"
 						},
 						"values": {
+							"description": "Configure display options for data values",
 							"type": "array",
 							"items": {
 								"type": "object",
@@ -73665,12 +75015,15 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"hideFromLegend": {
+										"description": "Whether to hide this value from the legend",
 										"type": "boolean"
 									},
 									"hideFromPopup": {
+										"description": "Whether to hide this value from the popup/tooltip",
 										"type": "boolean"
 									},
 									"icon": {
+										"description": "What icon to use for this value",
 										"enum": [
 											"checkbox",
 											"circle",
@@ -73695,9 +75048,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"name": {
+										"description": "Display name for this value",
 										"type": "string"
 									},
 									"value": {
+										"description": "The value",
 										"type": [
 											"string",
 											"number"
@@ -73706,7 +75061,6 @@ export const MapOverlayUpdateSchema = {
 								},
 								"additionalProperties": false,
 								"required": [
-									"icon",
 									"value"
 								]
 							}
@@ -86029,9 +87383,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -86126,6 +87482,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -86272,51 +87629,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -86359,6 +87676,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -86370,18 +87688,24 @@ export const TranslatedMapOverlaySchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -86423,14 +87747,156 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -86477,6 +87943,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -86492,12 +87959,109 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
+				},
+				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
-						"\"{code}: {name}\""
-					]
+						"boolean",
+						"currency",
+						"default",
+						"fraction",
+						"fractionAndPercentage",
+						"number",
+						"numberAndPercentage",
+						"oneDecimalPlace",
+						"percentage",
+						"text"
+					],
+					"type": "string"
+				},
+				"values": {
+					"description": "Configure display options for data values",
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"type": "string"
+							},
+							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
+								"type": "boolean"
+							},
+							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
+								"type": "boolean"
+							},
+							"icon": {
+								"description": "What icon to use for this value",
+								"enum": [
+									"checkbox",
+									"circle",
+									"downArrow",
+									"empty",
+									"fade",
+									"h",
+									"healthPin",
+									"help",
+									"hidden",
+									"pentagon",
+									"pin",
+									"radius",
+									"rightArrow",
+									"ring",
+									"square",
+									"triangle",
+									"upArrow",
+									"warning",
+									"x"
+								],
+								"type": "string"
+							},
+							"name": {
+								"description": "Display name for this value",
+								"type": "string"
+							},
+							"value": {
+								"description": "The value",
+								"type": [
+									"string",
+									"number"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"value"
+						]
+					}
+				},
+				"scaleType": {
+					"enum": [
+						"gpi",
+						"neutral",
+						"neutralReverse",
+						"performance",
+						"performanceDesc",
+						"time"
+					],
+					"type": "string"
+				},
+				"scaleColorScheme": {
+					"description": "What color scheme to use for the scale",
+					"enum": [
+						"default",
+						"default-reverse",
+						"gpi",
+						"performance",
+						"time"
+					],
+					"type": "string"
 				},
 				"scaleBounds": {
+					"description": "Limits on the min and max values for the scale",
 					"type": "object",
 					"properties": {
 						"left": {
@@ -86574,97 +88138,6 @@ export const TranslatedMapOverlaySchema = {
 						}
 					},
 					"additionalProperties": false
-				},
-				"valueType": {
-					"enum": [
-						"boolean",
-						"currency",
-						"default",
-						"fraction",
-						"fractionAndPercentage",
-						"number",
-						"numberAndPercentage",
-						"oneDecimalPlace",
-						"percentage",
-						"text"
-					],
-					"type": "string"
-				},
-				"values": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"color": {
-								"type": "string"
-							},
-							"hideFromLegend": {
-								"type": "boolean"
-							},
-							"hideFromPopup": {
-								"type": "boolean"
-							},
-							"icon": {
-								"enum": [
-									"checkbox",
-									"circle",
-									"downArrow",
-									"empty",
-									"fade",
-									"h",
-									"healthPin",
-									"help",
-									"hidden",
-									"pentagon",
-									"pin",
-									"radius",
-									"rightArrow",
-									"ring",
-									"square",
-									"triangle",
-									"upArrow",
-									"warning",
-									"x"
-								],
-								"type": "string"
-							},
-							"name": {
-								"type": "string"
-							},
-							"value": {
-								"type": [
-									"string",
-									"number"
-								]
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"icon",
-							"value"
-						]
-					}
-				},
-				"scaleType": {
-					"enum": [
-						"gpi",
-						"neutral",
-						"neutralReverse",
-						"performance",
-						"performanceDesc",
-						"time"
-					],
-					"type": "string"
-				},
-				"scaleColorScheme": {
-					"enum": [
-						"default",
-						"default-reverse",
-						"gpi",
-						"performance",
-						"time"
-					],
-					"type": "string"
 				},
 				"displayType": {
 					"enum": [
@@ -86719,9 +88192,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -86816,6 +88291,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -86962,51 +88438,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -87049,6 +88485,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -87060,18 +88497,24 @@ export const TranslatedMapOverlaySchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -87113,14 +88556,156 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -87167,6 +88752,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -87182,90 +88768,11 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -87281,6 +88788,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -87289,12 +88797,15 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -87319,9 +88830,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -87330,7 +88843,6 @@ export const TranslatedMapOverlaySchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -87342,6 +88854,7 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"icon": {
+					"description": "Which icon to display for this map overlay",
 					"enum": [
 						"checkbox",
 						"circle",
@@ -87410,9 +88923,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -87507,6 +89022,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -87653,51 +89169,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -87740,6 +89216,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -87751,18 +89228,24 @@ export const TranslatedMapOverlaySchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -87804,14 +89287,156 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -87858,6 +89483,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -87873,90 +89499,11 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -87972,6 +89519,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -87980,12 +89528,15 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -88010,9 +89561,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -88021,7 +89574,6 @@ export const TranslatedMapOverlaySchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -88076,9 +89628,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -88173,6 +89727,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -88319,51 +89874,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -88406,6 +89921,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -88417,18 +89933,24 @@ export const TranslatedMapOverlaySchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -88470,14 +89992,156 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -88524,6 +90188,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -88539,90 +90204,11 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -88638,6 +90224,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -88646,12 +90233,15 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -88676,9 +90266,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -88687,7 +90279,6 @@ export const TranslatedMapOverlaySchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}
@@ -88757,9 +90348,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"customLabel": {
+					"description": "Override the map overlay name",
 					"type": "string"
 				},
 				"datePickerLimits": {
+					"description": "Maximum date ranges that the date picker can be used to choose from",
 					"type": "object",
 					"properties": {
 						"start": {
@@ -88854,6 +90447,7 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"defaultTimePeriod": {
+					"description": "Initial date range for this viz",
 					"additionalProperties": false,
 					"type": "object",
 					"properties": {
@@ -89000,51 +90594,11 @@ export const TranslatedMapOverlaySchema = {
 					]
 				},
 				"disableRenameLegend": {
+					"description": "Values in the legend will be renamed if the majority of values have different 'displayValueKey'.\nThis setting disabled that behaviour.",
 					"type": "boolean"
 				},
-				"displayLevel": {
-					"enum": [
-						"Asset",
-						"Business",
-						"Case",
-						"CaseContact",
-						"Catchment",
-						"City",
-						"Complaint",
-						"Country",
-						"Disaster",
-						"District",
-						"Facility",
-						"Farm",
-						"FetpGraduate",
-						"FieldStation",
-						"FijiAspenFacility",
-						"Household",
-						"Incident",
-						"IncidentReported",
-						"Individual",
-						"Institute",
-						"LarvalHabitat",
-						"LocalGovernment",
-						"MedicalArea",
-						"MsupplyStore",
-						"NursingZone",
-						"Postcode",
-						"Project",
-						"RepairRequest",
-						"School",
-						"SubCatchment",
-						"SubDistrict",
-						"SubFacility",
-						"Trap",
-						"Village",
-						"WaterSample",
-						"WishSubDistrict",
-						"World"
-					],
-					"type": "string"
-				},
 				"displayOnLevel": {
+					"description": "This setting defines the level of the entity hierarchy from where we start rendering the map overlay.\nUse this if we want to only render the map overlay below a certain level.\neg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District",
 					"enum": [
 						"Asset",
 						"Business",
@@ -89087,6 +90641,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"displayedValueKey": {
+					"description": "Use to override the default column of data that we display",
 					"enum": [
 						"facilityTypeName",
 						"name",
@@ -89098,18 +90653,24 @@ export const TranslatedMapOverlaySchema = {
 				"hideByDefault": {
 					"description": "This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "boolean"
+					}
 				},
 				"hideFromLegend": {
+					"description": "Whether to include this map overlay in the legend",
 					"type": "boolean"
 				},
 				"hideFromMenu": {
+					"description": "Whether to include this map overlay in the map overlay selector menu",
 					"type": "boolean"
 				},
 				"hideFromPopup": {
+					"description": "Whether to map overlay in the popup/tooltip",
 					"type": "boolean"
 				},
 				"info": {
+					"description": "Configure the 'i' icon information in the map overlay menu",
 					"type": "object",
 					"properties": {
 						"reference": {
@@ -89151,14 +90712,156 @@ export const TranslatedMapOverlaySchema = {
 					"additionalProperties": false
 				},
 				"isTimePeriodEditable": {
+					"description": "Whether this map overlay supports a date picker",
 					"type": "boolean"
 				},
 				"measureConfig": {
-					"description": "This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value",
+					"description": "This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series",
 					"type": "object",
-					"additionalProperties": false
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "How to display this series (use popup-only to just show in the popup/tooltip)",
+								"enum": [
+									"color",
+									"icon",
+									"popup-only",
+									"radius",
+									"shaded-spectrum",
+									"shading",
+									"spectrum"
+								],
+								"type": "string"
+							},
+							"measureLevel": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"enum": [
+									"Asset",
+									"Business",
+									"Case",
+									"CaseContact",
+									"Catchment",
+									"City",
+									"Complaint",
+									"Country",
+									"Disaster",
+									"District",
+									"Facility",
+									"Farm",
+									"FetpGraduate",
+									"FieldStation",
+									"FijiAspenFacility",
+									"Household",
+									"Incident",
+									"IncidentReported",
+									"Individual",
+									"Institute",
+									"LarvalHabitat",
+									"LocalGovernment",
+									"MedicalArea",
+									"MsupplyStore",
+									"NursingZone",
+									"Postcode",
+									"Project",
+									"RepairRequest",
+									"School",
+									"SubCatchment",
+									"SubDistrict",
+									"SubFacility",
+									"Trap",
+									"Village",
+									"WaterSample",
+									"WishSubDistrict",
+									"World"
+								],
+								"type": "string"
+							},
+							"values": {
+								"description": "Level of the entity hierarchy that this map overlay has data for",
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"color": {
+											"type": "string"
+										},
+										"hideFromLegend": {
+											"description": "Whether to hide this value from the legend",
+											"type": "boolean"
+										},
+										"hideFromPopup": {
+											"description": "Whether to hide this value from the popup/tooltip",
+											"type": "boolean"
+										},
+										"icon": {
+											"description": "What icon to use for this value",
+											"enum": [
+												"checkbox",
+												"circle",
+												"downArrow",
+												"empty",
+												"fade",
+												"h",
+												"healthPin",
+												"help",
+												"hidden",
+												"pentagon",
+												"pin",
+												"radius",
+												"rightArrow",
+												"ring",
+												"square",
+												"triangle",
+												"upArrow",
+												"warning",
+												"x"
+											],
+											"type": "string"
+										},
+										"name": {
+											"description": "Display name for this value",
+											"type": "string"
+										},
+										"value": {
+											"description": "The value",
+											"type": [
+												"string",
+												"number"
+											]
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"value"
+									]
+								}
+							},
+							"sortOrder": {
+								"description": "Order to show this series in the popup/tooltip",
+								"type": "number"
+							},
+							"hideFromLegend": {
+								"description": "Whether to include this series in the legend",
+								"type": "boolean"
+							},
+							"name": {
+								"description": "Display name of this series",
+								"type": "string"
+							},
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"type"
+						]
+					}
 				},
 				"measureLevel": {
+					"description": "Level of the entity hierarchy that this map overlay has data for",
 					"enum": [
 						"Asset",
 						"Business",
@@ -89205,6 +90908,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"periodGranularity": {
+					"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
 					"enum": [
 						"day",
 						"month",
@@ -89220,90 +90924,11 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"popupHeaderFormat": {
-					"type": "string",
-					"enum": [
-						"\"{code}: {name}\""
-					]
-				},
-				"scaleBounds": {
-					"type": "object",
-					"properties": {
-						"left": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						},
-						"right": {
-							"type": "object",
-							"properties": {
-								"min": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								},
-								"max": {
-									"anyOf": [
-										{
-											"enum": [
-												"auto"
-											],
-											"type": "string"
-										},
-										{
-											"type": "number"
-										}
-									]
-								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"max",
-								"min"
-							]
-						}
-					},
-					"additionalProperties": false
+					"description": "Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker\neg. {code}: {value}",
+					"type": "string"
 				},
 				"valueType": {
+					"description": "Data format of the data in this map overlay",
 					"enum": [
 						"boolean",
 						"currency",
@@ -89319,6 +90944,7 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"values": {
+					"description": "Configure display options for data values",
 					"type": "array",
 					"items": {
 						"type": "object",
@@ -89327,12 +90953,15 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"hideFromLegend": {
+								"description": "Whether to hide this value from the legend",
 								"type": "boolean"
 							},
 							"hideFromPopup": {
+								"description": "Whether to hide this value from the popup/tooltip",
 								"type": "boolean"
 							},
 							"icon": {
+								"description": "What icon to use for this value",
 								"enum": [
 									"checkbox",
 									"circle",
@@ -89357,9 +90986,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"name": {
+								"description": "Display name for this value",
 								"type": "string"
 							},
 							"value": {
+								"description": "The value",
 								"type": [
 									"string",
 									"number"
@@ -89368,7 +90999,6 @@ export const TranslatedMapOverlaySchema = {
 						},
 						"additionalProperties": false,
 						"required": [
-							"icon",
 							"value"
 						]
 					}

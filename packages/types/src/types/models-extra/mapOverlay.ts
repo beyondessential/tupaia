@@ -20,20 +20,64 @@ type DefaultTimePeriod = DateOffsetSpec & {
 
 export type InlineValue = {
   color?: string;
+
+  /**
+   * @description Whether to hide this value from the legend
+   */
   hideFromLegend?: boolean;
+
+  /**
+   * @description Whether to hide this value from the popup/tooltip
+   */
   hideFromPopup?: boolean;
-  icon: IconKey;
+
+  /**
+   * @description What icon to use for this value
+   */
+  icon?: IconKey;
+
+  /**
+   * @description Display name for this value
+   */
   name?: string;
+
+  /**
+   * @description The value
+   */
   value: string | number | null;
 };
 
 type MeasureConfig = {
+  /**
+   * @description How to display this series (use popup-only to just show in the popup/tooltip)
+   */
   type: `${MeasureType}` | 'popup-only';
+
+  /**
+   * @description Level of the entity hierarchy that this map overlay has data for
+   */
   measureLevel?: EntityLevel;
+
+  /**
+   * @description Level of the entity hierarchy that this map overlay has data for
+   */
   values?: InlineValue[];
+
+  /**
+   * @description Order to show this series in the popup/tooltip
+   */
   sortOrder?: number;
+
+  /**
+   * @description Whether to include this series in the legend
+   */
   hideFromLegend?: boolean;
+
+  /**
+   * @description Display name of this series
+   */
   name?: string;
+
   color?: CssColor;
 };
 
@@ -108,39 +152,129 @@ export enum MeasureColorScheme {
 }
 
 export type BaseMapOverlayConfig = {
+  /**
+   * @description Override the map overlay name
+   */
   customLabel?: string | null;
+
+  /**
+   * @description Maximum date ranges that the date picker can be used to choose from
+   */
   datePickerLimits?: {
     start?: DateOffsetSpec;
     end?: DateOffsetSpec;
   };
+
+  /**
+   * @description Initial date range for this viz
+   */
   defaultTimePeriod?: DefaultTimePeriod;
+  /**
+   * @description
+   * Values in the legend will be renamed if the majority of values have different 'displayValueKey'.
+   * This setting disabled that behaviour.
+   */
   disableRenameLegend?: boolean;
-  displayLevel?: EntityLevel;
+
+  /**
+   * @description
+   * This setting defines the level of the entity hierarchy from where we start rendering the map overlay.
+   * Use this if we want to only render the map overlay below a certain level.
+   * eg. If rendering the map overlay at the country level causes performance issues, set displayOnLevel: SubDistrict to only start rendering at Sub District
+   */
   displayOnLevel?: EntityLevel;
+
+  /**
+   * @description Use to override the default column of data that we display
+   */
   displayedValueKey?: DisplayedValueType;
+
   /**
    * @description This is keyed by the value, e.g. 'null': true, and determines whether the specific value should be hidden by default
    */
-  hideByDefault?: Record<string, boolean>;
+  hideByDefault?: { [key: string]: boolean };
+
+  /**
+   * @description Whether to include this map overlay in the legend
+   */
   hideFromLegend?: boolean;
+
+  /**
+   * @description Whether to include this map overlay in the map overlay selector menu
+   */
   hideFromMenu?: boolean;
+
+  /**
+   * @description Whether to map overlay in the popup/tooltip
+   */
   hideFromPopup?: boolean;
+
+  /**
+   * @description Configure the 'i' icon information in the map overlay menu
+   */
   info?: {
     reference?: ReferenceProps;
   };
-  isTimePeriodEditable?: boolean;
+
   /**
-   * @description This is keyed by the value, e.g. 'Not operational' and determines the configuration for that value
+   * @description Whether this map overlay supports a date picker
    */
-  measureConfig?: Record<ValueKey, MeasureConfig>;
+  isTimePeriodEditable?: boolean;
+
+  /**
+   * @description This is keyed by the series, e.g. 'Not operational' and determines the configuration for that series
+   */
+  measureConfig?: {
+    [key: ValueKey]: MeasureConfig;
+  };
+
+  /**
+   * @description Level of the entity hierarchy that this map overlay has data for
+   */
   measureLevel?: EntityLevel;
-  name?: string;
+
   /**
    * @description The colour to use when there is no data
    */
   noDataColour?: CssColor;
+
+  /**
+   * @description Granularity of dates in the viz. Controls the date picker and x axis granularity
+   */
   periodGranularity?: VizPeriodGranularity;
-  popupHeaderFormat?: '"{code}: {name}"' | null;
+
+  /**
+   * @description
+   * Format string for how each series should display in the popup/tooltip. Supports '{<columnName>}' as a substitute marker
+   * eg. {code}: {value}
+   */
+  popupHeaderFormat?: string;
+
+  /**
+   * @description Data format of the data in this map overlay
+   */
+  valueType?: MeasureValueType;
+
+  /**
+   * @description
+   * Configure display options for data values
+   */
+  values?: InlineValue[];
+};
+
+type CustomColors = string | null;
+
+export type SpectrumMapOverlayConfig = BaseMapOverlayConfig & {
+  scaleType: `${ScaleType}`;
+
+  /**
+   * @description What color scheme to use for the scale
+   */
+  scaleColorScheme: MeasureColorScheme;
+
+  /**
+   * @description Limits on the min and max values for the scale
+   */
   scaleBounds?: {
     left?: {
       min: number | 'auto';
@@ -151,23 +285,16 @@ export type BaseMapOverlayConfig = {
       max: number | 'auto';
     };
   };
-  valueType?: MeasureValueType;
-  values?: InlineValue[];
-};
 
-/**
- * @description A comma separated list of colours, e.g 'Green,red,Blue,cyan'
- */
-type CustomColors = string | null;
-
-export type SpectrumMapOverlayConfig = BaseMapOverlayConfig & {
-  scaleType: `${ScaleType}`;
-  scaleColorScheme: MeasureColorScheme;
   displayType: MeasureType.SPECTRUM | MeasureType.SHADED_SPECTRUM;
 };
 
 export type IconMapOverlayConfig = BaseMapOverlayConfig & {
   displayType: MeasureType.ICON;
+
+  /**
+   * @description Which icon to display for this map overlay
+   */
   icon: IconKey;
 };
 
@@ -177,12 +304,21 @@ export type RadiusMapOverlayConfig = BaseMapOverlayConfig & {
 
 export type ColorMapOverlayConfig = BaseMapOverlayConfig & {
   displayType: MeasureType.COLOR;
+
+  /**
+   * @description A comma separated list of colours, e.g 'Green,red,Blue,cyan'
+   */
   customColors?: CustomColors;
+
   scaleType?: ScaleType;
 };
 
 export type ShadingMapOverlayConfig = BaseMapOverlayConfig & {
   displayType: MeasureType.SHADING;
+
+  /**
+   * @description A comma separated list of colours, e.g 'Green,red,Blue,cyan'
+   */
   customColors?: CustomColors;
 };
 
