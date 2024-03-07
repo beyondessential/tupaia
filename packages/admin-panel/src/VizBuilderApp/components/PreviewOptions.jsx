@@ -144,8 +144,12 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
  * @returns ISO date string in the format "yyyy-mm-dd", or `null` if the input is not a valid `Date`
  * instance.
  * @param date A `Date` object.
+ * @privateRemarks Internal call to `new Date()` has no effect when given a valid input, but
+ * prevents calling `getTime()` on a truthy value that is not an instance of `Date`, which throws
+ * an error.
  */
-const getIsoDateString = date => (isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10));
+const getIsoDateString = date =>
+  !date || isNaN(new Date(date).getTime()) ? null : date.toISOString().slice(0, 10);
 
 export const PreviewOptions = () => {
   const { setShowData } = usePreviewData();
