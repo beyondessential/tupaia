@@ -4,33 +4,19 @@
  */
 
 import React, { useContext } from 'react';
-import { Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { ConditionalPresentationOptions } from '@tupaia/types';
+import { PresentationOptionCondition, PresentationOptionRange } from '@tupaia/types';
+import Markdown from 'markdown-to-jsx';
 import { MatrixColumnType, MatrixRowType } from '../../types';
 import {
-  checkIfApplyDotStyle,
+  checkIfApplyPillCellStyle,
   getFlattenedColumns,
-  getIsUsingDots,
+  getIsUsingPillCell,
   getPresentationOption,
-  getFullHex,
 } from './utils';
-import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
-import { CellButton } from './CellButton';
+import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
-
-export const Dot = styled.div<{ $color?: string }>`
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: ${({ $color }) => $color};
-  border: 0.375rem solid
-    ${({ theme }) =>
-      theme.palette.background.default === 'transparent'
-        ? 'transparent'
-        : `${getFullHex(theme.palette.background.default)}cc`};
-  margin: 0 auto;
-`;
+import { Pill } from './Pill';
 
 const DataCell = styled(Cell)`
   vertical-align: middle;
@@ -40,7 +26,7 @@ const DataCell = styled(Cell)`
 `;
 
 const DataCellContent = styled.div<{
-  $characterLength: number;
+  $characterLength?: number;
 }>`
   height: 100%;
   width: 100%;
@@ -52,12 +38,11 @@ const DataCellContent = styled.div<{
       : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 `;
 
-const ExpandButton = styled(Button)`
-  &:hover {
-    ${Dot} {
-      transform: scale(1.2);
-    }
-  }
+const TooltipSubheading = styled.h3`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 `;
 
 interface MatrixCellProps {
@@ -65,19 +50,82 @@ interface MatrixCellProps {
   rowTitle: MatrixRowType['title'];
   isCategory?: boolean;
   colKey: MatrixColumnType['key'];
-  onClick?: MatrixRowType['onClick'];
 }
+
+interface PillCellProps
+  extends Pick<MatrixCellProps, 'rowTitle' | 'value' | 'isCategory' | 'colKey'> {
+  presentation?: PresentationOptionCondition | PresentationOptionRange | null | undefined;
+}
+const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCellProps) => {
+  const { presentationOptions, categoryPresentationOptions, rows } = useContext(MatrixContext);
+
+  // If it is a category header cell, use the category presentation options, otherwise use the normal presentation options
+  const getPresentationOptionsToUse = () => {
+    if (isCategory) {
+      return categoryPresentationOptions;
+    }
+    return presentationOptions;
+  };
+  const presentationOptionsToUse = getPresentationOptionsToUse();
+
+  const getNestedRowData = () => {
+    const fullRow = rows.find(({ title }) => title === rowTitle);
+    if (!fullRow || !fullRow.children) return '';
+    return fullRow.children
+      .map(childRow => {
+        const { title: childRowTitle } = childRow;
+        const childRowValue = childRow[colKey];
+        return `${childRowTitle}: ${childRowValue ?? null}`;
+      })
+      .join('\\n');
+  };
+
+  const getBodyText = () => {
+    if (isCategory && presentationOptionsToUse?.showNestedRows) {
+      return getNestedRowData();
+    }
+    const displayValue = presentationOptionsToUse?.showRawValue ? value : '';
+    if (!presentation?.description) return displayValue;
+    return `${presentation?.description}${
+      presentationOptionsToUse?.showRawValue ? ` ${value}` : ''
+    }`;
+  };
+
+  // Render the description, and also value if showRawValue is true. Also handle newlines in markdown
+  const bodyText = getBodyText();
+
+  const isNullish = value === undefined || value === null;
+
+  const showTooltip = !isNullish && !!bodyText && bodyText !== value;
+
+  return (
+    <DataCell $characterLength={0}>
+      <DataCellContent>
+        <Pill
+          color={presentation?.color}
+          tooltip={
+            showTooltip ? (
+              <>
+                {presentation?.label && (
+                  <TooltipSubheading>{presentation?.label}</TooltipSubheading>
+                )}
+                <Markdown>{bodyText.replace(/\\n/g, '\n\n')}</Markdown>
+              </>
+            ) : null
+          }
+        >
+          {isNullish ? '—' /* em dash */ : value}
+        </Pill>
+      </DataCellContent>
+    </DataCell>
+  );
+};
 
 /**
  * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
  */
-export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: MatrixCellProps) => {
-  const {
-    presentationOptions = {},
-    categoryPresentationOptions = {},
-    columns,
-  } = useContext(MatrixContext);
-  const dispatch = useContext(MatrixDispatchContext)!;
+export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellProps) => {
+  const { presentationOptions, categoryPresentationOptions, columns } = useContext(MatrixContext);
   // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
 
   const allColumns = getFlattenedColumns(columns);
@@ -85,62 +133,28 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey, onClick }: Mat
 
   const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
 
-  const isDots =
-    getIsUsingDots(presentationOptionsForCell) &&
-    checkIfApplyDotStyle(presentationOptionsForCell as ConditionalPresentationOptions, colIndex);
+  const isPillCell =
+    getIsUsingPillCell(presentationOptionsForCell) &&
+    checkIfApplyPillCellStyle(presentationOptionsForCell, colIndex);
+
   const presentation = getPresentationOption(presentationOptionsForCell, value);
 
-  const getDisplayValue = () => {
-    if (isDots) {
-      return (
-        <Dot
-          $color={presentation?.color}
-          aria-label={`${presentation?.description ? `${presentation.description}: ` : ''}${
-            value || 'No value'
-          }`}
-        />
-      );
-    }
-    if (value === null || value === undefined) {
-      return '—'; // em dash
-    }
-    return value;
-  };
-  const displayValue = getDisplayValue();
+  if (isPillCell)
+    return (
+      <PillCell
+        rowTitle={rowTitle}
+        value={value}
+        presentation={presentation}
+        isCategory={isCategory}
+        colKey={colKey}
+      />
+    );
 
-  const onClickCellButton = () => {
-    dispatch({
-      type: ACTION_TYPES.SET_ENLARGED_CELL,
-      payload: {
-        rowTitle,
-        value,
-        displayValue,
-        presentation,
-        isCategory,
-        colKey,
-      },
-    });
-  };
-
-  // If the cell has an onClick, it should be a button. If isDots is true, it should be a button that can be clicked to open a modal. Otherwise, it should just be a normal cell.
-  let CellComponent;
-  if (onClick) {
-    CellComponent = CellButton;
-    // if no value, don't render as a button because it won't do anything
-  } else if (isDots && value !== undefined) {
-    CellComponent = ExpandButton;
-  }
-
-  const characterLength = isDots ? 0 : String(displayValue).length;
+  const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
+  const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>
-      <DataCellContent
-        $characterLength={characterLength}
-        as={CellComponent}
-        onClick={onClick || (isDots && value !== undefined) ? onClickCellButton : null}
-      >
-        {displayValue}
-      </DataCellContent>
+      <DataCellContent $characterLength={characterLength}>{displayValue}</DataCellContent>
     </DataCell>
   );
 };
