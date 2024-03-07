@@ -7,7 +7,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Checkbox } from '@tupaia/ui-components';
-import { Entity, Project, TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
+import { Entity, Project, WebServerProjectCountryAccessListRequest } from '@tupaia/types';
 import { theme } from '../../../theme';
 
 const Container = styled.fieldset`

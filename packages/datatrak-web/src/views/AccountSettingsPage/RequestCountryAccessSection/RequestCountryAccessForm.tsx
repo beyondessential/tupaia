@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { UseQueryResult } from 'react-query';
 import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
-import { Entity, ProjectResponse, TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
+import { Entity, ProjectResponse, WebServerProjectCountryAccessListRequest } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
