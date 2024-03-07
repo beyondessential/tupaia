@@ -6,11 +6,11 @@
 import { SessionRecord, SessionModel } from '@tupaia/server-boilerplate';
 
 export class AdminPanelSessionRecord extends SessionRecord {
-  public static databaseType = 'admin_panel_session';
+  public static databaseRecord = 'admin_panel_session';
 }
 
 export class AdminPanelSessionModel extends SessionModel {
-  public get DatabaseTypeClass() {
+  public get DatabaseRecordClass() {
     return AdminPanelSessionRecord;
   }
 }

@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class SyncGroupLogRecord extends DatabaseType {
-  static databaseType = TYPES.SYNC_GROUP_LOG;
+class SyncGroupLogRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SYNC_GROUP_LOG;
 }
 
 export class SyncGroupLogModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return SyncGroupLogRecord;
   }
 }

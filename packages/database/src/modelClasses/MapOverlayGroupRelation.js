@@ -4,8 +4,8 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
@@ -14,8 +14,8 @@ const RELATION_CHILD_TYPES = {
   MAP_OVERLAY_GROUP,
 };
 
-export class MapOverlayGroupRelationRecord extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
+export class MapOverlayGroupRelationRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
   async findChildRelations() {
     return this.model.find({ map_overlay_group_id: this.child_id });
@@ -23,7 +23,7 @@ export class MapOverlayGroupRelationRecord extends DatabaseType {
 }
 
 export class MapOverlayGroupRelationModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return MapOverlayGroupRelationRecord;
   }
 
@@ -51,7 +51,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
 
   async findParentRelationTree(childIds) {
     return this.database.findWithParents(
-      this.databaseType,
+      this.databaseRecord,
       childIds,
       'child_id',
       'map_overlay_group_id',

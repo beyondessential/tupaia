@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { EntityModel, EntityRecord as BaseEntityRecord, TYPES } from '@tupaia/database';
+import { EntityModel, EntityRecord as BaseEntityRecord, RECORDS } from '@tupaia/database';
 import { DataElement, DataGroup, DataServiceSyncGroup, Entity, EntityRecord } from '../../types';
 
 const createInstances = <K extends string, T, S>(
@@ -34,7 +34,7 @@ export const dataElement = (fields: DataElementFields): DataElement => {
   return { code, service_type, config, dataElementCode, permission_groups };
 };
 export const dataElementType = (fields: DataElementFields) =>
-  ({ ...dataElement(fields), databaseType: TYPES.DATA_ELEMENT } as DataElement);
+  ({ ...dataElement(fields), databaseRecord: RECORDS.DATA_ELEMENT } as DataElement);
 export const dataElements = <K extends string>(fieldsByKey: Record<K, DataElementFields>) =>
   createInstances(fieldsByKey, dataElement);
 export const dataElementTypes = <K extends string>(fieldsByKey: Record<K, DataElementFields>) =>
@@ -50,7 +50,7 @@ export const dataGroup = (fields: DataGroupFields): DataGroup => {
   return { code, service_type, config };
 };
 export const dataGroupType = (fields: DataGroupFields) =>
-  ({ ...dataGroup(fields), databaseType: TYPES.DATA_GROUP } as DataGroup);
+  ({ ...dataGroup(fields), databaseRecord: RECORDS.DATA_GROUP } as DataGroup);
 export const dataGroups = <K extends string>(fieldsByKey: Record<K, DataGroupFields>) =>
   createInstances(fieldsByKey, dataGroup);
 export const dataGroupTypes = <K extends string>(fieldsByKey: Record<K, DataGroupFields>) =>
@@ -78,7 +78,7 @@ export const dataServiceSyncGroup = (fields: DataServiceSyncGroupFields): DataSe
 export const dataServiceSyncGroupType = (fields: DataServiceSyncGroupFields) =>
   ({
     ...dataServiceSyncGroup(fields),
-    databaseType: TYPES.DATA_SERVICE_SYNC_GROUP,
+    databaseRecord: RECORDS.DATA_SERVICE_SYNC_GROUP,
   } as DataServiceSyncGroup);
 export const dataServiceSyncGroups = <K extends string>(
   fieldsByKey: Record<K, DataServiceSyncGroupFields>,

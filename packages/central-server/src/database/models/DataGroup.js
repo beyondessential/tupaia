@@ -41,7 +41,7 @@ export class DataGroupRecord extends CommonDataGroupRecord {
 export class DataGroupModel extends CommonDataGroupModel {
   isDeletableViaApi = true;
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DataGroupRecord;
   }
 }

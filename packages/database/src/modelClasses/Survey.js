@@ -4,11 +4,11 @@
  */
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class SurveyType extends DatabaseType {
-  static databaseType = TYPES.SURVEY;
+export class SurveyType extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY;
 
   /**
    * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
@@ -121,7 +121,7 @@ export class SurveyType extends DatabaseType {
 }
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return SurveyType;
   }
 }

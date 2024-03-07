@@ -4,17 +4,17 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class IndicatorRecord extends DatabaseType {
-  static databaseType = TYPES.INDICATOR;
+class IndicatorRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.INDICATOR;
 }
 
 export class IndicatorModel extends DatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return IndicatorRecord;
   }
 }

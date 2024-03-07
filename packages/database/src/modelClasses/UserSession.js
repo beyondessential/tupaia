@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class UserSessionRecord extends DatabaseType {
-  static databaseType = TYPES.USER_SESSION;
+class UserSessionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.USER_SESSION;
 }
 
 export class UserSessionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return UserSessionRecord;
   }
 }

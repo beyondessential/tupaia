@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import moment from 'moment';
-import { generateTestId, TYPES } from '@tupaia/database';
+import { generateTestId, RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
 export const ORGANISATION_UNIT_ID = 'org_unit_xxx';
@@ -55,14 +55,14 @@ export const ANSWER = {
 export const ANSWER_CHANGE = {
   id: ANSWER.id, // to ensure upsert works when generating test data
   type: 'update',
-  record_type: TYPES.ANSWER,
+  record_type: RECORDS.ANSWER,
   record_id: ANSWER.id,
 };
 
 export const SURVEY_RESPONSE_CHANGE = {
   id: SURVEY_RESPONSE.id, // to ensure upsert works when generating test data
   type: 'update',
-  record_type: TYPES.SURVEY_RESPONSE,
+  record_type: RECORDS.SURVEY_RESPONSE,
   record_id: SURVEY_RESPONSE.id,
 };
 

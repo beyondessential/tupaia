@@ -30,7 +30,7 @@ class UserRecord extends CommonUserRecord {
 }
 
 export class UserModel extends CommonUserModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return UserRecord;
   }
 }

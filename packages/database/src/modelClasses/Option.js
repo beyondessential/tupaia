@@ -5,11 +5,11 @@
 
 import { hasContent } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OptionRecord extends DatabaseType {
-  static databaseType = TYPES.OPTION;
+export class OptionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.OPTION;
 
   static fieldValidators = new Map()
     .set('value', [
@@ -67,7 +67,7 @@ export class OptionRecord extends DatabaseType {
 }
 
 export class OptionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return OptionRecord;
   }
 

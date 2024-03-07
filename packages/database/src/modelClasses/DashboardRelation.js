@@ -5,25 +5,25 @@
 
 import { isNotNullish } from '@tupaia/tsutils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DashboardRelationRecord extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD_RELATION;
+export class DashboardRelationRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD_RELATION;
 
   static joins = [
     {
       fields: {
         code: 'dashboard_code',
       },
-      joinWith: TYPES.DASHBOARD,
+      joinWith: RECORDS.DASHBOARD,
       joinCondition: ['dashboard.id', 'dashboard_relation.dashboard_id'],
     },
     {
       fields: {
         code: 'dashboard_item_code',
       },
-      joinWith: TYPES.DASHBOARD_ITEM,
+      joinWith: RECORDS.DASHBOARD_ITEM,
       joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
     },
   ];
@@ -50,7 +50,7 @@ export class DashboardRelationRecord extends DatabaseType {
 }
 
 export class DashboardRelationModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DashboardRelationRecord;
   }
 
@@ -68,11 +68,11 @@ export class DashboardRelationModel extends DatabaseModel {
       {
         multiJoin: [
           {
-            joinWith: TYPES.DASHBOARD,
+            joinWith: RECORDS.DASHBOARD,
             joinCondition: ['dashboard.id', 'dashboard_relation.dashboard_id'],
           },
           {
-            joinWith: TYPES.DASHBOARD_ITEM,
+            joinWith: RECORDS.DASHBOARD_ITEM,
             joinCondition: ['dashboard_item.id', 'dashboard_relation.child_id'],
           },
         ],

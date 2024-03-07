@@ -48,7 +48,7 @@ class EntityRecord extends CommonEntityRecord {
   }
 }
 export class EntityModel extends CommonEntityModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return EntityRecord;
   }
 }

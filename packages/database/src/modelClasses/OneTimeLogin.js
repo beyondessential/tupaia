@@ -7,11 +7,11 @@ import moment from 'moment';
 import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OneTimeLoginRecord extends DatabaseType {
-  static databaseType = TYPES.ONE_TIME_LOGIN;
+export class OneTimeLoginRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ONE_TIME_LOGIN;
 
   isExpired() {
     return moment().subtract(1, 'h').isAfter(moment(this.creation_date));
@@ -23,7 +23,7 @@ export class OneTimeLoginRecord extends DatabaseType {
 }
 
 export class OneTimeLoginModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return OneTimeLoginRecord;
   }
 

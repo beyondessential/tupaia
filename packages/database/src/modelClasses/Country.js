@@ -4,11 +4,11 @@
  */
 import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class CountryRecord extends DatabaseType {
-  static databaseType = TYPES.COUNTRY;
+export class CountryRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.COUNTRY;
 
   async geographicalAreas() {
     return this.otherModels.geographicalArea.find({ country_id: this.id });
@@ -16,7 +16,7 @@ export class CountryRecord extends DatabaseType {
 }
 
 export class CountryModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return CountryRecord;
   }
 

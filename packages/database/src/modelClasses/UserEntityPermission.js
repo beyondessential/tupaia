@@ -4,28 +4,28 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class UserEntityPermissionRecord extends DatabaseType {
-  static databaseType = TYPES.USER_ENTITY_PERMISSION;
+export class UserEntityPermissionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.USER_ENTITY_PERMISSION;
 
   static joins = [
     {
       fields: {
         code: 'entity_code',
       },
-      joinWith: TYPES.ENTITY,
-      joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.USER_ENTITY_PERMISSION}.entity_id`],
+      joinWith: RECORDS.ENTITY,
+      joinCondition: [`${RECORDS.ENTITY}.id`, `${RECORDS.USER_ENTITY_PERMISSION}.entity_id`],
     },
     {
       fields: {
         name: 'permission_group_name',
       },
-      joinWith: TYPES.PERMISSION_GROUP,
+      joinWith: RECORDS.PERMISSION_GROUP,
       joinCondition: [
-        `${TYPES.PERMISSION_GROUP}.id`,
-        `${TYPES.USER_ENTITY_PERMISSION}.permission_group_id`,
+        `${RECORDS.PERMISSION_GROUP}.id`,
+        `${RECORDS.USER_ENTITY_PERMISSION}.permission_group_id`,
       ],
     },
   ];
@@ -44,7 +44,7 @@ export class UserEntityPermissionRecord extends DatabaseType {
 }
 
 export class UserEntityPermissionModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return UserEntityPermissionRecord;
   }
 

@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DashboardMailingListEntryRecord extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD_MAILING_LIST_ENTRY;
+export class DashboardMailingListEntryRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD_MAILING_LIST_ENTRY;
 
   async mailingList() {
     return this.otherModels.dashboardMailingList.findById(this.dashboard_mailing_list_id);
@@ -31,7 +31,7 @@ export class DashboardMailingListEntryRecord extends DatabaseType {
 }
 
 export class DashboardMailingListEntryModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DashboardMailingListEntryRecord;
   }
 }

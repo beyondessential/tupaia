@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class FacilityRecord extends DatabaseType {
-  static databaseType = TYPES.FACILITY;
+class FacilityRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.FACILITY;
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -33,7 +33,7 @@ class FacilityRecord extends DatabaseType {
 }
 
 export class FacilityModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return FacilityRecord;
   }
 }

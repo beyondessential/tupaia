@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class ReportRecord extends DatabaseType {
-  static databaseType = TYPES.REPORT;
+export class ReportRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.REPORT;
 
   /**
    * @returns {Promise<string>} name of permission group
@@ -22,7 +22,7 @@ export class ReportRecord extends DatabaseType {
 }
 
 export class ReportModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return ReportRecord;
   }
 }

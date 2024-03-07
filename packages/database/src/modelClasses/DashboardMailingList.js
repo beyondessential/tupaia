@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DashboardMailingListRecord extends DatabaseType {
-  static databaseType = TYPES.DASHBOARD_MAILING_LIST;
+export class DashboardMailingListRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DASHBOARD_MAILING_LIST;
 }
 
 export class DashboardMailingListModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DashboardMailingListRecord;
   }
 }

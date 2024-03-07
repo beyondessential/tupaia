@@ -6,13 +6,13 @@
 import moment from 'moment';
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
-export class FeedItemRecord extends DatabaseType {
-  static databaseType = TYPES.FEED_ITEM;
+export class FeedItemRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.FEED_ITEM;
 
   constructor(...args) {
     super(...args);
@@ -24,7 +24,7 @@ export class FeedItemRecord extends DatabaseType {
 }
 
 export class FeedItemModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return FeedItemRecord;
   }
 }

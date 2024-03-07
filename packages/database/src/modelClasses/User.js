@@ -5,11 +5,11 @@
 import { encryptPassword } from '@tupaia/auth';
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class UserRecord extends DatabaseType {
-  static databaseType = TYPES.USER_ACCOUNT;
+export class UserRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.USER_ACCOUNT;
 
   get fullName() {
     let userFullName = this.first_name;
@@ -36,7 +36,7 @@ export class UserRecord extends DatabaseType {
 const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return UserRecord;
   }
 

@@ -4,20 +4,20 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
-export class MapOverlayGroupRecord extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY_GROUP;
+export class MapOverlayGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY_GROUP;
 }
 
 export class MapOverlayGroupModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return MapOverlayGroupRecord;
   }
 
@@ -35,11 +35,11 @@ export class MapOverlayGroupModel extends DatabaseModel {
     return this.find(
       { map_overlay_group_id: rootMapOverlayGroup.id, child_type: 'mapOverlayGroup' },
       {
-        joinWith: TYPES.MAP_OVERLAY_GROUP_RELATION,
+        joinWith: RECORDS.MAP_OVERLAY_GROUP_RELATION,
         joinType: JOIN_TYPES.INNER,
         joinCondition: [
-          `${TYPES.MAP_OVERLAY_GROUP}.id`,
-          `${TYPES.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+          `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
         ],
       },
     );

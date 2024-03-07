@@ -3,11 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
-class QuestionRecord extends DatabaseType {
-  static databaseType = TYPES.QUESTION;
+class QuestionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.QUESTION;
 
   dataElement = async () => this.otherModels.dataElement.findById(this.data_element_id);
 
@@ -31,7 +31,7 @@ const HOOKS_BY_ID_CACHE_KEY = 'hooksByQuestionId';
 export class QuestionModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return QuestionRecord;
   }
 

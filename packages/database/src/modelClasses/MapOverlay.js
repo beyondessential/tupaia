@@ -4,18 +4,18 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
-class MapOverlayRecord extends DatabaseType {
-  static databaseType = TYPES.MAP_OVERLAY;
+class MapOverlayRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MAP_OVERLAY;
 }
 
 export class MapOverlayModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return MapOverlayRecord;
   }
 
@@ -24,8 +24,8 @@ export class MapOverlayModel extends DatabaseModel {
       { code: [code] },
       {
         columns: [
-          { code: `${TYPES.MAP_OVERLAY}.code` },
-          { linked_measures: `${TYPES.MAP_OVERLAY}.linked_measures` },
+          { code: `${RECORDS.MAP_OVERLAY}.code` },
+          { linked_measures: `${RECORDS.MAP_OVERLAY}.linked_measures` },
         ],
       },
     );
@@ -48,15 +48,15 @@ export class MapOverlayModel extends DatabaseModel {
 
   // Return measures joined with legacy info if it exists
   async findMeasuresWithLegacyInfo(criteria) {
-    return this.database.find(this.databaseType, criteria, {
+    return this.database.find(this.databaseRecord, criteria, {
       columns: [
         'map_overlay.*',
         'legacy_report.data_builder',
         'legacy_report.data_builder_config',
         'legacy_report.data_services',
       ],
-      joinWith: TYPES.LEGACY_REPORT,
-      joinCondition: [`${TYPES.MAP_OVERLAY}.report_code`, `${TYPES.LEGACY_REPORT}.code`],
+      joinWith: RECORDS.LEGACY_REPORT,
+      joinCondition: [`${RECORDS.MAP_OVERLAY}.report_code`, `${RECORDS.LEGACY_REPORT}.code`],
       joinType: JOIN_TYPES.LEFT,
     });
   }

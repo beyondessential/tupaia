@@ -7,7 +7,7 @@
 
 import winston from 'winston';
 
-import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
 
@@ -46,8 +46,8 @@ export const NON_DATA_ELEMENT_ANSWER_TYPES = [
   ANSWER_TYPES.SUBMISSION_DATE,
 ];
 
-class AnswerRecord extends DatabaseType {
-  static databaseType = TYPES.ANSWER;
+class AnswerRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ANSWER;
 
   static hookQueue = new CallbackQueue();
 
@@ -125,7 +125,7 @@ class AnswerRecord extends DatabaseType {
 export class AnswerModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeRunQuestionHook];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return AnswerRecord;
   }
 

@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class MeditrakDeviceRecord extends DatabaseType {
-  static databaseType = TYPES.MEDITRAK_DEVICE;
+class MeditrakDeviceRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MEDITRAK_DEVICE;
 }
 
 export class MeditrakDeviceModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return MeditrakDeviceRecord;
   }
 }

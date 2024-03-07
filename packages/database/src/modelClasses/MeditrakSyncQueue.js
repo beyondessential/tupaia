@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class MeditrakSyncQueueRecord extends DatabaseType {
-  static databaseType = TYPES.MEDITRAK_SYNC_QUEUE;
+export class MeditrakSyncQueueRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.MEDITRAK_SYNC_QUEUE;
 }
 
 export class MeditrakSyncQueueModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return MeditrakSyncQueueRecord;
   }
 }

@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class SurveyScreenComponentRecord extends DatabaseType {
-  static databaseType = TYPES.SURVEY_SCREEN_COMPONENT;
+export class SurveyScreenComponentRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY_SCREEN_COMPONENT;
 
   async question() {
     return this.otherModels.question.findById(this.question_id);
@@ -29,7 +29,7 @@ export class SurveyScreenComponentRecord extends DatabaseType {
 }
 
 export class SurveyScreenComponentModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return SurveyScreenComponentRecord;
   }
 }

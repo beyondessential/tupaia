@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class DisasterEventRecord extends DatabaseType {
-  static databaseType = TYPES.DISASTER_EVENT;
+class DisasterEventRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DISASTER_EVENT;
 }
 
 export class DisasterEventModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DisasterEventRecord;
   }
 }

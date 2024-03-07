@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class OptionSetRecord extends DatabaseType {
-  static databaseType = TYPES.OPTION_SET;
+export class OptionSetRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.OPTION_SET;
 
   async getSurveyIds() {
     const surveyScreens = await this.database.executeSql(
@@ -28,7 +28,7 @@ export class OptionSetRecord extends DatabaseType {
 }
 
 export class OptionSetModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return OptionSetRecord;
   }
 }

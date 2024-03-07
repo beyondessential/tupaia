@@ -5,7 +5,7 @@
 
 import type {
   DatabaseModel as BaseDatabaseModel,
-  DatabaseType as BaseDatabaseType,
+  DatabaseRecord as BaseDatabaseRecord,
   DataElementModel as BaseDataElementModel,
   DataElementRecord as BaseDataElementRecord,
   DataGroupModel as BaseDataGroupModel,
@@ -15,7 +15,7 @@ import type {
   EntityModel as BaseEntityModel,
   EntityRecord as BaseEntityRecord,
   ModelRegistry,
-  TYPES,
+  RECORDS,
 } from '@tupaia/database';
 import { Join, Override, Values } from './utils';
 
@@ -40,15 +40,18 @@ type JsonFieldConditions<T> = Values<{
 
 export type DbConditions<R> = Partial<FlatFieldConditions<R> & JsonFieldConditions<R>>;
 
-export type DatabaseType<R extends DbRecord, T extends BaseDatabaseType = BaseDatabaseType> = T & R;
+export type DatabaseRecord<
+  R extends DbRecord,
+  T extends BaseDatabaseRecord = BaseDatabaseRecord,
+> = T & R;
 
 type DatabaseModel<
   R extends DbRecord,
-  T extends BaseDatabaseType = BaseDatabaseType,
+  T extends BaseDatabaseRecord = BaseDatabaseRecord,
   M extends BaseDatabaseModel = BaseDatabaseModel,
 > = Omit<M, 'find' | 'findOne'> & {
-  find: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>[]>;
-  findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseType<R, T>>;
+  find: (dbConditions: DbConditions<R>) => Promise<DatabaseRecord<R, T>[]>;
+  findOne: (dbConditions: DbConditions<R>) => Promise<DatabaseRecord<R, T>>;
 };
 
 export type DataSourceType = 'dataElement' | 'dataGroup' | 'syncGroup';
@@ -140,13 +143,13 @@ export type EntityHierarchy = {
 };
 
 export type DataSourceTypeInstance = DataSource & {
-  databaseType:
-    | typeof TYPES.DATA_ELEMENT
-    | typeof TYPES.DATA_GROUP
-    | typeof TYPES.DATA_SERVICE_SYNC_GROUP;
+  databaseRecord:
+    | typeof RECORDS.DATA_ELEMENT
+    | typeof RECORDS.DATA_GROUP
+    | typeof RECORDS.DATA_SERVICE_SYNC_GROUP;
 };
-type DataElementRecord = DatabaseType<DataElement, BaseDataElementRecord>;
-export type EntityRecord = DatabaseType<Entity, BaseEntityRecord>;
+type DataElementRecord = DatabaseRecord<DataElement, BaseDataElementRecord>;
+export type EntityRecord = DatabaseRecord<Entity, BaseEntityRecord>;
 
 export type DataElementModel = DatabaseModel<
   DataElement,

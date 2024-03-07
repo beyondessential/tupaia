@@ -14,7 +14,7 @@ class SurveyType extends BaseSurveyType {
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataGroup];
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return SurveyType;
   }
 

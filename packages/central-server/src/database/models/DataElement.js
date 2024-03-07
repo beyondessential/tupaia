@@ -55,7 +55,7 @@ export class DataElementRecord extends CommonDataElementRecord {
 export class DataElementModel extends CommonDataElementModel {
   isDeletableViaApi = true;
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DataElementRecord;
   }
 }

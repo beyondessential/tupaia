@@ -4,8 +4,8 @@
  */
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const SERVICE_TYPES = {
   DHIS: 'dhis',
@@ -31,8 +31,8 @@ const DHIS_DATA_TYPES = {
   INDICATOR: 'Indicator',
 };
 
-export class DataElementRecord extends DatabaseType {
-  static databaseType = TYPES.DATA_ELEMENT;
+export class DataElementRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_ELEMENT;
 
   SERVICE_TYPES = SERVICE_TYPES;
 
@@ -79,7 +79,7 @@ export class DataElementRecord extends DatabaseType {
 export class DataElementModel extends MaterializedViewLogDatabaseModel {
   SERVICE_TYPES = SERVICE_TYPES;
 
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return DataElementRecord;
   }
 

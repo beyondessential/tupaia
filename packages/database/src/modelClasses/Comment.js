@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class CommentRecord extends DatabaseType {
-  static databaseType = TYPES.COMMENT;
+export class CommentRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.COMMENT;
 }
 
 export class CommentModel extends DatabaseModel {
-  get DatabaseTypeClass() {
+  get DatabaseRecordClass() {
     return CommentRecord;
   }
 }

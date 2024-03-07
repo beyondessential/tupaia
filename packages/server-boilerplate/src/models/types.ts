@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { ObjectLikeKeys, ObjectLikeFields, Flatten } from '@tupaia/types';
 
 type FilterComparators = '!=' | 'ilike' | '=' | '>' | '<' | '<=' | '>=' | 'in' | 'not in' | '@>';
@@ -86,7 +86,7 @@ type BaseModelOverrides<Fields = unknown, Type = unknown> = {
   all: () => Promise<Type[]>;
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseType> = Omit<
+export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseRecord> = Omit<
   BaseModel,
   keyof BaseModelOverrides
 > &
