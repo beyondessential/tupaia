@@ -4,12 +4,12 @@
  */
 
 import { MockTupaiaApiClient, MockCentralApi } from '@tupaia/api-client';
-import { DataTableRecord } from '@tupaia/types';
+import { DataTableType } from '@tupaia/types';
 import { DataTableServiceBuilder } from '../../../dataTableService';
 import { CENTRAL_API_RESPONSES } from './fixtures';
 
 const surveyResponseDataTableService = new DataTableServiceBuilder()
-  .setServiceType(DataTableRecord.survey_responses)
+  .setServiceType(DataTableType.survey_responses)
   .setContext({
     apiClient: new MockTupaiaApiClient({ central: new MockCentralApi(CENTRAL_API_RESPONSES) }),
   })
