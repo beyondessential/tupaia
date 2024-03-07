@@ -66,24 +66,23 @@ export const RequestableCountryChecklist = ({
       select ? [...selectedCountries, id] : selectedCountries.filter(element => element !== id),
     );
 
-  const getTooltip = (hasAccess: boolean, hasRequestedAccess: boolean) => {
+  const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
     if (hasAccess) return 'You already have access';
-    if (hasRequestedAccess) return 'Approval in progress';
+    if (hasPendingAccess) return 'Approval in progress';
   };
 
   return (
     <Container disabled={disabled}>
       {!projectCode
         ? null
-        : countries.map(({ id, name, hasAccess, accessRequests }) => {
-            const hasRequestedAccess = accessRequests.includes(projectCode);
+        : countries.map(({ id, name, hasAccess, hasPendingAccess }) => {
             const isSelected = selectedCountries.includes(id);
-            const tooltip = getTooltip(hasAccess, hasRequestedAccess);
+            const tooltip = getTooltip(hasAccess, hasPendingAccess);
 
             return (
               <StyledCheckbox
                 checked={isSelected}
-                disabled={hasAccess || hasRequestedAccess}
+                disabled={hasAccess || hasPendingAccess}
                 id="entityIds"
                 inputRef={register({ validate: (value: Entity['id'][]) => value.length > 0 })}
                 key={id}
