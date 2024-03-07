@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiPaper from '@material-ui/core/Paper';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-
 import {
   Autocomplete as AutocompleteComponent,
   DatePicker as DatePickerComponent,
