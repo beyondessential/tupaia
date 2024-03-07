@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class FacilityType extends DatabaseType {
+class FacilityRecord extends DatabaseType {
   static databaseType = TYPES.FACILITY;
 
   // Exposed for access policy creation.
@@ -34,6 +34,6 @@ class FacilityType extends DatabaseType {
 
 export class FacilityModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return FacilityType;
+    return FacilityRecord;
   }
 }

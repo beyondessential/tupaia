@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class APIClientType extends DatabaseType {
+class APIClientRecord extends DatabaseType {
   static databaseType = TYPES.API_CLIENT;
 
   async getUser() {
@@ -31,6 +31,6 @@ class APIClientType extends DatabaseType {
 
 export class APIClientModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return APIClientType;
+    return APIClientRecord;
   }
 }

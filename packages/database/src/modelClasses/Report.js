@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class ReportType extends DatabaseType {
+export class ReportRecord extends DatabaseType {
   static databaseType = TYPES.REPORT;
 
   /**
@@ -23,6 +23,6 @@ export class ReportType extends DatabaseType {
 
 export class ReportModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return ReportType;
+    return ReportRecord;
   }
 }

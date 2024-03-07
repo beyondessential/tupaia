@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class OptionType extends DatabaseType {
+export class OptionRecord extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
   static fieldValidators = new Map()
@@ -68,7 +68,7 @@ export class OptionType extends DatabaseType {
 
 export class OptionModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return OptionType;
+    return OptionRecord;
   }
 
   async getLargestSortOrder(optionSetId) {

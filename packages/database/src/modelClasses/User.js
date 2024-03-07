@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class UserType extends DatabaseType {
+export class UserRecord extends DatabaseType {
   static databaseType = TYPES.USER_ACCOUNT;
 
   get fullName() {
@@ -37,7 +37,7 @@ const PUBLIC_USER_EMAIL = 'public@tupaia.org';
 
 export class UserModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return UserType;
+    return UserRecord;
   }
 
   /**

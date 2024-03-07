@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class ApiRequestLogType extends DatabaseType {
+export class ApiRequestLogRecord extends DatabaseType {
   static databaseType = TYPES.API_REQUEST_LOG;
 }
 
 export class ApiRequestLogModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return ApiRequestLogType;
+    return ApiRequestLogRecord;
   }
 }

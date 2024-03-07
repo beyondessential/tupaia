@@ -31,7 +31,7 @@ const DHIS_DATA_TYPES = {
   INDICATOR: 'Indicator',
 };
 
-export class DataElementType extends DatabaseType {
+export class DataElementRecord extends DatabaseType {
   static databaseType = TYPES.DATA_ELEMENT;
 
   SERVICE_TYPES = SERVICE_TYPES;
@@ -80,7 +80,7 @@ export class DataElementModel extends MaterializedViewLogDatabaseModel {
   SERVICE_TYPES = SERVICE_TYPES;
 
   get DatabaseTypeClass() {
-    return DataElementType;
+    return DataElementRecord;
   }
 
   getDhisDataTypes = () => DHIS_DATA_TYPES;

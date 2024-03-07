@@ -11,21 +11,21 @@ export class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
 
   /**
-   * @returns {Promise<import('./DataGroup').DataGroupType>} data group for survey
+   * @returns {Promise<import('./DataGroup').DataGroupRecord>} data group for survey
    */
   async dataGroup() {
     return this.otherModels.dataGroup.findById(this.data_group_id);
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreen').SurveyScreenType[]>} survey screens in survey
+   * @returns {Promise<import('./SurveyScreen').SurveyScreenRecord[]>} survey screens in survey
    */
   async surveyScreens() {
     return this.otherModels.surveyScreen.find({ survey_id: this.id });
   }
 
   /**
-   * @returns {Promise<import('./SurveyScreenComponent').SurveyScreenComponentType[]>} survey screen components in survey
+   * @returns {Promise<import('./SurveyScreenComponent').SurveyScreenComponentRecord[]>} survey screen components in survey
    */
   async surveyScreenComponents() {
     const questions = await this.database.executeSql(
@@ -41,7 +41,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./Question').QuestionType[]>} questions in survey
+   * @returns {Promise<import('./Question').QuestionRecord[]>} questions in survey
    */
   async questions() {
     const questions = await this.database.executeSql(
@@ -58,7 +58,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./OptionSet').OptionSetType[]>} optionSets in questions in survey
+   * @returns {Promise<import('./OptionSet').OptionSetRecord[]>} optionSets in questions in survey
    */
   async optionSets() {
     const optionSets = await this.database.executeSql(
@@ -76,7 +76,7 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./Option').OptionType[]>} options in optionSets in questions in survey
+   * @returns {Promise<import('./Option').OptionRecord[]>} options in optionSets in questions in survey
    */
   async options() {
     const options = await this.database.executeSql(
@@ -95,14 +95,14 @@ export class SurveyType extends DatabaseType {
   }
 
   /**
-   * @returns {Promise<import('./PermissionGroup').PermissionGroupType>} permission group for survey
+   * @returns {Promise<import('./PermissionGroup').PermissionGroupRecord>} permission group for survey
    */
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
   /**
-   * @returns {Promise<import('./Country').CountryType[]>} countries that use this survey
+   * @returns {Promise<import('./Country').CountryRecord[]>} countries that use this survey
    */
   async getCountries() {
     return this.otherModels.country.findManyById(this.country_ids);

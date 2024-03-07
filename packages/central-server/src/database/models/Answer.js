@@ -46,7 +46,7 @@ export const NON_DATA_ELEMENT_ANSWER_TYPES = [
   ANSWER_TYPES.SUBMISSION_DATE,
 ];
 
-class AnswerType extends DatabaseType {
+class AnswerRecord extends DatabaseType {
   static databaseType = TYPES.ANSWER;
 
   static hookQueue = new CallbackQueue();
@@ -109,7 +109,7 @@ class AnswerType extends DatabaseType {
       throw new Error(`No hook with id: ${hookId}`);
     }
 
-    await AnswerType.hookQueue.add(
+    await AnswerRecord.hookQueue.add(
       () =>
         hook({
           answer: this,
@@ -126,7 +126,7 @@ export class AnswerModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeRunQuestionHook];
 
   get DatabaseTypeClass() {
-    return AnswerType;
+    return AnswerRecord;
   }
 
   types = ANSWER_TYPES;

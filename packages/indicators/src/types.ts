@@ -65,7 +65,7 @@ type DataSourceRecord = {
 
 export type DataSourceType = DatabaseType<DataSourceRecord>;
 
-export type IndicatorType = DatabaseType<IndicatorRecord>;
+export type IndicatorRecord = DatabaseType<IndicatorRecord>;
 
 type DataSourceModel = DatabaseModel<DataSourceRecord>;
 

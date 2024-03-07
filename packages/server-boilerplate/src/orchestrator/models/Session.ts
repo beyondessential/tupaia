@@ -26,7 +26,7 @@ interface SessionFields {
   refresh_token: string;
 }
 
-export class SessionType extends DatabaseType {
+export class SessionRecord extends DatabaseType {
   public static databaseType = 'session';
   public readonly id: string;
   public email: string;
@@ -94,7 +94,7 @@ export class SessionType extends DatabaseType {
 
 export class SessionModel extends DatabaseModel {
   public get DatabaseTypeClass() {
-    return SessionType;
+    return SessionRecord;
   }
 
   public async createSession(sessionDetails: SessionDetails) {

@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class DashboardRelationType extends DatabaseType {
+export class DashboardRelationRecord extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_RELATION;
 
   static joins = [
@@ -51,7 +51,7 @@ export class DashboardRelationType extends DatabaseType {
 
 export class DashboardRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DashboardRelationType;
+    return DashboardRelationRecord;
   }
 
   customColumnSelectors = {

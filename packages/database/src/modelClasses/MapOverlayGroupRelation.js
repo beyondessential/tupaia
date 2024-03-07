@@ -14,7 +14,7 @@ const RELATION_CHILD_TYPES = {
   MAP_OVERLAY_GROUP,
 };
 
-export class MapOverlayGroupRelationType extends DatabaseType {
+export class MapOverlayGroupRelationRecord extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
 
   async findChildRelations() {
@@ -24,7 +24,7 @@ export class MapOverlayGroupRelationType extends DatabaseType {
 
 export class MapOverlayGroupRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return MapOverlayGroupRelationType;
+    return MapOverlayGroupRelationRecord;
   }
 
   get RelationChildTypes() {

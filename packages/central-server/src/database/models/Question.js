@@ -6,7 +6,7 @@
 import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 
-class QuestionType extends DatabaseType {
+class QuestionRecord extends DatabaseType {
   static databaseType = TYPES.QUESTION;
 
   dataElement = async () => this.otherModels.dataElement.findById(this.data_element_id);
@@ -32,7 +32,7 @@ export class QuestionModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
   get DatabaseTypeClass() {
-    return QuestionType;
+    return QuestionRecord;
   }
 
   get cacheEnabled() {

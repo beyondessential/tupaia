@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class IndicatorType extends DatabaseType {
+class IndicatorRecord extends DatabaseType {
   static databaseType = TYPES.INDICATOR;
 }
 
@@ -15,7 +15,7 @@ export class IndicatorModel extends DatabaseModel {
   notifiers = [onChangeUpdateDataElement];
 
   get DatabaseTypeClass() {
-    return IndicatorType;
+    return IndicatorRecord;
   }
 }
 

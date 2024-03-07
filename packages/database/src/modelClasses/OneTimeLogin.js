@@ -10,7 +10,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class OneTimeLoginType extends DatabaseType {
+export class OneTimeLoginRecord extends DatabaseType {
   static databaseType = TYPES.ONE_TIME_LOGIN;
 
   isExpired() {
@@ -24,7 +24,7 @@ export class OneTimeLoginType extends DatabaseType {
 
 export class OneTimeLoginModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return OneTimeLoginType;
+    return OneTimeLoginRecord;
   }
 
   async create(fields) {

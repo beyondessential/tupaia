@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ReportModel as BaseReportModel, ReportType as BaseReportType } from '@tupaia/database';
+import { ReportModel as BaseReportModel, ReportRecord as BaseReportRecord } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
 export type ReportFields = Readonly<{
@@ -13,6 +13,6 @@ export type ReportFields = Readonly<{
   permission_group_id: string;
 }>;
 
-export interface ReportType extends ReportFields, Omit<BaseReportType, 'id'> {}
+export interface ReportRecord extends ReportFields, Omit<BaseReportRecord, 'id'> {}
 
-export interface ReportModel extends Model<BaseReportModel, ReportFields, ReportType> {}
+export interface ReportModel extends Model<BaseReportModel, ReportFields, ReportRecord> {}

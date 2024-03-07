@@ -5,8 +5,8 @@
 
 export {
   AncestorDescendantRelationModel,
-  AncestorDescendantRelationType,
+  AncestorDescendantRelationRecord,
 } from './AncestorDescendantRelation';
-export { EntityModel, EntityType, EntityFields, EntityFilter, EntityQueryFields } from './Entity';
+export { EntityModel, EntityRecord, EntityFields, EntityFilter, EntityQueryFields } from './Entity';
 export { EntityHierarchyModel } from './EntityHierarchy';
 export { ProjectModel } from './Project';

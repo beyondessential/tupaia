@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class SurveyScreenComponentType extends DatabaseType {
+export class SurveyScreenComponentRecord extends DatabaseType {
   static databaseType = TYPES.SURVEY_SCREEN_COMPONENT;
 
   async question() {
@@ -30,6 +30,6 @@ export class SurveyScreenComponentType extends DatabaseType {
 
 export class SurveyScreenComponentModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return SurveyScreenComponentType;
+    return SurveyScreenComponentRecord;
   }
 }

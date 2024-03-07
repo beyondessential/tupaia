@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class AncestorDescendantRelationType extends DatabaseType {
+export class AncestorDescendantRelationRecord extends DatabaseType {
   static databaseType = TYPES.ANCESTOR_DESCENDANT_RELATION;
 
   static joins = [
@@ -29,7 +29,7 @@ export class AncestorDescendantRelationType extends DatabaseType {
 
 export class AncestorDescendantRelationModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return AncestorDescendantRelationType;
+    return AncestorDescendantRelationRecord;
   }
 
   get cacheEnabled() {

@@ -8,7 +8,7 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
-class MapOverlayType extends DatabaseType {
+class MapOverlayRecord extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY;
 }
 
@@ -16,7 +16,7 @@ export class MapOverlayModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
   get DatabaseTypeClass() {
-    return MapOverlayType;
+    return MapOverlayRecord;
   }
 
   async findMeasuresByCode(code) {

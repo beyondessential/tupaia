@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class CommentType extends DatabaseType {
+export class CommentRecord extends DatabaseType {
   static databaseType = TYPES.COMMENT;
 }
 
 export class CommentModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return CommentType;
+    return CommentRecord;
   }
 }

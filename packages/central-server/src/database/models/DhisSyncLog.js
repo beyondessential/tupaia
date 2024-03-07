@@ -5,12 +5,12 @@
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
-class DhisSyncLogType extends DatabaseType {
+class DhisSyncLogRecord extends DatabaseType {
   static databaseType = TYPES.DHIS_SYNC_LOG;
 }
 
 export class DhisSyncLogModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DhisSyncLogType;
+    return DhisSyncLogRecord;
   }
 }

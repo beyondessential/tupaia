@@ -7,12 +7,12 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class QuestionType extends DatabaseType {
+export class QuestionRecord extends DatabaseType {
   static databaseType = TYPES.QUESTION;
 }
 
 export class QuestionModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
-    return QuestionType;
+    return QuestionRecord;
   }
 }

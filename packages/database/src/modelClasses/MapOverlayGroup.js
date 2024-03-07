@@ -10,7 +10,7 @@ import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const ROOT_MAP_OVERLAY_GROUP_CODE = 'Root';
 
-export class MapOverlayGroupType extends DatabaseType {
+export class MapOverlayGroupRecord extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP;
 }
 
@@ -18,7 +18,7 @@ export class MapOverlayGroupModel extends DatabaseModel {
   notifiers = [onChangeDeleteRelation];
 
   get DatabaseTypeClass() {
-    return MapOverlayGroupType;
+    return MapOverlayGroupRecord;
   }
 
   get RootMapOverlayGroupCode() {

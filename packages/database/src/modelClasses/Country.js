@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class CountryType extends DatabaseType {
+export class CountryRecord extends DatabaseType {
   static databaseType = TYPES.COUNTRY;
 
   async geographicalAreas() {
@@ -17,7 +17,7 @@ export class CountryType extends DatabaseType {
 
 export class CountryModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return CountryType;
+    return CountryRecord;
   }
 
   async getCountryCodeById(countryIds) {

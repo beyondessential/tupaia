@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class LegacyReportType extends DatabaseType {
+class LegacyReportRecord extends DatabaseType {
   static databaseType = TYPES.LEGACY_REPORT;
 }
 
 export class LegacyReportModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return LegacyReportType;
+    return LegacyReportRecord;
   }
 }

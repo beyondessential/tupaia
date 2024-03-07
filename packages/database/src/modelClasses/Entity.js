@@ -96,7 +96,7 @@ const ENTITY_RELATION_TYPE = {
   DESCENDANTS: 'descendants',
 };
 
-export class EntityType extends DatabaseType {
+export class EntityRecord extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
   // Exposed for access policy creation.
@@ -255,7 +255,7 @@ export class EntityType extends DatabaseType {
    * Fetches the closest node in the entity hierarchy that is an organisation unit,
    * starting from the entity itself and traversing the hierarchy up
    *
-   * @returns {EntityType}
+   * @returns {EntityRecord}
    */
   async fetchNearestOrgUnitAncestor(hierarchyId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
@@ -302,7 +302,7 @@ export class EntityType extends DatabaseType {
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
-    return EntityType;
+    return EntityRecord;
   }
 
   get cacheEnabled() {
@@ -435,7 +435,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {*} ancestorsOrDescendants
    * @param {*} entityIds
    * @param {*} criteria
-   * @returns {Promise<EntityType[]>}
+   * @returns {Promise<EntityRecord[]>}
    */
   async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria) {
     const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);

@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class DataElementDataGroupType extends DatabaseType {
+class DataElementDataGroupRecord extends DatabaseType {
   static databaseType = TYPES.DATA_ELEMENT_DATA_GROUP;
 
   async dataElement() {
@@ -25,6 +25,6 @@ class DataElementDataGroupType extends DatabaseType {
 
 export class DataElementDataGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DataElementDataGroupType;
+    return DataElementDataGroupRecord;
   }
 }

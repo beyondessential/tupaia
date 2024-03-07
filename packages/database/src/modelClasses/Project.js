@@ -8,7 +8,7 @@ import { DatabaseType } from '../DatabaseType';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { TYPES } from '../types';
 
-export class ProjectType extends DatabaseType {
+export class ProjectRecord extends DatabaseType {
   static databaseType = TYPES.PROJECT;
 
   async permissionGroups() {
@@ -22,7 +22,7 @@ export class ProjectType extends DatabaseType {
 
 export class ProjectModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return ProjectType;
+    return ProjectRecord;
   }
 
   async getAllProjectDetails() {

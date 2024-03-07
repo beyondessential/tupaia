@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class EntityHierarchyType extends DatabaseType {
+export class EntityHierarchyRecord extends DatabaseType {
   static databaseType = TYPES.ENTITY_HIERARCHY;
 }
 
 export class EntityHierarchyModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return EntityHierarchyType;
+    return EntityHierarchyRecord;
   }
 }

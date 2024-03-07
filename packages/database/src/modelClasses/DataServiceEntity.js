@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class DataServiceEntityType extends DatabaseType {
+export class DataServiceEntityRecord extends DatabaseType {
   static databaseType = TYPES.DATA_SERVICE_ENTITY;
 }
 
 export class DataServiceEntityModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DataServiceEntityType;
+    return DataServiceEntityRecord;
   }
 }

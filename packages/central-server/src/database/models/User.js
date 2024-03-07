@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { UserType as CommonUserType, UserModel as CommonUserModel } from '@tupaia/database';
+import { UserRecord as CommonUserRecord, UserModel as CommonUserModel } from '@tupaia/database';
 
 // Currently our pattern is that session tables don't have models
 // in the generic database package, this is a quick and dirty way to get
@@ -15,7 +15,7 @@ const SERVICES = {
   tupaia_web: 'tupaia_web_session',
 };
 
-class UserType extends CommonUserType {
+class UserRecord extends CommonUserRecord {
   async expireSessionToken(service) {
     if (!SERVICES[service]) {
       throw new Error(`${service} is not a support service for session expiry`);
@@ -31,6 +31,6 @@ class UserType extends CommonUserType {
 
 export class UserModel extends CommonUserModel {
   get DatabaseTypeClass() {
-    return UserType;
+    return UserRecord;
   }
 }

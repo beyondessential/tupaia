@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class DashboardMailingListEntryType extends DatabaseType {
+export class DashboardMailingListEntryRecord extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_MAILING_LIST_ENTRY;
 
   async mailingList() {
@@ -32,6 +32,6 @@ export class DashboardMailingListEntryType extends DatabaseType {
 
 export class DashboardMailingListEntryModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DashboardMailingListEntryType;
+    return DashboardMailingListEntryRecord;
   }
 }

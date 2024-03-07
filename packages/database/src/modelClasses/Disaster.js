@@ -7,13 +7,13 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class DisasterType extends DatabaseType {
+class DisasterRecord extends DatabaseType {
   static databaseType = TYPES.DISASTER;
 }
 
 export class DisasterModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DisasterType;
+    return DisasterRecord;
   }
 
   async getAllDisasterDetails() {

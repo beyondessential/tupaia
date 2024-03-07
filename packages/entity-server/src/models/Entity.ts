@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { EntityModel as BaseEntityModel, EntityType as BaseEntityType } from '@tupaia/database';
+import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from '@tupaia/database';
 import { Model, DbFilter } from '@tupaia/server-boilerplate';
 
 export type EntityFields = Readonly<{
@@ -27,29 +27,29 @@ export type EntityQueryFields = EntityFields & {
 
 export type EntityFilter = DbFilter<EntityQueryFields>;
 
-export interface EntityType extends EntityFields, Omit<BaseEntityType, 'id'> {
-  getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
-  getParent: (hierarchyId: string) => Promise<EntityType | undefined>;
-  getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
-  getAncestors: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
-  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityType | undefined>;
-  getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityType[]>;
+export interface EntityRecord extends EntityFields, Omit<BaseEntityRecord, 'id'> {
+  getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
+  getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getAncestors: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
+  getAncestorOfType: (hierarchyId: string, type: string) => Promise<EntityRecord | undefined>;
+  getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
 }
 
-export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityType> {
+export interface EntityModel extends Model<BaseEntityModel, EntityFields, BaseEntityRecord> {
   getDescendantsOfEntities: (
     hierarchyId: string,
     entityIds: string[],
     criteria?: EntityFilter,
-  ) => Promise<EntityType[]>;
+  ) => Promise<EntityRecord[]>;
   getRelativesOfEntities: (
     hierarchyId: string,
     entityIds: string[],
     criteria?: EntityFilter,
-  ) => Promise<EntityType[]>;
+  ) => Promise<EntityRecord[]>;
   getAncestorsOfEntities: (
     hierarchyId: string,
     entityIds: string[],
     criteria?: EntityFilter,
-  ) => Promise<EntityType[]>;
+  ) => Promise<EntityRecord[]>;
 }

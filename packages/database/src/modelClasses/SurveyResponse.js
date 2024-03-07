@@ -23,13 +23,13 @@ const USERS_EXCLUDED_FROM_LEADER_BOARD = [
 ];
 const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
-export class SurveyResponseType extends DatabaseType {
+export class SurveyResponseRecord extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
-    return SurveyResponseType;
+    return SurveyResponseRecord;
   }
 
   async getLeaderboard(projectId = '', rowCount = 10) {

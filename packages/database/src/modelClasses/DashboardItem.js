@@ -7,13 +7,13 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class DashboardItemType extends DatabaseType {
+export class DashboardItemRecord extends DatabaseType {
   static databaseType = TYPES.DASHBOARD_ITEM;
 }
 
 export class DashboardItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return DashboardItemType;
+    return DashboardItemRecord;
   }
 
   async fetchItemsInDashboard(dashboardId, entityTypes, permissionGroups, projectCodes, criteria) {

@@ -4,18 +4,18 @@
  */
 import {
   DashboardMailingListEntryModel as BaseDashboardMailingListEntryModel,
-  DashboardMailingListEntryType as BaseDashboardMailingListEntryType,
+  DashboardMailingListEntryRecord as BaseDashboardMailingListEntryRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import { DashboardMailingListEntry } from '@tupaia/types';
 
-interface DashboardMailingListEntryType
+interface DashboardMailingListEntryRecord
   extends DashboardMailingListEntry,
-    Omit<BaseDashboardMailingListEntryType, 'id'> {}
+    Omit<BaseDashboardMailingListEntryRecord, 'id'> {}
 
 export interface DashboardMailingListEntryModel
   extends Model<
     BaseDashboardMailingListEntryModel,
     DashboardMailingListEntry,
-    DashboardMailingListEntryType
+    DashboardMailingListEntryRecord
   > {}

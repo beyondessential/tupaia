@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class UserFavouriteDashboardItemType extends DatabaseType {
+class UserFavouriteDashboardItemRecord extends DatabaseType {
   static databaseType = TYPES.USER_FAVOURITE_DASHBOARD_ITEM;
 
   static joins = [
@@ -23,7 +23,7 @@ class UserFavouriteDashboardItemType extends DatabaseType {
 
 export class UserFavouriteDashboardItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return UserFavouriteDashboardItemType;
+    return UserFavouriteDashboardItemRecord;
   }
 
   async favourite(userId, dashboardItemId) {

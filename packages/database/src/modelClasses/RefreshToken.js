@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class RefreshTokenType extends DatabaseType {
+export class RefreshTokenRecord extends DatabaseType {
   static databaseType = TYPES.REFRESH_TOKEN;
 
   async meditrakDevice() {
@@ -19,6 +19,6 @@ export class RefreshTokenType extends DatabaseType {
 
 export class RefreshTokenModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return RefreshTokenType;
+    return RefreshTokenRecord;
   }
 }

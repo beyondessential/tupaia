@@ -4,7 +4,7 @@
  */
 
 import {
-  DataGroupType as CommonDataGroupType,
+  DataGroupRecord as CommonDataGroupRecord,
   DataGroupModel as CommonDataGroupModel,
 } from '@tupaia/database';
 
@@ -12,7 +12,7 @@ export const SERVICE_TYPES = ['dhis', 'tupaia'];
 
 const getSurveyDateCode = surveyCode => `${surveyCode}SurveyDate`;
 
-export class DataGroupType extends CommonDataGroupType {
+export class DataGroupRecord extends CommonDataGroupRecord {
   upsertSurveyDateElement = async () => {
     if (this.service_type !== SERVICE_TYPES.DHIS) {
       // Non DHIS groups do not need a SurveyDate element
@@ -42,6 +42,6 @@ export class DataGroupModel extends CommonDataGroupModel {
   isDeletableViaApi = true;
 
   get DatabaseTypeClass() {
-    return DataGroupType;
+    return DataGroupRecord;
   }
 }

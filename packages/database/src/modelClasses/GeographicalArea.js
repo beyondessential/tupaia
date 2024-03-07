@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class GeographicalAreaType extends DatabaseType {
+class GeographicalAreaRecord extends DatabaseType {
   static databaseType = TYPES.GEOGRAPHICAL_AREA;
 
   // Exposed for access policy creation.
@@ -35,7 +35,7 @@ class GeographicalAreaType extends DatabaseType {
 
 export class GeographicalAreaModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return GeographicalAreaType;
+    return GeographicalAreaRecord;
   }
 
   async getAncestorsPath(geographicalAreaId) {

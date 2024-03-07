@@ -21,7 +21,7 @@ const CONFIG_SCHEMA_BY_SERVICE = {
   [SERVICE_TYPES.INDICATOR]: {},
 };
 
-export class DataGroupType extends DatabaseType {
+export class DataGroupRecord extends DatabaseType {
   static databaseType = TYPES.DATA_GROUP;
 
   sanitizeConfig() {
@@ -69,7 +69,7 @@ export class DataGroupType extends DatabaseType {
 
 export class DataGroupModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
-    return DataGroupType;
+    return DataGroupRecord;
   }
 
   async getDataElementsInDataGroup(dataGroupCode) {

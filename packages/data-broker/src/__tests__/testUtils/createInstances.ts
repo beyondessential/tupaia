@@ -5,8 +5,8 @@
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { EntityModel, EntityType as BaseEntityType, TYPES } from '@tupaia/database';
-import { DataElement, DataGroup, DataServiceSyncGroup, Entity, EntityType } from '../../types';
+import { EntityModel, EntityRecord as BaseEntityRecord, TYPES } from '@tupaia/database';
+import { DataElement, DataGroup, DataServiceSyncGroup, Entity, EntityRecord } from '../../types';
 
 const createInstances = <K extends string, T, S>(
   fieldsByKey: Record<K, T>,
@@ -99,12 +99,12 @@ export const entity = (fields: EntityFields): Entity => {
   const { code, country_code, type, name = code, config = {}, metadata = {} } = fields;
   return { code, country_code, type, name, config, metadata };
 };
-export const entityType = (fields: Partial<EntityFields & BaseEntityType>) => {
+export const entityType = (fields: Partial<EntityFields & BaseEntityRecord>) => {
   const entityFields: EntityFields = { ...fields, ...entity(fields as EntityFields) };
-  return new BaseEntityType(EntityModel, entityFields) as EntityType;
+  return new BaseEntityRecord(EntityModel, entityFields) as EntityRecord;
 };
 export const entities = <K extends string>(fieldsByKey: Record<K, EntityFields>) =>
   createInstances(fieldsByKey, entity);
 export const entityTypes = <K extends string>(
-  fieldsByKey: Record<K, Partial<EntityFields & BaseEntityType>>,
+  fieldsByKey: Record<K, Partial<EntityFields & BaseEntityRecord>>,
 ) => createInstances(fieldsByKey, entityType);

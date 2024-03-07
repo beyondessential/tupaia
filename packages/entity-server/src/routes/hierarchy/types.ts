@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Resolved } from '@tupaia/types';
-import { EntityFields, EntityType, EntityFilter } from '../../models';
+import { EntityFields, EntityRecord, EntityFilter } from '../../models';
 import { extendedFieldFunctions } from './extendedFieldFunctions';
 import { Flattable, Flattened } from '../../types';
 
@@ -43,13 +43,11 @@ export interface EntityRequestQuery {
   filter?: string;
 }
 
-export type ExtendedFieldFunctions = Readonly<
-  {
-    [field in keyof typeof extendedFieldFunctions]: Resolved<
-      ReturnType<typeof extendedFieldFunctions[field]>
-    >;
-  }
->;
+export type ExtendedFieldFunctions = Readonly<{
+  [field in keyof typeof extendedFieldFunctions]: Resolved<
+    ReturnType<(typeof extendedFieldFunctions)[field]>
+  >;
+}>;
 
 export type FlattableEntityFieldName = keyof Flattable<EntityFields>;
 
@@ -76,18 +74,18 @@ export type CommonContext = {
 };
 
 export interface SingleEntityContext extends CommonContext {
-  entity: EntityType;
+  entity: EntityRecord;
 }
 
 export interface MultiEntityContext extends CommonContext {
-  entities: EntityType[];
+  entities: EntityRecord[];
 }
 
 export interface SingleEntityRequest<
   P = SingleEntityRequestParams,
   ResBody = EntityResponse,
   ReqBody = RequestBody,
-  ReqQuery = EntityRequestQuery
+  ReqQuery = EntityRequestQuery,
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   ctx: SingleEntityContext;
 }
@@ -96,7 +94,7 @@ export interface MultiEntityRequest<
   P = MultiEntityRequestParams,
   ResBody = EntityResponse[],
   ReqBody = MultiEntityRequestBody,
-  ReqQuery = EntityRequestQuery
+  ReqQuery = EntityRequestQuery,
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   ctx: MultiEntityContext;
 }

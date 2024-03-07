@@ -11,7 +11,7 @@ import { TYPES } from '../types';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
-export class FeedItemType extends DatabaseType {
+export class FeedItemRecord extends DatabaseType {
   static databaseType = TYPES.FEED_ITEM;
 
   constructor(...args) {
@@ -25,6 +25,6 @@ export class FeedItemType extends DatabaseType {
 
 export class FeedItemModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return FeedItemType;
+    return FeedItemRecord;
   }
 }

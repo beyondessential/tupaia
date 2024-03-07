@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-export class UserEntityPermissionType extends DatabaseType {
+export class UserEntityPermissionRecord extends DatabaseType {
   static databaseType = TYPES.USER_ENTITY_PERMISSION;
 
   static joins = [
@@ -45,7 +45,7 @@ export class UserEntityPermissionType extends DatabaseType {
 
 export class UserEntityPermissionModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return UserEntityPermissionType;
+    return UserEntityPermissionRecord;
   }
 
   // used by @tupaia/auth to build legacy access policy for meditrak app v1.7.106 and below

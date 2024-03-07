@@ -12,7 +12,7 @@ import { TYPES } from '../types';
 
 const EXT_DB_CONNECTION_ENV_VAR_PREFIX = 'EXT_DB';
 
-export class ExternalDatabaseConnectionType extends DatabaseType {
+export class ExternalDatabaseConnectionRecord extends DatabaseType {
   static databaseType = TYPES.EXTERNAL_DATABASE_CONNECTION;
 
   async executeSql(sql, parameters) {
@@ -34,7 +34,7 @@ export class ExternalDatabaseConnectionModel extends DatabaseModel {
   activeConnections = {};
 
   get DatabaseTypeClass() {
-    return ExternalDatabaseConnectionType;
+    return ExternalDatabaseConnectionRecord;
   }
 
   async update(whereCondition, fieldsToUpdate) {

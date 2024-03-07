@@ -15,7 +15,7 @@ export const SURVEY_RESPONSE_APPROVAL_STATUS = {
   APPROVED: 'approved',
 };
 
-class SurveyResponseType extends DatabaseType {
+class SurveyResponseRecord extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
   async getAnswers(conditions = {}) {
@@ -62,7 +62,7 @@ export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeMarkAnswersChanged];
 
   get DatabaseTypeClass() {
-    return SurveyResponseType;
+    return SurveyResponseRecord;
   }
 
   getOrgUnitEntityTypes = () => {
