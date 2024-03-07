@@ -133,7 +133,7 @@ const UploadDataModal = ({ isOpen, onSubmit, onClose }) => (
     onSubmit={onSubmit}
     onClose={onClose}
     title="Upload test data"
-    subtitle="Please upload a .json file with test data:"
+    subtitle="Please upload a JSON file with test data:"
     actionText="Upload"
     loadingText="Uploading"
     showLoadingContainer={false}
