@@ -11,6 +11,7 @@ import type {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
 } from './matricies';
 import type { ComponentConfig } from './components';
 import type { ChartConfig, ChartPresentationOptions } from './charts';
@@ -78,6 +79,7 @@ export type {
   ViewPresentationOptions,
   ChartPresentationOptions,
   ComponentConfig,
+  PresentationOptionRange,
 };
 
 export type PresentationOptions =

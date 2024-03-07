@@ -26,6 +26,14 @@ const StyledTable = styled(Table)<{
   td.MuiTableCell-root {
     ${props => props.$isExport && 'color: currentColor;'}
   }
+  border: none;
+`;
+
+const Row = styled(TableRow)`
+  background-color: transparent;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
 `;
 
 const TableCell = styled(MuiTableCell)`
@@ -54,24 +62,24 @@ export const MultiValueRow = ({ report: { data }, config, isExport }: MultiValue
     <StyledTable $isExport={isExport}>
       {showTableHeader && (
         <TableHead>
-          <TableRow>
+          <Row>
             {rowHeader && <TableHeaderCell>{rowHeader?.name}</TableHeaderCell>}
             {headerCells.map(cell => (
               <TableHeaderCell key={`header-${cell?.header}`}>{cell?.header}</TableHeaderCell>
             ))}
-          </TableRow>
+          </Row>
         </TableHead>
       )}
       <TableBody>
         {data?.map((datum: ViewDataItem, i) => (
-          <TableRow key={datum.name}>
+          <Row key={datum.name}>
             <TableCell>{datum.name}</TableCell>
             {headerCells.map(cell => (
               <TableCell key={`row-${i}-cell-${cell?.header}`}>
                 {datum[cell?.header as string]}
               </TableCell>
             ))}
-          </TableRow>
+          </Row>
         ))}
       </TableBody>
     </StyledTable>
