@@ -14,7 +14,7 @@ export class ModelRegistry {
    * @param {import('./TupaiaDatabase').TupaiaDatabase} database
    * @param {import('./DatabaseModel').DatabaseModel[]} [extraModelClasses]
    */
-  constructor(database, extraModelClasses, useNotifiers = false, schemata) {
+  constructor(database, extraModelClasses, useNotifiers = false, schemata = null) {
     this.database = database;
     this.modelClasses = {
       ...baseModelClasses,
