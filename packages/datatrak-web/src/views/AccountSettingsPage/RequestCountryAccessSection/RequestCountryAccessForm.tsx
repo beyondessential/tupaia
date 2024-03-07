@@ -6,14 +6,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import { UseQueryResult } from 'react-query';
 import { FormLabel, useMediaQuery, useTheme } from '@material-ui/core';
-import { Entity, ProjectResponse, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { Entity, ProjectResponse, TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
 import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { useRequestProjectAccess } from '../../../api';
 import { Button } from '../../../components';
 import { errorToast, successToast } from '../../../utils';
 import { RequestableCountryChecklist } from './RequestableCountryChecklist';
-import { UseQueryResult } from 'react-query';
 
 const StyledForm = styled(Form)`
   inline-size: 100%;
@@ -85,7 +85,7 @@ const StyledFormInput = styled(FormInput).attrs({
 `;
 
 interface RequestCountryAccessFormProps {
-  countryAccessList: UseQueryResult<TupaiaWebCountryAccessListRequest.ResBody>;
+  countryAccessList: UseQueryResult<WebServerProjectCountryAccessListRequest.ResBody>;
   project?: ProjectResponse | null;
 }
 

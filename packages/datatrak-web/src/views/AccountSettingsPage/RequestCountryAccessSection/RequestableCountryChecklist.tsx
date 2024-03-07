@@ -7,7 +7,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Checkbox } from '@tupaia/ui-components';
-import { Entity, Project, TupaiaWebCountryAccessListRequest } from '@tupaia/types';
+import { Entity, Project, TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
 import { theme } from '../../../theme';
 
 const Container = styled.fieldset`
@@ -46,7 +46,7 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
 
 interface RequestableCountryChecklistProps {
   projectCode?: Project['code'];
-  countries: TupaiaWebCountryAccessListRequest.ResBody;
+  countries: WebServerProjectCountryAccessListRequest.ResBody;
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
   disabled?: boolean;
