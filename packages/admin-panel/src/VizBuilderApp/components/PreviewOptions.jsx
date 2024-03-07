@@ -185,13 +185,13 @@ export const PreviewOptions = () => {
   };
 
   const handleChangeStartDate = date => {
-    const newDate = date ? getIsoDateString(date) : null;
+    const newDate = getIsoDateString(date);
     setSelectedStartDate(newDate);
     setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
-    const newDate = date ? getIsoDateString(date) : null;
+    const newDate = getIsoDateString(date);
     setSelectedEndDate(newDate);
     setEndDate(newDate);
   };
