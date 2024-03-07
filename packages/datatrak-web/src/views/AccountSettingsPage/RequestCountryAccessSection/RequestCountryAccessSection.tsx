@@ -12,7 +12,6 @@ import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 
 export const RequestCountryAccessSection = () => {
   const { project } = useCurrentUser();
-
   const countryAccessList = useProjectCountryAccessList(project?.code ?? '');
 
   const title = (
@@ -25,7 +24,7 @@ export const RequestCountryAccessSection = () => {
   const description = (
     <>
       <p>Select the countries you would like access to and the reason for requesting access</p>
-      <AccessGrantedCountryList countryAccessList={countryAccessList} project={project} />
+      <AccessGrantedCountryList countryAccessList={countryAccessList} />
     </>
   );
 

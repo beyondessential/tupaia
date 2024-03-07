@@ -100,8 +100,6 @@ export const RequestCountryAccessForm = ({
 }: RequestCountryAccessFormProps) => {
   const { data: countries, isLoading: accessListIsLoading } = countryAccessList;
   const projectCode = project?.code;
-  const applicableCountries =
-    countries?.filter(country => project?.names?.includes(country.name)) ?? [];
 
   const formContext = useForm<RequestCountryAccessFormFields>({
     defaultValues: {
@@ -161,7 +159,7 @@ export const RequestCountryAccessForm = ({
           <StyledFormLabel>Select countries</StyledFormLabel>
           <RequestableCountryChecklist
             projectCode={projectCode}
-            countries={applicableCountries}
+            countries={countries}
             disabled={formIsSubmitting}
             selectedCountries={selectedCountries}
             setSelectedCountries={setSelectedCountries}
