@@ -86,8 +86,8 @@ type BaseModelOverrides<Fields = unknown, Type = unknown> = {
   all: () => Promise<Type[]>;
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Type extends DatabaseRecord> = Omit<
+export type Model<BaseModel extends DatabaseModel, Fields, Record extends DatabaseRecord> = Omit<
   BaseModel,
   keyof BaseModelOverrides
 > &
-  BaseModelOverrides<Fields, Type>;
+  BaseModelOverrides<Fields, Record>;
