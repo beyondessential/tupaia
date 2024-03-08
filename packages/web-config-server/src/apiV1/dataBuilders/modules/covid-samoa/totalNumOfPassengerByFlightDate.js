@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { Flight, getTotalNumPassengers, FLIGHT_DATE } from './flight';
 

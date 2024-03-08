@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 const buildResponse = rawData => {

@@ -4,7 +4,7 @@
  */
 
 import generateUUID from 'bson-objectid';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import RNFS from 'react-native-fs';
 
 import {

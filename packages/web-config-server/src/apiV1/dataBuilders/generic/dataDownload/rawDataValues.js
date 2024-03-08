@@ -3,7 +3,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { reduceToDictionary } from '@tupaia/utils';
 import { transposeMatrix, mergeTableDataOnKey, sortByColumns } from '/apiV1/utils';
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 

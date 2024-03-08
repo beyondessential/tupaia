@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 const DEFAULT_RANGE = 2;
 /**

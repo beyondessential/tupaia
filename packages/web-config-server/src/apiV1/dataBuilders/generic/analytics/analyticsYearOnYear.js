@@ -5,7 +5,7 @@
 
 import { periodToMoment } from '@tupaia/tsutils';
 import { reduceToDictionary } from '@tupaia/utils';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { AnalyticsPerPeriodBuilder } from './analyticsPerPeriod';
 import { formatLayeredDataElementCode, layerYearOnYear } from '../../../utils/layerYearOnYear';
 
