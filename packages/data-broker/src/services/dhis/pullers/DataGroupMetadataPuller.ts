@@ -4,36 +4,34 @@
  */
 
 import { DhisApi } from '@tupaia/dhis-api';
-import { DataGroupModel } from '../../../types';
-import { DhisTranslator } from '../translators';
+import { DataGroupMetadata, DataGroupModel } from '../../../types';
+import { DataServiceMapping } from '../../DataServiceMapping';
 import { DataGroup } from '../types';
-import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
-export type PullDataGroupsOptions = BasePullMetadataOptions & {
-  includeOptions: boolean;
+export type PullDataGroupMetadataOptions = {
+  dataServiceMapping: DataServiceMapping;
+  includeOptions?: boolean;
 };
 
 export class DataGroupMetadataPuller {
-  private readonly dataSourceModel: DataGroupModel;
-  private readonly translator: DhisTranslator;
+  private readonly dataGroupModel: DataGroupModel;
 
-  public constructor(dataGroupModel: DataGroupModel, translator: DhisTranslator) {
-    this.dataSourceModel = dataGroupModel;
-    this.translator = translator;
+  public constructor(dataGroupModel: DataGroupModel) {
+    this.dataGroupModel = dataGroupModel;
   }
 
-  public pull = async (api: DhisApi, dataSources: DataGroup[], options: PullDataGroupsOptions) => {
-    if (dataSources.length > 1) {
+  public pull = async (
+    api: DhisApi,
+    dataGroups: DataGroup[],
+    options: PullDataGroupMetadataOptions,
+  ): Promise<DataGroupMetadata> => {
+    if (dataGroups.length > 1) {
       throw new Error('Cannot pull metadata from multiple programs at the same time');
     }
     const { includeOptions } = options;
-    const [dataSource] = dataSources;
-    const { code: dataGroupCode } = dataSource;
-    const dataElementDataSources = await this.dataSourceModel.getDataElementsInDataGroup(
-      dataGroupCode,
-    );
-
-    const dataElementCodes = dataElementDataSources.map(({ code }) => code);
+    const [{ code: dataGroupCode }] = dataGroups;
+    const dataElements = await this.dataGroupModel.getDataElementsInDataGroup(dataGroupCode);
+    const dataElementCodes = dataElements.map(({ code }) => code);
 
     return api.fetchDataGroup(dataGroupCode, dataElementCodes, includeOptions);
   };

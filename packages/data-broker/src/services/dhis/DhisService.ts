@@ -28,8 +28,8 @@ import {
   DeprecatedEventsPuller,
   EventsPuller,
   PullAnalyticsOptions,
-  PullDataElementsOptions,
-  PullDataGroupsOptions,
+  PullDataElementsMetadataOptions,
+  PullDataGroupMetadataOptions,
   PullEventsOptions,
 } from './pullers';
 import { DataElement, DataGroup, DataSource } from './types';
@@ -74,12 +74,12 @@ type MetadataPuller =
   | ((
       api: DhisApi,
       dataSources: DataElement[],
-      options: PullDataElementsOptions,
+      options: PullDataElementsMetadataOptions,
     ) => Promise<DataElementMetadata[]>)
   | ((
       api: DhisApi,
       dataSources: DataGroup[],
-      options: PullDataGroupsOptions,
+      options: PullDataGroupMetadataOptions,
     ) => Promise<DataGroupMetadata>);
 
 type MetadataMerger =
@@ -107,15 +107,8 @@ export class DhisService extends Service {
       this.models.dataElement,
       this.translator,
     );
-    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(
-      this.models.dataGroup,
-      this.translator,
-    );
-    this.analyticsPuller = new AnalyticsPuller(
-      this.models,
-      this.translator,
-      this.dataElementsMetadataPuller,
-    );
+    this.dataGroupMetadataPuller = new DataGroupMetadataPuller(this.models.dataGroup);
+    this.analyticsPuller = new AnalyticsPuller(this.models, this.translator);
     this.eventsPuller = new EventsPuller(this.models, this.translator);
     this.deprecatedEventsPuller = new DeprecatedEventsPuller(this.models, this.translator);
     this.pushers = this.getPushers();
@@ -291,12 +284,12 @@ export class DhisService extends Service {
   public async pullMetadata(
     dataSources: DataElement[],
     type: 'dataElement',
-    options: PullDataElementsOptions,
+    options: PullDataElementsMetadataOptions,
   ): Promise<DataElementMetadata[]>;
   public async pullMetadata(
     dataSources: DataGroup[],
     type: 'dataGroup',
-    options: PullDataGroupsOptions,
+    options: PullDataGroupMetadataOptions,
   ): Promise<DataGroupMetadata>;
   public async pullMetadata(
     dataSources: DataSource[],

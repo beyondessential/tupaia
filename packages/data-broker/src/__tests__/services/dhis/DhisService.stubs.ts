@@ -44,13 +44,11 @@ export const createMockDhisApi = ({
     getAnalytics: jest.fn().mockResolvedValue(getAnalyticsResponse),
     getEvents: jest.fn().mockResolvedValue(getEventsResponse),
     getEventAnalytics: jest.fn(getEventAnalyticsStub),
+    fetchCategoryOptionCombos: jest.fn(),
     fetchDataElements: jest
       .fn()
-      .mockImplementation(async (codes: (keyof typeof DHIS_RESPONSE_DATA_ELEMENTS)[]) =>
-        codes.map(
-          code => ({ code, id: DHIS_RESPONSE_DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }),
-          {},
-        ),
+      .mockImplementation(async (codes: string[]) =>
+        Object.values(DHIS_RESPONSE_DATA_ELEMENTS).filter(({ code }) => codes.includes(code)),
       ),
     getResourceTypes: jest.fn().mockReturnValue({ DATA_ELEMENT: 'dataElement' }),
     serverName,
@@ -102,9 +100,8 @@ export const buildDhisAnalyticsResponse = (analytics: Analytic[]): DhisAnalytics
   const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
   const items = dataElementsInAnalytics
     .map(dataElement => {
-      const { dataElementCode: dhisCode } = DATA_ELEMENTS[
-        dataElement as keyof typeof DATA_ELEMENTS
-      ];
+      const { dataElementCode: dhisCode } =
+        DATA_ELEMENTS[dataElement as keyof typeof DATA_ELEMENTS];
       return DHIS_RESPONSE_DATA_ELEMENTS[dhisCode as keyof typeof DHIS_RESPONSE_DATA_ELEMENTS];
     })
     .reduce((itemAgg, { uid, code, name }) => {
