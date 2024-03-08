@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 /**
  * @param  {...any} args

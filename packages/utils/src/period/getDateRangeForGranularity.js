@@ -4,7 +4,7 @@
  */
 
 import memoize from 'fast-memoize';
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const DATETIME_FORMAT = `${DATE_FORMAT} HH:mm:ss`;

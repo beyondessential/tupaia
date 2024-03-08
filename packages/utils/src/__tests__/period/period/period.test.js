@@ -4,7 +4,7 @@
  */
 
 import MockDate from 'mockdate';
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 import {
   dateStringToPeriod,

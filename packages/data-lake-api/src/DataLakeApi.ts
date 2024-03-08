@@ -5,7 +5,7 @@
 
 import groupBy from 'lodash.groupby';
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { getSortByKey } from '@tupaia/utils';
 import { DataLakeAnalyticsFetchQuery } from './DataLakeAnalyticsFetchQuery';
 import { DataLakeEventsFetchQuery, Event } from './DataLakeEventsFetchQuery';

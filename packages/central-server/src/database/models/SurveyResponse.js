@@ -4,9 +4,9 @@
  */
 
 import momentTimezone from 'moment-timezone';
-import moment from 'moment-timezone';
+import moment from 'moment';
 
-import { DatabaseType, MaterializedViewLogDatabaseModel, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 export const SURVEY_RESPONSE_APPROVAL_STATUS = {
   NOT_REQUIRED: 'not_required',

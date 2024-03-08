@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { DateTimePicker, RadioGroup } from '@tupaia/ui-components';
 import { ReduxAutocomplete, ExportModal } from '@tupaia/admin-panel';
 import { stripTimezoneFromDate } from '@tupaia/utils';

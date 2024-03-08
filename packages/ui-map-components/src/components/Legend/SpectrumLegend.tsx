@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';

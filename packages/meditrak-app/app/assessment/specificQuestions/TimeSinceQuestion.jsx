@@ -3,12 +3,12 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment-timezone';
+import moment from 'moment';
 
-import {DateQuestion} from './DateQuestion';
-import {formatPlural} from '../../utilities';
+import { DateQuestion } from './DateQuestion';
+import { formatPlural } from '../../utilities';
 
 class TimeSinceQuestion extends PureComponent {
   render() {

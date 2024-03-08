@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 
 /**
@@ -19,4 +19,4 @@ export const getTimezoneNameFromTimestamp = (timestamp: string) =>
     .names()
     .find(name => getUtcOffsetFromTimestamp(timestamp) === momentTimezone.tz(name).format('Z'));
 
-export const utcMoment = (...args: Parameters<(typeof moment)['utc']>) => moment.utc(...args);
+export const utcMoment = (...args: Parameters<typeof moment['utc']>) => moment.utc(...args);

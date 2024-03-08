@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 import randomToken from 'rand-token';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 
 import { DatabaseModel } from '../DatabaseModel';

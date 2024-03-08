@@ -5,7 +5,7 @@
 
 import groupBy from 'lodash.groupby';
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { TupaiaDatabase, SqlQuery } from '@tupaia/database';
 import { getSortByKey, DEFAULT_BINARY_OPTIONS, yup } from '@tupaia/utils';
 import { isNotNullish } from '@tupaia/tsutils';

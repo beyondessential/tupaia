@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { MenuItem } from '../Inputs';
 import { DatePicker } from './DatePicker';
 import { BaseDatePickerProps } from '../../types';

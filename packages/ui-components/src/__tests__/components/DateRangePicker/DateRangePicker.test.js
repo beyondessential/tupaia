@@ -6,7 +6,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import {
   DEFAULT_MIN_DATE,
   GRANULARITIES,

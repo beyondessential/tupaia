@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
-import { combineDiagnostics, DHIS2_RESOURCE_TYPES, dhisToTupaiaPeriodType } from '@tupaia/dhis-api';
+import moment from 'moment';
+import { DHIS2_RESOURCE_TYPES, dhisToTupaiaPeriodType, combineDiagnostics } from '@tupaia/dhis-api';
 import {
   DEFAULT_PERIOD_TYPE,
   periodToType,

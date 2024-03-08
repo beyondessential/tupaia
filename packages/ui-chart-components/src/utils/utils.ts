@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { useTheme } from '@material-ui/core/styles';
 import {
   CartesianChartPresentationOptions,

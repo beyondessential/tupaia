@@ -1,6 +1,6 @@
 'use strict';
 
-import moment from 'moment-timezone';
+import moment from 'moment';
 
 var dbm;
 var type;
