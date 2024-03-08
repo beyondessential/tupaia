@@ -12088,7 +12088,7 @@ __metadata:
     lodash.pick: ^4.4.0
     mocha: ^10.2.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.28
+    moment-timezone: ^0.5.45
     morgan: ^1.9.0
     multer: ^1.4.3
     npm-run-all: ^4.1.5
@@ -12334,7 +12334,7 @@ __metadata:
     lodash: ^4.17.4
     markdown-to-jsx: ^6.4.1
     moment: ^2.24.0
-    moment-timezone: ^0.5.14
+    moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     regenerator-runtime: ^0.13.9
@@ -12472,7 +12472,7 @@ __metadata:
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.27
+    moment-timezone: ^0.5.45
     semver-compare: ^1.0.0
     winston: ^3.3.3
   languageName: unknown
@@ -12720,7 +12720,7 @@ __metadata:
     camelcase-keys: ^6.2.2
     lodash.get: ^4.4.2
     moment: ^2.24.0
-    moment-timezone: ^0.5.25
+    moment-timezone: ^0.5.45
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -12925,7 +12925,7 @@ __metadata:
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.28
+    moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
@@ -32722,43 +32722,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.14":
-  version: 0.5.27
-  resolution: "moment-timezone@npm:0.5.27"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: 814bc11cf1f62cd93852499b469baa362c969ba354ba44f14eafbba1662f7ab22c026219786d9454c8f2781f12046c07aa4723f3a30083ebef9151b8dcd84f32
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.25":
-  version: 0.5.39
-  resolution: "moment-timezone@npm:0.5.39"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: 9f972d3a29b2726d4fd1464df27738b756441fe57575f087cda91b7716a5a31d2cfd274255e3edfb15eb60af3ccf33fd339527b456092cac1a2a4124e4369c8b
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.27":
-  version: 0.5.37
-  resolution: "moment-timezone@npm:0.5.37"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: b3fc24848a396ee3801331a4b5511591df0e22241e59f55200a475603f23a8429f01887294c7a0c005dae25b8e4bef20472fbc875ff20080f26fded066559f1a
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.28":
-  version: 0.5.43
-  resolution: "moment-timezone@npm:0.5.43"
+"moment-timezone@npm:^0.5.45":
+  version: 0.5.45
+  resolution: "moment-timezone@npm:0.5.45"
   dependencies:
     moment: ^2.29.4
-  checksum: 8075c897ed8a044f992ef26fe8cdbcad80caf974251db424cae157473cca03be2830de8c74d99341b76edae59f148c9d9d19c1c1d9363259085688ec1cf508d0
+  checksum: a22e9f983fbe1a01757ce30685bce92e3f6efa692eb682afd47b82da3ff960b3c8c2c3883ec6715c124bc985a342b57cba1f6ba25a1c8b4c7ad766db3cd5e1d0
   languageName: node
   linkType: hard
 
-"moment@npm:2.x.x, moment@npm:>= 2.9.0, moment@npm:^2.24.0":
+"moment@npm:2.x.x, moment@npm:^2.24.0":
   version: 2.24.0
   resolution: "moment@npm:2.24.0"
   checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
