@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 import validator from 'validator';
 
 import { toArray } from '../array';

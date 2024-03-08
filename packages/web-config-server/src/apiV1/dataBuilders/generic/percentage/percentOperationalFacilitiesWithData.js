@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 // Example use: % clinics surveyed in last 6 months

@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { CustomError } from '@tupaia/utils';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';

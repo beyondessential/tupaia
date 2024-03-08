@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import fs from 'fs';
 
 import { USER_SESSION_CONFIG } from '/authSession';
@@ -57,7 +57,7 @@ export const exportChartHandler = async (req, res) => {
     true,
     {
       authorization: authHeader,
-    }
+    },
   );
 
   const matrixData = {
