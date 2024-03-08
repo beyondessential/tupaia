@@ -4,7 +4,7 @@
  */
 
 import { uniq } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { compareAsc, readJsonFile, yup, yupUtils } from '@tupaia/utils';
 

@@ -2,7 +2,7 @@
  * Tupaia
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportConfigs } from './getImportConfigs';
 import { getSurveyResponsesExportModal } from '../../components';

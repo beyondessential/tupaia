@@ -6,7 +6,7 @@
  */
 
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { WEEK_DISPLAY_CONFIG, WEEK_DISPLAY_FORMATS } from './weekDisplayFormats';
 import { addMomentOffset } from './addMomentOffset';
 

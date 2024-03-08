@@ -4,7 +4,7 @@
  *
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { blue, red, green } from '@material-ui/core/colors';
 import { ScaleType, MeasureColorScheme } from '@tupaia/types';
 import { BREWER_PALETTE, HEATMAP_UNKNOWN_COLOR } from '../constants';

@@ -5,7 +5,7 @@
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { randomEmail } from '@tupaia/utils';
 import { getAuthorizationHeader, TestableApp } from '../../testUtilities';

@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { generateTestId, TYPES } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 

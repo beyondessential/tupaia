@@ -4,7 +4,7 @@
  */
 
 import xlsx from 'xlsx';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import keyBy from 'lodash.keyby';
 import chunk from 'lodash.chunk';
 import groupBy from 'lodash.groupby';
@@ -12,8 +12,8 @@ import {
   addExportedDateAndOriginAtTheSheetBottom,
   getExportDatesString,
   getUniqueEntries,
-  truncateString,
   toFilename,
+  truncateString,
 } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';

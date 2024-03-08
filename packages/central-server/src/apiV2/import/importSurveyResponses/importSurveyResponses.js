@@ -4,7 +4,7 @@
  */
 
 import xlsx from 'xlsx';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { generateId } from '@tupaia/database';
 import {
   constructIsOneOf,
@@ -14,11 +14,11 @@ import {
   hasContent,
   ImportValidationError,
   ObjectValidator,
+  reduceToDictionary,
   respond,
+  stripTimezoneFromDate,
   takesIdForm,
   UploadError,
-  reduceToDictionary,
-  stripTimezoneFromDate,
 } from '@tupaia/utils';
 
 import { getArrayQueryParameter } from '../../utilities';

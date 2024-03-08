@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export const getExportDatesString = (startDate, endDate) => {
   const format = 'D-M-YY';

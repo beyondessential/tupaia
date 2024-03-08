@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import groupBy from 'lodash.groupby';
 import pick from 'lodash.pick';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import {
   buildAndInsertSurveys,

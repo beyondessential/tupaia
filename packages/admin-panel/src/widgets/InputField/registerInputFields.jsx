@@ -5,19 +5,19 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { InputAdornment } from '@material-ui/core';
 import styled from 'styled-components';
 import {
   Button,
-  TextField,
+  Checkbox,
   DatePicker,
   DateTimePicker,
+  HexcodeField,
+  ImageUploadField,
   RadioGroup,
   Select,
-  ImageUploadField,
-  HexcodeField,
-  Checkbox,
+  TextField,
 } from '@tupaia/ui-components';
 import { stripTimezoneFromDate } from '@tupaia/utils';
 import { registerInputField } from './InputField';

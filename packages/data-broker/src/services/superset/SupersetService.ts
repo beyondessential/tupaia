@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { SupersetApi } from '@tupaia/superset-api';
 import { Service } from '../Service';

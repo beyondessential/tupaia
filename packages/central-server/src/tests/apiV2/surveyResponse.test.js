@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';

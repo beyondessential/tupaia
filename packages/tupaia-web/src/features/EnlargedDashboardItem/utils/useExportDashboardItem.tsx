@@ -4,7 +4,7 @@
  */
 
 import { RefObject, useContext, useEffect } from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import downloadJs from 'downloadjs';
 import domtoimage from 'dom-to-image';
 import { useParams } from 'react-router-dom';
