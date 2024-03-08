@@ -32,7 +32,6 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/lodash.get": "^4.4.2",
-    "@types/moment-timezone": "0.5.13"
+    "@types/lodash.get": "^4.4.2"
   }
 }
