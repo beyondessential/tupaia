@@ -291,12 +291,32 @@ export class EntityType extends DatabaseType {
     );
   }
 
-  pointLatLon() {
-    const pointJson = JSON.parse(this.point);
+  async calculateCentroid() {
+    const result = await this.database.executeSql(
+      `SELECT ST_AsGeoJSON(ST_Centroid(ST_AsGeoJSON(region))) as centroid from entity where id = ?;`,
+      [this.id],
+    );
+    const parsedPoint = JSON.parse(result[0].centroid);
     return {
-      lat: pointJson.coordinates[1],
-      lon: pointJson.coordinates[0],
+      lat: parsedPoint.coordinates[1],
+      lon: parsedPoint.coordinates[0],
     };
+  }
+
+  async pointLatLon() {
+    const { point } = this;
+    if (point) {
+      const pointJson = JSON.parse(point);
+      return {
+        lat: pointJson.coordinates[1],
+        lon: pointJson.coordinates[0],
+      };
+    }
+    const region = this.getRegion();
+    if (!region) return null;
+
+    // calculate centroid of region
+    return this.calculateCentroid();
   }
 }
 
