@@ -20,7 +20,7 @@ const AXIS_TIME_PROPS = {
   type: 'number',
   scale: 'time',
   domain: ['dataMin', 'dataMax'],
-} as RechartsXAxisProps; // cast these here because the ciomponent is complaining about the types of some of these being strings and not the enums etc that it expects
+} as RechartsXAxisProps; // cast these here because the component is complaining about the types of some of these being strings and not the enums etc that it expects
 
 const X_AXIS_PADDING = {
   enlarged: {
