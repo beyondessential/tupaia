@@ -63,13 +63,15 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       project_id: projectId,
     });
     const conditions = {
-      'survey_response.survey_id': {
-        comparator: 'IN',
-        comparisonValue: surveys.map(s => s.id),
-      },
-      // add this in here so that the survey id query is only applicable to survey response feed items
-      [QUERY_CONJUNCTIONS.OR]: {
-        'feed_item.type': FeedItemTypes.Markdown,
+      [QUERY_CONJUNCTIONS.AND]: {
+        'survey_response.survey_id': {
+          comparator: 'IN',
+          comparisonValue: surveys.map(s => s.id),
+        },
+        // add this in here so that the survey id query is only applicable to survey response feed items
+        [QUERY_CONJUNCTIONS.OR]: {
+          'feed_item.type': FeedItemTypes.Markdown,
+        },
       },
     } as Record<string, unknown>;
 
