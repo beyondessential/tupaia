@@ -950,6 +950,7 @@ export interface MapOverlay {
   'config': MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter': any;
   'id': string;
   'legacy': boolean;
   'linked_measures'?: string[] | null;
@@ -963,6 +964,7 @@ export interface MapOverlayCreate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
@@ -975,6 +977,7 @@ export interface MapOverlayUpdate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'id'?: string;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
