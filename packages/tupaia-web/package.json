@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/tupaia-web"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://www.bes.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "build": "yarn package:build:types && yarn package:build:vite",
     "lint": "yarn package:lint",

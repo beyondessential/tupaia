@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/admin-panel"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://www.bes.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "./lib/library.js",
   "scripts": {
     "build": "run-s -c \"build:* {@}\" --",
