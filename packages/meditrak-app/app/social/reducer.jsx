@@ -58,8 +58,12 @@ const stateChanges = {
         feedItems = [...newFeedItems, ...feedWithoutNewItems];
       }
     } else {
+      // dedupe new feed items to handle edge case where the same feed item appears twice in infinite scroll
+      const dedupedNewFeedItems = newFeedItems.filter(
+        item => !feedItems.some(existingItem => existingItem.id === item.id),
+      );
       // By default append new items to the end of the existing ones.
-      feedItems = [...feedItems, ...newFeedItems];
+      feedItems = [...feedItems, ...dedupedNewFeedItems];
     }
 
     // only grab the latest feed item date from non-leaderboard items, because the leaderboard will always be today's date
