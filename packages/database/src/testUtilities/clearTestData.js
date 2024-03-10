@@ -62,38 +62,38 @@ const TABLES_TO_CLEAR = [
   'map_overlay',
 ];
 
-export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
-  const extraConditions = {
-    api_request_log: [`request_time >= '${testStartTime}'`],
-    api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
-    answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
-    survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
-    survey_screen_component: [`question_id ${COMPARISON}`],
-    survey: [`code LIKE 'test%'`, `name ${COMPARISON}`], // name comparison is for clearing test data when importing new surveys using excel files
-    user_entity_permission: [`permission_group_id ${COMPARISON}`],
-    user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
-    clinic: [`country_id ${COMPARISON}`],
-    dashboard_relation: [`child_id ${COMPARISON}`, `dashboard_id ${COMPARISON}`],
-    map_overlay_group_relation: [`child_id ${COMPARISON}`, `map_overlay_group_id ${COMPARISON}`],
-    entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
-    entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
-    meditrak_sync_queue: [`record_id ${COMPARISON}`],
-  };
-  const sql = TABLES_TO_CLEAR.reduce(
-    (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
-    '',
-  );
-  await db.executeSql(sql);
-  await AnalyticsRefresher.refreshAnalytics(db);
-}
+// export async function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
+//   const extraConditions = {
+//     api_request_log: [`request_time >= '${testStartTime}'`],
+//     api_client: [`id ${COMPARISON}`, `user_account_id ${COMPARISON}`],
+//     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
+//     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
+//     survey_screen_component: [`question_id ${COMPARISON}`],
+//     survey: [`code LIKE 'test%'`, `name ${COMPARISON}`], // name comparison is for clearing test data when importing new surveys using excel files
+//     user_entity_permission: [`permission_group_id ${COMPARISON}`],
+//     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
+//     clinic: [`country_id ${COMPARISON}`],
+//     dashboard_relation: [`child_id ${COMPARISON}`, `dashboard_id ${COMPARISON}`],
+//     map_overlay_group_relation: [`child_id ${COMPARISON}`, `map_overlay_group_id ${COMPARISON}`],
+//     entity: [`code LIKE 'test%'`, `code ${COMPARISON}`, `parent_id ${COMPARISON}`],
+//     entity_relation: [`child_id ${COMPARISON}`, `parent_id ${COMPARISON}`],
+//     meditrak_sync_queue: [`record_id ${COMPARISON}`],
+//   };
+//   const sql = TABLES_TO_CLEAR.reduce(
+//     (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
+//     '',
+//   );
+//   await db.executeSql(sql);
+//   await AnalyticsRefresher.refreshAnalytics(db);
+// }
 
-export async function clearAllTestData(db) {
+export async function clearTestData(db) {
   // Safety check
   const [row] = await db.executeSql(`SELECT current_database();`);
   const { current_database } = row;
   if (current_database !== 'tupaia_test') {
     throw new Error(
-      `Safety check failed: clearAllTestData can only be run against a database named tupaia_test, found ${current_database}.`,
+      `Safety check failed: clearTestData can only be run against a database named tupaia_test, found ${current_database}.`,
     );
   }
 
