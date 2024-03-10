@@ -11957,7 +11957,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
     ace-builds: ^1.15.3
-    axios: ^0.28.0
+    axios: ^1.6.0
     case: ^1.5.3
     content-disposition-header: ^0.6.0
     date-fns: ^2.29.2
@@ -12428,7 +12428,7 @@ __metadata:
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    axios: ^0.28.0
+    axios: ^1.6.0
     camelcase: ^6.2.0
     dom-to-image: ^2.6.0
     downloadjs: ^1.4.7
