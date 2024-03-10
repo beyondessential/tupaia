@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import type { Report } from '@tupaia/types';
+import type { Report, DashboardItemReport } from '@tupaia/types';
 import { configValidator } from './configValidator';
 import { buildContext, ReqContext } from './context';
 import { buildTransform, TransformTable } from './transform';
@@ -14,7 +14,7 @@ import { CustomReportOutputType, customReports } from './customReports';
 
 export interface BuiltReport {
   results: OutputType | CustomReportOutputType;
-  type?: string;
+  type?: DashboardItemReport['type'];
 }
 
 export class ReportBuilder {
