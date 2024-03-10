@@ -11,6 +11,7 @@ import type {
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
 } from './matricies';
 import type { ComponentConfig } from './components';
 import type { ChartConfig, ChartPresentationOptions } from './charts';
@@ -56,7 +57,7 @@ export {
  */
 export type DashboardItemConfig = ChartConfig | ComponentConfig | MatrixConfig | ViewConfig;
 
-export { ValueType, VizPeriodGranularity } from './common';
+export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
@@ -78,6 +79,7 @@ export type {
   ViewPresentationOptions,
   ChartPresentationOptions,
   ComponentConfig,
+  PresentationOptionRange,
 };
 
 export type PresentationOptions =

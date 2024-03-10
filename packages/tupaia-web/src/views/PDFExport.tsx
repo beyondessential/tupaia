@@ -9,9 +9,8 @@ import { useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
 import { TupaiaWebExportDashboardRequest } from '@tupaia/types';
 import { useEntity } from '../api/queries';
-import { PDFExportDashboardItem } from '../features';
+import { PDFExportDashboardItem, useDashboard, useExportSettings } from '../features';
 import { DashboardItem } from '../types';
-import { useDashboard } from '../features/Dashboard';
 
 const A4_RATIO = 1 / 1.41;
 const Parent = styled.div<{ $isPreview?: boolean }>`
@@ -43,6 +42,9 @@ export const PDFExport = ({
 
   const { activeDashboard } = useDashboard();
   const { data: entity } = useEntity(projectCode, entityCode);
+  const { exportWithLabels, exportWithTable } = useExportSettings();
+
+  if (!activeDashboard) return null;
 
   const getSelectedDashboardItems = () => {
     const urlSelectedDashboardItems = urlSearchParams.get('selectedDashboardItems')?.split(',');
@@ -50,9 +52,26 @@ export const PDFExport = ({
     return propsSelectedDashboardItems || urlSelectedDashboardItems;
   };
 
-  const selectedDashboardItems = getSelectedDashboardItems();
+  const getSettings = () => {
+    const urlSettings = urlSearchParams.get('settings');
 
-  if (!activeDashboard) return null;
+    if (urlSettings) {
+      return (
+        JSON.parse(urlSettings) || {
+          exportWithLabels,
+          exportWithTable,
+        }
+      );
+    }
+
+    return {
+      exportWithLabels,
+      exportWithTable,
+    };
+  };
+
+  const selectedDashboardItems = getSelectedDashboardItems();
+  const settings = getSettings();
 
   const dashboardItems = selectedDashboardItems?.reduce(
     (result: DashboardItem[], code?: string) => {
@@ -73,6 +92,7 @@ export const PDFExport = ({
           entityName={entity?.name}
           activeDashboard={activeDashboard}
           isPreview={isPreview}
+          settings={settings}
         />
       ))}
     </Parent>

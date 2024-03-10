@@ -15,7 +15,7 @@ import { getVizOutputConfig } from '../utils';
 
 export class MapOverlayVisualisationExtractor<
   MapOverlayValidator extends yup.AnyObjectSchema,
-  ReportValidator extends yup.AnyObjectSchema
+  ReportValidator extends yup.AnyObjectSchema,
 > {
   private readonly visualisation: ExpandType<yup.InferType<typeof baseVisualisationValidator>>;
   private readonly mapOverlayValidator: MapOverlayValidator;
@@ -56,6 +56,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       mapOverlayPermissionGroup: permissionGroup,
+      entityAttributesFilter,
     } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
@@ -71,6 +72,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       permissionGroup,
+      entityAttributesFilter,
     };
   }
 

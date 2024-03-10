@@ -70,6 +70,17 @@ const FIELDS = [
     editConfig: { type: 'jsonEditor' },
   },
   {
+    Header: 'Entity attributes filters',
+    source: 'entity_attributes_filter',
+    type: 'jsonTooltip',
+    width: 200,
+    editConfig: {
+      type: 'jsonEditor',
+      secondaryLabel:
+        'This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. E.g. {"facility_type": "Hospital"}',
+    },
+  },
+  {
     Header: 'Country Codes',
     source: 'country_codes',
     width: 140,

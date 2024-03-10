@@ -32,11 +32,11 @@ const ExpandButton = styled(Button)`
   align-items: center;
   border-radius: 0;
   padding: 1rem;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   position: relative;
   &:hover,
   &:focus {
-    background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+    background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   }
 `;
 
@@ -68,7 +68,7 @@ const OverlayMenu = styled.div<{
   width: 100%;
   position: fixed;
   bottom: 0;
-  background-color: ${({ theme }) => theme.mobile.background};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.mobile};
   overflow: auto;
   ${OverlayLibraryHeaderButton} {
     display: ${({ $expanded }) => ($expanded ? 'flex' : 'none')};
@@ -88,7 +88,7 @@ const MapOverlayTitle = styled(Typography).attrs({
 
 const TitleWrapper = styled.div`
   width: 100%;
-  background-color: ${({ theme }) => theme.overlaySelector.menuBackground};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.menuBackground};
   padding: 1rem;
   display: flex;
   justify-content: space-between;
