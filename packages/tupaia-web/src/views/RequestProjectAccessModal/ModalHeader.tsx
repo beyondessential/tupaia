@@ -4,13 +4,9 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Location } from 'react-router';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
-import {
-  MODAL_ROUTES,
-  URL_SEARCH_PARAMS,
-  TUPAIA_LIGHT_LOGO_SRC,
-  MOBILE_BREAKPOINT,
-} from '../../constants';
+import { MODAL_ROUTES, TUPAIA_LIGHT_LOGO_SRC, MOBILE_BREAKPOINT } from '../../constants';
 import { RouterButton } from '../../components';
 
 const Header = styled.div`
@@ -60,7 +56,17 @@ const ProjectsButton = styled(RouterButton).attrs({
   }
 `;
 
-export const ModalHeader = ({ isLandingPage }: { isLandingPage: boolean }) => {
+export const ModalHeader = ({
+  isLandingPage,
+  baseCloseLocation,
+}: {
+  isLandingPage: boolean;
+  baseCloseLocation: Location;
+}) => {
+  const onCloseLocation = {
+    ...baseCloseLocation,
+    hash: MODAL_ROUTES.PROJECTS,
+  };
   return (
     <Header>
       <HeaderContainer>
@@ -71,10 +77,7 @@ export const ModalHeader = ({ isLandingPage }: { isLandingPage: boolean }) => {
       </HeaderContainer>
       <HeaderContainer>
         {!isLandingPage && (
-          <ProjectsButton
-            modal={MODAL_ROUTES.PROJECTS}
-            searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
-          >
+          <ProjectsButton to={onCloseLocation}>
             <ExploreIcon />
             View other projects
           </ProjectsButton>

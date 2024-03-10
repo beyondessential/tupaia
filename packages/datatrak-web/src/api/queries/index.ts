@@ -9,7 +9,7 @@ export { useSurveys } from './useSurveys';
 export { useSurvey } from './useSurvey';
 export { useSurveyResponse } from './useSurveyResponse';
 export { useSurveyResponses, useCurrentUserSurveyResponses } from './useSurveyResponses';
-export { useEntities } from './useEntities';
+export { useProjectEntities } from './useProjectEntities';
 export { useEntityById, useEntityByCode } from './useEntity';
 export { useAutocompleteOptions } from './useAutocompleteOptions';
 export { useProject } from './useProject';
@@ -18,3 +18,5 @@ export { useCurrentUserRecentSurveys, useRecentSurveys } from './useRecentSurvey
 export { useLeaderboard } from './useLeaderboard';
 export { useUserRewards } from './useUserRewards';
 export { useActivityFeed, useCurrentProjectActivityFeed } from './useActivityFeed';
+export { useProjectSurveys } from './useProjectSurveys';
+export { useEntities } from './useEntities';

@@ -22,6 +22,7 @@
     "@tupaia/utils": "workspace:*",
     "axios": "^1.4.0",
     "bson-objectid": "^1.2.2",
+    "downloadjs": "1.4.7",
     "leaflet": "^1.7.1",
     "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.4.1",

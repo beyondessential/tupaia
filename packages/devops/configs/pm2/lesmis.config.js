@@ -10,9 +10,9 @@ module.exports = {
     'central-server',
     'entity-server',
     'report-server',
-    'data-table-server',
-    'web-config-server',
     'lesmis-server',
+    'web-config-server',
+    'data-table-server',
     'lesmis',
   ]),
 };

@@ -9,7 +9,7 @@ import { IconButton } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
 
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
@@ -79,7 +79,7 @@ export const FileQuestion = ({
         helperText={detailLabel!}
         maxSizeInBytes={MAX_FILE_SIZE_BYTES}
         showFileSize
-        FormHelperTextComponent={QuestionHelperText}
+        FormHelperTextComponent={InputHelperText}
         required={required}
       />
       {selectedFile?.value && (

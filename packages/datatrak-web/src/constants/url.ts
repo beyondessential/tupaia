@@ -23,6 +23,9 @@ export const ROUTES = {
   CHANGE_PROJECT: '/change-project',
   VERIFY_EMAIL: '/verify-email',
   VERIFY_EMAIL_RESEND: '/verify-email-resend',
+  REPORTS: '/reports',
 };
 
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
+
+export const ADMIN_ONLY_ROUTES = [ROUTES.REPORTS];
