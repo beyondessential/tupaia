@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/ui-map-components"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://www.bes.au)",
   "source": "src/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

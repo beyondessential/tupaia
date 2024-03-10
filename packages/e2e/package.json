@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/e2e"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://www.bes.au)",
   "scripts": {
     "cypress:config": "yarn run:babel cypress/scripts/generateConfig",
     "cypress:format-config": "yarn run:babel cypress/scripts/formatConfig",
