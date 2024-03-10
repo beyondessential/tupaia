@@ -3,10 +3,7 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  UserModel as BaseUserModel,
-  UserType as BaseUserType,
-} from '@tupaia/database';
+import { UserModel as BaseUserModel, UserType as BaseUserType } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import { UserAccount, NullableKeysToOptional } from '@tupaia/types';
 

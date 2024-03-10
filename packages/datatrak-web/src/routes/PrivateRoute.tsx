@@ -3,14 +3,14 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactElement } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../api';
-import { ROUTES } from '../constants';
+import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
-export const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
-  const { isLoggedIn, ...user } = useCurrentUser();
+export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
+  const { isLoggedIn, hasAdminPanelAccess, ...user } = useCurrentUser();
   const location = useLocation();
   if (!isLoggedIn)
     return (
@@ -39,5 +39,12 @@ export const PrivateRoute = ({ children }: { children?: ReactNode }): any => {
         }}
       />
     );
+
+  const isAdminOnlyRoute = ADMIN_ONLY_ROUTES.includes(location.pathname);
+
+  // If the user is logged in but is not an admin and is trying to access an admin only page, redirect to the home page
+  if (isAdminOnlyRoute && !hasAdminPanelAccess) {
+    return <Navigate to={ROUTES.HOME} replace={true} />;
+  }
   return children ? children : <Outlet />;
 };

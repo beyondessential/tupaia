@@ -14,9 +14,11 @@ export type UserRequest = Request<
   DatatrakWebUserRequest.ReqQuery
 >;
 
+const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
+
 export class UserRoute extends Route<UserRequest> {
   public async buildResponse() {
-    const { ctx, session } = this.req;
+    const { ctx, session, accessPolicy } = this.req;
 
     // Avoid sending a 'me' request as the api user
     if (!session) {
@@ -34,6 +36,10 @@ export class UserRoute extends Route<UserRequest> {
       mobile_number: mobileNumber,
       preferences = {},
     } = await ctx.services.central.getUser();
+
+    // check if user has admin panel access
+    const hasAdminPanelAccess =
+      accessPolicy?.allowsSome(undefined, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP) ?? false;
 
     const { project_id: projectId, country_id: countryId, delete_account_requested } = preferences;
 
@@ -63,6 +69,7 @@ export class UserRoute extends Route<UserRequest> {
       project,
       country,
       deleteAccountRequested: delete_account_requested === true,
+      hasAdminPanelAccess,
     };
   }
 }
