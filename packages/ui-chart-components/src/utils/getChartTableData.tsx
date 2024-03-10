@@ -51,7 +51,7 @@ const makeFirstColumn = (header: string, accessor: TableAccessor, sortRows?: Fun
  * use value as the only column
  */
 const processColumns = (report?: ChartReport, config?: ChartConfig, sortByTimestamp?: Function) => {
-  if (!report || !report?.data) {
+  if (!report || !report.data) {
     return [];
   }
 

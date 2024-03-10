@@ -101,18 +101,8 @@ export const XAxis = ({ config, report, isExporting = false, isEnlarged = false 
 
   const formatXAxisTick = (tickData: string) => {
     const periodGranularity = 'periodGranularity' in config ? config.periodGranularity : undefined;
-    const getPeriodTickFormat = () => {
-      if (
-        'presentationOptions' in config &&
-        config.presentationOptions &&
-        'periodTickFormat' in config.presentationOptions
-      ) {
-        return config.presentationOptions.periodTickFormat;
-      }
-      return undefined;
-    };
 
-    const periodTickFormat = getPeriodTickFormat();
+    const periodTickFormat = config?.presentationOptions?.periodTickFormat;
 
     return isTimeSeries
       ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
