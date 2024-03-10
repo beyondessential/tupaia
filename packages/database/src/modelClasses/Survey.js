@@ -7,7 +7,7 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-export class SurveyType extends DatabaseRecord {
+export class SurveyRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY;
 
   /**
@@ -122,6 +122,6 @@ export class SurveyType extends DatabaseRecord {
 
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
   get DatabaseRecordClass() {
-    return SurveyType;
+    return SurveyRecord;
   }
 }

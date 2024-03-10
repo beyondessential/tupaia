@@ -163,7 +163,7 @@ export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
 export { ProjectModel, ProjectRecord } from './Project';
 export { QuestionModel } from './Question';
 export { ReportModel, ReportRecord } from './Report';
-export { SurveyModel, SurveyType } from './Survey';
+export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyResponseModel, SurveyResponseRecord } from './SurveyResponse';

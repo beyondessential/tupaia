@@ -3,9 +3,12 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { MaterializedViewLogDatabaseModel, SurveyType as BaseSurveyType } from '@tupaia/database';
+import {
+  MaterializedViewLogDatabaseModel,
+  SurveyRecord as BaseSurveyRecord,
+} from '@tupaia/database';
 
-class SurveyType extends BaseSurveyType {
+class SurveyRecord extends BaseSurveyRecord {
   static meditrakConfig = {
     minAppVersion: '0.0.1',
   };
@@ -15,7 +18,7 @@ export class SurveyModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeUpdateDataGroup];
 
   get DatabaseRecordClass() {
-    return SurveyType;
+    return SurveyRecord;
   }
 
   meditrakConfig = {
