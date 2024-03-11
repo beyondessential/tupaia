@@ -6,4 +6,3 @@
 export { DataTrakSessionModel, DataTrakSessionRecord } from './DataTrakSession';
 export { EntityModel } from './Entity';
 export { SurveyResponseModel } from './SurveyResponse';
-export { SurveyModel } from './Survey';
