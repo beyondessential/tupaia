@@ -11,7 +11,6 @@ import {
 } from '@tupaia/database';
 import { Model, ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 import { Entity, OneTimeLogin } from '@tupaia/types';
-import { SurveyResponseModel } from './models';
 import { OptionModel } from '@tupaia/database';
 
 export type EntityRecord = BaseEntityRecord & Entity;
@@ -19,7 +18,6 @@ export type OneTimeLoginRecord = BaseOneTimeLoginRecord & OneTimeLogin;
 
 export interface DatatrakWebServerModelRegistry extends ServerBoilerplateModelRegistry {
   readonly entity: Model<EntityModel, Entity, EntityRecord>;
-  readonly surveyResponse: SurveyResponseModel;
   readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginRecord>;
   readonly option: OptionModel;
 }

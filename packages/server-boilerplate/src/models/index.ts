@@ -15,3 +15,4 @@ export {
 
 export { UserRecord, UserModel } from './User';
 export { FeedItemModel } from './FeedItem';
+export { SurveyResponseModel } from './SurveyResponse';
