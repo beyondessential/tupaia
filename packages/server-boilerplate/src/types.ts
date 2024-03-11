@@ -35,6 +35,10 @@ import {
   MapOverlayGroupRecord,
   DashboardMailingListEntryModel,
   DashboardMailingListEntryRecord,
+  DataTableModel,
+  DataTableRecord,
+  ExternalDatabaseConnectionModel,
+  ExternalDatabaseConnectionRecord,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
@@ -47,6 +51,8 @@ import {
   DashboardItem,
   MapOverlayGroup,
   DashboardMailingListEntry,
+  DataTable,
+  ExternalDatabaseConnection,
 } from '@tupaia/types';
 import {
   FeedItemModel,
@@ -118,4 +124,10 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   >;
   readonly dashboardRelation: DashboardRelationModel;
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
+  readonly dataTable: Model<DataTableModel, DataTable, DataTableRecord & DataTable>;
+  readonly externalDatabaseConnection: Model<
+    ExternalDatabaseConnectionModel,
+    ExternalDatabaseConnection,
+    ExternalDatabaseConnection & ExternalDatabaseConnectionRecord
+  >;
 }
