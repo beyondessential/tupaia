@@ -2,13 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
-import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
+import { DatatrakWebServerModelRegistry } from '../types';
 
 const MAX_RECENT_ENTITIES = 3;
 
 export async function addRecentEntities(
-  models: ServerBoilerplateModelRegistry,
+  models: DatatrakWebServerModelRegistry,
   userId: string,
   entityIds: string[],
 ) {

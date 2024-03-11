@@ -5,8 +5,9 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { SessionCookie, ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
+import { SessionCookie } from '@tupaia/server-boilerplate';
 import { DataTrakSessionRecord, DataTrakSessionModel } from '../../models';
+import { DatatrakWebServerModelRegistry } from '../../types';
 
 declare global {
   namespace Express {
@@ -18,7 +19,7 @@ declare global {
       ctx: {
         services: TupaiaApiClient;
       };
-      models: ServerBoilerplateModelRegistry;
+      models: DatatrakWebServerModelRegistry;
     }
   }
 }

@@ -10,8 +10,8 @@ import {
   QuestionType,
   SurveyScreenComponentConfig,
 } from '@tupaia/types';
+import { DatatrakWebServerModelRegistry } from '../../types';
 import { buildUpsertEntity } from './buildUpsertEntity';
-import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
@@ -33,7 +33,7 @@ export const isUpsertEntityQuestion = (config?: SurveyScreenComponentConfig) => 
 
 // Process the survey response data into the format expected by the endpoint
 export const processSurveyResponse = async (
-  models: ServerBoilerplateModelRegistry,
+  models: DatatrakWebServerModelRegistry,
   surveyResponseData: SurveyRequestT,
 ) => {
   const {
