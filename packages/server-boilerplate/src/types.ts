@@ -17,7 +17,7 @@ import {
   CountryRecord,
 } from '@tupaia/database';
 import { UserEntityPermission, Entity, PermissionGroup, Country } from '@tupaia/types';
-import { Model, UserModel } from './models';
+import { FeedItemModel, Model, UserModel } from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -46,4 +46,5 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     PermissionGroupRecord & PermissionGroup
   >;
   readonly country: Model<CountryModel, Country, CountryRecord & Country>;
+  readonly feedItem: FeedItemModel;
 }

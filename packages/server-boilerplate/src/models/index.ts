@@ -14,3 +14,4 @@ export {
 } from './types';
 
 export { UserRecord, UserModel } from './User';
+export { FeedItemModel } from './FeedItem';
