@@ -27,6 +27,14 @@ import {
   SurveyGroupModel,
   SurveyScreenModel,
   SurveyScreenComponentModel,
+  DashboardModel,
+  DashboardRecord,
+  DashboardItemModel,
+  DashboardItemRecord,
+  MapOverlayGroupModel,
+  MapOverlayGroupRecord,
+  DashboardMailingListEntryModel,
+  DashboardMailingListEntryRecord,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
@@ -35,8 +43,19 @@ import {
   Country,
   Survey,
   OneTimeLogin,
+  Dashboard,
+  DashboardItem,
+  MapOverlayGroup,
+  DashboardMailingListEntry,
 } from '@tupaia/types';
-import { FeedItemModel, Model, UserModel, SurveyResponseModel } from './models';
+import {
+  FeedItemModel,
+  Model,
+  UserModel,
+  SurveyResponseModel,
+  DashboardRelationModel,
+  MapOverlayGroupRelationModel,
+} from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -81,4 +100,22 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   readonly surveyGroup: SurveyGroupModel;
   readonly surveyScreen: SurveyScreenModel;
   readonly surveyScreenComponent: SurveyScreenComponentModel;
+  readonly dashboard: Model<DashboardModel, Dashboard, DashboardRecord & Dashboard>;
+  readonly dashboardItem: Model<
+    DashboardItemModel,
+    DashboardItem,
+    DashboardItemRecord & DashboardItem
+  >;
+  readonly mapOverlayGroup: Model<
+    MapOverlayGroupModel,
+    MapOverlayGroup,
+    MapOverlayGroupRecord & MapOverlayGroup
+  >;
+  readonly dashboardMailingListEntry: Model<
+    DashboardMailingListEntryModel,
+    DashboardMailingListEntry,
+    DashboardMailingListEntryRecord & DashboardMailingListEntry
+  >;
+  readonly dashboardRelation: DashboardRelationModel;
+  readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
 }
