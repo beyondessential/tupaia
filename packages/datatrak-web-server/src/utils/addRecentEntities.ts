@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { DatatrakWebServerModelRegistry } from '../types';
+import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 
 const MAX_RECENT_ENTITIES = 3;
 
 export async function addRecentEntities(
-  models: DatatrakWebServerModelRegistry,
+  models: ServerBoilerplateModelRegistry,
   userId: string,
   entityIds: string[],
 ) {

@@ -4,13 +4,13 @@
  */
 
 import { generateId } from '@tupaia/database';
+import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 import { DatatrakWebSubmitSurveyRequest, Entity, SurveyScreenComponentConfig } from '@tupaia/types';
-import { DatatrakWebServerModelRegistry } from '../../types';
 
 type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
 
 export const buildUpsertEntity = async (
-  models: DatatrakWebServerModelRegistry,
+  models: ServerBoilerplateModelRegistry,
   config: SurveyScreenComponentConfig,
   questionId: string,
   answers: Answers,

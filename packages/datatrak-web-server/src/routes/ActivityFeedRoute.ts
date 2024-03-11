@@ -82,7 +82,6 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
         comparisonValue: pinned.id,
       };
     }
-
     const feedItems = await models.feedItem.find(conditions, {
       limit,
       offset: page * NUMBER_PER_PAGE,
