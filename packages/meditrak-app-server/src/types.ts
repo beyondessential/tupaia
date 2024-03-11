@@ -11,6 +11,18 @@ export type RequestContext = {
   services: TupaiaApiClient;
 };
 
-export interface MeditrakAppServerModelRegistry extends ServerBoilerplateModelRegistry {
+// this orchestration server uses more models than it excludes, so use an Omit instead of a Pick
+type IgnoreModels =
+  | 'apiRequestLog'
+  | 'apiClient'
+  | 'dashboard'
+  | 'dashboardItem'
+  | 'mapOverlayGroup'
+  | 'dashboardMailingListEntry'
+  | 'dashboardRelation'
+  | 'mapOverlayGroupRelation';
+
+export interface MeditrakAppServerModelRegistry
+  extends Omit<ServerBoilerplateModelRegistry, IgnoreModels> {
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
 }
