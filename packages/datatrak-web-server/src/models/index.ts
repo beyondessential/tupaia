@@ -4,4 +4,3 @@
  */
 
 export { DataTrakSessionModel, DataTrakSessionRecord } from './DataTrakSession';
-export { EntityModel } from './Entity';
