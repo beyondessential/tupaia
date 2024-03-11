@@ -20,6 +20,13 @@ import {
   OneTimeLoginModel,
   OneTimeLoginRecord,
   OptionModel,
+  FacilityModel,
+  GeographicalAreaModel,
+  OptionSetModel,
+  QuestionModel,
+  SurveyGroupModel,
+  SurveyScreenModel,
+  SurveyScreenComponentModel,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
@@ -59,7 +66,7 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   >;
   readonly country: Model<CountryModel, Country, CountryRecord & Country>;
   readonly feedItem: FeedItemModel;
-  readonly survey: Model<SurveyModel, Survey, SurveyRecord>;
+  readonly survey: Model<SurveyModel, Survey, SurveyRecord & Survey>;
   readonly surveyResponse: SurveyResponseModel;
   readonly oneTimeLogin: Model<
     OneTimeLoginModel,
@@ -67,4 +74,11 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     OneTimeLoginRecord
   >;
   readonly option: OptionModel;
+  readonly facility: FacilityModel;
+  readonly geographicalArea: GeographicalAreaModel;
+  readonly optionSet: OptionSetModel;
+  readonly question: QuestionModel;
+  readonly surveyGroup: SurveyGroupModel;
+  readonly surveyScreen: SurveyScreenModel;
+  readonly surveyScreenComponent: SurveyScreenComponentModel;
 }
