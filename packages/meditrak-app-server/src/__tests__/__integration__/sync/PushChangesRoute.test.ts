@@ -10,7 +10,6 @@ import {
   getTestDatabase,
   getTestModels,
   generateId,
-  generateId,
   generateValueOfType,
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
