@@ -30,7 +30,7 @@ const SearchInput = styled(TextField).attrs({
   }
 
   &:hover .MuiOutlinedInput-notchedOutline {
-    border: 2px ${({ theme }) => theme.form.border} solid;
+    border: 2px ${({ theme }) => theme.palette.form.border} solid;
   }
 
   .Mui-focused .MuiOutlinedInput-notchedOutline {

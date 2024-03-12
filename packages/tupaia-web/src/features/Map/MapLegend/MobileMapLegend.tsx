@@ -27,7 +27,7 @@ const MapLegendExpandButton = styled(Button)`
   text-transform: none;
   font-size: 0.75rem;
   padding: 0.25rem 0.8rem 0.25rem 0.4rem;
-  background-color: ${({ theme }) => theme.mobile.background};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.mobile};
 
   @media screen and (min-width: ${MOBILE_BREAKPOINT}) {
     display: none;
@@ -36,7 +36,7 @@ const MapLegendExpandButton = styled(Button)`
 
 const ExpandedLegend = styled.div`
   ${PositionStyles};
-  background-color: ${({ theme }) => theme.mobile.background};
+  background-color: ${({ theme }) => theme.palette.overlaySelector.mobile};
   border-radius: 0.5rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;

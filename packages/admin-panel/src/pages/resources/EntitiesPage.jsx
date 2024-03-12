@@ -10,25 +10,33 @@ import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
 const ENTITIES_ENDPOINT = 'entities';
 
-export const FIELDS = [
-  { source: 'id', show: false },
-  {
+export const FIELDS = {
+  id: { source: 'id', show: false },
+  code: {
     Header: 'Code',
     source: 'code',
   },
-  {
+  name: {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
   },
-  {
+  type: {
     Header: 'Type',
     source: 'type',
   },
-];
+  attributes: {
+    Header: 'Attributes',
+    source: 'attributes',
+    type: 'jsonTooltip',
+    editConfig: {
+      type: 'jsonEditor',
+    },
+  },
+};
 
 export const COLUMNS = [
-  ...FIELDS,
+  ...Object.values(FIELDS),
   {
     Header: 'Country',
     source: 'country_code',
@@ -40,12 +48,7 @@ export const COLUMNS = [
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
       title: 'Edit Entity',
-      fields: [
-        {
-          Header: 'Name',
-          source: 'name',
-        },
-      ],
+      fields: [FIELDS.name, FIELDS.attributes],
     },
   },
   {

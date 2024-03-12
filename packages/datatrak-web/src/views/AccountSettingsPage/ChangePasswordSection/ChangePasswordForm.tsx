@@ -77,7 +77,6 @@ export const ChangePasswordForm = () => {
   const {
     formState: { isSubmitting, isValid, isValidating },
     getValues,
-    handleSubmit,
     reset,
   } = formContext;
 
@@ -91,7 +90,7 @@ export const ChangePasswordForm = () => {
   const formIsInsubmissible = isValidating || !isValid || isSubmitting;
 
   return (
-    <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
+    <StyledForm onSubmit={attemptPasswordChange} formContext={formContext}>
       <StyledFieldset>
         <FormInput
           autoComplete="password"

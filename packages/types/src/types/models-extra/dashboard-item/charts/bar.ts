@@ -8,7 +8,6 @@ import {
   CartesianChartConfig,
   CartesianChartPresentationOptions,
   ChartType,
-  ReferenceLinesConfig,
 } from './common';
 
 export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
@@ -17,9 +16,6 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
    * @description This can be anything from the [numeraljs library]{@link http://numeraljs.com/#format}
    */
   valueFormat?: string;
-  referenceLines?: {
-    targetLine?: ReferenceLinesConfig;
-  };
 };
 
 /**

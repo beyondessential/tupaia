@@ -15,5 +15,9 @@ export type ReqBody = {
   cookieDomain: string;
   baseUrl: string;
   selectedDashboardItems?: string[];
+  settings?: {
+    exportWithTable: boolean;
+    exportWithLabels: boolean;
+  };
 };
 export type ReqQuery = Record<string, string>;
