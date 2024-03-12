@@ -18,6 +18,7 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AccountSettingsPage,
+  ReportsPage,
 } from '../views';
 import { useCurrentUser } from '../api';
 import { ROUTES } from '../constants';
@@ -78,7 +79,9 @@ export const Routes = () => {
               <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
             </Route>
           </Route>
+          <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
         </Route>
+        {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
         {/* PUBLIC ROUTES*/}
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>
