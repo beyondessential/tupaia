@@ -18,3 +18,4 @@ export { FeedItemModel } from './FeedItem';
 export { SurveyResponseModel } from './SurveyResponse';
 export { DashboardRelationModel } from './DashboardRelation';
 export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
+export { ProjectModel } from './Project';

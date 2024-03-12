@@ -39,6 +39,7 @@ import {
   DataTableRecord,
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
+  ProjectModel,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
@@ -130,4 +131,5 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     ExternalDatabaseConnection,
     ExternalDatabaseConnection & ExternalDatabaseConnectionRecord
   >;
+  readonly project: ProjectModel;
 }

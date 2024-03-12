@@ -3,19 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ModelRegistry } from '@tupaia/database';
-import {
-  AncestorDescendantRelationModel,
-  EntityModel,
-  EntityHierarchyModel,
-  ProjectModel,
-} from './models';
+import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
+import { AncestorDescendantRelationModel, EntityModel, EntityHierarchyModel } from './models';
 
-export interface EntityServerModelRegistry extends ModelRegistry {
+export interface EntityServerModelRegistry extends Pick<ServerBoilerplateModelRegistry, 'project'> {
   readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
   readonly entity: EntityModel;
   readonly entityHierarchy: EntityHierarchyModel;
-  readonly project: ProjectModel;
 }
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
