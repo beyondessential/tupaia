@@ -292,7 +292,7 @@ export class EntityType extends DatabaseType {
   }
 
   async pointLatLon() {
-    const { point } = this;
+    const { point, region } = this;
     if (point) {
       const pointJson = JSON.parse(point);
       return {
@@ -300,7 +300,6 @@ export class EntityType extends DatabaseType {
         lon: pointJson.coordinates[0],
       };
     }
-    const region = this.getRegion();
     if (!region) return null;
 
     // calculate the centroid of the region
