@@ -28280,10 +28280,11 @@ export const InlineValueSchema = {
 			"type": "string"
 		},
 		"value": {
-			"description": "The value",
+			"description": "The value (use 'null' to configure the behaviour for 'No data')",
 			"type": [
 				"string",
-				"number"
+				"number",
+				"null"
 			]
 		}
 	},
@@ -28399,10 +28400,11 @@ export const MeasureConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -29044,10 +29046,11 @@ export const BaseMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -29210,10 +29213,11 @@ export const BaseMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -29712,10 +29716,11 @@ export const SpectrumMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -29878,10 +29883,11 @@ export const SpectrumMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -30488,10 +30494,11 @@ export const IconMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -30654,10 +30661,11 @@ export const IconMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -31186,10 +31194,11 @@ export const RadiusMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -31352,10 +31361,11 @@ export const RadiusMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -31858,10 +31868,11 @@ export const ColorMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -32024,10 +32035,11 @@ export const ColorMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -32545,10 +32557,11 @@ export const ShadingMapOverlayConfigSchema = {
 									"type": "string"
 								},
 								"value": {
-									"description": "The value",
+									"description": "The value (use 'null' to configure the behaviour for 'No data')",
 									"type": [
 										"string",
-										"number"
+										"number",
+										"null"
 									]
 								}
 							},
@@ -32711,10 +32724,11 @@ export const ShadingMapOverlayConfigSchema = {
 						"type": "string"
 					},
 					"value": {
-						"description": "The value",
+						"description": "The value (use 'null' to configure the behaviour for 'No data')",
 						"type": [
 							"string",
-							"number"
+							"number",
+							"null"
 						]
 					}
 				},
@@ -33223,10 +33237,11 @@ export const MapOverlayConfigSchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -33389,10 +33404,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -33998,10 +34014,11 @@ export const MapOverlayConfigSchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -34164,10 +34181,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -34695,10 +34713,11 @@ export const MapOverlayConfigSchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -34861,10 +34880,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -35366,10 +35386,11 @@ export const MapOverlayConfigSchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -35532,10 +35553,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -36052,10 +36074,11 @@ export const MapOverlayConfigSchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -36218,10 +36241,11 @@ export const MapOverlayConfigSchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -64940,10 +64964,11 @@ export const MapOverlaySchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -65106,10 +65131,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -65715,10 +65741,11 @@ export const MapOverlaySchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -65881,10 +65908,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -66412,10 +66440,11 @@ export const MapOverlaySchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -66578,10 +66607,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -67083,10 +67113,11 @@ export const MapOverlaySchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -67249,10 +67280,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -67769,10 +67801,11 @@ export const MapOverlaySchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -67935,10 +67968,11 @@ export const MapOverlaySchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -68502,10 +68536,11 @@ export const MapOverlayCreateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -68668,10 +68703,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -69277,10 +69313,11 @@ export const MapOverlayCreateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -69443,10 +69480,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -69974,10 +70012,11 @@ export const MapOverlayCreateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -70140,10 +70179,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -70645,10 +70685,11 @@ export const MapOverlayCreateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -70811,10 +70852,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -71331,10 +71373,11 @@ export const MapOverlayCreateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -71497,10 +71540,11 @@ export const MapOverlayCreateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -72057,10 +72101,11 @@ export const MapOverlayUpdateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -72223,10 +72268,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -72832,10 +72878,11 @@ export const MapOverlayUpdateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -72998,10 +73045,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -73529,10 +73577,11 @@ export const MapOverlayUpdateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -73695,10 +73744,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -74200,10 +74250,11 @@ export const MapOverlayUpdateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -74366,10 +74417,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -74886,10 +74938,11 @@ export const MapOverlayUpdateSchema = {
 													"type": "string"
 												},
 												"value": {
-													"description": "The value",
+													"description": "The value (use 'null' to configure the behaviour for 'No data')",
 													"type": [
 														"string",
-														"number"
+														"number",
+														"null"
 													]
 												}
 											},
@@ -75052,10 +75105,11 @@ export const MapOverlayUpdateSchema = {
 										"type": "string"
 									},
 									"value": {
-										"description": "The value",
+										"description": "The value (use 'null' to configure the behaviour for 'No data')",
 										"type": [
 											"string",
-											"number"
+											"number",
+											"null"
 										]
 									}
 								},
@@ -87859,10 +87913,11 @@ export const TranslatedMapOverlaySchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -88025,10 +88080,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -88668,10 +88724,11 @@ export const TranslatedMapOverlaySchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -88834,10 +88891,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -89399,10 +89457,11 @@ export const TranslatedMapOverlaySchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -89565,10 +89624,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -90104,10 +90164,11 @@ export const TranslatedMapOverlaySchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -90270,10 +90331,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},
@@ -90824,10 +90886,11 @@ export const TranslatedMapOverlaySchema = {
 											"type": "string"
 										},
 										"value": {
-											"description": "The value",
+											"description": "The value (use 'null' to configure the behaviour for 'No data')",
 											"type": [
 												"string",
-												"number"
+												"number",
+												"null"
 											]
 										}
 									},
@@ -90990,10 +91053,11 @@ export const TranslatedMapOverlaySchema = {
 								"type": "string"
 							},
 							"value": {
-								"description": "The value",
+								"description": "The value (use 'null' to configure the behaviour for 'No data')",
 								"type": [
 									"string",
-									"number"
+									"number",
+									"null"
 								]
 							}
 						},

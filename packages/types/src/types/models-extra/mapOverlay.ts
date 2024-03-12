@@ -42,7 +42,8 @@ export type InlineValue = {
   name?: string;
 
   /**
-   * @description The value
+   * @description The value (use 'null' to configure the behaviour for 'No data')
+   * @nullable Need to add this for the JSON schema to include "null" as a valid type
    */
   value: string | number | null;
 };
