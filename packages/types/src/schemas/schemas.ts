@@ -3992,7 +3992,6 @@ export const CartesianChartConfigSchema = {
 } 
 
 export const PieChartPresentationOptionsSchema = {
-	"additionalProperties": false,
 	"type": "object",
 	"properties": {
 		"exportWithLabels": {
@@ -4007,6 +4006,24 @@ export const PieChartPresentationOptionsSchema = {
 			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 			"type": "boolean"
 		}
+	},
+	"additionalProperties": false
+} 
+
+export const PieChartSegmentConfigSchema = {
+	"type": "object",
+	"additionalProperties": {
+		"type": "object",
+		"properties": {
+			"color": {
+				"description": "A CSS color string e.g. green or #abc123",
+				"type": "string"
+			},
+			"label": {
+				"type": "string"
+			}
+		},
+		"additionalProperties": false
 	}
 } 
 
@@ -4423,7 +4440,6 @@ export const PieChartConfigSchema = {
 		},
 		"presentationOptions": {
 			"description": "Common options for configuring the chart presentation",
-			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"exportWithLabels": {
@@ -4438,6 +4454,24 @@ export const PieChartConfigSchema = {
 					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 					"type": "boolean"
 				}
+			},
+			"additionalProperties": false
+		},
+		"segmentConfig": {
+			"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"color": {
+						"description": "A CSS color string e.g. green or #abc123",
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					}
+				},
+				"additionalProperties": false
 			}
 		}
 	},
@@ -7871,7 +7905,6 @@ export const ChartConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
-					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -7886,6 +7919,24 @@ export const ChartConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
+					},
+					"additionalProperties": false
+				},
+				"segmentConfig": {
+					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false
 					}
 				}
 			},
@@ -10498,6 +10549,24 @@ export const ChartConfigSchema = {
 export const ChartPresentationOptionsSchema = {
 	"anyOf": [
 		{
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				}
+			},
+			"additionalProperties": false
+		},
+		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -10544,24 +10613,6 @@ export const ChartPresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
-				}
-			}
-		},
-		{
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
 				}
 			}
 		},
@@ -20645,7 +20696,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
-					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -20660,6 +20710,24 @@ export const DashboardItemConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
+					},
+					"additionalProperties": false
+				},
+				"segmentConfig": {
+					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"color": {
+								"description": "A CSS color string e.g. green or #abc123",
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false
 					}
 				}
 			},
@@ -27221,6 +27289,24 @@ export const PresentationOptionsSchema = {
 		{
 			"type": "object",
 			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
+				}
+			},
+			"additionalProperties": false
+		},
+		{
+			"type": "object",
+			"properties": {
 				"type": {
 					"type": "string",
 					"enum": [
@@ -27404,24 +27490,6 @@ export const PresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
-				}
-			}
-		},
-		{
-			"additionalProperties": false,
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
 				}
 			}
 		},
@@ -39201,7 +39269,6 @@ export const DashboardItemSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -39216,6 +39283,24 @@ export const DashboardItemSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							},
+							"additionalProperties": false
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
 							}
 						}
 					},
@@ -47262,7 +47347,6 @@ export const DashboardItemCreateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -47277,6 +47361,24 @@ export const DashboardItemCreateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							},
+							"additionalProperties": false
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
 							}
 						}
 					},
@@ -55317,7 +55419,6 @@ export const DashboardItemUpdateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
-							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -55332,6 +55433,24 @@ export const DashboardItemUpdateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
+							},
+							"additionalProperties": false
+						},
+						"segmentConfig": {
+							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "A CSS color string e.g. green or #abc123",
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
 							}
 						}
 					},
@@ -80758,7 +80877,6 @@ export const DashboardWithMetadataSchema = {
 									},
 									"presentationOptions": {
 										"description": "Common options for configuring the chart presentation",
-										"additionalProperties": false,
 										"type": "object",
 										"properties": {
 											"exportWithLabels": {
@@ -80773,6 +80891,24 @@ export const DashboardWithMetadataSchema = {
 												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 												"type": "boolean"
 											}
+										},
+										"additionalProperties": false
+									},
+									"segmentConfig": {
+										"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
+										"type": "object",
+										"additionalProperties": {
+											"type": "object",
+											"properties": {
+												"color": {
+													"description": "A CSS color string e.g. green or #abc123",
+													"type": "string"
+												},
+												"label": {
+													"type": "string"
+												}
+											},
+											"additionalProperties": false
 										}
 									}
 								},
