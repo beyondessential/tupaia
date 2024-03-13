@@ -1,9 +1,9 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { respond, reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary, respond } from '@tupaia/utils';
 
 const mapRequestsToEntities = (requestedEntities, projectCodeById) => {
   const entityRequests = {};
