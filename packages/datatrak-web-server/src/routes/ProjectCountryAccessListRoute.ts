@@ -6,16 +6,16 @@
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
 import {
+  CentralServerProjectCountryAccessListRequest,
   CountryAccessResponse,
   Project,
-  WebServerProjectCountryAccessListRequest,
 } from '@tupaia/types';
 
 export type ProjectCountryAccessListRequest = Request<
-  WebServerProjectCountryAccessListRequest.Params,
-  WebServerProjectCountryAccessListRequest.ReqBody,
-  WebServerProjectCountryAccessListRequest.ReqQuery,
-  WebServerProjectCountryAccessListRequest.ResBody
+  CentralServerProjectCountryAccessListRequest.Params,
+  CentralServerProjectCountryAccessListRequest.ReqBody,
+  CentralServerProjectCountryAccessListRequest.ReqQuery,
+  CentralServerProjectCountryAccessListRequest.ResBody
 >;
 
 export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessListRequest> {
@@ -31,7 +31,7 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
 
     return project.names
       .sort()
-      .reduce((result: WebServerProjectCountryAccessListRequest.ResBody, name: string) => {
+      .reduce((result: CentralServerProjectCountryAccessListRequest.ResBody, name: string) => {
         const country = countryAccessList.find(
           ({ name: countryName }: CountryAccessResponse) => countryName === name,
         );

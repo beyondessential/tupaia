@@ -15,7 +15,7 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-import { WebServerProjectCountryAccessListRequest } from '@tupaia/types';
+import { CentralServerProjectCountryAccessListRequest } from '@tupaia/types';
 import { UseQueryResult } from 'react-query';
 
 const StyledTableContainer = styled(TableContainer).attrs({
@@ -51,7 +51,7 @@ const EmptyStateLabel = styled(Typography).attrs({ color: 'textSecondary' })`
 `;
 
 interface AccessGrantedCountryListProps {
-  countryAccessList: UseQueryResult<WebServerProjectCountryAccessListRequest.ResBody>;
+  countryAccessList: UseQueryResult<CentralServerProjectCountryAccessListRequest.ResBody>;
 }
 
 export const AccessGrantedCountryList = ({ countryAccessList }: AccessGrantedCountryListProps) => {
