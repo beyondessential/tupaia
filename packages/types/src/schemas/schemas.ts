@@ -152,6 +152,11 @@ export const ReferencePropsSchema = {
 	]
 } 
 
+export const LooseObjectSchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
@@ -58198,8 +58203,13 @@ export const DisasterEventUpdateSchema = {
 export const EntitySchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -58212,15 +58222,22 @@ export const EntitySchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"additionalProperties": false
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -58276,8 +58293,13 @@ export const EntitySchema = {
 export const EntityCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -58287,15 +58309,22 @@ export const EntityCreateSchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"additionalProperties": false
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -58350,8 +58379,13 @@ export const EntityCreateSchema = {
 export const EntityUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -58364,15 +58398,22 @@ export const EntityUpdateSchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"additionalProperties": false
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -61970,6 +62011,7 @@ export const MapOverlaySchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
@@ -62002,6 +62044,7 @@ export const MapOverlaySchema = {
 	"required": [
 		"code",
 		"config",
+		"entity_attributes_filter",
 		"id",
 		"legacy",
 		"name",
@@ -64689,6 +64732,7 @@ export const MapOverlayCreateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -67402,6 +67446,7 @@ export const MapOverlayUpdateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
@@ -70640,8 +70685,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"items": {
 				"type": "object",
 				"properties": {
-					"attributes": {},
-					"bounds": {},
+					"attributes": {
+						"type": "object",
+						"additionalProperties": false
+					},
+					"bounds": {
+						"type": "string"
+					},
 					"code": {
 						"type": "string"
 					},
@@ -70654,15 +70704,22 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"image_url": {
 						"type": "string"
 					},
-					"metadata": {},
+					"metadata": {
+						"type": "object",
+						"additionalProperties": false
+					},
 					"name": {
 						"type": "string"
 					},
 					"parent_id": {
 						"type": "string"
 					},
-					"point": {},
-					"region": {},
+					"point": {
+						"type": "string"
+					},
+					"region": {
+						"type": "string"
+					},
 					"type": {
 						"enum": [
 							"asset",

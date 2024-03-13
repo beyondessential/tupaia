@@ -10,6 +10,7 @@
 import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
+import { LooseObject } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -666,44 +667,44 @@ export interface DisasterEventUpdate {
   'type'?: DisasterEventType;
 }
 export interface Entity {
-  'attributes'?: any | null;
-  'bounds'?: any | null;
+  'attributes'?: LooseObject | null;
+  'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
   'id': string;
   'image_url'?: string | null;
-  'metadata'?: any | null;
+  'metadata'?: LooseObject | null;
   'name': string;
   'parent_id'?: string | null;
-  'point'?: any | null;
-  'region'?: any | null;
+  'point'?: string | null;
+  'region'?: string | null;
   'type': EntityType;
 }
 export interface EntityCreate {
-  'attributes'?: any | null;
-  'bounds'?: any | null;
+  'attributes'?: LooseObject | null;
+  'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
   'image_url'?: string | null;
-  'metadata'?: any | null;
+  'metadata'?: LooseObject | null;
   'name': string;
   'parent_id'?: string | null;
-  'point'?: any | null;
-  'region'?: any | null;
+  'point'?: string | null;
+  'region'?: string | null;
   'type': EntityType;
 }
 export interface EntityUpdate {
-  'attributes'?: any | null;
-  'bounds'?: any | null;
+  'attributes'?: LooseObject | null;
+  'bounds'?: string | null;
   'code'?: string;
   'country_code'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
-  'metadata'?: any | null;
+  'metadata'?: LooseObject | null;
   'name'?: string;
   'parent_id'?: string | null;
-  'point'?: any | null;
-  'region'?: any | null;
+  'point'?: string | null;
+  'region'?: string | null;
   'type'?: EntityType;
 }
 export interface EntityHierarchy {
@@ -950,6 +951,7 @@ export interface MapOverlay {
   'config': MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter': any;
   'id': string;
   'legacy': boolean;
   'linked_measures'?: string[] | null;
@@ -963,6 +965,7 @@ export interface MapOverlayCreate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
@@ -975,6 +978,7 @@ export interface MapOverlayUpdate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'id'?: string;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;

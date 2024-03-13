@@ -59,3 +59,5 @@ export interface LinkReferenceProps {
  * of plaintext to display in the tooltip, or a named link; but not both.
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
+
+export type LooseObject = Record<string, unknown>;
