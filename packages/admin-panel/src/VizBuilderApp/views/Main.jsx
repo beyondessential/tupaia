@@ -1,23 +1,22 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
-
 import { useDashboardVisualisation } from '../api';
-import { Toolbar, Panel, PreviewSection, PreviewOptions } from '../components';
+import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
 import {
   PreviewDataProvider,
-  VizConfigErrorProvider,
-  useVizConfig,
   TabPanelProvider,
+  useVizConfig,
+  VizConfigErrorProvider,
 } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
@@ -90,21 +89,19 @@ export const Main = () => {
   }
 
   return (
-    <>
-      <VizConfigErrorProvider>
-        <Toolbar />
-        <Container maxWidth="xl">
-          <PreviewDataProvider>
-            <TabPanelProvider>
-              <Panel />
-            </TabPanelProvider>
-            <RightCol>
-              <PreviewOptions />
-              <PreviewSection />
-            </RightCol>
-          </PreviewDataProvider>
-        </Container>
-      </VizConfigErrorProvider>
-    </>
+    <VizConfigErrorProvider>
+      <Toolbar />
+      <Container maxWidth="xl">
+        <PreviewDataProvider>
+          <TabPanelProvider>
+            <Panel />
+          </TabPanelProvider>
+          <RightCol>
+            <PreviewOptions />
+            <PreviewSection />
+          </RightCol>
+        </PreviewDataProvider>
+      </Container>
+    </VizConfigErrorProvider>
   );
 };
