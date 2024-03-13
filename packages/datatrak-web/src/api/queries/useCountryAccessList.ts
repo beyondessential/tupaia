@@ -4,13 +4,13 @@
  */
 
 import { useQuery } from 'react-query';
-import { DatatrakWebCountryAccessListRequest } from '@tupaia/types';
+import { CentralServerProjectCountryAccessListRequest, Project } from '@tupaia/types';
 import { get } from '../api';
 
-export const useCountryAccessList = () => {
+export const useCountryAccessList = (projectCode: Project['code']) => {
   return useQuery(
-    'countryAccessList',
-    (): Promise<DatatrakWebCountryAccessListRequest.ResBody> => get('me/countries'),
+    ['countries', projectCode],
+    (): Promise<CentralServerProjectCountryAccessListRequest.ResBody> => get('me/countries'),
     {
       initialData: [],
       placeholderData: [],

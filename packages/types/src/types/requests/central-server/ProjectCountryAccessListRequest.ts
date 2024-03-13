@@ -9,7 +9,7 @@ export interface Params {
   projectCode: string;
 }
 
-interface CountryAccessObject {
+export interface CountryAccessObject {
   id: Entity['id'];
   name: Entity['name'];
   code: Entity['code'];

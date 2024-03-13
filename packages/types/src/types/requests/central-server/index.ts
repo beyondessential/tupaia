@@ -4,5 +4,4 @@
  */
 
 export * as CentralServerProjectCountryAccessListRequest from './ProjectCountryAccessListRequest';
-export { CountryAccessResponse } from './CountryAccessRequest';
 export { MeditrakSurveyResponseRequest } from './MeditrakSurveyResponseRequest';

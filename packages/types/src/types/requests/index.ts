@@ -5,7 +5,6 @@
 
 export {
   CentralServerProjectCountryAccessListRequest,
-  CountryAccessResponse,
   MeditrakSurveyResponseRequest,
 } from './central-server';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
@@ -21,7 +20,6 @@ export {
   DatatrakWebSingleSurveyResponseRequest,
   DatatrakWebLeaderboardRequest,
   DatatrakWebActivityFeedRequest,
-  DatatrakWebCountryAccessListRequest,
   DatatrakWebGenerateLoginTokenRequest,
 } from './datatrak-web-server';
 export {
