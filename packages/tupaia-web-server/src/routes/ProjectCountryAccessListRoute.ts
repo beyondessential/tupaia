@@ -5,7 +5,7 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralServerProjectCountryAccessListRequest, CountryAccessObject } from '@tupaia/types';
+import { CentralServerProjectCountryAccessListRequest } from '@tupaia/types';
 
 export type ProjectCountryAccessListRequest = Request<
   CentralServerProjectCountryAccessListRequest.Params,
@@ -32,11 +32,9 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
     return names
       .sort()
       .reduce((result: CentralServerProjectCountryAccessListRequest.ResBody, name: string) => {
-        const country = countryAccessList.find(
-          ({ name: countryName }: CountryAccessObject) => countryName === name,
-        );
+        const country = countryAccessList.find(({ name: countryName }) => countryName === name);
         if (!country) return result;
-        const hasPendingAccess = country.accessRequests.includes(projectCode);
+        const hasPendingAccess = country.hasPendingAccess;
 
         const hasAccess = project.permissionGroups.some((permissionGroup: string) =>
           accessPolicy.allows(country.code, permissionGroup),
