@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+export { PageContainer } from './PageContainer';
 export * from './Icons';
 export * from './SelectList';
 export { Autocomplete } from './Autocomplete';
@@ -13,7 +14,6 @@ export { ChangeProjectButton } from './ChangeProjectButton';
 export { ErrorDisplay } from './ErrorDisplay';
 export { InputHelperText } from './InputHelperText';
 export { Modal } from './Modal';
-export { PageContainer } from './PageContainer';
 export { PageTitleBar } from './PageTitleBar';
 export { SmallModal } from './SmallModal';
 export { TextInput } from './TextInput';
