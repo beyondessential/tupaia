@@ -46,7 +46,7 @@ const StyledCheckbox = styled(Checkbox).attrs({ color: 'primary' })`
 
 interface RequestableCountryChecklistProps {
   projectCode?: Project['code'];
-  countries: CentralServerProjectCountryAccessListRequest.ResBody;
+  countries?: CentralServerProjectCountryAccessListRequest.ResBody;
   selectedCountries: Entity['id'][];
   setSelectedCountries: React.Dispatch<React.SetStateAction<Entity['id'][]>>;
   disabled?: boolean;
@@ -54,7 +54,7 @@ interface RequestableCountryChecklistProps {
 
 export const RequestableCountryChecklist = ({
   projectCode,
-  countries,
+  countries = [],
   selectedCountries,
   setSelectedCountries,
   disabled,
