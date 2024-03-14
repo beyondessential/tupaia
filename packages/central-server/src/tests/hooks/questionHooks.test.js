@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
 
-const ENTITY_ID = generateTestId();
-const ENTITY2_ID = generateTestId();
-const ENTITY3_ID = generateTestId();
+const ENTITY_ID = generateId();
+const ENTITY2_ID = generateId();
+const ENTITY3_ID = generateId();
 
-const GENERIC_SURVEY_ID = generateTestId();
-const ENTITY_CREATION_SURVEY_ID = generateTestId();
+const GENERIC_SURVEY_ID = generateId();
+const ENTITY_CREATION_SURVEY_ID = generateId();
 const SURVEYS = [
   {
     id: GENERIC_SURVEY_ID,
@@ -62,7 +62,7 @@ describe('Question hooks', () => {
       country_id: country.id,
     });
     await models.facility.create({
-      id: generateTestId(),
+      id: generateId(),
       name: 'Test question hook clinic',
       code: 'test-question-hook-clinic',
       geographical_area_id: geographicalArea.id,
