@@ -22,15 +22,16 @@ export async function getCountryAccessList(req, res, next) {
   const { projectCode } = query;
   if (!projectCode) throw new Error('No project code provided');
 
+  const { entity, accessRequest, project } = models;
   try {
-    const countries = await models.entity.find({ type: 'country' });
     const entityPermissions = await models.userEntityPermission.find({ user_id: userId });
     const permittedEntityIds = new Set(entityPermissions.map(p => p.entity_id));
-    const accessRequests = await models.accessRequest.find({
+    const countries = await entity.find({ type: 'country' });
+    const accessRequests = await accessRequest.find({
       user_id: userId,
       processed_date: null,
     });
-    const projects = await models.project.find();
+    const projects = await project.find();
     const projectCodeById = reduceToDictionary(projects, 'id', 'code');
     const entityRequests = mapRequestsToEntities(accessRequests, projectCodeById);
 
