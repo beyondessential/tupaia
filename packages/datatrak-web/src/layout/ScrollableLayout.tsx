@@ -5,10 +5,10 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
+import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 
 const Container = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT});
+  height: calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT});
   display: flex;
   flex-direction: column;
 `;

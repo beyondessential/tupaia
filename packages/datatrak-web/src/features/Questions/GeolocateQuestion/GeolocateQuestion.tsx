@@ -7,8 +7,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import MapIcon from '@material-ui/icons/Map';
 import { SurveyQuestionInputProps } from '../../../types';
-import { Button } from '../../../components';
-import { QuestionHelperText } from '../QuestionHelperText';
+import { Button, InputHelperText } from '../../../components';
 import { useSurveyForm } from '../..';
 import { MapModal } from './MapModal';
 import { LatLongFields } from './LatLongFields';
@@ -66,7 +65,7 @@ export const GeolocateQuestion = ({
   return (
     <Wrapper>
       {text && <Typography component="legend">{text}</Typography>}
-      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+      {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <Container>
         <LatLongFields
           geolocation={value}

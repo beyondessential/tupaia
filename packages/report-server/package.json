@@ -38,6 +38,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "alasql": "^4.2.3",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",

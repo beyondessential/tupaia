@@ -61970,6 +61970,7 @@ export const MapOverlaySchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
@@ -62002,6 +62003,7 @@ export const MapOverlaySchema = {
 	"required": [
 		"code",
 		"config",
+		"entity_attributes_filter",
 		"id",
 		"legacy",
 		"name",
@@ -64689,6 +64691,7 @@ export const MapOverlayCreateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -67402,6 +67405,7 @@ export const MapOverlayUpdateSchema = {
 			}
 		},
 		"data_services": {},
+		"entity_attributes_filter": {},
 		"id": {
 			"type": "string"
 		},
@@ -79295,6 +79299,21 @@ export const TranslatedMapOverlaySchema = {
 				"reportCode": {
 					"type": "string"
 				},
+				"entityAttributesFilter": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						{
+							"type": "object",
+							"additionalProperties": false
+						}
+					]
+				},
 				"customLabel": {
 					"type": "string"
 				},
@@ -79831,6 +79850,7 @@ export const TranslatedMapOverlaySchema = {
 			"required": [
 				"code",
 				"displayType",
+				"entityAttributesFilter",
 				"legacy",
 				"name",
 				"scaleColorScheme",
@@ -79852,6 +79872,21 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"reportCode": {
 					"type": "string"
+				},
+				"entityAttributesFilter": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						{
+							"type": "object",
+							"additionalProperties": false
+						}
+					]
 				},
 				"customLabel": {
 					"type": "string"
@@ -80391,6 +80426,7 @@ export const TranslatedMapOverlaySchema = {
 			"required": [
 				"code",
 				"displayType",
+				"entityAttributesFilter",
 				"icon",
 				"legacy",
 				"name"
@@ -80411,6 +80447,21 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"reportCode": {
 					"type": "string"
+				},
+				"entityAttributesFilter": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						{
+							"type": "object",
+							"additionalProperties": false
+						}
+					]
 				},
 				"customLabel": {
 					"type": "string"
@@ -80926,6 +80977,7 @@ export const TranslatedMapOverlaySchema = {
 			"required": [
 				"code",
 				"displayType",
+				"entityAttributesFilter",
 				"legacy",
 				"name"
 			]
@@ -80945,6 +80997,21 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"reportCode": {
 					"type": "string"
+				},
+				"entityAttributesFilter": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						{
+							"type": "object",
+							"additionalProperties": false
+						}
+					]
 				},
 				"customLabel": {
 					"type": "string"
@@ -81475,6 +81542,7 @@ export const TranslatedMapOverlaySchema = {
 			"required": [
 				"code",
 				"displayType",
+				"entityAttributesFilter",
 				"legacy",
 				"name"
 			]
@@ -81494,6 +81562,21 @@ export const TranslatedMapOverlaySchema = {
 				},
 				"reportCode": {
 					"type": "string"
+				},
+				"entityAttributesFilter": {
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": false
+							}
+						},
+						{
+							"type": "object",
+							"additionalProperties": false
+						}
+					]
 				},
 				"customLabel": {
 					"type": "string"
@@ -82013,6 +82096,7 @@ export const TranslatedMapOverlaySchema = {
 			"required": [
 				"code",
 				"displayType",
+				"entityAttributesFilter",
 				"legacy",
 				"name"
 			]
