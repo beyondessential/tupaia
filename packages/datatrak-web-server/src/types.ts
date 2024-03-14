@@ -15,5 +15,4 @@ type Models =
   | 'oneTimeLogin'
   | 'option';
 
-export interface DatatrakWebServerModelRegistry
-  extends Pick<ServerBoilerplateModelRegistry, Models> {}
+export type DatatrakWebServerModelRegistry = Pick<ServerBoilerplateModelRegistry, Models>;

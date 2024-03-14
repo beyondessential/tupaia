@@ -7,5 +7,4 @@ import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 
 type Models = 'dataTable' | 'externalDatabaseConnection' | 'entity';
 
-export interface DataTableServerModelRegistry
-  extends Pick<ServerBoilerplateModelRegistry, Models> {}
+export type DataTableServerModelRegistry = Pick<ServerBoilerplateModelRegistry, Models>;

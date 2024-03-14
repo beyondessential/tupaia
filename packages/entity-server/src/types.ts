@@ -7,7 +7,7 @@ import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
 
 type Models = 'project' | 'ancestorDescendantRelation' | 'entityHierarchy' | 'entity';
 
-export interface EntityServerModelRegistry extends Pick<ServerBoilerplateModelRegistry, Models> {}
+export type EntityServerModelRegistry = Pick<ServerBoilerplateModelRegistry, Models>;
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 

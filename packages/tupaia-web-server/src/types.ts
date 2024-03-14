@@ -14,5 +14,4 @@ type Models =
   | 'dashboardRelation'
   | 'mapOverlayGroupRelation';
 
-export interface TupaiaWebServerModelRegistry
-  extends Pick<ServerBoilerplateModelRegistry, Models> {}
+export type TupaiaWebServerModelRegistry = Pick<ServerBoilerplateModelRegistry, Models>;
