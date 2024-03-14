@@ -18,7 +18,9 @@ const mapRequestsToEntities = (requestedEntities, projectCodeById) => {
 };
 
 export async function getCountryAccessList(req, res, next) {
-  const { userId, models } = req;
+  const { userId, models, query, accessPolicy } = req;
+  const { projectCode } = query;
+  if (!projectCode) throw new Error('No project code provided');
 
   try {
     const countries = await models.entity.find({ type: 'country' });
