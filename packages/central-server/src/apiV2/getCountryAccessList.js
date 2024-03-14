@@ -37,12 +37,12 @@ export async function getCountryAccessList(req, res, next) {
 
     const countryAccessList = countries
       .filter(country => country.name !== 'No Country')
-      .map(country => ({
-        id: country.id,
-        name: country.name,
-        hasAccess: permittedEntityIds.has(country.id),
-        accessRequests: entityRequests[country.id] || [],
-        code: country.code,
+      .map(({ code, id, name }) => ({
+        code,
+        id,
+        name,
+        hasAccess: permittedEntityIds.has(id),
+        accessRequests: entityRequests[id] || [],
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
 
