@@ -4,10 +4,18 @@
  */
 
 import { generateId } from '@tupaia/database';
+import { objectEntries } from '@tupaia/tsutils';
 import { DatatrakWebSubmitSurveyRequest, Entity, SurveyScreenComponentConfig } from '@tupaia/types';
 import { DatatrakWebServerModelRegistry } from '../../types';
 
 type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
+
+type EntityFieldValue = Entity[keyof Entity];
+
+//TODO: add type here
+const isQuestionValue = (value: any): value is { questionId: string } => {
+  return value && 'questionId' in value;
+};
 
 export const buildUpsertEntity = async (
   models: DatatrakWebServerModelRegistry,
@@ -18,23 +26,36 @@ export const buildUpsertEntity = async (
 ) => {
   const entityId = (answers[questionId] || generateId()) as Entity['id'];
   const entity = { id: entityId } as Entity;
-  const fields = config?.entity?.fields || {};
+  const fields = config?.entity?.fields;
 
-  for (const [fieldName, value] of Object.entries(fields)) {
-    // Value is not defined, skip
-    if (value === undefined) {
-      return;
-    }
+  if (fields) {
+    for (const [fieldName, value] of objectEntries(fields)) {
+      // Value is not defined, skip
+      if (value === undefined) {
+        return;
+      }
 
-    const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
+      const getFieldValue = () => {
+        if (typeof value === 'string') {
+          return value;
+        }
+        if (isQuestionValue(value)) {
+          const { questionId } = value;
+          return answers[questionId];
+        }
+        return undefined;
+      };
 
-    if (fieldName === 'parentId') {
-      // If the parentId field is not answered, use the country id
-      const parentValue = (fieldValue as string) || countryId;
-      const entityRecord = await models.entity.findById(parentValue);
-      entity.parent_id = entityRecord.id;
-    } else {
-      entity[fieldName as keyof Entity] = fieldValue;
+      const fieldValue = getFieldValue();
+
+      if (fieldName === 'parentId') {
+        // If the parentId field is not answered, use the country id
+        const parentValue = (fieldValue as string) || countryId;
+        const entityRecord = await models.entity.findById(parentValue);
+        entity.parent_id = entityRecord.id;
+      } else {
+        entity[fieldName] = fieldValue;
+      }
     }
   }
 

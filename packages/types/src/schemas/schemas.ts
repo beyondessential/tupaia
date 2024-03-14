@@ -32702,6 +32702,82 @@ export const ConditionQuestionConfigSchema = {
 	]
 } 
 
+export const EntityFieldsSchema = {
+	"enum": [
+		"attributes",
+		"code",
+		"country_code",
+		"id",
+		"image_url",
+		"metadata",
+		"name",
+		"type"
+	],
+	"type": "string"
+} 
+
+export const QuestionValueSchema = {
+	"type": "object",
+	"properties": {
+		"questionId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"questionId"
+	]
+} 
+
+export const FieldKeySchema = {
+	"description": "This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camelcased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.",
+	"enum": [
+		"attributes",
+		"code",
+		"country_code",
+		"id",
+		"image_url",
+		"metadata",
+		"name",
+		"parentId",
+		"type"
+	],
+	"type": "string"
+} 
+
+export const FieldValueSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		{
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		{
+			"type": "string"
+		}
+	]
+} 
+
 export const EntityQuestionConfigSchema = {
 	"type": "object",
 	"additionalProperties": {},
@@ -32711,7 +32787,308 @@ export const EntityQuestionConfigSchema = {
 		},
 		"fields": {
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"metadata": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"code": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"attributes": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"name": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"type": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"country_code": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"id": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"image_url": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"parentId": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"attributes",
+				"code",
+				"country_code",
+				"id",
+				"image_url",
+				"metadata",
+				"name",
+				"parentId",
+				"type"
+			]
 		},
 		"filter": {
 			"type": "object",
@@ -32721,10 +33098,88 @@ export const EntityQuestionConfigSchema = {
 						{
 							"type": "array",
 							"items": {
+								"enum": [
+									"asset",
+									"business",
+									"case",
+									"case_contact",
+									"catchment",
+									"city",
+									"complaint",
+									"country",
+									"disaster",
+									"district",
+									"facility",
+									"farm",
+									"fetp_graduate",
+									"field_station",
+									"fiji_aspen_facility",
+									"household",
+									"incident",
+									"incident_reported",
+									"individual",
+									"institute",
+									"larval_habitat",
+									"local_government",
+									"medical_area",
+									"msupply_store",
+									"nursing_zone",
+									"postcode",
+									"project",
+									"repair_request",
+									"school",
+									"sub_catchment",
+									"sub_district",
+									"sub_facility",
+									"trap",
+									"village",
+									"water_sample",
+									"wish_sub_district",
+									"world"
+								],
 								"type": "string"
 							}
 						},
 						{
+							"enum": [
+								"asset",
+								"business",
+								"case",
+								"case_contact",
+								"catchment",
+								"city",
+								"complaint",
+								"country",
+								"disaster",
+								"district",
+								"facility",
+								"farm",
+								"fetp_graduate",
+								"field_station",
+								"fiji_aspen_facility",
+								"household",
+								"incident",
+								"incident_reported",
+								"individual",
+								"institute",
+								"larval_habitat",
+								"local_government",
+								"medical_area",
+								"msupply_store",
+								"nursing_zone",
+								"postcode",
+								"project",
+								"repair_request",
+								"school",
+								"sub_catchment",
+								"sub_district",
+								"sub_facility",
+								"trap",
+								"village",
+								"water_sample",
+								"wish_sub_district",
+								"world"
+							],
 							"type": "string"
 						}
 					]
@@ -32755,18 +33210,7 @@ export const EntityQuestionConfigSchema = {
 				},
 				"attributes": {
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"questionId": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"questionId"
-						]
-					}
+					"additionalProperties": false
 				}
 			},
 			"additionalProperties": false
@@ -32862,7 +33306,308 @@ export const SurveyScreenComponentConfigSchema = {
 				},
 				"fields": {
 					"type": "object",
-					"additionalProperties": false
+					"properties": {
+						"metadata": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"code": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"attributes": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"name": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"type": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"country_code": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"id": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"image_url": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"parentId": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"attributes",
+						"code",
+						"country_code",
+						"id",
+						"image_url",
+						"metadata",
+						"name",
+						"parentId",
+						"type"
+					]
 				},
 				"filter": {
 					"type": "object",
@@ -32872,10 +33617,88 @@ export const SurveyScreenComponentConfigSchema = {
 								{
 									"type": "array",
 									"items": {
+										"enum": [
+											"asset",
+											"business",
+											"case",
+											"case_contact",
+											"catchment",
+											"city",
+											"complaint",
+											"country",
+											"disaster",
+											"district",
+											"facility",
+											"farm",
+											"fetp_graduate",
+											"field_station",
+											"fiji_aspen_facility",
+											"household",
+											"incident",
+											"incident_reported",
+											"individual",
+											"institute",
+											"larval_habitat",
+											"local_government",
+											"medical_area",
+											"msupply_store",
+											"nursing_zone",
+											"postcode",
+											"project",
+											"repair_request",
+											"school",
+											"sub_catchment",
+											"sub_district",
+											"sub_facility",
+											"trap",
+											"village",
+											"water_sample",
+											"wish_sub_district",
+											"world"
+										],
 										"type": "string"
 									}
 								},
 								{
+									"enum": [
+										"asset",
+										"business",
+										"case",
+										"case_contact",
+										"catchment",
+										"city",
+										"complaint",
+										"country",
+										"disaster",
+										"district",
+										"facility",
+										"farm",
+										"fetp_graduate",
+										"field_station",
+										"fiji_aspen_facility",
+										"household",
+										"incident",
+										"incident_reported",
+										"individual",
+										"institute",
+										"larval_habitat",
+										"local_government",
+										"medical_area",
+										"msupply_store",
+										"nursing_zone",
+										"postcode",
+										"project",
+										"repair_request",
+										"school",
+										"sub_catchment",
+										"sub_district",
+										"sub_facility",
+										"trap",
+										"village",
+										"water_sample",
+										"wish_sub_district",
+										"world"
+									],
 									"type": "string"
 								}
 							]
@@ -32906,18 +33729,7 @@ export const SurveyScreenComponentConfigSchema = {
 						},
 						"attributes": {
 							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"questionId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"questionId"
-								]
-							}
+							"additionalProperties": false
 						}
 					},
 					"additionalProperties": false

@@ -4,11 +4,13 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
+import { DataTable } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { DataTableRecord as DataTableRecordClass } from '@tupaia/database';
 import { DataTableServiceBuilder, getDataTableServiceType } from '../../dataTableService';
 import { AnalyticsDataTableService } from '../../dataTableService/services/AnalyticsDataTableService';
-import { DataTableRecord } from '../../models';
+
+type DataTableRecord = DataTableRecordClass & DataTable;
 
 describe('DataTableServiceBuilder', () => {
   describe('getDataTableServiceType', () => {
