@@ -12,7 +12,7 @@ const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
-type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<EntityFilterFields>>;
+type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<Required<EntityFilterFields>>>;
 
 type EntityFilterQuery = Partial<EntityFilterFields>;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;

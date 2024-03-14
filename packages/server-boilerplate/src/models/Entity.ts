@@ -7,17 +7,14 @@ import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from
 import { Entity } from '@tupaia/types';
 import { Model, DbFilter } from './types';
 
-// We also want to make all fields as non-optional
-export type EntityFields = Required<Entity>;
-
-export type EntityFilterFields = EntityFields & {
+export type EntityFilterFields = Entity & {
   generational_distance: number;
 };
 
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
 // allow the possibility of passing in own fields
-export interface EntityRecord extends EntityFields, Omit<BaseEntityRecord, 'metadata' | 'id'> {
+export interface EntityRecord extends Entity, Omit<BaseEntityRecord, 'metadata' | 'id'> {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
   getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
@@ -32,7 +29,7 @@ export interface EntityModel
       BaseEntityModel,
       'getDescendantsOfEntities' | 'getRelativesOfEntities' | 'getAncestorsOfEntities'
     >,
-    EntityFields,
+    Entity,
     EntityRecord
   > {
   getDescendantsOfEntities: (
