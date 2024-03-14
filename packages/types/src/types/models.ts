@@ -950,7 +950,8 @@ export interface MapOverlay {
   'code': string;
   'config': MapOverlayConfig;
   'country_codes'?: string[] | null;
-  'data_services'?: any | null;
+  'data_services'?: {} | null;
+  'entity_attributes_filter': {};
   'id': string;
   'legacy': boolean;
   'linked_measures'?: string[] | null;
@@ -963,7 +964,8 @@ export interface MapOverlayCreate {
   'code': string;
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
-  'data_services'?: any | null;
+  'data_services'?: {} | null;
+  'entity_attributes_filter'?: {};
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
@@ -975,7 +977,8 @@ export interface MapOverlayUpdate {
   'code'?: string;
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
-  'data_services'?: any | null;
+  'data_services'?: {} | null;
+  'entity_attributes_filter'?: {};
   'id'?: string;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;

@@ -152,11 +152,6 @@ export const ReferencePropsSchema = {
 	]
 } 
 
-export const LooseObjectSchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
 export const EntityAttributesSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -62180,8 +62175,14 @@ export const MapOverlaySchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64901,8 +64902,14 @@ export const MapOverlayCreateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -67615,8 +67622,14 @@ export const MapOverlayUpdateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -79471,19 +79484,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"type": "string"
@@ -80045,19 +80047,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"type": "string"
@@ -80620,19 +80611,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"type": "string"
@@ -81170,19 +81150,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"type": "string"
@@ -81735,19 +81704,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"type": "string"
