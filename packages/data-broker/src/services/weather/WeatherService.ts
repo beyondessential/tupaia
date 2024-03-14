@@ -188,7 +188,7 @@ export class WeatherService extends Service {
     }
   }
 
-  private getEntityPoint(entity: EntityType) {
+  private async getEntityPoint(entity: EntityType) {
     try {
       return entity.pointLatLon();
     } catch (error) {
@@ -224,7 +224,7 @@ export class WeatherService extends Service {
 
     // Run requests in parallel for performance
     const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = this.getEntityPoint(entity);
+      const { lat, lon } = await this.getEntityPoint(entity);
 
       // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
       // Performance looks fine requesting 16 days.
@@ -265,7 +265,7 @@ export class WeatherService extends Service {
 
     // Run requests in parallel for performance
     const getDataForEntity = async (entity: EntityType) => {
-      const { lat, lon } = this.getEntityPoint(entity);
+      const { lat, lon } = await this.getEntityPoint(entity);
 
       if (sanitisedStartDate === null || sanitisedEndDate === null) {
         return {
