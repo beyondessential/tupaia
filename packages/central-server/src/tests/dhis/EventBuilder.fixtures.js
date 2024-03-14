@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
-const orgUnitId = generateTestId();
-const customEventOrgUnitId = generateTestId();
+const orgUnitId = generateId();
+const customEventOrgUnitId = generateId();
 
 export const ENTITIES = {
   ORG_UNIT: {
@@ -29,23 +29,23 @@ export const ENTITIES = {
   },
 };
 
-const eventOrgUnitQuestionId = generateTestId();
+const eventOrgUnitQuestionId = generateId();
 
 export const SURVEYS = {
   DEFAULT_OU_SURVEY: {
-    id: generateTestId(),
+    id: generateId(),
     code: 'DEFAULT_OU',
     name: 'Survey using the default org unit for the event',
     questions: [
       {
-        id: generateTestId(),
+        id: generateId(),
         code: 'DEFAULT_OU1',
         text: 'Select a disease',
       },
     ],
   },
   CUSTOM_OU_SURVEY: {
-    id: generateTestId(),
+    id: generateId(),
     code: 'CUSTOM_OU',
     name: 'Survey using a custom org unit specified in the response',
     integration_metadata: {

@@ -14,7 +14,7 @@ export interface Params {
 
 // We return a simplified version of data to the frontend
 export type TranslatedMapOverlay = KeysToCamelCase<
-  Pick<MapOverlay, 'code' | 'name' | 'legacy' | 'report_code'>
+  Pick<MapOverlay, 'code' | 'name' | 'legacy' | 'report_code' | 'entity_attributes_filter'>
 > &
   MapOverlayConfig & {
     sortOrder?: number | null;

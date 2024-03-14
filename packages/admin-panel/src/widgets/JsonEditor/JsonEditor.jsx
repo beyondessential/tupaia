@@ -4,7 +4,7 @@ import JSONEditor from 'jsoneditor/dist/jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css'; 
 import Ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-json';
-import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/theme-xcode';
 
 /**
  * @typedef {{
@@ -272,7 +272,7 @@ JsonEditor.defaultProps = {
   onModeChange: undefined,
   ace: Ace,
   ajv: undefined,
-  theme: 'ace/theme/github',
+  theme: 'ace/theme/xcode',
   history: false,
   navigationBar: true,
   statusBar: true,

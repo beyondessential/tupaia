@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import moment from 'moment';
-import { generateTestId, RECORDS } from '@tupaia/database';
+import { generateId, RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
 export const ORGANISATION_UNIT_ID = 'org_unit_xxx';
@@ -14,29 +14,29 @@ export const MONTHLY_DATA_SET = { ...DATA_SET, periodType: 'Monthly' };
 export const YEARLY_DATA_SET = { ...DATA_SET, periodType: 'Yearly' };
 
 const USER = {
-  id: generateTestId(),
+  id: generateId(),
   first_name: 'John',
   last_name: 'Smith',
 };
 
 const ENTITY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'entity_1',
 };
 
 export const SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'ABC',
 };
 
 export const QUESTION = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'question_1',
   type: ANSWER_TYPES.NUMBER,
 };
 
 export const SURVEY_RESPONSE = {
-  id: generateTestId(),
+  id: generateId(),
   entity_id: ENTITY.id,
   end_time: '2019-04-10T10:05:00.000Z',
   data_time: '2019-05-20T10:05:00.000',
@@ -45,7 +45,7 @@ export const SURVEY_RESPONSE = {
 };
 
 export const ANSWER = {
-  id: generateTestId(),
+  id: generateId(),
   type: QUESTION.type,
   survey_response_id: SURVEY_RESPONSE.id,
   question_id: QUESTION.id,

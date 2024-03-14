@@ -7,10 +7,6 @@ import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from
 import { Entity } from '@tupaia/types';
 import { Model, DbFilter } from './types';
 
-type Required<T> = {
-  [P in keyof T]-?: T[P];
-};
-
 // We also want to make all fields as non-optional
 export type EntityFields = Required<Entity>;
 

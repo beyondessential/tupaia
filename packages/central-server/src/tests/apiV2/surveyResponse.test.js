@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   expectError,
@@ -31,8 +31,8 @@ const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
   return entities[randomIntBetween(0, entities.length - 1)].id;
 };
 
-const ENTITY_ID = generateTestId();
-const ENTITY_NON_CLINIC_ID = generateTestId();
+const ENTITY_ID = generateId();
+const ENTITY_NON_CLINIC_ID = generateId();
 
 const questionCode = key => `TEST-${key}`;
 

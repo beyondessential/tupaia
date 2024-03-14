@@ -4,10 +4,9 @@
  */
 
 import pluralize from 'pluralize';
-
-import { RECORDS } from '../records';
-import { generateTestId } from './generateTestId';
 import { generateValueOfType } from './generateValueOfType';
+import { generateId } from '../utilities';
+import { RECORDS } from '../records';
 
 const { DISASTER, ENTITY, SURVEY_RESPONSE } = RECORDS;
 
@@ -64,7 +63,7 @@ const generateDummyRecord = async (model, overrides = {}) => {
       if (columnInfo.defaultValue !== null)
         return processDefaultValue(columnInfo.defaultValue, columnInfo.type);
       // - a test id if the field name indicates that's what it should get
-      if (fieldName === 'id') return generateTestId();
+      if (fieldName === 'id') return generateId();
       // - null if this is a foreign key and has not been explicitly defined by the user
       if (fieldName.endsWith('_id')) return null;
       // - generate a sensible value based on the database column type
