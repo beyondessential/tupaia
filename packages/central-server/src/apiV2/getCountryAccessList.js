@@ -41,8 +41,8 @@ export async function getCountryAccessList(req, res, next) {
         code,
         id,
         name,
-        hasAccess: permittedEntityIds.has(id),
-        accessRequests: entityRequests[id] || [],
+        hasAccess: permittedEntityIds.has(id), // TODO: Make this project-dependent
+        hasPendingAccess: entityRequests[id]?.includes(projectCode) ?? false,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
 
