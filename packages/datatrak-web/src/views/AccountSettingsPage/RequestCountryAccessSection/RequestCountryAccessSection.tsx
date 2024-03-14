@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useCurrentUser, useProjectCountryAccessList } from '../../../api';
+import { useCurrentUser, useCountryAccessList } from '../../../api';
 import { ChangeProjectButton } from '../../../components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { AccessGrantedCountryList } from './AccessGrantedCountryList';
@@ -12,7 +12,7 @@ import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 
 export const RequestCountryAccessSection = () => {
   const { project } = useCurrentUser();
-  const countryAccessList = useProjectCountryAccessList(project?.code ?? '');
+  const countryAccessList = useCountryAccessList(project?.code ?? '');
 
   const title = (
     <>
