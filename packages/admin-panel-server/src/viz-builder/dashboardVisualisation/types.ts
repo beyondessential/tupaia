@@ -13,7 +13,6 @@ type Presentation = Record<string, unknown> & {
 type DashboardVisualisation = {
   id?: string;
   code: string;
-  name: string;
   legacy: false;
   data: VizData;
   presentation: Presentation;
@@ -23,7 +22,6 @@ type DashboardVisualisation = {
 type LegacyDashboardVisualisation = {
   id?: string;
   code: string;
-  name: string;
   legacy: true;
   data: {
     dataBuilder: string;
