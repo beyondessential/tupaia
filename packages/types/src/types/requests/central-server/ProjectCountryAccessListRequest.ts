@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Entity, Project } from '../..';
@@ -9,7 +9,7 @@ export interface Params {
   projectCode: string;
 }
 
-export interface CountryAccessObject {
+interface CountryAccessObject {
   id: Entity['id'];
   name: Entity['name'];
   code: Entity['code'];
