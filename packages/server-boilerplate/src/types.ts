@@ -40,6 +40,8 @@ import {
   ProjectModel,
   EntityHierarchyModel,
   EntityHierarchyRecord,
+  ReportModel,
+  ReportRecord,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
@@ -54,6 +56,7 @@ import {
   DataTable,
   ExternalDatabaseConnection,
   EntityHierarchy,
+  Report,
 } from '@tupaia/types';
 import {
   FeedItemModel,
@@ -140,4 +143,5 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     EntityHierarchy,
     EntityHierarchyRecord & EntityHierarchy
   >;
+  readonly report: Model<ReportModel, Report, ReportRecord & Report>;
 }
