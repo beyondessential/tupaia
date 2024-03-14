@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DateOffsetSpec, PeriodUnit, VizPeriodGranularity } from '../common';
+import { DateOffsetSpec, DefaultTimePeriod, VizPeriodGranularity } from '../common';
 
 export type BaseConfig = {
   /**
@@ -22,7 +22,33 @@ export type BaseConfig = {
   periodGranularity?: `${VizPeriodGranularity}`;
 
   /**
-   * @description Initial date range for this viz
+   * @description
+   * Initial date range for this viz.
+   * Either a single offset, or an ISO string / offset for start/end date
+   * eg.
+   * // Single offset
+   * "defaultTimePeriod": {
+   *   "unit": "week",
+   *   "offset": 7
+   * }
+   *
+   * // Explicit start/end dates
+   * "defaultTimePeriod": {
+   *   "start": "2022-10-01",
+   *   "end": "2023-06-30"
+   * }
+   *
+   * // Start/end date offsets
+   * "defaultTimePeriod": {
+   *   "start": {
+   *     "unit": "week",
+   *     "offset": -52
+   *   },
+   *   "end": {
+   *     "unit": "week",
+   *     "offset": 3
+   *   }
+   * }
    */
   defaultTimePeriod?: DefaultTimePeriod;
 
@@ -128,25 +154,6 @@ export enum WeekDisplayFormat {
   WEEK_ENDING = 'WEEK_ENDING',
   ISO_WEEK_NUMBER = 'ISO_WEEK_NUMBER',
 }
-
-type DefaultTimePeriod =
-  | DefaultTimePeriodShort
-  | DefaultTimePeriodLong
-  | DefaultTimePeriodWithAbsoluteDate;
-
-type DefaultTimePeriodShort = { offset: number; unit: PeriodUnit };
-
-type DefaultTimePeriodLong = {
-  start: DateOffsetSpec;
-  end: DateOffsetSpec;
-};
-
-type DefaultTimePeriodWithAbsoluteDate = {
-  /**
-   * @description ISO Date Time
-   */
-  start: string;
-};
 
 export type ExportPresentationOptions = {
   /**

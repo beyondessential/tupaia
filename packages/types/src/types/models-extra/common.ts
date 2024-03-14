@@ -45,6 +45,20 @@ enum OffsetModifier {
 
 export type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
+export type DefaultTimePeriod =
+  | DateOffsetSpec
+  | {
+      /**
+       * @description Either an ISO Date string, or an offset object
+       */
+      start?: string | DateOffsetSpec;
+
+      /**
+       * @description Either an ISO Date string, or an offset object
+       */
+      end?: string | DateOffsetSpec;
+    };
+
 /**
  * One of the two shapes which {@link ReferenceProps} can take.
  *

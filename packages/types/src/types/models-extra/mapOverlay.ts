@@ -6,17 +6,12 @@
 import { PascalCase } from '../../utils';
 import { CssColor } from '../css';
 import { EntityType } from '../models';
-import { DateOffsetSpec, ReferenceProps, VizPeriodGranularity } from './common';
+import { DateOffsetSpec, DefaultTimePeriod, ReferenceProps, VizPeriodGranularity } from './common';
 
 /**
  * @description A key that can be used to reference a value in a measureConfig, or to reference all values
  */
 type ValueKey = string | '$all';
-
-type DefaultTimePeriod = DateOffsetSpec & {
-  start?: string | DateOffsetSpec;
-  end?: string | DateOffsetSpec;
-};
 
 export type InlineValue = {
   color?: string;
@@ -167,9 +162,36 @@ export type BaseMapOverlayConfig = {
   };
 
   /**
-   * @description Initial date range for this viz
+   * @description
+   * Initial date range for this viz.
+   * Either a single offset, or an ISO string / offset for start/end date
+   * eg.
+   * // Single offset
+   * "defaultTimePeriod": {
+   *   "unit": "week",
+   *   "offset": 7
+   * }
+   *
+   * // Explicit start/end dates
+   * "defaultTimePeriod": {
+   *   "start": "2022-10-01",
+   *   "end": "2023-06-30"
+   * }
+   *
+   * // Start/end date offsets
+   * "defaultTimePeriod": {
+   *   "start": {
+   *     "unit": "week",
+   *     "offset": -52
+   *   },
+   *   "end": {
+   *     "unit": "week",
+   *     "offset": 3
+   *   }
+   * }
    */
   defaultTimePeriod?: DefaultTimePeriod;
+
   /**
    * @description
    * Values in the legend will be renamed if the majority of values have different 'displayValueKey'.
