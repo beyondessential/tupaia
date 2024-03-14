@@ -60,4 +60,6 @@ export interface LinkReferenceProps {
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
 
-export type LooseObject = Record<string, unknown>;
+export type EntityAttributes = Record<string, unknown> & {
+  type?: string;
+};

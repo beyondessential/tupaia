@@ -19,3 +19,5 @@ export { SurveyResponseModel } from './SurveyResponse';
 export { DashboardRelationModel } from './DashboardRelation';
 export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 export { ProjectModel } from './Project';
+export { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
+export { EntityModel, EntityRecord, EntityFilter, EntityFilterFields } from './Entity';

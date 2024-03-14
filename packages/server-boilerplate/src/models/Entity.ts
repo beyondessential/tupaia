@@ -4,30 +4,24 @@
  */
 
 import { EntityModel as BaseEntityModel, EntityRecord as BaseEntityRecord } from '@tupaia/database';
-import { Model, DbFilter } from '@tupaia/server-boilerplate';
+import { Entity } from '@tupaia/types';
+import { Model, DbFilter } from './types';
 
-export type EntityFields = Readonly<{
-  id: string;
-  code: string;
-  name: string;
-  country_code: string | null;
-  type: string | null;
-  image_url: string | null;
-  region: string | null;
-  point: string | null;
-  bounds: string | null;
-  attributes: {
-    type?: string;
-  };
-}>;
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
 
-export type EntityQueryFields = EntityFields & {
+// We also want to make all fields as non-optional
+export type EntityFields = Required<Entity>;
+
+export type EntityFilterFields = EntityFields & {
   generational_distance: number;
 };
 
-export type EntityFilter = DbFilter<EntityQueryFields>;
+export type EntityFilter = DbFilter<EntityFilterFields>;
 
-export interface EntityRecord extends EntityFields, Omit<BaseEntityRecord, 'id'> {
+// allow the possibility of passing in own fields
+export interface EntityRecord extends EntityFields, Omit<BaseEntityRecord, 'metadata' | 'id'> {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
   getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
@@ -36,7 +30,15 @@ export interface EntityRecord extends EntityFields, Omit<BaseEntityRecord, 'id'>
   getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
 }
 
-export interface EntityModel extends Model<BaseEntityModel, EntityFields, EntityRecord> {
+export interface EntityModel
+  extends Model<
+    Omit<
+      BaseEntityModel,
+      'getDescendantsOfEntities' | 'getRelativesOfEntities' | 'getAncestorsOfEntities'
+    >,
+    EntityFields,
+    EntityRecord
+  > {
   getDescendantsOfEntities: (
     hierarchyId: string,
     entityIds: string[],

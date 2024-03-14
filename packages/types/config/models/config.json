@@ -20,11 +20,11 @@
     "public.report.config": "ReportConfig",
     "public.dashboard_item.config": "DashboardItemConfig",
     "public.map_overlay.config": "MapOverlayConfig",
-    "public.entity.metadata": "LooseObject",
-    "public.entity.attributes": "LooseObject"
+    "public.entity.attributes": "EntityAttributes"
   },
   "typeMap": {
-    "string": ["geography"]
+    "string": ["geography"],
+    "{}": ["jsonb"]
   },
   "template": "config/models/template.handlebars",
   "custom": {
@@ -32,7 +32,7 @@
       "ReportConfig": "./models-extra",
       "DashboardItemConfig": "./models-extra",
       "MapOverlayConfig": "./models-extra",
-      "LooseObject": "./models-extra"
+      "EntityAttributes": "./models-extra"
     }
   }
 }

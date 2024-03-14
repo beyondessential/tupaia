@@ -8,9 +8,7 @@ import {
   ApiRequestLogModel,
   APIClientModel,
   UserEntityPermissionModel,
-  EntityModel,
   PermissionGroupModel,
-  EntityRecord,
   UserEntityPermissionRecord,
   PermissionGroupRecord,
   CountryModel,
@@ -40,10 +38,11 @@ import {
   ExternalDatabaseConnectionModel,
   ExternalDatabaseConnectionRecord,
   ProjectModel,
+  EntityHierarchyModel,
+  EntityHierarchyRecord,
 } from '@tupaia/database';
 import {
   UserEntityPermission,
-  Entity,
   PermissionGroup,
   Country,
   Survey,
@@ -54,6 +53,7 @@ import {
   DashboardMailingListEntry,
   DataTable,
   ExternalDatabaseConnection,
+  EntityHierarchy,
 } from '@tupaia/types';
 import {
   FeedItemModel,
@@ -62,6 +62,8 @@ import {
   SurveyResponseModel,
   DashboardRelationModel,
   MapOverlayGroupRelationModel,
+  AncestorDescendantRelationModel,
+  EntityModel,
 } from './models';
 
 export type AccessPolicyObject = Record<string, string[]>;
@@ -84,7 +86,7 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     UserEntityPermission,
     UserEntityPermissionRecord & UserEntityPermission
   >;
-  readonly entity: Model<EntityModel, Entity, EntityRecord & Entity>;
+  readonly entity: EntityModel;
   readonly permissionGroup: Model<
     PermissionGroupModel,
     PermissionGroup,
@@ -132,4 +134,10 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
     ExternalDatabaseConnection & ExternalDatabaseConnectionRecord
   >;
   readonly project: ProjectModel;
+  readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
+  readonly entityHierarchy: Model<
+    EntityHierarchyModel,
+    EntityHierarchy,
+    EntityHierarchyRecord & EntityHierarchy
+  >;
 }

@@ -3,27 +3,30 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
-import { NumericKeys, ObjectLikeKeys, Flatten } from '@tupaia/types';
+import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
+import { NumericKeys, ObjectLikeKeys, Flatten, Entity } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
 import { Writable } from '../../../types';
-import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
 const NESTED_FIELD_DELIMITER = '_';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
+type RequiredEntityFields = Required<Entity>;
+type ObjectKeys = ObjectLikeKeys<RequiredEntityFields>;
+
 type NestedFilterQueryFields = Flatten<
-  Pick<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>>,
+  Pick<RequiredEntityFields, ObjectKeys>,
   typeof NESTED_FIELD_DELIMITER
 >;
 
-type NumericFilterQueryFields = Pick<EntityQueryFields, NumericKeys<EntityQueryFields>>;
+type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<EntityFilterFields>>;
 
 type EntityFilterQuery = Partial<
-  Omit<EntityQueryFields, ObjectLikeKeys<EntityQueryFields>> & NestedFilterQueryFields
+  Omit<EntityFilterFields, ObjectLikeKeys<Required<EntityFilterFields>>> & NestedFilterQueryFields
 >;
+
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {
   [field in keyof T]: NotNull<T[field]>;
@@ -52,11 +55,10 @@ const numericFields: (keyof NumericFilterQueryFields)[] = ['generational_distanc
 const isNumericField = (field: keyof EntityFilterQuery): field is keyof NumericFilterQueryFields =>
   (numericFields as (keyof EntityFilterQuery)[]).includes(field);
 
-type JsonBKey<
-  T extends keyof NestedFilterQueryFields
-> = T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
-  ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
-  : T;
+type JsonBKey<T extends keyof NestedFilterQueryFields> =
+  T extends `${infer Field}${typeof NESTED_FIELD_DELIMITER}${infer Key}`
+    ? `${Field}${typeof JSONB_FIELD_DELIMITER}${Key}`
+    : T;
 
 const toJsonBKey = <T extends keyof NestedFilterQueryFields>(nestedField: T): JsonBKey<T> => {
   const [field, value] = nestedField.split(NESTED_FIELD_DELIMITER);

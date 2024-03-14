@@ -4,12 +4,11 @@
  */
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
-import { ajvValidate } from '@tupaia/tsutils';
-import { EntityRecord, EntityFilter } from '../../../models';
-import { extractFilterFromQuery } from './filter';
+import { ajvValidate, isNotNullish } from '@tupaia/tsutils';
+import { EntityType } from '@tupaia/types';
+import { EntityRecord, EntityFilter } from '@tupaia/server-boilerplate';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
-
-const notNull = <T>(value: T): value is Exclude<T, null> => value !== null;
+import { extractFilterFromQuery } from './filter';
 
 const throwNoAccessError = (entityCodes: string[]) => {
   throw new PermissionsError(`No access to requested entities: ${entityCodes}`);
@@ -21,7 +20,7 @@ const userCanAccessEntity = (
   rootEntity: EntityRecord,
 ) =>
   (entity.isProject() && entity.code === rootEntity.code) ||
-  (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
+  (isNotNullish(entity.country_code) && allowedCountries.includes(entity.country_code));
 
 const validateEntitiesAndBuildContext = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string }>,
@@ -31,7 +30,7 @@ const validateEntitiesAndBuildContext = async (
   const { hierarchyName } = req.params;
   // Root type shouldn't be locked into being a project entity, see: https://github.com/beyondessential/tupaia-backlog/issues/2570
   const rootEntity = await req.models.entity.findOne({
-    type: 'project',
+    type: EntityType.project,
     code: hierarchyName,
   });
   if (!rootEntity) {
@@ -80,7 +79,7 @@ const getFilterInfo = async (
 
   let allowedCountries = (await rootEntity.getChildren(req.ctx.hierarchyId))
     .map(child => child.country_code)
-    .filter(notNull)
+    .filter(isNotNullish)
     .filter((countryCode, index, countryCodes) => countryCodes.indexOf(countryCode) === index); // De-duplicate countryCodes
 
   if (!isPublic) {
@@ -162,7 +161,7 @@ export const attachEntityFilterContext = async (
   next: NextFunction,
 ) => {
   const rootEntity = await req.models.entity.findOne({
-    type: 'project',
+    type: EntityType.project,
     code: req.params.hierarchyName,
   });
 

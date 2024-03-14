@@ -157,6 +157,16 @@ export const LooseObjectSchema = {
 	"additionalProperties": false
 } 
 
+export const EntityAttributesSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string"
+		}
+	}
+} 
+
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
@@ -33234,7 +33244,10 @@ export const AccessRequestUpdateSchema = {
 export const AdminPanelSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -33265,7 +33278,10 @@ export const AdminPanelSessionSchema = {
 export const AdminPanelSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -33292,7 +33308,10 @@ export const AdminPanelSessionCreateSchema = {
 export const AdminPanelSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -33669,11 +33688,17 @@ export const ApiRequestLogSchema = {
 		"id": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -33706,11 +33731,17 @@ export const ApiRequestLogCreateSchema = {
 		"endpoint": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -33745,11 +33776,17 @@ export const ApiRequestLogUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -56889,7 +56926,10 @@ export const DashboardMailingListEntryUpdateSchema = {
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
@@ -56931,7 +56971,10 @@ export const DashboardRelationSchema = {
 export const DashboardRelationCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
@@ -56968,7 +57011,10 @@ export const DashboardRelationCreateSchema = {
 export const DashboardRelationUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
@@ -57004,7 +57050,10 @@ export const DataElementSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -57043,7 +57092,10 @@ export const DataElementCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -57076,7 +57128,10 @@ export const DataElementUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -57168,7 +57223,10 @@ export const DataElementDataServiceSchema = {
 		"id": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -57201,7 +57259,10 @@ export const DataElementDataServiceCreateSchema = {
 		"data_element_code": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -57235,7 +57296,10 @@ export const DataElementDataServiceUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -57258,7 +57322,10 @@ export const DataGroupSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -57290,7 +57357,10 @@ export const DataGroupCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -57317,7 +57387,10 @@ export const DataGroupUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -57340,7 +57413,10 @@ export const DataGroupUpdateSchema = {
 export const DataServiceEntitySchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		},
@@ -57359,7 +57435,10 @@ export const DataServiceEntitySchema = {
 export const DataServiceEntityCreateSchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		}
@@ -57374,7 +57453,10 @@ export const DataServiceEntityCreateSchema = {
 export const DataServiceEntityUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		},
@@ -57391,7 +57473,10 @@ export const DataServiceSyncGroupSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -57438,7 +57523,10 @@ export const DataServiceSyncGroupCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -57481,7 +57569,10 @@ export const DataServiceSyncGroupUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -57521,7 +57612,10 @@ export const DataTableSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -57565,7 +57659,10 @@ export const DataTableCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -57604,7 +57701,10 @@ export const DataTableUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -57638,7 +57738,10 @@ export const DataTableUpdateSchema = {
 export const DatatrakSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -57669,7 +57772,10 @@ export const DatatrakSessionSchema = {
 export const DatatrakSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -57696,7 +57802,10 @@ export const DatatrakSessionCreateSchema = {
 export const DatatrakSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -57722,7 +57831,10 @@ export const DhisInstanceSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -57745,7 +57857,10 @@ export const DhisInstanceCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"readonly": {
 			"type": "boolean"
 		}
@@ -57764,7 +57879,10 @@ export const DhisInstanceUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -58204,8 +58322,13 @@ export const EntitySchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -58224,7 +58347,7 @@ export const EntitySchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"additionalProperties": false
+			"properties": {}
 		},
 		"name": {
 			"type": "string"
@@ -58283,6 +58406,7 @@ export const EntitySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes",
 		"code",
 		"id",
 		"name",
@@ -58294,8 +58418,13 @@ export const EntityCreateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -58311,7 +58440,7 @@ export const EntityCreateSchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"additionalProperties": false
+			"properties": {}
 		},
 		"name": {
 			"type": "string"
@@ -58380,8 +58509,13 @@ export const EntityUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
 		},
 		"bounds": {
 			"type": "string"
@@ -58400,7 +58534,7 @@ export const EntityUpdateSchema = {
 		},
 		"metadata": {
 			"type": "object",
-			"additionalProperties": false
+			"properties": {}
 		},
 		"name": {
 			"type": "string"
@@ -58972,7 +59106,10 @@ export const IndicatorSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -58995,7 +59132,10 @@ export const IndicatorCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {}
+		"config": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -59013,7 +59153,10 @@ export const IndicatorUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -59201,8 +59344,14 @@ export const LegacyReportSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {},
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -59223,8 +59372,14 @@ export const LegacyReportCreateSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {}
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -59241,8 +59396,14 @@ export const LegacyReportUpdateSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {},
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -59253,7 +59414,10 @@ export const LegacyReportUpdateSchema = {
 export const LesmisSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -59284,7 +59448,10 @@ export const LesmisSessionSchema = {
 export const LesmisSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -59311,7 +59478,10 @@ export const LesmisSessionCreateSchema = {
 export const LesmisSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -62010,8 +62180,10 @@ export const MapOverlaySchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -62044,7 +62216,6 @@ export const MapOverlaySchema = {
 	"required": [
 		"code",
 		"config",
-		"entity_attributes_filter",
 		"id",
 		"legacy",
 		"name",
@@ -64731,8 +64902,10 @@ export const MapOverlayCreateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -67445,8 +67618,10 @@ export const MapOverlayUpdateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -67612,7 +67787,10 @@ export const MeditrakDeviceSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -67640,7 +67818,10 @@ export const MeditrakDeviceCreateSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"install_id": {
 			"type": "string"
 		},
@@ -67664,7 +67845,10 @@ export const MeditrakDeviceUpdateSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -68045,7 +68229,10 @@ export const OneTimeLoginUpdateSchema = {
 export const OptionSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -68073,7 +68260,10 @@ export const OptionSchema = {
 export const OptionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"label": {
 			"type": "string"
 		},
@@ -68097,7 +68287,10 @@ export const OptionCreateSchema = {
 export const OptionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -68443,7 +68636,10 @@ export const ProjectSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -68491,7 +68687,10 @@ export const ProjectCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -68535,7 +68734,10 @@ export const ProjectUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -68576,7 +68778,10 @@ export const ProjectUpdateSchema = {
 export const PsssSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -68607,7 +68812,10 @@ export const PsssSessionSchema = {
 export const PsssSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -68634,7 +68842,10 @@ export const PsssSessionCreateSchema = {
 export const PsssSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -69167,7 +69378,10 @@ export const SupersetInstanceSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -69186,7 +69400,10 @@ export const SupersetInstanceCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {}
+		"config": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -69201,7 +69418,10 @@ export const SupersetInstanceUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -69230,7 +69450,10 @@ export const SurveySchema = {
 		"id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -69284,7 +69507,10 @@ export const SurveyCreateSchema = {
 		"data_group_id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -69340,7 +69566,10 @@ export const SurveyUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -69935,7 +70164,10 @@ export const SyncGroupLogUpdateSchema = {
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -69966,7 +70198,10 @@ export const TupaiaWebSessionSchema = {
 export const TupaiaWebSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -69993,7 +70228,10 @@ export const TupaiaWebSessionCreateSchema = {
 export const TupaiaWebSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -70050,7 +70288,10 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {}
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -70115,7 +70356,10 @@ export const UserAccountCreateSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {}
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -70181,7 +70425,10 @@ export const UserAccountUpdateSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {}
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -70330,7 +70577,10 @@ export const UserSessionSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -70359,7 +70609,10 @@ export const UserSessionCreateSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -70383,7 +70636,10 @@ export const UserSessionUpdateSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -70686,8 +70942,13 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"type": "object",
 				"properties": {
 					"attributes": {
+						"additionalProperties": false,
 						"type": "object",
-						"additionalProperties": false
+						"properties": {
+							"type": {
+								"type": "string"
+							}
+						}
 					},
 					"bounds": {
 						"type": "string"
@@ -70706,7 +70967,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					},
 					"metadata": {
 						"type": "object",
-						"additionalProperties": false
+						"properties": {}
 					},
 					"name": {
 						"type": "string"
@@ -70765,6 +71026,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
+					"attributes",
 					"code",
 					"id",
 					"name",
@@ -70780,7 +71042,10 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"label": {
 						"type": "string"
 					},
-					"attributes": {},
+					"attributes": {
+						"type": "object",
+						"properties": {}
+					},
 					"option_set_id": {
 						"type": "string"
 					},
@@ -70873,7 +71138,10 @@ export const DataTablePreviewRequestSchema = {
 			],
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -70911,19 +71179,8 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
+			"type": "object",
+			"additionalProperties": false
 		},
 		"dashboardGroupName": {
 			"type": "string"
@@ -70989,19 +71246,8 @@ export const ResBodySchema = {
 			"type": "string"
 		},
 		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
+			"type": "object",
+			"additionalProperties": false
 		},
 		"dashboardGroupName": {
 			"type": "string"

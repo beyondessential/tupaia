@@ -4,13 +4,10 @@
  */
 
 import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
-import { AncestorDescendantRelationModel, EntityModel, EntityHierarchyModel } from './models';
 
-export interface EntityServerModelRegistry extends Pick<ServerBoilerplateModelRegistry, 'project'> {
-  readonly ancestorDescendantRelation: AncestorDescendantRelationModel;
-  readonly entity: EntityModel;
-  readonly entityHierarchy: EntityHierarchyModel;
-}
+type Models = 'project' | 'ancestorDescendantRelation' | 'entityHierarchy' | 'entity';
+
+export interface EntityServerModelRegistry extends Pick<ServerBoilerplateModelRegistry, Models> {}
 
 export type Writable<T> = { -readonly [field in keyof T]?: T[field] };
 
