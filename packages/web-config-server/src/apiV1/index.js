@@ -29,7 +29,6 @@ import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import DashboardsHandler from './dashboards';
 import { ReportHandler } from './report';
-import { disasters } from './disasters';
 
 import { getProjects } from './projects';
 import { getLandingPage } from './landingPages';
@@ -40,29 +39,28 @@ const handleWith = Handler =>
 export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
-  api.get('/getUser', catchAsyncErrors(getUser()));
+  api.get('/getUser', catchAsyncErrors(getUser())); // CULL
   api.post('/login', catchAsyncErrors(login));
-  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin));
+  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin)); // KEEP
   api.get('/logout', catchAsyncErrors(logout));
-  api.post('/signup', catchAsyncErrors(appSignup()));
-  api.post('/changePassword', catchAsyncErrors(appChangePassword()));
-  api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword()));
-  api.get('/downloadFiles', catchAsyncErrors(appDownloadFiles()));
-  api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList()));
+  api.post('/signup', catchAsyncErrors(appSignup())); // KEEP
+  api.post('/changePassword', catchAsyncErrors(appChangePassword())); // CULL
+  api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword())); // CULL
+  api.get('/downloadFiles', catchAsyncErrors(appDownloadFiles())); // CULL
+  api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList())); // CULL
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
-  api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
-  api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
-  api.get('/export/chart', catchAsyncErrors(exportChartHandler));
+  api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
+  api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP
+  api.get('/export/chart', catchAsyncErrors(exportChartHandler)); // CULL
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
-  api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
-  api.get('/organisationUnit', handleWith(OrganisationUnitHandler));
-  api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
-  api.get('/measures', handleWith(MeasuresHandler));
-  api.get('/measureData', handleWith(MeasuresDataHandler));
-  api.get('/disasters', catchAsyncErrors(disasters));
-  api.get('/projects', catchAsyncErrors(getProjects));
-  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
-  api.get('/report/:reportCode', handleWith(ReportHandler));
+  api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler)); // CULL
+  api.get('/organisationUnit', handleWith(OrganisationUnitHandler)); // CULL
+  api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler)); // CULL
+  api.get('/measures', handleWith(MeasuresHandler)); // KEEP
+  api.get('/measureData', handleWith(MeasuresDataHandler)); // KEEP
+  api.get('/projects', catchAsyncErrors(getProjects)); // KEEP
+  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards // KEEP
+  api.get('/report/:reportCode', handleWith(ReportHandler)); // KEEP
   api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
   api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 
