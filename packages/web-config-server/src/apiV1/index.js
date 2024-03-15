@@ -24,7 +24,6 @@ import {
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
-import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import DashboardsHandler from './dashboards';
 import { ReportHandler } from './report';
@@ -49,11 +48,10 @@ export const getRoutesForApiV1 = () => {
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
   api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP
-  api.get('/export/chart', catchAsyncErrors(exportChartHandler)); // CULL
+  api.get('/export/chart', catchAsyncErrors(exportChartHandler)); // KEEP
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler)); // CULL
   api.get('/organisationUnit', handleWith(OrganisationUnitHandler)); // CULL
-  api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler)); // CULL
   api.get('/measures', handleWith(MeasuresHandler)); // KEEP
   api.get('/measureData', handleWith(MeasuresDataHandler)); // KEEP
   api.get('/projects', catchAsyncErrors(getProjects)); // KEEP
