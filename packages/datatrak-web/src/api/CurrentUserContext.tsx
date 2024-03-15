@@ -15,7 +15,7 @@ const CurrentUserContext = createContext<CurrentUserContextType | null>(null);
 export const useCurrentUserContext = (): CurrentUserContextType => {
   const currentUser = useContext(CurrentUserContext);
   if (!currentUser) {
-    throw new Error('useCurrentUser must be used within a CurrentUserContextProvider');
+    throw new Error('useCurrentUserContext must be used within a CurrentUserContextProvider');
   }
   return currentUser;
 };
