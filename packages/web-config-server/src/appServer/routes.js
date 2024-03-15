@@ -1,10 +1,9 @@
 import { createUser } from './handlers/createUser';
-import { verifyEmail, requestResendEmail } from './handlers/verifyEmail';
+import { requestResendEmail, verifyEmail } from './handlers/verifyEmail';
 import { changePassword } from './handlers/changePassword';
 import { requestResetPassword } from './handlers/requestResetPassword';
 import { getCountryAccessList } from './handlers/getCountryAccessList';
 import { requestCountryAccess } from './handlers/requestCountryAccess';
-import { downloadFiles } from './handlers/downloadFiles';
 
 /**
  * /signup
