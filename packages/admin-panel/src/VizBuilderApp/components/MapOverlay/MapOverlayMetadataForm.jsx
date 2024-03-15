@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import Chip from '@material-ui/core/Chip';
-import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
+import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';

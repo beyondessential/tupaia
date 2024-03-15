@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import React, { useReducer, createContext, useContext } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 /**
  * This store is designed to hold the state for the vizBuilderConfig
@@ -221,7 +221,7 @@ const VizConfigProvider = ({ children }) => {
   );
 };
 
-const useVisualisation = () => {
+const useVisualisationContext = () => {
   return useContext(VisualisationContext);
 };
 
@@ -231,4 +231,4 @@ const useVizConfig = () => {
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVisualisation, useVizConfig, VizConfigProvider };
+export { useVisualisationContext, useVizConfig, VizConfigProvider };

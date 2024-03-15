@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { FlexStart, FlexEnd, FlexSpaceBetween } from '@tupaia/ui-components';
+import { FlexEnd, FlexSpaceBetween, FlexStart } from '@tupaia/ui-components';
 import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { DocumentIcon } from './DocumentIcon';

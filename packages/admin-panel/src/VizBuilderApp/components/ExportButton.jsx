@@ -13,11 +13,11 @@ import {
   useExportDashboardVisualisation,
   useExportMapOverlayVisualisation,
 } from '../api/mutations';
-import { useVisualisation, useVizConfigError } from '../context';
+import { useVisualisationContext, useVizConfigError } from '../context';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
 export const ExportButton = () => {
-  const { visualisation } = useVisualisation();
+  const { visualisation } = useVisualisationContext();
 
   const { dashboardItemOrMapOverlay } = useParams();
 
