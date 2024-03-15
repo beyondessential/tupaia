@@ -13,7 +13,7 @@ import { ExportButton } from './ExportButton';
 import { SaveButton } from './SaveButton';
 import { DocumentIcon } from './DocumentIcon';
 import { EditModal } from './Modal';
-import { useVizConfig } from '../context';
+import { useVizConfigContext } from '../context';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
 const Wrapper = styled.div`
@@ -54,7 +54,7 @@ const ButtonContainer = styled(FlexSpaceBetween)`
 `;
 
 export const Toolbar = () => {
-  const [{ project, visualisation }] = useVizConfig();
+  const [{ project, visualisation }] = useVizConfigContext();
   const { dashboardItemOrMapOverlay } = useParams();
 
   const permissionGroup = visualisation.permissionGroup ?? visualisation.mapOverlayPermissionGroup;

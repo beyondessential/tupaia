@@ -15,7 +15,7 @@ import { useReportPreview } from '../api';
 import {
   usePreviewData,
   useVisualisationContext,
-  useVizConfig,
+  useVizConfigContext,
   useVizConfigError,
 } from '../context';
 import { IdleMessage } from './IdleMessage';
@@ -115,7 +115,7 @@ export const PreviewSection = () => {
   const [
     { vizType, project, location, startDate, endDate, testData, visualisation },
     { setPresentation },
-  ] = useVizConfig();
+  ] = useVizConfigContext();
   const { visualisationForFetchingData } = useVisualisationContext();
 
   const presentationSchema =

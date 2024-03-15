@@ -12,7 +12,7 @@ import { JsonToggleButton } from './JsonToggleButton';
 import {
   usePreviewData,
   useVisualisationContext,
-  useVizConfig,
+  useVizConfigContext,
   useVizConfigError,
 } from '../context';
 import { TransformDataLibrary } from './DataLibrary';
@@ -54,7 +54,7 @@ export const Panel = () => {
       visualisation: { data: dataWithConfig },
     },
     { setDataConfig },
-  ] = useVizConfig();
+  ] = useVizConfigContext();
 
   const {
     visualisation: { data: vizData },

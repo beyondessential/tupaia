@@ -17,7 +17,7 @@ import {
   ImportModal,
 } from '@tupaia/ui-components';
 import { useLocations, useProjects } from '../api/queries';
-import { usePreviewData, useVizConfig } from '../context';
+import { usePreviewData, useVizConfigContext } from '../context';
 import { LinkButton } from './LinkButton';
 import { useUploadTestData } from '../api';
 
@@ -152,7 +152,7 @@ export const PreviewOptions = () => {
   const [
     { project, location },
     { setProject, setLocation, setStartDate, setEndDate, setTestData },
-  ] = useVizConfig();
+  ] = useVizConfigContext();
   const { mutateAsync: uploadTestData } = useUploadTestData();
 
   const handleSelectProject = (event, value) => {

@@ -21,7 +21,7 @@ import {
 } from '@tupaia/ui-components';
 
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM, MODAL_STATUS } from '../../constants';
-import { useVisualisationContext, useVizConfig } from '../../context';
+import { useVisualisationContext, useVizConfigContext } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizBuilderBasePath } from '../../utils';
 
@@ -39,7 +39,7 @@ const SuccessText = styled(Typography)`
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
   // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisationValue }] = useVizConfig();
+  const [_, { setVisualisationValue }] = useVizConfigContext();
   const { visualisation } = useVisualisationContext();
 
   const basePath = useVizBuilderBasePath();
