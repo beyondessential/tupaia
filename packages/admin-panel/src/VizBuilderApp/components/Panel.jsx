@@ -10,7 +10,7 @@ import { TabPanel } from './TabPanel';
 import { PlayButton } from './PlayButton';
 import { JsonToggleButton } from './JsonToggleButton';
 import {
-  usePreviewData,
+  usePreviewDataContext,
   useVisualisationContext,
   useVizConfigContext,
   useVizConfigError,
@@ -48,7 +48,7 @@ const PanelTabPanel = styled.div`
 
 export const Panel = () => {
   const { setDataError } = useVizConfigError();
-  const { jsonToggleEnabled } = usePreviewData();
+  const { jsonToggleEnabled } = usePreviewDataContext();
   const [
     {
       visualisation: { data: dataWithConfig },

@@ -13,7 +13,7 @@ import { JsonEditor, JsonTreeEditor } from '../../widgets';
 import { TabPanel } from './TabPanel';
 import { useReportPreview } from '../api';
 import {
-  usePreviewData,
+  usePreviewDataContext,
   useVisualisationContext,
   useVizConfigContext,
   useVizConfigError,
@@ -109,7 +109,7 @@ export const PreviewSection = () => {
   const [tab, setTab] = useState(0);
 
   const { dashboardItemOrMapOverlay } = useParams();
-  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewData();
+  const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewDataContext();
   const { hasPresentationError, setPresentationError } = useVizConfigError();
 
   const [
