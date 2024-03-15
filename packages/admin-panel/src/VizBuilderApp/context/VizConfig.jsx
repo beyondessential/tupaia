@@ -221,13 +221,9 @@ const VizConfigProvider = ({ children }) => {
   );
 };
 
-const useVisualisationContext = () => {
-  return useContext(VisualisationContext);
-};
+const useVisualisationContext = () => useContext(VisualisationContext);
 
-const useVizConfigContext = () => {
-  return useContext(VizBuilderConfigContext);
-};
+const useVizConfigContext = () => useContext(VizBuilderConfigContext);
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
 // https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
