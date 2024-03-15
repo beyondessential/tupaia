@@ -25,7 +25,7 @@ sudo apt-get --no-install-recommends -yqq install \
   libssl-dev  \
   libxml2 \
   libxml2-dev  \
-  libssl1.1 \
+  libssl3 \
   pkg-config \
   ca-certificates \
   xclip
