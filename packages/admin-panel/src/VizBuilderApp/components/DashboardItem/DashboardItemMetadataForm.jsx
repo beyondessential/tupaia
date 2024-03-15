@@ -9,25 +9,39 @@ import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
+import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
 
-export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+  const vizTypeOptions = Object.entries(DASHBOARD_ITEM_VIZ_TYPES).map(([vizType, { name }]) => ({
+    value: vizType,
+    label: name,
+  }));
   const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
+  const [
+    { visualisation, vizType },
+    { setVisualisationValue, setVizType, setPresentation, setPresentationValue },
+  ] = useVizConfig();
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
-  const { name, code, permissionGroup } = defaults;
-  const [searchInput, setSearchInput] = useState(permissionGroup || '');
-  const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { code, permissionGroup, presentation } = defaults;
+  const [permissionGroupSearchInput, setPermissionGroupSearchInput] = useState(
+    permissionGroup || '',
+  );
+  const debouncedPermissionGroupSearchInput = useDebounce(permissionGroupSearchInput, 200);
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedPermissionGroupSearchInput });
 
   const doSubmit = data => {
     setVisualisationValue('code', data.code);
-    setVisualisationValue('name', data.name);
     setVisualisationValue('permissionGroup', data.permissionGroup);
+    const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;
+    setVizType(selectedVizType);
+    if (Object.keys(presentation).length === 0) {
+      // If no presentation config exists, set the initial config by vizType
+      setPresentation(DASHBOARD_ITEM_VIZ_TYPES[selectedVizType].initialConfig);
+    }
+    setPresentationValue('name', data.name);
     onSubmit();
   };
 
@@ -48,7 +62,7 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
         <TextField
           name="name"
           label="Name"
-          defaultValue={name}
+          defaultValue={presentation.name}
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
@@ -68,10 +82,25 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           inputRef={register({
             required: 'Required',
           })}
-          value={searchInput}
+          value={permissionGroupSearchInput}
           onInputChange={(event, newValue) => {
-            setSearchInput(newValue);
+            setPermissionGroupSearchInput(newValue);
           }}
+        />
+        <Autocomplete
+          id="vizType"
+          name="vizType"
+          label="Visualisation Type"
+          placeholder="Select Visualisation Type"
+          defaultValue={vizTypeOptions.find(({ value }) => value === vizType)}
+          options={vizTypeOptions}
+          getOptionLabel={option => option.label}
+          getOptionSelected={option => option.value}
+          error={!!errors.vizType}
+          helperText={errors.vizType && errors.vizType.message}
+          inputRef={register({
+            required: 'Required',
+          })}
         />
       </Body>
       <Footer />
@@ -79,7 +108,7 @@ export const DashboardMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   );
 };
 
-DashboardMetadataForm.propTypes = {
+DashboardItemMetadataForm.propTypes = {
   Header: PropTypes.node.isRequired,
   Body: PropTypes.node.isRequired,
   Footer: PropTypes.node.isRequired,

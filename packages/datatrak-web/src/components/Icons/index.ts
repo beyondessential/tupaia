@@ -10,4 +10,5 @@ export { SurveyTickIcon } from './SurveyTickIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { RadioIcon } from './RadioIcon';
 export { PinIcon } from './PinIcon';
+export { ReportsIcon } from './ReportsIcon';
 export { CopyIcon } from './CopyIcon';

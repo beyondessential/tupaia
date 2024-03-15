@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { TextField } from '@material-ui/core';
 import { DatePicker as BaseDatePicker } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
 
 const DatePicker = styled(BaseDatePicker).attrs({
   InputAdornmentProps: {
@@ -59,7 +59,7 @@ export const DateQuestion = ({
       error={invalid}
       required={required}
       helperText={detailLabel}
-      FormHelperTextProps={{ component: QuestionHelperText }}
+      FormHelperTextProps={{ component: InputHelperText }}
     />
   );
 };

@@ -17,9 +17,24 @@ export enum VizPeriodGranularity {
 }
 
 export type DateOffsetSpec = {
+  /**
+   * @description Time unit to offset by
+   */
   unit: PeriodUnit;
+
+  /**
+   * @description Offset distance (can be negative to offset to an earlier date)
+   */
   offset: number;
+
+  /**
+   * @description Used to modify the offset by either moving the date to the start/end of the modifier unit
+   */
   modifier?: OffsetModifier;
+
+  /**
+   * @description Time unit to modify the offset by
+   */
   modifierUnit?: PeriodUnit;
 };
 
@@ -29,6 +44,20 @@ enum OffsetModifier {
 }
 
 export type PeriodUnit = 'day' | 'week' | 'month' | 'quarter' | 'year';
+
+export type DefaultTimePeriod =
+  | DateOffsetSpec
+  | {
+      /**
+       * @description Either an ISO Date string, or an offset object
+       */
+      start?: string | DateOffsetSpec;
+
+      /**
+       * @description Either an ISO Date string, or an offset object
+       */
+      end?: string | DateOffsetSpec;
+    };
 
 /**
  * One of the two shapes which {@link ReferenceProps} can take.
