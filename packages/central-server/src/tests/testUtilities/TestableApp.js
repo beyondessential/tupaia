@@ -8,7 +8,7 @@ import autobind from 'react-autobind';
 import sinon from 'sinon';
 
 import { Authenticator } from '@tupaia/auth';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
@@ -32,7 +32,7 @@ export class TestableApp {
     this.models = getModels();
 
     this.database = this.models.database;
-    this.database.generateId = generateTestId;
+    this.database.generateId = generateId;
 
     this.app = createApp(this.database, this.models);
     this.user = {};

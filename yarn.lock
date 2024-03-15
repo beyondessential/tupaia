@@ -11952,11 +11952,12 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    ace-builds: ^1.15.3
+    ace-builds: ^1.10.1
     axios: ^0.21.1
     case: ^1.5.3
     content-disposition-header: ^0.6.0
@@ -11964,7 +11965,7 @@ __metadata:
     downloadjs: ^1.4.7
     file-saver: ^1.3.3
     js-sql-parser: ^1.4.1
-    jsoneditor: ^9.9.0
+    jsoneditor: ^10.0.1
     localforage: ^1.5.0
     lodash.debounce: ^4.0.8
     lodash.groupby: ^4.6.0
@@ -11977,7 +11978,6 @@ __metadata:
     qrcode: ^1.5.3
     query-string: ^5.1.1
     react: ^16.13.1
-    react-ace: ^10.1.0
     react-autobind: ^1.0.6
     react-beautiful-dnd: ^13.1.0
     react-beforeunload: ^2.5.1
@@ -12262,7 +12262,7 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@tupaia/expression-parser": "workspace:*"
-    "@tupaia/types": 1.0.0
+    "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12632,6 +12632,7 @@ __metadata:
     "@types/lodash.isplainobject": ^4.0.6
     "@types/lodash.keyby": ^4.6.6
     "@types/lodash.pick": ^4.4.0
+    alasql: ^4.2.3
     api-error-handler: ^1.0.0
     body-parser: ^1.18.3
     cors: ^2.8.5
@@ -12799,7 +12800,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/types@1.0.0, @tupaia/types@workspace:*, @tupaia/types@workspace:packages/types":
+"@tupaia/types@workspace:*, @tupaia/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@tupaia/types@workspace:packages/types"
   dependencies:
@@ -12859,11 +12860,13 @@ __metadata:
     "@types/react-router-dom": ^5.3.3
     "@types/react-table": ^7.7.14
     "@types/styled-components": ^5.0.0
+    ace-builds: ^1.10.1
     babel-loader: 8.1.0
     date-fns: ^2.12.0
     downloadjs: ^1.4.7
     faker: ^4.1.0
     fast-glob: ^3.2.5
+    js-sql-parser: ^1.4.1
     jszip: ^3.10.1
     lodash.throttle: ^4.1.1
     markdown-to-jsx: ^6.4.1
@@ -12871,6 +12874,7 @@ __metadata:
     prop-types: ^15.7.2
     qrcode: ^1.5.3
     react: ^16.13.1
+    react-ace: ^10.1.0
     react-docgen-typescript-plugin: ^1.0.5
     react-dom: ^16.13.1
     react-hook-form: ^6.15.1
@@ -15077,10 +15081,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.15.3":
-  version: 1.23.4
-  resolution: "ace-builds@npm:1.23.4"
-  checksum: ad7b14083955d896bf22dd68a90c9e6a257be3c43be6d362269b5c51df9f2c0e1d5714e8318d88fdcc9084959f8bbfa20bdb5492d5b0a2c452d27ddc7fe8032c
+"ace-builds@npm:^1.32.6":
+  version: 1.32.7
+  resolution: "ace-builds@npm:1.32.7"
+  checksum: 6a7f73d738bf10e23c33a32ec2164102a507cf539c4a24690d91749dde23d11be34757d4c481ac9f0cf9762dda7ec003908857b4a56f69ad7b9f370dc8344332
   languageName: node
   linkType: hard
 
@@ -15433,6 +15437,18 @@ __metadata:
     require-from-string: ^2.0.2
     uri-js: ^4.2.2
   checksum: 4dc13714e316e67537c8b31bc063f99a1d9d9a497eb4bbd55191ac0dcd5e4985bbb71570352ad6f1e76684fb6d790928f96ba3b2d4fd6e10024be9612fe3f001
+  languageName: node
+  linkType: hard
+
+"alasql@npm:^4.2.3":
+  version: 4.2.6
+  resolution: "alasql@npm:4.2.6"
+  dependencies:
+    cross-fetch: 4
+    yargs: 16
+  bin:
+    alasql: bin/alasql-cli.js
+  checksum: 09e5933af4881e9d1231b8b60c5317d108ec9d341ff0d7dce57b28e7da61f1a6ed2b9944686d219a65aa9ce38d82332d046a51a7b4037aab5fb8bcb32d26f35d
   languageName: node
   linkType: hard
 
@@ -19964,6 +19980,15 @@ __metadata:
   dependencies:
     node-fetch: 2.6.7
   checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:4":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: ^2.6.12
+  checksum: ecca4f37ffa0e8283e7a8a590926b66713a7ef7892757aa36c2d20ffa27b0ac5c60dcf453119c809abe5923fc0bae3702a4d896bfb406ef1077b0d0018213e24
   languageName: node
   linkType: hard
 
@@ -29837,20 +29862,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsoneditor@npm:^9.9.0":
-  version: 9.9.2
-  resolution: "jsoneditor@npm:9.9.2"
+"jsoneditor@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "jsoneditor@npm:10.0.1"
   dependencies:
-    ace-builds: ^1.10.1
+    ace-builds: ^1.32.6
     ajv: ^6.12.6
     javascript-natural-sort: ^0.7.1
     jmespath: ^0.16.0
     json-source-map: ^0.6.1
-    jsonrepair: ^2.2.1
+    jsonrepair: ^3.5.1
     mobius1-selectr: ^2.4.13
     picomodal: ^3.0.0
-    vanilla-picker: ^2.12.1
-  checksum: 8f1d9403cddaf3bef94ec521da32a0892e12ae1630ef12e8bc38c7f6995bfe4563682505a9ce9e8e6c8511774289fc9f70a8ced158594fd330f892e5c8b5fd66
+    vanilla-picker: ^2.12.2
+  checksum: 25f6a50bda08a50287f2ade08c1eb976fd67c665e203f587897ec4df220312a92a6d6abe91653d0777a97fcbf25096140de31a00155171032c801a981b48257a
   languageName: node
   linkType: hard
 
@@ -29898,12 +29923,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonrepair@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "jsonrepair@npm:2.2.1"
+"jsonrepair@npm:^3.5.1":
+  version: 3.6.0
+  resolution: "jsonrepair@npm:3.6.0"
   bin:
     jsonrepair: bin/cli.js
-  checksum: c9ad3c948d78c356602e5f43023167acee8e2a32fde1e22481b0f311e54f9b1d0ab47a73feeb87b65585df4ecf42d34aac1d457ff5aa2010fe032b3634113cf8
+  checksum: afcc14f6135c596656c38b02bd940a81bf5bd943a11ee1ce57ce812fc3eec7b505a291e35b7b3d654ac4ac6f91cce92cc681e475efac0ba81670896bcc60714b
   languageName: node
   linkType: hard
 
@@ -33353,7 +33378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
+"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.6.9":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -43656,12 +43681,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-picker@npm:^2.12.1":
-  version: 2.12.1
-  resolution: "vanilla-picker@npm:2.12.1"
+"vanilla-picker@npm:^2.12.2":
+  version: 2.12.2
+  resolution: "vanilla-picker@npm:2.12.2"
   dependencies:
     "@sphinxxxx/color-conversion": ^2.2.2
-  checksum: 92cedd11869a7b9b2e1c1476f07c64d942bd3de625063618ff4a3758fc51371c3b9ef7e175f22634b702416df5a5a02e7ab62395ab9b159b36be44c3c43895fc
+  checksum: 3712edfb53e9bc698a339a6f40f38e04f125bf0d0ebddb69155f755480f49425c26690f729baae8800c9f511b0242287eb7ce28f4303427979dd7db37068e1c5
   languageName: node
   linkType: hard
 
@@ -44896,7 +44921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:16.2.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
+"yargs@npm:16, yargs@npm:16.2.0, yargs@npm:^16.1.1, yargs@npm:^16.2.0":
   version: 16.2.0
   resolution: "yargs@npm:16.2.0"
   dependencies:
