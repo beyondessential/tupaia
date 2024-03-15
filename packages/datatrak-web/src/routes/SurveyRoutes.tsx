@@ -15,7 +15,7 @@ import {
   SurveySuccessScreen,
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
-import { useCurrentUser, useSurvey } from '../api';
+import { useCurrentUserContext, useSurvey } from '../api';
 
 // Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = () => {
@@ -36,7 +36,7 @@ const SurveyPageRedirect = ({ children }) => {
 };
 
 const SurveyRoute = ({ children }) => {
-  const { isLoggedIn } = useCurrentUser();
+  const { isLoggedIn } = useCurrentUserContext();
   const { surveyCode } = useParams();
   const { isError, error, isLoading } = useSurvey(surveyCode);
 
