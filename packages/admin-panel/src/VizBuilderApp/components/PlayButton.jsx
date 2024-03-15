@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import MuiIconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayCircleFilled';
 
-import { usePreviewDataContext, useVizConfigError } from '../context';
+import { usePreviewDataContext, useVizConfigErrorContext } from '../context';
 
 const IconButton = styled(MuiIconButton)`
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
@@ -23,7 +23,7 @@ const IconButton = styled(MuiIconButton)`
 
 export const PlayButton = () => {
   const { setFetchEnabled, setShowData } = usePreviewDataContext();
-  const { hasError: vizConfigHasError } = useVizConfigError();
+  const { hasError: vizConfigHasError } = useVizConfigErrorContext();
 
   const handleClick = () => {
     setFetchEnabled(true);

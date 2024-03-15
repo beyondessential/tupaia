@@ -16,7 +16,7 @@ import {
   usePreviewDataContext,
   useVisualisationContext,
   useVizConfigContext,
-  useVizConfigError,
+  useVizConfigErrorContext,
 } from '../context';
 import { IdleMessage } from './IdleMessage';
 import { getColumns, getRows } from '../../utilities';
@@ -110,7 +110,7 @@ export const PreviewSection = () => {
 
   const { dashboardItemOrMapOverlay } = useParams();
   const { fetchEnabled, setFetchEnabled, showData, jsonToggleEnabled } = usePreviewDataContext();
-  const { hasPresentationError, setPresentationError } = useVizConfigError();
+  const { hasPresentationError, setPresentationError } = useVizConfigErrorContext();
 
   const [
     { vizType, project, location, startDate, endDate, testData, visualisation },

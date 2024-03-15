@@ -13,7 +13,7 @@ import {
   usePreviewDataContext,
   useVisualisationContext,
   useVizConfigContext,
-  useVizConfigError,
+  useVizConfigErrorContext,
 } from '../context';
 import { TransformDataLibrary } from './DataLibrary';
 
@@ -47,7 +47,7 @@ const PanelTabPanel = styled.div`
 `;
 
 export const Panel = () => {
-  const { setDataError } = useVizConfigError();
+  const { setDataError } = useVizConfigErrorContext();
   const { jsonToggleEnabled } = usePreviewDataContext();
   const [
     {
