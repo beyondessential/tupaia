@@ -106,7 +106,6 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  // can be replaced with 'generateTestId' by tests
   generateId = generateId;
 
   async closeConnections() {

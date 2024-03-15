@@ -7,7 +7,6 @@ export { buildAndInsertSurvey, buildAndInsertSurveys } from './buildAndInsertSur
 export { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';
 export { buildAndInsertProjectsAndHierarchies } from './buildAndInsertProjectsAndHierarchies';
 export { clearTestData } from './clearTestData';
-export { generateTestId } from './generateTestId';
 export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase, getTestModels } from './getTestDatabase';
 export { setupTest } from './setupTest';
