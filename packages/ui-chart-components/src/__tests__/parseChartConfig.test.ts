@@ -22,7 +22,6 @@ const testReport = {
     { name: '4', timestamp: 1260000, metric1: 6, metric2: 2, value: 40 },
     { name: '5', timestamp: 1270000, metric1: 7, metric2: 1, value: 50 },
   ],
-  type: 'chart',
   startDate: '2020-01-01',
   endDate: '2020-01-05',
 } as ChartReport;

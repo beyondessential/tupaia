@@ -5,13 +5,7 @@
 
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
-import {
-  BaseReport,
-  DashboardItemConfig,
-  DashboardItemReport,
-  isChartReport,
-  isViewReport,
-} from '@tupaia/types';
+import { DashboardItemReport, isChartReport, isViewReport } from '@tupaia/types';
 import { FetchErrorAlert } from '../../components';
 import {
   View,
