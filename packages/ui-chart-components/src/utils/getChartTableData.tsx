@@ -13,10 +13,11 @@ import {
   ChartReport,
   ChartConfig,
   DashboardItemConfig,
+  isChartReport,
 } from '@tupaia/types';
 import { DEFAULT_DATA_KEY } from '../constants';
 import { LooseObject, TableAccessor } from '../types';
-import { formatTimestampForChart, getIsTimeSeries, isChartReport } from './utils';
+import { formatTimestampForChart, getIsTimeSeries } from './utils';
 import { parseChartConfig } from './parseChartConfig';
 
 // For the rowData, ignore labelType and use percentage instead of fractionAndPercentage as

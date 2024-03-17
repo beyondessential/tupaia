@@ -10,7 +10,6 @@ export type ReportRouteQuery = {
   startDate?: string;
   endDate?: string;
   permissionGroup?: string;
-  itemCode?: string;
 };
 
 export type ReportRouteBody = {

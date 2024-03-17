@@ -96,3 +96,4 @@ export {
   MarkdownTemplateVariables,
 } from './feedItem';
 export { VizPeriodGranularity, DashboardItemType } from './common';
+export { isChartReport, isViewReport, isMatrixReport } from './report';

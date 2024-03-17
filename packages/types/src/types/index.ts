@@ -90,6 +90,9 @@ export {
   VizPeriodGranularity,
   ExportPresentationOptions,
   DashboardItemType,
+  isChartReport,
+  isViewReport,
+  isMatrixReport,
 } from './models-extra';
 export * from './requests';
 export * from './css';

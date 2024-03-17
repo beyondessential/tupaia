@@ -5,7 +5,13 @@
 
 import React, { useContext } from 'react';
 import { NoData } from '@tupaia/ui-components';
-import { BaseReport, DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
+import {
+  BaseReport,
+  DashboardItemConfig,
+  DashboardItemReport,
+  isChartReport,
+  isViewReport,
+} from '@tupaia/types';
 import { FetchErrorAlert } from '../../components';
 import {
   View,
@@ -29,11 +35,12 @@ const DisplayComponents = {
   NoDataAtLevelDashboard,
 };
 
-const getHasNoData = (report?: DashboardItemReport | null, type?: DashboardItemConfig['type']) => {
+const getHasNoData = (report?: DashboardItemReport | null) => {
   // If there is no report, if means it is loading or there is an error, which is handled elsewhere
   if (!report) return false;
-  if (type === 'view' || type === 'chart') {
-    return (report as BaseReport)?.data?.length === 0;
+  if (isViewReport(report) || isChartReport(report)) {
+    const { data } = report;
+    return data?.length === 0;
   }
   return false;
 };
@@ -65,7 +72,7 @@ export const DashboardItemContent = () => {
     return <DashboardItemLoader name={config?.name} isExport={isExport} />;
 
   // if there is no data for the selected dates, then we want to show a message to the user
-  const showNoDataMessage = isLoading ? false : getHasNoData(report, config?.type);
+  const showNoDataMessage = isLoading ? false : getHasNoData(report);
 
   return (
     <>

@@ -72,7 +72,3 @@ export const getIsChartData = (chartType: ChartType, report: ChartReport): boole
 
   return (report?.data && report?.data.length > 0) || false;
 };
-
-export const isChartReport = (report?: DashboardItemReport): report is ChartReport => {
-  return report?.type === 'chart';
-};

@@ -160,7 +160,7 @@ export const PreviewSection = () => {
   const report = useMemo(
     () => ({
       data: reportData,
-      type: visualisation?.presentation?.type,
+      type: visualisation?.output?.type,
     }),
     [reportData],
   );

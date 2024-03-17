@@ -12,12 +12,13 @@ import {
   DashboardItemConfig,
   DashboardItemReport,
   isChartConfig,
+  isChartReport,
   isGaugeChartConfig,
   isPieChartConfig,
 } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
 import { LooseObject } from '../types';
-import { isChartReport, isDataKey } from './utils';
+import { isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
 

@@ -50,7 +50,6 @@ export class ReportHandler extends DataAggregatingRouteHandler {
   };
 
   async buildReportData(reportCode) {
-    const { itemCode } = this.query;
     const reportConnection = new ReportConnection(this.req);
     const hierarchyId = await this.fetchHierarchyId();
     const hierarchyName = (await this.models.entityHierarchy.findById(hierarchyId)).name;
@@ -58,7 +57,6 @@ export class ReportHandler extends DataAggregatingRouteHandler {
     const requestQuery = {
       organisationUnitCodes: [this.entity.code],
       hierarchy: hierarchyName,
-      itemCode,
     };
 
     if (this.startDate) {
@@ -74,7 +72,6 @@ export class ReportHandler extends DataAggregatingRouteHandler {
   }
 
   async buildLegacyReportData(reportCode) {
-    const dashboardItem = await this.models.dashboardItem.findOne({ code: this.query.itemCode });
     const report = await this.models.legacyReport.findOne({
       code: reportCode,
     });
@@ -100,9 +97,9 @@ export class ReportHandler extends DataAggregatingRouteHandler {
 
     this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
     const reportData = await this.buildDataBuilderData(dataBuilder);
+
     return {
       ...reportData,
-      type: dashboardItem?.config?.type,
     };
   }
 

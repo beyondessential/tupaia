@@ -16,7 +16,7 @@ import {
   NoData,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReport, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
+import { MatrixConfig, MatrixReportColumn, MatrixReportRow, isMatrixReport } from '@tupaia/types';
 import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
@@ -180,8 +180,9 @@ const MatrixVisual = () => {
 
   // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
   const config = context.config as MatrixConfig;
-  // casting here because we know that the report is a MatrixReport and it has a different shape than reports of other types
-  const { columns = [], rows = [] } = report as MatrixReport;
+  // type guard to ensure that the report is a matrix report, even though we know it is
+  if (!isMatrixReport(report)) return null;
+  const { columns = [], rows = [] } = report;
   const [searchFilter, setSearchFilter] = useState('');
 
   const { periodGranularity, drillDown, valueType } = config;

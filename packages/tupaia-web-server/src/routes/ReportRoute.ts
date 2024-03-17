@@ -20,7 +20,7 @@ export class ReportRoute extends Route<ReportRequest> {
     const { query, ctx } = this.req;
     const { reportCode } = this.req.params;
     // TODO: Remove reference to organisationUnitCode => entityCode
-    const { organisationUnitCode, projectCode, startDate, endDate, itemCode } = query;
+    const { organisationUnitCode, projectCode, startDate, endDate } = query;
 
     // the params for the non-legacy reports are different
     const params = {
@@ -28,7 +28,6 @@ export class ReportRoute extends Route<ReportRequest> {
       hierarchy: projectCode,
       startDate,
       endDate,
-      itemCode,
     };
 
     const { results, type } = await ctx.services.report.fetchReport(reportCode, params);

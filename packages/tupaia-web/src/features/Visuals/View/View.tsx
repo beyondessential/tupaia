@@ -4,7 +4,7 @@
  */
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ViewConfig, ViewReport } from '@tupaia/types';
+import { ViewConfig, ViewReport, isViewReport } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
 import { DashboardItemContext, DashboardInfoHover } from '../../DashboardItem';
 import { SingleDownloadLink } from './SingleDownloadLink';
@@ -78,8 +78,9 @@ export const View = ({ customConfig, customReport }: ViewProps) => {
   // cast the config to a ViewConfig so we can access the viewType
   const viewConfig = config as ViewConfig;
   const { viewType } = viewConfig;
+
   // add a type guard to ensure that the report is a ViewReport, even though we know it will be
-  if (report?.type !== 'view' || !report?.data) return null; // in case there is no data at all, return null
+  if (!isViewReport(report) || !report?.data) return null; // in case there is no data at all, return null
   const { data } = report;
   if (viewType === 'multiSingleValue') {
     // for multi single values, we need to render each data point as a separate single value item
