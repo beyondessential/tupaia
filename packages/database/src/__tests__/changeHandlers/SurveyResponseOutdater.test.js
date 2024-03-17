@@ -10,10 +10,10 @@ import {
   buildAndInsertSurveys,
   findOrCreateDummyRecord,
   getTestModels,
-  generateTestId,
   populateTestData,
   upsertDummyRecord,
 } from '../../testUtilities';
+import { generateId } from '../../utilities';
 
 const buildSurvey = (id, periodGranularity) => {
   const code = `Test_${periodGranularity || 'no_granularity'}`;
@@ -26,14 +26,14 @@ const buildSurvey = (id, periodGranularity) => {
   };
 };
 
-const yearlySurveyId = generateTestId();
-const quarterlySurveyId = generateTestId();
-const monthlySurveyId = generateTestId();
-const weeklySurveyId = generateTestId();
-const dailySurveyId = generateTestId();
-const nonPeriodicSurveyId = generateTestId();
+const yearlySurveyId = generateId();
+const quarterlySurveyId = generateId();
+const monthlySurveyId = generateId();
+const weeklySurveyId = generateId();
+const dailySurveyId = generateId();
+const nonPeriodicSurveyId = generateId();
 
-const userId = generateTestId();
+const userId = generateId();
 
 const SURVEYS = {
   [yearlySurveyId]: buildSurvey(yearlySurveyId, 'yearly'),

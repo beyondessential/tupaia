@@ -57,24 +57,35 @@ export const MenuList = ({
   children?: ReactNode;
   onCloseMenu: () => void;
 }) => {
+  const [confirmModalLink, setConfirmModalLink] = useState('');
+  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUser();
   const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
-  const { isLoggedIn, projectId } = useCurrentUser();
   const { mutate: logout } = useLogout();
 
   const shouldShowCancelModal = isSurveyScreen && !isSuccessScreen;
 
-  const onClickInternalLink = (e: Event) => {
+  const onClickInternalLink = (e: any, confirmLink: string) => {
     if (shouldShowCancelModal) {
       e.preventDefault();
       setIsOpen(true);
+      setConfirmModalLink(confirmLink);
+    } else {
+      onCloseMenu();
     }
+  };
+
+  const reportsItem = {
+    label: 'Reports',
+    onClick: e => onClickInternalLink(e, ROUTES.REPORTS),
+    to: shouldShowCancelModal ? null : ROUTES.REPORTS,
+    component: shouldShowCancelModal ? 'button' : RouterLink,
   };
 
   const accountSettingsItem = {
     label: 'Account settings',
-    onClick: onClickInternalLink,
+    onClick: e => onClickInternalLink(e, ROUTES.ACCOUNT_SETTINGS),
     to: shouldShowCancelModal ? null : ROUTES.ACCOUNT_SETTINGS,
     component: shouldShowCancelModal ? 'button' : RouterLink,
   };
@@ -92,17 +103,20 @@ export const MenuList = ({
     },
   };
 
-  const getMenuItems = () => {
-    const hasProjectSelected = !!projectId;
+  const hasProjectSelected = !!projectId;
 
+  const getLoggedInMenuItems = () => {
     const items: MenuItem[] = [];
     if (isLoggedIn && hasProjectSelected) items.push(accountSettingsItem);
-    items.push(supportCentreItem);
-    if (isLoggedIn) items.push(logOutItem);
-
-    return items;
+    if (hasAdminPanelAccess) items.push(reportsItem);
+    return [...items, supportCentreItem, logOutItem];
   };
-  const menuItems = getMenuItems();
+  const getMenuItems = () => {
+    if (isLoggedIn) return getLoggedInMenuItems();
+
+    return [supportCentreItem];
+  };
+  const menuItems = getMenuItems() as MenuItem[];
 
   return (
     <>
@@ -126,7 +140,7 @@ export const MenuList = ({
       <CancelConfirmModal
         isOpen={surveyCancelModalIsOpen}
         onClose={() => setIsOpen(false)}
-        confirmLink={ROUTES.ACCOUNT_SETTINGS}
+        confirmLink={confirmModalLink}
       />
     </>
   );

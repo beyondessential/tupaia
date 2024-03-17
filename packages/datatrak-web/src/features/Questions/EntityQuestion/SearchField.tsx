@@ -8,7 +8,7 @@ import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { Search, Clear } from '@material-ui/icons';
 import { InputAdornment, IconButton, TextFieldProps } from '@material-ui/core';
-import { QuestionHelperText } from '../QuestionHelperText';
+import { InputHelperText } from '../../../components';
 
 const StyledField = styled(TextField)<TextFieldProps>`
   margin-bottom: 0;
@@ -89,7 +89,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>((p
       error={invalid}
       helperText={detailLabel}
       FormHelperTextProps={{
-        component: QuestionHelperText,
+        component: InputHelperText,
       }}
       placeholder="Search..."
       // disable browser autofill

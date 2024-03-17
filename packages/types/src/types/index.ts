@@ -74,6 +74,7 @@ export {
   ViewPresentationOptions,
   ChartPresentationOptions,
   PieChartPresentationOptions,
+  PieChartSegmentConfig,
   BarChartPresentationOptions,
   PresentationOptions,
   ChartType,
