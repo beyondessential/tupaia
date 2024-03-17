@@ -45,6 +45,7 @@ import {
   GenerateLoginTokenRoute,
   GenerateLoginTokenRequest,
 } from '../routes';
+import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -54,12 +55,10 @@ const {
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp() {
-  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server', {
-    attachModels: true,
-  })
+  const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
-
     .useAttachSession(attachSessionIfAvailable)
+    .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
     .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))

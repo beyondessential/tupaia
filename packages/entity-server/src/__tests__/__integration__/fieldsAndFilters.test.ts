@@ -287,7 +287,7 @@ describe('fieldsAndFilters', () => {
 
     it('it can filter on deep properties of object properties', async () => {
       const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
-        query: { field: 'code', filter: 'attributes_type==gym' },
+        query: { field: 'code', filter: 'attributes->>type==gym' },
       });
 
       expect(entities).toIncludeSameMembers([
@@ -300,6 +300,14 @@ describe('fieldsAndFilters', () => {
         'CERULEAN',
         'VIRIDIAN',
       ]);
+    });
+
+    it('it can filter nested attributes', async () => {
+      const { body: entities } = await app.get('hierarchy/redblue/redblue/descendants', {
+        query: { field: 'code', filter: 'attributes->>gym->>type==fire' },
+      });
+
+      expect(entities).toIncludeSameMembers(['VIRIDIAN']);
     });
 
     it('it can filter for multiple properties', async () => {

@@ -1,12 +1,8 @@
 import { expect } from 'chai';
-import {
-  buildAndInsertSurveys,
-  generateTestId,
-  buildAndInsertSurveyResponses,
-} from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, buildAndInsertSurveyResponses } from '@tupaia/database';
 import { expectSuccess, TestableApp, upsertEntity } from '../testUtilities';
 
-const ENTITY_ID = generateTestId();
+const ENTITY_ID = generateId();
 
 const questionCode = key => `TEST-${key}`;
 

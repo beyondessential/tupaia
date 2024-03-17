@@ -15,9 +15,8 @@ const getLegacyData = (report: LegacyReport) => {
 const getPresentation = (dashboardItem: DashboardItem, report: Report | LegacyReport) => {
   const { config: reportConfig } = report;
   const { config: dashboardItemConfig } = dashboardItem;
-  const { type, name, ...config } = dashboardItemConfig;
 
-  const presentation: Record<string, unknown> = { type, ...config };
+  const presentation: Record<string, unknown> = { ...dashboardItemConfig };
   if (!dashboardItem.legacy && 'output' in reportConfig) {
     presentation.output = reportConfig.output;
   }
@@ -29,8 +28,7 @@ export function combineDashboardVisualisation(
   visualisationResource: DashboardVizResource,
 ): DashboardViz {
   const { dashboardItem, report } = visualisationResource;
-  const { id, code, config, legacy } = dashboardItem;
-  const { name } = config;
+  const { id, code, legacy } = dashboardItem;
   const data = dashboardItem.legacy
     ? getLegacyData(report as LegacyReport)
     : extractDataFromReport(report as Report);
@@ -39,7 +37,6 @@ export function combineDashboardVisualisation(
   const visualisation: Record<string, unknown> = {
     id,
     code,
-    name,
     legacy,
     data,
     presentation,

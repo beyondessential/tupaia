@@ -4,7 +4,6 @@
  */
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
-
 import { AdminPanelSessionType } from '../../models';
 
 declare global {

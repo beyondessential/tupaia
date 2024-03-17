@@ -34,3 +34,9 @@ Authorization: {{user-authorization}}
 GET http://{{host}}/{{version}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+
+### Get socialFeed
+GET http://{{host}}/{{version}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}

@@ -4,7 +4,7 @@ import JSONEditor from 'jsoneditor/dist/jsoneditor';
 import 'jsoneditor/dist/jsoneditor.css';
 import Ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-json';
-import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/theme-xcode';
 
 /**
  * @typedef {{
@@ -71,6 +71,7 @@ modes.allValues = values;
  * @property {(string|PropTypes.elementType)} [tag='div'] - Html element, or react element to render
  * @property {object} [htmlElementProps] - html element custom props
  * @property {Function} [innerRef] - callback to get html element reference
+ * @property {Function} [editorRef] - callback to get JSONEditor reference
  * @property {boolean} [sortObjectKeys=false] If true, object keys in 'tree',
  * 'view' or 'form' mode list be listed alphabetically instead by their insertion order.
  * @property {Function} [editorRef] - callback to get the json editor instance, to programmatically change values, for example
@@ -112,6 +113,7 @@ export class JsonEditor extends Component {
     onChange,
     onInvalidChange,
     value,
+    editorRef,
     ...rest
   }) {
     if (this.jsonEditor) {
@@ -141,6 +143,9 @@ export class JsonEditor extends Component {
     if (this.jsonEditor) {
       this.jsonEditor.destroy();
       this.jsonEditor = null;
+      if (this.props.editorRef) {
+        this.props.editorRef(this.jsonEditor);
+      }
     }
   }
 
@@ -166,6 +171,9 @@ export class JsonEditor extends Component {
     }
 
     this.jsonEditor.set(value);
+    if (this.props.editorRef) {
+      this.props.editorRef(this.jsonEditor);
+    }
   }
 
   async handleChange() {
@@ -272,7 +280,7 @@ JsonEditor.defaultProps = {
   onModeChange: undefined,
   ace: Ace,
   ajv: undefined,
-  theme: 'ace/theme/github',
+  theme: 'ace/theme/xcode',
   history: false,
   navigationBar: true,
   statusBar: true,

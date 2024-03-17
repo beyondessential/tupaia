@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useRef, useState } from 'react';
@@ -9,8 +9,7 @@ import DownArrow from '@material-ui/icons/ArrowDropDown';
 import { IconButton } from '@material-ui/core';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
-import { FlexSpaceBetween, Checkbox } from '@tupaia/ui-components';
-import { BaseSelectedOption, EditableSelectedOption } from './options';
+import { Checkbox, FlexSpaceBetween } from '@tupaia/ui-components';
 import { JsonEditor } from '../../../../widgets';
 import { ExpandedSelectedOption } from './ExpandedSelectedOption';
 
@@ -19,8 +18,8 @@ const FlexBetweenPanel = styled(FlexSpaceBetween)`
 `;
 
 const JsonEditorPanel = styled.div`
-  flex: 1;
   display: flex;
+  flex: 1;
   width: 100%;
 
   > div {

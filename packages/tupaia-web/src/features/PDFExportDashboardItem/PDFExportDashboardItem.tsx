@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Moment } from 'moment';
 import styled from 'styled-components';
@@ -13,7 +14,12 @@ import {
   getDefaultDates,
   momentToDateDisplayString,
 } from '@tupaia/utils';
-import { BaseReport, DashboardItemConfig, VizPeriodGranularity } from '@tupaia/types';
+import {
+  BaseReport,
+  DashboardItemConfig,
+  VizPeriodGranularity,
+  TupaiaWebExportDashboardRequest,
+} from '@tupaia/types';
 import { A4Page, A4_PAGE_WIDTH_PX, ReferenceTooltip } from '@tupaia/ui-components';
 import { Dashboard, DashboardItem, Entity } from '../../types';
 import { useProject, useReport } from '../../api/queries';
@@ -93,6 +99,7 @@ interface PDFExportDashboardItemProps {
   entityName?: Entity['name'];
   activeDashboard?: Dashboard;
   isPreview?: boolean;
+  settings?: TupaiaWebExportDashboardRequest.ReqBody['settings'];
 }
 
 /**
@@ -104,6 +111,7 @@ export const PDFExportDashboardItem = ({
   entityName,
   activeDashboard,
   isPreview = false,
+  settings,
 }: PDFExportDashboardItemProps) => {
   const [width, setWidth] = useState(0);
   const pageRef = useRef<HTMLDivElement | null>(null);
@@ -141,9 +149,8 @@ export const PDFExportDashboardItem = ({
   const dashboardItemConfig = {
     ...config,
     presentationOptions: {
-      ...(presentationOptions || {}),
-      exportWithLabels: false,
-      exportWithTable: true,
+      ...presentationOptions,
+      ...settings,
     },
   } as DashboardItemConfig;
   const { description, entityHeader, name, periodGranularity, reference } = dashboardItemConfig;

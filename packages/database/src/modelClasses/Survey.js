@@ -3,9 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { reduceToDictionary } from '@tupaia/utils';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseType } from '../DatabaseType';
+import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { TYPES } from '../types';
+import { SqlQuery } from '../SqlQuery';
 
 export class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
@@ -123,5 +127,67 @@ export class SurveyType extends DatabaseType {
 export class SurveyModel extends MaterializedViewLogDatabaseModel {
   get DatabaseTypeClass() {
     return SurveyType;
+  }
+
+  async createAccessPolicyQueryClause(accessPolicy) {
+    const countryIdsByPermissionGroup = await this.getCountryIdsByPermissionGroup(accessPolicy);
+    const params = Object.entries(countryIdsByPermissionGroup).flat().flat(); // e.g. ['Public', 'id1', 'id2', 'Admin', 'id3']
+
+    return {
+      sql: `(${Object.entries(countryIdsByPermissionGroup)
+        .map(([_, countryIds]) => {
+          return `
+          (
+            permission_group_id = ? AND 
+            ${SqlQuery.array(countryIds, 'TEXT')} && country_ids
+          )
+        `;
+        })
+        .join(' OR ')})`,
+      parameters: params,
+    };
+  }
+
+  async getCountryIdsByPermissionGroup(accessPolicy) {
+    const permissionGroupNames = accessPolicy.getPermissionGroups();
+
+    const countries = await this.otherModels.country.find({});
+
+    const permissionGroups = await this.otherModels.permissionGroup.find({
+      name: permissionGroupNames,
+    });
+
+    const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
+
+    const permissionGroupIdByName = reduceToDictionary(permissionGroups, 'name', 'id');
+    return permissionGroupNames.reduce((result, permissionGroupName) => {
+      const countryCodes = accessPolicy.getEntitiesAllowed(permissionGroupName);
+      const permissionGroupId = permissionGroupIdByName[permissionGroupName];
+      const countryIds = countryCodes.map(code => countryIdByCode[code]);
+      return {
+        ...result,
+        [permissionGroupId]: countryIds,
+      };
+    }, {});
+  }
+
+  /**
+   *
+   * @param {AccessPolicy} accessPolicy
+   * @param {*} dbConditions
+   * @param {*} customQueryOptions
+   * @returns
+   */
+  async findByAccessPolicy(accessPolicy, dbConditions = {}, customQueryOptions) {
+    const queryClause = await this.createAccessPolicyQueryClause(accessPolicy);
+
+    const queryConditions = {
+      [QUERY_CONJUNCTIONS.RAW]: queryClause,
+      ...dbConditions,
+    };
+
+    const surveys = await this.find(queryConditions, customQueryOptions);
+
+    return surveys;
   }
 }
