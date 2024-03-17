@@ -3,19 +3,18 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { TableCell, TableHead, TableRow, darken } from '@material-ui/core';
+import { TableHead, TableRow, darken } from '@material-ui/core';
 import styled from 'styled-components';
-import { MatrixContext } from './MatrixContext';
-import { getDisplayedColumns, getFullHex } from './utils';
 import { MatrixColumnType } from '../../types';
+import { MatrixContext } from './MatrixContext';
+import { Cell } from './Cell';
 
-const HeaderCell = styled(TableCell)`
-  text-align: center;
-  max-width: 12rem;
-  border-width: 1px 1px 2px 1px;
-  border-style: solid;
-  border-color: ${({ theme }) => darken(theme.palette.text.primary, 0.4)}
-    ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
+const HeaderCell = styled(Cell)`
+  z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
+  &:first-child {
+    z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
+    max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
+  }
 `;
 
 const ColGroup = styled.colgroup`
@@ -26,31 +25,20 @@ const ColGroup = styled.colgroup`
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
 export const MatrixHeader = () => {
-  const {
-    columns,
-    startColumn,
-    maxColumns,
-    hideColumnTitles = false,
-    rowHeaderColumnTitle,
-  } = useContext(MatrixContext);
-  const displayedColumns = getDisplayedColumns(columns, startColumn, maxColumns);
-  // If a column is not displayed, then it should not be rendered in the header. This means that if a column group has no displayed children, then it should not be rendered either.
-  const displayedColumnGroups = columns.reduce(
-    (result: MatrixColumnType[], column: MatrixColumnType) => {
-      const visibleChildren =
-        column.children?.filter(child => !!displayedColumns.find(({ key }) => key === child.key)) ||
-        [];
-      if (!visibleChildren.length) return result;
-      return [...result, { ...column, children: visibleChildren }];
-    },
-    [],
-  );
+  const { columns, hideColumnTitles = false, rowHeaderColumnTitle } = useContext(MatrixContext);
+  // Get the grouped columns
+  const columnGroups = columns.reduce((result: MatrixColumnType[], column: MatrixColumnType) => {
+    if (!column.children?.length) return result;
+    return [...result, column];
+  }, []);
 
   // If there are parents, then there should be two rows: 1 for the column group headings, and one for the column headings
-  const hasParents = displayedColumnGroups.length > 0;
+  const hasParents = columnGroups.length > 0;
 
   const RowHeaderColumn = (
-    <HeaderCell rowSpan={hasParents ? 2 : 1}>{rowHeaderColumnTitle}</HeaderCell>
+    <HeaderCell rowSpan={hasParents ? 2 : 1} scope="row" className="MuiTableCell-row-head">
+      {rowHeaderColumnTitle}
+    </HeaderCell>
   );
   return (
     /**
@@ -60,18 +48,18 @@ export const MatrixHeader = () => {
       <ColGroup />
       {hasParents ? (
         <>
-          {displayedColumnGroups.map(({ title, children = [] }) => (
+          {columnGroups.map(({ title, children = [] }) => (
             <ColGroup key={title} span={children.length} />
           ))}
         </>
       ) : (
-        <ColGroup span={displayedColumns.length} />
+        <ColGroup span={columns.length} />
       )}
       <TableHead>
         {hasParents && (
           <TableRow>
             {RowHeaderColumn}
-            {displayedColumnGroups.map(({ title, children = [] }) => (
+            {columnGroups.map(({ title, children = [] }) => (
               <HeaderCell key={title} colSpan={children.length}>
                 {title}
               </HeaderCell>
@@ -81,8 +69,12 @@ export const MatrixHeader = () => {
         <TableRow>
           {/** If hasParents is true, then this row header column cell will have already been rendered. */}
           {!hasParents && RowHeaderColumn}
-          {displayedColumns.map(({ title, key }) => (
-            <HeaderCell key={key} aria-label={hideColumnTitles ? title : ''}>
+          {columns.map(({ title, key }) => (
+            <HeaderCell
+              key={key}
+              aria-label={hideColumnTitles ? title : ''}
+              $characterLength={title?.length}
+            >
               {!hideColumnTitles && title}
             </HeaderCell>
           ))}

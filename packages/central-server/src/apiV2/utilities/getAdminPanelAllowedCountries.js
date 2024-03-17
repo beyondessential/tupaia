@@ -3,10 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
-  LESMIS_ADMIN_PERMISSION_GROUP,
-} from '../../permissions';
+import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
 /*
  * Get a list of country codes this user has tupaia admin panel access to, or throw an error if they have none
@@ -21,20 +18,11 @@ export const getAdminPanelAllowedCountryCodes = accessPolicy => {
     TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   );
 
-  const accessibleLESMISAdminCountryCodes = accessPolicy.getEntitiesAllowed(
-    LESMIS_ADMIN_PERMISSION_GROUP,
-  );
-
-  const accessibleCountryCodes = [
-    ...accessibleAdminPanelCountryCodes,
-    ...accessibleLESMISAdminCountryCodes,
-  ];
-
-  if (accessibleCountryCodes.length === 0) {
+  if (accessibleAdminPanelCountryCodes.length === 0) {
     throw new Error('You do not have Tupaia Admin Panel access to any entities');
   }
 
-  return accessibleCountryCodes;
+  return accessibleAdminPanelCountryCodes;
 };
 
 /*

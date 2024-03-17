@@ -353,6 +353,7 @@ export interface DashboardMailingListEntryUpdate {
   'unsubscribed_time'?: Date | null;
 }
 export interface DashboardRelation {
+  'attributes_filter': any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -362,6 +363,7 @@ export interface DashboardRelation {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationCreate {
+  'attributes_filter'?: any;
   'child_id': string;
   'dashboard_id': string;
   'entity_types': any;
@@ -370,6 +372,7 @@ export interface DashboardRelationCreate {
   'sort_order'?: number | null;
 }
 export interface DashboardRelationUpdate {
+  'attributes_filter'?: any;
   'child_id'?: string;
   'dashboard_id'?: string;
   'entity_types'?: any;
@@ -947,6 +950,7 @@ export interface MapOverlay {
   'config': MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter': any;
   'id': string;
   'legacy': boolean;
   'linked_measures'?: string[] | null;
@@ -960,6 +964,7 @@ export interface MapOverlayCreate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;
   'name': string;
@@ -972,6 +977,7 @@ export interface MapOverlayUpdate {
   'config'?: MapOverlayConfig;
   'country_codes'?: string[] | null;
   'data_services'?: any | null;
+  'entity_attributes_filter'?: any;
   'id'?: string;
   'legacy'?: boolean;
   'linked_measures'?: string[] | null;

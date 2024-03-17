@@ -7,8 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormControlLabel, FormLabel, Radio, RadioGroup, lighten } from '@material-ui/core';
 import { SurveyQuestionInputProps } from '../../types';
-import { RadioIcon } from '../../components';
-import { QuestionHelperText } from './QuestionHelperText';
+import { RadioIcon, InputHelperText } from '../../components';
 
 const StyledRadioGroup = styled(RadioGroup)`
   width: 100%;
@@ -89,7 +88,7 @@ export const RadioQuestion = ({
     <StyledRadioGroup
       aria-describedby={`question_number_${id}`}
       name={name!}
-      onChange={onChange}
+      onChange={e => onChange(e, e.target.value)}
       id={id}
       aria-invalid={invalid}
       value={value || ''}
@@ -99,7 +98,7 @@ export const RadioQuestion = ({
         <FormLabel component="legend" error={invalid} required={required}>
           {label?.replace(/\xA0/g, ' ')}
         </FormLabel>
-        {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+        {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       </LegendWrapper>
       {options?.map(({ label, value, color }, i) => (
         <RadioItem

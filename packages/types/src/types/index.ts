@@ -1,11 +1,16 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- *
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 export * from './models';
 export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   StandardReportConfig,
   CustomReportConfig,
   DashboardItemConfig,
@@ -19,14 +24,14 @@ export {
   ValueType,
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
   ViewConfig,
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -57,6 +62,32 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
   FeedItemTypes,
+  ReferenceProps,
+  PlaintextReferenceProps,
+  LinkReferenceProps,
+  InlineValue,
+  SpectrumMapOverlayConfig,
+  IconMapOverlayConfig,
+  RadiusMapOverlayConfig,
+  ColorMapOverlayConfig,
+  ShadingMapOverlayConfig,
+  ViewPresentationOptions,
+  ChartPresentationOptions,
+  PieChartPresentationOptions,
+  PieChartSegmentConfig,
+  BarChartPresentationOptions,
+  PresentationOptions,
+  ChartType,
+  ChartReport,
+  DashboardItemReport,
+  ChartData,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
+  ChartConfigT,
+  ChartConfigObject,
+  ComponentConfig,
+  LineChartChartConfig,
+  VizPeriodGranularity,
 } from './models-extra';
 export * from './requests';
 export * from './css';

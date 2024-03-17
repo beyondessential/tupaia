@@ -6,15 +6,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import throttle from 'lodash.throttle';
-import { Paper } from '@material-ui/core';
-import { Check } from '@material-ui/icons';
 import { createFilterOptions } from '@material-ui/lab';
-import { Autocomplete as BaseAutocomplete } from '@tupaia/ui-components';
 import { Option } from '@tupaia/types';
 import { SurveyQuestionInputProps } from '../../types';
 import { useAutocompleteOptions } from '../../api';
 import { MOBILE_BREAKPOINT } from '../../constants';
-import { QuestionHelperText } from './QuestionHelperText';
+import { Autocomplete as BaseAutocomplete, InputHelperText } from '../../components';
 
 const Autocomplete = styled(BaseAutocomplete)`
   width: calc(100% - 3.5rem);
@@ -22,11 +19,6 @@ const Autocomplete = styled(BaseAutocomplete)`
 
   .MuiFormControl-root {
     margin-bottom: 0;
-  }
-  fieldset:disabled & {
-    .MuiAutocomplete-clearIndicator {
-      display: none; // hide the clear button when disabled on review screen
-    }
   }
 
   .MuiFormLabel-root {
@@ -50,7 +42,6 @@ const Autocomplete = styled(BaseAutocomplete)`
   }
 
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    box-shadow: none;
     border: none;
   }
   .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
@@ -65,61 +56,6 @@ const Autocomplete = styled(BaseAutocomplete)`
     color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
-
-const StyledPaper = styled(Paper).attrs({
-  variant: 'outlined',
-})`
-  border-color: ${({ theme }) => theme.palette.primary.main};
-  .MuiAutocomplete-option {
-    padding: 0;
-    &:hover,
-    &[data-focus='true'] {
-      background-color: ${({ theme }) => theme.palette.primaryHover};
-    }
-    &[aria-selected='true'] {
-      background-color: transparent;
-    }
-    &[aria-disabled='true'] {
-      opacity: 1;
-    }
-  }
-`;
-
-const OptionWrapper = styled.div`
-  width: 100%;
-  padding: 0.2rem 0.875rem;
-  line-height: 1.2;
-  margin: 0.3rem 0;
-`;
-
-const SelectedOption = styled(OptionWrapper)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 0.425rem;
-  padding-right: 0.425rem;
-  margin-left: 0.45rem;
-  margin-right: 0.45rem;
-  border-radius: 3px;
-  border: 1px solid ${({ theme }) => theme.palette.primary.main};
-  .MuiSvgIcon-root {
-    font-size: 1.2rem;
-  }
-`;
-
-const DisplayOption = ({ option, state }) => {
-  const { selected } = state;
-  const label = typeof option === 'string' ? option : option.label || option.value;
-
-  if (selected)
-    return (
-      <SelectedOption>
-        {label}
-        <Check color="primary" />
-      </SelectedOption>
-    );
-  return <OptionWrapper>{label}</OptionWrapper>;
-};
 
 export const AutocompleteQuestion = ({
   id,
@@ -173,14 +109,9 @@ export const AutocompleteQuestion = ({
     const { value } = option;
     // if the option is not in the list of options, it is a new option
     if (!data?.find(o => o.value === value)) {
-      onChange({
-        value,
-        label: value,
-        isNew: true,
-        optionSetId,
-      });
+      onChange(value);
     } else {
-      onChange(option);
+      onChange(option.value);
     }
   };
 
@@ -212,15 +143,13 @@ export const AutocompleteQuestion = ({
         helperText={detailLabel as string}
         textFieldProps={{
           FormHelperTextProps: {
-            component: QuestionHelperText,
+            component: InputHelperText,
           },
         }}
         placeholder="Search..."
         muiProps={{
-          PaperComponent: StyledPaper,
           freeSolo: !!createNew,
           getOptionDisabled: option => getOptionSelected(option, selectedValue?.value),
-          renderOption: (option, state) => <DisplayOption option={option} state={state} />,
           filterOptions: (availableOptions, params) => {
             const filtered = filter(availableOptions, params);
 
@@ -236,7 +165,7 @@ export const AutocompleteQuestion = ({
           },
         }}
       />
-      {error && <QuestionHelperText error>{(error as Error).message}</QuestionHelperText>}
+      {error && <InputHelperText error>{(error as Error).message}</InputHelperText>}
     </>
   );
 };

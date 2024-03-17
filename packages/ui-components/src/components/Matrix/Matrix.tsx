@@ -3,32 +3,28 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode, useEffect, useReducer, useRef } from 'react';
+import React, { ReactNode, useReducer, useRef } from 'react';
 import styled from 'styled-components';
-import { Table, TableBody } from '@material-ui/core';
+import { Table, TableBody, TableContainer } from '@material-ui/core';
 import { MatrixConfig } from '@tupaia/types';
 import { MatrixColumnType, MatrixRowType } from '../../types';
-import { getFlattenedColumns, getFullHex } from './utils';
 import { MatrixHeader } from './MatrixHeader';
-import { ACTION_TYPES, MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
-import { MatrixNavButtons } from './MatrixNavButtons';
+import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
 import { MatrixRow } from './MatrixRow';
-import { EnlargedMatrixCell } from './EnlargedMatrixCell';
 import { MatrixLegend } from './MatrixLegend';
 
 const MatrixTable = styled.table`
-  border-collapse: collapse;
-  border: 1px solid ${({ theme }) => getFullHex(theme.palette.text.primary)}33;
   color: ${({ theme }) => theme.palette.text.primary};
-  table-layout: fixed; // this is to allow us to set max-widths on the columns
   height: 1px; // this is to make the cell content (eg. buttons) take full height of the cell, and does not actually get applied
 `;
 
-// this is a scrollable container
-const Wrapper = styled.div`
-  max-height: 100%;
-  width: 100%;
-  overflow: auto;
+// wraps the table in a container so that we can set a max-height on it and make it scrollable inside it
+const ScrollContainer = styled(TableContainer)`
+  max-height: clamp(
+    20rem,
+    70vh,
+    60rem
+  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
 `;
 
 interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
@@ -39,65 +35,34 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
 }
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
-  const [{ startColumn, expandedRows, maxColumns, enlargedCell }, dispatch] = useReducer(
-    matrixReducer,
-    {
-      startColumn: 0,
-      expandedRows: [],
-      maxColumns: 0,
-      enlargedCell: null,
-    },
-  );
+  const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
+    expandedRows: [],
+  });
   const tableEl = useRef<HTMLTableElement | null>(null);
 
-  useEffect(() => {
-    // Update the number of columns per page when the table is mounted and data comes in, so that we can determine when to show the nav buttons
-    const updateMaxColumns = () => {
-      if (!tableEl || !tableEl?.current || !tableEl?.current?.offsetWidth) return;
-      const { offsetWidth } = tableEl?.current;
-      // 200px is the max width of a column that we want to show
-      const usableWidth = offsetWidth - 200; // the max size of the first column (row title)
-      const updatedMaxCols = Math.floor(usableWidth / 200) || 1;
-
-      const flattenedColumns = getFlattenedColumns(columns);
-      dispatch({
-        type: ACTION_TYPES.SET_MAX_COLUMNS,
-        payload: Math.min(updatedMaxCols, flattenedColumns.length),
-      });
-    };
-
-    updateMaxColumns();
-  }, [tableEl?.current?.offsetWidth, columns]);
-
   return (
-    <Wrapper>
-      <MatrixContext.Provider
-        value={{
-          ...config,
-          columns,
-          rows,
-          startColumn,
-          maxColumns,
-          expandedRows,
-          enlargedCell,
-          disableExpand,
-        }}
-      >
-        <MatrixDispatchContext.Provider value={dispatch}>
-          <MatrixNavButtons />
-          <EnlargedMatrixCell />
+    <MatrixContext.Provider
+      value={{
+        ...config,
+        columns,
+        rows,
+        expandedRows,
+        disableExpand,
+      }}
+    >
+      <MatrixDispatchContext.Provider value={dispatch}>
+        <MatrixLegend />
+        <ScrollContainer>
           <Table component={MatrixTable} ref={tableEl} stickyHeader>
             <MatrixHeader />
             <TableBody>
-              {rows.map(row => (
-                // add a random key to avoid bugs with re-rendering
-                <MatrixRow row={row} key={`${row.title}_${Math.random() * 1000}`} parents={[]} />
+              {rows.map((row, i) => (
+                <MatrixRow row={row} key={`${row.title}-${i}`} parents={[]} index={i + 1} />
               ))}
             </TableBody>
           </Table>
-          <MatrixLegend />
-        </MatrixDispatchContext.Provider>
-      </MatrixContext.Provider>
-    </Wrapper>
+        </ScrollContainer>
+      </MatrixDispatchContext.Provider>
+    </MatrixContext.Provider>
   );
 };

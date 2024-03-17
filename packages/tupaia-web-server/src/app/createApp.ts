@@ -14,7 +14,6 @@ import {
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
-import { attachAccessPolicy } from './middleware';
 
 const {
   WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
@@ -24,11 +23,10 @@ const {
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
-  const builder = new OrchestratorApiBuilder(db, 'tupaia-web', { attachModels: true })
+  const builder = new OrchestratorApiBuilder(db, 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
     .attachApiClientToContext(authHandlerProvider)
-    .use('*', attachAccessPolicy)
     .get<routes.ReportRequest>('report/:reportCode', handleWith(routes.ReportRoute))
     .get<routes.LegacyDashboardReportRequest>(
       'legacyDashboardReport/:reportCode',
@@ -56,9 +54,9 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboards/:projectCode/:entityCode/:dashboardCode/email',
       handleWith(routes.EmailDashboardRoute),
     )
-    .get<routes.CountryAccessListRequest>(
-      'countryAccessList',
-      handleWith(routes.CountryAccessListRoute),
+    .get<routes.ProjectCountryAccessListRequest>(
+      'countryAccessList/:projectCode',
+      handleWith(routes.ProjectCountryAccessListRoute),
     )
     .post<routes.RequestCountryAccessRequest>(
       'requestCountryAccess',

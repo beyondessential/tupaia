@@ -56,6 +56,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       mapOverlayPermissionGroup: permissionGroup,
+      entityAttributesFilter,
     } = this.visualisation;
     const { output, ...presentation } = this.visualisation.presentation;
 
@@ -71,6 +72,7 @@ export class MapOverlayVisualisationExtractor<
       countryCodes,
       linkedMeasures,
       permissionGroup,
+      entityAttributesFilter,
     };
   }
 

@@ -15,7 +15,6 @@ import {
   URL_SEARCH_PARAMS,
   ViewVizTypes,
 } from '../../constants';
-import { DashboardItemConfig } from '../../types';
 import { DashboardItemContext } from './DashboardItemContext';
 
 const ExpandableButton = styled(Button).attrs({
@@ -76,20 +75,24 @@ const EXPANDABLE_TYPES = [
 export const ExpandItemButton = () => {
   const { config, isEnlarged, isExport, report, reportCode } = useContext(DashboardItemContext);
 
-  const { viewType, type, periodGranularity } = config || ({} as DashboardItemConfig);
+  const { type, periodGranularity } = config || {};
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   if (isEnlarged || isExport) return null;
 
+  const viewType = config?.type === 'view' ? config.viewType : undefined;
+
   const getIsExpandable = () => {
     if (periodGranularity) return true;
     // always allow matrix to be expanded
-    else if (type === DashboardItemVizTypes.Matrix) return true;
+    if (type === DashboardItemVizTypes.Matrix) return true;
+
+    const comparisonType = viewType || type;
     // only expand expandable types if they have data, if they don't have periodGranularity set
-    else if (EXPANDABLE_TYPES.includes(type) || (viewType && EXPANDABLE_TYPES.includes(viewType))) {
+    if (comparisonType && EXPANDABLE_TYPES.includes(comparisonType)) {
       const { data } = report as ViewReport;
       return data && data.length > 0;
-    } else if (viewType === ViewVizTypes.QRCode) {
+    } else if (comparisonType === ViewVizTypes.QRCode) {
       const { data } = report as ViewReport;
       return data && data.length > 1;
     }

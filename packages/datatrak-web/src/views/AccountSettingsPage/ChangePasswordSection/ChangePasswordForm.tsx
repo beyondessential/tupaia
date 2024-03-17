@@ -77,7 +77,6 @@ export const ChangePasswordForm = () => {
   const {
     formState: { isSubmitting, isValid, isValidating },
     getValues,
-    handleSubmit,
     reset,
   } = formContext;
 
@@ -88,10 +87,10 @@ export const ChangePasswordForm = () => {
     onSuccess: response => successToast(response.message),
   });
 
-  const submissionShouldBeDisabled = isValidating || !isValid || isSubmitting;
+  const formIsInsubmissible = isValidating || !isValid || isSubmitting;
 
   return (
-    <StyledForm onSubmit={handleSubmit(attemptPasswordChange)} formContext={formContext}>
+    <StyledForm onSubmit={attemptPasswordChange} formContext={formContext}>
       <StyledFieldset>
         <FormInput
           autoComplete="password"
@@ -128,7 +127,7 @@ export const ChangePasswordForm = () => {
           required
           type="password"
         />
-        <StyledButton type="submit" disabled={submissionShouldBeDisabled} fullWidth>
+        <StyledButton type="submit" disabled={formIsInsubmissible} fullWidth>
           {isSubmitting ? 'Changing' : 'Change password'}
         </StyledButton>
       </StyledFieldset>

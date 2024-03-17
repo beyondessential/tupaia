@@ -1,33 +1,33 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useState, useEffect, MouseEvent } from 'react';
+
+import React, { MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { formatDataValueByType } from '@tupaia/utils';
 import {
-  PieChart as BasePieChart,
-  Pie,
   Cell,
   Legend,
+  LegendProps,
+  Pie,
+  PieChart as BasePieChart,
   ResponsiveContainer,
   Tooltip,
   TooltipProps,
-  LegendProps,
 } from 'recharts';
-import { PieChartConfig } from '@tupaia/types';
-import { OFF_WHITE, CHART_COLOR_PALETTE } from '../../constants';
-import { getPieLegend } from '../Reference/Legend';
+import { PieChartSegmentConfig } from '@tupaia/types';
+import { CHART_COLOR_PALETTE, OFF_WHITE } from '../../constants';
 import { isMobile } from '../../utils';
-import { TooltipContainer } from '../Reference';
-import { ViewContent, LegendPosition, PresentationOptions } from '../../types';
+import { LegendPosition, PieChartViewContent, ViewContent } from '../../types';
+import { getPieLegend, TooltipContainer } from '../Reference';
 
 const Heading = styled(Typography)`
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1rem;
-  margin-bottom: 0.5rem;
+  margin-block-end: 0.5rem;
   color: #2c3236;
 `;
 
@@ -69,41 +69,39 @@ const getFormattedValue = (viewContent: ViewContent, data: any) => {
   return formatDataValueByType({ value, metadata }, valueTypeForLabel);
 };
 
-const makeCustomTooltip = (viewContent: ViewContent) => ({ active, payload }: TooltipProps) => {
-  if (!active || !payload || !payload.length) {
-    return null;
-  }
+const makeCustomTooltip =
+  (viewContent: ViewContent) =>
+  ({ active, payload }: TooltipProps) => {
+    if (!active || !payload || !payload.length) {
+      return null;
+    }
 
-  const data = payload[0].payload;
-  const { name, fill } = data;
+    const data = payload[0].payload;
+    const { name, fill } = data;
 
-  return (
-    <TooltipContainer>
-      <Heading>{name}</Heading>
-      <Item>
-        <Box style={{ background: fill }} />
-        <Text>{getFormattedValue(viewContent, data)}</Text>
-      </Item>
-    </TooltipContainer>
-  );
+    return (
+      <TooltipContainer>
+        <Heading>{name}</Heading>
+        <Item>
+          <Box style={{ background: fill }} />
+          <Text>{getFormattedValue(viewContent, data)}</Text>
+        </Item>
+      </TooltipContainer>
+    );
+  };
+
+const makeLabel = (viewContent: ViewContent) => {
+  return ({ payload }: any) => getFormattedValue(viewContent, payload.payload);
 };
-
-const makeLabel = (viewContent: ViewContent) => ({ payload }: any) => {
-  return getFormattedValue(viewContent, payload.payload);
-};
-
-const chartColorAtIndex = (colorArray: string[], index: number) =>
-  colorArray[index % colorArray.length];
 
 const getHeight = (isExporting: boolean, isEnlarged: boolean, isMobileSize: boolean) => {
-  if (isExporting) {
-    return 420;
-  }
-  return isEnlarged && isMobileSize ? 320 : undefined;
+  if (isExporting) return 420;
+  if (isEnlarged && isMobileSize) return 320;
+  return undefined;
 };
 
 interface PieChartProps {
-  viewContent: ViewContent;
+  viewContent: PieChartViewContent;
   isEnlarged?: boolean;
   isExporting?: boolean;
   onItemClick?: (item: any) => void;
@@ -117,32 +115,32 @@ export const PieChart = ({
   legendPosition = 'bottom',
 }: PieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
-  const { presentationOptions, data } = viewContent;
-  // eslint-disable-next-line no-unused-vars
+  const { data } = viewContent;
+  const segmentConfig = 'segmentConfig' in viewContent ? viewContent.segmentConfig : undefined;
+  const presentationOptions =
+    'presentationOptions' in viewContent ? viewContent.presentationOptions : undefined;
   const [, setLoaded] = useState(false);
 
   const isMobileSize = isMobile(isExporting);
 
   // Trigger rendering of the chart to fix an issue with the legend overlapping the chart.
-  // This is a work around for a recharts bug. @see https://github.com/recharts/recharts/issues/511
+  // This is a workaround for a recharts bug. @see https://github.com/recharts/recharts/issues/511
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
     }, 50);
   }, []);
 
-  const handleMouseEnter = (event: MouseEvent, index: number) => {
-    setActiveIndex(index);
-  };
+  const handleMouseEnter = (event: MouseEvent, index: number) => setActiveIndex(index);
+  const handleMouseOut = () => setActiveIndex(-1);
 
-  const handleMouseOut = () => {
-    setActiveIndex(-1);
+  const getSegmentConfig = (
+    key?: keyof PieChartSegmentConfig,
+    option?: keyof PieChartSegmentConfig[string],
+  ) => {
+    if (!key || !option || !segmentConfig) return undefined;
+    return segmentConfig.hasOwnProperty(key) && segmentConfig[key][option];
   };
-
-  const getPresentationOption = (key: keyof PresentationOptions | string, option: string) =>
-    !!presentationOptions &&
-    presentationOptions.hasOwnProperty(key) &&
-    presentationOptions[key as keyof PresentationOptions][option];
 
   const getValidData = () =>
     data
@@ -152,12 +150,9 @@ export const PieChart = ({
       })
       .map(item => {
         const { name, ...otherKeyValues } = item;
-        // Map names to labels if available
-        let label = getPresentationOption(name, 'label');
-        if (!label) label = name;
 
         return {
-          name: label,
+          name: getSegmentConfig(name, 'label') || name, // Map names to labels if available
           ...otherKeyValues,
           originalItem: item,
         };
@@ -186,9 +181,7 @@ export const PieChart = ({
           data={validData}
           activeIndex={isExporting ? undefined : activeIndex}
           isAnimationActive={!isExporting && isEnlarged}
-          onClick={item => {
-            onItemClick(item.originalItem);
-          }}
+          onClick={item => onItemClick(item.originalItem)}
           label={
             isExporting && presentationOptions?.exportWithLabels
               ? makeLabel(viewContent)
@@ -199,8 +192,8 @@ export const PieChart = ({
         >
           {validData.map((entry, index) => {
             const fill =
-              getPresentationOption(entry.originalItem.name, 'color') ||
-              chartColorAtIndex(chartColors, index);
+              getSegmentConfig(entry.originalItem.name, 'color') ||
+              chartColors[index % chartColors.length];
             return <Cell key={`cell-${index}`} fill={fill} stroke={OFF_WHITE} />;
           })}
         </Pie>
@@ -210,7 +203,6 @@ export const PieChart = ({
           verticalAlign={verticalAlign as LegendProps['verticalAlign']}
           align={align as LegendProps['align']}
           content={getPieLegend({
-            chartConfig: viewContent.chartConfig as PieChartConfig,
             isEnlarged,
             isExporting,
             legendPosition,

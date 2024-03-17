@@ -13,6 +13,7 @@ import {
 } from '@tupaia/ui-map-components';
 import { get } from '../api';
 import { EntityCode, ProjectCode } from '../../types';
+import { Moment } from 'moment';
 
 type SingleMapOverlayItem = TupaiaWebMapOverlaysRequest.TranslatedMapOverlay;
 
@@ -67,8 +68,8 @@ export const useMapOverlayReport = (
   entityCode?: EntityCode,
   mapOverlay?: SingleMapOverlayItem,
   params?: {
-    startDate?: string;
-    endDate?: string;
+    startDate?: string | Moment;
+    endDate?: string | Moment;
   },
   keepPreviousData?: boolean,
 ) => {

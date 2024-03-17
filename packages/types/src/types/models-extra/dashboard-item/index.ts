@@ -6,17 +6,17 @@
 import type {
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
+  PresentationOptionRange,
 } from './matricies';
 import type { ComponentConfig } from './components';
-import type { ChartConfig } from './charts';
+import type { ChartConfig, ChartPresentationOptions } from './charts';
 import type {
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -25,9 +25,17 @@ import type {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ViewConfig,
+  ViewPresentationOptions,
 } from './views';
 
-export type {
+export { ChartType } from './charts';
+export {
+  isBarChartConfig,
+  isChartConfig,
+  isComposedChartConfig,
+  isGaugeChartConfig,
+  isLineChartConfig,
+  isPieChartConfig,
   BarChartConfig,
   ComposedChartConfig,
   GaugeChartConfig,
@@ -35,6 +43,14 @@ export type {
   PieChartConfig,
   BaseChartConfig,
   CartesianChartConfig,
+  PieChartPresentationOptions,
+  PieChartSegmentConfig,
+  BarChartPresentationOptions,
+  CartesianChartPresentationOptions,
+  ReferenceLinesConfig,
+  ChartConfigT,
+  ChartConfigObject,
+  LineChartChartConfig,
 } from './charts';
 /**
  * The master list of viz types.
@@ -46,14 +62,13 @@ export { ValueType } from './common';
 export type {
   MatrixConfig,
   PresentationOptionCondition,
-  PresentationOptions,
+  MatrixPresentationOptions,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
   ConditionalPresentationOptions,
   ViewConfig,
   DataDownloadViewConfig,
-  ListViewConfig,
   MultiPhotographViewConfig,
   MultiSingleValueViewConfig,
   MultiValueRowViewConfig,
@@ -62,4 +77,13 @@ export type {
   SingleDownloadLinkViewConfig,
   SingleValueViewConfig,
   ChartConfig,
+  ViewPresentationOptions,
+  ChartPresentationOptions,
+  ComponentConfig,
+  PresentationOptionRange,
 };
+
+export type PresentationOptions =
+  | MatrixPresentationOptions
+  | ViewPresentationOptions
+  | ChartPresentationOptions;

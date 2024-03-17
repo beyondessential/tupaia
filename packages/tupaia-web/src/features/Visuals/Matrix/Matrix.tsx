@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -21,10 +21,36 @@ import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 
+const Wrapper = styled.div`
+  // override the base table styles to handle expanded rows, which need to be done with classes and JS because nth-child will not handle skipped rows
+  tbody .MuiTableRow-root {
+    &.odd {
+      background-color: ${({ theme }) => theme.palette.table.odd};
+    }
+    &.even {
+      background-color: ${({ theme }) => theme.palette.table.even};
+    }
+    &.highlighted {
+      background-color: ${({ theme }) => theme.palette.table.highlighted};
+    }
+  }
+`;
+
 const SearchInput = styled(TextField)`
-  margin-bottom: 0;
+  margin: 0;
+  min-width: 10rem;
+
   .MuiInputBase-root {
     background-color: transparent;
+    font-size: inherit; // override this to inherit the font size from the cell
+  }
+  .MuiInputBase-input {
+    font-size: inherit; // override this to inherit the font size from the cell
+    padding: 0.875rem;
+  }
+  .MuiTableCell-root:has(&) {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
   }
 `;
 
@@ -35,18 +61,18 @@ const NoResultsMessage = styled(Typography)`
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
-  categoryId?: MatrixReportRow['categoryId'],
-  searchFilter?: string,
-  drillDown?: MatrixConfig['drillDown'],
-  valueType?: MatrixConfig['valueType'],
+  categoryId: MatrixReportRow['categoryId'] | undefined,
+  searchFilter: string | undefined,
+  drillDown: MatrixConfig['drillDown'] | undefined,
+  valueType: MatrixConfig['valueType'] | undefined,
+  urlSearchParams: URLSearchParams,
+  setUrlSearchParams: (searchParams: URLSearchParams) => void,
 ): MatrixRowType[] => {
-  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
-
   const onDrillDown = row => {
     if (!drillDown) return;
     const { itemCode } = drillDown;
-    urlSearchParams.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
-    urlSearchParams.set(
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
+    urlSearchParams?.set(
       URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID,
       row[drillDown?.parameterLink!] as string,
     );
@@ -70,7 +96,15 @@ const parseRows = (
     const valueTypeToUse = rowValueType || valueType;
     // if the row has a category, then it has children, so we need to parse them using this same function
     if (category) {
-      const children = parseRows(rows, category, searchFilter, drillDown, valueTypeToUse);
+      const children = parseRows(
+        rows,
+        category,
+        searchFilter,
+        drillDown,
+        valueTypeToUse,
+        urlSearchParams,
+        setUrlSearchParams,
+      );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
       return [
@@ -140,13 +174,34 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
  */
 
 const MatrixVisual = () => {
-  const { config, report, isEnlarged } = useContext(DashboardItemContext);
+  const context = useContext(DashboardItemContext);
+  const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
+
+  const { report, isEnlarged } = context;
+
+  // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
+  const config = context.config as MatrixConfig;
+  // casting here because we know that the report is a MatrixReport and it has a different shape than reports of other types
   const { columns = [], rows = [] } = report as MatrixReport;
   const [searchFilter, setSearchFilter] = useState('');
 
-  const { periodGranularity, drillDown, valueType } = config as MatrixConfig;
+  const { periodGranularity, drillDown, valueType } = config;
 
-  const parsedRows = parseRows(rows, undefined, searchFilter, drillDown, valueType);
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) {
+    return <MatrixPreview config={config} />;
+  }
+
+  const parsedRows = parseRows(
+    rows,
+    undefined,
+    searchFilter,
+    drillDown,
+    valueType,
+    urlSearchParams,
+    setUrlSearchParams,
+  );
   const parsedColumns = parseColumns(columns);
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,6 +211,11 @@ const MatrixVisual = () => {
   const clearSearchFilter = () => {
     setSearchFilter('');
   };
+
+  useEffect(() => {
+    // if the drillDownId changes, then we need to clear the search filter so that it doesn't persist across different drillDowns
+    clearSearchFilter();
+  }, [activeDrillDownId]);
 
   if (!parsedRows.length && !searchFilter) {
     return (
@@ -168,14 +228,10 @@ const MatrixVisual = () => {
     );
   }
 
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
-  }
-
   return (
-    <>
+    <Wrapper>
       <MatrixComponent
+        // casting here because we know that the config is a MatrixConfig and it has a different shape than configs of other types, and while we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context
         {...config}
         rows={parsedRows}
         columns={parsedColumns}
@@ -202,7 +258,7 @@ const MatrixVisual = () => {
       {searchFilter && !parsedRows.length && (
         <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
       )}
-    </>
+    </Wrapper>
   );
 };
 

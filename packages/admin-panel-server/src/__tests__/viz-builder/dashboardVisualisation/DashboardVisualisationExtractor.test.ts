@@ -390,13 +390,13 @@ describe('DashboardVisualisationExtractor', () => {
       const extractor = new DashboardVisualisationExtractor(
         {
           code: 'viz',
-          name: 'My Viz',
           data: {
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
             type: 'chart',
             chartType: 'bar',
+            name: 'My Viz',
             output: {
               type: 'bar',
             },
@@ -427,13 +427,13 @@ describe('DashboardVisualisationExtractor', () => {
       const extractor = new DashboardVisualisationExtractor(
         {
           code: 'viz',
-          name: 'My Viz',
           data: {
             transform: ['keyValueByDataElementName'],
           },
           presentation: {
             type: 'chart',
             chartType: 'bar',
+            name: 'My Viz',
             output: {
               type: 'bar',
             },
