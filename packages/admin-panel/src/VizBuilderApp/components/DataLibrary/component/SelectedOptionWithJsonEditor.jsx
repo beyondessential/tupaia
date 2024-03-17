@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { Checkbox, FlexSpaceBetween } from '@tupaia/ui-components';
 import { JsonEditor } from '../../../../widgets';
 import { ExpandedSelectedOption } from './ExpandedSelectedOption';
+import { BaseSelectedOption, EditableSelectedOption } from './options';
 
 const FlexBetweenPanel = styled(FlexSpaceBetween)`
   width: 100%;
