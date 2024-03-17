@@ -31,7 +31,7 @@ describe('Error responses', () => {
 
   describe('Microservice errors', () => {
     it('Returns the original error from the backing server', async () => {
-      const response = await app.get('entity/oracleages/YOLLS');
+      const response = await app.get('entity/redblue/CINNABAR');
 
       // Forbidden error
       expect(response.statusCode).toEqual(403);
