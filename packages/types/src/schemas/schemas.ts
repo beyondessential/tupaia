@@ -83039,6 +83039,105 @@ export const CountryAccessSchema = {
 	]
 } 
 
+export const EntityResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"attributes": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"bounds": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"asset",
+				"business",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		},
+		"isRecent": {
+			"type": "boolean"
+		}
+	},
+	"required": [
+		"attributes",
+		"code",
+		"id",
+		"name",
+		"type"
+	]
+} 
+
 export const MailingListSchema = {
 	"type": "object",
 	"properties": {
