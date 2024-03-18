@@ -6,9 +6,9 @@
 import { Entity } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
-// Default entities types used for multiple entity fetch routes
 export type Params = Record<string, never>;
-export type ResBody = KeysToCamelCase<Partial<Entity>>[];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ResBody = KeysToCamelCase<
+  Pick<Entity, 'id' | 'name' | 'code' | 'type' | 'parent_id'>
+>[];
 export type ReqBody = Record<string, any>;
 export type ReqQuery = Record<string, never>;
