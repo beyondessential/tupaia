@@ -51,7 +51,6 @@ export type MeasureData = Omit<PolygonProps, 'positions'> &
     icon?: IconKey;
     photoUrl?: string;
     value?: number | string;
-    submissionDate?: string | Date;
     positions?: PolygonProps['positions']; //allow this to be optional because of the loose types of measure data
   };
 

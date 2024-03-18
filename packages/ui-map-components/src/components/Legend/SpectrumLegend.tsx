@@ -63,8 +63,6 @@ const getSpectrumLabels = (
         left: formatDataValueByType({ value: min }, valueType),
         right: formatDataValueByType({ value: max }, valueType),
       };
-    case ScaleType.TIME:
-      return { left: '0 days', right: `${moment(max).diff(min, 'days')} days old` };
     default:
       return { left: '0%', right: '100%' };
   }
@@ -92,12 +90,6 @@ const renderSpectrum = ({ min, max, scaleType, scaleColorScheme, valueType }: Sp
   }
 
   switch (scaleType) {
-    case ScaleType.TIME:
-      for (let i = 0; i < 1; i += 0.01) {
-        const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
-        spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
-      }
-      break;
     case ScaleType.PERFORMANCE:
     case ScaleType.GPI:
     case ScaleType.PERFORMANCE_DESC:
