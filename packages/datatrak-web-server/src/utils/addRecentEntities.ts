@@ -22,12 +22,11 @@ export async function addRecentEntities(
     const entity = await models.entity.findById(entityId);
     if (!entity) throw new Error(`Entity ${entityId} does not exist`);
 
-    const countryCode = entity.country_code as string;
-
     // Possibly null if looking at a project, which shouldn't be added to recent entities
     if (!entity.country_code) throw new Error(`Country code ${entity.country_code} does not exist`);
+    const countryCode = entity.country_code;
 
-    const entityType = entity.type as string;
+    const entityType = entity.type;
 
     if (!allRecentEntities?.[countryCode]) {
       allRecentEntities[countryCode] = {};
@@ -36,7 +35,7 @@ export async function addRecentEntities(
       allRecentEntities[countryCode][entityType] = [];
     }
 
-    let recentEntities = [...allRecentEntities[countryCode][entityType]];
+    let recentEntities = [...(allRecentEntities[countryCode][entityType] ?? [])];
     // If the recent entities already contains this value exit early
     if (recentEntities.includes(entityId)) {
       const index = recentEntities.indexOf(entityId);

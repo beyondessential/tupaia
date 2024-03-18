@@ -3,14 +3,11 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export const objectEntries = <U, T extends string | number | symbol>(
-  o: { [key in T]: U } | ArrayLike<U>,
-): [T, U][] => {
-  return Object.entries(o) as [T, U][];
+// handle optional fields in objectEntries
+export const objectEntries = <T extends Record<string, unknown>>(o: T) => {
+  return Object.entries(o) as [keyof T, T[keyof T]][];
 };
 
-export const objectKeys = <T extends string | number | symbol>(
-  o: { [key in T]: unknown } | ArrayLike<unknown>,
-): T[] => {
-  return Object.keys(o) as T[];
+export const objectKeys = <T extends Record<string, unknown>>(o: T) => {
+  return Object.keys(o) as (keyof T)[];
 };

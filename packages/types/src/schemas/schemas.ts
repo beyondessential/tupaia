@@ -32702,7 +32702,7 @@ export const ConditionQuestionConfigSchema = {
 	]
 } 
 
-export const EntityFieldsSchema = {
+export const EntityQuestionConfigFieldsSchema = {
 	"enum": [
 		"attributes",
 		"code",
@@ -32729,8 +32729,8 @@ export const QuestionValueSchema = {
 	]
 } 
 
-export const FieldKeySchema = {
-	"description": "This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camelcased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.",
+export const EntityQuestionConfigFieldKeySchema = {
+	"description": "This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camel-cased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.",
 	"enum": [
 		"attributes",
 		"code",
@@ -32745,7 +32745,7 @@ export const FieldKeySchema = {
 	"type": "string"
 } 
 
-export const FieldValueSchema = {
+export const EntityQuestionConfigFieldValueSchema = {
 	"anyOf": [
 		{
 			"type": "object",
@@ -33919,6 +33919,252 @@ export const FeedItemTemplateVariablesSchema = {
 			"additionalProperties": false
 		}
 	]
+} 
+
+export const RecentEntitiesForCountrySchema = {
+	"type": "object",
+	"properties": {
+		"world": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"project": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"country": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"village": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"case": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"case_contact": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"disaster": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"school": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"catchment": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_catchment": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"field_station": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"city": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"individual": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"postcode": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"household": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"larval_habitat": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"local_government": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"medical_area": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"nursing_zone": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"fetp_graduate": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"incident": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"incident_reported": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"fiji_aspen_facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"wish_sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"trap": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"asset": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"institute": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"msupply_store": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"complaint": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"water_sample": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"farm": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"repair_request": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"business": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const UserAccountPreferencesSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"recent_entities": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const AccessRequestSchema = {
@@ -59213,7 +59459,6 @@ export const EntitySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
-		"attributes",
 		"code",
 		"id",
 		"name",
@@ -71110,7 +71355,19 @@ export const UserAccountSchema = {
 		},
 		"preferences": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"primary_platform": {
 			"enum": [
@@ -71178,7 +71435,19 @@ export const UserAccountCreateSchema = {
 		},
 		"preferences": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"primary_platform": {
 			"enum": [
@@ -71247,7 +71516,19 @@ export const UserAccountUpdateSchema = {
 		},
 		"preferences": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
 		},
 		"primary_platform": {
 			"enum": [
@@ -71846,7 +72127,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"attributes",
 					"code",
 					"id",
 					"name",

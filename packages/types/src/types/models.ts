@@ -11,6 +11,7 @@ import { ReportConfig } from './models-extra';
 import { DashboardItemConfig } from './models-extra';
 import { MapOverlayConfig } from './models-extra';
 import { EntityAttributes } from './models-extra';
+import { UserAccountPreferences } from './models-extra';
 
 export interface AccessRequest {
   'approved'?: boolean | null;
@@ -667,7 +668,7 @@ export interface DisasterEventUpdate {
   'type'?: DisasterEventType;
 }
 export interface Entity {
-  'attributes': EntityAttributes;
+  'attributes'?: EntityAttributes | null;
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
@@ -681,7 +682,7 @@ export interface Entity {
   'type': EntityType;
 }
 export interface EntityCreate {
-  'attributes'?: EntityAttributes;
+  'attributes'?: EntityAttributes | null;
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
@@ -694,7 +695,7 @@ export interface EntityCreate {
   'type': EntityType;
 }
 export interface EntityUpdate {
-  'attributes'?: EntityAttributes;
+  'attributes'?: EntityAttributes | null;
   'bounds'?: string | null;
   'code'?: string;
   'country_code'?: string | null;
@@ -1603,7 +1604,7 @@ export interface UserAccount {
   'password_hash': string;
   'password_salt': string;
   'position'?: string | null;
-  'preferences': {};
+  'preferences': UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
@@ -1619,7 +1620,7 @@ export interface UserAccountCreate {
   'password_hash': string;
   'password_salt': string;
   'position'?: string | null;
-  'preferences'?: {};
+  'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;
@@ -1636,7 +1637,7 @@ export interface UserAccountUpdate {
   'password_hash'?: string;
   'password_salt'?: string;
   'position'?: string | null;
-  'preferences'?: {};
+  'preferences'?: UserAccountPreferences;
   'primary_platform'?: PrimaryPlatform | null;
   'profile_image'?: string | null;
   'verified_email'?: VerifiedEmail | null;

@@ -29,18 +29,24 @@ export type ConditionQuestionConfig = {
   };
 };
 
-type EntityFields = keyof Omit<Entity, 'region' | 'bounds' | 'point' | 'parent_id'>;
+export type EntityQuestionConfigFields = keyof Omit<
+  Entity,
+  'region' | 'bounds' | 'point' | 'parent_id'
+>;
 type QuestionValue = { questionId: Question['id'] };
 
 /**
- * @description This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camelcased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.
+ * @description This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camel-cased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.
  */
-type FieldKey = EntityFields | 'parentId';
-type FieldValue = Entity[EntityFields] | QuestionValue | Entity['parent_id'];
+export type EntityQuestionConfigFieldKey = EntityQuestionConfigFields | 'parentId';
+export type EntityQuestionConfigFieldValue =
+  | Entity[EntityQuestionConfigFields]
+  | QuestionValue
+  | Entity['parent_id'];
 
 export type EntityQuestionConfig = {
   createNew?: boolean;
-  fields?: Record<FieldKey, FieldValue>;
+  fields?: Partial<Record<EntityQuestionConfigFieldKey, EntityQuestionConfigFieldValue>>;
   filter?: {
     type?: EntityType[] | EntityType;
     grandparentId?: QuestionValue;

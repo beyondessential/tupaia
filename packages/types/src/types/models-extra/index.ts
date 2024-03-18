@@ -90,6 +90,9 @@ export {
   EntityQuestionConfig,
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
@@ -99,3 +102,4 @@ export {
   MarkdownTemplateVariables,
 } from './feedItem';
 export { VizPeriodGranularity } from './common';
+export { UserAccountPreferences } from './user';
