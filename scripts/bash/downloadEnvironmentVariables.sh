@@ -3,7 +3,7 @@ set +x # do not output commands in this script, as some would show credentials i
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-FOLDER="Shared-Tupaia Environment Variables" # Folder in LastPass when .env vars are kept
+COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
 # can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
@@ -14,14 +14,23 @@ else
     echo "Fetching environment variables for ${PACKAGES}"
 fi
 
-echo ${LASTPASS_PASSWORD} | LPASS_DISABLE_PINENTRY=1 lpass login ${LASTPASS_EMAIL}
+# Login to bitwarden
+bw login --check || bw login $BITWARDEN_EMAIL $BITWARDEN_PASSWORD
+eval "$(bw unlock $BITWARDEN_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
+
+COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
 for PACKAGE in $PACKAGES; do
     ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
 
-    # checkout deployment specific env vars, or dev as fallback, temporarily redirecting stderr
-    lpass show --notes "${FOLDER}/${PACKAGE}.${DEPLOYMENT_NAME}.env" 2> /dev/null > ${ENV_FILE_PATH} \
-        || lpass show --notes "${FOLDER}/${PACKAGE}.dev.env" > ${ENV_FILE_PATH}
+    # checkout deployment specific env vars, or dev as fallback
+    DEPLOYEMNT_ENV_VARS=$(bw list items --search ${PACKAGE}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+    if [ -n "$DEPLOYEMNT_ENV_VARS" ]; then
+        echo "$DEPLOYEMNT_ENV_VARS" > ${ENV_FILE_PATH}
+    else
+        DEV_ENV_VARS=$(bw list items --search ${PACKAGE}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+        echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
+    fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
@@ -40,4 +49,8 @@ for PACKAGE in $PACKAGES; do
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
         sed -i -E 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
     fi
+
+    echo "downloaded .env vars for $PACKAGE"
 done
+
+bw logout
