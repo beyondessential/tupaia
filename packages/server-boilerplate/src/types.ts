@@ -16,7 +16,6 @@ import {
   SurveyModel,
   SurveyRecord,
   OneTimeLoginModel,
-  OneTimeLoginRecord,
   OptionModel,
   FacilityModel,
   GeographicalAreaModel,
@@ -42,10 +41,9 @@ import {
   EntityHierarchyRecord,
   ReportModel,
   ReportRecord,
+  OneTimeLoginRecord,
 } from '@tupaia/database';
 import {
-  UserEntityPermission,
-  PermissionGroup,
   Country,
   Survey,
   OneTimeLogin,
@@ -57,6 +55,8 @@ import {
   ExternalDatabaseConnection,
   EntityHierarchy,
   Report,
+  UserEntityPermission,
+  PermissionGroup,
 } from '@tupaia/types';
 import {
   FeedItemModel,
