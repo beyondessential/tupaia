@@ -23,7 +23,11 @@ export type BarChartPresentationOptions = CartesianChartPresentationOptions & {
  */
 export type BarChartConfig = CartesianChartConfig & {
   chartType: ChartType.Bar;
-  presentationOptions: BarChartPresentationOptions;
+
+  /**
+   * @description Common options for configuring the chart presentation
+   */
+  presentationOptions?: BarChartPresentationOptions;
 };
 
 export const isBarChartConfig = (config: BaseChartConfig): config is BarChartConfig =>
