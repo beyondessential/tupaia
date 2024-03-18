@@ -30,6 +30,7 @@
     "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
@@ -44,7 +45,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@tupaia/types": "workspace:*",
     "@types/multer": "^1.4.7"
   }
 }
