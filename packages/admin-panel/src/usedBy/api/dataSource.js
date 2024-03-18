@@ -127,7 +127,7 @@ const getDashboardItemsUsedBy = async (api, reportCodes, legacyReportCodes) => {
   // query the dashboard items for the exact report code in the dashboard items
   const dashboardItemsResponse = await api.get('dashboardItems', {
     filter: JSON.stringify({
-      report_code: [...legacyReportCodes, ...legacyReportCodes],
+      report_code: [...reportCodes, ...legacyReportCodes],
     }),
   });
 
@@ -192,8 +192,8 @@ export const getDataSourceUsedBy = async (api, recordType, recordId) => {
 
   const dashboardItemsUsedBy = await getDashboardItemsUsedBy(
     api,
-    legacyReportCodes,
     reportsUsedByCodes,
+    legacyReportCodes,
   );
 
   const mapOverlaysUsedBy = await getMapOverlaysUsedBy(api, legacyReportCodes, reportsUsedByCodes);
