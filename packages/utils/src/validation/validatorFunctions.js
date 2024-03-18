@@ -208,7 +208,7 @@ export const constructRecordExistsWithField = (model, field) => async value => {
 
   const record = await model.findOne({ [field]: value });
   if (!record) {
-    throw new ValidationError(`No ${model.databaseType} with ${field}: ${value}`);
+    throw new ValidationError(`No ${model.databaseRecord} with ${field}: ${value}`);
   }
 };
 
@@ -220,7 +220,7 @@ export const constructRecordNotExistsWithField =
     const record = await model.findOne({ [field]: value });
     if (record) {
       throw new ValidationError(
-        `Another ${model.databaseType} record already exists with with ${field}: ${value}`,
+        `Another ${model.databaseRecord} record already exists with with ${field}: ${value}`,
       );
     }
   };
@@ -230,7 +230,7 @@ export const constructRecordExistsWithCode = model => async value => {
 
   const record = await model.findOne({ code: value });
   if (!record) {
-    throw new ValidationError(`No ${model.databaseType} with code ${value}`);
+    throw new ValidationError(`No ${model.databaseRecord} with code ${value}`);
   }
 };
 
@@ -255,7 +255,7 @@ export const constructRecordExistsWithId = (modelOrDatabase, recordType) => asyn
     const model = modelOrDatabase;
     const record = await model.findById(value);
     if (!record) {
-      throw new ValidationError(`No ${model.databaseType} with id ${value}`);
+      throw new ValidationError(`No ${model.databaseRecord} with id ${value}`);
     }
   }
 };

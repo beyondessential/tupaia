@@ -4,10 +4,10 @@
  */
 
 import { calculateOuterBounds } from '@tupaia/utils';
-import { EntityType } from '../../models';
+import { EntityRecord } from '../../models';
 
 const getParentCode = async (
-  entity: EntityType,
+  entity: EntityRecord,
   context: {
     hierarchyId: string;
   },
@@ -17,7 +17,7 @@ const getParentCode = async (
 };
 
 const getChildrenCodes = async (
-  entity: EntityType,
+  entity: EntityRecord,
   context: {
     hierarchyId: string;
     allowedCountries: string[];
@@ -29,14 +29,14 @@ const getChildrenCodes = async (
   );
 };
 
-const getLocationType = (entity: EntityType) => {
+const getLocationType = (entity: EntityRecord) => {
   if (entity.region) return 'area';
   if (entity.point) return 'point';
   return 'no-coordinates';
 };
 
 const getParentName = async (
-  entity: EntityType,
+  entity: EntityRecord,
   context: {
     hierarchyId: string;
   },
@@ -45,16 +45,16 @@ const getParentName = async (
   return (await entity.getParent(hierarchyId))?.name;
 };
 
-const getPoint = (entity: EntityType) => {
+const getPoint = (entity: EntityRecord) => {
   return entity.getPoint();
 };
 
-const getRegion = (entity: EntityType) => {
+const getRegion = (entity: EntityRecord) => {
   return entity.getRegion();
 };
 
 const getBounds = async (
-  entity: EntityType,
+  entity: EntityRecord,
   context: { hierarchyId: string; allowedCountries: string[] },
 ) => {
   if (entity.isProject()) {
@@ -69,7 +69,7 @@ const getBounds = async (
 };
 
 const getQualifiedName = async (
-  entity: EntityType,
+  entity: EntityRecord,
   context: {
     hierarchyId: string;
   },

@@ -5,13 +5,14 @@
 
 import {
   DataTableModel as BaseDataTableModel,
-  DataTableType as BaseDataTableType,
+  DataTableRecord as BaseDataTableRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import type { DataTable } from '@tupaia/types';
 
 export type DataTableFields = Readonly<DataTable>;
 
-export interface DataTableType extends DataTableFields, Omit<BaseDataTableType, 'id'> {}
+export interface DataTableRecord extends DataTableFields, Omit<BaseDataTableRecord, 'id'> {}
 
-export interface DataTableModel extends Model<BaseDataTableModel, DataTableFields, DataTableType> {}
+export interface DataTableModel
+  extends Model<BaseDataTableModel, DataTableFields, DataTableRecord> {}

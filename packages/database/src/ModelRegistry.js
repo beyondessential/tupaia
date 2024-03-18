@@ -56,20 +56,20 @@ export class ModelRegistry {
   }
 
   /**
-   * @param {string} databaseType
+   * @param {string} databaseRecord
    * @returns {import('./DatabaseModel').DatabaseModel}
    */
-  getModelForDatabaseType(databaseType) {
-    return Object.values(this).find(model => model.databaseType === databaseType);
+  getModelForDatabaseRecord(databaseRecord) {
+    return Object.values(this).find(model => model.databaseRecord === databaseRecord);
   }
 
   /**
-   * @param {string} databaseType
+   * @param {string} databaseRecord
    * @returns {string | undefined} modelName
    */
-  getModelNameForDatabaseType(databaseType) {
+  getModelNameForDatabaseRecord(databaseRecord) {
     const modelEntry = Object.entries(this).find(
-      ([, model]) => model.databaseType === databaseType,
+      ([, model]) => model.databaseRecord === databaseRecord,
     );
     if (!modelEntry) {
       return undefined;
@@ -92,22 +92,22 @@ export class ModelRegistry {
   getTypesToSyncWithMeditrak() {
     return Object.values(this)
       .filter(({ meditrakConfig }) => meditrakConfig)
-      .map(({ databaseType }) => databaseType);
+      .map(({ databaseRecord }) => databaseRecord);
   }
 
   getMinAppVersionByType() {
     return Object.values(this).reduce((result, model) => {
-      const { databaseType, meditrakConfig } = model;
+      const { databaseRecord, meditrakConfig } = model;
       const { minAppVersion = MAX_APP_VERSION } = meditrakConfig || {};
 
-      return { ...result, [databaseType]: minAppVersion };
+      return { ...result, [databaseRecord]: minAppVersion };
     }, {});
   }
 
   initialiseNotifiers() {
-    Object.values(this).forEach(({ databaseType, notifiers = [] }) => {
+    Object.values(this).forEach(({ databaseRecord, notifiers = [] }) => {
       notifiers.forEach(notifier => {
-        this.addChangeHandlerForCollection(databaseType, (...args) => notifier(...args, this));
+        this.addChangeHandlerForCollection(databaseRecord, (...args) => notifier(...args, this));
       });
     });
   }
