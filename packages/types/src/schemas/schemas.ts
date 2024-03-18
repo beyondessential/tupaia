@@ -37884,18 +37884,7 @@ export const EntityQuestionConfigSchema = {
 					]
 				}
 			},
-			"additionalProperties": false,
-			"required": [
-				"attributes",
-				"code",
-				"country_code",
-				"id",
-				"image_url",
-				"metadata",
-				"name",
-				"parentId",
-				"type"
-			]
+			"additionalProperties": false
 		},
 		"filter": {
 			"type": "object",
@@ -38403,18 +38392,7 @@ export const SurveyScreenComponentConfigSchema = {
 							]
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"attributes",
-						"code",
-						"country_code",
-						"id",
-						"image_url",
-						"metadata",
-						"name",
-						"parentId",
-						"type"
-					]
+					"additionalProperties": false
 				},
 				"filter": {
 					"type": "object",
@@ -66858,6 +66836,7 @@ export const EntitySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes",
 		"code",
 		"id",
 		"name",
@@ -82259,6 +82238,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
+					"attributes",
 					"code",
 					"id",
 					"name",

@@ -668,7 +668,7 @@ export interface DisasterEventUpdate {
   'type'?: DisasterEventType;
 }
 export interface Entity {
-  'attributes'?: EntityAttributes | null;
+  'attributes': EntityAttributes;
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
@@ -682,7 +682,7 @@ export interface Entity {
   'type': EntityType;
 }
 export interface EntityCreate {
-  'attributes'?: EntityAttributes | null;
+  'attributes'?: EntityAttributes;
   'bounds'?: string | null;
   'code': string;
   'country_code'?: string | null;
@@ -695,7 +695,7 @@ export interface EntityCreate {
   'type': EntityType;
 }
 export interface EntityUpdate {
-  'attributes'?: EntityAttributes | null;
+  'attributes'?: EntityAttributes;
   'bounds'?: string | null;
   'code'?: string;
   'country_code'?: string | null;
