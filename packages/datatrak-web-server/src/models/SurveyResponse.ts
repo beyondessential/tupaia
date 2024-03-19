@@ -4,7 +4,7 @@
  */
 import {
   SurveyResponseModel as BaseSurveyResponseModel,
-  SurveyResponseType as BaseSurveyResponseType,
+  SurveyResponseRecord as BaseSurveyResponseRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -12,7 +12,7 @@ import { SurveyResponse } from '@tupaia/types';
 
 export interface SurveyResponseModelType
   extends SurveyResponse,
-    Omit<BaseSurveyResponseType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+    Omit<BaseSurveyResponseRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface SurveyResponseModel
   extends Model<BaseSurveyResponseModel, SurveyResponse, SurveyResponseModelType> {}

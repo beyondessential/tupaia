@@ -4,9 +4,12 @@
  */
 
 import { Request } from 'express';
-import { DataTableType } from '../../models';
+import { DataTableRecord } from '../../models';
 
-export const validatePermissions = (dataTable: DataTableType, req: Request<any, any, any, any>) => {
+export const validatePermissions = (
+  dataTable: DataTableRecord,
+  req: Request<any, any, any, any>,
+) => {
   const { code: dataTableCode, permission_groups: permissionGroups } = dataTable;
 
   if (
