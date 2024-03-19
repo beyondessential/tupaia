@@ -189,6 +189,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
       displayType: 'icon',
       icon: 'pin',
     },
+    configMatchesType: ({ displayType }) => displayType === 'icon',
   },
   COLOR: {
     name: 'Color',
@@ -219,6 +220,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
       scaleColorScheme: 'default',
       scaleType: 'gpi',
     },
+    configMatchesType: ({ displayType }) => displayType === 'shaded-spectrum',
   },
 
   // This must be defined at the bottom of this object
