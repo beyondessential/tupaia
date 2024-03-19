@@ -5,7 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
@@ -81,7 +81,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
   }
 
   async findSingleRecord(mapOverlayVisualisationId) {
-    const [mapOverlay] = await this.database.find(TYPES.MAP_OVERLAY, {
+    const [mapOverlay] = await this.database.find(RECORDS.MAP_OVERLAY, {
       id: mapOverlayVisualisationId,
     });
 
@@ -126,7 +126,7 @@ export class GETMapOverlayVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(TYPES.MAP_OVERLAY, parseCriteria(inputCriteria), {
+    return this.database.count(RECORDS.MAP_OVERLAY, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['map_overlay.report_code', 'report.code'],
     });

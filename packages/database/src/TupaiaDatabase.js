@@ -195,9 +195,9 @@ export class TupaiaDatabase {
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**

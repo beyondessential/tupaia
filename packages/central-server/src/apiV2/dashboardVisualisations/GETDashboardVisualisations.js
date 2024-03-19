@@ -5,7 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { camelKeys } from '@tupaia/utils';
 
 import { GETHandler } from '../GETHandler';
@@ -82,7 +82,7 @@ export class GETDashboardVisualisations extends GETHandler {
   }
 
   async findSingleRecord(dashboardVisualisationId) {
-    const [dashboardItem] = await this.database.find(TYPES.DASHBOARD_ITEM, {
+    const [dashboardItem] = await this.database.find(RECORDS.DASHBOARD_ITEM, {
       id: dashboardVisualisationId,
     });
 
@@ -127,7 +127,7 @@ export class GETDashboardVisualisations extends GETHandler {
   }
 
   async countRecords(inputCriteria) {
-    return this.database.count(TYPES.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
+    return this.database.count(RECORDS.DASHBOARD_ITEM, parseCriteria(inputCriteria), {
       joinWith: 'report',
       joinCondition: ['dashboard_item.report_code', 'report.code'],
     });

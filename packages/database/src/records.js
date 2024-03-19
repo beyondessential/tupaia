@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-export const TYPES = {
+export const RECORDS = {
   ANALYTICS: 'analytics',
   ANCESTOR_DESCENDANT_RELATION: 'ancestor_descendant_relation',
   ANSWER: 'answer',

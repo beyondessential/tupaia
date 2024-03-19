@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -46,14 +46,14 @@ export class GETDashboardMailingListEntries extends GETHandler {
     dbOptions.multiJoin = mergeMultiJoin(
       [
         {
-          joinWith: TYPES.DASHBOARD_MAILING_LIST,
+          joinWith: RECORDS.DASHBOARD_MAILING_LIST,
           joinCondition: [
             'dashboard_mailing_list_entry.dashboard_mailing_list_id',
             'dashboard_mailing_list.id',
           ],
         },
         {
-          joinWith: TYPES.DASHBOARD,
+          joinWith: RECORDS.DASHBOARD,
           joinCondition: ['dashboard_mailing_list.dashboard_id', 'dashboard.id'],
         },
       ],

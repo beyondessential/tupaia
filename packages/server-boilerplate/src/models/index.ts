@@ -13,4 +13,4 @@ export {
   QueryConjunctions,
 } from './types';
 
-export { UserType, UserModel } from './User';
+export { UserRecord, UserModel } from './User';

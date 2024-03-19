@@ -4,8 +4,8 @@
  */
 import { TypeValidationError, stripFields } from '@tupaia/utils';
 
-export class DatabaseType {
-  static databaseType = null; // The database table name
+export class DatabaseRecord {
+  static databaseRecord = null; // The database table name
 
   /**
    * The field validator is a map with a type field as the key and
@@ -44,7 +44,7 @@ export class DatabaseType {
           ['field code in joined database']: 'field code to map to in model',
         },
         joinWith: 'table to join with',
-        joinCondition: [`{table to join with}.id`, `${this.databaseType}.${field to join on}`],
+        joinCondition: [`{table to join with}.id`, `${this.databaseRecord}.${field to join on}`],
       }
     ]
 
@@ -54,15 +54,15 @@ export class DatabaseType {
         fields: {
           code: 'country_code',
         },
-        joinWith: TYPES.COUNTRY,
-        joinCondition: [`${TYPES.COUNTRY}.id`, `${this.databaseType}.country_id`],
+        joinWith: RECORDS.COUNTRY,
+        joinCondition: [`${RECORDS.COUNTRY}.id`, `${this.databaseRecord}.country_id`],
       },
       {
         fields: {
           code: 'foo_bar_field',
         },
-        joinWith: TYPES.FOO_BAR,
-        joinCondition: [`${TYPES.FOO_BAR}.id`, `${this.databaseType}.foo_bar_id`],
+        joinWith: RECORDS.FOO_BAR,
+        joinCondition: [`${RECORDS.FOO_BAR}.id`, `${this.databaseRecord}.foo_bar_id`],
       }
     ]
 
@@ -78,8 +78,8 @@ export class DatabaseType {
     });
   }
 
-  get databaseType() {
-    return this.constructor.databaseType;
+  get databaseRecord() {
+    return this.constructor.databaseRecord;
   }
 
   get database() {
@@ -129,7 +129,7 @@ export class DatabaseType {
     const problematicFields = fieldResults.filter(r => r.errors.length > 0);
 
     if (problematicFields.length > 0) {
-      throw new TypeValidationError(problematicFields, this.databaseType);
+      throw new TypeValidationError(problematicFields, this.databaseRecord);
     }
   }
 

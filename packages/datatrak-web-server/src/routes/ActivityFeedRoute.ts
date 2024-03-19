@@ -7,8 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
-import { JOIN_TYPES, TYPES } from '@tupaia/database';
-import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { JOIN_TYPES, RECORDS, QUERY_CONJUNCTIONS } from '@tupaia/database';
 
 export type ActivityFeedRequest = Request<
   DatatrakWebActivityFeedRequest.Params,
@@ -89,8 +88,8 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
       {
         page,
         pageLimit: NUMBER_PER_PAGE,
-        joinWith: TYPES.SURVEY_RESPONSE,
-        joinCondition: [`${TYPES.FEED_ITEM}.record_id`, `${TYPES.SURVEY_RESPONSE}.id`],
+        joinWith: RECORDS.SURVEY_RESPONSE,
+        joinCondition: [`${RECORDS.FEED_ITEM}.record_id`, `${RECORDS.SURVEY_RESPONSE}.id`],
         joinType: JOIN_TYPES.LEFT,
       },
     );

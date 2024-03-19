@@ -4,7 +4,7 @@
  */
 import {
   DashboardModel as BaseDashboardModel,
-  DashboardType as BaseDashboardType,
+  DashboardRecord as BaseDashboardRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -16,6 +16,7 @@ type DashboardFields = Readonly<{
   sort_order: number | null;
 }>;
 
-interface DashboardType extends DashboardFields, Omit<BaseDashboardType, 'id'> {}
+interface DashboardRecord extends DashboardFields, Omit<BaseDashboardRecord, 'id'> {}
 
-export interface DashboardModel extends Model<BaseDashboardModel, DashboardFields, DashboardType> {}
+export interface DashboardModel
+  extends Model<BaseDashboardModel, DashboardFields, DashboardRecord> {}

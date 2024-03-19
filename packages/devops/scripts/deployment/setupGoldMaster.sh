@@ -12,6 +12,9 @@ cd ..
 sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
+# Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
+sudo usermod -a -G ubuntu www-data
+
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
 
@@ -25,7 +28,7 @@ sudo apt-get --no-install-recommends -yqq install \
   libssl-dev  \
   libxml2 \
   libxml2-dev  \
-  libssl1.1 \
+  libssl3 \
   pkg-config \
   ca-certificates \
   xclip
