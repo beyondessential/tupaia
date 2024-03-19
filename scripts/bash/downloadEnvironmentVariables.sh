@@ -24,9 +24,9 @@ for PACKAGE in $PACKAGES; do
     ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
 
     # checkout deployment specific env vars, or dev as fallback
-    DEPLOYEMNT_ENV_VARS=$(bw list items --search ${PACKAGE}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
-    if [ -n "$DEPLOYEMNT_ENV_VARS" ]; then
-        echo "$DEPLOYEMNT_ENV_VARS" > ${ENV_FILE_PATH}
+    DEPLOYMENT_ENV_VARS=$(bw list items --search ${PACKAGE}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+    if [ -n "$DEPLOYMENT_ENV_VARS" ]; then
+        echo "$DEPLOYMENT_ENV_VARS" > ${ENV_FILE_PATH}
     else
         DEV_ENV_VARS=$(bw list items --search ${PACKAGE}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
         echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
