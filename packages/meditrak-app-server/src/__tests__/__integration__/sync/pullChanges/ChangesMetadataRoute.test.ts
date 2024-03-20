@@ -14,6 +14,7 @@ import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../.
 import { CAT_USER_SESSION } from '../../fixtures';
 
 import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../../routes/sync/pullChanges/supportsPermissionsBasedSync';
+import { BASIC_ACCESS } from '../../../utilities/grantUserAccess';
 import {
   PERM_SYNC_COUNTRY_1,
   PERM_SYNC_COUNTRY_2,
@@ -21,14 +22,13 @@ import {
   PERM_SYNC_PG_PUBLIC,
   insertPermissionsBasedSyncTestData,
 } from './fixtures';
-import { BASIC_ACCESS } from '../../../utilities/grantUserAccess';
 
 describe('changes/metadata', () => {
   let app: TestableServer;
   let authHeader: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
-    getTestModels() as MeditrakAppServerModelRegistry,
+    getTestModels() as unknown as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
 
@@ -208,8 +208,9 @@ describe('changes/metadata', () => {
         const startOfThisTest = Date.now();
 
         // Make survey4 have 'public' permissions
-        const survey4 = testData.surveys.find(({ survey }) => survey.code === 'PERM_SYNC_SURVEY_4')
-          .survey;
+        const survey4 = testData.surveys.find(
+          ({ survey }) => survey.code === 'PERM_SYNC_SURVEY_4',
+        ).survey;
         const publicPermissionGroupId = testData.permissionGroups.find(
           pg => pg.name === PERM_SYNC_PG_PUBLIC.name,
         ).id;
@@ -243,8 +244,9 @@ describe('changes/metadata', () => {
         const startOfThisTest = Date.now();
 
         // Make survey4 have 'public' permissions
-        const survey3 = testData.surveys.find(({ survey }) => survey.code === 'PERM_SYNC_SURVEY_3')
-          .survey;
+        const survey3 = testData.surveys.find(
+          ({ survey }) => survey.code === 'PERM_SYNC_SURVEY_3',
+        ).survey;
         const country1Id = testData.countries.find(c => c.code === PERM_SYNC_COUNTRY_1.code).id;
         survey3.country_ids = [...survey3.country_ids, country1Id];
         await survey3.save();

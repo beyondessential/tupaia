@@ -19,7 +19,7 @@ dotenv.config(); // Load the environment variables into process.env
 
 (async () => {
   const database = new TupaiaDatabase();
-  const models = new ModelRegistry(database) as MeditrakAppServerModelRegistry;
+  const models = new ModelRegistry(database) as unknown as MeditrakAppServerModelRegistry;
 
   /**
    * Set up app with routes etc.

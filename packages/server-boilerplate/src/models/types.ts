@@ -78,16 +78,16 @@ export type QueryOptions = {
   joinCondition?: [string, string];
 };
 
-type BaseModelOverrides<Fields = unknown, Type = unknown> = {
-  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type[]>;
-  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<Type>;
-  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<Type>;
+type BaseModelOverrides<Fields = unknown, RecordT = unknown> = {
+  find: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT[]>;
+  findOne: (filter: DbFilter<Fields>, customQueryOptions?: QueryOptions) => Promise<RecordT>;
+  findById: (id: string, customQueryOptions?: QueryOptions) => Promise<RecordT>;
   update: (whereCondition: DbFilter<Fields>, fieldsToUpdate: Partial<Fields>) => Promise<void>;
-  all: () => Promise<Type[]>;
+  all: () => Promise<RecordT[]>;
 };
 
-export type Model<BaseModel extends DatabaseModel, Fields, Record extends DatabaseRecord> = Omit<
+export type Model<BaseModel extends DatabaseModel, Fields, RecordT extends DatabaseRecord> = Omit<
   BaseModel,
   keyof BaseModelOverrides
 > &
-  BaseModelOverrides<Fields, Record>;
+  BaseModelOverrides<Fields, RecordT>;

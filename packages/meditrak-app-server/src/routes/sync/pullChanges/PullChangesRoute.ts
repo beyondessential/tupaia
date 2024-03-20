@@ -13,11 +13,11 @@ import { Route } from '@tupaia/server-boilerplate';
 import { DatabaseError } from '@tupaia/utils';
 import { MeditrakSyncQueue } from '@tupaia/types';
 import { getSupportedModels, getUnsupportedModelFields } from '../../../sync';
+import { MeditrakAppServerModelRegistry } from '../../../types';
+import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
 import { buildMeditrakSyncQuery } from './meditrakSyncQuery';
 import { buildPermissionsBasedMeditrakSyncQuery } from './permissionsBasedMeditrakSyncQuery';
 import { supportsPermissionsBasedSync } from './supportsPermissionsBasedSync';
-import { MeditrakAppServerModelRegistry } from '../../../types';
-import { getSyncRecordTranslator } from '../../../sync/appSupportedModels';
 
 type ChangeRecord = {
   action: MeditrakSyncQueue['type'];

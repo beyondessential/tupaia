@@ -11,6 +11,6 @@ export { ReduxAutocomplete } from './autocomplete';
 export { ExportModal } from './importExport';
 export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
-export { useApi } from './utilities/ApiProvider';
+export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction } from './editor';
 export { App as VizBuilderApp } from './VizBuilderApp/App';
