@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
 import {
@@ -15,7 +15,7 @@ import {
   OutlinedButton,
 } from '@tupaia/ui-components';
 import { ModalContentProvider } from '../widgets';
-import { useApi } from '../utilities/ApiProvider';
+import { useApiContext } from '../utilities/ApiProvider';
 
 const STATUS = {
   IDLE: 'idle',
@@ -35,7 +35,7 @@ export const ExportModal = React.memo(
     cancelButtonText,
     isExportingMessage,
   }) => {
-    const api = useApi();
+    const api = useApiContext();
     const [status, setStatus] = useState(STATUS.IDLE);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
