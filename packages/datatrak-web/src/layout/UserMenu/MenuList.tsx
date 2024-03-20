@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { useMatch } from 'react-router';
 import { Link, ListItem } from '@material-ui/core';
 import { Button, RouterLink } from '@tupaia/ui-components';
-import { useCurrentUser, useLogout } from '../../api';
+import { useCurrentUserContext, useLogout } from '../../api';
 import { ROUTES } from '../../constants';
 import { CancelConfirmModal } from '../../components';
 
@@ -58,7 +58,7 @@ export const MenuList = ({
   onCloseMenu: () => void;
 }) => {
   const [confirmModalLink, setConfirmModalLink] = useState('');
-  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUser();
+  const { isLoggedIn, projectId, hasAdminPanelAccess } = useCurrentUserContext();
   const [surveyCancelModalIsOpen, setIsOpen] = useState(false);
   const isSurveyScreen = !!useMatch(ROUTES.SURVEY_SCREEN);
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
