@@ -38,7 +38,7 @@
     "numeral": "^2.0.6",
     "prop-types": "^15.6.2",
     "sanitize-filename": "^1.6.3",
-    "validator": "^13.7.0",
+    "validator": "^13.11.0",
     "winston": "^3.3.3",
     "xlsx": "^0.10.9",
     "yup": "^0.32.9"
