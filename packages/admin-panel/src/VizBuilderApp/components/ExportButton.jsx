@@ -13,11 +13,11 @@ import {
   useExportDashboardVisualisation,
   useExportMapOverlayVisualisation,
 } from '../api/mutations';
-import { useVisualisationContext, useVizConfigErrorContext } from '../context';
+import { useVisualisation, useVizConfigError } from '../context';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 
 export const ExportButton = () => {
-  const { visualisation } = useVisualisationContext();
+  const { visualisation } = useVisualisation();
 
   const { dashboardItemOrMapOverlay } = useParams();
 
@@ -31,7 +31,7 @@ export const ExportButton = () => {
     throw new Error('Unknown viz type');
   };
 
-  const { hasError: vizConfigHasError } = useVizConfigErrorContext();
+  const { hasError: vizConfigHasError } = useVizConfigError();
   const { mutateAsync: exportVisualisation } = useExportViz();
 
   return (

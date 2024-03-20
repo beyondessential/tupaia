@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { useCurrentUserContext, useUserRewards } from '../../../api';
+import { useCurrentUser, useUserRewards } from '../../../api';
 import { Coconut, Pig } from '../../../components';
 
 const UserContent = styled.div<{
@@ -59,7 +59,7 @@ const UserRewardsItem = styled(Typography)`
 `;
 
 export const UserDetails = () => {
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const { data: userRewards } = useUserRewards();
   return (
     <UserContent $appearsDisabled={user.deleteAccountRequested}>

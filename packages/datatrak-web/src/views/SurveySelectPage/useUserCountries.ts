@@ -3,11 +3,11 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useState } from 'react';
-import { useProjectEntities, useCurrentUserContext } from '../../api';
+import { useProjectEntities, useCurrentUser } from '../../api';
 import { Entity } from '../../types';
 
 export const useUserCountries = () => {
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
   const { data: countries, isLoading: isLoadingCountries } = useProjectEntities(
     user.project?.code,

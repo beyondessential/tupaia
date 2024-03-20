@@ -14,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { FileUploadField } from '../widgets/InputField/FileUploadField';
 import { IconButton, ModalContentProvider } from '../widgets';
-import { useApiContext } from '../utilities/ApiProvider';
+import { useApi } from '../utilities/ApiProvider';
 
 const Container = styled.div`
   padding-bottom: 1.2rem;
@@ -113,7 +113,7 @@ export const FileQuestionField = ({ value: uniqueFileName, onChange, label, maxS
     });
   };
 
-  const api = useApiContext();
+  const api = useApi();
   const downloadFile = async () => {
     await api.download(`downloadFiles`, { uniqueFileNames: uniqueFileName }, fileName);
   };

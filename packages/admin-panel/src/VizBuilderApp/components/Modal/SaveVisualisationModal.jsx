@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -12,16 +12,16 @@ import Typography from '@material-ui/core/Typography';
 
 import {
   Button,
-  ConfirmModal,
+  OutlinedButton,
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  OutlinedButton,
+  ConfirmModal,
 } from '@tupaia/ui-components';
 
-import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM, MODAL_STATUS } from '../../constants';
-import { useVisualisationContext, useVizConfigContext } from '../../context';
+import { MODAL_STATUS, DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
+import { useVizConfig, useVisualisation } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizBuilderBasePath } from '../../utils';
 
@@ -39,8 +39,8 @@ const SuccessText = styled(Typography)`
 export const SaveVisualisationModal = ({ isOpen, onClose }) => {
   const [status, setStatus] = useState(MODAL_STATUS.INITIAL);
   // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisationValue }] = useVizConfigContext();
-  const { visualisation } = useVisualisationContext();
+  const [_, { setVisualisationValue }] = useVizConfig();
+  const { visualisation } = useVisualisation();
 
   const basePath = useVizBuilderBasePath();
   const { dashboardItemOrMapOverlay } = useParams();

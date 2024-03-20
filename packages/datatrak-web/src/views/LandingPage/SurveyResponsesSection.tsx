@@ -6,7 +6,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
-import { useCurrentUserContext, useCurrentUserSurveyResponses } from '../../api';
+import { useCurrentUser, useCurrentUserSurveyResponses } from '../../api';
 import { displayDate } from '../../utils';
 import { LoadingTile, SurveyTickIcon, Tile } from '../../components';
 import { SectionHeading } from './SectionHeading';
@@ -35,7 +35,7 @@ const ScrollBody = styled.div`
 
 export const SurveyResponsesSection = () => {
   const { data: recentSurveyResponses, isSuccess, isLoading } = useCurrentUserSurveyResponses();
-  const { project } = useCurrentUserContext();
+  const { project } = useCurrentUser();
 
   return (
     <Container>

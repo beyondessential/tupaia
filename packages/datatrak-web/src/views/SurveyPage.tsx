@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
+import { useCurrentUser, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
@@ -72,7 +72,7 @@ const SurveyPageInner = () => {
 export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   const { mutateAsync: editUser } = useEditUser();
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const { data: survey } = useSurvey(surveyCode);
   const { data: surveyCountry } = useEntityByCode(countryCode!);
 

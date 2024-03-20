@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Paper } from '@material-ui/core';
 import { ProjectSelectForm, RequestProjectAccess } from '../../features';
-import { useCurrentUserContext } from '../../api';
+import { useCurrentUser } from '../../api';
 import { Modal } from '../../components';
 
 const Wrapper = styled(Paper)`
@@ -24,7 +24,7 @@ interface ModalProps {
 }
 
 export const ProjectSelectModal = ({ onClose }: ModalProps) => {
-  const { projectId } = useCurrentUserContext();
+  const { projectId } = useCurrentUser();
   const [requestAccessProjectCode, setRequestAccessProjectCode] = useState<string | null>(null);
 
   return (

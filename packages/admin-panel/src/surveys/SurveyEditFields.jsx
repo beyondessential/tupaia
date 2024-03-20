@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Editor } from '../editor/Editor';
 import { useSuggestSurveyCode } from './useSuggestSurveyCode';
-import { useApiContext } from '../utilities/ApiProvider';
+import { useApi } from '../utilities/ApiProvider';
 import { useDebounce } from '../utilities';
 
 export const SurveyEditFields = ({ fields, recordData, onEditField, ...restOfProps }) => {
@@ -15,7 +15,7 @@ export const SurveyEditFields = ({ fields, recordData, onEditField, ...restOfPro
   const debouncedName = useDebounce(name);
 
   const [codeTouched, setCodeTouched] = useState(false);
-  const api = useApiContext();
+  const api = useApi();
   const { data } = useSuggestSurveyCode(api, debouncedName);
   const suggestedCode = data;
 

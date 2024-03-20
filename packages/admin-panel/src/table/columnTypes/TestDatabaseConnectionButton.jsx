@@ -10,7 +10,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Tooltip } from '@material-ui/core';
 import styled from 'styled-components';
-import { useApiContext } from '../../utilities/ApiProvider';
+import { useApi } from '../../utilities/ApiProvider';
 import { IconButton } from '../../widgets';
 import { makeSubstitutionsInString } from '../../utilities';
 
@@ -43,7 +43,7 @@ const TestConnectionIconButton = styled(IconButton)`
 `;
 
 export const TestDatabaseConnectionButton = ({ row }) => {
-  const api = useApiContext();
+  const api = useApi();
   const [buttonState, setButtonState] = useState(BUTTON_STATES.IDLE);
   const [toolTip, setTooltip] = useState(null);
 

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
-import { post, useCurrentUserContext, useEntityByCode } from '../../api';
+import { post, useCurrentUser, useEntityByCode } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -19,7 +19,7 @@ export type AnswersT = Record<string, Answer>;
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
@@ -40,7 +40,7 @@ export const useSubmitSurvey = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const { data: survey } = useSurvey(params.surveyCode);
 
   const surveyResponseData = useSurveyResponseData();

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { useCurrentUserContext } from '../../api';
+import { useCurrentUser } from '../../api';
 import { useLeaderboard, useUserRewards } from '../../api/queries';
 import { UserRewardsSection } from './UserRewardsSection';
 import { LeaderboardTable } from './LeaderboardTable';
@@ -24,7 +24,7 @@ const ScrollBody = styled.div`
 `;
 
 export const Leaderboard = () => {
-  const user = useCurrentUserContext();
+  const user = useCurrentUser();
   const { data: userRewards, isSuccess } = useUserRewards();
   const { data: leaderboard } = useLeaderboard(user.projectId);
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImportIcon from '@material-ui/icons/Publish';
@@ -16,9 +16,9 @@ import {
   LightOutlinedButton,
   OutlinedButton,
 } from '@tupaia/ui-components';
-import { InputField, ModalContentProvider } from '../widgets';
-import { useApiContext } from '../utilities/ApiProvider';
-import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
+import { ModalContentProvider, InputField } from '../widgets';
+import { useApi } from '../utilities/ApiProvider';
+import { DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS, DATA_CHANGE_ERROR } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 
 const STATUS = {
@@ -46,7 +46,7 @@ export const ImportModalComponent = React.memo(
     uploadButtonText,
     noFileMessage,
   }) => {
-    const api = useApiContext();
+    const api = useApi();
     const [status, setStatus] = useState(STATUS.IDLE);
     const [finishedMessage, setFinishedMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);

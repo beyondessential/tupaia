@@ -3,14 +3,14 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@tupaia/ui-components';
-import { useVizConfigErrorContext } from '../context';
+import { useVizConfigError } from '../context';
 
 import { SaveVisualisationModal } from './Modal';
 
 export const SaveButton = () => {
-  const { hasError: vizConfigHasError } = useVizConfigErrorContext();
+  const { hasError: vizConfigHasError } = useVizConfigError();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);

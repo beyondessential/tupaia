@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import Chip from '@material-ui/core/Chip';
-import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/queries';
-import { useVizConfigContext } from '../../context';
+import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
+import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
 
@@ -20,7 +20,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
 
   const { handleSubmit, register, errors } = useForm();
   const [{ visualisation, vizType }, { setVisualisationValue, setVizType, setPresentation }] =
-    useVizConfigContext();
+    useVizConfig();
   const { data: allProjects = [], isLoading: isLoadingAllProjects } = useProjects();
   const { data: allCountries = [], isLoading: isLoadingAllCountries } = useCountries();
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistance } from 'date-fns';
 import SyncIcon from '@material-ui/icons/Sync';
@@ -11,7 +11,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Tooltip } from '@material-ui/core';
 import styled, { keyframes } from 'styled-components';
-import { useApiContext } from '../utilities/ApiProvider';
+import { useApi } from '../utilities/ApiProvider';
 import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
 
@@ -97,7 +97,7 @@ const formatLog = ({ timestamp, message }) =>
 
 export const SyncStatus = props => {
   const { actionConfig, original } = props;
-  const api = useApiContext();
+  const api = useApi();
   const [status, setStatus] = useExternalState(`${original.id}.status`, original.sync_status);
   const [logMessage, setLogMessage] = useExternalState(`${original.id}.logMessage`, '');
   const [errorMessage, setErrorMessage] = useState(null);
