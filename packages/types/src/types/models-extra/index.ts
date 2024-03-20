@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export { ReferenceProps, PlaintextReferenceProps, LinkReferenceProps } from './common';
+export {
+  ReferenceProps,
+  PlaintextReferenceProps,
+  LinkReferenceProps,
+  EntityAttributes,
+} from './common';
 export type {
   ReportConfig,
   StandardReportConfig,
@@ -86,6 +91,9 @@ export {
   EntityQuestionConfig,
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
@@ -95,3 +103,4 @@ export {
   MarkdownTemplateVariables,
 } from './feedItem';
 export { VizPeriodGranularity } from './common';
+export { UserAccountPreferences } from './user';

@@ -7,20 +7,16 @@ import {
   AncestorDescendantRelationModel as BaseAncestorDescendantRelationModel,
   AncestorDescendantRelationRecord as BaseAncestorDescendantRelationRecord,
 } from '@tupaia/database';
-import { Model, DbFilter, Joined } from '@tupaia/server-boilerplate';
-import { EntityFields } from './Entity';
+import { AncestorDescendantRelation, Entity } from '@tupaia/types';
+import { Model, DbFilter, Joined } from './types';
 
-export type AncestorDescendantRelationFields = Readonly<{
-  id: string;
-  entity_hierarchy_id: string;
-  generational_distance: number;
-}> &
-  Joined<EntityFields, 'ancestor'> &
-  Joined<EntityFields, 'descendant'>;
+type AncestorDescendantRelationFields = Readonly<AncestorDescendantRelation> &
+  Joined<Entity, 'ancestor'> &
+  Joined<Entity, 'descendant'>;
 
-export interface AncestorDescendantRelationRecord
+interface AncestorDescendantRelationRecord
   extends AncestorDescendantRelationFields,
-    Omit<BaseAncestorDescendantRelationRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+    Omit<BaseAncestorDescendantRelationRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string in the type definition
 
 export interface AncestorDescendantRelationModel
   extends Model<

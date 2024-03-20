@@ -9,6 +9,7 @@ import { screen } from '@testing-library/react';
 import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
 import { renderComponent } from '../../helpers/render';
 import { EntityQuestion } from '../../../features/Questions';
+import { EntityType } from '@tupaia/types';
 
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -123,7 +124,7 @@ describe('Entity Question', () => {
         config={{
           entity: {
             filter: {
-              type: 'facility',
+              type: EntityType.facility,
               parentId: {
                 questionId: 'theParentQuestionId',
               },
