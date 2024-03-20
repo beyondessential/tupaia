@@ -44,12 +44,12 @@ export const getSupportedModels = (appVersion?: string) => {
     .map(([modelName]) => modelName) as (keyof typeof appSupportedModels)[];
 };
 
-export const getSupportedDatabaseTypes = (
+export const getSupportedDatabaseRecords = (
   models: MeditrakAppServerModelRegistry,
   appVersion?: string,
 ) => {
   const supportedModels = getSupportedModels(appVersion);
-  return supportedModels.map(modelName => models[modelName].databaseType as string);
+  return supportedModels.map(modelName => models[modelName].databaseRecord as string);
 };
 
 const isSupportedModel = (modelName: string): modelName is keyof typeof appSupportedModels =>

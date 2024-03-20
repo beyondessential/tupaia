@@ -5,7 +5,7 @@
 import { Request, NextFunction, Response } from 'express';
 import { PermissionsError } from '@tupaia/utils';
 import { ajvValidate } from '@tupaia/tsutils';
-import { EntityType, EntityFilter } from '../../../models';
+import { EntityRecord, EntityFilter } from '../../../models';
 import { extractFilterFromQuery } from './filter';
 import { MultiEntityRequestBody, MultiEntityRequestBodySchema } from '../types';
 
@@ -16,9 +16,9 @@ const throwNoAccessError = (entityCodes: string[]) => {
 };
 
 const userCanAccessEntity = (
-  entity: EntityType,
+  entity: EntityRecord,
   allowedCountries: string[],
-  rootEntity: EntityType,
+  rootEntity: EntityRecord,
 ) =>
   (entity.isProject() && entity.code === rootEntity.code) ||
   (notNull(entity.country_code) && allowedCountries.includes(entity.country_code));
@@ -74,7 +74,7 @@ const validateEntitiesAndBuildContext = async (
 
 const getFilterInfo = async (
   req: Request<{ hierarchyName: string }, any, any, { filter?: string; isPublic?: string }>,
-  rootEntity: EntityType,
+  rootEntity: EntityRecord,
 ) => {
   const isPublic = req.query.isPublic?.toLowerCase() === 'true';
 
@@ -106,7 +106,7 @@ const getFilterInfo = async (
 
 export const attachSingleEntityContext = async (
   req: Request<{ hierarchyName: string; entityCode: string }, any, any, { filter?: string }> & {
-    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+    ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
   res: Response,
   next: NextFunction,
@@ -128,7 +128,7 @@ export const attachSingleEntityContext = async (
 
 export const attachMultiEntityContext = async (
   req: Request<{ hierarchyName: string }, any, { entities: string[] }, { filter?: string }> & {
-    ctx: { entities: EntityType[]; allowedCountries: string[]; filter: EntityFilter };
+    ctx: { entities: EntityRecord[]; allowedCountries: string[]; filter: EntityFilter };
   },
   res: Response,
   next: NextFunction,

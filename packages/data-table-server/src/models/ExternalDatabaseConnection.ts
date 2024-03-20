@@ -5,18 +5,18 @@
 
 import {
   ExternalDatabaseConnectionModel as BaseExternalDatabaseConnectionModel,
-  ExternalDatabaseConnectionType as BaseExternalDatabaseConnectionType,
+  ExternalDatabaseConnectionRecord as BaseExternalDatabaseConnectionRecord,
 } from '@tupaia/database';
 import { ExternalDatabaseConnection as ExternalDatabaseConnectionFields } from '@tupaia/types';
 import { Model } from '@tupaia/server-boilerplate';
 
-export interface ExternalDatabaseConnectionType
+export interface ExternalDatabaseConnectionRecord
   extends ExternalDatabaseConnectionFields,
-    Omit<BaseExternalDatabaseConnectionType, 'id'> {}
+    Omit<BaseExternalDatabaseConnectionRecord, 'id'> {}
 
 export interface ExternalDatabaseConnectionModel
   extends Model<
     BaseExternalDatabaseConnectionModel,
     ExternalDatabaseConnectionFields,
-    ExternalDatabaseConnectionType
+    ExternalDatabaseConnectionRecord
   > {}

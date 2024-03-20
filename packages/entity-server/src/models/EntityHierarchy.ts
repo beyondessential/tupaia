@@ -5,7 +5,7 @@
 
 import {
   EntityHierarchyModel as BaseEntityHierarchyModel,
-  EntityHierarchyType as BaseEntityHierarchyType,
+  EntityHierarchyRecord as BaseEntityHierarchyRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -14,7 +14,9 @@ type EntityHierarchyFields = Readonly<{
   id: string;
 }>;
 
-interface EntityHierarchyType extends EntityHierarchyFields, Omit<BaseEntityHierarchyType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+interface EntityHierarchyRecord
+  extends EntityHierarchyFields,
+    Omit<BaseEntityHierarchyRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface EntityHierarchyModel
-  extends Model<BaseEntityHierarchyModel, EntityHierarchyFields, EntityHierarchyType> {}
+  extends Model<BaseEntityHierarchyModel, EntityHierarchyFields, EntityHierarchyRecord> {}

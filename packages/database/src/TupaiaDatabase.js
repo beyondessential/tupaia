@@ -77,16 +77,19 @@ export class TupaiaDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
-    const connectToDatabase = async () => {
-      this.connection =
-        transactingConnection ||
-        knex({
+    if (transactingConnection) {
+      this.connection = transactingConnection;
+      this.connectionPromise = Promise.resolve(true);
+    } else {
+      const connectToDatabase = async () => {
+        this.connection = knex({
           client: 'pg',
           connection: getConnectionConfig(),
         });
-      return true;
-    };
-    this.connectionPromise = connectToDatabase();
+        return true;
+      };
+      this.connectionPromise = connectToDatabase();
+    }
 
     this.handlerLock = new Multilock();
 
@@ -195,9 +198,9 @@ export class TupaiaDatabase {
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**

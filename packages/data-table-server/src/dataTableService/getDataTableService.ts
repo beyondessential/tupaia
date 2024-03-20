@@ -5,9 +5,12 @@
 
 import { Request } from 'express';
 import { DataTableServiceBuilder, getDataTableServiceType } from './DataTableServiceBuilder';
-import { DataTableType } from '../models';
+import { DataTableRecord } from '../models';
 
-export const getDataTableService = (dataTable: DataTableType, req: Request<any, any, any, any>) => {
+export const getDataTableService = (
+  dataTable: DataTableRecord,
+  req: Request<any, any, any, any>,
+) => {
   const { accessPolicy, models, ctx } = req;
 
   const serviceType = getDataTableServiceType(dataTable);

@@ -20,7 +20,7 @@ export {
 export {
   ApiBuilder as OrchestratorApiBuilder,
   SessionModel,
-  SessionType,
+  SessionRecord,
   SessionCookie,
   SessionSwitchingAuthHandler,
   attachSession,

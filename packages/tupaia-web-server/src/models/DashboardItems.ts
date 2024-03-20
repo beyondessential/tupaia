@@ -4,12 +4,12 @@
  */
 import {
   DashboardItemModel as BaseDashboardItemModel,
-  DashboardItemType as BaseDashboardItemType,
+  DashboardItemRecord as BaseDashboardItemRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import { DashboardItem } from '@tupaia/types';
 
-interface DashboardItemType extends DashboardItem, Omit<BaseDashboardItemType, 'id'> {}
+interface DashboardItemRecord extends DashboardItem, Omit<BaseDashboardItemRecord, 'id'> {}
 
 export interface DashboardItemModel
-  extends Model<BaseDashboardItemModel, DashboardItem, DashboardItemType> {}
+  extends Model<BaseDashboardItemModel, DashboardItem, DashboardItemRecord> {}
