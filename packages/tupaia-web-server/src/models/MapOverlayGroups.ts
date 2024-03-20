@@ -4,7 +4,7 @@
  */
 import {
   MapOverlayGroupModel as BaseGroupModel,
-  MapOverlayGroupType as BaseGroupType,
+  MapOverlayGroupRecord as BaseGroupType,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -14,7 +14,7 @@ type MapOverlayGroupFields = Readonly<{
   code: string;
 }>;
 
-interface MapOverlayGroupType extends MapOverlayGroupFields, Omit<BaseGroupType, 'id'> {}
+interface MapOverlayGroupRecord extends MapOverlayGroupFields, Omit<BaseGroupType, 'id'> {}
 
 export interface MapOverlayGroupModel
-  extends Model<BaseGroupModel, MapOverlayGroupFields, MapOverlayGroupType> {}
+  extends Model<BaseGroupModel, MapOverlayGroupFields, MapOverlayGroupRecord> {}

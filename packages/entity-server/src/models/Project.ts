@@ -4,7 +4,10 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { ProjectModel as BaseProjectModel, ProjectType as BaseProjectType } from '@tupaia/database';
+import {
+  ProjectModel as BaseProjectModel,
+  ProjectRecord as BaseProjectRecord,
+} from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
 type ProjectFields = Readonly<{
@@ -16,8 +19,8 @@ type ProjectFields = Readonly<{
   permission_groups: string[];
 }>;
 
-interface ProjectType extends ProjectFields, Omit<BaseProjectType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+interface ProjectRecord extends ProjectFields, Omit<BaseProjectRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
-export interface ProjectModel extends Model<BaseProjectModel, ProjectFields, ProjectType> {
-  getAccessibleProjects: (accessPolicy: AccessPolicy) => Promise<ProjectType[]>;
+export interface ProjectModel extends Model<BaseProjectModel, ProjectFields, ProjectRecord> {
+  getAccessibleProjects: (accessPolicy: AccessPolicy) => Promise<ProjectRecord[]>;
 }

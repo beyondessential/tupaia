@@ -12,10 +12,13 @@ cd ..
 sudo cp -R ./server-configs-nginx/h5bp/ /etc/nginx/
 rm -rf server-configs-nginx
 
+# Add the nginx user (www-data) to the ubuntu group to give it access to the tupaia code
+sudo usermod -a -G ubuntu www-data
+
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
 
-# install lastpass
+# install base dependencies
 sudo apt-get --no-install-recommends -yqq install \
   bash-completion \
   build-essential \
@@ -25,18 +28,11 @@ sudo apt-get --no-install-recommends -yqq install \
   libssl-dev  \
   libxml2 \
   libxml2-dev  \
-  libssl1.1 \
+  libssl3 \
   pkg-config \
   ca-certificates \
-  xclip
-
-git clone https://github.com/lastpass/lastpass-cli.git
-cd lastpass-cli
-sudo make
-sudo make install
-cd ../
-rm -rf lastpass-cli
-mkdir -p /home/ubuntu/.local/share/lpass
+  xclip \
+  jq
 
 # install puppeteer dependencies https://pptr.dev/15.3.0/troubleshooting#chrome-headless-doesnt-launch-on-unix
 sudo apt-get -yqq install \
@@ -88,6 +84,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 nvm install $(sudo cat tupaia/.nvmrc)
 npm install --global yarn
+
+# install bitwarden cli
+npm install --global @bitwarden/cli
 
 # install pm2
 npm install --global pm2

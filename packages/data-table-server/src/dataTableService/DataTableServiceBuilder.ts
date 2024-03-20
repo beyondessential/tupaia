@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { DataTableType } from '../models';
+import { DataTableRecord } from '../models';
 import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import {
   AnalyticsDataTableService,
@@ -67,7 +67,7 @@ const isValidServiceType = (
 ): serviceType is keyof typeof dataTablesServiceBuilders =>
   serviceType in dataTablesServiceBuilders;
 
-export const getDataTableServiceType = (dataTable: DataTableType) => {
+export const getDataTableServiceType = (dataTable: DataTableRecord) => {
   const { type } = dataTable;
 
   if (!isValidServiceType(type)) {
@@ -84,7 +84,7 @@ export const getDataTableServiceType = (dataTable: DataTableType) => {
 export class DataTableServiceBuilder {
   public setServiceType<T extends keyof typeof dataTablesServiceBuilders>(serviceType: T) {
     return dataTablesServiceBuilders[serviceType]() as ReturnType<
-      typeof dataTablesServiceBuilders[T]
+      (typeof dataTablesServiceBuilders)[T]
     >;
   }
 }

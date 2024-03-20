@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES, generateId } from '@tupaia/database';
+import { RECORDS, generateId } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
 export const DHIS_REFERENCE = 'XXXXXXX';
@@ -51,7 +51,7 @@ export const ANSWER = {
 export const CHANGE = {
   id: SURVEY_RESPONSE.id, // to ensure upsert works when generating test data
   type: 'update',
-  record_type: TYPES.SURVEY_RESPONSE,
+  record_type: RECORDS.SURVEY_RESPONSE,
   record_id: SURVEY_RESPONSE.id,
 };
 

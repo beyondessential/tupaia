@@ -10,11 +10,11 @@ import {
   UserEntityPermissionModel,
   EntityModel,
   PermissionGroupModel,
-  EntityType,
-  UserEntityPermissionType,
-  PermissionGroupType,
+  EntityRecord,
+  UserEntityPermissionRecord,
+  PermissionGroupRecord,
   CountryModel,
-  CountryType,
+  CountryRecord,
 } from '@tupaia/database';
 import { UserEntityPermission, Entity, PermissionGroup, Country } from '@tupaia/types';
 import { Model, UserModel } from './models';
@@ -37,13 +37,13 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   readonly userEntityPermission: Model<
     UserEntityPermissionModel,
     UserEntityPermission,
-    UserEntityPermissionType & UserEntityPermission
+    UserEntityPermissionRecord & UserEntityPermission
   >;
-  readonly entity: Model<EntityModel, Entity, EntityType & Entity>;
+  readonly entity: Model<EntityModel, Entity, EntityRecord & Entity>;
   readonly permissionGroup: Model<
     PermissionGroupModel,
     PermissionGroup,
-    PermissionGroupType & PermissionGroup
+    PermissionGroupRecord & PermissionGroup
   >;
-  readonly country: Model<CountryModel, Country, CountryType & Country>;
+  readonly country: Model<CountryModel, Country, CountryRecord & Country>;
 }

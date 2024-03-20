@@ -5,11 +5,11 @@
 
 import { DatabaseError } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class APIClientType extends DatabaseType {
-  static databaseType = TYPES.API_CLIENT;
+class APIClientRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.API_CLIENT;
 
   async getUser() {
     const userId = this.user_account_id;
@@ -30,7 +30,7 @@ class APIClientType extends DatabaseType {
 }
 
 export class APIClientModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return APIClientType;
+  get DatabaseRecordClass() {
+    return APIClientRecord;
   }
 }

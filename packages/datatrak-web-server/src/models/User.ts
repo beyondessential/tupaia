@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import { UserModel as BaseUserModel, UserType as BaseUserType } from '@tupaia/database';
+import { UserModel as BaseUserModel, UserRecord as BaseUserRecord } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import { UserAccount, NullableKeysToOptional } from '@tupaia/types';
 
-export interface UserType extends UserAccount, Omit<BaseUserType, 'id'> {
+export interface UserRecord extends UserAccount, Omit<BaseUserRecord, 'id'> {
   getData: () => Promise<NullableKeysToOptional<UserAccount>>;
 }
 
-export interface UserModel extends Model<BaseUserModel, UserAccount, UserType> {}
+export interface UserModel extends Model<BaseUserModel, UserAccount, UserRecord> {}
