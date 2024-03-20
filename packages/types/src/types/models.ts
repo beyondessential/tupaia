@@ -627,46 +627,6 @@ export interface DhisSyncQueueUpdate {
   'record_type'?: string;
   'type'?: string;
 }
-export interface Disaster {
-  'countryCode': string;
-  'description'?: string | null;
-  'id': string;
-  'name': string;
-  'type': DisasterType;
-}
-export interface DisasterCreate {
-  'countryCode': string;
-  'description'?: string | null;
-  'name': string;
-  'type': DisasterType;
-}
-export interface DisasterUpdate {
-  'countryCode'?: string;
-  'description'?: string | null;
-  'id'?: string;
-  'name'?: string;
-  'type'?: DisasterType;
-}
-export interface DisasterEvent {
-  'date': Date;
-  'disasterId': string;
-  'id': string;
-  'organisationUnitCode': string;
-  'type': DisasterEventType;
-}
-export interface DisasterEventCreate {
-  'date': Date;
-  'disasterId': string;
-  'organisationUnitCode': string;
-  'type': DisasterEventType;
-}
-export interface DisasterEventUpdate {
-  'date'?: Date;
-  'disasterId'?: string;
-  'id'?: string;
-  'organisationUnitCode'?: string;
-  'type'?: DisasterEventType;
-}
 export interface Entity {
   'attributes': EntityAttributes;
   'bounds'?: string | null;
