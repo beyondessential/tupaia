@@ -1784,6 +1784,8 @@ export enum EntityType {
   'farm' = 'farm',
   'repair_request' = 'repair_request',
   'business' = 'business',
+  'health_clinic_boundary' = 'health_clinic_boundary',
+  'enumeration_area' = 'enumeration_area',
 }
 export enum DisasterType {
   'cyclone' = 'cyclone',
