@@ -44,6 +44,8 @@ import {
   OneTimeLoginRecord,
   DataElementModel,
   DataElementRecord,
+  AnswerModel,
+  AnswerRecord,
 } from '@tupaia/database';
 import {
   Country,
@@ -72,8 +74,6 @@ import {
   AncestorDescendantRelationModel,
   EntityModel,
 } from './models';
-import { AnswerModel } from '@tupaia/database';
-import { AnswerRecord } from '@tupaia/database';
 
 export type AccessPolicyObject = Record<string, string[]>;
 

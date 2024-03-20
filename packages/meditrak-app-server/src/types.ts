@@ -29,7 +29,8 @@ type Models =
   | 'optionSet'
   | 'surveyGroup'
   | 'surveyScreen'
-  | 'surveyScreenComponent';
+  | 'surveyScreenComponent'
+  | 'getModelNameForDatabaseRecord';
 
 export interface MeditrakAppServerModelRegistry
   extends Pick<ServerBoilerplateModelRegistry, Models> {
