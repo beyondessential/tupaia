@@ -7,7 +7,7 @@ import {
   DataGroup,
   DataSource,
   DataSourceType,
-  EntityType,
+  EntityRecord,
   EventResults,
 } from '../../types';
 import { EMPTY_ANALYTICS_RESULTS } from '../../utils';
@@ -188,7 +188,7 @@ export class WeatherService extends Service {
     }
   }
 
-  private async getEntityPoint(entity: EntityType) {
+  private async getEntityPoint(entity: EntityRecord) {
     try {
       return entity.pointLatLon();
     } catch (error) {
@@ -202,7 +202,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getForecastWeather(
-    entities: EntityType[],
+    entities: EntityRecord[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -223,7 +223,7 @@ export class WeatherService extends Service {
     };
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityType) => {
+    const getDataForEntity = async (entity: EntityRecord) => {
       const { lat, lon } = await this.getEntityPoint(entity);
 
       // Maximum forecast is 16 days, we request all of it and filter it down to the dates we need.
@@ -255,7 +255,7 @@ export class WeatherService extends Service {
    * Fetch API data and return in format of events/analytics
    */
   private async getHistoricWeather(
-    entities: EntityType[],
+    entities: EntityRecord[],
     startDate: string,
     endDate: string,
     apiResultTranslator: ApiResultTranslator,
@@ -264,7 +264,7 @@ export class WeatherService extends Service {
       this.dateSanitiser.sanitiseHistoricDateRange(startDate, endDate);
 
     // Run requests in parallel for performance
-    const getDataForEntity = async (entity: EntityType) => {
+    const getDataForEntity = async (entity: EntityRecord) => {
       const { lat, lon } = await this.getEntityPoint(entity);
 
       if (sanitisedStartDate === null || sanitisedEndDate === null) {

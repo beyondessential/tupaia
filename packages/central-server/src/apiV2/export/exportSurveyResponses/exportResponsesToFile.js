@@ -15,7 +15,7 @@ import {
   truncateString,
   toFilename,
 } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../../../dataAccessors';
 import { hasBESAdminAccess } from '../../../permissions';
@@ -227,7 +227,10 @@ export async function exportResponsesToFile(
       models,
       surveyResponseIds,
       {},
-      { columns: [{ [`${TYPES.SURVEY_RESPONSE}.id`]: 'answer.survey_response_id' }], sort: [] },
+      {
+        columns: [{ [`${RECORDS.SURVEY_RESPONSE}.id`]: 'answer.survey_response_id' }],
+        sort: [],
+      },
     );
 
     // Add any questions that are in survey responses but no longer in the survey

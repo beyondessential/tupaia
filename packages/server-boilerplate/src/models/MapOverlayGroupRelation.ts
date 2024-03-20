@@ -5,9 +5,9 @@
 
 import {
   MapOverlayGroupRelationModel as BaseRelationModel,
-  MapOverlayGroupRelationType as BaseRelationType,
+  MapOverlayGroupRelationRecord as BaseRelationType,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
+import { Model } from './types';
 
 type MapOverlayGroupRelationFields = Readonly<{
   id: string;
@@ -17,11 +17,11 @@ type MapOverlayGroupRelationFields = Readonly<{
   sort_order: number | null;
 }>;
 
-interface MapOverlayGroupRelationType
+interface MapOverlayGroupRelationRecord
   extends MapOverlayGroupRelationFields,
     Omit<BaseRelationType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface MapOverlayGroupRelationModel
-  extends Model<BaseRelationModel, MapOverlayGroupRelationFields, MapOverlayGroupRelationType> {
-  findParentRelationTree: (childIds: string[]) => Promise<MapOverlayGroupRelationType[]>;
+  extends Model<BaseRelationModel, MapOverlayGroupRelationFields, MapOverlayGroupRelationRecord> {
+  findParentRelationTree: (childIds: string[]) => Promise<MapOverlayGroupRelationRecord[]>;
 }

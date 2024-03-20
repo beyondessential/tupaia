@@ -6,10 +6,8 @@
 import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
-
+import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
 import { EntityServerModelRegistry } from '../../../types';
-import { EntityFilter, EntityType } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
 
@@ -43,8 +41,8 @@ export class ResponseBuilder {
     this.groupBy = groupBy;
 
     const ancestorType = ctx.ancestor.type || ctx.entities[0]?.type;
-    if (ancestorType === null) {
-      throw new Error('No explicit ancestorType provided and entity type is null');
+    if (!ancestorType) {
+      throw new Error(`No explicit ancestorType provided and entity type is ${ancestorType}`);
     }
 
     this.ctx = {
@@ -53,7 +51,9 @@ export class ResponseBuilder {
     };
   }
 
-  private async buildAncestorCodesAndPairs(descendants: EntityType[]): Promise<[string[], Pair[]]> {
+  private async buildAncestorCodesAndPairs(
+    descendants: EntityRecord[],
+  ): Promise<[string[], Pair[]]> {
     const { hierarchyId, entities } = this.ctx;
     const { type: ancestorType } = this.ctx.ancestor;
     const { type: descendantType } = this.ctx.descendant;
@@ -118,7 +118,7 @@ export class ResponseBuilder {
     );
   }
 
-  private async getFormattedEntitiesByCode(ancestors: EntityType[], descendants: EntityType[]) {
+  private async getFormattedEntitiesByCode(ancestors: EntityRecord[], descendants: EntityRecord[]) {
     const { field: ancestorField } = this.ctx.ancestor;
     const { field: descendantField } = this.ctx.descendant;
 

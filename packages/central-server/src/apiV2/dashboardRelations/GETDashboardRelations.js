@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import { assertDashboardGetPermissions } from '../dashboards';
@@ -54,9 +54,9 @@ export class GETDashboardRelations extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     switch (this.parentRecordType) {
-      case TYPES.DASHBOARD:
+      case RECORDS.DASHBOARD:
         return this.getPermissionsViaParentDashboardFilter(criteria, options);
-      case TYPES.DASHBOARD_ITEM:
+      case RECORDS.DASHBOARD_ITEM:
         return this.getPermissionsViaParentDashboardItemFilter(criteria, options);
       default:
         throw new Error(`Cannot get dashboard relations for ${this.parentRecordType}`);

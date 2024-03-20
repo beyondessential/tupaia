@@ -5,13 +5,13 @@
 
 import {
   FeedItemModel as BaseFeedItemModel,
-  FeedItemType as BaseFeedItemType,
+  FeedItemRecord as BaseFeedItemRecord,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
 import { FeedItem, NullableKeysToOptional } from '@tupaia/types';
+import { Model } from './types';
 
-export interface FeedItemType extends FeedItem, Omit<BaseFeedItemType, 'id' | 'creation_date'> {
+interface FeedItemRecord extends FeedItem, Omit<BaseFeedItemRecord, 'id' | 'creation_date'> {
   getData: () => Promise<NullableKeysToOptional<FeedItem>>;
 }
 
-export interface FeedItemModel extends Model<BaseFeedItemModel, FeedItem, FeedItemType> {}
+export interface FeedItemModel extends Model<BaseFeedItemModel, FeedItem, FeedItemRecord> {}

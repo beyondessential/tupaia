@@ -4,17 +4,17 @@
  */
 import {
   DashboardRelationModel as BaseDashboardRelationModel,
-  DashboardRelationType as BaseDashboardRelationType,
+  DashboardRelationRecord as BaseDashboardRelationRecord,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
 import { Dashboard, DashboardRelation, Entity, Project } from '@tupaia/types';
+import { Model } from './types';
 
-export interface DashboardRelationType
+export interface DashboardRelationRecord
   extends DashboardRelation,
-    Omit<BaseDashboardRelationType, 'id'> {}
+    Omit<BaseDashboardRelationRecord, 'id'> {}
 
 export interface DashboardRelationModel
-  extends Model<BaseDashboardRelationModel, DashboardRelation, DashboardRelationType> {
+  extends Model<BaseDashboardRelationModel, DashboardRelation, DashboardRelationRecord> {
   findDashboardRelationsForEntityAndProject: (
     dashboardIds: Dashboard['id'][],
     entityCode: Entity['code'],

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { Autocomplete, TextField } from '@tupaia/ui-components';
 import { useSearchPermissionGroups } from '../../api/queries';
-import { useVizConfig } from '../../context';
+import { useVizConfigContext } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
 
@@ -20,7 +20,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
   const [
     { visualisation, vizType },
     { setVisualisationValue, setVizType, setPresentation, setPresentationValue },
-  ] = useVizConfig();
+  ] = useVizConfigContext();
 
   // Save the default values here so that they are frozen from the store when the component first mounts
   const [defaults] = useState(visualisation);
