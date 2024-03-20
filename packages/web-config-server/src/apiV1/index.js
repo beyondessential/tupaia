@@ -16,6 +16,7 @@ import {
 } from '/appServer';
 import { login, logout, oneTimeLogin } from '/authSession';
 import { exportChartHandler, ExportSurveyResponsesHandler, PDFExportHandler } from '/export';
+import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import DashboardsHandler from './dashboards';
@@ -30,6 +31,7 @@ const handleWith = Handler =>
 export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
+  api.get('/getUser', catchAsyncErrors(getUser())); // CULL
   api.post('/login', catchAsyncErrors(login));
   api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin)); // KEEP
   api.get('/logout', catchAsyncErrors(logout));
@@ -47,8 +49,8 @@ export const getRoutesForApiV1 = () => {
   api.get('/projects', catchAsyncErrors(getProjects)); // KEEP
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards // KEEP
   api.get('/report/:reportCode', handleWith(ReportHandler)); // KEEP
-  api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage)); // KEEP
-  api.post('/pdf', catchAsyncErrors(PDFExportHandler)); // KEEP
+  api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
+  api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 
   return api;
 };
