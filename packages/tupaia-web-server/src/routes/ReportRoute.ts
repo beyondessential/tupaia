@@ -30,13 +30,14 @@ export class ReportRoute extends Route<ReportRequest> {
       endDate,
     };
 
-    const { results } = await ctx.services.report.fetchReport(reportCode, params);
+    const { results, type } = await ctx.services.report.fetchReport(reportCode, params);
 
     // format to be the same as the legacy report results, so that the FE can handle accordingly
     const reportData = Array.isArray(results) ? { data: results } : { ...results };
 
     return {
       ...reportData,
+      type,
       startDate,
       endDate,
     };

@@ -5,7 +5,7 @@
  */
 import { Chart } from '../src';
 import { DarkThemeTemplate, LightThemeChartTemplate } from './helpers';
-import viewContent from './data/barChartViewContent.json';
+import mockData from './data/barChartData.json';
 
 export default {
   title: 'BarChart',
@@ -19,14 +19,14 @@ export default {
  */
 export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: true,
   legendPosition: 'top',
 };
 
 export const DarkTheme = DarkThemeTemplate.bind({});
 DarkTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: true,
 };
 DarkTheme.parameters = { theme: 'dark' };

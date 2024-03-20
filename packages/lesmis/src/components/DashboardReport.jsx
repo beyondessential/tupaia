@@ -45,6 +45,7 @@ export const DashboardReport = React.memo(
     useYearSelector,
     periodGranularity,
     modalDates,
+    itemCode,
   }) => {
     const { search } = useLocation();
     const { locale, entityCode } = useUrlParams();
@@ -56,6 +57,7 @@ export const DashboardReport = React.memo(
       reportCode,
       startDate,
       endDate,
+      itemCode,
     });
 
     const { reportData, dashboardItemConfig: config, reportCodes } = data;
@@ -92,7 +94,12 @@ export const DashboardReport = React.memo(
     return (
       <Wrapper>
         <Visual
-          viewContent={{ ...config, data: reportData, startDate, endDate }}
+          config={{
+            ...config,
+            startDate,
+            endDate,
+          }}
+          report={reportData}
           isLoading={isLoading}
           isFetching={isFetching}
           isError={isError}
@@ -136,6 +143,7 @@ DashboardReport.propTypes = {
   useYearSelector: PropTypes.bool,
   periodGranularity: PropTypes.string,
   modalDates: PropTypes.object,
+  itemCode: PropTypes.string,
 };
 
 DashboardReport.defaultProps = {
@@ -147,4 +155,5 @@ DashboardReport.defaultProps = {
   useYearSelector: false,
   periodGranularity: undefined,
   modalDates: undefined,
+  itemCode: undefined,
 };

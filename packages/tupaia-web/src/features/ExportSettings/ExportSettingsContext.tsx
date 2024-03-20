@@ -14,7 +14,7 @@ type ExportSettings = {
   exportFormat: ExportFormats;
   exportWithLabels: boolean;
   exportWithTable: boolean;
-  exportWithTableDisabled?: boolean;
+  exportWithTableDisabled: boolean;
 };
 
 type ExportSettingsContextType = ExportSettings & {

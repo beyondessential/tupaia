@@ -65,6 +65,7 @@ export {
   ChartConfigObject,
   ComponentConfig,
   LineChartChartConfig,
+  ExportPresentationOptions,
 } from './dashboard-item';
 export {
   MapOverlayConfig,
@@ -94,4 +95,5 @@ export {
   SurveyResponseTemplateVariables,
   MarkdownTemplateVariables,
 } from './feedItem';
-export { VizPeriodGranularity } from './common';
+export { VizPeriodGranularity, DashboardItemType } from './common';
+export { isChartReport, isViewReport, isMatrixReport } from './report';

@@ -7,9 +7,13 @@ import { ValueType, ViewConfig } from './dashboard-item';
 
 type Transform = string | Record<string, unknown>;
 
+type OutputConfig = Record<string, unknown> & {
+  type?: string;
+};
+
 export type StandardReportConfig = {
   transform: Transform[];
-  output?: Record<string, unknown>;
+  output?: OutputConfig;
 };
 
 export type CustomReportConfig = {
@@ -35,6 +39,7 @@ export type MatrixReportColumn = {
 };
 
 export type BaseReport = {
+  type?: string;
   data?: Record<string, unknown>[];
   startDate: string;
   endDate: string;
@@ -45,20 +50,33 @@ export type BaseReport = {
   };
 };
 
-// This is the data item for a report of type 'view'
-export type ViewDataItem = Record<string, any> & {
-  value?: any;
-  total?: number;
-  viewType?: ViewConfig['viewType'];
+export type DownloadFilesVisualDataItem = {
+  uniqueFileName: string;
+  label: string;
+  viewType: never;
+  value: never;
+  total: never;
+  name: never;
+  value_metadata: never;
 };
+// This is the data item for a report of type 'view'
+export type ViewDataItem =
+  | (Record<string, any> & {
+      value?: any;
+      total?: number;
+      viewType?: ViewConfig['viewType'];
+    })
+  | DownloadFilesVisualDataItem;
 
 // This is the shape of a report when type is 'view'
-export type ViewReport = Omit<BaseReport, 'data'> & {
+export type ViewReport = Omit<BaseReport, 'data' | 'type'> & {
+  type?: 'default' | 'rawDataExport'; // optional because of legacy reports
   data?: ViewDataItem[];
   downloadUrl?: string;
 };
 
 export type MatrixReport = Omit<BaseReport, 'data'> & {
+  type?: 'matrix'; // optional because of legacy reports
   columns?: MatrixReportColumn[];
   rows?: MatrixReportRow[];
 };
@@ -72,8 +90,26 @@ export interface ChartData extends Record<string, unknown> {
   timestamp?: number;
 }
 
-export type ChartReport = Omit<BaseReport, 'data'> & {
+export type ChartReport = Omit<BaseReport, 'data' | 'type'> & {
+  type?: 'default'; // optional because of legacy reports
   data?: ChartData[];
 };
 
-export type DashboardItemReport = ViewReport | MatrixReport | ChartReport | BaseReport;
+export type DashboardItemReport = ViewReport | MatrixReport | ChartReport;
+
+export const isChartReport = (report?: DashboardItemReport | null): report is ChartReport => {
+  // If the report is a chart report, it will have a 'data' property or type 'default'
+  return report?.type === 'default' || !!(report && 'data' in report);
+};
+
+export const isMatrixReport = (report?: DashboardItemReport | null): report is MatrixReport => {
+  // If the report is a matrix report, it will have 'columns' and 'rows' properties or type 'matrix'
+  return report?.type === 'matrix' || !!(report && 'columns' in report && 'rows' in report);
+};
+
+export const isViewReport = (report?: DashboardItemReport | null): report is ViewReport => {
+  // If the report is a view report, it will have a 'data' property or type 'default' or 'rawDataExport'
+  return (
+    report?.type === 'default' || report?.type === 'rawDataExport' || !!(report && 'data' in report)
+  );
+};

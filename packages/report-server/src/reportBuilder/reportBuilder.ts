@@ -14,6 +14,7 @@ import { CustomReportOutputType, customReports } from './customReports';
 
 export interface BuiltReport {
   results: OutputType | CustomReportOutputType;
+  type?: string;
 }
 
 export class ReportBuilder {
@@ -59,6 +60,8 @@ export class ReportBuilder {
     const output = buildOutput(this.config.output, this.reqContext.aggregator);
     const outputData = await output(transformedData);
 
-    return { results: outputData };
+    const outputTypeString = this.config.output?.type || 'default';
+
+    return { results: outputData, type: outputTypeString };
   };
 }

@@ -315,6 +315,16 @@ export const ReferencePropsSchema = {
 	]
 } 
 
+export const DashboardItemTypeSchema = {
+	"enum": [
+		"chart",
+		"component",
+		"matrix",
+		"view"
+	],
+	"type": "string"
+} 
+
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
@@ -3974,20 +3984,15 @@ export const CartesianChartConfigSchema = {
 	]
 } 
 
-export const PieChartPresentationOptionsSchema = {
+export const PieOptionSchema = {
 	"type": "object",
 	"properties": {
-		"exportWithLabels": {
-			"description": "Include labels for each point of data in exports",
-			"type": "boolean"
+		"color": {
+			"description": "A CSS color string e.g. green or #abc123",
+			"type": "string"
 		},
-		"exportWithTable": {
-			"description": "Include the data table below the viz in exports",
-			"type": "boolean"
-		},
-		"exportWithTableDisabled": {
-			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-			"type": "boolean"
+		"label": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -4007,6 +4012,25 @@ export const PieChartSegmentConfigSchema = {
 			}
 		},
 		"additionalProperties": false
+	}
+} 
+
+export const PieChartPresentationOptionsSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"exportWithLabels": {
+			"description": "Include labels for each point of data in exports",
+			"type": "boolean"
+		},
+		"exportWithTable": {
+			"description": "Include the data table below the viz in exports",
+			"type": "boolean"
+		},
+		"exportWithTableDisabled": {
+			"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+			"type": "boolean"
+		}
 	}
 } 
 
@@ -4443,6 +4467,7 @@ export const PieChartConfigSchema = {
 		},
 		"presentationOptions": {
 			"description": "Common options for configuring the chart presentation",
+			"additionalProperties": false,
 			"type": "object",
 			"properties": {
 				"exportWithLabels": {
@@ -4457,8 +4482,7 @@ export const PieChartConfigSchema = {
 					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 					"type": "boolean"
 				}
-			},
-			"additionalProperties": false
+			}
 		},
 		"segmentConfig": {
 			"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -8008,6 +8032,7 @@ export const ChartConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -8022,8 +8047,7 @@ export const ChartConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				"segmentConfig": {
 					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -10732,24 +10756,6 @@ export const ChartConfigSchema = {
 export const ChartPresentationOptionsSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -10796,6 +10802,24 @@ export const ChartPresentationOptionsSchema = {
 						}
 					},
 					"additionalProperties": false
+				}
+			}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				}
 			}
 		},
@@ -21359,6 +21383,7 @@ export const DashboardItemConfigSchema = {
 				},
 				"presentationOptions": {
 					"description": "Common options for configuring the chart presentation",
+					"additionalProperties": false,
 					"type": "object",
 					"properties": {
 						"exportWithLabels": {
@@ -21373,8 +21398,7 @@ export const DashboardItemConfigSchema = {
 							"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 							"type": "boolean"
 						}
-					},
-					"additionalProperties": false
+					}
 				},
 				"segmentConfig": {
 					"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -28232,24 +28256,6 @@ export const PresentationOptionsSchema = {
 		{
 			"type": "object",
 			"properties": {
-				"exportWithLabels": {
-					"description": "Include labels for each point of data in exports",
-					"type": "boolean"
-				},
-				"exportWithTable": {
-					"description": "Include the data table below the viz in exports",
-					"type": "boolean"
-				},
-				"exportWithTableDisabled": {
-					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
-					"type": "boolean"
-				}
-			},
-			"additionalProperties": false
-		},
-		{
-			"type": "object",
-			"properties": {
 				"type": {
 					"type": "string",
 					"enum": [
@@ -28451,6 +28457,24 @@ export const PresentationOptionsSchema = {
 				"exportWithTableDisabled": {
 					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 					"type": "boolean"
+				}
+			}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"exportWithLabels": {
+					"description": "Include labels for each point of data in exports",
+					"type": "boolean"
+				},
+				"exportWithTable": {
+					"description": "Include the data table below the viz in exports",
+					"type": "boolean"
+				},
+				"exportWithTableDisabled": {
+					"description": "Set to 'true' to prevent users from exporting this viz with the data table",
+					"type": "boolean"
 				},
 				"periodTickFormat": {
 					"description": "This string is one of the [Moment.js format]{@link https://momentjs.com/docs/#/displaying/format/} values",
@@ -28612,6 +28636,16 @@ export const TransformSchema = {
 	]
 } 
 
+export const OutputConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string"
+		}
+	}
+} 
+
 export const StandardReportConfigSchema = {
 	"type": "object",
 	"properties": {
@@ -28630,8 +28664,13 @@ export const StandardReportConfigSchema = {
 			}
 		},
 		"output": {
+			"additionalProperties": false,
 			"type": "object",
-			"additionalProperties": false
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
 		}
 	},
 	"additionalProperties": false,
@@ -28673,8 +28712,13 @@ export const ReportConfigSchema = {
 					}
 				},
 				"output": {
+					"additionalProperties": false,
 					"type": "object",
-					"additionalProperties": false
+					"properties": {
+						"type": {
+							"type": "string"
+						}
+					}
 				}
 			},
 			"additionalProperties": false,
@@ -28735,6 +28779,9 @@ export const MatrixReportColumnSchema = {
 export const BaseReportSchema = {
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string"
+		},
 		"data": {
 			"type": "array",
 			"items": {
@@ -28771,30 +28818,67 @@ export const BaseReportSchema = {
 	]
 } 
 
-export const ViewDataItemSchema = {
-	"additionalProperties": false,
+export const DownloadFilesVisualDataItemSchema = {
 	"type": "object",
 	"properties": {
-		"value": {},
-		"total": {
-			"type": "number"
+		"uniqueFileName": {
+			"type": "string"
 		},
-		"viewType": {
-			"enum": [
-				"dataDownload",
-				"filesDownload",
-				"multiPhotograph",
-				"multiSingleValue",
-				"multiValue",
-				"multiValueRow",
-				"qrCodeVisual",
-				"singleDate",
-				"singleDownloadLink",
-				"singleValue"
-			],
+		"label": {
 			"type": "string"
 		}
-	}
+	},
+	"additionalProperties": false,
+	"required": [
+		"label",
+		"uniqueFileName"
+	]
+} 
+
+export const ViewDataItemSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {
+				"uniqueFileName": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"label",
+				"uniqueFileName"
+			]
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"value": {},
+				"total": {
+					"type": "number"
+				},
+				"viewType": {
+					"enum": [
+						"dataDownload",
+						"filesDownload",
+						"multiPhotograph",
+						"multiSingleValue",
+						"multiValue",
+						"multiValueRow",
+						"qrCodeVisual",
+						"singleDate",
+						"singleDownloadLink",
+						"singleValue"
+					],
+					"type": "string"
+				}
+			}
+		}
+	]
 } 
 
 export const ViewReportSchema = {
@@ -28822,32 +28906,59 @@ export const ViewReportSchema = {
 			},
 			"additionalProperties": false
 		},
+		"type": {
+			"enum": [
+				"default",
+				"rawDataExport"
+			],
+			"type": "string"
+		},
 		"data": {
 			"type": "array",
 			"items": {
-				"additionalProperties": false,
-				"type": "object",
-				"properties": {
-					"value": {},
-					"total": {
-						"type": "number"
+				"anyOf": [
+					{
+						"type": "object",
+						"properties": {
+							"uniqueFileName": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"label",
+							"uniqueFileName"
+						]
 					},
-					"viewType": {
-						"enum": [
-							"dataDownload",
-							"filesDownload",
-							"multiPhotograph",
-							"multiSingleValue",
-							"multiValue",
-							"multiValueRow",
-							"qrCodeVisual",
-							"singleDate",
-							"singleDownloadLink",
-							"singleValue"
-						],
-						"type": "string"
+					{
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"value": {},
+							"total": {
+								"type": "number"
+							},
+							"viewType": {
+								"enum": [
+									"dataDownload",
+									"filesDownload",
+									"multiPhotograph",
+									"multiSingleValue",
+									"multiValue",
+									"multiValueRow",
+									"qrCodeVisual",
+									"singleDate",
+									"singleDownloadLink",
+									"singleValue"
+								],
+								"type": "string"
+							}
+						}
 					}
-				}
+				]
 			}
 		},
 		"downloadUrl": {
@@ -28864,6 +28975,12 @@ export const MatrixReportSchema = {
 	"additionalProperties": false,
 	"type": "object",
 	"properties": {
+		"type": {
+			"type": "string",
+			"enum": [
+				"matrix"
+			]
+		},
 		"startDate": {
 			"type": "string"
 		},
@@ -28979,6 +29096,12 @@ export const ChartReportSchema = {
 			},
 			"additionalProperties": false
 		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"default"
+			]
+		},
 		"data": {
 			"type": "array",
 			"items": {
@@ -29014,44 +29137,6 @@ export const ChartReportSchema = {
 export const DashboardItemReportSchema = {
 	"anyOf": [
 		{
-			"type": "object",
-			"properties": {
-				"data": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				"startDate": {
-					"type": "string"
-				},
-				"endDate": {
-					"type": "string"
-				},
-				"period": {
-					"type": "object",
-					"properties": {
-						"earliestAvailable": {
-							"type": "string"
-						},
-						"latestAvailable": {
-							"type": "string"
-						},
-						"requested": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"endDate",
-				"startDate"
-			]
-		},
-		{
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
@@ -29076,32 +29161,59 @@ export const DashboardItemReportSchema = {
 					},
 					"additionalProperties": false
 				},
+				"type": {
+					"enum": [
+						"default",
+						"rawDataExport"
+					],
+					"type": "string"
+				},
 				"data": {
 					"type": "array",
 					"items": {
-						"additionalProperties": false,
-						"type": "object",
-						"properties": {
-							"value": {},
-							"total": {
-								"type": "number"
+						"anyOf": [
+							{
+								"type": "object",
+								"properties": {
+									"uniqueFileName": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"label",
+									"uniqueFileName"
+								]
 							},
-							"viewType": {
-								"enum": [
-									"dataDownload",
-									"filesDownload",
-									"multiPhotograph",
-									"multiSingleValue",
-									"multiValue",
-									"multiValueRow",
-									"qrCodeVisual",
-									"singleDate",
-									"singleDownloadLink",
-									"singleValue"
-								],
-								"type": "string"
+							{
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"value": {},
+									"total": {
+										"type": "number"
+									},
+									"viewType": {
+										"enum": [
+											"dataDownload",
+											"filesDownload",
+											"multiPhotograph",
+											"multiSingleValue",
+											"multiValue",
+											"multiValueRow",
+											"qrCodeVisual",
+											"singleDate",
+											"singleDownloadLink",
+											"singleValue"
+										],
+										"type": "string"
+									}
+								}
 							}
-						}
+						]
 					}
 				},
 				"downloadUrl": {
@@ -29117,6 +29229,12 @@ export const DashboardItemReportSchema = {
 			"additionalProperties": false,
 			"type": "object",
 			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"matrix"
+					]
+				},
 				"startDate": {
 					"type": "string"
 				},
@@ -29207,6 +29325,12 @@ export const DashboardItemReportSchema = {
 						}
 					},
 					"additionalProperties": false
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"default"
+					]
 				},
 				"data": {
 					"type": "array",
@@ -40474,6 +40598,7 @@ export const DashboardItemSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -40488,8 +40613,7 @@ export const DashboardItemSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -48892,6 +49016,7 @@ export const DashboardItemCreateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -48906,8 +49031,7 @@ export const DashboardItemCreateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -57304,6 +57428,7 @@ export const DashboardItemUpdateSchema = {
 						},
 						"presentationOptions": {
 							"description": "Common options for configuring the chart presentation",
+							"additionalProperties": false,
 							"type": "object",
 							"properties": {
 								"exportWithLabels": {
@@ -57318,8 +57443,7 @@ export const DashboardItemUpdateSchema = {
 									"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 									"type": "boolean"
 								}
-							},
-							"additionalProperties": false
+							}
 						},
 						"segmentConfig": {
 							"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",
@@ -79213,8 +79337,13 @@ export const ReportSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -79278,8 +79407,13 @@ export const ReportCreateSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -79339,8 +79473,13 @@ export const ReportUpdateSchema = {
 							}
 						},
 						"output": {
+							"additionalProperties": false,
 							"type": "object",
-							"additionalProperties": false
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
 						}
 					},
 					"additionalProperties": false,
@@ -83388,6 +83527,7 @@ export const DashboardWithMetadataSchema = {
 									},
 									"presentationOptions": {
 										"description": "Common options for configuring the chart presentation",
+										"additionalProperties": false,
 										"type": "object",
 										"properties": {
 											"exportWithLabels": {
@@ -83402,8 +83542,7 @@ export const DashboardWithMetadataSchema = {
 												"description": "Set to 'true' to prevent users from exporting this viz with the data table",
 												"type": "boolean"
 											}
-										},
-										"additionalProperties": false
+										}
 									},
 									"segmentConfig": {
 										"description": "Configuration for segments of the pie chart, keyed by the 'name' column values\neg.\n{\n  \"NEGATIVE\": {\n    \"color\": \"#599bd7\"\n  },\n  \"POSITIVE\": {\n    \"color\": \"#4636AE\"\n  }\n}",

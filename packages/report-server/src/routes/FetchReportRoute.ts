@@ -63,6 +63,10 @@ export class FetchReportRoute extends Route<FetchReportRequest> {
     };
 
     const reportBuilder = new ReportBuilder(reqContext).setConfig(report.config);
-    return reportBuilder.build();
+    const reportResult = await reportBuilder.build();
+
+    console.log('reportResult', reportResult);
+
+    return reportResult;
   }
 }

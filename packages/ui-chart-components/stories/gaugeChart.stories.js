@@ -4,7 +4,7 @@
  */
 import { Chart } from '../src/components/Chart';
 import { LightThemeChartTemplate, DarkThemeTemplate } from './helpers';
-import viewContent from './data/gaugeChartViewContent.json';
+import mockData from './data/gaugeChartData.json';
 
 export default {
   title: 'GaugeChart',
@@ -19,13 +19,13 @@ export default {
 
 export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: false,
 };
 
 export const DarkTheme = DarkThemeTemplate.bind({});
 DarkTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: false,
 };
 DarkTheme.parameters = { theme: 'dark' };

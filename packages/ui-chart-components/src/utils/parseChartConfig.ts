@@ -9,9 +9,15 @@ import {
   ChartConfigT,
   ChartData,
   ChartType,
+  DashboardItemConfig,
+  DashboardItemReport,
+  isChartConfig,
+  isChartReport,
+  isGaugeChartConfig,
+  isPieChartConfig,
 } from '@tupaia/types';
 import { COLOR_PALETTES } from '../constants';
-import { LooseObject, ViewContent } from '../types';
+import { LooseObject } from '../types';
 import { isDataKey } from './utils';
 
 export const ADD_TO_ALL_KEY = '$all';
@@ -21,13 +27,22 @@ export const getLayeredOpacity = (numberOfLayers: number, index: number, ascendi
 
 type ColorPalette = keyof typeof COLOR_PALETTES;
 
-export const parseChartConfig = (viewContent: ViewContent) => {
-  const { chartType, data, colorPalette: paletteName } = viewContent;
-  if (!('chartConfig' in viewContent) || !viewContent.chartConfig) {
+export const parseChartConfig = (report: DashboardItemReport, config?: DashboardItemConfig) => {
+  if (
+    // defaulting to chart type report if no type is provided, to handle, for example, admin panel viz builder previews
+    !isChartReport(report) ||
+    !isChartConfig(config) ||
+    isGaugeChartConfig(config) ||
+    isPieChartConfig(config) ||
+    !config.chartConfig
+  ) {
     return {};
   }
 
-  const { chartConfig } = viewContent;
+  const { chartType } = config;
+  const { data = [] } = report;
+
+  const { chartConfig } = config;
   const configForAllKeys = ADD_TO_ALL_KEY in chartConfig ? chartConfig[ADD_TO_ALL_KEY] : null;
 
   // Remove '$all' key and the 'name' from chart config - we can't use a spread here because some types don't have this key, so we need to filter it out and use a type guard above to get the '$all' config
@@ -39,8 +54,7 @@ export const parseChartConfig = (viewContent: ViewContent) => {
     ? createDynamicConfig(restOfConfig, configForAllKeys, data)
     : restOfConfig;
 
-  const addDefaultColors = (config: any) =>
-    addDefaultColorsToConfig(config, paletteName as ColorPalette, chartType);
+  const addDefaultColors = (config: any) => addDefaultColorsToConfig(config, chartType);
 
   const chartConfigs = [baseConfig];
 
@@ -72,14 +86,10 @@ const setOpacityValues = (chartConfig: LooseObject) => {
 };
 
 // Adds default colors for every element with no color defined
-const addDefaultColorsToConfig = (
-  chartConfig: BaseChartConfig,
-  paletteName: ColorPalette,
-  chartType: ChartType,
-) => {
+const addDefaultColorsToConfig = (chartConfig: BaseChartConfig, chartType: ChartType) => {
   const newConfig: LooseObject = {};
 
-  const palette = paletteName || getDefaultPaletteName(chartType, Object.keys(chartConfig).length);
+  const palette = getDefaultPaletteName(chartType, Object.keys(chartConfig).length);
   const colors = Object.values(COLOR_PALETTES[palette]);
 
   let colorId = 0;
@@ -96,7 +106,7 @@ const addDefaultColorsToConfig = (
   return newConfig;
 };
 
-const getDefaultPaletteName = (chartType: ChartType, numberRequired: number): string => {
+const getDefaultPaletteName = (chartType: ChartType, numberRequired: number): ColorPalette => {
   if (chartType === ChartType.Composed) {
     return 'COMPOSED_CHART_COLOR_PALETTE';
   }

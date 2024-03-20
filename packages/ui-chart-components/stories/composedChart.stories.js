@@ -5,7 +5,7 @@
  */
 import { Chart } from '../src/components/Chart';
 import { LightThemeChartTemplate, DarkThemeTemplate } from './helpers';
-import viewContent from './data/composedChartViewContent.json';
+import mockData from './data/composedChartData.json';
 
 export default {
   title: 'ComposedChart',
@@ -20,14 +20,14 @@ export default {
 
 export const LightTheme = LightThemeChartTemplate.bind({});
 LightTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: true,
   legendPosition: 'top',
 };
 
 export const DarkTheme = DarkThemeTemplate.bind({});
 DarkTheme.args = {
-  viewContent,
+  ...mockData,
   isEnlarged: true,
 };
 DarkTheme.parameters = { theme: 'dark' };

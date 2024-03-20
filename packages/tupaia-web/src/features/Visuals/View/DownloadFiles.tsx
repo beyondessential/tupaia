@@ -44,11 +44,7 @@ interface DownloadFilesVisualProps {
   isEnlarged?: boolean;
 }
 
-export const DownloadFiles = ({
-  report: { data = [] },
-  config,
-  isEnlarged,
-}: DownloadFilesVisualProps) => {
+export const DownloadFiles = ({ report, config, isEnlarged }: DownloadFilesVisualProps) => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   const { mutateAsync: download, error, reset, isLoading } = useDownloadFiles();
@@ -64,7 +60,7 @@ export const DownloadFiles = ({
   return (
     <StyledDownloadFilesVisual
       config={config}
-      data={(data as unknown) as { uniqueFileName: string; label: string }[]}
+      report={report}
       downloadFiles={download as (uniqueFileNames: string[]) => Promise<void>}
       error={errorObj?.message}
       isEnlarged={isEnlarged}

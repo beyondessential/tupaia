@@ -96,7 +96,11 @@ export class ReportHandler extends DataAggregatingRouteHandler {
     } = report;
 
     this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
-    return this.buildDataBuilderData(dataBuilder);
+    const reportData = await this.buildDataBuilderData(dataBuilder);
+
+    return {
+      ...reportData,
+    };
   }
 
   async buildDataBuilderData(dataBuilderName) {
