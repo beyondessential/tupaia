@@ -358,7 +358,7 @@ export interface DashboardRelation {
   'attributes_filter': {};
   'child_id': string;
   'dashboard_id': string;
-  'entity_types': any;
+  'entity_types': EntityType[];
   'id': string;
   'permission_groups': string[];
   'project_codes': string[];
@@ -368,7 +368,7 @@ export interface DashboardRelationCreate {
   'attributes_filter'?: {};
   'child_id': string;
   'dashboard_id': string;
-  'entity_types': any;
+  'entity_types': EntityType[];
   'permission_groups': string[];
   'project_codes': string[];
   'sort_order'?: number | null;
@@ -377,7 +377,7 @@ export interface DashboardRelationUpdate {
   'attributes_filter'?: {};
   'child_id'?: string;
   'dashboard_id'?: string;
-  'entity_types'?: any;
+  'entity_types'?: EntityType[];
   'id'?: string;
   'permission_groups'?: string[];
   'project_codes'?: string[];

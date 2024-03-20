@@ -42,6 +42,8 @@ import {
   ReportModel,
   ReportRecord,
   OneTimeLoginRecord,
+  DataElementModel,
+  DataElementRecord,
 } from '@tupaia/database';
 import {
   Country,
@@ -57,6 +59,8 @@ import {
   Report,
   UserEntityPermission,
   PermissionGroup,
+  DataElement,
+  Answer,
 } from '@tupaia/types';
 import {
   FeedItemModel,
@@ -68,6 +72,8 @@ import {
   AncestorDescendantRelationModel,
   EntityModel,
 } from './models';
+import { AnswerModel } from '@tupaia/database';
+import { AnswerRecord } from '@tupaia/database';
 
 export type AccessPolicyObject = Record<string, string[]>;
 
@@ -130,6 +136,8 @@ export interface ServerBoilerplateModelRegistry extends ModelRegistry {
   >;
   readonly dashboardRelation: DashboardRelationModel;
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
+  readonly dataElement: Model<DataElementModel, DataElement, DataElementRecord & DataElement>;
+  readonly answer: Model<AnswerModel, Answer, AnswerRecord>;
   readonly dataTable: Model<DataTableModel, DataTable, DataTableRecord & DataTable>;
   readonly externalDatabaseConnection: Model<
     ExternalDatabaseConnectionModel,

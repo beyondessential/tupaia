@@ -65366,7 +65366,51 @@ export const DashboardRelationSchema = {
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -65411,7 +65455,51 @@ export const DashboardRelationCreateSchema = {
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -65451,7 +65539,51 @@ export const DashboardRelationUpdateSchema = {
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"id": {
 			"type": "string"
 		},

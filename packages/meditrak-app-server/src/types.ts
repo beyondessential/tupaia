@@ -11,18 +11,27 @@ export type RequestContext = {
   services: TupaiaApiClient;
 };
 
-// this orchestration server uses more models than it excludes, so use an Omit instead of a Pick
-type IgnoreModels =
-  | 'apiRequestLog'
-  | 'apiClient'
-  | 'dashboard'
-  | 'dashboardItem'
-  | 'mapOverlayGroup'
-  | 'dashboardMailingListEntry'
-  | 'dashboardRelation'
-  | 'mapOverlayGroupRelation';
+type Models =
+  | 'dataElement'
+  | 'user'
+  | 'surveyResponse'
+  | 'answer'
+  | 'feedItem'
+  | 'database'
+  | 'question'
+  | 'country'
+  | 'facility'
+  | 'entity'
+  | 'survey'
+  | 'permissionGroup'
+  | 'option'
+  | 'geographicalArea'
+  | 'optionSet'
+  | 'surveyGroup'
+  | 'surveyScreen'
+  | 'surveyScreenComponent';
 
 export interface MeditrakAppServerModelRegistry
-  extends Omit<ServerBoilerplateModelRegistry, IgnoreModels> {
+  extends Pick<ServerBoilerplateModelRegistry, Models> {
   readonly meditrakSyncQueue: MeditrakSyncQueueModel;
 }
