@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import moment from 'moment';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   expectError,
@@ -31,8 +31,8 @@ const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
   return entities[randomIntBetween(0, entities.length - 1)].id;
 };
 
-const ENTITY_ID = generateTestId();
-const ENTITY_NON_CLINIC_ID = generateTestId();
+const ENTITY_ID = generateId();
+const ENTITY_NON_CLINIC_ID = generateId();
 
 const questionCode = key => `TEST-${key}`;
 
@@ -539,8 +539,10 @@ describe('surveyResponse endpoint', () => {
     it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
       this.retries(10);
       await oneSecondSleep(1000);
-      expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);
-      expect(syncQueue.count(models.answer.databaseType)).to.equal(numberOfAnswersInSurveyResponse);
+      expect(syncQueue.count(models.surveyResponse.databaseRecord)).to.equal(1);
+      expect(syncQueue.count(models.answer.databaseRecord)).to.equal(
+        numberOfAnswersInSurveyResponse,
+      );
     });
   });
 

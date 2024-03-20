@@ -4,25 +4,17 @@
  */
 
 import { useQuery } from 'react-query';
-import { DatatrakWebSurveyRequest, Project } from '@tupaia/types';
+import { DatatrakWebSurveyRequest } from '@tupaia/types';
 import { get } from '../api';
-import { Entity } from '../../types';
 
-export const useSurveys = (selectedCountryName?: Entity['name'], projectId?: Project['id']) => {
+export const useSurveys = () => {
   return useQuery(
-    ['surveys', projectId],
+    ['surveys'],
     (): Promise<DatatrakWebSurveyRequest.ResBody[]> =>
       get('surveys', {
         params: {
           fields: ['name', 'code', 'id', 'survey_group.name', 'countryNames'],
-          projectId,
         },
       }),
-    {
-      select: data => {
-        return data.filter(survey => survey.countryNames?.includes(selectedCountryName!));
-      },
-      enabled: !!projectId,
-    },
   );
 };

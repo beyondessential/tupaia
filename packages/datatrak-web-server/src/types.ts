@@ -6,25 +6,25 @@
 import {
   ModelRegistry,
   EntityModel,
-  EntityType as BaseEntityType,
+  EntityRecord as BaseEntityRecord,
   SurveyModel,
   OneTimeLoginModel,
-  OneTimeLoginType as BaseOneTimeLoginType,
+  OneTimeLoginRecord as BaseOneTimeLoginRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 import { Entity, OneTimeLogin } from '@tupaia/types';
 import { FeedItemModel, SurveyResponseModel, UserModel } from './models';
 import { OptionModel } from '@tupaia/database';
 
-export type EntityType = BaseEntityType & Entity;
-export type OneTimeLoginType = BaseOneTimeLoginType & OneTimeLogin;
+export type EntityRecord = BaseEntityRecord & Entity;
+export type OneTimeLoginRecord = BaseOneTimeLoginRecord & OneTimeLogin;
 
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
-  readonly entity: Model<EntityModel, Entity, EntityType>;
+  readonly entity: Model<EntityModel, Entity, EntityRecord>;
   readonly surveyResponse: SurveyResponseModel;
   readonly feedItem: FeedItemModel;
   readonly user: UserModel;
   readonly survey: SurveyModel;
-  readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginType>;
+  readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginRecord>;
   readonly option: OptionModel;
 }

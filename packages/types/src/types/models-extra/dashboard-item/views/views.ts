@@ -9,7 +9,7 @@ import { MultiValueRowPresentationOptions, MultiValueRowViewConfig } from './mul
 
 export type SingleValueViewConfig = BaseViewConfig & {
   viewType: 'singleValue';
-  dataColor: CssColor;
+  dataColor?: CssColor;
 };
 
 export type MultiPhotographViewConfig = BaseViewConfig & {

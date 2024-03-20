@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { UserModel as BaseUserModel, UserType as BaseUserType } from '@tupaia/database';
+import { UserModel as BaseUserModel, UserRecord as BaseUserRecord } from '@tupaia/database';
 import { Model } from './types';
 
 export type UserFields = Readonly<{
@@ -22,6 +22,6 @@ export type UserFields = Readonly<{
   primary_platform: 'tupaia' | 'lesmis';
 }>;
 
-export interface UserType extends UserFields, Omit<BaseUserType, 'id'> {}
+export interface UserRecord extends UserFields, Omit<BaseUserRecord, 'id'> {}
 
-export interface UserModel extends Model<BaseUserModel, UserFields, BaseUserType> {}
+export interface UserModel extends Model<BaseUserModel, UserFields, BaseUserRecord> {}

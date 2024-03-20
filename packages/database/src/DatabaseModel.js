@@ -26,13 +26,13 @@ export class DatabaseModel {
     if (this.database.isSingleton) {
       if (this.cacheEnabled) {
         // fully reset cache on any change to this model's records
-        this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
+        this.database.addChangeHandlerForCollection(this.DatabaseRecordClass.databaseRecord, () => {
           this.cache = {};
         });
 
         // if this model has caching that depends on other models, also add invalidation for them
-        this.cacheDependencies.forEach(databaseType => {
-          this.database.addChangeHandlerForCollection(databaseType, () => {
+        this.cacheDependencies.forEach(databaseRecord => {
+          this.database.addChangeHandlerForCollection(databaseRecord, () => {
             this.cache = {};
           });
         });
@@ -56,14 +56,15 @@ export class DatabaseModel {
     return [];
   }
 
-  startSchemaFetch = () => this.database.fetchSchemaForTable(this.DatabaseTypeClass.databaseType);
+  startSchemaFetch = () =>
+    this.database.fetchSchemaForTable(this.DatabaseRecordClass.databaseRecord);
 
   // functionArguments should receive the 'arguments' object
   getCacheKey = (functionName, functionArguments) =>
     `${functionName}:${JSON.stringify(Object.values(functionArguments))}`;
 
   addChangeHandler = handler =>
-    this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
+    this.database.addChangeHandlerForCollection(this.DatabaseRecordClass.databaseRecord, handler);
 
   async fetchSchema() {
     return this.schemaPromise;
@@ -81,25 +82,25 @@ export class DatabaseModel {
   }
 
   /**
-   * This method must be overridden by every subclass, so that the model knows what DatabaseType to generate when returning results
-   * @returns {*} DatabaseTypeClass
+   * This method must be overridden by every subclass, so that the model knows what DatabaseRecord to generate when returning results
+   * @returns {*} DatabaseRecordClass
    */
-  get DatabaseTypeClass() {
-    throw new TypeError('get DatabaseTypeClass was called on object that has not implemented it');
+  get DatabaseRecordClass() {
+    throw new TypeError('get DatabaseRecordClass was called on object that has not implemented it');
   }
 
-  get databaseType() {
-    return this.DatabaseTypeClass.databaseType;
+  get databaseRecord() {
+    return this.DatabaseRecordClass.databaseRecord;
   }
 
   get joins() {
-    return this.DatabaseTypeClass.joins;
+    return this.DatabaseRecordClass.joins;
   }
 
   // A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
   getIdClause(id) {
     return {
-      [`${this.databaseType}.id`]: id,
+      [`${this.databaseRecord}.id`]: id,
     };
   }
 
@@ -108,7 +109,7 @@ export class DatabaseModel {
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
     return fieldNames.map(fieldName => {
-      const qualifiedName = `${this.databaseType}.${fieldName}`;
+      const qualifiedName = `${this.databaseRecord}.${fieldName}`;
       const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
       if (customSelector) {
         return { [fieldName]: customSelector(qualifiedName) };
@@ -140,12 +141,12 @@ export class DatabaseModel {
    * @returns {Promise<number>} Count of records matching args
    */
   async count(...args) {
-    return this.database.count(this.databaseType, ...args);
+    return this.database.count(this.databaseRecord, ...args);
   }
 
   async findById(id, customQueryOptions = {}) {
     if (!id) {
-      throw new Error(`Cannot search for ${this.databaseType} by id without providing an id`);
+      throw new Error(`Cannot search for ${this.databaseRecord} by id without providing an id`);
     }
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const result = await this.findOne(this.getIdClause(id), queryOptions);
@@ -156,7 +157,7 @@ export class DatabaseModel {
   async findManyByColumn(column, values, additionalConditions = {}, customQueryOptions = {}) {
     if (!values) {
       throw new Error(
-        `Cannot search for ${this.databaseType} by ${column} without providing the values`,
+        `Cannot search for ${this.databaseRecord} by ${column} without providing the values`,
       );
     }
     return runDatabaseFunctionInBatches(values, async batchOfValues =>
@@ -170,7 +171,7 @@ export class DatabaseModel {
 
   async findOne(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const result = await this.database.findOne(this.databaseType, dbConditions, queryOptions);
+    const result = await this.database.findOne(this.databaseRecord, dbConditions, queryOptions);
     if (!result) return null;
     return this.generateInstance(result);
   }
@@ -183,7 +184,7 @@ export class DatabaseModel {
    */
   async find(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
-    const dbResults = await this.database.find(this.databaseType, dbConditions, queryOptions);
+    const dbResults = await this.database.find(this.databaseRecord, dbConditions, queryOptions);
     return Promise.all(dbResults.map(result => this.generateInstance(result)));
   }
 
@@ -195,7 +196,7 @@ export class DatabaseModel {
   async findIdByField(field, fieldValues) {
     const containFields = await this.checkFieldNamesExist([field, 'id']);
     if (!containFields) {
-      throw new Error(`${this.databaseType} table does not have ${field} or id column`);
+      throw new Error(`${this.databaseRecord} table does not have ${field} or id column`);
     }
     const records = await this.find({ [field]: fieldValues });
     return reduceToDictionary(records, field, 'id');
@@ -216,7 +217,7 @@ export class DatabaseModel {
   }
 
   /**
-   * @returns {*} DatabaseTypeClass
+   * @returns {*} DatabaseRecordClass
    */
   generateInstance = async (fields = {}) => {
     const data = {};
@@ -238,10 +239,10 @@ export class DatabaseModel {
   };
 
   /**
-   * @returns {*} DatabaseTypeClass
+   * @returns {*} DatabaseRecordClass
    */
   createTypeInstance = (data = {}) => {
-    return new this.DatabaseTypeClass(this, data);
+    return new this.DatabaseRecordClass(this, data);
   };
 
   // Read the field values and convert them to database friendly representations
@@ -269,20 +270,20 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fields);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    const fieldValues = await this.database.create(this.databaseType, data);
+    const fieldValues = await this.database.create(this.databaseRecord, data);
 
     return this.generateInstance(fieldValues);
   }
 
   /**
-   * Bulk creates database records and returns DatabaseType instances representing them
+   * Bulk creates database records and returns DatabaseRecord instances representing them
    * @param {Array.<Object>} recordsToCreate
    */
   async createMany(recordsToCreate) {
     const data = await Promise.all(recordsToCreate.map(this.getDatabaseSafeData));
     const instances = await Promise.all(data.map(this.generateInstance));
     await Promise.all(instances.map(i => i.assertValid()));
-    const records = await this.database.createMany(this.databaseType, data);
+    const records = await this.database.createMany(this.databaseRecord, data);
     return Promise.all(records.map(this.generateInstance));
   }
 
@@ -291,7 +292,7 @@ export class DatabaseModel {
       throw new DatabaseError('cannot delete model with no conditions');
     }
 
-    return this.database.delete(this.databaseType, whereConditions);
+    return this.database.delete(this.databaseRecord, whereConditions);
   }
 
   async deleteById(id) {
@@ -307,14 +308,18 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fieldsToUpdate);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    return this.database.update(this.databaseType, whereCondition, data);
+    return this.database.update(this.databaseRecord, whereCondition, data);
   }
 
   async updateOrCreate(whereCondition, fieldsToUpsert) {
     const data = await this.getDatabaseSafeData(fieldsToUpsert);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    const fieldValues = await this.database.updateOrCreate(this.databaseType, whereCondition, data);
+    const fieldValues = await this.database.updateOrCreate(
+      this.databaseRecord,
+      whereCondition,
+      data,
+    );
     return this.generateInstance(fieldValues);
   }
 
@@ -323,17 +328,17 @@ export class DatabaseModel {
   }
 
   markRecordsAsChanged(records) {
-    return this.database.markRecordsAsChanged(this.databaseType, records);
+    return this.database.markRecordsAsChanged(this.databaseRecord, records);
   }
 
   async markAsChanged(...args) {
-    return this.database.markAsChanged(this.databaseType, ...args);
+    return this.database.markAsChanged(this.databaseRecord, ...args);
   }
 
   runCachedFunction(cacheKey, fn) {
     if (!this.cacheEnabled) {
       throw new Error(
-        `Must enable caching in the ${this.databaseType} model in order to use cached function`,
+        `Must enable caching in the ${this.databaseRecord} model in order to use cached function`,
       );
     }
 

@@ -10,10 +10,17 @@ import Chip from '@material-ui/core/Chip';
 import { useCountries, useSearchPermissionGroups, useProjects } from '../../api/queries';
 import { useVizConfig } from '../../context';
 import { useDebounce } from '../../../utilities';
+import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
+  const vizTypeOptions = Object.entries(MAP_OVERLAY_VIZ_TYPES).map(([vizType, { name }]) => ({
+    value: vizType,
+    label: name,
+  }));
+
   const { handleSubmit, register, errors } = useForm();
-  const [{ visualisation }, { setVisualisationValue }] = useVizConfig();
+  const [{ visualisation, vizType }, { setVisualisationValue, setVizType, setPresentation }] =
+    useVizConfig();
   const { data: allProjects = [], isLoading: isLoadingAllProjects } = useProjects();
   const { data: allCountries = [], isLoading: isLoadingAllCountries } = useCountries();
 
@@ -25,13 +32,12 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     mapOverlayPermissionGroup,
     projectCodes: inputProjectCodes,
     countryCodes: inputCountryCodes,
+    presentation,
   } = defaults;
   const [searchInput, setSearchInput] = useState(mapOverlayPermissionGroup || '');
   const debouncedSearchInput = useDebounce(searchInput, 200);
-  const {
-    data: permissionGroups = [],
-    isLoading: isLoadingPermissionGroups,
-  } = useSearchPermissionGroups({ search: debouncedSearchInput });
+  const { data: permissionGroups = [], isLoading: isLoadingPermissionGroups } =
+    useSearchPermissionGroups({ search: debouncedSearchInput });
   const [projectCodes, setProjectCodes] = useState(inputProjectCodes);
   const [countryCodes, setCountryCodes] = useState(inputCountryCodes);
 
@@ -42,6 +48,12 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
     setVisualisationValue('reportPermissionGroup', data.mapOverlayPermissionGroup);
     setVisualisationValue('projectCodes', projectCodes);
     setVisualisationValue('countryCodes', countryCodes);
+    const selectedVizType = vizTypeOptions.find(({ label }) => label === data.vizType).value;
+    setVizType(selectedVizType);
+    if (Object.keys(presentation).length === 0) {
+      // If no presentation config exists, set the initial config by vizType
+      setPresentation(MAP_OVERLAY_VIZ_TYPES[selectedVizType].initialConfig);
+    }
     onSubmit();
   };
 
@@ -130,6 +142,21 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
               )),
           }}
           onChange={(thing, selected) => setCountryCodes(selected)}
+        />
+        <Autocomplete
+          id="vizType"
+          name="vizType"
+          label="Visualisation Type"
+          placeholder="Select Visualisation Type"
+          defaultValue={vizTypeOptions.find(({ value }) => value === vizType)}
+          options={vizTypeOptions}
+          getOptionLabel={option => option.label}
+          getOptionSelected={option => option.value}
+          error={!!errors.vizType}
+          helperText={errors.vizType && errors.vizType.message}
+          inputRef={register({
+            required: 'Required',
+          })}
         />
       </Body>
       <Footer />

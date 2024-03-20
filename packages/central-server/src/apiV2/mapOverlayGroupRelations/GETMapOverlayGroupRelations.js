@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
@@ -65,9 +65,9 @@ export class GETMapOverlayGroupRelations extends GETHandler {
 
   async getPermissionsViaParentFilter(criteria, options) {
     switch (this.parentRecordType) {
-      case TYPES.MAP_OVERLAY_GROUP:
+      case RECORDS.MAP_OVERLAY_GROUP:
         return this.getPermissionsViaParentMapOverlayGroupFilter(criteria, options);
-      case TYPES.MAP_OVERLAY:
+      case RECORDS.MAP_OVERLAY:
         return this.getPermissionsViaParentMapOverlayFilter(criteria, options);
       default:
         throw new Error(`Cannot get map overlay relations for ${this.parentRecordType}`);

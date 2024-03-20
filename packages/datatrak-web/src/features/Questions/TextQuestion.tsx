@@ -6,10 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SurveyQuestionInputProps } from '../../types';
-import { TextInput } from '../../components';
+import { TextInput, InputHelperText } from '../../components';
 import { MOBILE_BREAKPOINT } from '../../constants';
 import { useSurveyForm } from '..';
-import { QuestionHelperText } from './QuestionHelperText';
 
 const Wrapper = styled.div<{
   $type?: string;
@@ -72,7 +71,7 @@ export const TextQuestion = ({
           multiline: type === 'FreeText',
           helperText: detailLabel,
           FormHelperTextProps: {
-            component: QuestionHelperText,
+            component: InputHelperText,
           },
         }}
       />

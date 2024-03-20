@@ -4,12 +4,12 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
+import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
-import { TYPES } from '../types';
+import { RECORDS } from '../records';
 
-export class ProjectType extends DatabaseType {
-  static databaseType = TYPES.PROJECT;
+export class ProjectRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.PROJECT;
 
   async permissionGroups() {
     return this.otherModels.permissionGroup.find({ name: this.permission_groups });
@@ -21,8 +21,8 @@ export class ProjectType extends DatabaseType {
 }
 
 export class ProjectModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return ProjectType;
+  get DatabaseRecordClass() {
+    return ProjectRecord;
   }
 
   async getAllProjectDetails() {

@@ -4,12 +4,11 @@
  */
 
 export { IconButton } from './IconButton';
-export { InputField } from './InputField';
+export { InputField, JsonEditorInputField } from './InputField';
 export { Navbar } from './Navbar';
 export { Tabs } from './Tabs';
 export { Header } from './Header';
 export { PageBody } from './PageBody';
 export { Footer } from './Footer';
 export { ModalContentProvider } from './ModalContentProvider';
-export { JsonEditor } from './JsonEditor';
-export { SQLQueryEditor } from './SQLQueryEditor';
+export { JsonEditor, JsonTreeEditor } from './JsonEditor';

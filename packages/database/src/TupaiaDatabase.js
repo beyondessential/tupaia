@@ -109,7 +109,6 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  // can be replaced with 'generateTestId' by tests
   generateId = generateId;
 
   async closeConnections() {
@@ -199,9 +198,9 @@ export class TupaiaDatabase {
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**

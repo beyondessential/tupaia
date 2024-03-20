@@ -78,6 +78,7 @@ describe('GET map overlay visualisations', () => {
             reportCode: 'Modern_Report',
             dataServices: [{ isDataRegional: true }],
             legacy: false,
+            entityAttributesFilter: {},
           },
           report: {
             code: modernReport.code,

@@ -10,7 +10,7 @@ import { SpinningLoader } from '@tupaia/ui-components';
 import { useEditUser } from '../../api/mutations';
 import { SelectList, ListItemType, Button, SurveyFolderIcon, SurveyIcon } from '../../components';
 import { Survey } from '../../types';
-import { useSurveys, useCurrentUser } from '../../api';
+import { useCurrentUser, useProjectSurveys } from '../../api';
 import { HEADER_HEIGHT } from '../../constants';
 import { SurveyCountrySelector } from './SurveyCountrySelector';
 import { useUserCountries } from './useUserCountries';
@@ -115,7 +115,7 @@ export const SurveySelectPage = () => {
   const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
   const user = useCurrentUser();
 
-  const { data: surveys, isLoading } = useSurveys(selectedCountry?.name, user.projectId);
+  const { data: surveys, isLoading } = useProjectSurveys(user.projectId, selectedCountry?.name);
 
   // group the data by surveyGroupName for the list, and add the value and selected properties
   const groupedSurveys =

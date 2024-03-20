@@ -5,7 +5,7 @@
 
 import {
   SurveyResponseModel as BaseSurveyResponseModel,
-  SurveyResponseType as BaseSurveyResponseType,
+  SurveyResponseRecord as BaseSurveyResponseRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -25,7 +25,7 @@ export type SurveyResponseModelFields = Readonly<{
 
 export interface SurveyResponseModelType
   extends SurveyResponseModelFields,
-    Omit<BaseSurveyResponseType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+    Omit<BaseSurveyResponseRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface SurveyResponseModel
   extends Model<BaseSurveyResponseModel, SurveyResponseModelFields, SurveyResponseModelType> {

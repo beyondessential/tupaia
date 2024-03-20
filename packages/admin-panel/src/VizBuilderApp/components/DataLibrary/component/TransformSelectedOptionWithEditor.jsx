@@ -6,6 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SelectedOptionWithJsonEditor } from './SelectedOptionWithJsonEditor';
+import { SelectedOptionWithSqlEditor } from './SelectedOptionWithSqlEditor';
 
 const getDefaultValueByType = type => {
   switch (type) {
@@ -22,7 +23,7 @@ const getDefaultValueByType = type => {
   }
 };
 
-export const TransformSelectedOptionWithJsonEditor = ({
+export const TransformSelectedOptionWithEditor = ({
   option,
   optionMetaData,
   onChange,
@@ -57,6 +58,20 @@ export const TransformSelectedOptionWithJsonEditor = ({
     description: option.description || '',
   };
 
+  if (code === 'sql') {
+    return (
+      <SelectedOptionWithSqlEditor
+        option={option}
+        basicOption={basicOption}
+        supportsTitleEditing
+        onRemove={onRemove}
+        currentValue={currentValue}
+        setIsDragDisabled={setIsDragDisabled}
+        onChange={onChange}
+      />
+    );
+  }
+
   return (
     <SelectedOptionWithJsonEditor
       option={option}
@@ -72,9 +87,9 @@ export const TransformSelectedOptionWithJsonEditor = ({
   );
 };
 
-TransformSelectedOptionWithJsonEditor.defaultProps = { optionMetaData: null };
+TransformSelectedOptionWithEditor.defaultProps = { optionMetaData: null };
 
-TransformSelectedOptionWithJsonEditor.propTypes = {
+TransformSelectedOptionWithEditor.propTypes = {
   option: PropTypes.shape({
     id: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,

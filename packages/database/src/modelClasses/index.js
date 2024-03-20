@@ -128,55 +128,55 @@ export const modelClasses = {
 export { AccessRequestModel } from './AccessRequest';
 export {
   AncestorDescendantRelationModel,
-  AncestorDescendantRelationType,
+  AncestorDescendantRelationRecord,
 } from './AncestorDescendantRelation';
 export { APIClientModel } from './APIClient';
 export { ApiRequestLogModel } from './ApiRequestLog';
 export { CommentModel } from './Comment';
-export { CountryModel, CountryType } from './Country';
-export { DhisInstanceModel, DhisInstanceType } from './DhisInstance';
+export { CountryModel, CountryRecord } from './Country';
+export { DhisInstanceModel, DhisInstanceRecord } from './DhisInstance';
 export { DataElementDataServiceModel } from './DataElementDataService';
-export { DataElementModel, DataElementType } from './DataElement';
-export { DataGroupModel, DataGroupType } from './DataGroup';
-export { DataServiceSyncGroupModel, DataServiceSyncGroupType } from './DataServiceSyncGroup';
-export { DataTableModel, DataTableType } from './DataTable';
-export { EntityModel, EntityType } from './Entity';
-export { EntityHierarchyModel, EntityHierarchyType } from './EntityHierarchy';
+export { DataElementModel, DataElementRecord } from './DataElement';
+export { DataGroupModel, DataGroupRecord } from './DataGroup';
+export { DataServiceSyncGroupModel, DataServiceSyncGroupRecord } from './DataServiceSyncGroup';
+export { DataTableModel, DataTableRecord } from './DataTable';
+export { EntityModel, EntityRecord } from './Entity';
+export { EntityHierarchyModel, EntityHierarchyRecord } from './EntityHierarchy';
 export { EntityRelationModel } from './EntityRelation';
 export {
   ExternalDatabaseConnectionModel,
-  ExternalDatabaseConnectionType,
+  ExternalDatabaseConnectionRecord,
 } from './ExternalDatabaseConnection';
 export { FacilityModel } from './Facility';
-export { FeedItemModel, FeedItemType } from './FeedItem';
+export { FeedItemModel, FeedItemRecord } from './FeedItem';
 export { GeographicalAreaModel } from './GeographicalArea';
 export {
   MapOverlayGroupRelationModel,
-  MapOverlayGroupRelationType,
+  MapOverlayGroupRelationRecord,
 } from './MapOverlayGroupRelation';
-export { MapOverlayGroupModel, MapOverlayGroupType } from './MapOverlayGroup';
+export { MapOverlayGroupModel, MapOverlayGroupRecord } from './MapOverlayGroup';
 export { MeditrakDeviceModel } from './MeditrakDevice';
-export { MeditrakSyncQueueModel, MeditrakSyncQueueType } from './MeditrakSyncQueue';
+export { MeditrakSyncQueueModel, MeditrakSyncQueueRecord } from './MeditrakSyncQueue';
 export { OptionModel } from './Option';
 export { OptionSetModel } from './OptionSet';
-export { PermissionGroupModel, PermissionGroupType } from './PermissionGroup';
-export { ProjectModel, ProjectType } from './Project';
+export { PermissionGroupModel, PermissionGroupRecord } from './PermissionGroup';
+export { ProjectModel, ProjectRecord } from './Project';
 export { QuestionModel } from './Question';
-export { ReportModel, ReportType } from './Report';
-export { SurveyModel, SurveyType } from './Survey';
+export { ReportModel, ReportRecord } from './Report';
+export { SurveyModel, SurveyRecord } from './Survey';
 export { SurveyGroupModel } from './SurveyGroup';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
-export { SurveyResponseModel, SurveyResponseType } from './SurveyResponse';
+export { SurveyResponseModel, SurveyResponseRecord } from './SurveyResponse';
 export { SurveyScreenModel } from './SurveyScreen';
-export { UserEntityPermissionModel, UserEntityPermissionType } from './UserEntityPermission';
-export { UserModel, UserType } from './User';
+export { UserEntityPermissionModel, UserEntityPermissionRecord } from './UserEntityPermission';
+export { UserModel, UserRecord } from './User';
 export { SupersetInstanceModel } from './SupersetInstance';
-export { DashboardType, DashboardModel } from './Dashboard';
-export { DashboardItemType, DashboardItemModel } from './DashboardItem';
-export { DashboardMailingListType, DashboardMailingListModel } from './DashboardMailingList';
+export { DashboardRecord, DashboardModel } from './Dashboard';
+export { DashboardItemRecord, DashboardItemModel } from './DashboardItem';
+export { DashboardMailingListRecord, DashboardMailingListModel } from './DashboardMailingList';
 export {
-  DashboardMailingListEntryType,
+  DashboardMailingListEntryRecord,
   DashboardMailingListEntryModel,
 } from './DashboardMailingListEntry';
-export { DashboardRelationType, DashboardRelationModel } from './DashboardRelation';
-export { OneTimeLoginType, OneTimeLoginModel } from './OneTimeLogin';
+export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRelation';
+export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';

@@ -1,15 +1,15 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { prefetchTransformSchemas, useSearchTransformSchemas } from '../../api';
 import {
-  TransformSelectedOptionWithJsonEditor,
-  TransformSelectedOption,
   DataLibrary,
+  TransformSelectedOption,
+  TransformSelectedOptionWithEditor,
 } from './component';
 
 const DATA_TYPES = {
@@ -87,7 +87,7 @@ export const TransformDataLibrary = ({ transform, onTransformChange, onInvalidCh
             onRemove={onRemove}
           />
         ) : (
-          <TransformSelectedOptionWithJsonEditor
+          <TransformSelectedOptionWithEditor
             option={option}
             optionMetaData={optionWithMetaData}
             onChange={newValue => onChangeInOption(newValue, option)}

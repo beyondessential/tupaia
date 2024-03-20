@@ -148,6 +148,7 @@ export class MapOverlaysRoute extends Route<MapOverlaysRequest> {
               reportCode: overlay.report_code,
               legacy: overlay.legacy,
               sortOrder: relation.sort_order,
+              entityAttributesFilter: overlay.entity_attributes_filter,
               ...overlay.config,
             } as TranslatedMapOverlay;
           }
