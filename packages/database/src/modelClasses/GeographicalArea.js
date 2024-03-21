@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class GeographicalAreaRecord extends DatabaseRecord {
+export class GeographicalAreaRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.GEOGRAPHICAL_AREA;
 
   // Exposed for access policy creation.

@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class AccessRequestRecord extends DatabaseRecord {
+export class AccessRequestRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ACCESS_REQUEST;
 }
 

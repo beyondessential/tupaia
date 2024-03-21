@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class MeditrakDeviceRecord extends DatabaseRecord {
+export class MeditrakDeviceRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MEDITRAK_DEVICE;
 }
 

@@ -8,7 +8,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class APIClientRecord extends DatabaseRecord {
+export class ApiClientRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.API_CLIENT;
 
   async getUser() {
@@ -29,8 +29,8 @@ class APIClientRecord extends DatabaseRecord {
   }
 }
 
-export class APIClientModel extends DatabaseModel {
+export class ApiClientModel extends DatabaseModel {
   get DatabaseRecordClass() {
-    return APIClientRecord;
+    return ApiClientRecord;
   }
 }
