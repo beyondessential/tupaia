@@ -83,43 +83,43 @@ describe('Requests record types that require a through join', () => {
   });
   it('returns record types that require two through joins', () => {
     const customJoinConditions = {
-      country: {
-        through: 'entity',
-        nearTableKey: 'entity.country_code',
-        farTableKey: 'country.code',
+      question: {
+        through: 'answer',
+        nearTableKey: 'answer.question_id',
+        farTableKey: 'question.id',
       },
-      disaster: {
-        through: 'country',
-        nearTableKey: 'country.code',
-        farTableKey: 'disaster.countryCode',
+      survey_screen_component: {
+        through: 'question',
+        nearTableKey: 'question.id',
+        farTableKey: 'survey_screen_component.question_id',
       },
     };
     const results = getQueryOptionsForColumns(
-      ['survey_response.id', 'country.name', 'disaster.type'],
+      ['survey_response.id', 'question.id', 'survey_screen_component.component_number'],
       'survey_response',
       customJoinConditions,
       null,
     );
     expect(results.sort).to.have.ordered.members([
       'survey_response.id',
-      'entity.id',
-      'country.id',
-      'disaster.id',
+      'answer.id',
+      'question.id',
+      'survey_screen_component.id',
     ]);
     expect(results.multiJoin).to.deep.equal([
       {
-        joinWith: 'entity',
-        joinCondition: ['entity.id', 'survey_response.entity_id'],
+        joinWith: 'answer',
+        joinCondition: ['survey_response.id', 'answer.survey_response_id'],
         joinType: null,
       },
       {
-        joinWith: 'country',
-        joinCondition: ['country.code', 'entity.country_code'],
+        joinWith: 'question',
+        joinCondition: ['answer.question_id', 'question.id'],
         joinType: null,
       },
       {
-        joinWith: 'disaster',
-        joinCondition: ['disaster.countryCode', 'country.code'],
+        joinWith: 'survey_screen_component',
+        joinCondition: ['question.id', 'survey_screen_component.question_id'],
         joinType: null,
       },
     ]);
