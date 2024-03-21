@@ -5,7 +5,7 @@
 
 import {
   MeditrakSyncQueueModel as BaseMeditrakSyncQueueModel,
-  MeditrakSyncQueueType as BaseMeditrakSyncQueueType,
+  MeditrakSyncQueueRecord as BaseMeditrakSyncQueueRecord,
 } from '@tupaia/database';
 import { Model } from '@tupaia/server-boilerplate';
 
@@ -17,9 +17,9 @@ export type MeditrakSyncQueueFields = Readonly<{
   change_time: number;
 }>;
 
-export interface MeditrakSyncQueueType
+export interface MeditrakSyncQueueRecord
   extends MeditrakSyncQueueFields,
-    Omit<BaseMeditrakSyncQueueType, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
+    Omit<BaseMeditrakSyncQueueRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string here
 
 export interface MeditrakSyncQueueModel
-  extends Model<BaseMeditrakSyncQueueModel, MeditrakSyncQueueFields, MeditrakSyncQueueType> {}
+  extends Model<BaseMeditrakSyncQueueModel, MeditrakSyncQueueFields, MeditrakSyncQueueRecord> {}

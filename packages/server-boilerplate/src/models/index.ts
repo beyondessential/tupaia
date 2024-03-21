@@ -13,4 +13,11 @@ export {
   QueryConjunctions,
 } from './types';
 
-export { UserType, UserModel } from './User';
+export { UserRecord, UserModel } from './User';
+export { FeedItemModel } from './FeedItem';
+export { SurveyResponseModel } from './SurveyResponse';
+export { DashboardRelationModel } from './DashboardRelation';
+export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
+export { ProjectModel } from './Project';
+export { AncestorDescendantRelationModel } from './AncestorDescendantRelation';
+export { EntityModel, EntityRecord, EntityFilter, EntityFilterFields } from './Entity';

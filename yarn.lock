@@ -11952,6 +11952,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.47
     "@material-ui/styles": ^4.9.10
     "@tupaia/access-policy": "workspace:*"
+    "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/ui-chart-components": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
@@ -11963,7 +11964,8 @@ __metadata:
     date-fns: ^2.29.2
     downloadjs: ^1.4.7
     file-saver: ^1.3.3
-    jsoneditor: ^9.9.0
+    js-sql-parser: ^1.4.1
+    jsoneditor: ^10.0.1
     localforage: ^1.5.0
     lodash.debounce: ^4.0.8
     lodash.groupby: ^4.6.0
@@ -12086,7 +12088,7 @@ __metadata:
     lodash.pick: ^4.4.0
     mocha: ^10.2.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.28
+    moment-timezone: ^0.5.45
     morgan: ^1.9.0
     multer: ^1.4.3
     npm-run-all: ^4.1.5
@@ -12201,6 +12203,7 @@ __metadata:
   resolution: "@tupaia/database@workspace:packages/database"
   dependencies:
     "@babel/node": ^7.10.5
+    "@tupaia/access-policy": "workspace:*"
     "@tupaia/auth": "workspace:*"
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12260,7 +12263,7 @@ __metadata:
     "@testing-library/react": 12.1.2
     "@testing-library/react-hooks": ^8.0.1
     "@tupaia/expression-parser": "workspace:*"
-    "@tupaia/types": 1.0.0
+    "@tupaia/types": "workspace:*"
     "@tupaia/ui-components": "workspace:*"
     "@tupaia/ui-map-components": "workspace:*"
     "@tupaia/utils": "workspace:*"
@@ -12333,7 +12336,7 @@ __metadata:
     lodash: ^4.17.4
     markdown-to-jsx: ^6.4.1
     moment: ^2.24.0
-    moment-timezone: ^0.5.14
+    moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     regenerator-runtime: ^0.13.9
@@ -12471,7 +12474,7 @@ __metadata:
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.27
+    moment-timezone: ^0.5.45
     semver-compare: ^1.0.0
     winston: ^3.3.3
   languageName: unknown
@@ -12513,7 +12516,7 @@ __metadata:
     react-native-config: ^1.5.1
     react-native-database: ^0.3.3
     react-native-device-info: ^10.9.0
-    react-native-document-picker: ^9.0.1
+    react-native-document-picker: ^9.1.1
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.13.0
     react-native-image-picker: ^7.0.0
@@ -12688,7 +12691,7 @@ __metadata:
     "@types/nodemailer": ^6.4.13
     "@types/sha256": ^0.2.2
     cookie: ^0.5.0
-    nodemailer: ^6.9.7
+    nodemailer: ^6.9.12
     puppeteer: ^15.4.0
     sha256: ^0.2.0
   languageName: unknown
@@ -12713,14 +12716,13 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/lodash.get": ^4.4.2
-    "@types/moment-timezone": 0.5.13
     ajv: ^8.12.0
     ajv-formats: v3.0.0-rc.0
     better-ajv-errors: ^1.2.0
     camelcase-keys: ^6.2.2
     lodash.get: ^4.4.2
     moment: ^2.24.0
-    moment-timezone: ^0.5.25
+    moment-timezone: ^0.5.45
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -12798,7 +12800,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tupaia/types@1.0.0, @tupaia/types@workspace:*, @tupaia/types@workspace:packages/types":
+"@tupaia/types@workspace:*, @tupaia/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@tupaia/types@workspace:packages/types"
   dependencies:
@@ -12928,13 +12930,13 @@ __metadata:
     lodash.get: ^4.4.2
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
-    moment-timezone: ^0.5.28
+    moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
     npm-run-all: ^4.1.5
     numeral: ^2.0.6
     prop-types: ^15.6.2
     sanitize-filename: ^1.6.3
-    validator: ^13.7.0
+    validator: ^13.11.0
     winston: ^3.3.3
     xlsx: ^0.10.9
     yup: ^0.32.9
@@ -12993,8 +12995,9 @@ __metadata:
     lodash.tail: ^4.1.1
     lodash.zipobject: ^4.1.3
     moment: ^2.24.0
+    moment-timezone: ^0.5.45
     morgan: ^1.9.0
-    nodemailer: ^4.6.7
+    nodemailer: ^6.9.12
     promise: ^7.3.1
     react-autobind: ^1.0.6
     request: ^2.81.0
@@ -13822,15 +13825,6 @@ __metadata:
   version: 1.2.0
   resolution: "@types/minimist@npm:1.2.0"
   checksum: 30cbd9acd7ddb60bc3729adcc43a9da4940c90180fa0f08228f1da95ec6c00db2e3fd3af5280fc5345e3fa2637253bb5cf6625f30d571ef9bc3820a531febb7e
-  languageName: node
-  linkType: hard
-
-"@types/moment-timezone@npm:0.5.13":
-  version: 0.5.13
-  resolution: "@types/moment-timezone@npm:0.5.13"
-  dependencies:
-    moment: ">=2.14.0"
-  checksum: 35bd6414b790663e4879e38b4a344526ebe87b3f795929f9bc38f91f7caa373c65dd19a0e836182319f929d0f7fcff9b629efc6dbcef23d386bf0c87597f5b49
   languageName: node
   linkType: hard
 
@@ -15076,6 +15070,13 @@ __metadata:
   version: 1.15.0
   resolution: "ace-builds@npm:1.15.0"
   checksum: fc67d8c4358a3029c1d4caab7fbc5a4b021bd082dbd16684e4a8ab7e77da2cf194e2fac577ac4a6e22e06af8bd306ebb9382ad34c7f028dbea8895081f4ee9ce
+  languageName: node
+  linkType: hard
+
+"ace-builds@npm:^1.32.6":
+  version: 1.32.7
+  resolution: "ace-builds@npm:1.32.7"
+  checksum: 6a7f73d738bf10e23c33a32ec2164102a507cf539c4a24690d91749dde23d11be34757d4c481ac9f0cf9762dda7ec003908857b4a56f69ad7b9f370dc8344332
   languageName: node
   linkType: hard
 
@@ -29861,20 +29862,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsoneditor@npm:^9.9.0":
-  version: 9.9.2
-  resolution: "jsoneditor@npm:9.9.2"
+"jsoneditor@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "jsoneditor@npm:10.0.1"
   dependencies:
-    ace-builds: ^1.10.1
+    ace-builds: ^1.32.6
     ajv: ^6.12.6
     javascript-natural-sort: ^0.7.1
     jmespath: ^0.16.0
     json-source-map: ^0.6.1
-    jsonrepair: ^2.2.1
+    jsonrepair: ^3.5.1
     mobius1-selectr: ^2.4.13
     picomodal: ^3.0.0
-    vanilla-picker: ^2.12.1
-  checksum: 8f1d9403cddaf3bef94ec521da32a0892e12ae1630ef12e8bc38c7f6995bfe4563682505a9ce9e8e6c8511774289fc9f70a8ced158594fd330f892e5c8b5fd66
+    vanilla-picker: ^2.12.2
+  checksum: 25f6a50bda08a50287f2ade08c1eb976fd67c665e203f587897ec4df220312a92a6d6abe91653d0777a97fcbf25096140de31a00155171032c801a981b48257a
   languageName: node
   linkType: hard
 
@@ -29922,12 +29923,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonrepair@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "jsonrepair@npm:2.2.1"
+"jsonrepair@npm:^3.5.1":
+  version: 3.6.0
+  resolution: "jsonrepair@npm:3.6.0"
   bin:
     jsonrepair: bin/cli.js
-  checksum: c9ad3c948d78c356602e5f43023167acee8e2a32fde1e22481b0f311e54f9b1d0ab47a73feeb87b65585df4ecf42d34aac1d457ff5aa2010fe032b3634113cf8
+  checksum: afcc14f6135c596656c38b02bd940a81bf5bd943a11ee1ce57ce812fc3eec7b505a291e35b7b3d654ac4ac6f91cce92cc681e475efac0ba81670896bcc60714b
   languageName: node
   linkType: hard
 
@@ -32806,50 +32807,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.14":
-  version: 0.5.27
-  resolution: "moment-timezone@npm:0.5.27"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: 814bc11cf1f62cd93852499b469baa362c969ba354ba44f14eafbba1662f7ab22c026219786d9454c8f2781f12046c07aa4723f3a30083ebef9151b8dcd84f32
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.25":
-  version: 0.5.39
-  resolution: "moment-timezone@npm:0.5.39"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: 9f972d3a29b2726d4fd1464df27738b756441fe57575f087cda91b7716a5a31d2cfd274255e3edfb15eb60af3ccf33fd339527b456092cac1a2a4124e4369c8b
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.27":
-  version: 0.5.37
-  resolution: "moment-timezone@npm:0.5.37"
-  dependencies:
-    moment: ">= 2.9.0"
-  checksum: b3fc24848a396ee3801331a4b5511591df0e22241e59f55200a475603f23a8429f01887294c7a0c005dae25b8e4bef20472fbc875ff20080f26fded066559f1a
-  languageName: node
-  linkType: hard
-
-"moment-timezone@npm:^0.5.28":
-  version: 0.5.43
-  resolution: "moment-timezone@npm:0.5.43"
+"moment-timezone@npm:^0.5.45":
+  version: 0.5.45
+  resolution: "moment-timezone@npm:0.5.45"
   dependencies:
     moment: ^2.29.4
-  checksum: 8075c897ed8a044f992ef26fe8cdbcad80caf974251db424cae157473cca03be2830de8c74d99341b76edae59f148c9d9d19c1c1d9363259085688ec1cf508d0
+  checksum: a22e9f983fbe1a01757ce30685bce92e3f6efa692eb682afd47b82da3ff960b3c8c2c3883ec6715c124bc985a342b57cba1f6ba25a1c8b4c7ad766db3cd5e1d0
   languageName: node
   linkType: hard
 
-"moment@npm:2.x.x, moment@npm:>= 2.9.0, moment@npm:^2.24.0":
+"moment@npm:2.x.x, moment@npm:^2.24.0":
   version: 2.24.0
   resolution: "moment@npm:2.24.0"
   checksum: 9cd93a251a2b33cb1b532eade0e496a2a7547faa6cfe37a283ee7bf69e202cd7c8ab0673d66883b5b29aed051353176dc0e6684f04073a75b0a155c500be1580
   languageName: node
   linkType: hard
 
-"moment@npm:>=2.14.0, moment@npm:^2.18.1, moment@npm:^2.29.4":
+"moment@npm:^2.18.1, moment@npm:^2.29.4":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
   checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
@@ -33575,17 +33549,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^4.6.7":
-  version: 4.7.0
-  resolution: "nodemailer@npm:4.7.0"
-  checksum: 33f8774cd1883c693b4cafe66eb599e2351c3e0dfa29f4d37dcfcc26ad789490e9cede64784f4cd79db8ee7675381aafb9e52243859977a5c1ecd2fff6607d97
-  languageName: node
-  linkType: hard
-
-"nodemailer@npm:^6.9.7":
-  version: 6.9.7
-  resolution: "nodemailer@npm:6.9.7"
-  checksum: 0cf66d27aed3bd2cbdff9939402cec3d2119c31b2b9ff4af3bcd59f48287ea75b90c0ce2cd9eb0df838164972cd25581b4b723c91fd673e2608bcb28445ccb1b
+"nodemailer@npm:^6.9.12":
+  version: 6.9.12
+  resolution: "nodemailer@npm:6.9.12"
+  checksum: 061f4c785b5362903078ef2434d1e5a50901439caa0102435cfdb33efa993ac5d03ae26780c1baef5adb90909793e40ba36d853273294fe83dc4dffb9719dfd0
   languageName: node
   linkType: hard
 
@@ -37256,9 +37223,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-document-picker@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "react-native-document-picker@npm:9.0.1"
+"react-native-document-picker@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "react-native-document-picker@npm:9.1.1"
   dependencies:
     invariant: ^2.2.4
   peerDependencies:
@@ -37268,7 +37235,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-windows:
       optional: true
-  checksum: a8ad0bc2ed13290e8d7ff5f77aa7e35ffda9fa380a7d01d1286111e92656415985d61469a50567b8bcb67e42c41a36b89e879d0d08b40d3fdda171eaa08721e4
+  checksum: e29b9406dd77e16f461e64035a5f7056b1fcb0d05fb26b23f0073ff2211520a7ac9b57da7e58e61ff03bcbe1120d2e104fb1c90282412736feeb12abe96e2d3b
   languageName: node
   linkType: hard
 
@@ -43628,10 +43595,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validator@npm:^13.7.0":
-  version: 13.9.0
-  resolution: "validator@npm:13.9.0"
-  checksum: e2c936f041f61faa42bafd17c6faddf939498666cd82e88d733621c286893730b008959f4cb12ab3e236148a4f3805c30b85e3dcf5e0efd8b0cbcd36c02bfc0c
+"validator@npm:^13.11.0":
+  version: 13.11.0
+  resolution: "validator@npm:13.11.0"
+  checksum: d1e0c27022681420756da25bc03eb08d5f0c66fb008f8ff02ebc95812b77c6be6e03d3bd05cf80ca702e23eeb73dadd66b4b3683173ea2a0bc7cc72820bee131
   languageName: node
   linkType: hard
 
@@ -43642,12 +43609,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vanilla-picker@npm:^2.12.1":
-  version: 2.12.1
-  resolution: "vanilla-picker@npm:2.12.1"
+"vanilla-picker@npm:^2.12.2":
+  version: 2.12.2
+  resolution: "vanilla-picker@npm:2.12.2"
   dependencies:
     "@sphinxxxx/color-conversion": ^2.2.2
-  checksum: 92cedd11869a7b9b2e1c1476f07c64d942bd3de625063618ff4a3758fc51371c3b9ef7e175f22634b702416df5a5a02e7ab62395ab9b159b36be44c3c43895fc
+  checksum: 3712edfb53e9bc698a339a6f40f38e04f125bf0d0ebddb69155f755480f49425c26690f729baae8800c9f511b0242287eb7ce28f4303427979dd7db37068e1c5
   languageName: node
   linkType: hard
 

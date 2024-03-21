@@ -42,9 +42,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@tupaia/auth": "workspace:*",
-    "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.0"
   }

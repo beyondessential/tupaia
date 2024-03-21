@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '@tupaia/utils';
 
 import { EditHandler } from '../EditHandler';
@@ -74,7 +74,7 @@ export class EditMapOverlayVisualisation extends EditHandler {
 
   async validateRecordExists() {
     const validationCriteria = {
-      id: [constructRecordExistsWithId(this.database, TYPES.MAP_OVERLAY)],
+      id: [constructRecordExistsWithId(this.database, RECORDS.MAP_OVERLAY)],
     };
 
     const validator = new ObjectValidator(validationCriteria);

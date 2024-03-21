@@ -46,20 +46,22 @@ const STUBBED_MODEL_DATA = {
   survey_response: [REGIONAL_SURVEY_RESPONSE, TONGA_SURVEY_RESPONSE],
 };
 
-const stubFind = type => async ({ id: ids }) =>
-  STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
+const stubFind =
+  type =>
+  async ({ id: ids }) =>
+    STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
 
 export const MODELS = {
   entity: {
-    databaseType: 'entity',
+    databaseRecord: 'entity',
     find: stubFind('entity'),
   },
   surveyResponse: {
-    databaseType: 'survey_response',
+    databaseRecord: 'survey_response',
     find: stubFind('survey_response'),
   },
   answer: {
-    databaseType: 'answer',
+    databaseRecord: 'answer',
   },
   survey: {
     find: stubFind('survey'),

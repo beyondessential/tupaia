@@ -12,14 +12,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { FlexColumn, SmallAlert } from '@tupaia/ui-components';
 import { useDashboardVisualisation } from '../api';
 import { Panel, PreviewOptions, PreviewSection, Toolbar } from '../components';
-import {
-  PreviewDataProvider,
-  TabPanelProvider,
-  useVizConfig,
-  VizConfigErrorProvider,
-} from '../context';
+import { PreviewDataProvider, useVizConfigContext, VizConfigErrorProvider } from '../context';
 import { useMapOverlayVisualisation } from '../api/queries/useMapOverlayVisualisation';
-import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
+import {
+  DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM,
+  DASHBOARD_ITEM_VIZ_TYPES,
+  MAP_OVERLAY_VIZ_TYPES,
+} from '../constants';
+import { findVizType } from '../utils';
 
 const Container = styled(MuiContainer)`
   flex: 1;
@@ -58,7 +58,7 @@ export const Main = () => {
   };
 
   // eslint-disable-next-line no-unused-vars
-  const [_, { setVisualisation }] = useVizConfig();
+  const [_, { setVisualisation, setVizType }] = useVizConfigContext();
   const [visualisationLoaded, setVisualisationLoaded] = useState(false);
   const { data = {}, error } = useViz();
   const { visualisation } = data;
@@ -66,6 +66,11 @@ export const Main = () => {
   useEffect(() => {
     if (visualisation) {
       setVisualisation(visualisation);
+      const vizType =
+        dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
+          ? findVizType(visualisation, DASHBOARD_ITEM_VIZ_TYPES)
+          : findVizType(visualisation, MAP_OVERLAY_VIZ_TYPES);
+      setVizType(vizType);
       setVisualisationLoaded(true);
     }
   }, [visualisation]);
@@ -93,9 +98,7 @@ export const Main = () => {
       <Toolbar />
       <Container maxWidth="xl">
         <PreviewDataProvider>
-          <TabPanelProvider>
-            <Panel />
-          </TabPanelProvider>
+          <Panel />
           <RightCol>
             <PreviewOptions />
             <PreviewSection />

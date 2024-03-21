@@ -77,16 +77,19 @@ export class TupaiaDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
-    const connectToDatabase = async () => {
-      this.connection =
-        transactingConnection ||
-        knex({
+    if (transactingConnection) {
+      this.connection = transactingConnection;
+      this.connectionPromise = Promise.resolve(true);
+    } else {
+      const connectToDatabase = async () => {
+        this.connection = knex({
           client: 'pg',
           connection: getConnectionConfig(),
         });
-      return true;
-    };
-    this.connectionPromise = connectToDatabase();
+        return true;
+      };
+      this.connectionPromise = connectToDatabase();
+    }
 
     this.handlerLock = new Multilock();
 
@@ -195,9 +198,9 @@ export class TupaiaDatabase {
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**
@@ -680,13 +683,16 @@ function addJoin(baseQuery, recordType, joinOptions) {
 }
 
 function getColSelector(connection, inputColStr) {
-  if (inputColStr.includes('->>')) {
+  const regexp = new RegExp(/->>?/, 'g');
+  if (regexp.test(inputColStr)) {
     // Shorthand way of querying json property
     // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const [first, ...rest] = inputColStr.split(/->>?/);
+    const [first, ...rest] = inputColStr.split(regexp);
     if (rest.length === 1) {
-      // e.g. 'config->>colour' is converted to config->>'colour'
-      return connection.raw(`??->>?`, [first, ...rest]);
+      // get the first separator (there will only be 1 in this case)
+      const separator = inputColStr.match(regexp)[0];
+      // e.g. 'config->>colour' is converted to config->>'colour' and 'config->colour' is converted to config->'colour'
+      return connection.raw(`??${separator}?`, [first, ...rest]);
     }
     // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
     const last = rest.slice(-1);

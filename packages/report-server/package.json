@@ -22,7 +22,8 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9995 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
@@ -54,7 +55,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@tupaia/types": "workspace:*",
     "@types/lodash.isplainobject": "^4.0.6",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.pick": "^4.4.0",
