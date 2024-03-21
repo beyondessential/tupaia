@@ -180,3 +180,4 @@ export {
 } from './DashboardMailingListEntry';
 export { DashboardRelationRecord, DashboardRelationModel } from './DashboardRelation';
 export { OneTimeLoginRecord, OneTimeLoginModel } from './OneTimeLogin';
+export { AnswerModel, AnswerRecord } from './Answer';

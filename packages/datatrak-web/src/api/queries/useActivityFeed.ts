@@ -1,11 +1,12 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import { useInfiniteQuery } from 'react-query';
 import { DatatrakWebActivityFeedRequest, Project } from '@tupaia/types';
 import { get } from '../api';
-import { useCurrentUser } from '..';
+import { useCurrentUserContext } from '..';
 
 export const useActivityFeed = (projectId?: Project['id']) => {
   return useInfiniteQuery(
@@ -28,6 +29,6 @@ export const useActivityFeed = (projectId?: Project['id']) => {
 };
 
 export const useCurrentProjectActivityFeed = () => {
-  const { projectId } = useCurrentUser();
+  const { projectId } = useCurrentUserContext();
   return useActivityFeed(projectId);
 };

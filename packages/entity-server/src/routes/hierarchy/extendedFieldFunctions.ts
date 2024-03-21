@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { EntityRecord } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
 import { calculateOuterBounds } from '@tupaia/utils';
-import { EntityRecord } from '../../models';
 
 const getParentCode = async (
   entity: EntityRecord,
@@ -61,7 +62,7 @@ const getBounds = async (
     const { hierarchyId, allowedCountries } = context;
     const children = await entity.getChildren(hierarchyId, { country_code: allowedCountries });
     if (children.length > 0) {
-      return calculateOuterBounds(children.map(child => child.bounds));
+      return calculateOuterBounds(children.map(child => child.bounds).filter(isNotNullish));
     }
   }
 

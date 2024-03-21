@@ -7,7 +7,7 @@ import {
   MapOverlayGroupRelationModel as BaseRelationModel,
   MapOverlayGroupRelationRecord as BaseRelationType,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
+import { Model } from './types';
 
 type MapOverlayGroupRelationFields = Readonly<{
   id: string;

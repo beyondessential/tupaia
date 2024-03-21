@@ -29,7 +29,7 @@ export const PreviewDataProvider = ({ children }) => {
   );
 };
 
-export const usePreviewData = () => useContext(PreviewDataContext);
+export const usePreviewDataContext = () => useContext(PreviewDataContext);
 
 PreviewDataProvider.propTypes = {
   children: PropTypes.node.isRequired,

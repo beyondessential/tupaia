@@ -6,10 +6,8 @@
 import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToArrayDictionary } from '@tupaia/utils';
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
-
+import { QueryConjunctions, EntityFilter, EntityRecord } from '@tupaia/server-boilerplate';
 import { EntityServerModelRegistry } from '../../../types';
-import { EntityFilter, EntityRecord } from '../../../models';
 import { formatEntitiesForResponse } from '../format';
 import { MultiEntityRelationshipsContext } from './types';
 
@@ -43,8 +41,8 @@ export class ResponseBuilder {
     this.groupBy = groupBy;
 
     const ancestorType = ctx.ancestor.type || ctx.entities[0]?.type;
-    if (ancestorType === null) {
-      throw new Error('No explicit ancestorType provided and entity type is null');
+    if (!ancestorType) {
+      throw new Error(`No explicit ancestorType provided and entity type is ${ancestorType}`);
     }
 
     this.ctx = {

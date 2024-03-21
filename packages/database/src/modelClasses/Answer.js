@@ -7,7 +7,7 @@ import { MaterializedViewLogDatabaseModel } from '../analytics';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class AnswerRecord extends DatabaseRecord {
+export class AnswerRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ANSWER;
 }
 

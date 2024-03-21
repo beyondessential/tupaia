@@ -6,8 +6,8 @@ import {
   DashboardRelationModel as BaseDashboardRelationModel,
   DashboardRelationRecord as BaseDashboardRelationRecord,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
 import { Dashboard, DashboardRelation, Entity, Project } from '@tupaia/types';
+import { Model } from './types';
 
 export interface DashboardRelationRecord
   extends DashboardRelation,

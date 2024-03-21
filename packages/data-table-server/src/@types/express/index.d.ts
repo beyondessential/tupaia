@@ -5,8 +5,8 @@
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaApiClient } from '@tupaia/api-client';
+import { DataTableRecord } from '@tupaia/database';
 import { DataTableService } from '../../dataTableService';
-import { DataTableRecord } from '../../models';
 import { DataTableServerModelRegistry } from '../../types';
 
 declare global {

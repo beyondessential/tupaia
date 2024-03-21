@@ -72,7 +72,7 @@ describe('changes (GET)', () => {
   let userId: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
-    getTestModels() as MeditrakAppServerModelRegistry,
+    getTestModels() as unknown as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
 

@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { EntityRecord } from '../../models';
+import { EntityRecord } from '@tupaia/server-boilerplate';
+import { isNotNullish } from '@tupaia/tsutils';
 import { EntityServerModelRegistry } from '../../types';
 import { ResponseObjectBuilder } from '../utils';
 import {
@@ -38,7 +39,8 @@ export async function formatEntityForResponse(
 ) {
   if (!Array.isArray(fieldOrFields)) {
     const field = fieldOrFields;
-    return entity[field];
+    if (isNotNullish(field)) return entity[field];
+    return undefined;
   }
   const fields = fieldOrFields;
   const responseBuilder = new ResponseObjectBuilder<EntityResponseObject>();

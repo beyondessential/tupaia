@@ -7,10 +7,10 @@ import {
   FeedItemModel as BaseFeedItemModel,
   FeedItemRecord as BaseFeedItemRecord,
 } from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
 import { FeedItem, NullableKeysToOptional } from '@tupaia/types';
+import { Model } from './types';
 
-export interface FeedItemRecord extends FeedItem, Omit<BaseFeedItemRecord, 'id' | 'creation_date'> {
+interface FeedItemRecord extends FeedItem, Omit<BaseFeedItemRecord, 'id' | 'creation_date'> {
   getData: () => Promise<NullableKeysToOptional<FeedItem>>;
 }
 
