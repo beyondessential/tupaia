@@ -1349,17 +1349,20 @@ export interface Report {
   'code': string;
   'config': ReportConfig;
   'id': string;
+  'latest_data_parameters': {};
   'permission_group_id': string;
 }
 export interface ReportCreate {
   'code': string;
   'config': ReportConfig;
+  'latest_data_parameters'?: {};
   'permission_group_id': string;
 }
 export interface ReportUpdate {
   'code'?: string;
   'config'?: ReportConfig;
   'id'?: string;
+  'latest_data_parameters'?: {};
   'permission_group_id'?: string;
 }
 export interface Setting {
