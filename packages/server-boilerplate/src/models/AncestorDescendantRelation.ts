@@ -14,7 +14,7 @@ type AncestorDescendantRelationFields = AncestorDescendantRelation &
   Joined<Entity, 'ancestor'> &
   Joined<Entity, 'descendant'>;
 
-interface AncestorDescendantRelationRecord
+export interface AncestorDescendantRelationRecord
   extends AncestorDescendantRelationFields,
     BaseAncestorDescendantRelationRecord {}
 

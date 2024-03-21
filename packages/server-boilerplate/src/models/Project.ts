@@ -11,7 +11,7 @@ import {
 } from '@tupaia/database';
 import { Model } from './types';
 
-interface ProjectRecord extends Project, BaseProjectRecord {}
+export interface ProjectRecord extends Project, BaseProjectRecord {}
 
 export interface ProjectModel extends Model<BaseProjectModel, Project, ProjectRecord> {
   getAccessibleProjects: (accessPolicy: AccessPolicy) => Promise<ProjectRecord[]>;

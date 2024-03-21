@@ -10,7 +10,7 @@ import {
 import { MapOverlayGroupRelation } from '@tupaia/types';
 import { Model } from './types';
 
-interface MapOverlayGroupRelationRecord
+export interface MapOverlayGroupRelationRecord
   extends MapOverlayGroupRelation,
     BaseMapOverlayGroupRelationType {}
 
