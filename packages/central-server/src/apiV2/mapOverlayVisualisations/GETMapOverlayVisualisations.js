@@ -30,6 +30,7 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
     code: report.code,
     config: report.config,
     permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
+    latestDataParameters: report.latest_data_parameters || {},
   };
 };
 
