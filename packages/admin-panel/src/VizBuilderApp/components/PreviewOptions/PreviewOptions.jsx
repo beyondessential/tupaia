@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { FlexEnd, FlexSpaceBetween, FlexStart, ImportModal } from '@tupaia/ui-components';
-import { usePreviewData, useVizConfig } from '../../context';
+import { usePreviewDataContext, useVizConfigContext } from '../../context';
 import { LinkButton } from '../LinkButton';
 import { useUploadTestData } from '../../api';
 import { ProjectField } from './ProjectField';
@@ -67,8 +67,8 @@ UploadDataModal.propTypes = {
 };
 
 export const PreviewOptions = () => {
-  const { setShowData } = usePreviewData();
-  const [_, { setTestData }] = useVizConfig();
+  const { setShowData } = usePreviewDataContext();
+  const [_, { setTestData }] = useVizConfigContext();
 
   const [fileName, setFileName] = useState('');
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);

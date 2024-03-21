@@ -5,12 +5,12 @@
 
 import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
-import { useVizConfig } from '../../context';
+import { useVizConfigContext } from '../../context';
 import { useEntityByCode, useLocations } from '../../api';
 
 export const LocationField = () => {
   const [locationSearch, setLocationSearch] = useState('');
-  const [{ visualisation, project, location }, { setLocation }] = useVizConfig();
+  const [{ visualisation, project, location }, { setLocation }] = useVizConfigContext();
 
   const entityCodes = visualisation?.latestDataParameters?.organisationUnitCodes ?? '';
 

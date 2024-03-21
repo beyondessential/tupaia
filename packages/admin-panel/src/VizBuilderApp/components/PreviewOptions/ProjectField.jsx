@@ -4,11 +4,11 @@
  */
 import React from 'react';
 import { useProject, useProjects } from '../../api';
-import { useVizConfig } from '../../context';
+import { useVizConfigContext } from '../../context';
 import { Autocomplete } from './Autocomplete';
 
 export const ProjectField = () => {
-  const [{ visualisation, project }, { setProject }] = useVizConfig();
+  const [{ visualisation, project }, { setProject }] = useVizConfigContext();
 
   const { data: defaultProject } = useProject(
     visualisation?.latestDataParameters?.hierarchy,

@@ -5,7 +5,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { DatePicker as DatePickerComponent } from '@tupaia/ui-components';
-import { useVizConfig } from '../../context';
+import { useVizConfigContext } from '../../context';
 
 const DatePicker = styled(DatePickerComponent)`
   flex: 1 1 0px;
@@ -24,7 +24,8 @@ const DatePicker = styled(DatePickerComponent)`
 `;
 
 export const DateRangeField = () => {
-  const [{ startDate, endDate, visualisation }, { setStartDate, setEndDate }] = useVizConfig();
+  const [{ startDate, endDate, visualisation }, { setStartDate, setEndDate }] =
+    useVizConfigContext();
   const defaultStartDate = visualisation?.latestDataParameters?.startDate;
   const defaultEndDate = visualisation?.latestDataParameters?.endDate;
 
