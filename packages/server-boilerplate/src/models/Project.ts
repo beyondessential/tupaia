@@ -11,10 +11,8 @@ import {
 } from '@tupaia/database';
 import { Model } from './types';
 
-type ProjectFields = Readonly<Project>;
+interface ProjectRecord extends Project, BaseProjectRecord {}
 
-interface ProjectRecord extends ProjectFields, Omit<BaseProjectRecord, 'id'> {} // Omit base `id: any` type as it comes from ProjectFields
-
-export interface ProjectModel extends Model<BaseProjectModel, ProjectFields, ProjectRecord> {
+export interface ProjectModel extends Model<BaseProjectModel, Project, ProjectRecord> {
   getAccessibleProjects: (accessPolicy: AccessPolicy) => Promise<ProjectRecord[]>;
 }

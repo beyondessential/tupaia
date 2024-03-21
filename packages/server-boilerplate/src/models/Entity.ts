@@ -14,7 +14,7 @@ export type EntityFilterFields = Entity & {
 export type EntityFilter = DbFilter<EntityFilterFields>;
 
 // allow the possibility of passing in own fields
-export interface EntityRecord extends Entity, Omit<BaseEntityRecord, 'metadata' | 'id'> {
+export interface EntityRecord extends Entity, BaseEntityRecord {
   getChildren: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
   getParent: (hierarchyId: string) => Promise<EntityRecord | undefined>;
   getDescendants: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
@@ -23,15 +23,7 @@ export interface EntityRecord extends Entity, Omit<BaseEntityRecord, 'metadata' 
   getRelatives: (hierarchyId: string, criteria?: EntityFilter) => Promise<EntityRecord[]>;
 }
 
-export interface EntityModel
-  extends Model<
-    Omit<
-      BaseEntityModel,
-      'getDescendantsOfEntities' | 'getRelativesOfEntities' | 'getAncestorsOfEntities'
-    >,
-    Entity,
-    EntityRecord
-  > {
+export interface EntityModel extends Model<BaseEntityModel, Entity, EntityRecord> {
   getDescendantsOfEntities: (
     hierarchyId: string,
     entityIds: string[],
