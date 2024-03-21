@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class FacilityRecord extends DatabaseRecord {
+export class FacilityRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.FACILITY;
 
   // Exposed for access policy creation.
