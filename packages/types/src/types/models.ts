@@ -674,7 +674,7 @@ export interface Entity {
   'country_code'?: string | null;
   'id': string;
   'image_url'?: string | null;
-  'metadata'?: {} | null;
+  'metadata': {};
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
@@ -687,7 +687,7 @@ export interface EntityCreate {
   'code': string;
   'country_code'?: string | null;
   'image_url'?: string | null;
-  'metadata'?: {} | null;
+  'metadata'?: {};
   'name': string;
   'parent_id'?: string | null;
   'point'?: string | null;
@@ -701,7 +701,7 @@ export interface EntityUpdate {
   'country_code'?: string | null;
   'id'?: string;
   'image_url'?: string | null;
-  'metadata'?: {} | null;
+  'metadata'?: {};
   'name'?: string;
   'parent_id'?: string | null;
   'point'?: string | null;

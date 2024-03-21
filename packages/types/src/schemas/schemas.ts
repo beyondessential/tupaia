@@ -67069,6 +67069,7 @@ export const EntitySchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
@@ -82588,6 +82589,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"attributes",
 					"code",
 					"id",
+					"metadata",
 					"name",
 					"type"
 				]
@@ -83482,6 +83484,7 @@ export const EntityResponseSchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
