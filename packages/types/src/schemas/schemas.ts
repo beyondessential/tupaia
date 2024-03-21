@@ -80184,7 +80184,8 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"id",
+		"permission_groups"
 	]
 } 
 
@@ -82795,7 +82796,8 @@ export const ProjectResponseSchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -82862,7 +82864,8 @@ export const ResBodySchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 

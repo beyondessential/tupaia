@@ -1234,7 +1234,7 @@ export interface Project {
   'id': string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
-  'permission_groups'?: string[] | null;
+  'permission_groups': string[];
   'sort_order'?: number | null;
 }
 export interface ProjectCreate {
@@ -1247,7 +1247,7 @@ export interface ProjectCreate {
   'entity_id'?: string | null;
   'image_url'?: string | null;
   'logo_url'?: string | null;
-  'permission_groups'?: string[] | null;
+  'permission_groups'?: string[];
   'sort_order'?: number | null;
 }
 export interface ProjectUpdate {
@@ -1261,7 +1261,7 @@ export interface ProjectUpdate {
   'id'?: string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
-  'permission_groups'?: string[] | null;
+  'permission_groups'?: string[];
   'sort_order'?: number | null;
 }
 export interface PsssSession {
