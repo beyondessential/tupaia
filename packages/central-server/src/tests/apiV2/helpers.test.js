@@ -81,8 +81,13 @@ describe('Requests record types that require a through join', () => {
       },
     ]);
   });
-  it('returns record types that require two through joins', () => {
+  it('returns record types that require multiple through joins', () => {
     const customJoinConditions = {
+      answer: {
+        through: 'survey_response',
+        nearTableKey: 'survey_response.id',
+        farTableKey: 'answer.survey_response_id',
+      },
       question: {
         through: 'answer',
         nearTableKey: 'answer.question_id',
@@ -109,17 +114,17 @@ describe('Requests record types that require a through join', () => {
     expect(results.multiJoin).to.deep.equal([
       {
         joinWith: 'answer',
-        joinCondition: ['survey_response.id', 'answer.survey_response_id'],
+        joinCondition: ['answer.survey_response_id', 'survey_response.id'],
         joinType: null,
       },
       {
         joinWith: 'question',
-        joinCondition: ['answer.question_id', 'question.id'],
+        joinCondition: ['question.id', 'answer.question_id'],
         joinType: null,
       },
       {
         joinWith: 'survey_screen_component',
-        joinCondition: ['question.id', 'survey_screen_component.question_id'],
+        joinCondition: ['survey_screen_component.question_id', 'question.id'],
         joinType: null,
       },
     ]);

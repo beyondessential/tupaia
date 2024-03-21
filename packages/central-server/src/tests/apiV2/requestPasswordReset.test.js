@@ -10,7 +10,7 @@ import { createBearerHeader, randomEmail, randomString } from '@tupaia/utils';
 
 import { getAuthorizationHeader, TestableApp } from '../testUtilities';
 
-describe('Reset Password', () => {
+describe.only('Reset Password', () => {
   const app = new TestableApp();
   const { models } = app;
   const { VERIFIED } = models.user.emailVerifiedStatuses;
