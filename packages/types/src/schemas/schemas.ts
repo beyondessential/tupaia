@@ -80693,7 +80693,10 @@ export const ReportSchema = {
 		"id": {
 			"type": "string"
 		},
-		"latest_data_parameters": {},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_group_id": {
 			"type": "string"
 		}
@@ -80757,7 +80760,10 @@ export const ReportCreateSchema = {
 				}
 			]
 		},
-		"latest_data_parameters": {},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_group_id": {
 			"type": "string"
 		}
@@ -80822,7 +80828,10 @@ export const ReportUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"latest_data_parameters": {},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_group_id": {
 			"type": "string"
 		}
