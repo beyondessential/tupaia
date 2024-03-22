@@ -38,7 +38,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
@@ -76,7 +76,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn build:internal-dependencies
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
@@ -170,7 +170,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn build:internal-dependencies
       - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
@@ -187,7 +187,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
       - run: yarn build
 
