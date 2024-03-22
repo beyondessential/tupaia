@@ -4,29 +4,18 @@
  */
 
 import { Request } from 'express';
+import winston from 'winston';
 import { Route } from '@tupaia/server-boilerplate';
-import { ValidationError, yup } from '@tupaia/utils';
-import { addSurveyImage } from './addSurveyImage';
+import { ValidationError } from '@tupaia/utils';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
 import { populateData } from './populateData';
-import { addSurveyFile } from './addSurveyFile';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
   AddSurveyImage: 'AddSurveyImage',
   AddSurveyFile: 'AddSurveyFile',
 };
-
-const addSurveyImageValidator = yup.object().shape({
-  id: yup.string().required(),
-  data: yup.string().required(),
-});
-
-const addSurveyFileValidator = yup.object().shape({
-  uniqueFileName: yup.string().required(),
-  data: yup.string().required(),
-});
 
 type ChangeRecord = {
   action: (typeof ACTIONS)[keyof typeof ACTIONS];
@@ -70,13 +59,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           break;
         }
         case ACTIONS.AddSurveyImage: {
-          const { id, data } = addSurveyImageValidator.validateSync(payload);
-          await addSurveyImage(id, data);
+          winston.info(`Legacy ${ACTIONS.AddSurveyImage} action requested, skipping`);
           break;
         }
         case ACTIONS.AddSurveyFile: {
-          const { uniqueFileName, data } = addSurveyFileValidator.validateSync(payload);
-          await addSurveyFile(this.req.models, uniqueFileName, data);
+          winston.info(`Legacy ${ACTIONS.AddSurveyFile} action requested, skipping`);
           break;
         }
         default:
