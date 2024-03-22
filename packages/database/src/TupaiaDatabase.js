@@ -9,13 +9,12 @@ import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
 import { hashStringToInt } from '@tupaia/tsutils';
-
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
-import { generateId } from './utilities/generateId';
+import { generateId } from './utilities';
 import {
-  runDatabaseFunctionInBatches,
   MAX_BINDINGS_PER_QUERY,
+  runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
