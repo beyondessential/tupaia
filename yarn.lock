@@ -11696,7 +11696,7 @@ __metadata:
     case: ^1.6.3
     client-sessions: ^0.8.0
     cors: ^2.8.5
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash: ^4.17.4
     multer: ^1.4.3
@@ -11836,7 +11836,7 @@ __metadata:
     cross-env: ^7.0.2
     deep-equal-in-any-order: ^1.0.21
     del: ^2.2.2
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.4
     form-data: ^2.3.3
     format-link-header: ^2.1.0
@@ -11880,7 +11880,7 @@ __metadata:
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     lodash.groupby: ^4.6.0
     moment: ^2.24.0
     ts-node: ^10.7.0
@@ -11930,7 +11930,7 @@ __metadata:
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
     deep-equal-in-any-order: ^1.0.27
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     jest: ^29.7.0
     knex: 0.14.6
     lodash.groupby: ^4.6.0
@@ -11952,7 +11952,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     mockdate: ^3.0.5
     winston: ^3.3.3
@@ -11970,7 +11970,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     db-migrate: ^0.11.5
     db-migrate-pg: ^1.2.2
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     knex: 0.14.6
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
@@ -12002,7 +12002,7 @@ __metadata:
     "@types/lodash.keyby": ^4.6.0
     "@types/lodash.sortby": ^4.6.0
     camelcase-keys: ^6.2.2
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -12116,7 +12116,7 @@ __metadata:
     "@tupaia/types": "workspace:*"
     "@tupaia/utils": "workspace:*"
     "@types/lodash.keyby": ^4.6.6
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.keyby: ^4.6.0
     winston: ^3.3.3
@@ -12169,7 +12169,7 @@ __metadata:
     "@tupaia/tsutils": "workspace:*"
     "@tupaia/utils": "workspace:*"
     camelcase-keys: ^6.2.2
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.uniqby: ^4.7.0
     winston: ^3.3.3
@@ -12229,7 +12229,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/lodash.clonedeep": ^4.5.0
     "@types/semver-compare": ^1.0.1
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.clonedeep: ^4.5.0
     lodash.groupby: ^4.6.0
@@ -12325,7 +12325,7 @@ __metadata:
     body-parser: ^1.18.3
     client-sessions: ^0.8.0
     cors: ^2.8.5
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     winston: ^3.3.3
@@ -12398,7 +12398,7 @@ __metadata:
     body-parser: ^1.18.3
     cors: ^2.8.5
     date-fns: ^2.29.3
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     lodash.isplainobject: ^4.0.6
@@ -12431,7 +12431,7 @@ __metadata:
     body-parser: ^1.18.3
     client-sessions: ^0.8.0
     cors: ^2.8.5
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     http-proxy-middleware: ^2.0.1
     i18n: ^0.13.3
@@ -12502,7 +12502,7 @@ __metadata:
     "@tupaia/utils": "workspace:*"
     "@types/lodash.groupby": ^4.6.0
     "@types/lodash.keyby": ^4.6.0
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.groupby: ^4.6.0
     lodash.keyby: ^4.6.0
@@ -12734,7 +12734,7 @@ __metadata:
     cookie-parser: ^1.4.3
     cors: ^2.8.4
     csvtojson: ^1.1.5
-    dotenv: ^8.2.0
+    dotenv: ^16.4.5
     express: ^4.16.2
     lodash.difference: ^4.5.0
     lodash.flatten: ^4.4.0
@@ -21299,6 +21299,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:16.4.5, dotenv@npm:^16.4.5":
+  version: 16.4.5
+  resolution: "dotenv@npm:16.4.5"
+  checksum: 301a12c3d44fd49888b74eb9ccf9f07a1f5df43f489e7fcb89647a2edcd84c42d6bc349dc8df099cd18f07c35c7b04685c1a4f3e6a6a9e6b30f8d48c15b7f49c
+  languageName: node
+  linkType: hard
+
 "dotenv@npm:^16.0.0":
   version: 16.3.1
   resolution: "dotenv@npm:16.3.1"
@@ -21327,7 +21334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^8.0.0, dotenv@npm:^8.2.0":
+"dotenv@npm:^8.0.0":
   version: 8.2.0
   resolution: "dotenv@npm:8.2.0"
   checksum: ad4c8e0df3e24b4811c8e93377d048a10a9b213dcd9f062483b4a2d3168f08f10ec9c618c23f5639060d230ccdb174c08761479e9baa29610aa978e1ee66df76
@@ -41576,7 +41583,7 @@ __metadata:
     babel-preset-react-app: ^10.0.0
     concurrently: ^5.2.0
     cypress-dotenv: ^1.2.2
-    dotenv: ^16.0.3
+    dotenv: 16.4.5
     eslint: ^7.9.0
     eslint-import-resolver-babel-module: ^5.3.1
     eslint-plugin-cypress: ^2.11.1

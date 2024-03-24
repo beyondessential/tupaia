@@ -4,6 +4,7 @@
  */
 
 import http from 'http';
+import path from 'path';
 import * as dotenv from 'dotenv';
 
 import winston from 'winston';
@@ -12,7 +13,19 @@ import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
 
 configureWinston();
-dotenv.config(); // Load the environment variables into process.env
+dotenv.config({
+  path: [
+    path.resolve(__dirname, '../../../env/.env.aggregation'),
+    path.resolve(__dirname, '../../../env/.env.servers'),
+    path.resolve(__dirname, '../../../env/.env.db'),
+    path.resolve(__dirname, '../../../env/.env.dhis'),
+    path.resolve(__dirname, '../../../env/.env.dataLake'),
+    path.resolve(__dirname, '../../../env/.envexternalDBConnections'),
+    path.resolve(__dirname, '../../../env/.env.superset'),
+    path.resolve(__dirname, '../../../env/.env.weatherbit'),
+    '.env',
+  ],
+}); // Load the environment variables into process.env
 
 (async () => {
   const database = new TupaiaDatabase();

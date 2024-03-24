@@ -5,7 +5,7 @@
 
 import '@babel/polyfill';
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv';
 
 import http from 'http';
 import {
@@ -27,6 +27,11 @@ import { startFeedScraper } from './social';
 import { createApp } from './createApp';
 
 import winston from './log';
+import { envFilePaths } from './envFilePaths';
+
+dotenv.config({
+  path: envFilePaths,
+});
 
 (async () => {
   /**

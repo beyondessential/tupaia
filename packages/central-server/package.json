@@ -48,7 +48,7 @@
     "cors": "^2.8.5",
     "countrynames": "^0.1.1",
     "del": "^2.2.2",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.4.5",
     "express": "^4.16.4",
     "form-data": "^2.3.3",
     "format-link-header": "^2.1.0",

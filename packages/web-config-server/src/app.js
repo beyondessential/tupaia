@@ -1,4 +1,5 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv';
+import path from 'path';
 import '@babel/polyfill';
 import http from 'http';
 import express from 'express';
@@ -14,6 +15,19 @@ import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
+
+dotenv.config({
+  path: [
+    path.resolve(__dirname, '../../../env/.env.aggregation'),
+    path.resolve(__dirname, '../../../env/.env.db'),
+    path.resolve(__dirname, '../../../env/.env.dhis'),
+    path.resolve(__dirname, '../../../env/.env.mail'),
+    path.resolve(__dirname, '../../../env/.env.weatherbit'),
+    path.resolve(__dirname, '../../../env/.env.superset'),
+    path.resolve(__dirname, '../../../env/.servers'),
+    path.resolve(__dirname, '.env'),
+  ],
+});
 
 export async function createApp() {
   const app = express();

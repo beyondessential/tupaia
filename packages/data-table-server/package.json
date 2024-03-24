@@ -34,7 +34,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.4.5",
     "express": "^4.16.2",
     "winston": "^3.3.3"
   },

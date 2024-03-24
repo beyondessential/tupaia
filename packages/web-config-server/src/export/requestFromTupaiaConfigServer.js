@@ -1,6 +1,6 @@
 import { fetchWithTimeout } from '@tupaia/utils';
 
-const BASE_URL = process.env.CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1';
+const BASE_URL = process.env.CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1';
 
 /**
  * Requests a URL, returning a promise
@@ -23,7 +23,7 @@ export const requestFromTupaiaConfigServer = async (
   try {
     const headers = {
       cookie: `${sessionCookieName}=${sessionCookie}`,
-      ...additionalHeaders
+      ...additionalHeaders,
     };
 
     const response = await fetchWithTimeout(

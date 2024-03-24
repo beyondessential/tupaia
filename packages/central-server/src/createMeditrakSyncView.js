@@ -8,18 +8,24 @@
 
 import '@babel/polyfill';
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
+import * as dotenv from 'dotenv'; // Load the environment variables into process.env
 
 import { TupaiaDatabase } from '@tupaia/database';
 import { isFeatureEnabled } from '@tupaia/utils';
 
 import winston from './log';
 import { createPermissionsBasedMeditrakSyncQueue } from './database';
+import { envFilePaths } from './envFilePaths';
+
+dotenv.config({
+  path: envFilePaths,
+});
 
 (async () => {
   /**
    * Set up database
    */
+
   const database = new TupaiaDatabase();
 
   if (!isFeatureEnabled('MEDITRAK_SYNC_QUEUE')) {
