@@ -1876,7 +1876,6 @@ export const MatrixPresentationOptionsSchema = {
 
 export const VizComponentNameSchema = {
 	"enum": [
-		"ActiveDisasters",
 		"NoAccessDashboard",
 		"NoDataAtLevelDashboard",
 		"ProjectDescription"
@@ -2259,7 +2258,6 @@ export const ComponentConfigSchema = {
 		},
 		"componentName": {
 			"enum": [
-				"ActiveDisasters",
 				"NoAccessDashboard",
 				"NoDataAtLevelDashboard",
 				"ProjectDescription"
@@ -20922,7 +20920,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"componentName": {
 					"enum": [
-						"ActiveDisasters",
 						"NoAccessDashboard",
 						"NoDataAtLevelDashboard",
 						"ProjectDescription"
@@ -41120,7 +41117,6 @@ export const DashboardItemSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -49538,7 +49534,6 @@ export const DashboardItemCreateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -57950,7 +57945,6 @@ export const DashboardItemUpdateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -66781,195 +66775,6 @@ export const DhisSyncQueueUpdateSchema = {
 			"type": "string"
 		},
 		"type": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const DisasterSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"id",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterCreateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const DisasterEventSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"id",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventCreateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
 			"type": "string"
 		}
 	},
@@ -82334,26 +82139,6 @@ export const EntityTypeSchema = {
 	"type": "string"
 } 
 
-export const DisasterTypeSchema = {
-	"enum": [
-		"cyclone",
-		"earthquake",
-		"eruption",
-		"flood",
-		"tsunami"
-	],
-	"type": "string"
-} 
-
-export const DisasterEventTypeSchema = {
-	"enum": [
-		"end",
-		"resolve",
-		"start"
-	],
-	"type": "string"
-} 
-
 export const DataTableTypeSchema = {
 	"enum": [
 		"analytics",
@@ -84598,7 +84383,6 @@ export const DashboardWithMetadataSchema = {
 									},
 									"componentName": {
 										"enum": [
-											"ActiveDisasters",
 											"NoAccessDashboard",
 											"NoDataAtLevelDashboard",
 											"ProjectDescription"
