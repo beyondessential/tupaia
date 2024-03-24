@@ -18,6 +18,8 @@ exports.up = async function (db) {
   return db.runSql(`
     DROP TABLE IF EXISTS "disasterEvent";
     DROP TABLE IF EXISTS "disaster";
+    DROP TYPE IF EXISTS disaster_type;
+    DROP TYPE IF EXISTS disaster_event_type;
   `);
 };
 
