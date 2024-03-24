@@ -11,7 +11,7 @@ import { Form, FormInput, TextField } from '@tupaia/ui-components';
 import { Button } from '../../../components';
 import { UserAccountDetails } from '../../../types';
 import { successToast } from '../../../utils';
-import { CurrentUserContextType, useCurrentUser, useEditUser } from '../../../api';
+import { CurrentUserContextType, useCurrentUserContext, useEditUser } from '../../../api';
 
 type PersonalDetailsFormFields = Pick<
   UserAccountDetails,
@@ -60,7 +60,7 @@ const StyledFieldset = styled.fieldset`
 `;
 
 export const PersonalDetailsForm = () => {
-  const user: CurrentUserContextType = useCurrentUser();
+  const user: CurrentUserContextType = useCurrentUserContext();
 
   const formContext = useForm<PersonalDetailsFormFields>({
     defaultValues: {

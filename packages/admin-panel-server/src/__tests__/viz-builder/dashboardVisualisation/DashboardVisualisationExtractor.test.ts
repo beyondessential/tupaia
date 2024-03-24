@@ -78,6 +78,7 @@ describe('DashboardVisualisationExtractor', () => {
           config: {
             transform: [],
           },
+          latestDataParameters: {},
         });
       });
 
@@ -99,6 +100,7 @@ describe('DashboardVisualisationExtractor', () => {
           config: {
             customReport: 'custom',
           },
+          latestDataParameters: {},
         });
       });
     });
@@ -300,6 +302,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
 
@@ -339,6 +342,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
 
@@ -376,6 +380,7 @@ describe('DashboardVisualisationExtractor', () => {
           },
         },
         permissionGroup: 'Admin',
+        latestDataParameters: {},
       });
     });
   });
@@ -451,6 +456,7 @@ describe('DashboardVisualisationExtractor', () => {
             },
           },
           permission_group: 'Admin',
+          latest_data_parameters: {},
         },
         dashboardItem: {
           code: 'viz',

@@ -88,6 +88,9 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   VizPeriodGranularity,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './models-extra';
 export * from './requests';
 export * from './css';

@@ -78,6 +78,7 @@ export class DashboardVisualisationExtractor<
         },
         code,
         permissionGroup,
+        latestDataParameters: {},
       };
     }
 
@@ -96,6 +97,7 @@ export class DashboardVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

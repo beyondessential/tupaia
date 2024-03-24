@@ -68,7 +68,7 @@ describe('surveyResponse endpoint', () => {
     await upsertEntity({
       id: ENTITY_NON_CLINIC_ID,
       code: ENTITY_NON_CLINIC_ID,
-      type: 'disaster',
+      type: 'village',
     });
 
     // This question will not be part of the survey
@@ -539,8 +539,10 @@ describe('surveyResponse endpoint', () => {
     it('should add the survey response and all answers to the sync queue after it is submitted', async function () {
       this.retries(10);
       await oneSecondSleep(1000);
-      expect(syncQueue.count(models.surveyResponse.databaseType)).to.equal(1);
-      expect(syncQueue.count(models.answer.databaseType)).to.equal(numberOfAnswersInSurveyResponse);
+      expect(syncQueue.count(models.surveyResponse.databaseRecord)).to.equal(1);
+      expect(syncQueue.count(models.answer.databaseRecord)).to.equal(
+        numberOfAnswersInSurveyResponse,
+      );
     });
   });
 

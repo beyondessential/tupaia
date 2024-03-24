@@ -12,7 +12,7 @@ import { useSurveyForm } from '../SurveyContext';
 import { ROUTES } from '../../../constants';
 import { useSurvey } from '../../../api/queries';
 import { SurveyQRCode } from '../SurveyQRCode';
-import { useCurrentUser } from '../../../api';
+import { useCurrentUserContext } from '../../../api';
 
 const Wrapper = styled.div`
   display: flex;
@@ -70,7 +70,7 @@ const Button = styled(BaseButton)`
 `;
 
 export const SurveySuccessScreen = () => {
-  const { isLoggedIn } = useCurrentUser();
+  const { isLoggedIn } = useCurrentUserContext();
   const params = useParams();
   const navigate = useNavigate();
   const { resetForm } = useSurveyForm();

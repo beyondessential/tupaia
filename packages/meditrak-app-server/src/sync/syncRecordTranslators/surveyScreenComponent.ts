@@ -99,9 +99,9 @@ const extractEntityFields = (
 export const translateToPreEntityUpsert = (record: Record<string, unknown>) => {
   const validatedRecord = ajvValidate<SurveyScreenComponent>(SurveyScreenComponentSchema, record);
   const { config } = validatedRecord;
-  const { entity: entityConfig, ...restOfConfig } = (config
-    ? JSON.parse(config)
-    : {}) as SurveyScreenComponentConfig;
+  const { entity: entityConfig, ...restOfConfig } = (
+    config ? JSON.parse(config) : {}
+  ) as SurveyScreenComponentConfig;
 
   if (!entityConfig) {
     // No need for translation if no entity config
