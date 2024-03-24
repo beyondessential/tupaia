@@ -40,7 +40,8 @@ export const DateRangeField = () => {
     }
   }, [defaultStartDate, startDate, defaultEndDate, endDate]);
 
-  const convertDateToIsoString = date => (date ? date.toISOString() : null);
+  const convertDateToIsoString = date =>
+    !date || isNaN(new Date(date).getTime()) ? null : date.toISOString().slice(0, 10);
 
   const handleChangeStartDate = date => {
     const newDate = convertDateToIsoString(date);
