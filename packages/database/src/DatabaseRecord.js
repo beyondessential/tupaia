@@ -164,6 +164,8 @@ export class DatabaseRecord {
       }
     } else {
       const record = await this.model.create(data);
+
+      /** @type {string} */
       this.id = record.id;
     }
   }

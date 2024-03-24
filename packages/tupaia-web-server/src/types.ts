@@ -2,16 +2,25 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
+import { ModelRegistry } from '@tupaia/database';
+import {
+  DashboardItemModel,
+  DashboardMailingListEntryModel,
+  DashboardModel,
+  DashboardRelationModel,
+  EntityModel,
+  MapOverlayGroupModel,
+  MapOverlayGroupRelationModel,
+  UserModel,
+} from '@tupaia/server-boilerplate';
 
-type Models =
-  | 'user'
-  | 'entity'
-  | 'dashboard'
-  | 'dashboardItem'
-  | 'mapOverlayGroup'
-  | 'dashboardMailingListEntry'
-  | 'dashboardRelation'
-  | 'mapOverlayGroupRelation';
-
-export type TupaiaWebServerModelRegistry = Pick<ServerBoilerplateModelRegistry, Models>;
+export interface TupaiaWebServerModelRegistry extends ModelRegistry {
+  readonly dashboard: DashboardModel;
+  readonly dashboardItem: DashboardItemModel;
+  readonly dashboardMailingListEntry: DashboardMailingListEntryModel;
+  readonly dashboardRelation: DashboardRelationModel;
+  readonly entity: EntityModel;
+  readonly mapOverlayGroup: MapOverlayGroupModel;
+  readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
+  readonly user: UserModel;
+}

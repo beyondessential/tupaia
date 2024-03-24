@@ -10,13 +10,13 @@ import {
 import { AncestorDescendantRelation, Entity } from '@tupaia/types';
 import { Model, DbFilter, Joined } from './types';
 
-type AncestorDescendantRelationFields = Readonly<AncestorDescendantRelation> &
+type AncestorDescendantRelationFields = AncestorDescendantRelation &
   Joined<Entity, 'ancestor'> &
   Joined<Entity, 'descendant'>;
 
-interface AncestorDescendantRelationRecord
+export interface AncestorDescendantRelationRecord
   extends AncestorDescendantRelationFields,
-    Omit<BaseAncestorDescendantRelationRecord, 'id'> {} // Omit base `id: any` type as we explicity define as a string in the type definition
+    BaseAncestorDescendantRelationRecord {}
 
 export interface AncestorDescendantRelationModel
   extends Model<

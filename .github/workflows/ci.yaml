@@ -17,7 +17,7 @@ jobs:
     name: Validate branch name
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Validate branch name
         run: packages/devops/scripts/ci/validateBranchName.sh
 
@@ -25,7 +25,7 @@ jobs:
     name: Validate new migrations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Validate new migration
         run: packages/devops/scripts/ci/validateNewMigrations.sh
 
@@ -33,12 +33,12 @@ jobs:
     name: Validate tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.1
+          node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn workspace @tupaia/utils build # /scripts/node/validateTests.js uses utils package
       - name: Validate unit tests
@@ -71,12 +71,12 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.1
+          node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn build:internal-dependencies
       - run: ./packages/devops/scripts/ci/validateTypesAndDbSchemaInSync.sh
@@ -165,12 +165,12 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.1
+          node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
       - run: yarn build:internal-dependencies
       - run: yarn workspace @tupaia/${{ matrix.package }} setup-test || echo "No setup needed"
@@ -182,12 +182,12 @@ jobs:
     env:
       CI: false # react-scripts build treats warnings as errors if this is true
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.1
+          node-version-file: '.nvmrc'
           cache: yarn
-      - run: yarn set version 3.2.1
+      - run: corepack enable yarn
       - run: SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install --immutable
       - run: yarn build
 

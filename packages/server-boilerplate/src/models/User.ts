@@ -7,7 +7,7 @@ import { UserModel as BaseUserModel, UserRecord as BaseUserRecord } from '@tupai
 import { UserAccount, NullableKeysToOptional } from '@tupaia/types';
 import { Model } from './types';
 
-export interface UserRecord extends UserAccount, Omit<BaseUserRecord, 'id'> {
+export interface UserRecord extends UserAccount, BaseUserRecord {
   getData: () => Promise<NullableKeysToOptional<UserAccount>>;
 }
 

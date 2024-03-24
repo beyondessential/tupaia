@@ -9,9 +9,7 @@ import {
 import { Dashboard, DashboardRelation, Entity, Project } from '@tupaia/types';
 import { Model } from './types';
 
-export interface DashboardRelationRecord
-  extends DashboardRelation,
-    Omit<BaseDashboardRelationRecord, 'id'> {}
+export interface DashboardRelationRecord extends DashboardRelation, BaseDashboardRelationRecord {}
 
 export interface DashboardRelationModel
   extends Model<BaseDashboardRelationModel, DashboardRelation, DashboardRelationRecord> {
