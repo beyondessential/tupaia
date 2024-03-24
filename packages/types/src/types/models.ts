@@ -1752,18 +1752,6 @@ export enum EntityType {
   'health_clinic_boundary' = 'health_clinic_boundary',
   'enumeration_area' = 'enumeration_area',
 }
-export enum DisasterType {
-  'cyclone' = 'cyclone',
-  'eruption' = 'eruption',
-  'earthquake' = 'earthquake',
-  'tsunami' = 'tsunami',
-  'flood' = 'flood',
-}
-export enum DisasterEventType {
-  'start' = 'start',
-  'end' = 'end',
-  'resolve' = 'resolve',
-}
 export enum DataTableType {
   'analytics' = 'analytics',
   'events' = 'events',

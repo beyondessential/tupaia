@@ -82139,26 +82139,6 @@ export const EntityTypeSchema = {
 	"type": "string"
 } 
 
-export const DisasterTypeSchema = {
-	"enum": [
-		"cyclone",
-		"earthquake",
-		"eruption",
-		"flood",
-		"tsunami"
-	],
-	"type": "string"
-} 
-
-export const DisasterEventTypeSchema = {
-	"enum": [
-		"end",
-		"resolve",
-		"start"
-	],
-	"type": "string"
-} 
-
 export const DataTableTypeSchema = {
 	"enum": [
 		"analytics",
