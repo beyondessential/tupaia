@@ -67069,6 +67069,7 @@ export const EntitySchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
@@ -80183,7 +80184,8 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"id",
+		"permission_groups"
 	]
 } 
 
@@ -82588,6 +82590,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"attributes",
 					"code",
 					"id",
+					"metadata",
 					"name",
 					"type"
 				]
@@ -82793,7 +82796,8 @@ export const ProjectResponseSchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -82860,7 +82864,8 @@ export const ResBodySchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -83482,6 +83487,7 @@ export const EntityResponseSchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]

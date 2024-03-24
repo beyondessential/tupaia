@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class SurveyGroupRecord extends DatabaseRecord {
+export class SurveyGroupRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.SURVEY_GROUP;
 }
 
