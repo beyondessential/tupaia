@@ -21,12 +21,11 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
     const { hierarchies } = this.req.query;
     const { entity: entityApi } = this.req.ctx.services;
 
-    const workbook = {
-      SheetNames: hierarchies,
-      Sheets: {},
-    } as xlsx.WorkBook;
+    const hierarchiesArray = Array.isArray(hierarchies) ? hierarchies : [hierarchies];
 
-    for (const hierarchy of hierarchies) {
+    const workbook = xlsx.utils.book_new();
+
+    for (const hierarchy of hierarchiesArray) {
       const descendants = await entityApi.getDescendantsOfEntity(
         hierarchy,
         hierarchy,
@@ -37,7 +36,13 @@ export class ExportEntityHierarchiesRoute extends Route<ExportEntityHierarchiesR
         false,
       );
 
-      workbook.Sheets[hierarchy] = xlsx.utils.json_to_sheet(descendants);
+      const projectEntity = await entityApi.getEntity(hierarchy, hierarchy, {
+        fields: ['name'],
+      });
+
+      const sheetName = projectEntity?.name || hierarchy;
+      const sheet = xlsx.utils.json_to_sheet(descendants);
+      xlsx.utils.book_append_sheet(workbook, sheet, sheetName);
     }
 
     const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
