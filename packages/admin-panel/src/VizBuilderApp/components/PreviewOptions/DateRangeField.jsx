@@ -42,13 +42,16 @@ export const DateRangeField = () => {
 
   const convertDateToIsoString = date =>
     !date || isNaN(new Date(date).getTime()) ? null : date.toISOString().slice(0, 10);
+  const shiftEpoch = date => date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 
   const handleChangeStartDate = date => {
+    shiftEpoch(date);
     const newDate = convertDateToIsoString(date);
     setStartDate(newDate);
   };
 
   const handleChangeEndDate = date => {
+    shiftEpoch(date);
     const newDate = convertDateToIsoString(date);
     setEndDate(newDate);
   };
