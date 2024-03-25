@@ -1,10 +1,17 @@
 #!/bin/bash -e 
+  
+
+DIR=$(pwd "$0")
+
+ 
 
 # Fixed paths to the .env files for the test db
 file1="../../env/.env.db"
 file2="../../env/.env.pg"
 file3="../../env/.env.dataLake"
-file4=".env"
+file4="$DIR/.env"
+ 
+echo file4: $file4
 
 # Merge files and assign to a variable
 new_env=$(cat "$file1" "$file2" "$file3" "$file4")
