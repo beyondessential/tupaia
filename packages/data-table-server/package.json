@@ -31,6 +31,7 @@
     "@tupaia/data-broker": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",

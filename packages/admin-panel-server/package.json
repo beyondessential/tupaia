@@ -30,6 +30,7 @@
     "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "api-error-handler": "^1.0.0",

@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { configureDotEnv } from '@tupaia/server-utils';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
@@ -16,18 +17,16 @@ import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
 
-dotenv.config({
-  path: [
-    path.resolve(__dirname, '../../../env/.env.aggregation'),
-    path.resolve(__dirname, '../../../env/.env.db'),
-    path.resolve(__dirname, '../../../env/.env.dhis'),
-    path.resolve(__dirname, '../../../env/.env.mail'),
-    path.resolve(__dirname, '../../../env/.env.weatherbit'),
-    path.resolve(__dirname, '../../../env/.env.superset'),
-    path.resolve(__dirname, '../../../env/.servers'),
-    path.resolve(__dirname, '.env'),
-  ],
-});
+configureDotEnv([
+  path.resolve(__dirname, '../../../env/.env.aggregation'),
+  path.resolve(__dirname, '../../../env/.env.db'),
+  path.resolve(__dirname, '../../../env/.env.dhis'),
+  path.resolve(__dirname, '../../../env/.env.mail'),
+  path.resolve(__dirname, '../../../env/.env.weatherbit'),
+  path.resolve(__dirname, '../../../env/.env.superset'),
+  path.resolve(__dirname, '../../../env/.servers'),
+  path.resolve(__dirname, '.env'),
+]);
 
 export async function createApp() {
   const app = express();

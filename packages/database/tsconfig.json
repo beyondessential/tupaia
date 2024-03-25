@@ -3,6 +3,12 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src/**/*.js"],
-  "exclude": ["src/__tests__", "src/migrations"]
+  "include": [
+    "src/**/*.js",
+    "configureEnv.js"
+  ],
+  "exclude": [
+    "src/__tests__",
+    "src/migrations"
+  ]
 }

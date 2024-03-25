@@ -4,9 +4,6 @@
  */
 
 import '@babel/polyfill';
-
-import * as dotenv from 'dotenv';
-
 import http from 'http';
 import {
   AnalyticsRefresher,
@@ -27,11 +24,9 @@ import { startFeedScraper } from './social';
 import { createApp } from './createApp';
 
 import winston from './log';
-import { envFilePaths } from './envFilePaths';
+import { configureEnv } from './configureEnv';
 
-dotenv.config({
-  path: envFilePaths,
-});
+configureEnv();
 
 (async () => {
   /**

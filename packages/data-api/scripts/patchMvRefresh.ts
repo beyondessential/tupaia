@@ -3,21 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import path from 'path';
 // @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
-
-import * as dotenv from 'dotenv';
 import { requireEnv } from '@tupaia/utils';
 import { getConnectionConfig } from '@tupaia/database';
+import { configureEnv } from '../configureEnv';
 
-dotenv.config({
-  path: [
-    path.resolve(__dirname, '../../../env/.env.servers'),
-    path.resolve(__dirname, '../../../env/.env.db'),
-    '.env',
-  ],
-}); // Load the environment variables into process.env
+configureEnv(); // Load the environment variables into process.env
 
 const exitWithError = (error: Error) => {
   console.error(error.message);

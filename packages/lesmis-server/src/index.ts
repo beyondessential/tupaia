@@ -5,20 +5,18 @@
 
 import http from 'http';
 import path from 'path';
-import * as dotenv from 'dotenv';
 
 import winston from 'winston';
+import { configureDotEnv } from '@tupaia/server-utils';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
 
 configureWinston();
-dotenv.config({
-  path: [
-    path.resolve(__dirname, '../../../env/.env.servers'),
-    path.resolve(__dirname, '../../../env/.env.db'),
-    '.env',
-  ],
-}); // Load the environment variables into process.env
+configureDotEnv([
+  path.resolve(__dirname, '../../../env/.env.servers'),
+  path.resolve(__dirname, '../../../env/.env.db'),
+  '.env',
+]); // Load the environment variables into process.env
 
 (async () => {
   /**

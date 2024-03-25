@@ -4,8 +4,9 @@
  */
 
 import path from 'path';
+import { configureDotEnv } from '@tupaia/server-utils';
 
-export const envFilePaths = [
+const envFilePaths = [
   path.resolve(__dirname, '../../../env/.env.db'),
   path.resolve(__dirname, '../../../env/.env.servers'),
   path.resolve(__dirname, '../../../env/.env.pg'),
@@ -16,3 +17,7 @@ export const envFilePaths = [
   path.resolve(__dirname, '../../../env/.env.aggregation'),
   path.resolve(__dirname, '.env'),
 ];
+
+export const configureEnv = () => {
+  configureDotEnv(envFilePaths);
+};
