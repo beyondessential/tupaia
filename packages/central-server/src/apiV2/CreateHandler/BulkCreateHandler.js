@@ -58,7 +58,7 @@ export class BulkCreateHandler extends CRUDHandler {
   }
 
   async insertRecords(transactingModels, newRecordData) {
-    const model = transactingModels.getModelForDatabaseType(this.recordType);
+    const model = transactingModels.getModelForDatabaseRecord(this.recordType);
     for (const record of newRecordData) {
       await model.create(record);
     }

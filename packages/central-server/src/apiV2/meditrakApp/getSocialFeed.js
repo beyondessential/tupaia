@@ -27,7 +27,7 @@ const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
 // TODO: Remove as part of RN-502
 export const getSocialFeed = async (req, res) => {
-  const { query, models } = req;
+  const { query, models, accessPolicy } = req;
   const {
     countryId,
     earliestCreationDate = 0,
@@ -52,9 +52,6 @@ export const getSocialFeed = async (req, res) => {
     };
   }
 
-  // Fetch an extra record on page 0 to check to see if the page range exceeded the toDate.
-  const limit = numberPerPage + 1;
-
   if (earliestCreationDate) {
     conditions.creation_date = {
       comparator: '>',
@@ -62,14 +59,14 @@ export const getSocialFeed = async (req, res) => {
     };
   }
 
-  const feedItems = await models.feedItem.find(conditions, {
-    limit,
-    offset: pageNumber * numberPerPage,
-    sort: ['creation_date DESC'],
-  });
-
-  const hasMorePages = feedItems.length > numberPerPage;
-  const items = await Promise.all(feedItems.slice(0, numberPerPage - 1).map(f => f.getData()));
+  const { items, hasMorePages } = await models.feedItem.findByAccessPolicy(
+    accessPolicy,
+    conditions,
+    {
+      pageLimit: numberPerPage,
+      page,
+    },
+  );
 
   await intersperseDynamicFeedItems(items, countryId, pageNumber, models);
 

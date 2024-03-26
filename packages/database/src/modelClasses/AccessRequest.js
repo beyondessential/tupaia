@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class AccessRequestType extends DatabaseType {
-  static databaseType = TYPES.ACCESS_REQUEST;
+export class AccessRequestRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ACCESS_REQUEST;
 }
 
 export class AccessRequestModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return AccessRequestType;
+  get DatabaseRecordClass() {
+    return AccessRequestRecord;
   }
 }

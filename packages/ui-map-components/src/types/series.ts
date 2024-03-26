@@ -8,7 +8,6 @@ import {
   IconMapOverlayConfig,
   InlineValue,
   MapOverlayConfig,
-  MeasureType,
   RadiusMapOverlayConfig,
   ShadingMapOverlayConfig,
   SpectrumMapOverlayConfig,
@@ -26,8 +25,9 @@ export type SeriesValueMapping = {
 
 export type BaseSeries = Pick<
   MapOverlayConfig,
-  'name' | 'hideFromLegend' | 'hideByDefault' | 'displayedValueKey' | 'hideFromPopup' | 'valueType'
+  'hideFromLegend' | 'hideByDefault' | 'displayedValueKey' | 'hideFromPopup' | 'valueType'
 > & {
+  name: string;
   key: string;
   values: SeriesValue[];
   valueMapping: SeriesValueMapping;

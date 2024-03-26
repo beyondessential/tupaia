@@ -30,7 +30,7 @@ export const VizConfigErrorProvider = ({ children }) => {
   );
 };
 
-export const useVizConfigError = () => useContext(VizConfigErrorContext);
+export const useVizConfigErrorContext = () => useContext(VizConfigErrorContext);
 
 VizConfigErrorProvider.propTypes = {
   children: PropTypes.node.isRequired,

@@ -29,7 +29,6 @@ import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import DashboardsHandler from './dashboards';
 import { ReportHandler } from './report';
-import { disasters } from './disasters';
 
 import { getProjects } from './projects';
 import { getLandingPage } from './landingPages';
@@ -59,7 +58,6 @@ export const getRoutesForApiV1 = () => {
   api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
-  api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
   api.get('/report/:reportCode', handleWith(ReportHandler));

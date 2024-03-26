@@ -7,13 +7,13 @@
  * Note: this file includes data that are referenced or used in import spreadsheets
  */
 
-import { findOrCreateRecords, generateTestId } from '@tupaia/database';
+import { findOrCreateRecords, generateId } from '@tupaia/database';
 import { reduceToDictionary, upperFirst } from '@tupaia/utils';
 
 const ID_LENGTH = 24;
 
 export const VALIDATION_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Import_Validation',
   name: 'Test Import Validation',
   questions: [
@@ -47,7 +47,7 @@ export const VALIDATION_SURVEY = {
 };
 
 export const CLINIC_DATA_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Clinic_Data',
   name: 'Test Clinic Data',
   questions: [
@@ -81,7 +81,7 @@ export const CLINIC_DATA_SURVEY = {
 };
 
 export const FACILITY_FUNDAMENTALS_SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Facility_Fundamentals',
   name: 'Test Facility Fundamentals',
   questions: [
@@ -99,7 +99,7 @@ export const FACILITY_FUNDAMENTALS_SURVEY = {
 };
 
 export const BASIC_SURVEY_A = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Basic_Survey_A',
   name: 'Test_Basic Survey A',
   questions: [
@@ -117,7 +117,7 @@ export const BASIC_SURVEY_A = {
 };
 
 export const BASIC_SURVEY_B = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'Test_Basic_Survey_B',
   name: 'Test_Basic Survey B',
   questions: [
@@ -135,7 +135,7 @@ export const BASIC_SURVEY_B = {
 };
 
 export const createPeriodicSurvey = periodGranularity => ({
-  id: generateTestId(),
+  id: generateId(),
   code: `Test_${upperFirst(periodGranularity)}`, // Test_Yearly
   name: `Test ${upperFirst(periodGranularity)}`, // Test Yearly
   period_granularity: periodGranularity,

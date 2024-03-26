@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class DataServiceEntityType extends DatabaseType {
-  static databaseType = TYPES.DATA_SERVICE_ENTITY;
+export class DataServiceEntityRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_SERVICE_ENTITY;
 }
 
 export class DataServiceEntityModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DataServiceEntityType;
+  get DatabaseRecordClass() {
+    return DataServiceEntityRecord;
   }
 }

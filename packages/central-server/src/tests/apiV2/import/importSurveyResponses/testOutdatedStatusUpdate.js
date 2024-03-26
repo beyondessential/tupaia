@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import {
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
-  generateTestId,
+  generateId,
   SurveyResponseOutdater,
 } from '@tupaia/database';
 import { TestableApp } from '../../../testUtilities';
@@ -19,7 +19,7 @@ import { importFile } from './helpers';
 const SURVEYS = {
   // Survey details match the import spreadsheet
   Test_Yearly: {
-    id: generateTestId(),
+    id: generateId(),
     name: 'Test Yearly',
     code: 'Test_Yearly',
     period_granularity: 'yearly',
@@ -27,14 +27,14 @@ const SURVEYS = {
     questions: [{ id: 'yearly_test_000000000000', code: 'Test_Yearly', type: 'Number' }],
   },
   Test_Monthly: {
-    id: generateTestId(),
+    id: generateId(),
     name: 'Test Monthly',
     code: 'Test_Monthly',
     period_granularity: 'monthly',
     questions: [{ id: 'monthly_test_00000000000', code: 'Test_Monthly', type: 'Number' }],
   },
   Test_No_Granularity: {
-    id: generateTestId(),
+    id: generateId(),
     name: 'Test No Granularity',
     code: 'Test_No_Granularity',
     period_granularity: undefined,

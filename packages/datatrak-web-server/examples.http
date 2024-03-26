@@ -22,7 +22,7 @@ content-type: {{contentType}}
  
 
 ### Get Activity feed 
-GET {{host}}/activityFeed HTTP/1.1
+GET {{host}}/activityFeed?projectId=64df18f22ecffb2ac901a2b3 HTTP/1.1
 content-type: {{contentType}}
 
  

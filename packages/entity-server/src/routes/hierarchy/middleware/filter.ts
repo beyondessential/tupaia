@@ -3,19 +3,18 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { QueryConjunctions } from '@tupaia/server-boilerplate';
+import { QueryConjunctions, EntityFilter, EntityFilterFields } from '@tupaia/server-boilerplate';
 import { NumericKeys } from '@tupaia/types';
 import { getSortByKey } from '@tupaia/utils';
 import { Writable } from '../../../types';
-import { EntityFilter, EntityQueryFields } from '../../../models';
 
 const CLAUSE_DELIMITER = ';';
 const JSONB_FIELD_DELIMITER = '->>';
 const MULTIPLE_VALUES_DELIMITER = ',';
 
-type NumericFilterQueryFields = Pick<EntityQueryFields, NumericKeys<EntityQueryFields>>;
+type NumericFilterQueryFields = Pick<EntityFilterFields, NumericKeys<Required<EntityFilterFields>>>;
 
-type EntityFilterQuery = Partial<EntityQueryFields>;
+type EntityFilterQuery = Partial<EntityFilterFields>;
 type NotNull<T> = T extends Array<infer U> ? Array<Exclude<U, null>> : Exclude<T, null>;
 type NotNullValues<T> = {
   [field in keyof T]: NotNull<T[field]>;

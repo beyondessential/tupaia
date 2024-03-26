@@ -14,11 +14,11 @@ export {
   runDatabaseFunctionInBatches,
 } from './utilities';
 export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
-export { TYPES } from './types';
+export { RECORDS } from './records';
 export { ModelRegistry } from './ModelRegistry';
 export { DatabaseChangeChannel } from './DatabaseChangeChannel';
 export { DatabaseModel } from './DatabaseModel';
-export { DatabaseType } from './DatabaseType';
+export { DatabaseRecord } from './DatabaseRecord';
 export * from './testUtilities';
 export { getConnectionConfig } from './getConnectionConfig';
 export { SqlQuery } from './SqlQuery';

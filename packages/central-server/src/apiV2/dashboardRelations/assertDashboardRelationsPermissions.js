@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { QUERY_CONJUNCTIONS, TYPES } from '@tupaia/database';
+import { QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
 import {
   hasAccessToEntityForVisualisation,
@@ -210,7 +210,7 @@ export const createDashboardRelationsViaParentDashboardDBFilter = (
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.DASHBOARD,
+        joinWith: RECORDS.DASHBOARD,
         joinCondition: ['dashboard_relation.dashboard_id', 'dashboard.id'],
       },
     ],
@@ -233,7 +233,7 @@ export const createDashboardRelationsViaParentDashboardItemDBFilter = (
   dbOptions.multiJoin = mergeMultiJoin(
     [
       {
-        joinWith: TYPES.DASHBOARD_ITEM,
+        joinWith: RECORDS.DASHBOARD_ITEM,
         joinCondition: ['dashboard_relation.child_id', 'dashboard_item.id'],
       },
     ],

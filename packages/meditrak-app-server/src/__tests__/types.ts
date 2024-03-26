@@ -21,4 +21,8 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly permissionGroup: modelClasses.PermissionGroup;
   readonly country: modelClasses.Country;
   readonly geographicalArea: modelClasses.GeographicalArea;
+  readonly option: modelClasses.Option;
+  readonly optionSet: modelClasses.OptionSet;
+  readonly surveyGroup: modelClasses.SurveyGroup;
+  readonly surveyScreen: modelClasses.SurveyScreen;
 }

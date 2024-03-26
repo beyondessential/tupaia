@@ -7,13 +7,13 @@ import { getEnvVarOrDefault, requireEnv } from '@tupaia/utils';
 import knex from 'knex';
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const EXT_DB_CONNECTION_ENV_VAR_PREFIX = 'EXT_DB';
 
-export class ExternalDatabaseConnectionType extends DatabaseType {
-  static databaseType = TYPES.EXTERNAL_DATABASE_CONNECTION;
+export class ExternalDatabaseConnectionRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.EXTERNAL_DATABASE_CONNECTION;
 
   async executeSql(sql, parameters) {
     const connection = this.model.acquireConnection(this);
@@ -33,8 +33,8 @@ export class ExternalDatabaseConnectionModel extends DatabaseModel {
   // databases with requests
   activeConnections = {};
 
-  get DatabaseTypeClass() {
-    return ExternalDatabaseConnectionType;
+  get DatabaseRecordClass() {
+    return ExternalDatabaseConnectionRecord;
   }
 
   async update(whereCondition, fieldsToUpdate) {

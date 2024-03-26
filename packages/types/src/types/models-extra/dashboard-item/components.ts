@@ -6,7 +6,6 @@
 import type { BaseConfig } from './common';
 
 enum VizComponentName {
-  ActiveDisasters = 'ActiveDisasters',
   ProjectDescription = 'ProjectDescription',
   NoAccessDashboard = 'NoAccessDashboard',
   NoDataAtLevelDashboard = 'NoDataAtLevelDashboard',

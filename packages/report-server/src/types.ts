@@ -5,7 +5,7 @@
 
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { ModelRegistry } from '@tupaia/database';
-import { ReportModel } from './models';
+import { ReportModel } from '@tupaia/server-boilerplate';
 
 export type RequestContext = {
   services: TupaiaApiClient;

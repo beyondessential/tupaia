@@ -4,11 +4,10 @@
  */
 
 import { Request } from 'express';
-
 import { getHighestPossibleIdForGivenTime, SqlQuery } from '@tupaia/database';
 import { ValidationError } from '@tupaia/utils';
+import { getSupportedDatabaseRecords } from '../../../sync';
 import { MeditrakSyncQueryModifiers } from './types';
-import { getSupportedDatabaseTypes } from '../../../sync';
 
 export const recordTypeFilter = (req: Request) => {
   const { appVersion, recordTypes = null } = req.query;
@@ -21,10 +20,10 @@ export const recordTypeFilter = (req: Request) => {
     };
   }
   if (typeof appVersion === 'string') {
-    const supportedTypes = getSupportedDatabaseTypes(req.models, appVersion);
+    const supportedRecordTypes = getSupportedDatabaseRecords(req.models, appVersion);
     return {
-      query: `record_type IN ${SqlQuery.record(supportedTypes)}`,
-      params: supportedTypes,
+      query: `record_type IN ${SqlQuery.record(supportedRecordTypes)}`,
+      params: supportedRecordTypes,
     };
   }
 

@@ -43,28 +43,18 @@ const addLatestSurveyFeedItems = async models => {
     ? latestSurveyFeedItem.creation_date
     : minimumDateOfSurveyToAddToFeed;
 
-  const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
-  const publicLevelSurveys = await models.survey.find({
-    permission_group_id: publicPermissionGroup.id,
-  });
-  const newSurveys = await getLatestSurveyResponses(models, lastSurveyFeedItemDate, {
-    survey_id: publicLevelSurveys.map(survey => survey.id),
-  });
+  const newSurveyResponses = await getLatestSurveyResponses(models, lastSurveyFeedItemDate);
 
   // Use async for loop instead of Promise.all because this process doesn't block
   // user events and should pace itself to avoid overloading the database.
-  for (let i = 0; i < newSurveys.length; i++) {
+  for (const surveyResponse of newSurveyResponses) {
     try {
-      const surveyResponse = newSurveys[i];
       const { id: surveyResponseId, end_time: endTime } = surveyResponse;
 
-      const { name: surveyName } = await surveyResponse.survey();
-      const {
-        facilityCode,
-        facilityName,
-        geographicalAreaId,
-        regionName,
-      } = await getSurveyResponseFacilityData(models, surveyResponse);
+      const { name: surveyName, permission_group_id: permissionGroupId } =
+        await surveyResponse.survey();
+      const { facilityCode, facilityName, geographicalAreaId, regionName } =
+        await getSurveyResponseFacilityData(models, surveyResponse);
       const {
         id: countryId,
         name: countryName,
@@ -93,7 +83,7 @@ const addLatestSurveyFeedItems = async models => {
         user_id: userId,
         country_id: countryId,
         geographical_area_id: geographicalAreaId,
-        permission_group_id: publicPermissionGroup.id,
+        permission_group_id: permissionGroupId,
         creation_date: endTime,
         template_variables: {
           authorName,

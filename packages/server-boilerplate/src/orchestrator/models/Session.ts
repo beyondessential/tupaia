@@ -4,7 +4,7 @@
  *
  */
 
-import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
 import { createBearerHeader, getTokenExpiry } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
@@ -26,8 +26,8 @@ interface SessionFields {
   refresh_token: string;
 }
 
-export class SessionType extends DatabaseType {
-  public static databaseType = 'session';
+export class SessionRecord extends DatabaseRecord {
+  public static databaseRecord = 'session';
   public readonly id: string;
   public email: string;
   public refresh_token: string;
@@ -93,8 +93,8 @@ export class SessionType extends DatabaseType {
 }
 
 export class SessionModel extends DatabaseModel {
-  public get DatabaseTypeClass() {
-    return SessionType;
+  public get DatabaseRecordClass() {
+    return SessionRecord;
   }
 
   public async createSession(sessionDetails: SessionDetails) {

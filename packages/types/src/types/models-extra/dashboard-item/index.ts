@@ -44,6 +44,7 @@ export {
   BaseChartConfig,
   CartesianChartConfig,
   PieChartPresentationOptions,
+  PieChartSegmentConfig,
   BarChartPresentationOptions,
   CartesianChartPresentationOptions,
   ReferenceLinesConfig,

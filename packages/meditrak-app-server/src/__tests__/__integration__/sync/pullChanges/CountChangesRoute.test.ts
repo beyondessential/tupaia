@@ -19,7 +19,7 @@ describe('changes/count', () => {
   let authHeader: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
-    getTestModels() as MeditrakAppServerModelRegistry,
+    getTestModels() as unknown as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
 

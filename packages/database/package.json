@@ -31,6 +31,7 @@
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
   },
   "dependencies": {
+    "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",

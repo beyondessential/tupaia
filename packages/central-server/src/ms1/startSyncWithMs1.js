@@ -25,7 +25,7 @@ export async function startSyncWithMs1(models) {
     return;
   }
 
-  const subscriptions = [models.surveyResponse.databaseType];
+  const subscriptions = [models.surveyResponse.databaseRecord];
   const validator = new Ms1ChangeValidator(models);
   const detailGenerator = new Ms1ChangeDetailGenerator(models);
 

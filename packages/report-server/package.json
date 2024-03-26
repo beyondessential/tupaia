@@ -22,7 +22,8 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9995 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
@@ -38,6 +39,7 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
+    "alasql": "^4.2.3",
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -53,7 +55,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@tupaia/types": "workspace:*",
     "@types/lodash.isplainobject": "^4.0.6",
     "@types/lodash.keyby": "^4.6.6",
     "@types/lodash.pick": "^4.4.0",

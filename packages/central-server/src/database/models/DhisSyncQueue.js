@@ -3,14 +3,14 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { DatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 
-class DhisSyncQueueType extends DatabaseType {
-  static databaseType = TYPES.DHIS_SYNC_QUEUE;
+class DhisSyncQueueRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DHIS_SYNC_QUEUE;
 }
 
 export class DhisSyncQueueModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DhisSyncQueueType;
+  get DatabaseRecordClass() {
+    return DhisSyncQueueRecord;
   }
 }

@@ -9,7 +9,6 @@ import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
 // @ts-expect-error no types
 import morgan from 'morgan';
-
 import {
   AuthHandler,
   getBaseUrlsForHost,
@@ -18,7 +17,6 @@ import {
 } from '@tupaia/api-client';
 import { Authenticator } from '@tupaia/auth';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
-
 import { handleWith, handleError, initialiseApiClient } from '../../utils';
 import { buildBasicBearerAuthMiddleware } from '../auth';
 import { TestRoute } from '../../routes';

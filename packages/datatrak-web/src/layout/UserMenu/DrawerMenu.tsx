@@ -8,7 +8,7 @@ import { Drawer as MuiDrawer, Paper as MuiPaper, Typography } from '@material-ui
 import CloseIcon from '@material-ui/icons/Close';
 import { IconButton, RouterLink } from '@tupaia/ui-components';
 import { MOBILE_BREAKPOINT, ROUTES } from '../../constants';
-import { useCurrentUser } from '../../api';
+import { useCurrentUserContext } from '../../api';
 import { Button } from '../../components';
 import { MenuButton, MenuList } from './MenuList';
 
@@ -76,7 +76,7 @@ interface DrawerMenuProps {
   openProjectModal: () => void;
 }
 export const DrawerMenu = ({ menuOpen, onCloseMenu, openProjectModal }: DrawerMenuProps) => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   // When not logged in, show the login and register buttons in the drawer menu
 
   const getAdditionalMenuItems = () => {

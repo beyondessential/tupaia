@@ -8,7 +8,7 @@ import { TupaiaApiClient } from '@tupaia/api-client';
 import { SessionCookie } from '@tupaia/server-boilerplate';
 
 import { TupaiaWebServerModelRegistry } from '../../types';
-import { TupaiaWebSessionType, TupaiaWebSessionModel } from '../../models';
+import { TupaiaWebSessionRecord, TupaiaWebSessionModel } from '../../models';
 
 declare global {
   namespace Express {
@@ -16,7 +16,7 @@ declare global {
       accessPolicy: AccessPolicy;
       sessionModel: TupaiaWebSessionModel;
       sessionCookie?: SessionCookie;
-      session: TupaiaWebSessionType;
+      session: TupaiaWebSessionRecord;
       ctx: {
         services: TupaiaApiClient;
       };

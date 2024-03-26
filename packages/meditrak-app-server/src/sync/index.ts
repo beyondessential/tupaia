@@ -5,7 +5,7 @@
 
 export {
   getSupportedModels,
-  getSupportedDatabaseTypes,
+  getSupportedDatabaseRecords,
   getUnsupportedModelFields,
 } from './appSupportedModels';
 export { SyncableChangeEnqueuer } from './SyncableChangeEnqueuer';

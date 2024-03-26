@@ -7,18 +7,18 @@ import { expect } from 'chai';
 import { flatten } from 'lodash';
 import sinon from 'sinon';
 
-import { generateTestId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
+import { generateId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
 import * as SurveyResponse from '../../../apiV2/surveyResponse';
 
 const ENTITY_IDS = {
-  1989: generateTestId(),
-  1993: generateTestId(),
-  September: generateTestId(),
-  April: generateTestId(),
+  1989: generateId(),
+  1993: generateId(),
+  September: generateId(),
+  April: generateId(),
 };
-const SURVEY1 = { id: generateTestId(), name: 'Year of birth' };
-const SURVEY2 = { id: generateTestId(), name: 'Month of birth' };
+const SURVEY1 = { id: generateId(), name: 'Year of birth' };
+const SURVEY2 = { id: generateId(), name: 'Month of birth' };
 const SHEET1 = SURVEY1.name;
 const SHEET2 = SURVEY2.name;
 const ROWS_BY_SURVEY = {
@@ -33,12 +33,12 @@ const ROWS_BY_SURVEY = {
 };
 const RESULTS_BY_SURVEY_ID = {
   [SURVEY1.id]: [
-    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
-    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
+    { surveyResponseId: generateId(), answerIds: [generateId()] },
+    { surveyResponseId: generateId(), answerIds: [generateId()] },
   ],
   [SURVEY2.id]: [
-    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
-    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
+    { surveyResponseId: generateId(), answerIds: [generateId()] },
+    { surveyResponseId: generateId(), answerIds: [generateId()] },
   ],
 };
 const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));

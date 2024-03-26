@@ -7,7 +7,7 @@ import { expect } from 'chai';
 
 import {
   buildAndInsertSurveys,
-  generateTestId,
+  generateId,
   findOrCreateDummyCountryEntity,
 } from '@tupaia/database';
 import { TestableApp, upsertEntity } from '../../../testUtilities';
@@ -16,14 +16,14 @@ const DEFAULT_POLICY = {
   PG: ['Public'],
 };
 const QUESTION_IDS = {
-  Well: generateTestId(),
-  Cq: generateTestId(),
-  Sq: generateTestId(),
-  Positive: generateTestId(),
+  Well: generateId(),
+  Cq: generateId(),
+  Sq: generateId(),
+  Positive: generateId(),
 };
 const CASE_CODES = ['TEST_STR_LBR_CASE1', 'TEST_STR_LBR_CASE2'];
 const SURVEY = {
-  id: generateTestId(),
+  id: generateId(),
   code: 'TEST_SLR',
   name: 'Test - STRIVE Lab Results',
   questions: [
@@ -80,7 +80,7 @@ const upsertEntities = async models =>
   Promise.all(
     CASE_CODES.map(caseCode =>
       upsertEntity({
-        id: generateTestId(),
+        id: generateId(),
         type: models.entity.types.CASE,
         code: caseCode,
         name: caseCode,

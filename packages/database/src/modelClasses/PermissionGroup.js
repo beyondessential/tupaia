@@ -5,11 +5,11 @@
 
 import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class PermissionGroupType extends DatabaseType {
-  static databaseType = TYPES.PERMISSION_GROUP;
+export class PermissionGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.PERMISSION_GROUP;
 
   async parent() {
     if (this.parent_id) {
@@ -27,7 +27,7 @@ export class PermissionGroupType extends DatabaseType {
 
   async getChildTree() {
     const permissionGroupTree = await this.model.database.findWithChildren(
-      this.constructor.databaseType,
+      this.constructor.databaseRecord,
       this.id,
     );
     return Promise.all(
@@ -37,8 +37,8 @@ export class PermissionGroupType extends DatabaseType {
 }
 
 export class PermissionGroupModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return PermissionGroupType;
+  get DatabaseRecordClass() {
+    return PermissionGroupRecord;
   }
 
   async getPermissionGroupNameById(permissionGroupIds) {

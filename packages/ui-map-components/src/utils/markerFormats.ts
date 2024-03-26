@@ -288,7 +288,7 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
   if (displayedValueKey && (markerData[displayedValueKey] || markerData[displayedValueKey] === 0)) {
     return {
       formattedValue: formatDataValueByType(
-        { value: markerData[displayedValueKey], metadata: markerData.metadata },
+        { value: markerData[displayedValueKey], metadata: markerData.metadata || undefined },
         valueType,
       ),
       valueInfo,

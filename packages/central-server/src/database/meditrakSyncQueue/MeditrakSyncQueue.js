@@ -12,7 +12,7 @@ import { MeditrakSyncRecordUpdater } from './MeditrakSyncRecordUpdater';
 const modelValidator = model => {
   if (!model.meditrakConfig.minAppVersion) {
     throw new Error(
-      `Model for ${model.databaseType} must have a meditrakConfig.minAppVersion property`,
+      `Model for ${model.databaseRecord} must have a meditrakConfig.minAppVersion property`,
     );
   }
   return true;
@@ -34,9 +34,9 @@ export class MeditrakSyncQueue extends ChangeHandler {
 
     const typesToSync = models.getTypesToSyncWithMeditrak();
     const modelNamesToSync = Object.entries(models)
-      .filter(([, model]) => typesToSync.includes(model.databaseType))
+      .filter(([, model]) => typesToSync.includes(model.databaseRecord))
       .map(([modelName]) => modelName);
-    const modelsToSync = typesToSync.map(type => models.getModelForDatabaseType(type));
+    const modelsToSync = typesToSync.map(type => models.getModelForDatabaseRecord(type));
     modelsToSync.forEach(model => modelValidator(model));
     this.changeTranslators = Object.fromEntries(
       modelNamesToSync.map(model => [model, change => [stripDataFromChange(change)]]),

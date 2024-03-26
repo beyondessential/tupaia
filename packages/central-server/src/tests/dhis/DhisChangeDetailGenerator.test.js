@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import { DhisChangeDetailGenerator } from '../../dhis/DhisChangeDetailGenerator';
 
 import {
@@ -14,7 +14,7 @@ import {
 } from './DhisChangeDetailGenerator.fixtures';
 
 const buildChange = (type, { id, ...record }) => {
-  const recordId = id || generateTestId();
+  const recordId = id || generateId();
   return {
     record_type: type,
     record_id: recordId,

@@ -18,6 +18,7 @@ export type Report = {
   code: string;
   permissionGroup: string;
   config: BaseReportType['config'];
+  latestDataParameters: BaseReportType['latest_data_parameters'];
 };
 
 export type LegacyReport = {

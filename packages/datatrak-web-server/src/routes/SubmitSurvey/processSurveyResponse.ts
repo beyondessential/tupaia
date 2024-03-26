@@ -10,8 +10,8 @@ import {
   QuestionType,
   SurveyScreenComponentConfig,
 } from '@tupaia/types';
-import { buildUpsertEntity } from './buildUpsertEntity';
 import { DatatrakWebServerModelRegistry } from '../../types';
+import { buildUpsertEntity } from './buildUpsertEntity';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {

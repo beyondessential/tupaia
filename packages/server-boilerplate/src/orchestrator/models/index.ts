@@ -4,4 +4,4 @@
  *
  */
 
-export { SessionModel, SessionType } from './Session';
+export { SessionModel, SessionRecord } from './Session';

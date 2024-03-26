@@ -22,10 +22,9 @@ export type NullableKeys<T> = { [K in keyof T]-?: null | T[K] extends T[K] ? K :
  * Maps keys of type that fields which can be null are instead optional (useful for serializing database items to JSON output)
  * NullableKeysToOptional<{ cat: string; dog: number; fish: boolean | null; }> => { cat: string; dog: number; fish?: boolean; }
  */
-export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> &
-  {
-    [P in NullableKeys<T>]?: Exclude<T[P], null>;
-  };
+export type NullableKeysToOptional<T> = Pick<T, NonNullKeys<T>> & {
+  [P in NullableKeys<T>]?: Exclude<T[P], null>;
+};
 
 /**
  * Deeply partial object, eg.
@@ -65,7 +64,7 @@ export type Flatten<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, Record<string, any>>,
   J extends string = '.',
-  K extends keyof T & string = keyof T & string
+  K extends keyof T & string = keyof T & string,
 > = UnionToIntersection<
   {
     [V in K]: { [field in keyof T[V] & string as `${V}${J}${field}`]: T[V][field] };

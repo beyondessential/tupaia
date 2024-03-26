@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { Analytic, RawAnalyticResults, EntityType, Event, EventResults } from '../../types';
+import { Analytic, RawAnalyticResults, EntityRecord, Event, EventResults } from '../../types';
 import { WeatherProperty, WeatherResult } from './types';
 
 export type ResultFormat = 'analytics' | 'events';
@@ -23,12 +23,12 @@ const DATA_ELEMENT_CODE_TO_API_PROPERTY_MAP: Record<string, WeatherProperty> = {
  * Translates Weather API data into events/analytics formatted data
  */
 export class ApiResultTranslator {
-  private readonly entities: EntityType[];
+  private readonly entities: EntityRecord[];
   private readonly resultFormat: ResultFormat;
   private readonly dataElementCodes: WeatherDataElementCode[];
 
   public constructor(
-    entities: EntityType[],
+    entities: EntityRecord[],
     resultFormat: ResultFormat,
     dataElementCodes: WeatherDataElementCode[],
   ) {
@@ -89,7 +89,7 @@ export class ApiResultTranslator {
     }
   }
 
-  private apiResultToEvents(apiResult: WeatherResult, entity: EntityType) {
+  private apiResultToEvents(apiResult: WeatherResult, entity: EntityRecord) {
     const events = [];
 
     for (const entry of apiResult.data) {
@@ -113,7 +113,7 @@ export class ApiResultTranslator {
     return events;
   }
 
-  private apiResultToAnalytics(apiResult: WeatherResult, entity: EntityType) {
+  private apiResultToAnalytics(apiResult: WeatherResult, entity: EntityRecord) {
     const analytics: Analytic[] = [];
 
     for (const entry of apiResult.data) {

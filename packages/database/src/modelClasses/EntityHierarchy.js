@@ -4,15 +4,15 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-export class EntityHierarchyType extends DatabaseType {
-  static databaseType = TYPES.ENTITY_HIERARCHY;
+export class EntityHierarchyRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ENTITY_HIERARCHY;
 }
 
 export class EntityHierarchyModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return EntityHierarchyType;
+  get DatabaseRecordClass() {
+    return EntityHierarchyRecord;
   }
 }

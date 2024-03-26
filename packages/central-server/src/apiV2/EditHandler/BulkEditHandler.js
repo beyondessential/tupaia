@@ -58,7 +58,7 @@ export class BulkEditHandler extends CRUDHandler {
   }
 
   async updateRecords(transactingModels, updatedRecords) {
-    const model = transactingModels.getModelForDatabaseType(this.recordType);
+    const model = transactingModels.getModelForDatabaseRecord(this.recordType);
     for (const record of updatedRecords) {
       await model.updateById(record.id, record);
     }

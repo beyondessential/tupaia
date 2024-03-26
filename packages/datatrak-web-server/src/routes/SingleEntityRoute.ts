@@ -16,7 +16,7 @@ export type SingleEntityRequest = Request<
 
 export class SingleEntityRoute extends Route<SingleEntityRequest> {
   public async buildResponse() {
-    const { params, query, models } = this.req;
+    const { params, models } = this.req;
     const { entityCode } = params;
     const {
       id,

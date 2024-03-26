@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import {
   ObjectValidator,
   constructRecordExistsWithCode,
@@ -75,7 +75,7 @@ export class EditDashboardVisualisation extends EditHandler {
   async validateRecordExists() {
     const { legacy } = this.updatedFields.dashboardItem;
     const validationCriteria = {
-      id: [constructRecordExistsWithId(this.database, TYPES.DASHBOARD_ITEM)],
+      id: [constructRecordExistsWithId(this.database, RECORDS.DASHBOARD_ITEM)],
     };
 
     const validationData = { id: this.recordId };

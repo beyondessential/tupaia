@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { SwipeableDrawer, Typography } from '@material-ui/core';
 import { Button } from '@tupaia/ui-components';
 import { BROWSERS, getBrowser, getIsMobileDevice } from '../utils';
-import { useCurrentUser } from '../api';
+import { useCurrentUserContext } from '../api';
 
 const Container = styled.div`
   padding: 2.2rem 1.25rem 3.4rem 1.25rem;
@@ -121,7 +121,7 @@ const getAppStoreLink = () => {
 };
 
 export const MobileAppPrompt = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const [showPrompt, setShowPrompt] = useState(true);
   const isMobile = getIsMobileDevice();
   const { prompted, setHasBeenPrompted } = usePromptCookie();

@@ -25,7 +25,7 @@ import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { SessionModel } from '../models';
-import { logApiRequest } from '../utils';
+import { attachAccessPolicy, logApiRequest } from '../utils';
 import { ServerBoilerplateModelRegistry } from '../../types';
 import { sessionCookie } from './sessionCookie';
 
@@ -42,6 +42,7 @@ export class ApiBuilder {
   private logApiRequestMiddleware: RequestHandler;
   private attachVerifyLogin: (req: Request, res: Response, next: NextFunction) => void;
   private verifyAuthMiddleware: RequestHandler;
+  private attachAccessPolicy: RequestHandler;
   private version: number;
 
   private translatorConfigured = false;
@@ -49,11 +50,7 @@ export class ApiBuilder {
   // We add handlers at the end so that middlewares and initial routes can be set up first
   private handlers: { add: () => void }[] = [];
 
-  public constructor(
-    transactingConnection: TupaiaDatabase,
-    apiName: string,
-    options: { attachModels: boolean } = { attachModels: false },
-  ) {
+  public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
     this.database = transactingConnection;
     this.models = new ModelRegistry(this.database) as ServerBoilerplateModelRegistry;
     this.apiName = apiName;
@@ -63,7 +60,7 @@ export class ApiBuilder {
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
-
+    this.attachAccessPolicy = attachAccessPolicy;
     /**
      * Access logs
      */
@@ -89,9 +86,7 @@ export class ApiBuilder {
      * Add singletons to be attached to req for every route
      */
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (options.attachModels) {
-        req.models = this.models;
-      }
+      req.models = this.models;
       const context = { apiName: this.apiName }; // context is shared between request and response
       req.ctx = context;
       res.ctx = context;
@@ -207,7 +202,13 @@ export class ApiBuilder {
 
   public use(path: string, ...middleware: RequestHandler[]) {
     this.handlers.push({
-      add: () => this.app.use(this.formatPath(path), this.attachSession, ...middleware),
+      add: () =>
+        this.app.use(
+          this.formatPath(path),
+          this.attachSession,
+          this.attachAccessPolicy,
+          ...middleware,
+        ),
     });
     return this;
   }
@@ -222,6 +223,7 @@ export class ApiBuilder {
         this.app[method](
           this.formatPath(path),
           this.attachSession as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
+          this.attachAccessPolicy as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
           this.verifyAuthMiddleware as RequestHandler<Params<T>, ResBody<T>, ReqBody<T>, Query<T>>,
           this.logApiRequestMiddleware as RequestHandler<
             Params<T>,
@@ -281,6 +283,7 @@ export class ApiBuilder {
     this.handlers.forEach(handler => handler.add());
 
     this.app.use(handleError);
+
     return this.app;
   }
 

@@ -73,4 +73,3 @@ export const BREWER_AUTO = [
 export const YES_COLOR = BREWER_PALETTE.green;
 export const NO_COLOR = BREWER_PALETTE.red;
 export const UNKNOWN_COLOR = 'grey';
-export const DEFAULT_DISASTER_COLOR = 'orange';

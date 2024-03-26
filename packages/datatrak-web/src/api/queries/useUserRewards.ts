@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { Project } from '@tupaia/types';
 import { get } from '../api';
 import { UserRewards } from '../../types';
-import { useCurrentUser } from '../CurrentUserContext';
+import { useCurrentUserContext } from '../CurrentUserContext';
 
 const useRewards = (projectId?: Project['id']) => {
   return useQuery(
@@ -24,6 +24,6 @@ const useRewards = (projectId?: Project['id']) => {
 };
 
 export const useUserRewards = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   return useRewards(user.projectId);
 };

@@ -7,7 +7,7 @@
 /**
  * @format id
  */
-import { Entity, Option } from '../../models';
+import { Entity, Option, Survey, UserAccount } from '../../models';
 
 type Id = string;
 
@@ -23,11 +23,11 @@ type AnswerType = {
 
 export interface MeditrakSurveyResponseRequest {
   id?: Id;
-  survey_id: Id;
-  user_id: Id | null;
+  survey_id: Survey['id'];
+  user_id: UserAccount['id'] | null;
   answers: AnswerType[];
   clinic_id?: Id | null;
-  entity_id?: Id;
+  entity_id?: Entity['id'] | null;
   /**
    * @format iso-date-time
    */

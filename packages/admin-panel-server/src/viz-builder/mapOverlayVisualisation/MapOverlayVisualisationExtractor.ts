@@ -101,6 +101,7 @@ export class MapOverlayVisualisationExtractor<
       code,
       permissionGroup,
       config,
+      latestDataParameters: {},
     };
   }
 

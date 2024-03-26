@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
-const permissionGroupId = generateTestId();
-const testPermissionGroupId = generateTestId();
+const permissionGroupId = generateId();
+const testPermissionGroupId = generateId();
 
 const MAP_OVERLAYS = [
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Modern_Map_Overlay',
     name: 'Modern Map Overlay',
     config: { displayType: 'spectrum', scaleType: 'neutral' },

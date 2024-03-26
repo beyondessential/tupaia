@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
-import { useApi } from '../utilities/ApiProvider';
+import { useApiContext } from '../utilities/ApiProvider';
 
 const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryParameters) => {
   if (!rowIdQueryParameter && !filterQueryParameters) return null;
@@ -20,18 +20,14 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
 };
 
 export const ExportButton = ({ actionConfig, row }) => {
-  const api = useApi();
+  const api = useApiContext();
 
   return (
     <IconButton
       className="export-button"
       onClick={async () => {
-        const {
-          exportEndpoint,
-          rowIdQueryParameter,
-          extraQueryParameters,
-          fileName,
-        } = actionConfig;
+        const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
+          actionConfig;
         const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
         const endpoint = `export/${exportEndpoint}${
           !queryParameters && row.id ? `/${row.id}` : ''

@@ -30,6 +30,7 @@ const NumResults = styled.span`
 
 const StyledLink = styled(Link)`
   display: flex;
+  user-select: all; // make the text selectable
   span {
     flex: 1;
     overflow: hidden;

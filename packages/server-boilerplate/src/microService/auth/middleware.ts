@@ -9,7 +9,7 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { Authenticator, getUserAndPassFromBasicAuth, getJwtToken } from '@tupaia/auth';
 
 import { AccessPolicyObject, ServerBoilerplateModelRegistry } from '../../types';
-import { UserType } from '../../models';
+import { UserRecord } from '../../models';
 
 const getBearerAccessPolicy = async (authenticator: Authenticator, authHeader: string) => {
   // Use the user account provided in the auth header if present
@@ -47,42 +47,41 @@ const getBasicAccessPolicy = async (
   throw new UnauthenticatedError('Could not find user');
 };
 
-export const buildBasicBearerAuthMiddleware = (
-  apiName: string,
-  authenticator: Authenticator,
-) => async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authHeader = req.headers.authorization;
+export const buildBasicBearerAuthMiddleware =
+  (apiName: string, authenticator: Authenticator) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
-      throw new UnauthenticatedError(
-        'No authorization header provided - must be Basic or Bearer Auth Header',
-      );
+      if (!authHeader) {
+        throw new UnauthenticatedError(
+          'No authorization header provided - must be Basic or Bearer Auth Header',
+        );
+      }
+
+      let userObject: UserRecord;
+      let accessPolicyObject: AccessPolicyObject;
+      if (authHeader.startsWith('Bearer')) {
+        const { user, accessPolicy } = await getBearerAccessPolicy(authenticator, authHeader);
+        userObject = user;
+        accessPolicyObject = accessPolicy;
+      } else if (authHeader.startsWith('Basic')) {
+        const { user, accessPolicy } = await getBasicAccessPolicy(
+          req.models,
+          authenticator,
+          authHeader,
+          apiName,
+        );
+        userObject = user;
+        accessPolicyObject = accessPolicy;
+      } else {
+        throw new UnauthenticatedError('Could not authenticate');
+      }
+
+      req.user = userObject;
+      req.accessPolicy = new AccessPolicy(accessPolicyObject);
+      next();
+    } catch (error) {
+      next(error);
     }
-
-    let userObject: UserType;
-    let accessPolicyObject: AccessPolicyObject;
-    if (authHeader.startsWith('Bearer')) {
-      const { user, accessPolicy } = await getBearerAccessPolicy(authenticator, authHeader);
-      userObject = user;
-      accessPolicyObject = accessPolicy;
-    } else if (authHeader.startsWith('Basic')) {
-      const { user, accessPolicy } = await getBasicAccessPolicy(
-        req.models,
-        authenticator,
-        authHeader,
-        apiName,
-      );
-      userObject = user;
-      accessPolicyObject = accessPolicy;
-    } else {
-      throw new UnauthenticatedError('Could not authenticate');
-    }
-
-    req.user = userObject;
-    req.accessPolicy = new AccessPolicy(accessPolicyObject);
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+  };

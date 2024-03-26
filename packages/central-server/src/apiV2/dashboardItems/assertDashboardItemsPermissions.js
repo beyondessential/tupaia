@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import {
   hasDashboardRelationGetPermissions,
   hasDashboardRelationEditPermissions,
@@ -104,7 +104,7 @@ export const createDashboardItemsDBFilter = async (accessPolicy, models, criteri
   const permittedDashboardItemsFromRelations = await models.dashboardItem.find(
     permittedRelationConditions,
     {
-      joinWith: TYPES.DASHBOARD_RELATION,
+      joinWith: RECORDS.DASHBOARD_RELATION,
       joinCondition: ['dashboard_relation.child_id', 'dashboard_item.id'],
     },
   );

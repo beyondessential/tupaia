@@ -4,3 +4,4 @@
  */
 
 export { logApiRequest } from './logApiRequest';
+export { attachAccessPolicy } from './attachAccessPolicy';

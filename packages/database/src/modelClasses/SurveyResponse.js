@@ -4,8 +4,8 @@
  */
 
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
 const USERS_EXCLUDED_FROM_LEADER_BOARD = [
   "'edmofro@gmail.com'", // Edwin
@@ -23,13 +23,13 @@ const USERS_EXCLUDED_FROM_LEADER_BOARD = [
 ];
 const INTERNAL_EMAIL = ['@beyondessential.com.au', '@bes.au'];
 
-export class SurveyResponseType extends DatabaseType {
-  static databaseType = TYPES.SURVEY_RESPONSE;
+export class SurveyResponseRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY_RESPONSE;
 }
 
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
-  get DatabaseTypeClass() {
-    return SurveyResponseType;
+  get DatabaseRecordClass() {
+    return SurveyResponseRecord;
   }
 
   async getLeaderboard(projectId = '', rowCount = 10) {

@@ -40,7 +40,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@tupaia/types": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.0",
     "@types/lodash.sortby": "^4.6.0"

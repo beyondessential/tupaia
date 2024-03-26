@@ -4,14 +4,14 @@
  *
  */
 import { useMutation } from 'react-query';
-import { useApi } from '../../utilities/ApiProvider';
+import { useApiContext } from '../../utilities/ApiProvider';
 
 export const useResubmitSurveyResponse = (
   surveyResponseId,
   updatedSurveyResponse,
   filesByQuestionCode,
 ) => {
-  const api = useApi();
+  const api = useApiContext();
   return useMutation(
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
     () => {

@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 
 import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import { MeditrakSyncQueue, createPermissionsBasedMeditrakSyncQueue } from '../../../database';
 import {
   TestableApp,
@@ -204,7 +204,7 @@ describe('GET /changes/*', async () => {
       const since = Date.now();
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
-      const questionId = generateTestId();
+      const questionId = generateId();
       await upsertQuestion({ id: questionId, type: 'Entity' });
       const { id: countryId } = await upsertCountry({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });
@@ -234,7 +234,7 @@ describe('GET /changes/*', async () => {
       const since = Date.now();
       // Wait one second for the triggers to have properly added the changes to the queue
       await oneSecondSleep();
-      const questionId = generateTestId();
+      const questionId = generateId();
       await upsertQuestion({ id: questionId, type: 'Entity' });
       const { id: countryId } = await models.country.findOne({ code: 'DL' });
       const survey = await upsertSurvey({ country_ids: [countryId] });

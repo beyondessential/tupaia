@@ -20,7 +20,7 @@ import {
   AccountSettingsPage,
   ReportsPage,
 } from '../views';
-import { useCurrentUser } from '../api';
+import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
@@ -31,7 +31,7 @@ import { SurveyRoutes } from './SurveyRoutes';
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, ...user } = useCurrentUser();
+  const { isLoggedIn, ...user } = useCurrentUserContext();
   const from = useFromLocation();
 
   if (!isLoggedIn) {

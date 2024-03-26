@@ -67,7 +67,7 @@ export const processColumnSelector = (models, unprocessedColumnSelector, baseRec
     baseRecordType,
   );
   const [recordType, column] = fullyQualifiedSelector.split('.');
-  const model = models.getModelForDatabaseType(recordType);
+  const model = models.getModelForDatabaseRecord(recordType);
   const customSelector = model?.customColumnSelectors?.[column];
   return customSelector ? customSelector(fullyQualifiedSelector) : fullyQualifiedSelector;
 };
