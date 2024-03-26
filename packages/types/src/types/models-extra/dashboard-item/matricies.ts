@@ -40,6 +40,12 @@ export type MatrixConfig = BaseConfig & {
   placeholder?: string;
 };
 
+export type MatrixVizBuilderConfig = MatrixConfig & {
+  output?: {
+    [key: string]: unknown;
+  };
+};
+
 type BasePresentationOption = {
   /**
    * @description Specify the color of the display item
@@ -84,7 +90,7 @@ export type PresentationOptionCondition = BasePresentationOption & {
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
-  condition: ConditionValue | Record<ConditionType, ConditionValue>;
+  condition: ConditionValue | { [key in ConditionType]?: ConditionValue };
   legendLabel?: string;
 };
 

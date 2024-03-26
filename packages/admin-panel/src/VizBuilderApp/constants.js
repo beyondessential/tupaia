@@ -12,7 +12,7 @@ import {
   GaugeChartConfigSchema,
   IconMapOverlayConfigSchema,
   LineChartConfigSchema,
-  MatrixConfigSchema,
+  MatrixVizBuilderConfigSchema,
   MultiPhotographViewConfigSchema,
   MultiSingleValueViewConfigSchema,
   MultiValueRowViewConfigSchema,
@@ -167,7 +167,7 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Matrix
   MATRIX: {
     name: 'Matrix',
-    schema: MatrixConfigSchema,
+    schema: MatrixVizBuilderConfigSchema,
     initialConfig: {
       type: 'matrix',
     },
