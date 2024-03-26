@@ -21,7 +21,7 @@ const ORGANISATION_UNIT_GROUP = 'organisationUnitGroups';
 const PROGRAM = 'programs';
 const TRACKED_ENTITY_ATTRIBUTE = 'trackedEntityAttributes';
 const TRACKED_ENTITY_INSTANCE = 'trackedEntityInstances';
-const TRACKED_ENTITY_TYPE = 'trackedEntityRecords';
+const TRACKED_ENTITY_TYPE = 'trackedEntityTypes';
 const INDICATOR = 'indicators';
 
 export const DHIS2_RESOURCE_TYPES = {
