@@ -34,7 +34,6 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^6.2.2",
-    "dotenv": "^16.4.5",
     "express": "^4.16.2",
     "lodash.uniqby": "^4.7.0",
     "winston": "^3.3.3"

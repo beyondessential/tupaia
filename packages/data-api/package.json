@@ -35,7 +35,6 @@
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
     "deep-equal-in-any-order": "^1.0.27",
-    "dotenv": "^16.4.5",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0"
   },

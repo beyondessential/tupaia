@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-import path from 'path';
 import '@babel/polyfill';
 import http from 'http';
 import express from 'express';
@@ -9,24 +7,15 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
-import { configureDotEnv } from '@tupaia/server-utils';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
+import { configureEnv } from './configureEnv';
 
-configureDotEnv([
-  path.resolve(__dirname, '../../../env/aggregation.env'),
-  path.resolve(__dirname, '../../../env/db.env'),
-  path.resolve(__dirname, '../../../env/dhis.env'),
-  path.resolve(__dirname, '../../../env/mail.env'),
-  path.resolve(__dirname, '../../../env/weatherbit.env'),
-  path.resolve(__dirname, '../../../env/superset.env'),
-  path.resolve(__dirname, '../../../env/.servers'),
-  path.resolve(__dirname, '.env'),
-]);
+configureEnv();
 
 export async function createApp() {
   const app = express();
