@@ -1,6 +1,9 @@
 import winston from 'winston';
 import { createApp } from './app';
 import { runPreaggregation } from './preaggregation/runPreaggregation';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 async function start() {
   if (process.env.RUN_PREAGGREGATION) {
