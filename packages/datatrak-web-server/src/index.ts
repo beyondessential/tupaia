@@ -14,7 +14,7 @@ import { createApp } from './app';
 configureWinston();
 
 configureDotEnv([
-  path.resolve(__dirname, '../../../env/servers.db'),
+  path.resolve(__dirname, '../../../env/servers.env'),
   path.resolve(__dirname, '../../../env/db.env'),
   path.resolve(__dirname, '.env'),
 ]); // Load the environment variables into process.env from the common .env file and this server's .env file

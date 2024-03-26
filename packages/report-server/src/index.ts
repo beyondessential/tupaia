@@ -18,7 +18,7 @@ configureDotEnv([
   path.resolve(__dirname, '../../../env/dhis.env'),
   path.resolve(__dirname, '../../../env/data-lake.env'),
   path.resolve(__dirname, '../../../env/superset.env'),
-  path.resolve(__dirname, '../../../env/servers.db'),
+  path.resolve(__dirname, '../../../env/servers.env'),
   path.resolve(__dirname, '../../../env/db.env'),
   '.env',
 ]); // Load the environment variables into process.env

@@ -5,10 +5,11 @@
 
 import { getTestModels, setupTest, clearTestData } from '@tupaia/database';
 import { SETUP } from './src/__tests__/TupaiaDataApi.fixtures';
-import { configureEnv } from './configureEnv';
+import { configureEnv } from './src/configureEnv';
+
+configureEnv();
 
 const models = getTestModels();
-configureEnv();
 
 beforeAll(async () => {
   jest.setTimeout(30000); // Extend default jest timeout as these tests can take a while

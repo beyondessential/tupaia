@@ -8,7 +8,7 @@ import { configureDotEnv } from '@tupaia/server-utils';
 
 const envFilePaths = [
   path.resolve(__dirname, '../../../env/db.env'),
-  path.resolve(__dirname, '../../../env/servers.db'),
+  path.resolve(__dirname, '../../../env/servers.env'),
   path.resolve(__dirname, '../../../env/pg.env'),
   path.resolve(__dirname, '../../../env/dhis.env'),
   path.resolve(__dirname, '../../../env/external-db-connections.env'),

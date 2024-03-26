@@ -9,6 +9,5 @@
     "jest.setup.ts",
     "global.d.ts",
     "scripts/patchMvRefresh.ts",
-    "scripts/configureEnv.ts"
   ]
 }

@@ -7,7 +7,7 @@
 import DBMigrate from 'db-migrate';
 import { requireEnv } from '@tupaia/utils';
 import { getConnectionConfig } from '@tupaia/database';
-import { configureEnv } from '../configureEnv';
+import { configureEnv } from '../src/configureEnv';
 
 configureEnv(); // Load the environment variables into process.env
 
