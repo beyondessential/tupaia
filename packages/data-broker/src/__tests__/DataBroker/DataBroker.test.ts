@@ -20,7 +20,7 @@ jest.mock('@tupaia/database', () => ({
   TupaiaDatabase: jest.fn().mockImplementation(() => {}),
   ModelRegistry: jest.fn().mockImplementation(() => mockModels),
   createModelsStub: jest.requireActual('@tupaia/database').createModelsStub, // don't mock needed testUtility
-  TYPES: jest.requireActual('@tupaia/database').TYPES, // don't mock needed type
+  RECORDS: jest.requireActual('@tupaia/database').RECORDS, // don't mock needed type
 }));
 
 jest.mock('@tupaia/server-boilerplate', () => ({

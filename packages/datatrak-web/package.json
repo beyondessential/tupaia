@@ -17,6 +17,7 @@
     "@material-ui/styles": "^4.9.10",
     "@testing-library/react-hooks": "^8.0.1",
     "@tupaia/expression-parser": "workspace:*",
+    "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/ui-map-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
@@ -41,7 +42,6 @@
   "devDependencies": {
     "@mui/types": "^7.2.4",
     "@testing-library/react": "12.1.2",
-    "@tupaia/types": "1.0.0",
     "@types/leaflet": "^1.7.1",
     "@types/material-ui": "^0.21.12",
     "@types/react": "16.8.6",

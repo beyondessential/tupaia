@@ -167,7 +167,7 @@
     {
       "name": "web-config-server",
       "path": "packages/web-config-server"
-    },
+    }
   ],
   "settings": {
     "cSpell.caseSensitive": false,
@@ -182,9 +182,10 @@
       "Clazz",
       "cleanup",
       "Codeship",
+      "corepack",
       "ctes",
-      "datetime",
       "Datatrak",
+      "datetime",
       "debouncing",
       "deleters",
       "dhis",
@@ -237,10 +238,8 @@
       "Upserts",
       "vars"
     ],
-    "eslint.validate": [
-      "typescript",
-      "typescriptreact"
-    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "files.exclude": {
       "packages/": true
     },
