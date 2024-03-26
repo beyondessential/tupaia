@@ -8,14 +8,14 @@ import { configureDotEnv } from '@tupaia/server-utils';
 
 export const configureEnv = () => {
   configureDotEnv([
-    path.resolve(__dirname, '../../../env/.env.aggregation'),
-    path.resolve(__dirname, '../../../env/.env.servers'),
-    path.resolve(__dirname, '../../../env/.env.db'),
-    path.resolve(__dirname, '../../../env/.env.dhis'),
-    path.resolve(__dirname, '../../../env/.env.dataLake'),
-    path.resolve(__dirname, '../../../env/.env.externalDBConnections'),
-    path.resolve(__dirname, '../../../env/.env.superset'),
-    path.resolve(__dirname, '../../../env/.env.weatherbit'),
+    path.resolve(__dirname, '../../../env/aggregation.env'),
+    path.resolve(__dirname, '../../../env/servers.db'),
+    path.resolve(__dirname, '../../../env/db.env'),
+    path.resolve(__dirname, '../../../env/dhis.env'),
+    path.resolve(__dirname, '../../../env/data-lake.env'),
+    path.resolve(__dirname, '../../../env/external-db-connections.env'),
+    path.resolve(__dirname, '../../../env/superset.env'),
+    path.resolve(__dirname, '../../../env/weatherbit.env'),
     '.env',
   ]); // Load the environment variables into process.env
 };

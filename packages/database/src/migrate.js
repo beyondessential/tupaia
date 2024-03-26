@@ -4,7 +4,7 @@
  */
 
 import { getDbMigrator } from './getDbMigrator';
-import { configureEnv } from '../configureEnv';
+import { configureEnv } from './configureEnv';
 
 configureEnv();
 

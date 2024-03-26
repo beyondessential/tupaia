@@ -17,8 +17,8 @@ import { createPermissionsBasedMeditrakSyncQueue } from './createPermissionsBase
 
 configureWinston();
 configureDotEnv([
-  path.resolve(__dirname, '../../../env/.env.servers'),
-  path.resolve(__dirname, '../../../env/.env.db'),
+  path.resolve(__dirname, '../../../env/servers.db'),
+  path.resolve(__dirname, '../../../env/db.env'),
   '.env',
 ]); // Load the environment variables into process.env
 

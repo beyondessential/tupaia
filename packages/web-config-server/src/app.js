@@ -18,12 +18,12 @@ import { handleError, logApiRequest } from './utils';
 import './log';
 
 configureDotEnv([
-  path.resolve(__dirname, '../../../env/.env.aggregation'),
-  path.resolve(__dirname, '../../../env/.env.db'),
-  path.resolve(__dirname, '../../../env/.env.dhis'),
-  path.resolve(__dirname, '../../../env/.env.mail'),
-  path.resolve(__dirname, '../../../env/.env.weatherbit'),
-  path.resolve(__dirname, '../../../env/.env.superset'),
+  path.resolve(__dirname, '../../../env/aggregation.env'),
+  path.resolve(__dirname, '../../../env/db.env'),
+  path.resolve(__dirname, '../../../env/dhis.env'),
+  path.resolve(__dirname, '../../../env/mail.env'),
+  path.resolve(__dirname, '../../../env/weatherbit.env'),
+  path.resolve(__dirname, '../../../env/superset.env'),
   path.resolve(__dirname, '../../../env/.servers'),
   path.resolve(__dirname, '.env'),
 ]);

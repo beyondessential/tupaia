@@ -31,10 +31,8 @@
     "check-test-database-exists": "DB_NAME=tupaia_test scripts/checkTestDatabaseExists.sh"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.26.0",
     "@tupaia/access-policy": "workspace:*",
     "@tupaia/auth": "workspace:*",
-    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "db-migrate": "^0.11.5",

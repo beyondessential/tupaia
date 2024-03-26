@@ -95,8 +95,5 @@
   "engines": {
     "node": "^20.11.1"
   },
-  "packageManager": "yarn@3.2.1",
-  "dependencies": {
-    "@dotenvx/dotenvx": "^0.26.0"
-  }
+  "packageManager": "yarn@3.2.1"
 }

@@ -7,8 +7,8 @@
 
 require('dotenv').config({
   path: [
-    require('path').resolve(__dirname, '../../../env/.env.db'),
-    require('path').resolve(__dirname, '../../../env/.env.pg'),
+    require('path').resolve(__dirname, '../../../env/db.env'),
+    require('path').resolve(__dirname, '../../../env/pg.env'),
     require('path').resolve(__dirname, '.env'),
   ],
 });
