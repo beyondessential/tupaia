@@ -10,6 +10,7 @@ import {
   EntityRelationModel,
   UserEntityPermissionModel,
   UserModel,
+  PermissionGroupModel,
 } from '@tupaia/database';
 
 export interface TestModelRegistry extends ModelRegistry {
@@ -18,4 +19,5 @@ export interface TestModelRegistry extends ModelRegistry {
   readonly entityRelation: EntityRelationModel;
   readonly user: UserModel;
   readonly userEntityPermission: UserEntityPermissionModel;
+  readonly permissionGroup: PermissionGroupModel;
 }

@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
-import { DashboardMetadataForm } from '../Dashboard';
+import { DashboardItemMetadataForm } from '../DashboardItem';
 import { MapOverlayMetadataForm } from '../MapOverlay';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
 
@@ -30,7 +30,7 @@ export const EditModal = () => {
 
   let MetadataForm = null;
   if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM) {
-    MetadataForm = DashboardMetadataForm;
+    MetadataForm = DashboardItemMetadataForm;
   } else if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY) {
     MetadataForm = MapOverlayMetadataForm;
   } else {

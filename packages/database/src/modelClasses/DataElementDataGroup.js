@@ -4,11 +4,11 @@
  */
 
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 
-class DataElementDataGroupType extends DatabaseType {
-  static databaseType = TYPES.DATA_ELEMENT_DATA_GROUP;
+class DataElementDataGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_ELEMENT_DATA_GROUP;
 
   async dataElement() {
     return this.otherModels.dataElement.findOne({
@@ -24,7 +24,7 @@ class DataElementDataGroupType extends DatabaseType {
 }
 
 export class DataElementDataGroupModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return DataElementDataGroupType;
+  get DatabaseRecordClass() {
+    return DataElementDataGroupRecord;
   }
 }

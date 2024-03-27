@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { RouterLink } from '@tupaia/ui-components';
 import { Button, ChangeProjectButton } from '../../components';
-import { useCurrentUser } from '../../api';
+import { useCurrentUserContext } from '../../api';
 import { ROUTES } from '../../constants';
 
 const Wrapper = styled.div`
@@ -60,7 +60,7 @@ const AuthButtons = styled.div`
  * This is the displayed user name OR the login/register buttons on desktop
  */
 export const UserInfo = () => {
-  const { isLoggedIn, projectId, userName } = useCurrentUser();
+  const { isLoggedIn, projectId, userName } = useCurrentUserContext();
 
   return (
     <Wrapper>

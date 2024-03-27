@@ -6,7 +6,7 @@
 import keyBy from 'lodash.keyby';
 import groupBy from 'lodash.groupby';
 import { respond, DatabaseError } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import { camel } from 'case';
 import { getColumnsForMeditrakApp } from './utilities';
 import {
@@ -71,7 +71,7 @@ export async function getChanges(req, res) {
       await Promise.all(
         recordTypesToSync.map(async recordType => [
           recordType,
-          await getColumnsForMeditrakApp(models.getModelForDatabaseType(recordType)),
+          await getColumnsForMeditrakApp(models.getModelForDatabaseRecord(recordType)),
         ]),
       ),
     );
@@ -96,7 +96,7 @@ export async function getChanges(req, res) {
       const changeObject = { action, recordType, timestamp };
       if (action === 'delete') {
         changeObject.record = { id: recordId };
-        if (recordType === TYPES.GEOGRAPHICAL_AREA) {
+        if (recordType === RECORDS.GEOGRAPHICAL_AREA) {
           // TODO LEGACY Deal with this bug on app end for v3 api
           changeObject.recordType = 'area';
         }

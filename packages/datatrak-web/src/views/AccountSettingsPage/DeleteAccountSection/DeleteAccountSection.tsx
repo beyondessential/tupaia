@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { UserDetails } from './UserDetails';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
-import { useCurrentUser } from '../../../api';
+import { useCurrentUserContext } from '../../../api';
 import { AccountSettingsColumn } from '../AccountSettingsColumn';
 import { Button } from '../../../components';
 
@@ -22,7 +22,7 @@ const RequestPendingText = styled(Typography)`
 
 export const DeleteAccountSection = () => {
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const { deleteAccountRequested } = useCurrentUser();
+  const { deleteAccountRequested } = useCurrentUserContext();
   const toggleConfirmationDialog = () => {
     setConfirmationDialogOpen(!confirmationDialogOpen);
   };

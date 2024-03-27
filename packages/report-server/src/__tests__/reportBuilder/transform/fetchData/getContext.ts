@@ -8,13 +8,8 @@ import { MockTupaiaApiClient, MockDataTableApi, MockEntityApi } from '@tupaia/ap
 import { ReportServerAggregator } from '../../../../aggregator';
 import { Context, ReqContext } from '../../../../reportBuilder/context';
 import { FetchReportQuery } from '../../../../types';
-import {
-  analyticsDataTable,
-  ENTITIES,
-  eventsDataTable,
-  HIERARCHY,
-  RELATIONS,
-} from './fetchData.fixtures';
+import { eventsDataTable } from '../../../fixtures';
+import { analyticsDataTable, ENTITIES, HIERARCHY, RELATIONS } from './fixtures';
 
 export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
   const reqContext: ReqContext = {
@@ -31,7 +26,7 @@ export const getContext = (queryOverrides?: Partial<FetchReportQuery>) => {
       explore: ['Admin'],
       MY: ['Public'],
     }),
-    aggregator: ({} as unknown) as ReportServerAggregator,
+    aggregator: {} as unknown as ReportServerAggregator,
     query: {
       hierarchy: HIERARCHY,
       organisationUnitCodes: [],
