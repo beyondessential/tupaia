@@ -23,18 +23,18 @@ const handleWith = Handler =>
 export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
-  api.get('/getUser', catchAsyncErrors(getUser())); // KEEP
-  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin)); // KEEP
-  api.post('/signup', catchAsyncErrors(appSignup())); // KEEP
+  api.get('/getUser', catchAsyncErrors(getUser()));
+  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin));
+  api.post('/signup', catchAsyncErrors(appSignup()));
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
-  api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
-  api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP
-  api.get('/export/chart', catchAsyncErrors(exportChartHandler)); // KEEP
-  api.get('/measures', handleWith(MeasuresHandler)); // KEEP
-  api.get('/measureData', handleWith(MeasuresDataHandler)); // KEEP
-  api.get('/projects', catchAsyncErrors(getProjects)); // KEEP
-  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards // KEEP
-  api.get('/report/:reportCode', handleWith(ReportHandler)); // KEEP
+  api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
+  api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
+  api.get('/export/chart', catchAsyncErrors(exportChartHandler));
+  api.get('/measures', handleWith(MeasuresHandler));
+  api.get('/measureData', handleWith(MeasuresDataHandler));
+  api.get('/projects', catchAsyncErrors(getProjects));
+  api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards
+  api.get('/report/:reportCode', handleWith(ReportHandler));
   api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
 
   return api;
