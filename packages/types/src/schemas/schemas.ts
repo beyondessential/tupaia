@@ -2369,6 +2369,43 @@ export const PresentationOptionRangeSchema = {
 	}
 } 
 
+export const ConditionsObjectSchema = {
+	"type": "object",
+	"properties": {
+		"=": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		">": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"<": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		">=": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"<=": {
+			"type": [
+				"string",
+				"number"
+			]
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const ConditionValueSchema = {
 	"type": [
 		"string",

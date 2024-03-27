@@ -90,7 +90,7 @@ export type PresentationOptionCondition = BasePresentationOption & {
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
-  condition: ConditionValue | { [key in ConditionType]?: ConditionValue };
+  condition: ConditionValue | ConditionsObject;
   legendLabel?: string;
 };
 
@@ -98,6 +98,8 @@ export type PresentationOptionRange = BasePresentationOption & {
   min?: number;
   max?: number;
 };
+
+export type ConditionsObject = { [key in ConditionType]?: ConditionValue };
 
 export type ConditionValue = string | number;
 
