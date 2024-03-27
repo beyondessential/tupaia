@@ -1,6 +1,5 @@
 import { createUser } from './handlers/createUser';
 import { requestResendEmail, verifyEmail } from './handlers/verifyEmail';
-import { changePassword } from './handlers/changePassword';
 import { requestResetPassword } from './handlers/requestResetPassword';
 import { requestCountryAccess } from './handlers/requestCountryAccess';
 
@@ -11,16 +10,6 @@ import { requestCountryAccess } from './handlers/requestCountryAccess';
  */
 export const appSignup = () => async (req, res) => {
   const result = await createUser(req.body);
-  res.send(result);
-};
-
-/**
- * /changePassword
- *
- * Change a user's password
- */
-export const appChangePassword = () => async (req, res) => {
-  const result = await changePassword(req);
   res.send(result);
 };
 

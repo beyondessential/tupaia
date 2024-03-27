@@ -1,6 +1,5 @@
 export {
   appSignup,
-  appChangePassword,
   appRequestResetPassword,
   appResendEmail,
   appRequestCountryAccess,
