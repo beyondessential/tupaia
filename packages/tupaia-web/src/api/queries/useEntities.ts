@@ -4,8 +4,8 @@
  */
 import { AxiosRequestConfig } from 'axios';
 import { useQuery, QueryObserverOptions } from 'react-query';
-import { Entity } from '../../types';
 import { get } from '../api';
+import { Entity } from '../../types';
 
 export const useEntities = (
   projectCode?: string,

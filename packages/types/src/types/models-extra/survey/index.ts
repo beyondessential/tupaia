@@ -10,4 +10,7 @@ export {
   EntityQuestionConfig,
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './surveyScreenComponent';

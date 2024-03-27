@@ -30,6 +30,7 @@ const buildReportObject = (report, legacy, permissionGroupsById) => {
     code: report.code,
     config: report.config,
     permissionGroup: permissionGroupsById[report.permission_group_id]?.name || null,
+    latestDataParameters: report.latest_data_parameters,
   };
 };
 
@@ -39,6 +40,7 @@ const buildVisualisationObject = (dashboardItemObject, referencedRecords) => {
   const { report_code: reportCode, legacy } = dashboardItem;
 
   const report = reportsByCode[reportCode] || legacyReportsByCode[reportCode];
+
   if (!report) {
     throw new Error(`Cannot find a report for visualisation "${dashboardItem.report_code}"`);
   }

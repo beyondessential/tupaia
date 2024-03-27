@@ -1,30 +1,26 @@
-/*
+/**
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+import { ModelRegistry } from '@tupaia/database';
 import {
-  ModelRegistry,
+  CountryModel,
   EntityModel,
-  EntityRecord as BaseEntityRecord,
-  SurveyModel,
+  FeedItemModel,
   OneTimeLoginModel,
-  OneTimeLoginRecord as BaseOneTimeLoginRecord,
-} from '@tupaia/database';
-import { Model } from '@tupaia/server-boilerplate';
-import { Entity, OneTimeLogin } from '@tupaia/types';
-import { FeedItemModel, SurveyResponseModel, UserModel } from './models';
-import { OptionModel } from '@tupaia/database';
-
-export type EntityRecord = BaseEntityRecord & Entity;
-export type OneTimeLoginRecord = BaseOneTimeLoginRecord & OneTimeLogin;
+  OptionModel,
+  SurveyModel,
+  SurveyResponseModel,
+  UserModel,
+} from '@tupaia/server-boilerplate';
 
 export interface DatatrakWebServerModelRegistry extends ModelRegistry {
-  readonly entity: Model<EntityModel, Entity, EntityRecord>;
-  readonly surveyResponse: SurveyResponseModel;
-  readonly feedItem: FeedItemModel;
   readonly user: UserModel;
+  readonly entity: EntityModel;
+  readonly country: CountryModel;
+  readonly feedItem: FeedItemModel;
   readonly survey: SurveyModel;
-  readonly oneTimeLogin: Model<OneTimeLoginModel, OneTimeLogin, OneTimeLoginRecord>;
+  readonly surveyResponse: SurveyResponseModel;
+  readonly oneTimeLogin: OneTimeLoginModel;
   readonly option: OptionModel;
 }

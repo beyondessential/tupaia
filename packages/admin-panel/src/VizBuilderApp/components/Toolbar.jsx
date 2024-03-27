@@ -70,7 +70,7 @@ export const Toolbar = () => {
           <DocumentIcon />
           <MuiBox ml={2}>
             <SubTitle variant="h4">
-              Project: {project} • {permissionGroup}
+              Project: {project?.['project.code']} • {permissionGroup}
             </SubTitle>
             <Title variant="h2">{name}</Title>
           </MuiBox>

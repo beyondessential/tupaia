@@ -315,6 +315,16 @@ export const ReferencePropsSchema = {
 	]
 } 
 
+export const EntityAttributesSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"type": {
+			"type": "string"
+		}
+	}
+} 
+
 export const CssColorSchema = {
 	"description": "A CSS color string e.g. green or #abc123",
 	"type": "string"
@@ -1866,7 +1876,6 @@ export const MatrixPresentationOptionsSchema = {
 
 export const VizComponentNameSchema = {
 	"enum": [
-		"ActiveDisasters",
 		"NoAccessDashboard",
 		"NoDataAtLevelDashboard",
 		"ProjectDescription"
@@ -2249,7 +2258,6 @@ export const ComponentConfigSchema = {
 		},
 		"componentName": {
 			"enum": [
-				"ActiveDisasters",
 				"NoAccessDashboard",
 				"NoDataAtLevelDashboard",
 				"ProjectDescription"
@@ -20912,7 +20920,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"componentName": {
 					"enum": [
-						"ActiveDisasters",
 						"NoAccessDashboard",
 						"NoDataAtLevelDashboard",
 						"ProjectDescription"
@@ -37569,6 +37576,82 @@ export const ConditionQuestionConfigSchema = {
 	]
 } 
 
+export const EntityQuestionConfigFieldsSchema = {
+	"enum": [
+		"attributes",
+		"code",
+		"country_code",
+		"id",
+		"image_url",
+		"metadata",
+		"name",
+		"type"
+	],
+	"type": "string"
+} 
+
+export const QuestionValueSchema = {
+	"type": "object",
+	"properties": {
+		"questionId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"questionId"
+	]
+} 
+
+export const EntityQuestionConfigFieldKeySchema = {
+	"description": "This is the possible field key type for the `fields` object in the entity question config. In the case of the `parentId` field, the key will be camel-cased instead, so that is why we have to explicitly include it in the `FieldKey` type and also in the `FieldValue` type.",
+	"enum": [
+		"attributes",
+		"code",
+		"country_code",
+		"id",
+		"image_url",
+		"metadata",
+		"name",
+		"parentId",
+		"type"
+	],
+	"type": "string"
+} 
+
+export const EntityQuestionConfigFieldValueSchema = {
+	"anyOf": [
+		{
+			"type": "object",
+			"properties": {}
+		},
+		{
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		{
+			"type": "object",
+			"properties": {
+				"questionId": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"questionId"
+			]
+		},
+		{
+			"type": "string"
+		}
+	]
+} 
+
 export const EntityQuestionConfigSchema = {
 	"type": "object",
 	"additionalProperties": {},
@@ -37578,6 +37661,296 @@ export const EntityQuestionConfigSchema = {
 		},
 		"fields": {
 			"type": "object",
+			"properties": {
+				"metadata": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"code": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"attributes": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"name": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"type": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"country_code": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"id": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"image_url": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"parentId": {
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {}
+						},
+						{
+							"additionalProperties": false,
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string"
+								}
+							}
+						},
+						{
+							"type": "object",
+							"properties": {
+								"questionId": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"questionId"
+							]
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
 			"additionalProperties": false
 		},
 		"filter": {
@@ -37588,10 +37961,92 @@ export const EntityQuestionConfigSchema = {
 						{
 							"type": "array",
 							"items": {
+								"enum": [
+									"asset",
+									"business",
+									"case",
+									"case_contact",
+									"catchment",
+									"city",
+									"complaint",
+									"country",
+									"disaster",
+									"district",
+									"enumeration_area",
+									"facility",
+									"farm",
+									"fetp_graduate",
+									"field_station",
+									"fiji_aspen_facility",
+									"health_clinic_boundary",
+									"household",
+									"incident",
+									"incident_reported",
+									"individual",
+									"institute",
+									"larval_habitat",
+									"local_government",
+									"medical_area",
+									"msupply_store",
+									"nursing_zone",
+									"postcode",
+									"project",
+									"repair_request",
+									"school",
+									"sub_catchment",
+									"sub_district",
+									"sub_facility",
+									"trap",
+									"village",
+									"water_sample",
+									"wish_sub_district",
+									"world"
+								],
 								"type": "string"
 							}
 						},
 						{
+							"enum": [
+								"asset",
+								"business",
+								"case",
+								"case_contact",
+								"catchment",
+								"city",
+								"complaint",
+								"country",
+								"disaster",
+								"district",
+								"enumeration_area",
+								"facility",
+								"farm",
+								"fetp_graduate",
+								"field_station",
+								"fiji_aspen_facility",
+								"health_clinic_boundary",
+								"household",
+								"incident",
+								"incident_reported",
+								"individual",
+								"institute",
+								"larval_habitat",
+								"local_government",
+								"medical_area",
+								"msupply_store",
+								"nursing_zone",
+								"postcode",
+								"project",
+								"repair_request",
+								"school",
+								"sub_catchment",
+								"sub_district",
+								"sub_facility",
+								"trap",
+								"village",
+								"water_sample",
+								"wish_sub_district",
+								"world"
+							],
 							"type": "string"
 						}
 					]
@@ -37622,18 +38077,7 @@ export const EntityQuestionConfigSchema = {
 				},
 				"attributes": {
 					"type": "object",
-					"additionalProperties": {
-						"type": "object",
-						"properties": {
-							"questionId": {
-								"type": "string"
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"questionId"
-						]
-					}
+					"additionalProperties": false
 				}
 			},
 			"additionalProperties": false
@@ -37729,6 +38173,296 @@ export const SurveyScreenComponentConfigSchema = {
 				},
 				"fields": {
 					"type": "object",
+					"properties": {
+						"metadata": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"code": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"attributes": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"name": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"type": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"country_code": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"id": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"image_url": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"parentId": {
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {}
+								},
+								{
+									"additionalProperties": false,
+									"type": "object",
+									"properties": {
+										"type": {
+											"type": "string"
+										}
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"questionId": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"questionId"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
 					"additionalProperties": false
 				},
 				"filter": {
@@ -37739,10 +38473,92 @@ export const SurveyScreenComponentConfigSchema = {
 								{
 									"type": "array",
 									"items": {
+										"enum": [
+											"asset",
+											"business",
+											"case",
+											"case_contact",
+											"catchment",
+											"city",
+											"complaint",
+											"country",
+											"disaster",
+											"district",
+											"enumeration_area",
+											"facility",
+											"farm",
+											"fetp_graduate",
+											"field_station",
+											"fiji_aspen_facility",
+											"health_clinic_boundary",
+											"household",
+											"incident",
+											"incident_reported",
+											"individual",
+											"institute",
+											"larval_habitat",
+											"local_government",
+											"medical_area",
+											"msupply_store",
+											"nursing_zone",
+											"postcode",
+											"project",
+											"repair_request",
+											"school",
+											"sub_catchment",
+											"sub_district",
+											"sub_facility",
+											"trap",
+											"village",
+											"water_sample",
+											"wish_sub_district",
+											"world"
+										],
 										"type": "string"
 									}
 								},
 								{
+									"enum": [
+										"asset",
+										"business",
+										"case",
+										"case_contact",
+										"catchment",
+										"city",
+										"complaint",
+										"country",
+										"disaster",
+										"district",
+										"enumeration_area",
+										"facility",
+										"farm",
+										"fetp_graduate",
+										"field_station",
+										"fiji_aspen_facility",
+										"health_clinic_boundary",
+										"household",
+										"incident",
+										"incident_reported",
+										"individual",
+										"institute",
+										"larval_habitat",
+										"local_government",
+										"medical_area",
+										"msupply_store",
+										"nursing_zone",
+										"postcode",
+										"project",
+										"repair_request",
+										"school",
+										"sub_catchment",
+										"sub_district",
+										"sub_facility",
+										"trap",
+										"village",
+										"water_sample",
+										"wish_sub_district",
+										"world"
+									],
 									"type": "string"
 								}
 							]
@@ -37773,18 +38589,7 @@ export const SurveyScreenComponentConfigSchema = {
 						},
 						"attributes": {
 							"type": "object",
-							"additionalProperties": {
-								"type": "object",
-								"properties": {
-									"questionId": {
-										"type": "string"
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"questionId"
-								]
-							}
+							"additionalProperties": false
 						}
 					},
 					"additionalProperties": false
@@ -37976,6 +38781,264 @@ export const FeedItemTemplateVariablesSchema = {
 	]
 } 
 
+export const RecentEntitiesForCountrySchema = {
+	"type": "object",
+	"properties": {
+		"world": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"project": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"country": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"village": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"case": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"case_contact": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"disaster": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"school": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"catchment": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_catchment": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"field_station": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"city": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"individual": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"sub_facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"postcode": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"household": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"larval_habitat": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"local_government": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"medical_area": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"nursing_zone": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"fetp_graduate": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"incident": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"incident_reported": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"fiji_aspen_facility": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"wish_sub_district": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"trap": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"asset": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"institute": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"msupply_store": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"complaint": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"water_sample": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"farm": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"repair_request": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"business": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"health_clinic_boundary": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"enumeration_area": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const UserAccountPreferencesSchema = {
+	"type": "object",
+	"properties": {
+		"country_id": {
+			"type": "string"
+		},
+		"project_id": {
+			"type": "string"
+		},
+		"recent_entities": {
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -38106,7 +39169,10 @@ export const AccessRequestUpdateSchema = {
 export const AdminPanelSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -38137,7 +39203,10 @@ export const AdminPanelSessionSchema = {
 export const AdminPanelSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -38164,7 +39233,10 @@ export const AdminPanelSessionCreateSchema = {
 export const AdminPanelSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -38541,11 +39613,17 @@ export const ApiRequestLogSchema = {
 		"id": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -38578,11 +39656,17 @@ export const ApiRequestLogCreateSchema = {
 		"endpoint": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -38617,11 +39701,17 @@ export const ApiRequestLogUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"method": {
 			"type": "string"
 		},
-		"query": {},
+		"query": {
+			"type": "object",
+			"properties": {}
+		},
 		"refresh_token": {
 			"type": "string"
 		},
@@ -40027,7 +41117,6 @@ export const DashboardItemSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -48445,7 +49534,6 @@ export const DashboardItemCreateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -56857,7 +57945,6 @@ export const DashboardItemUpdateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -64353,14 +65440,63 @@ export const DashboardMailingListEntryUpdateSchema = {
 export const DashboardRelationSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"enumeration_area",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"health_clinic_boundary",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64395,14 +65531,63 @@ export const DashboardRelationSchema = {
 export const DashboardRelationCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"enumeration_area",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"health_clinic_boundary",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -64432,14 +65617,63 @@ export const DashboardRelationCreateSchema = {
 export const DashboardRelationUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes_filter": {},
+		"attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"child_id": {
 			"type": "string"
 		},
 		"dashboard_id": {
 			"type": "string"
 		},
-		"entity_types": {},
+		"entity_types": {
+			"type": "array",
+			"items": {
+				"enum": [
+					"asset",
+					"business",
+					"case",
+					"case_contact",
+					"catchment",
+					"city",
+					"complaint",
+					"country",
+					"disaster",
+					"district",
+					"enumeration_area",
+					"facility",
+					"farm",
+					"fetp_graduate",
+					"field_station",
+					"fiji_aspen_facility",
+					"health_clinic_boundary",
+					"household",
+					"incident",
+					"incident_reported",
+					"individual",
+					"institute",
+					"larval_habitat",
+					"local_government",
+					"medical_area",
+					"msupply_store",
+					"nursing_zone",
+					"postcode",
+					"project",
+					"repair_request",
+					"school",
+					"sub_catchment",
+					"sub_district",
+					"sub_facility",
+					"trap",
+					"village",
+					"water_sample",
+					"wish_sub_district",
+					"world"
+				],
+				"type": "string"
+			}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64468,7 +65702,10 @@ export const DataElementSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64507,7 +65744,10 @@ export const DataElementCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -64540,7 +65780,10 @@ export const DataElementUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64632,7 +65875,10 @@ export const DataElementDataServiceSchema = {
 		"id": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -64665,7 +65911,10 @@ export const DataElementDataServiceCreateSchema = {
 		"data_element_code": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -64699,7 +65948,10 @@ export const DataElementDataServiceUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"service_config": {},
+		"service_config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -64722,7 +65974,10 @@ export const DataGroupSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64754,7 +66009,10 @@ export const DataGroupCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"service_type": {
 			"enum": [
 				"data-lake",
@@ -64781,7 +66039,10 @@ export const DataGroupUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -64804,7 +66065,10 @@ export const DataGroupUpdateSchema = {
 export const DataServiceEntitySchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		},
@@ -64823,7 +66087,10 @@ export const DataServiceEntitySchema = {
 export const DataServiceEntityCreateSchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		}
@@ -64838,7 +66105,10 @@ export const DataServiceEntityCreateSchema = {
 export const DataServiceEntityUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"entity_code": {
 			"type": "string"
 		},
@@ -64855,7 +66125,10 @@ export const DataServiceSyncGroupSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -64902,7 +66175,10 @@ export const DataServiceSyncGroupCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -64945,7 +66221,10 @@ export const DataServiceSyncGroupUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"data_group_code": {
 			"type": "string"
 		},
@@ -64985,7 +66264,10 @@ export const DataTableSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -65029,7 +66311,10 @@ export const DataTableCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -65068,7 +66353,10 @@ export const DataTableUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"description": {
 			"type": "string"
 		},
@@ -65102,7 +66390,10 @@ export const DataTableUpdateSchema = {
 export const DatatrakSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -65133,7 +66424,10 @@ export const DatatrakSessionSchema = {
 export const DatatrakSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -65160,7 +66454,10 @@ export const DatatrakSessionCreateSchema = {
 export const DatatrakSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -65186,7 +66483,10 @@ export const DhisInstanceSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -65209,7 +66509,10 @@ export const DhisInstanceCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"readonly": {
 			"type": "boolean"
 		}
@@ -65228,7 +66531,10 @@ export const DhisInstanceUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -65475,200 +66781,21 @@ export const DhisSyncQueueUpdateSchema = {
 	"additionalProperties": false
 } 
 
-export const DisasterSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"id",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterCreateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const DisasterEventSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"id",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventCreateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
 export const EntitySchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -65681,15 +66808,22 @@ export const EntitySchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -65737,8 +66871,10 @@ export const EntitySchema = {
 	},
 	"additionalProperties": false,
 	"required": [
+		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
@@ -65747,8 +66883,18 @@ export const EntitySchema = {
 export const EntityCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -65758,15 +66904,22 @@ export const EntityCreateSchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -65823,8 +66976,18 @@ export const EntityCreateSchema = {
 export const EntityUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
-		"bounds": {},
+		"attributes": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"bounds": {
+			"type": "string"
+		},
 		"code": {
 			"type": "string"
 		},
@@ -65837,15 +67000,22 @@ export const EntityUpdateSchema = {
 		"image_url": {
 			"type": "string"
 		},
-		"metadata": {},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
 		"parent_id": {
 			"type": "string"
 		},
-		"point": {},
-		"region": {},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
 		"type": {
 			"enum": [
 				"asset",
@@ -66406,7 +67576,10 @@ export const IndicatorSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -66429,7 +67602,10 @@ export const IndicatorCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {}
+		"config": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -66447,7 +67623,10 @@ export const IndicatorUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -66635,8 +67814,14 @@ export const LegacyReportSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {},
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -66657,8 +67842,14 @@ export const LegacyReportCreateSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {}
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -66675,8 +67866,14 @@ export const LegacyReportUpdateSchema = {
 		"data_builder": {
 			"type": "string"
 		},
-		"data_builder_config": {},
-		"data_services": {},
+		"data_builder_config": {
+			"type": "object",
+			"properties": {}
+		},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -66687,7 +67884,10 @@ export const LegacyReportUpdateSchema = {
 export const LesmisSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -66718,7 +67918,10 @@ export const LesmisSessionSchema = {
 export const LesmisSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -66745,7 +67948,10 @@ export const LesmisSessionCreateSchema = {
 export const LesmisSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -70385,8 +71591,14 @@ export const MapOverlaySchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -74047,8 +75259,14 @@ export const MapOverlayCreateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"legacy": {
 			"type": "boolean"
 		},
@@ -77702,8 +78920,14 @@ export const MapOverlayUpdateSchema = {
 				"type": "string"
 			}
 		},
-		"data_services": {},
-		"entity_attributes_filter": {},
+		"data_services": {
+			"type": "object",
+			"properties": {}
+		},
+		"entity_attributes_filter": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -77869,7 +79093,10 @@ export const MeditrakDeviceSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -77897,7 +79124,10 @@ export const MeditrakDeviceCreateSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"install_id": {
 			"type": "string"
 		},
@@ -77921,7 +79151,10 @@ export const MeditrakDeviceUpdateSchema = {
 		"app_version": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -78302,7 +79535,10 @@ export const OneTimeLoginUpdateSchema = {
 export const OptionSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -78330,7 +79566,10 @@ export const OptionSchema = {
 export const OptionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"label": {
 			"type": "string"
 		},
@@ -78354,7 +79593,10 @@ export const OptionCreateSchema = {
 export const OptionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"attributes": {},
+		"attributes": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		},
@@ -78706,7 +79948,10 @@ export const ProjectSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -78744,7 +79989,8 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"id",
+		"permission_groups"
 	]
 } 
 
@@ -78754,7 +80000,10 @@ export const ProjectCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -78798,7 +80047,10 @@ export const ProjectUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"dashboard_group_name": {
 			"type": "string"
 		},
@@ -78839,7 +80091,10 @@ export const ProjectUpdateSchema = {
 export const PsssSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -78870,7 +80125,10 @@ export const PsssSessionSchema = {
 export const PsssSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -78897,7 +80155,10 @@ export const PsssSessionCreateSchema = {
 export const PsssSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -79239,6 +80500,10 @@ export const ReportSchema = {
 		"id": {
 			"type": "string"
 		},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_group_id": {
 			"type": "string"
 		}
@@ -79248,6 +80513,7 @@ export const ReportSchema = {
 		"code",
 		"config",
 		"id",
+		"latest_data_parameters",
 		"permission_group_id"
 	]
 } 
@@ -79300,6 +80566,10 @@ export const ReportCreateSchema = {
 					]
 				}
 			]
+		},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
 		},
 		"permission_group_id": {
 			"type": "string"
@@ -79364,6 +80634,10 @@ export const ReportUpdateSchema = {
 		},
 		"id": {
 			"type": "string"
+		},
+		"latest_data_parameters": {
+			"type": "object",
+			"properties": {}
 		},
 		"permission_group_id": {
 			"type": "string"
@@ -79430,7 +80704,10 @@ export const SupersetInstanceSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -79449,7 +80726,10 @@ export const SupersetInstanceCreateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {}
+		"config": {
+			"type": "object",
+			"properties": {}
+		}
 	},
 	"additionalProperties": false,
 	"required": [
@@ -79464,7 +80744,10 @@ export const SupersetInstanceUpdateSchema = {
 		"code": {
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"id": {
 			"type": "string"
 		}
@@ -79493,7 +80776,10 @@ export const SurveySchema = {
 		"id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -79547,7 +80833,10 @@ export const SurveyCreateSchema = {
 		"data_group_id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -79603,7 +80892,10 @@ export const SurveyUpdateSchema = {
 		"id": {
 			"type": "string"
 		},
-		"integration_metadata": {},
+		"integration_metadata": {
+			"type": "object",
+			"properties": {}
+		},
 		"name": {
 			"type": "string"
 		},
@@ -80198,7 +81490,10 @@ export const SyncGroupLogUpdateSchema = {
 export const TupaiaWebSessionSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -80229,7 +81524,10 @@ export const TupaiaWebSessionSchema = {
 export const TupaiaWebSessionCreateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -80256,7 +81554,10 @@ export const TupaiaWebSessionCreateSchema = {
 export const TupaiaWebSessionUpdateSchema = {
 	"type": "object",
 	"properties": {
-		"access_policy": {},
+		"access_policy": {
+			"type": "object",
+			"properties": {}
+		},
 		"access_token": {
 			"type": "string"
 		},
@@ -80313,7 +81614,22 @@ export const UserAccountSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -80378,7 +81694,22 @@ export const UserAccountCreateSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -80444,7 +81775,22 @@ export const UserAccountUpdateSchema = {
 		"position": {
 			"type": "string"
 		},
-		"preferences": {},
+		"preferences": {
+			"type": "object",
+			"properties": {
+				"country_id": {
+					"type": "string"
+				},
+				"project_id": {
+					"type": "string"
+				},
+				"recent_entities": {
+					"type": "object",
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
 		"primary_platform": {
 			"enum": [
 				"datatrak",
@@ -80593,7 +81939,10 @@ export const UserSessionSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -80622,7 +81971,10 @@ export const UserSessionCreateSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -80646,7 +81998,10 @@ export const UserSessionUpdateSchema = {
 		"access_token_expiry": {
 			"type": "string"
 		},
-		"accessPolicy": {},
+		"accessPolicy": {
+			"type": "object",
+			"properties": {}
+		},
 		"accessToken": {
 			"type": "string"
 		},
@@ -80780,26 +82135,6 @@ export const EntityTypeSchema = {
 		"water_sample",
 		"wish_sub_district",
 		"world"
-	],
-	"type": "string"
-} 
-
-export const DisasterTypeSchema = {
-	"enum": [
-		"cyclone",
-		"earthquake",
-		"eruption",
-		"flood",
-		"tsunami"
-	],
-	"type": "string"
-} 
-
-export const DisasterEventTypeSchema = {
-	"enum": [
-		"end",
-		"resolve",
-		"start"
 	],
 	"type": "string"
 } 
@@ -80950,8 +82285,18 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"items": {
 				"type": "object",
 				"properties": {
-					"attributes": {},
-					"bounds": {},
+					"attributes": {
+						"additionalProperties": false,
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string"
+							}
+						}
+					},
+					"bounds": {
+						"type": "string"
+					},
 					"code": {
 						"type": "string"
 					},
@@ -80964,15 +82309,22 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"image_url": {
 						"type": "string"
 					},
-					"metadata": {},
+					"metadata": {
+						"type": "object",
+						"properties": {}
+					},
 					"name": {
 						"type": "string"
 					},
 					"parent_id": {
 						"type": "string"
 					},
-					"point": {},
-					"region": {},
+					"point": {
+						"type": "string"
+					},
+					"region": {
+						"type": "string"
+					},
 					"type": {
 						"enum": [
 							"asset",
@@ -81020,8 +82372,10 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
+					"attributes",
 					"code",
 					"id",
+					"metadata",
 					"name",
 					"type"
 				]
@@ -81035,7 +82389,10 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"label": {
 						"type": "string"
 					},
-					"attributes": {},
+					"attributes": {
+						"type": "object",
+						"properties": {}
+					},
 					"option_set_id": {
 						"type": "string"
 					},
@@ -81128,7 +82485,10 @@ export const DataTablePreviewRequestSchema = {
 			],
 			"type": "string"
 		},
-		"config": {},
+		"config": {
+			"type": "object",
+			"properties": {}
+		},
 		"permission_groups": {
 			"type": "array",
 			"items": {
@@ -81166,19 +82526,8 @@ export const ProjectResponseSchema = {
 			"type": "string"
 		},
 		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
+			"type": "object",
+			"additionalProperties": false
 		},
 		"dashboardGroupName": {
 			"type": "string"
@@ -81232,7 +82581,8 @@ export const ProjectResponseSchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -81244,19 +82594,8 @@ export const ResBodySchema = {
 			"type": "string"
 		},
 		"config": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": false
-					}
-				},
-				{
-					"type": "object",
-					"additionalProperties": false
-				}
-			]
+			"type": "object",
+			"additionalProperties": false
 		},
 		"dashboardGroupName": {
 			"type": "string"
@@ -81310,7 +82649,8 @@ export const ResBodySchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -81833,6 +83173,108 @@ export const CountryAccessSchema = {
 		"hasAccess",
 		"id",
 		"name"
+	]
+} 
+
+export const EntityResponseSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"attributes": {
+			"additionalProperties": false,
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"bounds": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"country_code": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"image_url": {
+			"type": "string"
+		},
+		"metadata": {
+			"type": "object",
+			"properties": {}
+		},
+		"name": {
+			"type": "string"
+		},
+		"parent_id": {
+			"type": "string"
+		},
+		"point": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
+		"type": {
+			"enum": [
+				"asset",
+				"business",
+				"case",
+				"case_contact",
+				"catchment",
+				"city",
+				"complaint",
+				"country",
+				"disaster",
+				"district",
+				"enumeration_area",
+				"facility",
+				"farm",
+				"fetp_graduate",
+				"field_station",
+				"fiji_aspen_facility",
+				"health_clinic_boundary",
+				"household",
+				"incident",
+				"incident_reported",
+				"individual",
+				"institute",
+				"larval_habitat",
+				"local_government",
+				"medical_area",
+				"msupply_store",
+				"nursing_zone",
+				"postcode",
+				"project",
+				"repair_request",
+				"school",
+				"sub_catchment",
+				"sub_district",
+				"sub_facility",
+				"trap",
+				"village",
+				"water_sample",
+				"wish_sub_district",
+				"world"
+			],
+			"type": "string"
+		},
+		"isRecent": {
+			"type": "boolean"
+		}
+	},
+	"required": [
+		"attributes",
+		"code",
+		"id",
+		"metadata",
+		"name",
+		"type"
 	]
 } 
 
@@ -82941,7 +84383,6 @@ export const DashboardWithMetadataSchema = {
 									},
 									"componentName": {
 										"enum": [
-											"ActiveDisasters",
 											"NoAccessDashboard",
 											"NoDataAtLevelDashboard",
 											"ProjectDescription"
@@ -90349,19 +91790,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"description": "Override the map overlay name",
@@ -91178,19 +92608,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"description": "Override the map overlay name",
@@ -91929,19 +93348,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"description": "Override the map overlay name",
@@ -92654,19 +94062,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"description": "Override the map overlay name",
@@ -93394,19 +94791,8 @@ export const TranslatedMapOverlaySchema = {
 					"type": "string"
 				},
 				"entityAttributesFilter": {
-					"anyOf": [
-						{
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": false
-							}
-						},
-						{
-							"type": "object",
-							"additionalProperties": false
-						}
-					]
+					"type": "object",
+					"additionalProperties": false
 				},
 				"customLabel": {
 					"description": "Override the map overlay name",

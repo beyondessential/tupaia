@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import { DataTableRecord } from '../models';
+import { DataTable } from '@tupaia/types';
 import { DataTableService, ClassOfDataTableService, ServiceContext } from './DataTableService';
 import {
   AnalyticsDataTableService,
@@ -67,7 +67,7 @@ const isValidServiceType = (
 ): serviceType is keyof typeof dataTablesServiceBuilders =>
   serviceType in dataTablesServiceBuilders;
 
-export const getDataTableServiceType = (dataTable: DataTableRecord) => {
+export const getDataTableServiceType = (dataTable: DataTable) => {
   const { type } = dataTable;
 
   if (!isValidServiceType(type)) {
