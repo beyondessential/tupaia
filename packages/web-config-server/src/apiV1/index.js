@@ -7,7 +7,6 @@ import { Router } from 'express';
 
 import {
   appChangePassword,
-  appGetCountryAccessList,
   appRequestCountryAccess,
   appRequestResetPassword,
   appResendEmail,
@@ -36,7 +35,6 @@ export const getRoutesForApiV1 = () => {
   api.post('/signup', catchAsyncErrors(appSignup())); // KEEP
   api.post('/changePassword', catchAsyncErrors(appChangePassword())); // CULL
   api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword())); // CULL
-  api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList())); // CULL
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
   api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP

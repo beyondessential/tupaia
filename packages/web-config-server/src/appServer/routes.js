@@ -2,7 +2,6 @@ import { createUser } from './handlers/createUser';
 import { requestResendEmail, verifyEmail } from './handlers/verifyEmail';
 import { changePassword } from './handlers/changePassword';
 import { requestResetPassword } from './handlers/requestResetPassword';
-import { getCountryAccessList } from './handlers/getCountryAccessList';
 import { requestCountryAccess } from './handlers/requestCountryAccess';
 
 /**
@@ -32,16 +31,6 @@ export const appRequestResetPassword = () => async (req, res) => {
 
 export const appResendEmail = () => async (req, res) => {
   const result = await requestResendEmail(req);
-  res.send(result);
-};
-
-/**
- * /getCountryAccessList
- *
- * Gets an array of all countries and user's access to them
- */
-export const appGetCountryAccessList = () => async (req, res) => {
-  const result = await getCountryAccessList(req);
   res.send(result);
 };
 
