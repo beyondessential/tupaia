@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - # "npm" is the YAML value for Yarn
+    # See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem
+    package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    pull-request-branch-name:
+      # By default, Dependabot separates sections of its branch names with `/`, which fails our
+      # ‘Validate branch name’ CI step
+      #
+      # This makes it use
+      #   dependabot-npm_and_yarn-express-4.19.2
+      # instead of
+      #   dependabot/npm_and_yarn/express-4.19.2
+      separator: "-"
