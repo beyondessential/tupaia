@@ -1,8 +1,8 @@
+# Reference: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
 version: 2
 updates:
-  - # "npm" is the YAML value for Yarn
-    # See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem
-    package-ecosystem: "npm"
+  - package-ecosystem: "npm" # "npm" is the YAML value for Yarn
     directory: "/"
     schedule:
       interval: "weekly"
