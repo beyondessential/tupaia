@@ -5,13 +5,7 @@
 
 import { Router } from 'express';
 
-import {
-  appRequestCountryAccess,
-  appRequestResetPassword,
-  appResendEmail,
-  appSignup,
-  appVerifyEmail,
-} from '/appServer';
+import { appRequestCountryAccess, appResendEmail, appSignup, appVerifyEmail } from '/appServer';
 import { oneTimeLogin } from '/authSession';
 import { exportChartHandler } from '/export';
 import { getUser } from './getUser';
@@ -32,7 +26,6 @@ export const getRoutesForApiV1 = () => {
   api.get('/getUser', catchAsyncErrors(getUser())); // KEEP
   api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin)); // KEEP
   api.post('/signup', catchAsyncErrors(appSignup())); // KEEP
-  api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword())); // CULL
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
   api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP
