@@ -19,7 +19,7 @@ yarn install --immutable
 # packages' dists are not rebuilt. This will be fixed by changing to a single yarn:build command in a future PR.
 yarn build:internal-dependencies
 
-# Inject environment variables from LastPass
+# Inject environment variables from Bitwarden
 BITWARDEN_EMAIL=$($DIR/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
 BITWARDEN_PASSWORD=$($DIR/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
 BITWARDEN_EMAIL=$BITWARDEN_EMAIL BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME

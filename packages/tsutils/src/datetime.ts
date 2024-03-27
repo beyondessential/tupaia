@@ -19,4 +19,4 @@ export const getTimezoneNameFromTimestamp = (timestamp: string) =>
     .names()
     .find(name => getUtcOffsetFromTimestamp(timestamp) === momentTimezone.tz(name).format('Z'));
 
-export const utcMoment = (...args: Parameters<typeof moment['utc']>) => moment.utc(...args);
+export const utcMoment = (...args: Parameters<(typeof moment)['utc']>) => moment.utc(...args);

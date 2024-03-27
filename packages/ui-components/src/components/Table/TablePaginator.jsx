@@ -70,6 +70,8 @@ export const TablePaginator = React.memo(
     onChangeRowsPerPage,
     isFetching,
   }) => {
+    if (count <= rowsPerPage) return null;
+
     const handleChangePage = useCallback(
       (event, newPage) => {
         if (onChangePage) onChangePage(newPage);
@@ -84,10 +86,6 @@ export const TablePaginator = React.memo(
       },
       [onChangeRowsPerPage],
     );
-
-    if (count <= rowsPerPage) {
-      return null;
-    }
 
     return (
       <TableFooter>
