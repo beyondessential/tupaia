@@ -14,7 +14,7 @@ import {
   appSignup,
   appVerifyEmail,
 } from '/appServer';
-import { login, oneTimeLogin } from '/authSession';
+import { oneTimeLogin } from '/authSession';
 import { exportChartHandler, ExportSurveyResponsesHandler, PDFExportHandler } from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
@@ -32,7 +32,6 @@ export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
   api.get('/getUser', catchAsyncErrors(getUser())); // KEEP
-  api.post('/login', catchAsyncErrors(login));
   api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin)); // KEEP
   api.post('/signup', catchAsyncErrors(appSignup())); // KEEP
   api.post('/changePassword', catchAsyncErrors(appChangePassword())); // CULL
