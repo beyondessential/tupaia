@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
-import { IconButton, DataChangeAction, useApi } from '@tupaia/admin-panel';
+import { IconButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiSnackbar from '@material-ui/core/Snackbar';
 import { SmallAlert } from '@tupaia/ui-components';
@@ -22,7 +22,7 @@ const Button = styled(IconButton)`
 `;
 
 export const ApproveButton = ({ value: id }) => {
-  const api = useApi();
+  const api = useApiContext();
   const [showAlert, setShowAlert] = useState(false);
   const { mutate, isLoading, isError } = useApproveSurveyResponseStatus(api);
 

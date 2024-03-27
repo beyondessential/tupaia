@@ -30,6 +30,7 @@ describe('GET dashboard visualisations', () => {
       code: modernReport.code,
       config: modernReport.config,
       permissionGroup: 'Viz_Permissions',
+      latestDataParameters: {},
     },
   };
   const LEGACY_DASHBOARD_VISUALISATION = {

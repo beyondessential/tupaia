@@ -4,6 +4,7 @@
  */
 export * from './useLocations';
 export * from './useProjects';
+export * from './useProject';
 export * from './useReportPreview';
 export * from './useUser';
 export * from './useDashboardVisualisation';

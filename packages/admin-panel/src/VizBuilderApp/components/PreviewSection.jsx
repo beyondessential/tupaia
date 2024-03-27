@@ -122,13 +122,6 @@ export const PreviewSection = () => {
     dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM
       ? DASHBOARD_ITEM_VIZ_TYPES[vizType]?.schema
       : MAP_OVERLAY_VIZ_TYPES[vizType]?.schema;
-  console.log(
-    'vizType',
-    dashboardItemOrMapOverlay,
-    vizType,
-    presentationSchema,
-    MAP_OVERLAY_VIZ_TYPES,
-  );
 
   const [viewContent, setViewContent] = useState(null);
 
@@ -140,8 +133,8 @@ export const PreviewSection = () => {
     error,
   } = useReportPreview({
     visualisation: visualisationForFetchingData,
-    project,
-    location,
+    project: project?.['project.code'],
+    location: location?.code,
     startDate,
     endDate,
     testData,

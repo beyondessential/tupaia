@@ -36,3 +36,22 @@ export const useEntity = entityId =>
       ...DEFAULT_REACT_QUERY_OPTIONS,
     },
   );
+
+export const useEntityByCode = (entityCode, onSuccess) =>
+  useQuery(
+    ['entities', entityCode],
+    () =>
+      get('entities', {
+        params: {
+          filter: {
+            code: entityCode,
+          },
+        },
+      }),
+    {
+      ...DEFAULT_REACT_QUERY_OPTIONS,
+      enabled: !!entityCode,
+      select: data => data?.[0],
+      onSuccess,
+    },
+  );

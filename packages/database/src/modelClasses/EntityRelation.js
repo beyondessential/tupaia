@@ -7,7 +7,7 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 
-class EntityRelationRecord extends DatabaseRecord {
+export class EntityRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.ENTITY_RELATION;
 }
 
