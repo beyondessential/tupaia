@@ -17,7 +17,7 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts';
-import { PieChartPresentationOptions } from '@tupaia/types';
+import { PieChartSegmentConfig } from '@tupaia/types';
 import { CHART_COLOR_PALETTE, OFF_WHITE } from '../../constants';
 import { isMobile } from '../../utils';
 import { LegendPosition, PieChartViewContent, ViewContent } from '../../types';
@@ -116,6 +116,7 @@ export const PieChart = ({
 }: PieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { data } = viewContent;
+  const segmentConfig = 'segmentConfig' in viewContent ? viewContent.segmentConfig : undefined;
   const presentationOptions =
     'presentationOptions' in viewContent ? viewContent.presentationOptions : undefined;
   const [, setLoaded] = useState(false);
@@ -133,12 +134,12 @@ export const PieChart = ({
   const handleMouseEnter = (event: MouseEvent, index: number) => setActiveIndex(index);
   const handleMouseOut = () => setActiveIndex(-1);
 
-  const getPresentationOption = (
-    key?: keyof PieChartPresentationOptions,
-    option?: keyof PieChartPresentationOptions[string],
+  const getSegmentConfig = (
+    key?: keyof PieChartSegmentConfig,
+    option?: keyof PieChartSegmentConfig[string],
   ) => {
-    if (!key || !option || !presentationOptions) return undefined;
-    return presentationOptions.hasOwnProperty(key) && presentationOptions[key][option];
+    if (!key || !option || !segmentConfig) return undefined;
+    return segmentConfig.hasOwnProperty(key) && segmentConfig[key][option];
   };
 
   const getValidData = () =>
@@ -151,7 +152,7 @@ export const PieChart = ({
         const { name, ...otherKeyValues } = item;
 
         return {
-          name: getPresentationOption(name, 'label') || name, // Map names to labels if available
+          name: getSegmentConfig(name, 'label') || name, // Map names to labels if available
           ...otherKeyValues,
           originalItem: item,
         };
@@ -191,7 +192,7 @@ export const PieChart = ({
         >
           {validData.map((entry, index) => {
             const fill =
-              getPresentationOption(entry.originalItem.name, 'color') ||
+              getSegmentConfig(entry.originalItem.name, 'color') ||
               chartColors[index % chartColors.length];
             return <Cell key={`cell-${index}`} fill={fill} stroke={OFF_WHITE} />;
           })}
