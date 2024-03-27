@@ -35,18 +35,6 @@ export const appResendEmail = () => async (req, res) => {
 };
 
 /**
- * /downloadFiles
- *
- */
-export const appDownloadFiles = () => async (req, res) => {
-  const result = await downloadFiles(req);
-  res.setHeader('content-type', result.headers.get('content-type'));
-  res.setHeader('content-disposition', result.headers.get('content-disposition'));
-  res.setHeader('content-length', result.headers.get('content-length'));
-  result.body.pipe(res);
-};
-
-/**
  * /RequestCountryAccess
  *
  * Grant user access to specified countries
