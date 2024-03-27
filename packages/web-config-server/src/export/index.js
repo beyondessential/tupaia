@@ -5,5 +5,4 @@
 
 export { buildExportUrl } from './buildExportUrl';
 export { exportChartHandler } from './exportChartHandler';
-export { ExportSurveyResponsesHandler } from './ExportSurveyResponsesHandler';
 export { PDFExportHandler } from './PDFExportHandler';

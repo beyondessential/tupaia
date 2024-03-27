@@ -15,7 +15,7 @@ import {
   appVerifyEmail,
 } from '/appServer';
 import { oneTimeLogin } from '/authSession';
-import { exportChartHandler, ExportSurveyResponsesHandler, PDFExportHandler } from '/export';
+import { exportChartHandler, PDFExportHandler } from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
@@ -41,7 +41,6 @@ export const getRoutesForApiV1 = () => {
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail())); // KEEP
   api.post('/resendEmail', catchAsyncErrors(appResendEmail())); // KEEP
   api.get('/export/chart', catchAsyncErrors(exportChartHandler)); // KEEP
-  api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get('/measures', handleWith(MeasuresHandler)); // KEEP
   api.get('/measureData', handleWith(MeasuresDataHandler)); // KEEP
   api.get('/projects', catchAsyncErrors(getProjects)); // KEEP
