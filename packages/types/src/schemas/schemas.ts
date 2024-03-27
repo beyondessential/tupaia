@@ -2105,8 +2105,43 @@ export const MatrixVizBuilderConfigSchema = {
 			"type": "string"
 		},
 		"output": {
+			"description": "Configuration for rows, columns, and categories of the matrix",
 			"type": "object",
-			"additionalProperties": {}
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"matrix"
+					]
+				},
+				"rowField": {
+					"description": "The column of the data-table that should be used for the row values in the matrix",
+					"type": "string"
+				},
+				"categoryField": {
+					"description": "The column of the data-table that should be used to group the rows into categories",
+					"type": "string"
+				},
+				"columns": {
+					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either a list of column names, or '*' to indicate all columns",
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"rowField",
+				"type"
+			]
 		}
 	},
 	"required": [

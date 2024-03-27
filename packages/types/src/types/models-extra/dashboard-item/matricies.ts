@@ -41,8 +41,28 @@ export type MatrixConfig = BaseConfig & {
 };
 
 export type MatrixVizBuilderConfig = MatrixConfig & {
+  /**
+   * @description Configuration for rows, columns, and categories of the matrix
+   */
   output?: {
-    [key: string]: unknown;
+    type: 'matrix';
+
+    /**
+     * @description The column of the data-table that should be used for the row values in the matrix
+     */
+    rowField: string;
+
+    /**
+     * @description The column of the data-table that should be used to group the rows into categories
+     */
+    categoryField?: string;
+
+    /**
+     * @description
+     * The columns of the data-table that should be included as columns in the matrix.
+     * Can be either a list of column names, or '*' to indicate all columns
+     */
+    columns?: string | string[];
   };
 };
 
