@@ -1,6 +1,6 @@
-/**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Router } from 'express';
@@ -15,7 +15,7 @@ import {
   appVerifyEmail,
 } from '/appServer';
 import { oneTimeLogin } from '/authSession';
-import { exportChartHandler, PDFExportHandler } from '/export';
+import { exportChartHandler } from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
@@ -47,7 +47,6 @@ export const getRoutesForApiV1 = () => {
   api.get('/dashboards', handleWith(DashboardsHandler)); // New style dashboards // KEEP
   api.get('/report/:reportCode', handleWith(ReportHandler)); // KEEP
   api.get('/landingPage/:landingPageUrl', catchAsyncErrors(getLandingPage));
-  api.post('/pdf', catchAsyncErrors(PDFExportHandler));
 
   return api;
 };
