@@ -66,14 +66,13 @@ const fetchEntities = async (models, entityIds, countryIds) => {
 };
 
 export const requestCountryAccess = async (req, res) => {
-  const { body: requestBody = {}, userId: requestUserId, params, models } = req;
+  const { body: requestBody = {}, userId, models } = req;
   const { countryIds, entityIds, message = '', projectCode } = requestBody;
 
   if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
     throw new ValidationError('Please select at least one country');
   }
   const entities = await fetchEntities(models, entityIds, countryIds);
-  const userId = requestUserId || params.userId;
 
   try {
     checkUserPermission(req, userId);

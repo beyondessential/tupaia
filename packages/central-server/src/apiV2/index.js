@@ -155,14 +155,6 @@ apiV2.use(logApiRequest); // log every request to the api_request_log table
 apiV2.use(ensurePermissionCheck); // ensure permissions checking is handled by each endpoint
 
 /**
- * Legacy routes to be eventually removed
- */
-apiV2.post(
-  '/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
-  allowAnyone(requestCountryAccess),
-);
-
-/**
  * /export and /import routes
  */
 apiV2.use('/export', exportRoutes);
