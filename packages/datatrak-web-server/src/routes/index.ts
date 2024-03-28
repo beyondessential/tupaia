@@ -21,7 +21,3 @@ export { LeaderboardRequest, LeaderboardRoute } from './LeaderboardRoute';
 export { ActivityFeedRequest, ActivityFeedRoute } from './ActivityFeedRoute';
 export { EntitiesRequest, EntitiesRoute } from './EntitiesRoute';
 export { GenerateLoginTokenRequest, GenerateLoginTokenRoute } from './GenerateLoginTokenRoute';
-export {
-  ProjectCountryAccessListRequest,
-  ProjectCountryAccessListRoute,
-} from './ProjectCountryAccessListRoute';

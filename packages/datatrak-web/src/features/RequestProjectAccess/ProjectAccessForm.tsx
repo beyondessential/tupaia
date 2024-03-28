@@ -107,7 +107,7 @@ interface ProjectAccessFormProps {
 }
 
 export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) => {
-  const { data: countries } = useCountryAccessList();
+  const { data: countries } = useCountryAccessList(project.code);
   const formContext = useForm({
     mode: 'onChange',
   });
