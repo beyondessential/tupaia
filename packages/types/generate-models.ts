@@ -49,10 +49,10 @@ const removeIdColumn = (tables: Table[]) =>
     columns: columns.filter(({ name }) => name !== 'id'),
   }));
 
-const makeColumnsOptional = (tables: Table[]): Table[] =>
+const makeNonIdColumnsOptional = (tables: Table[]): Table[] =>
   tables.map(({ columns, ...restOfTable }) => ({
     ...restOfTable,
-    columns: columns.map(col => ({ ...col, optional: true })),
+    columns: columns.map(col => (col.name === 'id' ? col : { ...col, optional: true })),
   }));
 
 const makeDefaultColumnsRequired = (tables: Table[]): Table[] =>
@@ -82,8 +82,8 @@ const run = async () => {
   // ModelCreate tables don't require an id column as one will be generated at create time
   const createTables = removeIdColumn(renameTables(definitions.tables, 'Create'));
 
-  // ModelUpdate tables have all fields as optional since we are just updating an existing record
-  const updateTables = makeColumnsOptional(renameTables(definitions.tables, 'Update'));
+  // ModelUpdate tables have all fields as optional (except id) since we are just updating an existing record
+  const updateTables = makeNonIdColumnsOptional(renameTables(definitions.tables, 'Update'));
 
   const allTables = removeUnwantedColumns(combineTables(baseTables, createTables, updateTables));
 
