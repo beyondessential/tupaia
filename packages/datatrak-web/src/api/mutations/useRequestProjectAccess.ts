@@ -1,18 +1,29 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { useMutation, useQueryClient } from 'react-query';
-import { Country } from '@tupaia/types';
+import { Country, Project } from '@tupaia/types';
 import { post } from '../api';
 
 type RequestCountryAccessParams = {
   entityIds: Country['id'][];
   message?: string;
-  projectCode?: string;
+  projectCode?: Project['code'];
 };
-export const useRequestProjectAccess = () => {
+
+interface ResponseBody {
+  message: string;
+}
+
+interface RequestProjectAccessOptions {
+  onError?: (error: Error) => void;
+  onSettled?: () => void;
+  onSuccess?: (response: ResponseBody) => void;
+}
+
+export const useRequestProjectAccess = (options?: RequestProjectAccessOptions) => {
   const queryClient = useQueryClient();
 
   return useMutation<any, Error, RequestCountryAccessParams, unknown>(
@@ -26,10 +37,17 @@ export const useRequestProjectAccess = () => {
       });
     },
     {
-      onSuccess: () => {
+      onError(error: Error) {
+        if (options?.onError) options.onError(error);
+      },
+      onSettled() {
+        if (options?.onSettled) options.onSettled();
+      },
+      async onSuccess(response: ResponseBody) {
         queryClient.invalidateQueries({
           queryKey: ['projects'],
         });
+        if (options?.onSuccess) options.onSuccess(response);
       },
     },
   );

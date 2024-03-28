@@ -1,15 +1,17 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
+import { Entity, Project } from '../../models';
 
 export type Params = Record<string, never>;
 
 interface CountryAccess {
-  id: string;
-  name: string;
+  id: Entity['id'];
+  name: Entity['name'];
   hasAccess: boolean;
-  accessRequests: string[];
+  accessRequests: Project['code'][];
 }
 export type ResBody = CountryAccess[];
 

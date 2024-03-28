@@ -166,9 +166,7 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
             return (
               <Checkbox
                 id={country.id}
-                inputRef={register({
-                  validate: value => value.length > 0,
-                })}
+                inputRef={register({ validate: value => value.length > 0 })}
                 disabled={hasRequestedAccess}
                 key={country.id}
                 label={country.name}

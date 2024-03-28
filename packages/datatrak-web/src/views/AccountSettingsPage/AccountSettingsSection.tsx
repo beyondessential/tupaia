@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Paper, Typography } from '@material-ui/core';
@@ -12,10 +12,12 @@ const Wrapper = styled(Paper).attrs({
   elevation: 0,
   component: 'section',
 })`
-  padding: 0.8rem;
-  margin-top: 1.5rem;
-  display: flex;
+  column-gap: 2rem;
+  display: block flex;
   flex-direction: column;
+  margin-block-start: 1.5rem;
+  padding-block: 1rem;
+  padding-inline: 1.25rem;
   ${({ theme }) => theme.breakpoints.up('md')} {
     flex-direction: row;
     gap: 2.5rem;

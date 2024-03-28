@@ -4,14 +4,14 @@
  */
 
 import { useQuery } from 'react-query';
-import { TupaiaWebProjectCountryAccessListRequest } from '@tupaia/types';
+import { WebServerProjectCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 import { ProjectCode } from '../../types';
 
 export const useProjectCountryAccessList = (projectCode: ProjectCode) => {
   return useQuery(
     ['countryAccessList', projectCode],
-    (): Promise<TupaiaWebProjectCountryAccessListRequest.ResBody> =>
+    (): Promise<WebServerProjectCountryAccessListRequest.ResBody> =>
       get(`countryAccessList/${projectCode}`),
     {
       placeholderData: [],
