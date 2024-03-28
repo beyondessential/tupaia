@@ -401,7 +401,7 @@ describe('processSurveyResponse', () => {
       ],
       qr_codes_to_create: [
         {
-          code: 'answer2',
+          name: 'answer1',
           id: 'answer1',
         },
       ],

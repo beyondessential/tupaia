@@ -15,7 +15,7 @@ import { buildUpsertEntity } from './buildUpsertEntity';
 
 type SurveyRequestT = DatatrakWebSubmitSurveyRequest.ReqBody;
 type CentralServerSurveyResponseT = MeditrakSurveyResponseRequest & {
-  qr_codes_to_create?: Entity[];
+  qr_codes_to_create?: Pick<Entity, 'id' | 'name'>[];
   recent_entities: string[];
 };
 type AnswerT = DatatrakWebSubmitSurveyRequest.Answer;
@@ -75,17 +75,12 @@ export const processSurveyResponse = async (
     if ([QuestionType.PrimaryEntity, QuestionType.Entity].includes(type)) {
       // If an entity should be created by this question, build the entity object. We need to do this before we get to the check for the answer being empty, because most of the time these questions are hidden and therefore the answer will always be empty
       if (isUpsertEntityQuestion(config)) {
-        const entityObj = (await buildUpsertEntity(
-          models,
-          config,
-          questionId,
-          answers,
-          countryId,
-        )) as Entity;
-        if (entityObj) surveyResponse.entities_upserted?.push(entityObj);
+        const entityObj = await buildUpsertEntity(models, config, questionId, answers, countryId);
+        surveyResponse.entities_upserted?.push(entityObj);
         answer = entityObj?.id;
         if (config.entity?.generateQrCode) {
-          surveyResponse.qr_codes_to_create?.push(entityObj);
+          const { id, name = id } = entityObj; // Default to just display id on QR-code if no name defined
+          surveyResponse.qr_codes_to_create?.push({ name, id });
         }
       }
       surveyResponse.recent_entities.push(answer as string);

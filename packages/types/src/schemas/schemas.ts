@@ -83339,12 +83339,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 				},
 				"additionalProperties": false,
 				"required": [
-					"attributes",
-					"code",
-					"id",
-					"metadata",
-					"name",
-					"type"
+					"id"
 				]
 			}
 		},
@@ -83353,21 +83348,21 @@ export const MeditrakSurveyResponseRequestSchema = {
 			"items": {
 				"type": "object",
 				"properties": {
-					"label": {
-						"type": "string"
-					},
 					"attributes": {
 						"type": "object",
 						"properties": {}
 					},
-					"option_set_id": {
+					"label": {
 						"type": "string"
 					},
-					"value": {
+					"option_set_id": {
 						"type": "string"
 					},
 					"sort_order": {
 						"type": "number"
+					},
+					"value": {
+						"type": "string"
 					}
 				},
 				"additionalProperties": false,

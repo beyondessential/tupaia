@@ -36,14 +36,14 @@ export const buildUpsertEntity = async (
   if (typeof entityId !== 'string')
     throw new Error(`Entity id must be a string, but received ${entityId}`);
 
-  const entity: Record<string, unknown> = { id: entityId };
+  const entityObjectFromSurvey: Record<string, unknown> = { id: entityId };
   const fields = config?.entity?.fields;
 
   if (fields) {
     for (const [fieldName, value] of objectEntries(fields)) {
       // Value is not defined, skip
       if (value === undefined) {
-        return;
+        continue;
       }
 
       const getFieldValue = () => {
@@ -63,15 +63,15 @@ export const buildUpsertEntity = async (
         if (typeof parentValue !== 'string')
           throw new Error(`Parent id must be a string, but received ${parentValue}`);
         const entityRecord = await models.entity.findById(parentValue);
-        entity.parent_id = entityRecord.id;
+        entityObjectFromSurvey.parent_id = entityRecord.id;
       } else {
-        entity[fieldName] = fieldValue;
+        entityObjectFromSurvey[fieldName] = fieldValue;
       }
     }
   }
 
+  const entity = ajvValidate<EntityUpdate>(EntityUpdateSchema, entityObjectFromSurvey);
   const isUpdate = await models.entity.findById(entityId);
-
   if (isUpdate) {
     return entity;
   }
@@ -87,7 +87,5 @@ export const buildUpsertEntity = async (
     entity.code = entityId;
   }
 
-  const validatedEntity = ajvValidate<EntityUpdate>(EntityUpdateSchema, entity);
-
-  return validatedEntity;
+  return entity;
 };
