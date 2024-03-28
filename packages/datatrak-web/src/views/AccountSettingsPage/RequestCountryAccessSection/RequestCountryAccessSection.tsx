@@ -4,14 +4,14 @@
  */
 
 import React from 'react';
-import { useCurrentUser, useCountryAccessList } from '../../../api';
+import { useCountryAccessList, useCurrentUserContext } from '../../../api';
 import { ChangeProjectButton } from '../../../components';
 import { AccountSettingsSection } from '../AccountSettingsSection';
 import { AccessGrantedCountryList } from './AccessGrantedCountryList';
 import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 
 export const RequestCountryAccessSection = () => {
-  const { project } = useCurrentUser();
+  const { project } = useCurrentUserContext();
   const countryAccessList = useCountryAccessList(project?.code ?? '');
 
   const title = (

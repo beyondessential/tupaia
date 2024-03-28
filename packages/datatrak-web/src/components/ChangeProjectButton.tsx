@@ -65,7 +65,7 @@ const ProjectButton = styled(Button).attrs({
 `;
 
 export const ChangeProjectButton = ({ className }: { className?: string }) => {
-  const { project } = useCurrentUser();
+  const { project } = useCurrentUserContext();
   const projectName = project?.name ?? null;
 
   const [projectModalIsOpen, setProjectModalIsOpen] = useState(false);
