@@ -4,7 +4,7 @@
  */
 
 export const findVizType = (viz, vizTypes) => {
-  // Check that all fields in the viz types initial config are match those in the viz
+  // Check that all fields in the viz types initial config match those in the viz
   const vizTypeKeyAndValue = Object.entries(vizTypes).find(
     ([, { vizMatchesType, initialConfig }]) => {
       if (vizMatchesType) {
