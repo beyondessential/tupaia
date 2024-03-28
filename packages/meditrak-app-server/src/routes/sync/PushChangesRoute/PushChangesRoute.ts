@@ -4,13 +4,12 @@
  */
 
 import { Request } from 'express';
+import winston from 'winston';
 import { Route } from '@tupaia/server-boilerplate';
-import { ValidationError, yup } from '@tupaia/utils';
-import { addSurveyImage } from './addSurveyImage';
+import { ValidationError } from '@tupaia/utils';
 import { validateSurveyResponseObject } from './validateInboundSurveyResponses';
 import { translateSurveyResponseObject } from './translateInboundSurveyResponse';
 import { populateData } from './populateData';
-import { addSurveyFile } from './addSurveyFile';
 
 const ACTIONS = {
   SubmitSurveyResponse: 'SubmitSurveyResponse',
@@ -18,19 +17,9 @@ const ACTIONS = {
   AddSurveyFile: 'AddSurveyFile',
 };
 
-const addSurveyImageValidator = yup.object().shape({
-  id: yup.string().required(),
-  data: yup.string().required(),
-});
-
-const addSurveyFileValidator = yup.object().shape({
-  uniqueFileName: yup.string().required(),
-  data: yup.string().required(),
-});
-
 type ChangeRecord = {
-  action: typeof ACTIONS[keyof typeof ACTIONS];
-  payload: Record<string, unknown>;
+  action: (typeof ACTIONS)[keyof typeof ACTIONS];
+  payload: { survey_response: Record<string, unknown> } | Record<string, unknown>;
 };
 
 export type PushChangesRequest = Request<
@@ -41,6 +30,13 @@ export type PushChangesRequest = Request<
 >;
 
 export class PushChangesRoute extends Route<PushChangesRequest> {
+  private extractSurveyResponseFromPayload(payload: Record<string, unknown>) {
+    if (payload.survey_response) {
+      return payload.survey_response as Record<string, unknown>;
+    }
+    return payload;
+  }
+
   public async buildResponse() {
     const changes = this.req.body;
 
@@ -49,7 +45,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
     for (const { action, payload } of changes) {
       switch (action) {
         case ACTIONS.SubmitSurveyResponse: {
-          const translatedPayload = await translateSurveyResponseObject(this.req.models, payload);
+          const surveyResponse = this.extractSurveyResponseFromPayload(payload);
+          const translatedPayload = await translateSurveyResponseObject(
+            this.req.models,
+            surveyResponse,
+          );
           const validatedSurveyResponse = validateSurveyResponseObject(translatedPayload);
           const surveyResponseWithPopulatedData = await populateData(
             this.req.models,
@@ -59,13 +59,11 @@ export class PushChangesRoute extends Route<PushChangesRequest> {
           break;
         }
         case ACTIONS.AddSurveyImage: {
-          const { id, data } = addSurveyImageValidator.validateSync(payload);
-          await addSurveyImage(id, data);
+          winston.info(`Legacy ${ACTIONS.AddSurveyImage} action requested, skipping`);
           break;
         }
         case ACTIONS.AddSurveyFile: {
-          const { uniqueFileName, data } = addSurveyFileValidator.validateSync(payload);
-          await addSurveyFile(this.req.models, uniqueFileName, data);
+          winston.info(`Legacy ${ACTIONS.AddSurveyFile} action requested, skipping`);
           break;
         }
         default:

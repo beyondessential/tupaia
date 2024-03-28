@@ -11,9 +11,6 @@ export async function getEntityIdFromClinicId(
   models: MeditrakAppServerModelRegistry,
   clinicId: string,
 ) {
-  if (!clinicId) {
-    return null;
-  }
   const clinic = await models.facility.findById(clinicId);
   const entity = await models.entity.findOne({ code: clinic.code });
   if (!entity) {

@@ -26,7 +26,7 @@ interface SurveyResponse {
 
 export type Params = Record<string, never>;
 export type ResBody = {
-  qrCodeEntitiesCreated: Entity[];
+  qrCodeEntitiesCreated: Pick<Entity, 'id' | 'name'>[];
 };
 export type ReqBody = SurveyResponse;
 export type ReqQuery = Record<string, never>;

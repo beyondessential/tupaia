@@ -10,6 +10,7 @@ import { RequestBody } from '../ApiConnection';
 
 type Data = Record<string, any>[];
 
+type User = { email: string; password: string };
 type MockData = Record<string, Data>;
 
 type Params = {
@@ -52,9 +53,15 @@ const getValueMatchesFilter = (value: any, filter: any) => {
 };
 
 export class MockCentralApi implements CentralApiInterface {
+  private readonly user: User | null = null;
   private readonly mockData: MockData = {};
-  public constructor(mockData: MockData = {}) {
-    this.mockData = mockData;
+  public constructor({ user, mockData }: { user?: User; mockData?: MockData } = {}) {
+    if (user) {
+      this.user = user;
+    }
+    if (mockData) {
+      this.mockData = mockData;
+    }
   }
   public getUser(): Promise<any> {
     throw new Error('Method not implemented.');
@@ -62,18 +69,40 @@ export class MockCentralApi implements CentralApiInterface {
   public getCountryAccessList(): Promise<CountryAccessResponse[]> {
     throw new Error('Method not implemented.');
   }
-  public registerUserAccount(
+  public async registerUserAccount(
     userFields: Record<string, unknown>,
   ): Promise<{ userId: string; message: string }> {
-    throw new Error('Method not implemented.');
+    const { id } = userFields;
+    if (!id || typeof id !== 'string') {
+      throw new Error('User must have a string id');
+    }
+
+    return { message: 'Successfully created user', userId: id };
   }
-  public changeUserPassword(
+
+  public async changeUserPassword(
     passwordChangeFields: Record<string, unknown>,
   ): Promise<{ message: string }> {
-    throw new Error('Method not implemented.');
+    if (!this.user) {
+      throw new Error(
+        'Must provide a users to the MockCentralApi in order to call changeUserPassword',
+      );
+    }
+
+    const { oldPassword, password, passwordConfirm } = passwordChangeFields;
+    if (oldPassword !== this.user.password) {
+      throw new Error('Incorrect old password');
+    }
+
+    if (password !== passwordConfirm) {
+      throw new Error('password != confirm');
+    }
+
+    return { message: 'Successfully changed password' };
   }
-  public createSurveyResponses(responses: MeditrakSurveyResponseRequest[]): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  public async createSurveyResponses(responses: MeditrakSurveyResponseRequest[]) {
+    // Do nothing
   }
   public async fetchResources(endpoint: string, params?: Params): Promise<any> {
     const resourceData = this.mockData[endpoint];
@@ -86,6 +115,7 @@ export class MockCentralApi implements CentralApiInterface {
       ),
     );
   }
+
   public createResource(
     endpoint: string,
     params: Record<string, unknown>,

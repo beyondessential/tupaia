@@ -21,12 +21,10 @@ import {
   setupDummySyncQueue,
   setupTestApp,
   setupTestUser,
-  CentralApiMock,
   grantUserAccess,
   revokeAccess,
 } from '../../utilities';
 import { CAT_USER_SESSION } from '../fixtures';
-import { TEST_IMAGE_DATA } from './testImageData';
 import {
   upsertQuestion,
   upsertEntity,
@@ -34,7 +32,6 @@ import {
   upsertUserEntityPermission,
   insertEntityAndFacility,
 } from '../../utilities/database';
-import { upsertSurveyResponsesMock } from '../../utilities/CentralApiMock';
 import { RawSurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
 
 const clinicId = generateId();
@@ -54,35 +51,7 @@ const generateDummyAnswer = (questionNumber?: number) => ({
   question_id: getQuestionId(questionNumber),
 });
 
-const mockS3Bucket: { images: string[]; files: string[] } = {
-  images: [], // ids
-  files: [], // fileNames
-};
-
-const S3ClientMock = {
-  uploadImage: (data: string, id: string) => {
-    if (mockS3Bucket.images.includes(id)) {
-      throw new Error(`Image ${id} already exists`);
-    }
-    mockS3Bucket.images = [...mockS3Bucket.images, id];
-  },
-  uploadFile: (fileName: string) => {
-    if (mockS3Bucket.files.includes(fileName)) {
-      throw new Error(`File ${fileName} already exists`);
-    }
-    mockS3Bucket.files = [...mockS3Bucket.files, fileName];
-  },
-};
-
-jest.mock('@tupaia/server-utils', () => {
-  const original = jest.requireActual('@tupaia/server-utils');
-  return {
-    ...original,
-    S3Client: jest.fn().mockImplementation(() => {
-      return S3ClientMock;
-    }),
-  };
-});
+const upsertSurveyResponsesMock = jest.fn();
 
 type Answer = Record<string, unknown>;
 
@@ -117,17 +86,22 @@ describe('changes (POST)', () => {
   let authHeader: string;
   const models = getTestModels() as TestModelRegistry;
   const syncQueue = setupDummySyncQueue(models);
-  const centralApiMock = new CentralApiMock();
 
   beforeAll(async () => {
-    app = await setupTestApp({ central: centralApiMock });
+    app = await setupTestApp({
+      central: {
+        createSurveyResponses: (surveyResponses: Record<string, unknown>[]) => {
+          upsertSurveyResponsesMock(surveyResponses);
+        },
+      },
+    });
 
     const user = await setupTestUser();
     userId = user.id;
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
+        refreshToken: CAT_USER_SESSION.refreshToken,
         apiClientUserId: undefined,
       }),
     );
@@ -219,44 +193,6 @@ describe('changes (POST)', () => {
             }),
           ]),
         );
-      });
-    });
-
-    describe('Survey responses containing images', () => {
-      it('correctly uploads an image', async () => {
-        const id = generateId();
-        const imageResponseObject = { id, data: TEST_IMAGE_DATA };
-
-        const imageAction = {
-          action: 'AddSurveyImage',
-          payload: imageResponseObject,
-        };
-        const imagePostResponse = await app.post('changes', {
-          headers: {
-            Authorization: authHeader,
-          },
-          body: [imageAction],
-        });
-        expect(imagePostResponse.statusCode).toEqual(200);
-      });
-    });
-
-    describe('Survey responses containing files', () => {
-      it('correctly uploads a file', async () => {
-        const uniqueFileName = `${generateId()}_file.png`;
-        const fileResponseObject = { uniqueFileName, data: TEST_IMAGE_DATA };
-
-        const fileAction = {
-          action: 'AddSurveyFile',
-          payload: fileResponseObject,
-        };
-        const filePostResponse = await app.post('changes', {
-          headers: {
-            Authorization: authHeader,
-          },
-          body: [fileAction],
-        });
-        expect(filePostResponse.statusCode).toEqual(200);
       });
     });
 

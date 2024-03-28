@@ -9,7 +9,6 @@ import * as dotenv from 'dotenv';
 import winston from 'winston';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
-import { isFeatureEnabled } from '@tupaia/utils';
 import { createApp } from './app';
 import { MeditrakAppServerModelRegistry } from './types';
 import { SyncableChangeEnqueuer } from './sync';
@@ -29,10 +28,8 @@ dotenv.config(); // Load the environment variables into process.env
   /**
    * Set up change handler for the meditrakSyncQueue
    */
-  if (isFeatureEnabled('SERVER_CHANGE_ENQUEUER')) {
-    const syncableChangeEnqueuer = new SyncableChangeEnqueuer(models);
-    syncableChangeEnqueuer.listenForChanges();
-  }
+  const syncableChangeEnqueuer = new SyncableChangeEnqueuer(models);
+  syncableChangeEnqueuer.listenForChanges();
 
   /**
    * Start the server
