@@ -11,7 +11,7 @@ import { AccessGrantedCountryList } from './AccessGrantedCountryList';
 import { RequestCountryAccessForm } from './RequestCountryAccessForm';
 
 export const RequestCountryAccessSection = () => {
-  const { project } = useCurrentUser();
+  const { project } = useCurrentUserContext();
   const countryAccessList = useProjectCountryAccessList(project?.code ?? '');
 
   const title = (
