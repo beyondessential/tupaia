@@ -42,7 +42,7 @@ export interface AccessRequestUpdate {
   'approved'?: boolean | null;
   'created_time'?: Date;
   'entity_id'?: string | null;
-  'id'?: string;
+  'id': string;
   'message'?: string | null;
   'note'?: string | null;
   'permission_group_id'?: string | null;
@@ -71,7 +71,7 @@ export interface AdminPanelSessionUpdate {
   'access_token'?: string;
   'access_token_expiry'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'refresh_token'?: string;
 }
 export interface Analytics {
@@ -134,7 +134,7 @@ export interface AncestorDescendantRelationUpdate {
   'descendant_id'?: string;
   'entity_hierarchy_id'?: string;
   'generational_distance'?: number;
-  'id'?: string;
+  'id': string;
 }
 export interface Answer {
   'id': string;
@@ -150,7 +150,7 @@ export interface AnswerCreate {
   'type': string;
 }
 export interface AnswerUpdate {
-  'id'?: string;
+  'id': string;
   'question_id'?: string;
   'survey_response_id'?: string;
   'text'?: string | null;
@@ -168,7 +168,7 @@ export interface ApiClientCreate {
   'username': string;
 }
 export interface ApiClientUpdate {
-  'id'?: string;
+  'id': string;
   'secret_key_hash'?: string;
   'user_account_id'?: string | null;
   'username'?: string;
@@ -199,7 +199,7 @@ export interface ApiRequestLogCreate {
 export interface ApiRequestLogUpdate {
   'api'?: string;
   'endpoint'?: string;
-  'id'?: string;
+  'id': string;
   'metadata'?: {} | null;
   'method'?: string | null;
   'query'?: {} | null;
@@ -232,7 +232,7 @@ export interface ClinicUpdate {
   'code'?: string;
   'country_id'?: string;
   'geographical_area_id'?: string;
-  'id'?: string;
+  'id': string;
   'name'?: string;
   'type'?: string | null;
   'type_name'?: string | null;
@@ -252,7 +252,7 @@ export interface CommentCreate {
 }
 export interface CommentUpdate {
   'created_time'?: Date;
-  'id'?: string;
+  'id': string;
   'last_modified_time'?: Date;
   'text'?: string;
   'user_id'?: string | null;
@@ -268,7 +268,7 @@ export interface CountryCreate {
 }
 export interface CountryUpdate {
   'code'?: string;
-  'id'?: string;
+  'id': string;
   'name'?: string;
 }
 export interface Dashboard {
@@ -286,7 +286,7 @@ export interface DashboardCreate {
 }
 export interface DashboardUpdate {
   'code'?: string;
-  'id'?: string;
+  'id': string;
   'name'?: string;
   'root_entity_code'?: string;
   'sort_order'?: number | null;
@@ -309,7 +309,7 @@ export interface DashboardItemCreate {
 export interface DashboardItemUpdate {
   'code'?: string;
   'config'?: DashboardItemConfig;
-  'id'?: string;
+  'id': string;
   'legacy'?: boolean;
   'permission_group_ids'?: string[] | null;
   'report_code'?: string | null;
@@ -331,7 +331,7 @@ export interface DashboardMailingListUpdate {
   'admin_permission_groups'?: string[];
   'dashboard_id'?: string;
   'entity_id'?: string;
-  'id'?: string;
+  'id': string;
   'project_id'?: string;
 }
 export interface DashboardMailingListEntry {
@@ -350,7 +350,7 @@ export interface DashboardMailingListEntryCreate {
 export interface DashboardMailingListEntryUpdate {
   'dashboard_mailing_list_id'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'subscribed'?: boolean;
   'unsubscribed_time'?: Date | null;
 }
@@ -378,7 +378,7 @@ export interface DashboardRelationUpdate {
   'child_id'?: string;
   'dashboard_id'?: string;
   'entity_types'?: EntityType[];
-  'id'?: string;
+  'id': string;
   'permission_groups'?: string[];
   'project_codes'?: string[];
   'sort_order'?: number | null;
@@ -399,7 +399,7 @@ export interface DataElementCreate {
 export interface DataElementUpdate {
   'code'?: string;
   'config'?: {};
-  'id'?: string;
+  'id': string;
   'permission_groups'?: string[];
   'service_type'?: ServiceType;
 }
@@ -415,7 +415,7 @@ export interface DataElementDataGroupCreate {
 export interface DataElementDataGroupUpdate {
   'data_element_id'?: string;
   'data_group_id'?: string;
-  'id'?: string;
+  'id': string;
 }
 export interface DataElementDataService {
   'country_code': string;
@@ -433,7 +433,7 @@ export interface DataElementDataServiceCreate {
 export interface DataElementDataServiceUpdate {
   'country_code'?: string;
   'data_element_code'?: string;
-  'id'?: string;
+  'id': string;
   'service_config'?: {};
   'service_type'?: ServiceType;
 }
@@ -451,7 +451,7 @@ export interface DataGroupCreate {
 export interface DataGroupUpdate {
   'code'?: string;
   'config'?: {};
-  'id'?: string;
+  'id': string;
   'service_type'?: ServiceType;
 }
 export interface DataServiceEntity {
@@ -466,7 +466,7 @@ export interface DataServiceEntityCreate {
 export interface DataServiceEntityUpdate {
   'config'?: {};
   'entity_code'?: string;
-  'id'?: string;
+  'id': string;
 }
 export interface DataServiceSyncGroup {
   'code': string;
@@ -489,7 +489,7 @@ export interface DataServiceSyncGroupUpdate {
   'code'?: string;
   'config'?: {};
   'data_group_code'?: string;
-  'id'?: string;
+  'id': string;
   'service_type'?: ServiceType;
   'sync_cursor'?: string | null;
   'sync_status'?: SyncGroupSyncStatus | null;
@@ -513,7 +513,7 @@ export interface DataTableUpdate {
   'code'?: string;
   'config'?: {};
   'description'?: string | null;
-  'id'?: string;
+  'id': string;
   'permission_groups'?: string[];
   'type'?: DataTableType;
 }
@@ -537,7 +537,7 @@ export interface DatatrakSessionUpdate {
   'access_token'?: string;
   'access_token_expiry'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'refresh_token'?: string;
 }
 export interface DhisInstance {
@@ -554,7 +554,7 @@ export interface DhisInstanceCreate {
 export interface DhisInstanceUpdate {
   'code'?: string;
   'config'?: {};
-  'id'?: string;
+  'id': string;
   'readonly'?: boolean;
 }
 export interface DhisSyncLog {
@@ -585,7 +585,7 @@ export interface DhisSyncLogUpdate {
   'deleted'?: number | null;
   'dhis_reference'?: string | null;
   'error_list'?: string | null;
-  'id'?: string;
+  'id': string;
   'ignored'?: number | null;
   'imported'?: number | null;
   'record_id'?: string;
@@ -619,7 +619,7 @@ export interface DhisSyncQueueUpdate {
   'bad_request_count'?: number | null;
   'change_time'?: number | null;
   'details'?: string | null;
-  'id'?: string;
+  'id': string;
   'is_dead_letter'?: boolean | null;
   'is_deleted'?: boolean | null;
   'priority'?: number | null;
@@ -659,7 +659,7 @@ export interface EntityUpdate {
   'bounds'?: string | null;
   'code'?: string;
   'country_code'?: string | null;
-  'id'?: string;
+  'id': string;
   'image_url'?: string | null;
   'metadata'?: {};
   'name'?: string;
@@ -679,7 +679,7 @@ export interface EntityHierarchyCreate {
 }
 export interface EntityHierarchyUpdate {
   'canonical_types'?: string[] | null;
-  'id'?: string;
+  'id': string;
   'name'?: string;
 }
 export interface EntityRelation {
@@ -696,7 +696,7 @@ export interface EntityRelationCreate {
 export interface EntityRelationUpdate {
   'child_id'?: string;
   'entity_hierarchy_id'?: string;
-  'id'?: string;
+  'id': string;
   'parent_id'?: string;
 }
 export interface ErrorLog {
@@ -715,7 +715,7 @@ export interface ErrorLogCreate {
 export interface ErrorLogUpdate {
   'api_request_log_id'?: string | null;
   'error_time'?: Date | null;
-  'id'?: string;
+  'id': string;
   'message'?: string | null;
   'type'?: string | null;
 }
@@ -735,7 +735,7 @@ export interface ExternalDatabaseConnectionCreate {
 export interface ExternalDatabaseConnectionUpdate {
   'code'?: string;
   'description'?: string | null;
-  'id'?: string;
+  'id': string;
   'name'?: string;
   'permission_groups'?: string[];
 }
@@ -764,7 +764,7 @@ export interface FeedItemUpdate {
   'country_id'?: string | null;
   'creation_date'?: Date | null;
   'geographical_area_id'?: string | null;
-  'id'?: string;
+  'id': string;
   'permission_group_id'?: string | null;
   'record_id'?: string | null;
   'template_variables'?: Object | null;
@@ -791,7 +791,7 @@ export interface GeographicalAreaCreate {
 export interface GeographicalAreaUpdate {
   'code'?: string | null;
   'country_id'?: string;
-  'id'?: string;
+  'id': string;
   'level_code'?: string;
   'level_name'?: string;
   'name'?: string;
@@ -812,7 +812,7 @@ export interface IndicatorUpdate {
   'builder'?: string;
   'code'?: string;
   'config'?: {};
-  'id'?: string;
+  'id': string;
 }
 export interface LandingPage {
   'contact_us'?: string | null;
@@ -851,7 +851,7 @@ export interface LandingPageUpdate {
   'contact_us'?: string | null;
   'extended_title'?: string | null;
   'external_link'?: string | null;
-  'id'?: string;
+  'id': string;
   'image_url'?: string | null;
   'include_name_in_header'?: boolean | null;
   'logo_url'?: string | null;
@@ -882,7 +882,7 @@ export interface LegacyReportUpdate {
   'data_builder'?: string | null;
   'data_builder_config'?: {} | null;
   'data_services'?: {} | null;
-  'id'?: string;
+  'id': string;
 }
 export interface LesmisSession {
   'access_policy': {};
@@ -904,7 +904,7 @@ export interface LesmisSessionUpdate {
   'access_token'?: string;
   'access_token_expiry'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'refresh_token'?: string;
 }
 export interface MapOverlay {
@@ -959,7 +959,7 @@ export interface MapOverlayGroupCreate {
 }
 export interface MapOverlayGroupUpdate {
   'code'?: string;
-  'id'?: string;
+  'id': string;
   'name'?: string;
 }
 export interface MapOverlayGroupRelation {
@@ -978,7 +978,7 @@ export interface MapOverlayGroupRelationCreate {
 export interface MapOverlayGroupRelationUpdate {
   'child_id'?: string;
   'child_type'?: string;
-  'id'?: string;
+  'id': string;
   'map_overlay_group_id'?: string;
   'sort_order'?: number | null;
 }
@@ -1004,7 +1004,7 @@ export interface MeditrakDeviceCreate {
 export interface MeditrakDeviceUpdate {
   'app_version'?: string | null;
   'config'?: {} | null;
-  'id'?: string;
+  'id': string;
   'install_id'?: string;
   'last_login_time'?: Date | null;
   'platform'?: string | null;
@@ -1026,7 +1026,7 @@ export interface MeditrakSyncQueueCreate {
 }
 export interface MeditrakSyncQueueUpdate {
   'change_time'?: number | null;
-  'id'?: string;
+  'id': string;
   'record_id'?: string;
   'record_type'?: string;
   'type'?: string;
@@ -1053,7 +1053,7 @@ export interface Ms1SyncLogUpdate {
   'data'?: string | null;
   'endpoint'?: string | null;
   'error_list'?: string | null;
-  'id'?: string;
+  'id': string;
   'record_id'?: string;
   'record_type'?: string;
 }
@@ -1084,7 +1084,7 @@ export interface Ms1SyncQueueUpdate {
   'bad_request_count'?: number | null;
   'change_time'?: number | null;
   'details'?: string | null;
-  'id'?: string;
+  'id': string;
   'is_dead_letter'?: boolean | null;
   'is_deleted'?: boolean | null;
   'priority'?: number | null;
@@ -1107,7 +1107,7 @@ export interface OneTimeLoginCreate {
 }
 export interface OneTimeLoginUpdate {
   'creation_date'?: Date | null;
-  'id'?: string;
+  'id': string;
   'token'?: string;
   'use_date'?: Date | null;
   'user_id'?: string;
@@ -1129,7 +1129,7 @@ export interface OptionCreate {
 }
 export interface OptionUpdate {
   'attributes'?: {} | null;
-  'id'?: string;
+  'id': string;
   'label'?: string | null;
   'option_set_id'?: string;
   'sort_order'?: number | null;
@@ -1143,7 +1143,7 @@ export interface OptionSetCreate {
   'name': string;
 }
 export interface OptionSetUpdate {
-  'id'?: string;
+  'id': string;
   'name'?: string;
 }
 export interface PermissionGroup {
@@ -1156,7 +1156,7 @@ export interface PermissionGroupCreate {
   'parent_id'?: string | null;
 }
 export interface PermissionGroupUpdate {
-  'id'?: string;
+  'id': string;
   'name'?: string;
   'parent_id'?: string | null;
 }
@@ -1224,7 +1224,7 @@ export interface ProjectUpdate {
   'description'?: string | null;
   'entity_hierarchy_id'?: string | null;
   'entity_id'?: string | null;
-  'id'?: string;
+  'id': string;
   'image_url'?: string | null;
   'logo_url'?: string | null;
   'permission_groups'?: string[];
@@ -1250,7 +1250,7 @@ export interface PsssSessionUpdate {
   'access_token'?: string;
   'access_token_expiry'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'refresh_token'?: string;
 }
 export interface Question {
@@ -1281,7 +1281,7 @@ export interface QuestionUpdate {
   'data_element_id'?: string | null;
   'detail'?: string | null;
   'hook'?: string | null;
-  'id'?: string;
+  'id': string;
   'name'?: string | null;
   'option_set_id'?: string | null;
   'options'?: string[] | null;
@@ -1304,7 +1304,7 @@ export interface RefreshTokenCreate {
 export interface RefreshTokenUpdate {
   'device'?: string | null;
   'expiry'?: number | null;
-  'id'?: string;
+  'id': string;
   'token'?: string;
   'user_id'?: string;
 }
@@ -1324,7 +1324,7 @@ export interface ReportCreate {
 export interface ReportUpdate {
   'code'?: string;
   'config'?: ReportConfig;
-  'id'?: string;
+  'id': string;
   'latest_data_parameters'?: {};
   'permission_group_id'?: string;
 }
@@ -1338,7 +1338,7 @@ export interface SettingCreate {
   'value'?: string | null;
 }
 export interface SettingUpdate {
-  'id'?: string;
+  'id': string;
   'key'?: string;
   'value'?: string | null;
 }
@@ -1354,7 +1354,7 @@ export interface SupersetInstanceCreate {
 export interface SupersetInstanceUpdate {
   'code'?: string;
   'config'?: {};
-  'id'?: string;
+  'id': string;
 }
 export interface Survey {
   'can_repeat'?: boolean | null;
@@ -1388,7 +1388,7 @@ export interface SurveyUpdate {
   'code'?: string;
   'country_ids'?: string[] | null;
   'data_group_id'?: string | null;
-  'id'?: string;
+  'id': string;
   'integration_metadata'?: {} | null;
   'name'?: string;
   'period_granularity'?: PeriodGranularity | null;
@@ -1405,7 +1405,7 @@ export interface SurveyGroupCreate {
   'name': string;
 }
 export interface SurveyGroupUpdate {
-  'id'?: string;
+  'id': string;
   'name'?: string;
 }
 export interface SurveyResponse {
@@ -1441,7 +1441,7 @@ export interface SurveyResponseUpdate {
   'data_time'?: Date | null;
   'end_time'?: Date;
   'entity_id'?: string;
-  'id'?: string;
+  'id': string;
   'metadata'?: string | null;
   'outdated'?: boolean | null;
   'start_time'?: Date;
@@ -1460,7 +1460,7 @@ export interface SurveyResponseCommentCreate {
 }
 export interface SurveyResponseCommentUpdate {
   'comment_id'?: string;
-  'id'?: string;
+  'id': string;
   'survey_response_id'?: string;
 }
 export interface SurveyScreen {
@@ -1473,7 +1473,7 @@ export interface SurveyScreenCreate {
   'survey_id': string;
 }
 export interface SurveyScreenUpdate {
-  'id'?: string;
+  'id': string;
   'screen_number'?: number;
   'survey_id'?: string;
 }
@@ -1507,7 +1507,7 @@ export interface SurveyScreenComponentUpdate {
   'component_number'?: number;
   'config'?: string | null;
   'detail_label'?: string | null;
-  'id'?: string;
+  'id': string;
   'is_follow_up'?: boolean | null;
   'question_id'?: string;
   'question_label'?: string | null;
@@ -1529,7 +1529,7 @@ export interface SyncGroupLogCreate {
   'timestamp'?: Date | null;
 }
 export interface SyncGroupLogUpdate {
-  'id'?: string;
+  'id': string;
   'log_message'?: string;
   'service_type'?: ServiceType;
   'sync_group_code'?: string;
@@ -1555,7 +1555,7 @@ export interface TupaiaWebSessionUpdate {
   'access_token'?: string;
   'access_token_expiry'?: string;
   'email'?: string;
-  'id'?: string;
+  'id': string;
   'refresh_token'?: string;
 }
 export interface UserAccount {
@@ -1597,7 +1597,7 @@ export interface UserAccountUpdate {
   'employer'?: string | null;
   'first_name'?: string | null;
   'gender'?: string | null;
-  'id'?: string;
+  'id': string;
   'last_name'?: string | null;
   'mobile_number'?: string | null;
   'password_hash'?: string;
@@ -1621,7 +1621,7 @@ export interface UserEntityPermissionCreate {
 }
 export interface UserEntityPermissionUpdate {
   'entity_id'?: string;
-  'id'?: string;
+  'id': string;
   'permission_group_id'?: string;
   'user_id'?: string;
 }
@@ -1636,7 +1636,7 @@ export interface UserFavouriteDashboardItemCreate {
 }
 export interface UserFavouriteDashboardItemUpdate {
   'dashboard_item_id'?: string;
-  'id'?: string;
+  'id': string;
   'user_id'?: string;
 }
 export interface UserSession {
@@ -1658,7 +1658,7 @@ export interface UserSessionUpdate {
   'access_token_expiry'?: string;
   'accessPolicy'?: {} | null;
   'accessToken'?: string | null;
-  'id'?: string;
+  'id': string;
   'refreshToken'?: string;
   'userName'?: string;
 }
