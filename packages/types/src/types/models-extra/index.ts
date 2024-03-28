@@ -42,6 +42,7 @@ export {
   MatrixConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,

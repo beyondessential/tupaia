@@ -5,8 +5,7 @@
 
 import React, { useContext } from 'react';
 import {
-  ConditionType,
-  ConditionValue,
+  ConditionsObject,
   ConditionalPresentationOptions,
   PresentationOptionCondition,
 } from '@tupaia/types';
@@ -29,7 +28,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const convertNumberRangeToText = (condition: Record<ConditionType, ConditionValue>) => {
+const convertNumberRangeToText = (condition: ConditionsObject) => {
   // sort the values so that if we have a range, it's displayed in the correct order
   const sortedValues = Object.values(condition).sort();
 
