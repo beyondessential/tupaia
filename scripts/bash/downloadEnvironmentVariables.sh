@@ -5,6 +5,7 @@ DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
+
 # can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
     echo "Fetching all .env files"
@@ -20,26 +21,36 @@ eval "$(bw unlock $BITWARDEN_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
-for PACKAGE in $PACKAGES; do
-    ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
+load_env_file_from_bw () {
+    FILE_NAME=$1
+    BASE_FILE_PATH=$2 
+    NEW_FILE_NAME=$3
+    ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
+
+    echo "Fetching environment variables for $FILE_NAME: $ENV_FILE_PATH"
+
+    echo "Fetching environment variables for $FILE_NAME"
 
     # checkout deployment specific env vars, or dev as fallback
-    DEPLOYMENT_ENV_VARS=$(bw list items --search ${PACKAGE}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+    DEPLOYMENT_ENV_VARS=$(bw list items --search ${FILE_NAME}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+
+
     if [ -n "$DEPLOYMENT_ENV_VARS" ]; then
         echo "$DEPLOYMENT_ENV_VARS" > ${ENV_FILE_PATH}
     else
-        DEV_ENV_VARS=$(bw list items --search ${PACKAGE}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+        DEV_ENV_VARS=$(bw list items --search ${FILE_NAME}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
         echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
     fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
-    sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" ${ENV_FILE_PATH}
+    sed -i "" "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
+   
 
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
-        if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
-            sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
+        if [[ ${FILE_NAME} == "aggregation" ]]; then
+            sed -i "" 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
 
@@ -47,10 +58,29 @@ for PACKAGE in $PACKAGES; do
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
-        sed -i -E 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+        sed -i "" 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
     fi
+ 
 
-    echo "downloaded .env vars for $PACKAGE"
+     echo "downloaded .env vars for $FILE_NAME"
+}
+ 
+for PACKAGE in $PACKAGES; do
+    load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
 done
+ 
+
+# get all .env.*.example files in the env directory
+file_names=$(find $DIR/../../env -type f -name '*.env.example' -exec basename {} \;)
+ 
+ 
+# for each file, get the extract the filename without the .example extension
+for file_name in $file_names; do
+    env_name=$(echo $file_name | sed 's/\.env.example//')
+    load_env_file_from_bw $env_name $DIR/../../env $env_name
+done
+
+
+
 
 bw logout

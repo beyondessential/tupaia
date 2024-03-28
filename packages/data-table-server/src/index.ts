@@ -4,15 +4,14 @@
  */
 
 import http from 'http';
-import * as dotenv from 'dotenv';
-
 import winston from 'winston';
 import { TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { createApp } from './app';
+import { configureEnv } from './configureEnv';
 
 configureWinston();
-dotenv.config(); // Load the environment variables into process.env
+configureEnv();
 
 (async () => {
   const database = new TupaiaDatabase();

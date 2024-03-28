@@ -8,6 +8,6 @@
     "jest.config.ts",
     "jest.setup.ts",
     "global.d.ts",
-    "scripts/patchMvRefresh.ts"
+    "scripts/patchMvRefresh.ts",
   ]
 }

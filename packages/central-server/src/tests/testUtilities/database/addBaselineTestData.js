@@ -3,14 +3,16 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { encryptPassword } from '@tupaia/auth';
 import { generateId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
+import { configureEnv } from '../../../configureEnv';
 import { getModels } from './getModels';
 import { TEST_USER_EMAIL } from '../constants';
 
 const models = getModels();
+
+configureEnv();
 
 export async function addBaselineTestData() {
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create

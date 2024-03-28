@@ -1,4 +1,3 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import '@babel/polyfill';
 import http from 'http';
 import express from 'express';
@@ -14,6 +13,9 @@ import { bindUserSessions } from './authSession';
 import { modelClasses } from './models';
 import { handleError, logApiRequest } from './utils';
 import './log';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 export async function createApp() {
   const app = express();

@@ -4,9 +4,6 @@
  */
 
 import '@babel/polyfill';
-
-import {} from 'dotenv/config'; // Load the environment variables into process.env
-
 import http from 'http';
 import {
   AnalyticsRefresher,
@@ -27,6 +24,9 @@ import { startFeedScraper } from './social';
 import { createApp } from './createApp';
 
 import winston from './log';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 (async () => {
   /**

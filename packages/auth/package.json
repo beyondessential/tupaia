@@ -23,6 +23,7 @@
     "test:coverage": "yarn test --coverage"
   },
   "dependencies": {
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "jsonwebtoken": "^7.4.3",
     "rand-token": "^1.0.1",

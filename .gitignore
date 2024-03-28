@@ -1,5 +1,6 @@
 *.env*
 !*.env.example*
+!*.env.*.example*
 !*.env.encrypted*
 .DS_Store
 **/node_modules

@@ -31,36 +31,47 @@ const SERVICES = {
     subdomain: 'api',
     version: 'v2',
     localPort: '8090',
+    prefix: null,
   },
   entity: {
     subdomain: 'entity-api',
     version: 'v1',
     localPort: '8050',
+    prefix: null,
   },
   central: {
     subdomain: 'api',
     version: 'v2',
     localPort: '8090',
+    prefix: null,
   },
   report: {
     subdomain: 'report-api',
     version: 'v1',
     localPort: '8030',
+    prefix: null,
   },
   dataTable: {
     subdomain: 'data-table-api',
     version: 'v1',
     localPort: '8010',
+    prefix: null,
   },
   webConfig: {
     subdomain: 'config',
+    prefix: 'api',
     version: 'v1',
     localPort: '8000',
   },
 };
 
-const getLocalUrl = (service: ServiceName): string =>
-  `http://localhost:${SERVICES[service].localPort}/${SERVICES[service].version}`;
+const getLocalUrl = (service: ServiceName): string => {
+  const { prefix, localPort, version } = SERVICES[service];
+  const base = `http://localhost:${localPort}`;
+  const prefixPath = prefix ? `/${prefix}` : '';
+  return `${base}${prefixPath}/${version}`;
+};
+
 export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
   auth: getLocalUrl('auth'),
   entity: getLocalUrl('entity'),

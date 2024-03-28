@@ -1,11 +1,12 @@
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
 
 import { UnauthenticatedError } from '@tupaia/utils';
-
+import { configureEnv } from '../configureEnv';
 import { getUserFromAuthHeader } from './getUserFromAuthHeader';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
+
+configureEnv();
 
 // auth is a middleware that runs on every request
 const auth = () => async (req, res, next) => {
