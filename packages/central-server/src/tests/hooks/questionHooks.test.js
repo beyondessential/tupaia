@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 
-import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
+import { buildAndInsertSurveys, generateId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from '../testUtilities';
 import { registerHook } from '../../hooks';
 
-const ENTITY_ID = generateTestId();
-const ENTITY2_ID = generateTestId();
-const ENTITY3_ID = generateTestId();
+const ENTITY_ID = generateId();
+const ENTITY2_ID = generateId();
+const ENTITY3_ID = generateId();
 
-const GENERIC_SURVEY_ID = generateTestId();
-const ENTITY_CREATION_SURVEY_ID = generateTestId();
+const GENERIC_SURVEY_ID = generateId();
+const ENTITY_CREATION_SURVEY_ID = generateId();
 const SURVEYS = [
   {
     id: GENERIC_SURVEY_ID,
@@ -62,7 +62,7 @@ describe('Question hooks', () => {
       country_id: country.id,
     });
     await models.facility.create({
-      id: generateTestId(),
+      id: generateId(),
       name: 'Test question hook clinic',
       code: 'test-question-hook-clinic',
       geographical_area_id: geographicalArea.id,
@@ -390,7 +390,7 @@ describe('Question hooks', () => {
               'TEST_create-code': 'test_code',
               'TEST_create-name': 'Test Dynamic Entity',
               'TEST_create-image-url': TEST_URL,
-              'TEST_create-type': 'disaster',
+              'TEST_create-type': 'village',
             },
           },
         });
@@ -402,7 +402,7 @@ describe('Question hooks', () => {
         expect(entity.parent_id).to.equal(ENTITY_ID);
         expect(entity.name).to.equal('Test Dynamic Entity');
         expect(entity.image_url).to.equal(TEST_URL);
-        expect(entity.type).to.equal('disaster');
+        expect(entity.type).to.equal('village');
       });
 
       it('Should not create a duplicate entity', async () => {
@@ -421,7 +421,7 @@ describe('Question hooks', () => {
               'TEST_create-code': DUP_CODE,
               'TEST_create-name': 'Dupe Entity',
               'TEST_create-image-url': TEST_URL,
-              'TEST_create-type': 'disaster',
+              'TEST_create-type': 'village',
             },
           },
         });
@@ -431,7 +431,7 @@ describe('Question hooks', () => {
         const midEntity = await models.entity.findOne({ code: DUP_CODE });
         expect(midEntity).to.not.be.null;
         expect(midEntity.name).to.equal('Dupe Entity');
-        expect(midEntity.type).to.equal('disaster');
+        expect(midEntity.type).to.equal('village');
         expect(midEntity.image_url).to.equal(TEST_URL);
 
         // submit a second survey response with slightly different data

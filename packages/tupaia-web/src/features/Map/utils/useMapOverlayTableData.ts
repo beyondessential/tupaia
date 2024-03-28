@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useEffect, useRef } from 'react';
-import { LegendProps, MeasureData, Series } from '@tupaia/ui-map-components';
+import { LegendProps, Series } from '@tupaia/ui-map-components';
 import { useParams } from 'react-router';
+import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 import {
   useEntitiesWithLocation,
   useEntity,
@@ -15,7 +16,6 @@ import { Entity, EntityCode, ProjectCode } from '../../../types';
 import { useDateRanges } from '../../../utils';
 import { URL_SEARCH_PARAMS } from '../../../constants';
 import { processMeasureData } from './processMeasureData';
-import { TupaiaWebMapOverlaysRequest } from '@tupaia/types';
 
 type EntityTypeParam = string | null | undefined;
 
@@ -132,7 +132,7 @@ export const useMapOverlayTableData = ({
       ? [...data?.serieses]?.sort((a: Series, b: Series) => a.key.localeCompare(b.key))
       : [], // previously this was keyed and so ended up being alphabetised, so we need to sort to match the previous way of displaying series data
     hiddenValues: hiddenValues ? hiddenValues : {},
-  }) as MeasureData[];
+  });
 
   const loadingData = isLoading || isFetching || (!isFetched && !isIdle);
 

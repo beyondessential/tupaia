@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataElementModel, DataElementType } from '../../modelClasses/DataElement';
+import { DataElementModel, DataElementRecord } from '../../modelClasses/DataElement';
 
 describe('DataElement', () => {
   describe('sanitizeConfig()', () => {
@@ -12,7 +12,7 @@ describe('DataElement', () => {
     };
 
     const createDataElement = ({ serviceType = 'tupaia', config }) =>
-      new DataElementType(new DataElementModel(database), {
+      new DataElementRecord(new DataElementModel(database), {
         service_type: serviceType,
         config,
       });

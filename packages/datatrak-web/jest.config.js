@@ -13,7 +13,7 @@ module.exports = async () => ({
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
   moduleNameMapper: {
-    axios: 'axios/dist/node/axios.cjs',
+    '^axios$': require.resolve('axios'),
   },
   transformIgnorePatterns: ['/node_modules/(?!(msw)/).*/'],
 });

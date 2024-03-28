@@ -4,8 +4,8 @@
  */
 
 import cloneDeep from 'lodash.clonedeep';
-import { EntityModel, QuestionModel, SurveyModel } from '@tupaia/database';
-import { UserModel } from '@tupaia/server-boilerplate';
+import { QuestionModel, SurveyModel } from '@tupaia/database';
+import { EntityModel, UserModel } from '@tupaia/server-boilerplate';
 import { ValidationError } from '@tupaia/utils';
 import { Entity } from '@tupaia/types';
 import { MeditrakAppServerModelRegistry } from '../../../types';
