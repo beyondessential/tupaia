@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ProjectSelectModal } from '../layout/UserMenu/ProjectSelectModal';
-import { useCurrentUser } from '../api';
+import { useCurrentUserContext } from '../api';
 import { UserDetails as NavbarUserDetails } from '../layout/UserMenu/UserInfo';
 import { Button, TooltipButtonWrapper } from './Button';
 
