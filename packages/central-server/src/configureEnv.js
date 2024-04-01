@@ -15,7 +15,7 @@ const envFilePaths = [
   path.resolve(__dirname, '../../../env/mail.env'),
   path.resolve(__dirname, '../../../env/aws.env'),
   path.resolve(__dirname, '../../../env/aggregation.env'),
-  path.resolve(__dirname, '.env'),
+  path.resolve(__dirname, '../.env'),
 ];
 
 export const configureEnv = () => {

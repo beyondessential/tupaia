@@ -16,6 +16,6 @@ export const configureEnv = () => {
     path.resolve(__dirname, '../../../env/external-db-connections.env'),
     path.resolve(__dirname, '../../../env/superset.env'),
     path.resolve(__dirname, '../../../env/weatherbit.env'),
-    '.env',
+    '../.env',
   ]); // Load the environment variables into process.env
 };

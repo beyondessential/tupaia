@@ -16,7 +16,7 @@ configureWinston();
 configureDotEnv([
   path.resolve(__dirname, '../../../env/servers.env'),
   path.resolve(__dirname, '../../../env/db.env'),
-  path.resolve(__dirname, '.env'),
+  path.resolve(__dirname, '../.env'),
 ]);
 
 (async () => {

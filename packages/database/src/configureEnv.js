@@ -11,7 +11,7 @@ export const configureEnv = () => {
     path: [
       path.resolve(__dirname, '../../../env/db.env'),
       path.resolve(__dirname, '../../../env/pg.env'),
-      path.resolve(__dirname, '.env'),
+      path.resolve(__dirname, '../.env'),
     ],
   });
 };

@@ -10,5 +10,5 @@ export const configureEnv = () =>
   configureDotEnv([
     path.resolve(__dirname, '../../../env/servers.env'),
     path.resolve(__dirname, '../../../env/db.env'),
-    path.resolve(__dirname, '.env'),
+    path.resolve(__dirname, '../.env'),
   ]); // Load the environment variables into process.env
