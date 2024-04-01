@@ -25,12 +25,14 @@ file2="$CURRENT_DIR/../../env/pg.env"
 file3="$CURRENT_DIR/../../env/data-lake.env"
 file4="$CALLING_SCRIPT_DIR/.env"
 
-common_files="$file1 $file2 $file3"
+common_files="$file1 $file2 $file3 $file4"
 
-# Check if the current package has a .env file
-if [ -f "$file4" ]; then
-    common_files+=" $file4"
-fi
+ # Remove files that don't exist
+for file in $common_files; do
+    if [ ! -f "$file" ]; then
+        common_files=$(echo "$common_files" | sed "s|$file||g")
+    fi
+done
 
 # Load environment variables from .env files
 merged_content="$(cat $common_files)" 
