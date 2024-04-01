@@ -15,7 +15,7 @@ import { TestableServer } from '@tupaia/server-boilerplate';
 import { createBearerHeader } from '@tupaia/utils';
 import { TestModelRegistry } from '../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../utilities';
-import { CAT_QUESTION, CAT_SURVEY, CAT_USER_SESSION } from './fixtures';
+import { CAT_QUESTION, CAT_SURVEY } from './fixtures';
 
 describe('me/rewards', () => {
   const numberOfSurveyResponses = 100;
@@ -30,7 +30,6 @@ describe('me/rewards', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );
