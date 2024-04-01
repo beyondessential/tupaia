@@ -6,7 +6,7 @@
 import momentTimezone from 'moment-timezone';
 import moment from 'moment';
 
-import { MaterializedViewLogDatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MaterializedViewLogDatabaseModel, DatabaseRecord, RECORDS } from '@tupaia/database';
 
 export const SURVEY_RESPONSE_APPROVAL_STATUS = {
   NOT_REQUIRED: 'not_required',
@@ -15,8 +15,8 @@ export const SURVEY_RESPONSE_APPROVAL_STATUS = {
   APPROVED: 'approved',
 };
 
-class SurveyResponseType extends DatabaseType {
-  static databaseType = TYPES.SURVEY_RESPONSE;
+class SurveyResponseRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.SURVEY_RESPONSE;
 
   async getAnswers(conditions = {}) {
     return this.otherModels.answer.find({ survey_response_id: this.id, ...conditions });
@@ -61,8 +61,8 @@ class SurveyResponseType extends DatabaseType {
 export class SurveyResponseModel extends MaterializedViewLogDatabaseModel {
   notifiers = [onChangeMarkAnswersChanged];
 
-  get DatabaseTypeClass() {
-    return SurveyResponseType;
+  get DatabaseRecordClass() {
+    return SurveyResponseRecord;
   }
 
   getOrgUnitEntityTypes = () => {

@@ -6,8 +6,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Done, Close, ChevronRight } from '@material-ui/icons';
-import { Input as MuiInput } from '@material-ui/core';
+import { Done, Close, ChevronRight, Add } from '@material-ui/icons';
+import { IconButton as MuiIconButton, Input as MuiInput } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import {
   FlexSpaceBetween as MuiFlexSpaceBetween,
@@ -69,9 +69,6 @@ const StyledSelectableMultipleTimesOption = styled(StyledOption)`
 `;
 
 const StyledSelectedDataCard = styled(StyledOption)`
-  .icon-wrapper {
-    cursor: pointer;
-  }
   background-color: ${props => (props.isDragging ? ALICE_BLUE : 'default')};
 `;
 
@@ -118,6 +115,10 @@ const IconWrapper = styled.div`
   & .MuiSvgIcon-root {
     width: 15px;
   }
+`;
+
+const IconButton = styled(IconWrapper).attrs({ as: MuiIconButton })`
+  padding-block: 0.2rem;
 `;
 
 const OptionType = PropTypes.shape({
@@ -203,9 +204,10 @@ export const BaseSelectedOption = ({ option, onRemove }) => {
     <Tooltip option={option}>
       <FlexSpaceBetween>
         <Option option={option} />
-        <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
+
+        <IconButton onClick={event => onRemove(event, option)} title="Remove item">
           <Close />
-        </IconWrapper>
+        </IconButton>
       </FlexSpaceBetween>
     </Tooltip>
   );
@@ -216,7 +218,7 @@ BaseSelectedOption.propTypes = {
   onRemove: PropTypes.func.isRequired,
 };
 
-export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
+export const EditableSelectedOption = ({ option, onRemove, onTitleChange, onOpenModal }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(option.title || option.code);
 
@@ -244,6 +246,14 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
 
+  const onClickOpenModal = () => {
+    onOpenModal(option);
+  };
+
+  const onClickRemoveOption = event => {
+    onRemove(event, option);
+  };
+
   return (
     <Tooltip option={option}>
       <FlexSpaceBetween ref={wrapperRef}>
@@ -254,18 +264,31 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange }) => {
           title={title}
           setTitle={setTitle}
         />
-        <IconWrapper onClick={event => onRemove(event, option)} className="icon-wrapper">
-          <Close />
-        </IconWrapper>
+        {onOpenModal && (
+          <IconButton onClick={onClickOpenModal} title="Open JSON editor window">
+            <Add />
+          </IconButton>
+        )}
+        {onRemove && (
+          <IconButton onClick={onClickRemoveOption} title="Remove item">
+            <Close />
+          </IconButton>
+        )}
       </FlexSpaceBetween>
     </Tooltip>
   );
 };
 
+EditableSelectedOption.defaultProps = {
+  onOpenModal: null,
+  onRemove: null,
+};
+
 EditableSelectedOption.propTypes = {
   option: OptionType.isRequired,
-  onRemove: PropTypes.func.isRequired,
+  onRemove: PropTypes.func,
   onTitleChange: PropTypes.func.isRequired,
+  onOpenModal: PropTypes.func,
 };
 
 export const SelectableOption = ({ option, isSelected, onSelect, ...restProps }) => (

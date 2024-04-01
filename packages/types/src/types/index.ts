@@ -25,6 +25,7 @@ export {
   MatrixConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
@@ -88,6 +89,9 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   VizPeriodGranularity,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './models-extra';
 export * from './requests';
 export * from './css';

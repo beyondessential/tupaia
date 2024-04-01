@@ -5,12 +5,12 @@
 
 import React, { ReactElement } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useCurrentUser } from '../api';
+import { useCurrentUserContext } from '../api';
 import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 
 // Reusable wrapper to handle redirecting to login if user is not logged in and the route is private
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
-  const { isLoggedIn, hasAdminPanelAccess, ...user } = useCurrentUser();
+  const { isLoggedIn, hasAdminPanelAccess, ...user } = useCurrentUserContext();
   const location = useLocation();
   if (!isLoggedIn)
     return (

@@ -4,17 +4,17 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntitiesRequest } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { sortSearchResults } from '../utils';
 
 export type EntityDescendantsRequest = Request<
-  DatatrakWebEntitiesRequest.Params,
-  DatatrakWebEntitiesRequest.ResBody,
-  DatatrakWebEntitiesRequest.ReqBody,
-  DatatrakWebEntitiesRequest.ReqQuery
+  DatatrakWebEntityDescendantsRequest.Params,
+  DatatrakWebEntityDescendantsRequest.ResBody,
+  DatatrakWebEntityDescendantsRequest.ReqBody,
+  DatatrakWebEntityDescendantsRequest.ReqQuery
 >;
 
 const DEFAULT_FIELDS = ['id', 'parent_name', 'code', 'name', 'type'];
@@ -92,7 +92,7 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     );
 
     const sortedEntities = searchString
-      ? (sortSearchResults(searchString, entities) as DatatrakWebEntitiesRequest.ResBody)
+      ? sortSearchResults(searchString, entities)
       : [
           ...recentEntities
             .map((id: string) => {

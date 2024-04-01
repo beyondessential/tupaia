@@ -10,7 +10,7 @@ export interface Params {
   entityCode: string;
   projectCode: string;
 }
-export type ResBody = KeysToCamelCase<Entity>;
+export type ResBody = KeysToCamelCase<Partial<Entity>>;
 export type ReqBody = Record<string, never>;
 export interface ReqQuery {
   entityId?: string[];

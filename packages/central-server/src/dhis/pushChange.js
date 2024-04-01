@@ -39,9 +39,9 @@ async function checkIsEventBased(models, change) {
 }
 
 const getPusher = async (models, change) => {
-  const ANSWER = models.answer.databaseType;
-  const ENTITY = models.entity.databaseType;
-  const SURVEY_RESPONSE = models.surveyResponse.databaseType;
+  const ANSWER = models.answer.databaseRecord;
+  const ENTITY = models.entity.databaseRecord;
+  const SURVEY_RESPONSE = models.surveyResponse.databaseRecord;
   const { record_type: recordType } = change;
 
   switch (recordType) {
