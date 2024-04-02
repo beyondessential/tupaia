@@ -49,13 +49,3 @@ done
 
 # Evaluate merged content to set variables
 eval "$merged_content" 
-
- 
-
- 
- 
-
-
-
-
- 
