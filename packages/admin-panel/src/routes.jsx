@@ -227,18 +227,19 @@ export const ROUTES = [
   {
     label: 'Projects',
     to: '/projects',
-    isBESAdminOnly: true,
     icon: <Flag />,
     tabs: [
       {
         label: 'Projects',
         to: '',
         component: ProjectsPage,
+        needsBESAdminAccess: ['create'],
       },
       {
         label: 'Strive',
         to: '/strive',
         component: StrivePage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Entity Hierarchy',
@@ -249,6 +250,7 @@ export const ROUTES = [
         label: 'Landing Pages',
         to: '/landing-pages',
         component: CustomLandingPagesPage,
+        isBESAdminOnly: true,
       },
     ],
   },
