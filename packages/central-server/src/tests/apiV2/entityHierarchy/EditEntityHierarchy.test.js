@@ -11,7 +11,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe.only('Editing an entity hierarchy', async () => {
+describe('Editing an entity hierarchy', async () => {
   const ALT_PERMISSION_GROUP = 'Alternative';
   const BES_ADMIN_POLICY = {
     DL: [BES_ADMIN_PERMISSION_GROUP, ALT_PERMISSION_GROUP],
