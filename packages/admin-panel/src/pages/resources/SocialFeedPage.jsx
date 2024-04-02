@@ -107,7 +107,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SocialFeedPage = ({ getHeaderEl }) => (
+export const SocialFeedPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
@@ -116,6 +116,7 @@ export const SocialFeedPage = ({ getHeaderEl }) => (
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={data => ({ ...data, type: 'markdown' })}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

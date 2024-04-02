@@ -17,10 +17,8 @@ const isJsonResponse = response => {
   return contentType.startsWith('application/json');
 };
 
-const {
-  REACT_APP_API_URL = 'http://localhost:8070/v1',
-  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-} = import.meta.env;
+const { REACT_APP_API_URL = 'http://localhost:8070/v1', REACT_APP_CLIENT_BASIC_AUTH_HEADER } =
+  import.meta.env;
 
 export class TupaiaApi {
   constructor(config) {
@@ -39,13 +37,17 @@ export class TupaiaApi {
   }
 
   async login(loginCredentials) {
-    const { body: authenticationDetails } = await this.post(
-      'login',
-      null,
-      loginCredentials,
-      this.clientBasicAuthHeader,
-    );
-    return authenticationDetails;
+    try {
+      const { body: authenticationDetails } = await this.post(
+        'login',
+        null,
+        loginCredentials,
+        this.clientBasicAuthHeader,
+      );
+      return authenticationDetails;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async logout() {

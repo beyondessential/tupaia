@@ -38,12 +38,13 @@ const fetchBranch = async (rootNode, node) => {
   }));
 };
 
-export const EntityHierarchiesPage = ({ getHeaderEl }) => (
+export const EntityHierarchiesPage = ({ getHeaderEl, ...props }) => (
   <TreeResourcePage
     title="Entity Hierarchies"
     fetchRoot={fetchRoot}
     fetchBranch={fetchBranch}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

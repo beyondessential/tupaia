@@ -59,13 +59,14 @@ const CREATE_CONFIG = {
   },
 };
 
-export const IndicatorsPage = ({ getHeaderEl }) => (
+export const IndicatorsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Indicators"
     endpoint="indicators"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

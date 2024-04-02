@@ -46,12 +46,13 @@ const COLUMNS = [
   },
 ];
 
-export const LegacyReportsPage = ({ getHeaderEl }) => (
+export const LegacyReportsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Legacy Reports"
     endpoint="legacyReports"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

@@ -47,12 +47,13 @@ const COLUMNS = [
   },
 ];
 
-export const EntityHierarchyPage = ({ getHeaderEl }) => (
+export const EntityHierarchyPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title={TITLE}
     endpoint={ENTITY_HIERARCHY_ENDPOINT}
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

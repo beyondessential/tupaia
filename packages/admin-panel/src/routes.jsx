@@ -73,6 +73,7 @@ export const ROUTES = [
         label: 'Data Groups',
         to: '/data-groups',
         component: DataGroupsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Survey Responses',
@@ -83,11 +84,13 @@ export const ROUTES = [
         label: 'Sync Groups',
         to: '/sync-groups',
         component: SyncGroupsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Data Mapping',
         to: '/data-mapping',
         component: DataElementDataServicesPage,
+        isBESAdminOnly: true,
       },
     ],
   },
@@ -100,6 +103,7 @@ export const ROUTES = [
         label: 'Dashboard Items',
         to: '',
         component: DashboardItemsPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Dashboards',
@@ -115,11 +119,13 @@ export const ROUTES = [
         label: 'Dashboard Mailing Lists',
         to: '/dashboard-mailing-lists',
         component: DashboardMailingListsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Legacy Reports',
         to: '/legacy-reports',
         component: LegacyReportsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Map Overlays',
@@ -140,16 +146,19 @@ export const ROUTES = [
         label: 'Indicators',
         to: '/indicators',
         component: IndicatorsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Data-Tables',
         to: '/dataTables',
         component: DataTablesPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Social Feed',
         to: '/social-feed',
         component: SocialFeedPage,
+        isBESAdminOnly: true,
       },
     ],
   },
@@ -194,16 +203,19 @@ export const ROUTES = [
         label: 'Entities',
         to: '',
         component: EntitiesPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Countries',
         to: '/countries',
         component: CountriesPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Entity Types',
         to: '/entityTypes',
         component: EntityTypesPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Entity Hierarchies',
@@ -215,6 +227,7 @@ export const ROUTES = [
   {
     label: 'Projects',
     to: '/projects',
+    isBESAdminOnly: true,
     icon: <Flag />,
     tabs: [
       {
@@ -242,6 +255,7 @@ export const ROUTES = [
   {
     label: 'External Data',
     to: '/external-database-connections',
+    isBESAdminOnly: true,
     icon: <Language />,
     tabs: [
       {

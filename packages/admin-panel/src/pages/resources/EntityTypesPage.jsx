@@ -19,12 +19,13 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
-export const EntityTypesPage = ({ getHeaderEl }) => (
+export const EntityTypesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Entity Types"
     endpoint={ENTITY_TYPES_ENDPOINT}
     columns={ENTITY_TYPES_COLUMNS}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

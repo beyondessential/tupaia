@@ -45,7 +45,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionGroupsPage = ({ getHeaderEl }) => (
+export const PermissionGroupsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Permission Groups"
     endpoint="permissionGroups"
@@ -53,6 +53,7 @@ export const PermissionGroupsPage = ({ getHeaderEl }) => (
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
     defaultSorting={[{ id: 'name', desc: false }]}
+    {...props}
   />
 );
 

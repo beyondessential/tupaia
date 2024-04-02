@@ -174,7 +174,7 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const AccessRequestsPage = ({ getHeaderEl }) => (
+export const AccessRequestsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Access Requests"
     endpoint="accessRequests"
@@ -190,6 +190,7 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
       // Return an array of records for bulk editing on the server
       return recordData.map(record => ({ ...record, ...editedFields }));
     }}
+    {...props}
   />
 );
 

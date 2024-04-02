@@ -89,7 +89,7 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const OptionSetsPage = ({ getHeaderEl }) => (
+export const OptionSetsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Option Sets"
     endpoint="optionSets"
@@ -97,6 +97,7 @@ export const OptionSetsPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

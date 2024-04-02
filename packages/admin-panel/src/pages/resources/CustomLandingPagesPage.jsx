@@ -284,7 +284,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CustomLandingPagesPage = ({ getHeaderEl }) => {
+export const CustomLandingPagesPage = ({ getHeaderEl, ...props }) => {
   return (
     <ResourcePage
       title="Landing Pages"
@@ -292,6 +292,7 @@ export const CustomLandingPagesPage = ({ getHeaderEl }) => {
       columns={COLUMNS}
       getHeaderEl={getHeaderEl}
       createConfig={CREATE_CONFIG}
+      {...props}
     />
   );
 };

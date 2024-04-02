@@ -37,7 +37,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CountriesPage = ({ getHeaderEl }) => (
+export const CountriesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Countries"
     endpoint="countries"
@@ -45,6 +45,7 @@ export const CountriesPage = ({ getHeaderEl }) => (
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
 

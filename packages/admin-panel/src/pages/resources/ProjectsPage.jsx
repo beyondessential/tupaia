@@ -172,7 +172,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const ProjectsPage = ({ getHeaderEl }) => (
+export const ProjectsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
     title="Projects"
     endpoint="projects"
@@ -186,6 +186,7 @@ export const ProjectsPage = ({ getHeaderEl }) => (
       }
       return editedFields;
     }}
+    {...props}
   />
 );
 
