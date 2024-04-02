@@ -41,8 +41,8 @@ jobs:
             exit 1
           fi
 
-      - name: Check for Linear card number for feature/ branches
-        if: steps.release.conclusion == 'skipped' && startsWith(github.head_ref, 'feature/')
+      - name: Check for Linear card number for feature branches
+        if: steps.release.conclusion == 'skipped' && startsWith(github.event.pull_request.title, 'feat')
         shell: bash
         run: |
           if ! grep -qP '^\w+(\(\w+\))?:\s[A-Z]+-[0-9]+(:\s+\w+)?' <<< "$PR_TITLE"; then
