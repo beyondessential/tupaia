@@ -682,26 +682,9 @@ function addJoin(baseQuery, recordType, joinOptions) {
 }
 
 function getColSelector(connection, inputColStr) {
-  const regexp = new RegExp(/->>?/, 'g');
-  if (regexp.test(inputColStr)) {
-    // Shorthand way of querying json property
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const [first, ...rest] = inputColStr.split(regexp);
-    if (rest.length === 1) {
-      // get the first separator (there will only be 1 in this case)
-      const separator = inputColStr.match(regexp)[0];
-      // e.g. 'config->>colour' is converted to config->>'colour' and 'config->colour' is converted to config->'colour'
-      return connection.raw(`??${separator}?`, [first, ...rest]);
-    }
-    // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
-    const last = rest.slice(-1);
-    const middle = rest.slice(0, rest.length - 1);
-    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
-      first,
-      ...middle,
-      ...last,
-    ]);
-  }
+  const jsonOperatorPattern = /->>?/g;
+  if (!jsonOperatorPattern.test(inputColStr)) return inputColStr;
 
-  return inputColStr;
+  const [first, ...rest] = inputColStr.split(jsonOperatorPattern);
+  return connection.raw(`?? #>> '{${rest.join(',')}}'`, first);
 }
