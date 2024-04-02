@@ -37,17 +37,13 @@ export class TupaiaApi {
   }
 
   async login(loginCredentials) {
-    try {
-      const { body: authenticationDetails } = await this.post(
-        'login',
-        null,
-        loginCredentials,
-        this.clientBasicAuthHeader,
-      );
-      return authenticationDetails;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    const { body: authenticationDetails } = await this.post(
+      'login',
+      null,
+      loginCredentials,
+      this.clientBasicAuthHeader,
+    );
+    return authenticationDetails;
   }
 
   async logout() {
