@@ -31,13 +31,16 @@ export const login =
       // Set state to logging in
       type: LOGIN_REQUEST,
     });
-
-    const userDetails = await api.login({
-      emailAddress,
-      password,
-      deviceName,
-    });
-    dispatch(loginSuccess(userDetails));
+    try {
+      const userDetails = await api.login({
+        emailAddress,
+        password,
+        deviceName,
+      });
+      dispatch(loginSuccess(userDetails));
+    } catch (error) {
+      dispatch(loginError(error.message));
+    }
   };
 
 export const loginSuccess =
