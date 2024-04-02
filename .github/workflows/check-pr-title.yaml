@@ -37,7 +37,7 @@ jobs:
         shell: bash
         run: |
           if ! grep -qP '^(ci|db|deps|doc|env|feat|fix|fmt|merge|refactor|repo|revert|style|test|tweak)(\(\w+\))?:\s' <<< "$PR_TITLE"; then
-            echo "::warning::PR title Conventional Type is not on the list; refer to README.md"
+            echo "::warning::PR title Conventional Type is not on the list; refer to CONTRIBUTING.md"
             exit 1
           fi
 
