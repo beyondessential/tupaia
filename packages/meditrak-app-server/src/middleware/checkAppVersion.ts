@@ -12,7 +12,7 @@ export const checkAppVersion = async (req: Request, res: Response, next: NextFun
   try {
     const { appVersion } = req.query;
     if (!appVersion) {
-      throw new Error('appVersion unspecified, please upgrade your app');
+      throw new Error('appVersion unspecified, please upgrade Meditrak App');
     }
 
     if (typeof appVersion !== 'string') {
@@ -21,7 +21,7 @@ export const checkAppVersion = async (req: Request, res: Response, next: NextFun
 
     if (semverCompare(appVersion, MINIMUM_SUPPORTED_APP_VERSION) < 0) {
       throw new Error(
-        `appVersion ${appVersion} is no longer supported. Please upgrade your Meditrak App from the Play Store`,
+        `appVersion ${appVersion} is no longer supported, please upgrade Meditrak App`,
       );
     }
 

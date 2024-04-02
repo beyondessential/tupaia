@@ -47,7 +47,7 @@ export class AuthRoute extends Route<AuthRequest> {
     await meditrakDevice.save();
   }
 
-  private async refreshTokenLogin(refreshToken: string) {
+  private async grantAccessToken(refreshToken: string) {
     const meditrakDevice = await this.req.models.meditrakDevice.findOne({
       refresh_token: refreshToken,
     });
@@ -91,7 +91,7 @@ export class AuthRoute extends Route<AuthRequest> {
 
     if (query.grantType === 'refresh_token') {
       const { refreshToken } = reAuthValidator.validateSync(body);
-      return this.refreshTokenLogin(refreshToken);
+      return this.grantAccessToken(refreshToken);
     }
 
     const { emailAddress, password, deviceName, installId, devicePlatform } =

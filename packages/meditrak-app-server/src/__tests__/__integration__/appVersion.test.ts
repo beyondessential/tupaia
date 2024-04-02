@@ -20,7 +20,7 @@ describe('appVersion', () => {
     const response = await app.get('test');
 
     expect(response.statusCode).toEqual(500);
-    expect(response.body.error).toMatch(/appVersion unspecified, please upgrade your app/);
+    expect(response.body.error).toMatch(/appVersion unspecified, please upgrade Meditrak App/);
   });
 
   it('returns an error if appVersion is not supported', async () => {
@@ -32,7 +32,7 @@ describe('appVersion', () => {
 
     expect(response.statusCode).toEqual(500);
     expect(response.body.error).toMatch(
-      /appVersion 1.7.106 is no longer supported. Please upgrade your Meditrak App from the Play Store/,
+      /appVersion 1.7.106 is no longer supported, please upgrade Meditrak App/,
     );
   });
 });
