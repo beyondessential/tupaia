@@ -10,7 +10,7 @@ import {
   BES_ADMIN_PERMISSION_GROUP,
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp } from '../../testUtilities';
+import { TestableApp, resetTestData } from '../../testUtilities';
 
 describe('GET entity hierarchy', () => {
   const ALT_PERMISSION_GROUP = 'Alternative';
@@ -72,6 +72,10 @@ describe('GET entity hierarchy', () => {
 
   afterEach(() => {
     app.revokeAccess();
+  });
+
+  after(async () => {
+    await resetTestData();
   });
 
   describe('GET /entityHierarchy/:id', () => {
