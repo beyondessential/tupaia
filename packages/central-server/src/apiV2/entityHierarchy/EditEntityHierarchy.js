@@ -4,17 +4,26 @@
  */
 import {
   assertAdminPanelAccess,
-  assertAllPermissions,
   assertAnyPermissions,
   assertBESAdminAccess,
+  hasTupaiaAdminPanelAccess,
 } from '../../permissions';
 import { EditHandler } from '../EditHandler';
 
 const assertEntityHierarchyEditPermissions = async (accessPolicy, models, entityHierarchyId) => {
+  const error = new Error(
+    `Need Tupaia Admin Panel access to hierarchy with id: '${entityHierarchyId}'`,
+  );
+  if (!hasTupaiaAdminPanelAccess(accessPolicy)) {
+    throw error;
+  }
+
   const projects = await models.project.getAccessibleProjects(accessPolicy);
+
   const project = projects.find(p => p.entity_hierarchy_id === entityHierarchyId);
+
   if (!project) {
-    throw new Error(`No access to hierarchy with id ${entityHierarchyId}`);
+    throw error;
   }
   return true;
 };
@@ -26,10 +35,8 @@ export class EditEntityHierarchy extends EditHandler {
 
   async assertUserHasAccess() {
     const entityHierarchyPermissionsChecker = accessPolicy =>
-      assertAllPermissions([
-        assertAdminPanelAccess,
-        assertEntityHierarchyEditPermissions(accessPolicy, this.models, this.recordId),
-      ]);
+      assertEntityHierarchyEditPermissions(accessPolicy, this.models, this.recordId);
+
     await this.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, entityHierarchyPermissionsChecker]),
     );
