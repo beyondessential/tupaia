@@ -685,9 +685,10 @@ function getColSelector(connection, inputColStr) {
   const jsonOperatorPattern = /->>?/g;
   if (!jsonOperatorPattern.test(inputColStr)) return inputColStr;
 
-  const [first, ...rest] = inputColStr.split(jsonOperatorPattern);
+  const params = inputColStr.split(jsonOperatorPattern);
+  const allButFirst = params.slice(1);
 
   // Turn `config->item->>colour` into `config #>> '{item,colour}'`
   // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
-  return connection.raw(`?? #>> '{${rest.map(() => '?').join(',')}}'`, [first, ...rest]);
+  return connection.raw(`?? #>> '{${allButFirst.map(() => '?').join(',')}}'`, params);
 }
