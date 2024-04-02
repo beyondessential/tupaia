@@ -4,13 +4,16 @@
  */
 
 import { TupaiaApiClient } from '@tupaia/api-client';
-import { ServerBoilerplateModelRegistry } from '@tupaia/server-boilerplate';
+import { ModelRegistry } from '@tupaia/database';
+import { ReportModel } from '@tupaia/server-boilerplate';
 
 export type RequestContext = {
   services: TupaiaApiClient;
 };
 
-export type ReportServerModelRegistry = Pick<ServerBoilerplateModelRegistry, 'report'>;
+export interface ReportServerModelRegistry extends ModelRegistry {
+  readonly report: ReportModel;
+}
 
 export type PeriodParams = {
   period?: string;

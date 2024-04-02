@@ -8,7 +8,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
 import { JOIN_TYPES } from '../TupaiaDatabase';
 
-class MapOverlayRecord extends DatabaseRecord {
+export class MapOverlayRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MAP_OVERLAY;
 }
 

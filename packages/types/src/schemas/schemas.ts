@@ -1199,14 +1199,7 @@ export const MatrixConfigSchema = {
 														]
 													}
 												},
-												"additionalProperties": false,
-												"required": [
-													"<",
-													"<=",
-													"=",
-													">",
-													">="
-												]
+												"additionalProperties": false
 											},
 											{
 												"type": [
@@ -1343,14 +1336,7 @@ export const MatrixConfigSchema = {
 														]
 													}
 												},
-												"additionalProperties": false,
-												"required": [
-													"<",
-													"<=",
-													"=",
-													">",
-													">="
-												]
+												"additionalProperties": false
 											},
 											{
 												"type": [
@@ -1436,6 +1422,726 @@ export const MatrixConfigSchema = {
 		"placeholder": {
 			"description": "A url to an image to be used when a matrix is collapsed.",
 			"type": "string"
+		}
+	},
+	"required": [
+		"name",
+		"type"
+	]
+} 
+
+export const MatrixVizBuilderConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"type": "object",
+			"properties": {
+				"link": {
+					"description": "url",
+					"type": "string"
+				},
+				"name": {
+					"description": "label",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"link",
+				"name"
+			]
+		},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"matrix"
+			]
+		},
+		"dataElementColumnTitle": {
+			"description": "Matrix viz type can specify a column as the data element column.",
+			"type": "string"
+		},
+		"hideColumnTitles": {
+			"description": "Like it sounds",
+			"type": "boolean"
+		},
+		"presentationOptions": {
+			"description": "Allows for conditional styling",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"condition"
+							]
+						},
+						"conditions": {
+							"type": "array",
+							"items": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "Specify the color of the display item",
+										"type": "string"
+									},
+									"description": {
+										"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+										"type": "string"
+									},
+									"label": {
+										"description": "Specify if you want a label to appear above the enlarged",
+										"type": "string"
+									},
+									"key": {
+										"type": "string"
+									},
+									"condition": {
+										"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<=": {
+														"type": [
+															"string",
+															"number"
+														]
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": [
+													"string",
+													"number"
+												]
+											}
+										]
+									},
+									"legendLabel": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"condition",
+									"key"
+								]
+							}
+						},
+						"showRawValue": {
+							"default": false,
+							"type": "boolean"
+						},
+						"showNestedRows": {
+							"default": false,
+							"type": "boolean"
+						},
+						"applyLocation": {
+							"description": "Specify if you want to limit where to apply the conditional presentation",
+							"type": "object",
+							"properties": {
+								"columnIndexes": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"columnIndexes"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"range"
+							]
+						},
+						"showRawValue": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"categoryPresentationOptions": {
+			"description": "Category header rows can have values just like real rows, this is how you style them",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"condition"
+							]
+						},
+						"conditions": {
+							"type": "array",
+							"items": {
+								"additionalProperties": false,
+								"type": "object",
+								"properties": {
+									"color": {
+										"description": "Specify the color of the display item",
+										"type": "string"
+									},
+									"description": {
+										"description": "Specify the text for the legend item. Also used in the enlarged cell view",
+										"type": "string"
+									},
+									"label": {
+										"description": "Specify if you want a label to appear above the enlarged",
+										"type": "string"
+									},
+									"key": {
+										"type": "string"
+									},
+									"condition": {
+										"description": "the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }",
+										"anyOf": [
+											{
+												"type": "object",
+												"properties": {
+													"=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													">=": {
+														"type": [
+															"string",
+															"number"
+														]
+													},
+													"<=": {
+														"type": [
+															"string",
+															"number"
+														]
+													}
+												},
+												"additionalProperties": false
+											},
+											{
+												"type": [
+													"string",
+													"number"
+												]
+											}
+										]
+									},
+									"legendLabel": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"condition",
+									"key"
+								]
+							}
+						},
+						"showRawValue": {
+							"default": false,
+							"type": "boolean"
+						},
+						"showNestedRows": {
+							"default": false,
+							"type": "boolean"
+						},
+						"applyLocation": {
+							"description": "Specify if you want to limit where to apply the conditional presentation",
+							"type": "object",
+							"properties": {
+								"columnIndexes": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"columnIndexes"
+							]
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"additionalProperties": false,
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": [
+								"range"
+							]
+						},
+						"showRawValue": {
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"type"
+					]
+				}
+			]
+		},
+		"valueType": {
+			"description": "Specify the valueType for formatting of the value in the matrix",
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"placeholder": {
+			"description": "A url to an image to be used when a matrix is collapsed.",
+			"type": "string"
+		},
+		"output": {
+			"description": "Configuration for rows, columns, and categories of the matrix",
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"matrix"
+					]
+				},
+				"rowField": {
+					"description": "The column of the data-table that should be used for the row values in the matrix",
+					"type": "string"
+				},
+				"categoryField": {
+					"description": "The column of the data-table that should be used to group the rows into categories",
+					"type": "string"
+				},
+				"columns": {
+					"description": "The columns of the data-table that should be included as columns in the matrix.\nCan be either a list of column names, or '*' to indicate all columns",
+					"anyOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						{
+							"type": "string"
+						}
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"rowField",
+				"type"
+			]
 		}
 	},
 	"required": [
@@ -1530,14 +2236,7 @@ export const ConditionalPresentationOptionsSchema = {
 										]
 									}
 								},
-								"additionalProperties": false,
-								"required": [
-									"<",
-									"<=",
-									"=",
-									">",
-									">="
-								]
+								"additionalProperties": false
 							},
 							{
 								"type": [
@@ -1660,14 +2359,7 @@ export const PresentationOptionConditionSchema = {
 							]
 						}
 					},
-					"additionalProperties": false,
-					"required": [
-						"<",
-						"<=",
-						"=",
-						">",
-						">="
-					]
+					"additionalProperties": false
 				},
 				{
 					"type": [
@@ -1710,6 +2402,43 @@ export const PresentationOptionRangeSchema = {
 			"type": "number"
 		}
 	}
+} 
+
+export const ConditionsObjectSchema = {
+	"type": "object",
+	"properties": {
+		"=": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		">": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"<": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		">=": {
+			"type": [
+				"string",
+				"number"
+			]
+		},
+		"<=": {
+			"type": [
+				"string",
+				"number"
+			]
+		}
+	},
+	"additionalProperties": false
 } 
 
 export const ConditionValueSchema = {
@@ -1799,14 +2528,7 @@ export const MatrixPresentationOptionsSchema = {
 												]
 											}
 										},
-										"additionalProperties": false,
-										"required": [
-											"<",
-											"<=",
-											"=",
-											">",
-											">="
-										]
+										"additionalProperties": false
 									},
 									{
 										"type": [
@@ -1876,7 +2598,6 @@ export const MatrixPresentationOptionsSchema = {
 
 export const VizComponentNameSchema = {
 	"enum": [
-		"ActiveDisasters",
 		"NoAccessDashboard",
 		"NoDataAtLevelDashboard",
 		"ProjectDescription"
@@ -2259,7 +2980,6 @@ export const ComponentConfigSchema = {
 		},
 		"componentName": {
 			"enum": [
-				"ActiveDisasters",
 				"NoAccessDashboard",
 				"NoDataAtLevelDashboard",
 				"ProjectDescription"
@@ -20303,14 +21023,7 @@ export const DashboardItemConfigSchema = {
 																]
 															}
 														},
-														"additionalProperties": false,
-														"required": [
-															"<",
-															"<=",
-															"=",
-															">",
-															">="
-														]
+														"additionalProperties": false
 													},
 													{
 														"type": [
@@ -20447,14 +21160,7 @@ export const DashboardItemConfigSchema = {
 																]
 															}
 														},
-														"additionalProperties": false,
-														"required": [
-															"<",
-															"<=",
-															"=",
-															">",
-															">="
-														]
+														"additionalProperties": false
 													},
 													{
 														"type": [
@@ -20922,7 +21628,6 @@ export const DashboardItemConfigSchema = {
 				},
 				"componentName": {
 					"enum": [
-						"ActiveDisasters",
 						"NoAccessDashboard",
 						"NoDataAtLevelDashboard",
 						"ProjectDescription"
@@ -28324,14 +29029,7 @@ export const PresentationOptionsSchema = {
 												]
 											}
 										},
-										"additionalProperties": false,
-										"required": [
-											"<",
-											"<=",
-											"=",
-											">",
-											">="
-										]
+										"additionalProperties": false
 									},
 									{
 										"type": [
@@ -29358,6 +30056,7 @@ export const MeasureConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -29545,6 +30244,7 @@ export const EntityLevelSchema = {
 		"Institute",
 		"LarvalHabitat",
 		"LocalGovernment",
+		"Maintenance",
 		"MedicalArea",
 		"MsupplyStore",
 		"NursingZone",
@@ -29883,6 +30583,7 @@ export const BaseMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -30022,6 +30723,7 @@ export const BaseMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -30151,6 +30853,7 @@ export const BaseMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -30571,6 +31274,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -30710,6 +31414,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -30839,6 +31544,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -31367,6 +32073,7 @@ export const IconMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -31506,6 +32213,7 @@ export const IconMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -31635,6 +32343,7 @@ export const IconMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32085,6 +32794,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32224,6 +32934,7 @@ export const RadiusMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -32353,6 +33064,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32777,6 +33489,7 @@ export const ColorMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32916,6 +33629,7 @@ export const ColorMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -33045,6 +33759,7 @@ export const ColorMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -33484,6 +34199,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -33623,6 +34339,7 @@ export const ShadingMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
+							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -33752,6 +34469,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
+				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -34182,6 +34900,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -34321,6 +35040,7 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -34450,6 +35170,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -34977,6 +35698,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35116,6 +35838,7 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -35245,6 +35968,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35694,6 +36418,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35833,6 +36558,7 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -35962,6 +36688,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -36385,6 +37112,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -36524,6 +37252,7 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -36653,6 +37382,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37091,6 +37821,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37230,6 +37961,7 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -37359,6 +38091,7 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37989,6 +38722,7 @@ export const EntityQuestionConfigSchema = {
 									"institute",
 									"larval_habitat",
 									"local_government",
+									"maintenance",
 									"medical_area",
 									"msupply_store",
 									"nursing_zone",
@@ -38034,6 +38768,7 @@ export const EntityQuestionConfigSchema = {
 								"institute",
 								"larval_habitat",
 								"local_government",
+								"maintenance",
 								"medical_area",
 								"msupply_store",
 								"nursing_zone",
@@ -38501,6 +39236,7 @@ export const SurveyScreenComponentConfigSchema = {
 											"institute",
 											"larval_habitat",
 											"local_government",
+											"maintenance",
 											"medical_area",
 											"msupply_store",
 											"nursing_zone",
@@ -38546,6 +39282,7 @@ export const SurveyScreenComponentConfigSchema = {
 										"institute",
 										"larval_habitat",
 										"local_government",
+										"maintenance",
 										"medical_area",
 										"msupply_store",
 										"nursing_zone",
@@ -39016,6 +39753,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"enumeration_area": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"maintenance": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -40501,14 +41244,7 @@ export const DashboardItemSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -40645,14 +41381,7 @@ export const DashboardItemSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -41120,7 +41849,6 @@ export const DashboardItemSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -48919,14 +49647,7 @@ export const DashboardItemCreateSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -49063,14 +49784,7 @@ export const DashboardItemCreateSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -49538,7 +50252,6 @@ export const DashboardItemCreateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -57331,14 +58044,7 @@ export const DashboardItemUpdateSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -57475,14 +58181,7 @@ export const DashboardItemUpdateSchema = {
 																		]
 																	}
 																},
-																"additionalProperties": false,
-																"required": [
-																	"<",
-																	"<=",
-																	"=",
-																	">",
-																	">="
-																]
+																"additionalProperties": false
 															},
 															{
 																"type": [
@@ -57950,7 +58649,6 @@ export const DashboardItemUpdateSchema = {
 						},
 						"componentName": {
 							"enum": [
-								"ActiveDisasters",
 								"NoAccessDashboard",
 								"NoDataAtLevelDashboard",
 								"ProjectDescription"
@@ -65484,6 +66182,7 @@ export const DashboardRelationSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
+					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -65575,6 +66274,7 @@ export const DashboardRelationCreateSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
+					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -65661,6 +66361,7 @@ export const DashboardRelationUpdateSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
+					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -66787,195 +67488,6 @@ export const DhisSyncQueueUpdateSchema = {
 	"additionalProperties": false
 } 
 
-export const DisasterSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"id",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterCreateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"countryCode",
-		"name",
-		"type"
-	]
-} 
-
-export const DisasterUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"countryCode": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"cyclone",
-				"earthquake",
-				"eruption",
-				"flood",
-				"tsunami"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const DisasterEventSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"id",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventCreateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"date",
-		"disasterId",
-		"organisationUnitCode",
-		"type"
-	]
-} 
-
-export const DisasterEventUpdateSchema = {
-	"type": "object",
-	"properties": {
-		"date": {
-			"type": "string",
-			"format": "date-time"
-		},
-		"disasterId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"organisationUnitCode": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"end",
-				"resolve",
-				"start"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
 export const EntitySchema = {
 	"type": "object",
 	"properties": {
@@ -67045,6 +67557,7 @@ export const EntitySchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -67069,6 +67582,7 @@ export const EntitySchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
@@ -67140,6 +67654,7 @@ export const EntityCreateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -67236,6 +67751,7 @@ export const EntityUpdateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -68466,6 +68982,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -68605,6 +69122,7 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -68734,6 +69252,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69261,6 +69780,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69400,6 +69920,7 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -69529,6 +70050,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69978,6 +70500,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -70117,6 +70640,7 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -70246,6 +70770,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -70669,6 +71194,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -70808,6 +71334,7 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -70937,6 +71464,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -71375,6 +71903,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -71514,6 +72043,7 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -71643,6 +72173,7 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72134,6 +72665,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72273,6 +72805,7 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -72402,6 +72935,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72929,6 +73463,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -73068,6 +73603,7 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -73197,6 +73733,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -73646,6 +74183,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -73785,6 +74323,7 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -73914,6 +74453,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -74337,6 +74877,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -74476,6 +75017,7 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -74605,6 +75147,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75043,6 +75586,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75182,6 +75726,7 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -75311,6 +75856,7 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75795,6 +76341,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75934,6 +76481,7 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -76063,6 +76611,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -76590,6 +77139,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -76729,6 +77279,7 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -76858,6 +77409,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77307,6 +77859,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77446,6 +77999,7 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -77575,6 +78129,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77998,6 +78553,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -78137,6 +78693,7 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -78266,6 +78823,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -78704,6 +79262,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -78843,6 +79402,7 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
+											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -78972,6 +79532,7 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
+								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -79943,6 +80504,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80021,6 +80583,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80096,6 +80659,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80183,7 +80747,8 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
-		"id"
+		"id",
+		"permission_groups"
 	]
 } 
 
@@ -82313,6 +82878,7 @@ export const EntityTypeSchema = {
 		"institute",
 		"larval_habitat",
 		"local_government",
+		"maintenance",
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
@@ -82328,26 +82894,6 @@ export const EntityTypeSchema = {
 		"water_sample",
 		"wish_sub_district",
 		"world"
-	],
-	"type": "string"
-} 
-
-export const DisasterTypeSchema = {
-	"enum": [
-		"cyclone",
-		"earthquake",
-		"eruption",
-		"flood",
-		"tsunami"
-	],
-	"type": "string"
-} 
-
-export const DisasterEventTypeSchema = {
-	"enum": [
-		"end",
-		"resolve",
-		"start"
 	],
 	"type": "string"
 } 
@@ -82564,6 +83110,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"institute",
 							"larval_habitat",
 							"local_government",
+							"maintenance",
 							"medical_area",
 							"msupply_store",
 							"nursing_zone",
@@ -82588,6 +83135,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 					"attributes",
 					"code",
 					"id",
+					"metadata",
 					"name",
 					"type"
 				]
@@ -82793,7 +83341,8 @@ export const ProjectResponseSchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -82860,7 +83409,8 @@ export const ResBodySchema = {
 		"hasPendingAccess",
 		"homeEntityCode",
 		"id",
-		"name"
+		"name",
+		"permissionGroups"
 	]
 } 
 
@@ -83456,6 +84006,7 @@ export const EntityResponseSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
+				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -83482,6 +84033,7 @@ export const EntityResponseSchema = {
 		"attributes",
 		"code",
 		"id",
+		"metadata",
 		"name",
 		"type"
 	]
@@ -83973,14 +84525,7 @@ export const DashboardWithMetadataSchema = {
 																					]
 																				}
 																			},
-																			"additionalProperties": false,
-																			"required": [
-																				"<",
-																				"<=",
-																				"=",
-																				">",
-																				">="
-																			]
+																			"additionalProperties": false
 																		},
 																		{
 																			"type": [
@@ -84117,14 +84662,7 @@ export const DashboardWithMetadataSchema = {
 																					]
 																				}
 																			},
-																			"additionalProperties": false,
-																			"required": [
-																				"<",
-																				"<=",
-																				"=",
-																				">",
-																				">="
-																			]
+																			"additionalProperties": false
 																		},
 																		{
 																			"type": [
@@ -84592,7 +85130,6 @@ export const DashboardWithMetadataSchema = {
 									},
 									"componentName": {
 										"enum": [
-											"ActiveDisasters",
 											"NoAccessDashboard",
 											"NoDataAtLevelDashboard",
 											"ProjectDescription"
@@ -92292,6 +92829,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -92431,6 +92969,7 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -92560,6 +93099,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93110,6 +93650,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93249,6 +93790,7 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -93378,6 +93920,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93850,6 +94393,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93989,6 +94533,7 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -94118,6 +94663,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -94564,6 +95110,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -94703,6 +95250,7 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -94832,6 +95380,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95293,6 +95842,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95432,6 +95982,7 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
+									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -95561,6 +96112,7 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
+						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
