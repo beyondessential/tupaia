@@ -16,7 +16,7 @@ export class ProjectRecord extends DatabaseRecord {
       parent_id: this.entity_id,
     });
     return entityRelations.map(async entityRelation =>
-      this.otherModels.entity.find({ id: entityRelation.child_id, type: 'country' }),
+      this.otherModels.entity.findOne({ id: entityRelation.child_id, type: 'country' }),
     );
   }
 
