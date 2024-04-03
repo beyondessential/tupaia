@@ -5,7 +5,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { DatePicker as DatePickerComponent } from '@tupaia/ui-components';
-import { getIsoDateString } from '@tupaia/tsutils/src';
+import { getIsoDateString } from '@tupaia/tsutils';
 import { useVizConfigContext } from '../../context';
 
 const DatePicker = styled(DatePickerComponent)`
