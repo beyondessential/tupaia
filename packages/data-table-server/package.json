@@ -34,7 +34,7 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*", 
+    "@tupaia/utils": "workspace:*",
     "express": "^4.19.2",
     "winston": "^3.3.3"
   },

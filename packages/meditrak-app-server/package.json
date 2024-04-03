@@ -35,7 +35,7 @@
     "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*", 
+    "@tupaia/utils": "workspace:*",
     "express": "^4.19.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",

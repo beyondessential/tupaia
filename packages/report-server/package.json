@@ -44,7 +44,7 @@
     "api-error-handler": "^1.0.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
-    "date-fns": "^2.29.3", 
+    "date-fns": "^2.29.3",
     "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.isplainobject": "^4.0.6",

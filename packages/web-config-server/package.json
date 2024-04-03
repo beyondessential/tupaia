@@ -38,7 +38,7 @@
     "client-sessions": "^0.8.0",
     "compression": "^1.7.2",
     "cookie-parser": "^1.4.3",
-    "cors": "^2.8.4", 
+    "cors": "^2.8.4",
     "express": "^4.19.2",
     "lodash.difference": "^4.5.0",
     "lodash.flatten": "^4.4.0",
