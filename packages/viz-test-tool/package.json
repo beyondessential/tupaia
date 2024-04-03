@@ -1,0 +1,27 @@
+{
+  "name": "@tupaia/viz-test-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tupaia types repository",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git",
+    "directory": "packages/viz-test-tool"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "scripts": {
+    "build": "rm -rf dist && npm run --prefix ../../ package:build:ts",
+    "build-dev": "npm run build",
+    "lint": "yarn package:lint",
+    "lint:fix": "yarn lint --fix",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}

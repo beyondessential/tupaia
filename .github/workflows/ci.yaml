@@ -150,6 +150,7 @@ jobs:
           - ui-components
           - ui-map-components
           - utils
+          - viz-test-tool
           - weather-api
           - web-config-server
 

@@ -12700,6 +12700,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@tupaia/viz-test-tool@workspace:packages/viz-test-tool":
+  version: 0.0.0-use.local
+  resolution: "@tupaia/viz-test-tool@workspace:packages/viz-test-tool"
+  dependencies:
+    ts-node: ^10.9.1
+  languageName: unknown
+  linkType: soft
+
 "@tupaia/weather-api@workspace:*, @tupaia/weather-api@workspace:packages/weather-api":
   version: 0.0.0-use.local
   resolution: "@tupaia/weather-api@workspace:packages/weather-api"
