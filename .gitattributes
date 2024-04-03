@@ -2,3 +2,4 @@
 *.pbxproj -text
 packages/types/src/schemas/schemas.ts linguist-generated=true
 packages/types/src/types/models.ts linguist-generated=true
+yarn.lock linguist-generated=true
