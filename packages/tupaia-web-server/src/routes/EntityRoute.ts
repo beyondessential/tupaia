@@ -37,7 +37,7 @@ export class EntityRoute extends Route<EntityRequest> {
 
     if (entity.type && typesToExclude.includes(entity.type)) {
       throw new PermissionsError(
-        `Access to entity with type ${entity.type} is denied. If you believe this is an error, please contact your system administrator.`,
+        'Access to entity is denied. If you believe this is an error, please contact your system administrator.',
       );
     }
 
