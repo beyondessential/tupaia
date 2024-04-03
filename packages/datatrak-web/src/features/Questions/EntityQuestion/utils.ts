@@ -37,12 +37,12 @@ export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
  */
 export const useAttributeFilter = (questionConfig: SurveyScreenComponentConfig) => {
   const { getAnswerByQuestionId } = useSurveyForm();
-  const attributes = questionConfig.entity?.filter?.attributes;
-  if (!attributes) {
+  const attributesFilters = questionConfig.entity?.filter?.attributes;
+  if (!attributesFilters) {
     return null;
   }
 
-  const filterValues = Object.entries(attributes).reduce((acc, [key, config]) => {
+  const filterValues = Object.entries(attributesFilters).reduce((acc, [key, config]) => {
     // Get the answer from the configured question
     const filterValue = getAnswerByQuestionId(config.questionId);
     return filterValue ? { ...acc, [key]: filterValue } : acc;
@@ -56,6 +56,7 @@ export const useAttributeFilter = (questionConfig: SurveyScreenComponentConfig) 
   return entity =>
     Object.entries(filterValues).every(([key, value]) => {
       const { attributes } = entity;
+      if (!attributes) return false;
       return attributes[key] === value;
     });
 };

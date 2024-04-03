@@ -13,5 +13,8 @@ type EntityResponse = Entity & {
 export type Params = Record<string, never>;
 export type ResBody = KeysToCamelCase<EntityResponse>[];
 
-export type ReqBody = Record<string, unknown>;
+export type ReqBody = Record<string, unknown> & {
+  filter: Record<string, unknown>;
+  fields?: string[];
+};
 export type ReqQuery = Record<string, never>;

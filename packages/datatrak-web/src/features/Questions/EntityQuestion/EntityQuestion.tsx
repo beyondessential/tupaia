@@ -33,14 +33,15 @@ const Label = styled(Typography).attrs({
 `;
 
 const useSearchResults = (searchValue, config) => {
-  const filters = useEntityBaseFilters(config);
+  const filter = useEntityBaseFilters(config);
   const { surveyProjectCode } = useSurveyForm();
   const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
   const query = useProjectEntities(surveyProjectCode, {
     searchString: debouncedSearch,
-    ...filters,
+    fields: ['id', 'parent_name', 'code', 'name', 'type', 'attributes'],
+    filter,
   });
   let entities = query?.data;
   if (attributeFilter) {
