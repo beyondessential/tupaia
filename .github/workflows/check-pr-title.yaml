@@ -27,7 +27,7 @@ jobs:
         shell: bash
         if: steps.release.conclusion == 'skipped'
         run: |
-          if ! grep -qP '^\w+(\(\w+\))?:\s' <<< "$PR_TITLE"; then
+          if ! grep -qP '^\w+(\((\w|-)+\))?:\s' <<< "$PR_TITLE"; then
             echo "::warning::PR title should be in Conventional Commit style, e.g. 'feat: ...'"
             exit 1
           fi
@@ -36,7 +36,7 @@ jobs:
         if: steps.release.conclusion == 'skipped'
         shell: bash
         run: |
-          if ! grep -qP '^(ci|db|deps|doc|env|feat|fix|fmt|merge|refactor|repo|revert|style|test|tweak)(\(\w+\))?:\s' <<< "$PR_TITLE"; then
+          if ! grep -qP '^(ci|db|deps|doc|env|feat|fix|fmt|merge|refactor|repo|revert|style|test|tweak)(\((\w|-)+\))?:\s' <<< "$PR_TITLE"; then
             echo "::warning::PR title Conventional Type is not on the list; refer to CONTRIBUTING.md"
             exit 1
           fi
@@ -45,7 +45,7 @@ jobs:
         if: steps.release.conclusion == 'skipped' && startsWith(github.event.pull_request.title, 'feat')
         shell: bash
         run: |
-          if ! grep -qP '^\w+(\(\w+\))?:\s[A-Z]+-[0-9]+(:\s+\w+)?' <<< "$PR_TITLE"; then
+          if ! grep -qP '^\w+(\((\w|-)+\))?:\s[A-Z]+-[0-9]+(:\s+\w+)?' <<< "$PR_TITLE"; then
             echo "::warning::PR title should start with ticket number, e.g. 'feat(scope): ABC-123: ...'"
             exit 1
           fi
