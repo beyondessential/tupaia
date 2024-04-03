@@ -20,7 +20,7 @@ const Container = styled.main`
   min-height: 100vh;
 `;
 
-export const App = ({ Navbar, Footer }) => {
+export const App = ({ NavPanel, Footer }) => {
   const { data, isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
@@ -34,7 +34,7 @@ export const App = ({ Navbar, Footer }) => {
   return (
     <StateProvider>
       <Container>
-        {Navbar && <Navbar user={user} />}
+        {NavPanel && <NavPanel user={user} />}
         <Switch>
           <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
             <CreateNew />
@@ -50,11 +50,11 @@ export const App = ({ Navbar, Footer }) => {
 };
 
 App.propTypes = {
-  Navbar: PropTypes.node,
+  NavPanel: PropTypes.node,
   Footer: PropTypes.node,
 };
 
 App.defaultProps = {
-  Navbar: null,
+  NavPanel: null,
   Footer: null,
 };

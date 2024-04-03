@@ -6,8 +6,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { Navbar, Footer } from './widgets';
+import { NavPanel, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getUser, PrivateRoute } from './authentication';
@@ -15,13 +16,13 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { labelToId } from './utilities';
 
+const Wrapper = styled.div`
+  display: flex;
+`;
+
+const Main = styled.main``;
+
 export const App = ({ user }) => {
-  const headerEl = React.useRef(null);
-
-  const getHeaderEl = () => {
-    return headerEl;
-  };
-
   return (
     <Switch>
       <Route path="/login" exact>
@@ -31,43 +32,50 @@ export const App = ({ user }) => {
         <LogoutPage />
       </Route>
       <PrivateRoute path="/">
-        <Navbar
-          links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
-          user={user}
-        />
-        <div ref={headerEl} />
-        <Switch>
-          {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-            <Route
-              key={route.to}
-              path={route.to}
-              render={({ match }) => {
-                return (
-                  <>
-                    <TabsToolbar
-                      links={route.tabs.map(tab => ({
-                        ...tab,
-                        id: `app-subTab-${labelToId(tab.label)}`,
-                      }))}
-                      maxWidth="xl"
-                      baseRoute={match.url}
-                    />
-                    <Switch>
-                      {route.tabs.map(tab => (
-                        <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                          <tab.component getHeaderEl={getHeaderEl} />
-                        </Route>
-                      ))}
-                      <Redirect to={route.to} />
-                    </Switch>
-                  </>
-                );
-              }}
-            />
-          ))}
-          <Redirect to="surveys" />
-        </Switch>
-        <Footer />
+        <Wrapper>
+          <NavPanel
+            links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+            user={user}
+          />
+          <Main>
+            <Switch>
+              {[...ROUTES, ...PROFILE_ROUTES].map(route => (
+                <Route
+                  key={route.to}
+                  path={route.to}
+                  render={({ match }) => {
+                    return (
+                      <>
+                        <TabsToolbar
+                          links={route.tabs.map(tab => ({
+                            ...tab,
+                            id: `app-subTab-${labelToId(tab.label)}`,
+                          }))}
+                          maxWidth="xl"
+                          baseRoute={match.url}
+                        />
+                        <Switch>
+                          {route.tabs.map(tab => (
+                            <Route
+                              key={`${route.to}-${tab.to}`}
+                              path={`${route.to}${tab.to}`}
+                              exact
+                            >
+                              <tab.component />
+                            </Route>
+                          ))}
+                          <Redirect to={route.to} />
+                        </Switch>
+                      </>
+                    );
+                  }}
+                />
+              ))}
+              <Redirect to="surveys" />
+            </Switch>
+            <Footer />
+          </Main>
+        </Wrapper>
       </PrivateRoute>
       <Redirect
         to={{

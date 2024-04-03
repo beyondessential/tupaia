@@ -5,7 +5,6 @@
 
 import groupBy from 'lodash.groupby';
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { getSortByKey } from '@tupaia/utils';
 import { get } from '../../VizBuilderApp/api';
@@ -39,16 +38,11 @@ const fetchBranch = async (rootNode, node) => {
   }));
 };
 
-export const EntityHierarchiesPage = ({ getHeaderEl }) => (
+export const EntityHierarchiesPage = () => (
   <TreeResourcePage
     title="Entity Hierarchies"
     fetchRoot={fetchRoot}
     fetchBranch={fetchBranch}
-    getHeaderEl={getHeaderEl}
     ExportModalComponent={EntityHierarchyExportModal}
   />
 );
-
-EntityHierarchiesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

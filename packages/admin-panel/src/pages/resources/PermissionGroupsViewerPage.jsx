@@ -3,12 +3,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
 import { useQuery } from 'react-query';
 import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import * as COLORS from '../../theme/colors';
 import { get } from '../../VizBuilderApp/api';
@@ -57,21 +55,16 @@ const usePermissionGroups = () => {
 
   return { fetchRoot, fetchBranch };
 };
-export const PermissionGroupsViewerPage = ({ getHeaderEl }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title="Permission Groups" />, getHeaderEl);
+export const PermissionGroupsViewerPage = () => {
   const { fetchRoot, fetchBranch } = usePermissionGroups();
 
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <Header title="Permission Groups" />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
       </Container>
       <LogsModal />
     </>
   );
-};
-
-PermissionGroupsViewerPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
 };

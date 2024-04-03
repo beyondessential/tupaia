@@ -49,7 +49,7 @@ const FIELDS = [
   },
 ];
 
-export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
+export const DashboardItemsPage = ({ vizBuilderBaseUrl, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -138,14 +138,12 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
       columns={columns}
       importConfig={importConfig}
       LinksComponent={renderNewDashboardVizButton}
-      getHeaderEl={getHeaderEl}
       {...props}
     />
   );
 };
 
 DashboardItemsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   vizBuilderBaseUrl: PropTypes.string,
 };
 

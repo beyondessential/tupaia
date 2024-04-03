@@ -10,7 +10,7 @@ const themeName = 'Tupaia';
 
 const palette = {
   primary: {
-    main: COLORS.BLUE,
+    main: COLORS.LIGHT_BLACK,
     light: COLORS.LIGHT_BLUE,
     dark: COLORS.DARK_BLUE,
   },

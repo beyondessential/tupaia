@@ -6,8 +6,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiContainer from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import { ImportModal } from '../importExport';
 import { CreateButton as SingleCreateButton, BulkCreateButton } from '../editor';
 
@@ -17,21 +15,9 @@ const HeaderButtonContainer = styled.div`
   column-gap: 5px;
 `;
 
-const HeaderMain = styled.header`
-  background-color: ${props => props.theme.palette.primary.main};
-  color: white;
-`;
-
-const HeaderInner = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 190px;
-  padding-bottom: 1.25rem;
-`;
+const HeaderMain = styled.header``;
 
 export const Header = ({
-  title,
   importConfig,
   createConfig,
   exportConfig,
@@ -43,17 +29,12 @@ export const Header = ({
 
   return (
     <HeaderMain>
-      <MuiContainer maxWidth="xl">
-        <HeaderInner>
-          <Typography variant="h1">{title}</Typography>
-          <HeaderButtonContainer>
-            {importConfig && <ImportModal {...importConfig} />}
-            {createConfig && <CreateButton {...createConfig} />}
-            {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
-            {LinksComponent && <LinksComponent />}
-          </HeaderButtonContainer>
-        </HeaderInner>
-      </MuiContainer>
+      <HeaderButtonContainer>
+        {importConfig && <ImportModal {...importConfig} />}
+        {createConfig && <CreateButton {...createConfig} />}
+        {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
+        {LinksComponent && <LinksComponent />}
+      </HeaderButtonContainer>
     </HeaderMain>
   );
 };

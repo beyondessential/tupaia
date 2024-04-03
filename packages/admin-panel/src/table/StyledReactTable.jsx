@@ -8,13 +8,8 @@ import ReactTable from 'react-table-v6';
 import * as COLORS from '../theme/colors';
 
 export const StyledReactTable = styled(ReactTable)`
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-block: 2.5rem;
   border: none;
-
-  .rt-table {
-    overflow: visible; // to make box shadows visible
-  }
 
   .rt-tbody .rt-tr .rt-td,
   .rt-thead.-header .rt-th,
@@ -32,11 +27,11 @@ export const StyledReactTable = styled(ReactTable)`
 
     .rt-th {
       font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
+      font-size: 1rem;
       color: ${COLORS.TEXT_DARKGREY};
       text-align: left;
-      padding: 6px 5px;
+      padding-block: 0.375rem;
+      padding-inline: 0.32rem;
     }
   }
 
@@ -68,7 +63,6 @@ export const StyledReactTable = styled(ReactTable)`
 
   // Body
   .rt-tbody {
-    overflow: visible;
     background: white;
     border-left: 1px solid ${COLORS.GREY_DE};
     border-right: 1px solid ${COLORS.GREY_DE};
@@ -83,13 +77,12 @@ export const StyledReactTable = styled(ReactTable)`
   }
 
   .rt-tr {
-    padding-left: 10px;
-    padding-right: 25px;
+    padding-inline-start: 0.625rem;
+    padding-inline-end: 1.56rem;
     align-items: center;
 
     .rt-td {
-      font-size: 15px;
-      line-height: 18px;
+      font-size: 1rem;
       color: ${COLORS.TEXT_MIDGREY};
       padding-top: 1rem;
       padding-bottom: 1rem;
@@ -105,7 +98,7 @@ export const StyledReactTable = styled(ReactTable)`
   .-pagination {
     box-shadow: none;
     border: none;
-    padding: 20px 0 0;
+    padding: 1.25rem 0 0;
     align-items: center;
 
     .MuiButtonBase-root:not(:hover) {

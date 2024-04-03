@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Drawer } from '@material-ui/core';
 import { HomeButton, NavBar as BaseNavBar } from '@tupaia/ui-components';
 import { ProfileButton } from '../authentication';
 
@@ -20,7 +21,7 @@ const StyledHomeButton = styled(HomeButton)`
   margin-bottom: 14px;
 `;
 
-const StyledNavBar = styled(BaseNavBar)`
+const StyledNavBar = styled.div`
   .mobile {
     display: none;
   }
@@ -42,22 +43,32 @@ const StyledNavBar = styled(BaseNavBar)`
   }
 `;
 
-export const Navbar = ({ links, user }) => (
-  <StyledNavBar
-    HomeButton={
-      <>
-        <StyledHomeButton source="/admin-panel-logo-white.svg" className="desktop" />
-        <StyledHomeButton source="/tupaia.svg" className="mobile" />
-      </>
-    }
-    links={links}
-    Profile={() => <ProfileButton user={user} />}
-    isTabActive={isTabActive}
-    maxWidth="xl"
-  />
+const Wrapper = styled.div`
+  min-width: 240px;
+  background-color: ${props => props.theme.palette.primary.main};
+`;
+
+const Container = styled.div``;
+
+export const NavPanel = ({ links, user }) => (
+  <Wrapper>
+    <Container>Hi</Container>
+  </Wrapper>
+  // <StyledNavBar
+  //   HomeButton={
+  //     <>
+  //       <StyledHomeButton source="/admin-panel-logo-white.svg" className="desktop" />
+  //       <StyledHomeButton source="/tupaia.svg" className="mobile" />
+  //     </>
+  //   }
+  //   links={links}
+  //   Profile={() => <ProfileButton user={user} />}
+  //   isTabActive={isTabActive}
+  //   maxWidth="xl"
+  // />
 );
 
-Navbar.propTypes = {
+NavPanel.propTypes = {
   links: PropTypes.arrayOf(PropTypes.shape({})),
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -67,6 +78,6 @@ Navbar.propTypes = {
   }).isRequired,
 };
 
-Navbar.defaultProps = {
+NavPanel.defaultProps = {
   links: [],
 };

@@ -67,7 +67,7 @@ const getDataElementFields = translate => {
   ];
 };
 
-export const DataElementsPage = ({ getHeaderEl, translate }) => {
+export const DataElementsPage = ({ translate }) => {
   const DATA_ELEMENT_FIELDS = getDataElementFields(translate);
   const importConfig = getImportConfigs(translate, {
     actionConfig: {
@@ -95,7 +95,6 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
       ]}
       importConfig={importConfig}
       createConfig={createConfig}
-      getHeaderEl={getHeaderEl}
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
     />
@@ -103,6 +102,5 @@ export const DataElementsPage = ({ getHeaderEl, translate }) => {
 };
 
 DataElementsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

@@ -184,14 +184,9 @@ const getRoutes = (adminUrl, translate) => {
 
 const AdminPanelApp = ({ user }) => {
   const { translate } = useI18n();
-  const headerEl = React.useRef(null);
   const { path } = useRouteMatch();
   const adminUrl = useAdminPanelUrl();
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
-
-  const getHeaderEl = () => {
-    return headerEl;
-  };
 
   const routes = getRoutes(adminUrl, translate);
 
@@ -210,7 +205,6 @@ const AdminPanelApp = ({ user }) => {
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <AdminPanelNavbar user={user} links={routes} />
-        <div ref={headerEl} />
         <Switch>
           {[...routes].map(route => (
             <LesmisAdminRoute
@@ -224,7 +218,7 @@ const AdminPanelApp = ({ user }) => {
                     <Switch>
                       {route.tabs.map(tab => (
                         <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                          <tab.component getHeaderEl={getHeaderEl} translate={translate} />
+                          <tab.component translate={translate} />
                         </Route>
                       ))}
                       <Redirect to={`${route.to}`} />

@@ -123,7 +123,7 @@ const FIELDS = [
   },
 ];
 
-export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
+export const MapOverlaysPage = ({ vizBuilderBaseUrl, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -213,14 +213,12 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
       columns={COLUMNS}
       importConfig={importConfig}
       LinksComponent={renderNewMapOverlayVizButton}
-      getHeaderEl={getHeaderEl}
       {...props}
     />
   );
 };
 
 MapOverlaysPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   vizBuilderBaseUrl: PropTypes.string,
 };
 

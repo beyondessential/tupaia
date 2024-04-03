@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -114,17 +113,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const DashboardRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const DashboardRelationsPage = props => (
   <ResourcePage
     title="Dashboard Relations"
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-DashboardRelationsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

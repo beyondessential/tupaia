@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
@@ -113,18 +112,13 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
+export const EntitiesPage = props => (
   <ResourcePage
     title="Entities"
     endpoint={ENTITIES_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-EntitiesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};
