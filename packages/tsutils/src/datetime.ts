@@ -9,7 +9,7 @@ import momentTimezone from 'moment-timezone';
 export const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
- * @returns ISO date string in the format "yyyy-mm-dd".
+ * @returns ISO date string in the format "yyyy-mm-dd", discarding the timestamp.
  * @remarks Assumes the input date object is valid.
  */
 export const getIsoDateString = (date: Date) => date.toISOString().slice(0, 10);
