@@ -53,6 +53,7 @@ describe('GET entity hierarchy', () => {
   }));
 
   before(async () => {
+    await resetTestData();
     const TO = await findOrCreateDummyCountryEntity(models, { code: 'TO' });
     const DL = await findOrCreateDummyCountryEntity(models, { code: 'DL' });
 
