@@ -11,30 +11,33 @@ type FrontEndExcludedException = {
   permissionGroups: PermissionGroup['name'][];
 };
 
-const getUserHasAccessToExcludedTypes = async (
+const getShouldExcludeTypes = async (
   models: TupaiaWebServerModelRegistry,
   exceptions?: FrontEndExcludedException,
   accessPolicy?: AccessPolicy,
 ) => {
+  // If there are no exceptions, then exclude the types
   if (!exceptions) return true;
   const allCountries = await models.country.find({});
 
   const allCountryCodes = allCountries.map(country => country.code);
 
+  // If there are no permission groups in the exceptions, then exclude the types
   if (!exceptions?.permissionGroups) {
-    throw new Error(
-      `'frontendExcluded.exceptions' config should have 'permissionGroups' specified`,
-    );
+    return true;
   }
+
   const permissionGroups = exceptions?.permissionGroups || [];
   const userPermissionGroups = accessPolicy
     ? accessPolicy?.getPermissionGroups(allCountryCodes)
     : [];
+
   const userHasAccessToExcludedTypes = permissionGroups.some(permissionGroup =>
     userPermissionGroups.includes(permissionGroup),
   );
 
-  return userHasAccessToExcludedTypes;
+  // If the user has any of the permission groups in the exceptions, then do not exclude the types
+  return !userHasAccessToExcludedTypes;
 };
 
 export const getTypesToExclude = async (
@@ -46,6 +49,9 @@ export const getTypesToExclude = async (
   const project = await models.project.find({
     code: projectCode,
   });
+
+  if (!project[0]) throw new Error(`Project with code '${projectCode}' not found`);
+
   const { config } = project[0];
   const { typesExcludedFromWebFrontend } = models.entity;
 
@@ -53,13 +59,9 @@ export const getTypesToExclude = async (
     const typesFilter = [];
     for (const excludedConfig of config?.frontendExcluded) {
       const { types, exceptions } = excludedConfig;
-      const userHasAccessToExcludedTypes = await getUserHasAccessToExcludedTypes(
-        models,
-        exceptions,
-        accessPolicy,
-      );
+      const shouldExcludeTypes = await getShouldExcludeTypes(models, exceptions, accessPolicy);
 
-      if (!userHasAccessToExcludedTypes) {
+      if (shouldExcludeTypes) {
         typesFilter.push(...types);
       } else {
         if (useDefaultIfNoExclusions) {
