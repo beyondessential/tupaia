@@ -12,7 +12,7 @@ import {
   GaugeChartConfigSchema,
   IconMapOverlayConfigSchema,
   LineChartConfigSchema,
-  MatrixConfigSchema,
+  MatrixVizBuilderConfigSchema,
   MultiPhotographViewConfigSchema,
   MultiSingleValueViewConfigSchema,
   MultiValueRowViewConfigSchema,
@@ -167,9 +167,14 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Matrix
   MATRIX: {
     name: 'Matrix',
-    schema: MatrixConfigSchema,
+    schema: MatrixVizBuilderConfigSchema,
+    vizMatchesType: viz => viz.type === 'matrix',
     initialConfig: {
       type: 'matrix',
+      output: {
+        type: 'matrix',
+        rowField: '',
+      },
     },
   },
 
@@ -185,6 +190,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
   ICON: {
     name: 'Icon',
     schema: IconMapOverlayConfigSchema,
+    vizMatchesType: viz => viz.displayType === 'icon',
     initialConfig: {
       displayType: 'icon',
       icon: 'pin',
@@ -214,6 +220,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
   SPECTRUM: {
     name: 'Spectrum',
     schema: SpectrumMapOverlayConfigSchema,
+    vizMatchesType: viz => viz.displayType === 'shaded-spectrum',
     initialConfig: {
       displayType: 'shaded-spectrum',
       scaleColorScheme: 'default',
