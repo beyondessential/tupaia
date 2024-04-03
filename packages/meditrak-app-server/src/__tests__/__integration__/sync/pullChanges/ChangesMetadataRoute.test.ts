@@ -11,7 +11,6 @@ import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from 
 import { MeditrakAppServerModelRegistry } from '../../../../types';
 import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
-import { CAT_USER_SESSION } from '../../fixtures';
 
 import { PERMISSIONS_BASED_SYNC_MIN_APP_VERSION } from '../../../../routes/sync/pullChanges/supportsPermissionsBasedSync';
 import { BASIC_ACCESS } from '../../../utilities/grantUserAccess';
@@ -55,7 +54,6 @@ describe('changes/metadata', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

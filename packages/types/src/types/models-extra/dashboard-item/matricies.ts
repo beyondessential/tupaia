@@ -40,6 +40,32 @@ export type MatrixConfig = BaseConfig & {
   placeholder?: string;
 };
 
+export type MatrixVizBuilderConfig = MatrixConfig & {
+  /**
+   * @description Configuration for rows, columns, and categories of the matrix
+   */
+  output?: {
+    type: 'matrix';
+
+    /**
+     * @description The column of the data-table that should be used for the row values in the matrix
+     */
+    rowField: string;
+
+    /**
+     * @description The column of the data-table that should be used to group the rows into categories
+     */
+    categoryField?: string;
+
+    /**
+     * @description
+     * The columns of the data-table that should be included as columns in the matrix.
+     * Can be either a list of column names, or '*' to indicate all columns
+     */
+    columns?: string | string[];
+  };
+};
+
 type BasePresentationOption = {
   /**
    * @description Specify the color of the display item
@@ -84,7 +110,7 @@ export type PresentationOptionCondition = BasePresentationOption & {
   /**
    * @description the value to match against exactly, or an object with match criteria e.g. { '>=': 5.5 }
    */
-  condition: ConditionValue | Record<ConditionType, ConditionValue>;
+  condition: ConditionValue | ConditionsObject;
   legendLabel?: string;
 };
 
@@ -92,6 +118,8 @@ export type PresentationOptionRange = BasePresentationOption & {
   min?: number;
   max?: number;
 };
+
+export type ConditionsObject = { [key in ConditionType]?: ConditionValue };
 
 export type ConditionValue = string | number;
 
