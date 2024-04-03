@@ -30056,7 +30056,6 @@ export const MeasureConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -30244,7 +30243,6 @@ export const EntityLevelSchema = {
 		"Institute",
 		"LarvalHabitat",
 		"LocalGovernment",
-		"Maintenance",
 		"MedicalArea",
 		"MsupplyStore",
 		"NursingZone",
@@ -30583,7 +30581,6 @@ export const BaseMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -30723,7 +30720,6 @@ export const BaseMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -30853,7 +30849,6 @@ export const BaseMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -31274,7 +31269,6 @@ export const SpectrumMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -31414,7 +31408,6 @@ export const SpectrumMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -31544,7 +31537,6 @@ export const SpectrumMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32073,7 +32065,6 @@ export const IconMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32213,7 +32204,6 @@ export const IconMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -32343,7 +32333,6 @@ export const IconMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32794,7 +32783,6 @@ export const RadiusMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -32934,7 +32922,6 @@ export const RadiusMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -33064,7 +33051,6 @@ export const RadiusMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -33489,7 +33475,6 @@ export const ColorMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -33629,7 +33614,6 @@ export const ColorMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -33759,7 +33743,6 @@ export const ColorMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -34199,7 +34182,6 @@ export const ShadingMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -34339,7 +34321,6 @@ export const ShadingMapOverlayConfigSchema = {
 							"Institute",
 							"LarvalHabitat",
 							"LocalGovernment",
-							"Maintenance",
 							"MedicalArea",
 							"MsupplyStore",
 							"NursingZone",
@@ -34469,7 +34450,6 @@ export const ShadingMapOverlayConfigSchema = {
 				"Institute",
 				"LarvalHabitat",
 				"LocalGovernment",
-				"Maintenance",
 				"MedicalArea",
 				"MsupplyStore",
 				"NursingZone",
@@ -34900,7 +34880,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35040,7 +35019,6 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -35170,7 +35148,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35698,7 +35675,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -35838,7 +35814,6 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -35968,7 +35943,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -36418,7 +36392,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -36558,7 +36531,6 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -36688,7 +36660,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37112,7 +37083,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37252,7 +37222,6 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -37382,7 +37351,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37821,7 +37789,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -37961,7 +37928,6 @@ export const MapOverlayConfigSchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -38091,7 +38057,6 @@ export const MapOverlayConfigSchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -38722,7 +38687,6 @@ export const EntityQuestionConfigSchema = {
 									"institute",
 									"larval_habitat",
 									"local_government",
-									"maintenance",
 									"medical_area",
 									"msupply_store",
 									"nursing_zone",
@@ -38768,7 +38732,6 @@ export const EntityQuestionConfigSchema = {
 								"institute",
 								"larval_habitat",
 								"local_government",
-								"maintenance",
 								"medical_area",
 								"msupply_store",
 								"nursing_zone",
@@ -39236,7 +39199,6 @@ export const SurveyScreenComponentConfigSchema = {
 											"institute",
 											"larval_habitat",
 											"local_government",
-											"maintenance",
 											"medical_area",
 											"msupply_store",
 											"nursing_zone",
@@ -39282,7 +39244,6 @@ export const SurveyScreenComponentConfigSchema = {
 										"institute",
 										"larval_habitat",
 										"local_government",
-										"maintenance",
 										"medical_area",
 										"msupply_store",
 										"nursing_zone",
@@ -39757,12 +39718,6 @@ export const RecentEntitiesForCountrySchema = {
 			"items": {
 				"type": "string"
 			}
-		},
-		"maintenance": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
 		}
 	},
 	"additionalProperties": false
@@ -39780,6 +39735,105 @@ export const UserAccountPreferencesSchema = {
 		"recent_entities": {
 			"type": "object",
 			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+} 
+
+export const FrontEndExcludedExceptionSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroups"
+	]
+} 
+
+export const FrontEndExcludedConfigSchema = {
+	"type": "object",
+	"properties": {
+		"types": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"exceptions": {
+			"type": "object",
+			"properties": {
+				"permissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroups"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"types"
+	]
+} 
+
+export const ProjectConfigSchema = {
+	"type": "object",
+	"properties": {
+		"frontendExcluded": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"types": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"exceptions": {
+						"type": "object",
+						"properties": {
+							"permissionGroups": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"permissionGroups"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"types"
+				]
+			}
+		},
+		"permanentRegionLabels": {
+			"type": "boolean"
+		},
+		"tileSets": {
+			"type": "string"
+		},
+		"includeDefaultTileSets": {
+			"type": "boolean"
+		},
+		"projectDashboardHeader": {
+			"type": "string"
 		}
 	},
 	"additionalProperties": false
@@ -66182,7 +66236,6 @@ export const DashboardRelationSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
-					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -66274,7 +66327,6 @@ export const DashboardRelationCreateSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
-					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -66361,7 +66413,6 @@ export const DashboardRelationUpdateSchema = {
 					"institute",
 					"larval_habitat",
 					"local_government",
-					"maintenance",
 					"medical_area",
 					"msupply_store",
 					"nursing_zone",
@@ -67557,7 +67608,6 @@ export const EntitySchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -67654,7 +67704,6 @@ export const EntityCreateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -67751,7 +67800,6 @@ export const EntityUpdateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -68982,7 +69030,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69122,7 +69169,6 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -69252,7 +69298,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69780,7 +69825,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -69920,7 +69964,6 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -70050,7 +70093,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -70500,7 +70542,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -70640,7 +70681,6 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -70770,7 +70810,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -71194,7 +71233,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -71334,7 +71372,6 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -71464,7 +71501,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -71903,7 +71939,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72043,7 +72078,6 @@ export const MapOverlaySchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -72173,7 +72207,6 @@ export const MapOverlaySchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72665,7 +72698,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -72805,7 +72837,6 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -72935,7 +72966,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -73463,7 +73493,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -73603,7 +73632,6 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -73733,7 +73761,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -74183,7 +74210,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -74323,7 +74349,6 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -74453,7 +74478,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -74877,7 +74901,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75017,7 +75040,6 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -75147,7 +75169,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75586,7 +75607,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -75726,7 +75746,6 @@ export const MapOverlayCreateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -75856,7 +75875,6 @@ export const MapOverlayCreateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -76341,7 +76359,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -76481,7 +76498,6 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -76611,7 +76627,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77139,7 +77154,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77279,7 +77293,6 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -77409,7 +77422,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77859,7 +77871,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -77999,7 +78010,6 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -78129,7 +78139,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -78553,7 +78562,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -78693,7 +78701,6 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -78823,7 +78830,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -79262,7 +79268,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -79402,7 +79407,6 @@ export const MapOverlayUpdateSchema = {
 											"Institute",
 											"LarvalHabitat",
 											"LocalGovernment",
-											"Maintenance",
 											"MedicalArea",
 											"MsupplyStore",
 											"NursingZone",
@@ -79532,7 +79536,6 @@ export const MapOverlayUpdateSchema = {
 								"Institute",
 								"LarvalHabitat",
 								"LocalGovernment",
-								"Maintenance",
 								"MedicalArea",
 								"MsupplyStore",
 								"NursingZone",
@@ -80504,7 +80507,6 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80583,7 +80585,6 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80659,7 +80660,6 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -80708,7 +80708,54 @@ export const ProjectSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -80760,7 +80807,54 @@ export const ProjectCreateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -80807,7 +80901,54 @@ export const ProjectUpdateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -82878,7 +83019,6 @@ export const EntityTypeSchema = {
 		"institute",
 		"larval_habitat",
 		"local_government",
-		"maintenance",
 		"medical_area",
 		"msupply_store",
 		"nursing_zone",
@@ -83110,7 +83250,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"institute",
 							"larval_habitat",
 							"local_government",
-							"maintenance",
 							"medical_area",
 							"msupply_store",
 							"nursing_zone",
@@ -83287,6 +83426,53 @@ export const ProjectResponseSchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"dashboardGroupName": {
@@ -83355,6 +83541,53 @@ export const ResBodySchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"dashboardGroupName": {
@@ -84006,7 +84239,6 @@ export const EntityResponseSchema = {
 				"institute",
 				"larval_habitat",
 				"local_government",
-				"maintenance",
 				"medical_area",
 				"msupply_store",
 				"nursing_zone",
@@ -92829,7 +93061,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -92969,7 +93200,6 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -93099,7 +93329,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93650,7 +93879,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -93790,7 +94018,6 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -93920,7 +94147,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -94393,7 +94619,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -94533,7 +94758,6 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -94663,7 +94887,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95110,7 +95333,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95250,7 +95472,6 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -95380,7 +95601,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95842,7 +96062,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",
@@ -95982,7 +96201,6 @@ export const TranslatedMapOverlaySchema = {
 									"Institute",
 									"LarvalHabitat",
 									"LocalGovernment",
-									"Maintenance",
 									"MedicalArea",
 									"MsupplyStore",
 									"NursingZone",
@@ -96112,7 +96330,6 @@ export const TranslatedMapOverlaySchema = {
 						"Institute",
 						"LarvalHabitat",
 						"LocalGovernment",
-						"Maintenance",
 						"MedicalArea",
 						"MsupplyStore",
 						"NursingZone",

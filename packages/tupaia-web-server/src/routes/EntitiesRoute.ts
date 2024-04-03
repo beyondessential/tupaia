@@ -49,27 +49,23 @@ const parseFilter = (filter: Record<string, any>) =>
 
 export class EntitiesRoute extends Route<EntitiesRequest> {
   public async buildResponse() {
-    const { params, query, ctx, models } = this.req;
+    const { params, query, ctx, models, accessPolicy } = this.req;
     const { rootEntityCode, projectCode } = params;
     const { filter = DEFAULT_FILTER, fields = DEFAULT_FIELDS } = query;
     const formattedFilter = parseFilter(filter);
 
-    const project = (
-      await ctx.services.central.fetchResources('projects', {
-        filter: { code: projectCode },
-        columns: ['config'],
-      })
-    )[0];
-    const { config } = project;
-
-    const { typesExcludedFromWebFrontend } = models.entity;
+    const frontendExcludedFilter = await generateFrontendExcludedFilter(
+      models,
+      accessPolicy,
+      projectCode,
+    );
 
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
       projectCode,
       rootEntityCode,
       {
         filter: {
-          ...generateFrontendExcludedFilter(config, typesExcludedFromWebFrontend),
+          ...frontendExcludedFilter,
           ...formattedFilter,
         },
         fields,
