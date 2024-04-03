@@ -19,9 +19,21 @@
     "build-dev": "npm run build",
     "lint": "yarn package:lint",
     "lint:fix": "yarn lint --fix",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "yarn package:test",
+    "compare": "ts-node src/index.ts compare",
+    "health-check": "ts-node src/index.ts health-check"
+  },
+  "dependencies": {
+    "@slack/web-api": "^7.0.3",
+    "@tupaia/api-client": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
+    "@tupaia/types": "workspace:*",
+    "@tupaia/utils": "workspace:*",
+    "cli-progress": "^3.12.0",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
+    "@types/cli-progress": "^3.11.5",
     "ts-node": "^10.9.1"
   }
 }
