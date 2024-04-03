@@ -24,7 +24,6 @@ import {
 import { MeditrakAppServerModelRegistry } from '../../../../types';
 import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
-import { CAT_USER_SESSION } from '../../fixtures';
 import { upsertDummyQuestion } from '../upsertDummyQuestion';
 import {
   findRecordsWithPermissions,
@@ -125,7 +124,6 @@ describe('changes (GET)', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

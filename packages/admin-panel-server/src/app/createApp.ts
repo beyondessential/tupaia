@@ -42,6 +42,8 @@ import {
   FetchTransformSchemasRoute,
   FetchDataTableBuiltInParamsRequest,
   FetchDataTableBuiltInParamsRoute,
+  ExportEntityHierarchiesRequest,
+  ExportEntityHierarchiesRoute,
 } from '../routes';
 import { authHandlerProvider } from '../auth';
 
@@ -104,6 +106,10 @@ export async function createApp() {
     .get(
       'export/mapOverlayVisualisation/:mapOverlayVisualisationId',
       handleWith(ExportMapOverlayVisualisationRoute),
+    )
+    .get<ExportEntityHierarchiesRequest>(
+      'export/hierarchies',
+      handleWith(ExportEntityHierarchiesRoute),
     )
     .post<ExportDashboardVisualisationRequest>(
       'export/dashboardVisualisation',
