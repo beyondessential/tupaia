@@ -16,6 +16,7 @@ import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 dotenv.config({
   path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
+  override: true,
 });
 
 const db = Knex({
