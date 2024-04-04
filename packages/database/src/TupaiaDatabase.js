@@ -690,5 +690,5 @@ function getColSelector(connection, inputColStr) {
 
   // Turn `config->item->>colour` into `config #>> '{item,colour}'`
   // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
-  return connection.raw(`?? #>> '{${allButFirst.map(() => '?').join(',')}}'`, params);
+  return connection.raw(`?? #>> '{${allButFirst.map(() => '??').join(',')}}'`, params);
 }
