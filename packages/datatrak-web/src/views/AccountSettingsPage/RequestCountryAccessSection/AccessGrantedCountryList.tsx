@@ -56,6 +56,8 @@ interface AccessGrantedCountryListProps {
 
 export const AccessGrantedCountryList = ({ countryAccessList }: AccessGrantedCountryListProps) => {
   const { data: countries = [], isFetched, isLoading } = countryAccessList;
+  const grantedCountries = countries.filter(country => country.hasAccess);
+
   const emptyStateText = isLoading || !isFetched ? 'Loading…' : 'None';
 
   return (
@@ -67,8 +69,8 @@ export const AccessGrantedCountryList = ({ countryAccessList }: AccessGrantedCou
           </TableRow>
         </TableHead>
         <TableBody>
-          {countries.length > 0 ? (
-            countries.map(({ id, name }) => (
+          {grantedCountries.length > 0 ? (
+            grantedCountries.map(({ id, name }) => (
               <TableRow key={id}>
                 <TableCell>{name}</TableCell>
               </TableRow>
