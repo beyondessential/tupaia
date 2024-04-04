@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { reduceToDictionary, respond } from '@tupaia/utils';
+import { respond } from '@tupaia/utils';
 
 const mapRequestsToEntities = (requestedEntities, projectCodeById) => {
   const entityRequests = {};
@@ -22,28 +22,30 @@ export async function getCountryAccessList(req, res, next) {
   const { projectCode } = query;
   if (!projectCode) throw new Error('No project code provided');
 
-  const { entity, accessRequest, project } = models;
   try {
-    const entityPermissions = await models.userEntityPermission.find({ user_id: userId });
-    const permittedEntityIds = new Set(entityPermissions.map(p => p.entity_id));
-    const countries = await entity.find({ type: 'country' });
-    const accessRequests = await accessRequest.find({
-      user_id: userId,
-      processed_date: null,
-    });
-    const projects = await project.find();
-    const projectCodeById = reduceToDictionary(projects, 'id', 'code');
-    const entityRequests = mapRequestsToEntities(accessRequests, projectCodeById);
+    const project = await models.project.findOne({ code: projectCode });
+    if (!project) throw new Error(`No project found with code ‘${projectCode}’`);
+
+    const countries = await project.countries();
+    const countriesPendingAccess = (
+      await models.accessRequest.find({
+        user_id: userId,
+        project_id: project.id,
+        approved: null,
+      })
+    ).map(accessRequest => accessRequest.entity_id);
 
     const countryAccessList = countries
-      .filter(country => country.name !== 'No Country')
-      .map(({ code, id, name }) => ({
-        code,
-        id,
-        name,
-        hasAccess: permittedEntityIds.has(id), // TODO: Make this project-dependent
-        hasPendingAccess: entityRequests[id]?.includes(projectCode) ?? false,
-      }))
+      .reduce((listSoFar, country) => {
+        const { id, code, name } = country;
+        const hasAccess = project.permission_groups.some(permissionGroup =>
+          accessPolicy.allows(code, permissionGroup),
+        );
+        const hasPendingAccess = countriesPendingAccess.includes(id);
+
+        const countryAccessListItem = { id, name, hasAccess, hasPendingAccess };
+        return [...listSoFar, countryAccessListItem];
+      }, [])
       .sort((a, b) => a.name.localeCompare(b.name));
 
     respond(res, countryAccessList);
