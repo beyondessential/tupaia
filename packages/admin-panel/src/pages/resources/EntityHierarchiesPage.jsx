@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { getSortByKey } from '@tupaia/utils';
 import { get } from '../../VizBuilderApp/api';
 import { TreeResourcePage } from './TreeResourcePage';
+import { EntityHierarchyExportModal } from '../../importExport';
 
 const fetchRoot = async () => get('hierarchies');
 
@@ -44,6 +45,7 @@ export const EntityHierarchiesPage = ({ getHeaderEl, ...props }) => (
     fetchRoot={fetchRoot}
     fetchBranch={fetchBranch}
     getHeaderEl={getHeaderEl}
+    ExportModalComponent={EntityHierarchyExportModal}
     {...props}
   />
 );

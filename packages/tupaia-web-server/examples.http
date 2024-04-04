@@ -44,7 +44,7 @@ GET {{host}}/countryAccessList/pacmossi
 content-type: {{contentType}}
 
 ### Fetch legacy report
-GET {{host}}/report/28?dashboardCode=explore_General&itemCode=28&legacy=true&organisationUnitCode=explore&projectCode=explore&timeZone=Pacific%2FAuckland
+GET {{host}}/legacyDashboardReport/8?dashboardCode=explore_General&itemCode=8&projectCode=explore&organisationUnitCode=explore&timeZone=Pacific%2FAuckland
 content-type: {{contentType}}
 
 ### Fetch report
