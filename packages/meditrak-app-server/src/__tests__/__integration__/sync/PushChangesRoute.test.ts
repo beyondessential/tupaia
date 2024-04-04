@@ -25,7 +25,6 @@ import {
   grantUserAccess,
   revokeAccess,
 } from '../../utilities';
-import { CAT_USER_SESSION } from '../fixtures';
 import { TEST_IMAGE_DATA } from './testImageData';
 import {
   upsertQuestion,
@@ -127,7 +126,6 @@ describe('changes (POST)', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

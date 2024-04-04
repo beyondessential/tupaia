@@ -28,8 +28,17 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   }
 `;
 
-export const TreeResourcePage = ({ title, getHeaderEl, fetchRoot, fetchBranch }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title={title} />, getHeaderEl);
+export const TreeResourcePage = ({
+  title,
+  getHeaderEl,
+  fetchRoot,
+  fetchBranch,
+  ExportModalComponent,
+}) => {
+  const HeaderPortal = usePortalWithCallback(
+    <Header title={title} ExportModalComponent={ExportModalComponent} />,
+    getHeaderEl,
+  );
 
   return (
     <>
@@ -42,9 +51,14 @@ export const TreeResourcePage = ({ title, getHeaderEl, fetchRoot, fetchBranch })
   );
 };
 
+TreeResourcePage.defaultProps = {
+  ExportModalComponent: null,
+};
+
 TreeResourcePage.propTypes = {
   getHeaderEl: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   fetchRoot: PropTypes.func.isRequired,
   fetchBranch: PropTypes.func.isRequired,
+  ExportModalComponent: PropTypes.elementType,
 };
