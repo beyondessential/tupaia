@@ -24,7 +24,7 @@ export class EntityRoute extends Route<EntityRequest> {
     const { params, query, ctx, accessPolicy, models } = this.req;
     const { projectCode, entityCode } = params;
 
-    const typesToExclude = await getTypesToExclude(models, accessPolicy, projectCode, false);
+    const typesToExclude = await getTypesToExclude(models, accessPolicy, projectCode);
 
     const entity = (await ctx.services.entity.getEntity(projectCode, entityCode, {
       fields: DEFAULT_FIELDS,
