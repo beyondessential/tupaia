@@ -29,7 +29,7 @@ export const fetchFromCentralServer = async (
   authHeader = DEFAULT_AUTH_HEADER,
 ) => {
   const url = stringifyQuery(
-    process.env.TUPAIA_APP_SERVER_URL || 'http://localhost:8090/v2',
+    process.env.CENTRAL_API_URL || 'http://localhost:8090/v2',
     endpoint,
     queryParameters,
   );
