@@ -2,11 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import {} from 'dotenv/config';
 import { ModelRegistry } from '../ModelRegistry';
 import { TupaiaDatabase } from '../TupaiaDatabase';
+import { configureEnv } from '../configureEnv';
 
 let database = null;
+
+configureEnv();
 
 export function getTestDatabase() {
   if (!database) {

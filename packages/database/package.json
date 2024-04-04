@@ -37,7 +37,7 @@
     "@tupaia/utils": "workspace:*",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.4.5",
     "knex": "0.14.6",
     "lodash.clonedeep": "^4.5.0",
     "lodash.groupby": "^4.6.0",
