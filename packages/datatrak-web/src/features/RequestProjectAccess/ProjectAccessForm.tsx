@@ -117,9 +117,6 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
   } = formContext;
   const { mutate: requestProjectAccess, isLoading, isSuccess } = useRequestProjectAccess();
 
-  // the countries that are applicable to this project
-  const projectCountries = countries?.filter((c: any) => project?.names?.includes(c.name));
-
   const projectCode = project?.code;
   const submitForm = (formData: any) => {
     requestProjectAccess({
@@ -161,21 +158,18 @@ export const ProjectAccessForm = ({ project, onClose }: ProjectAccessFormProps) 
     <Form onSubmit={submitForm as SubmitHandler<any>} formContext={formContext}>
       <FormControl>
         <FormGroup>
-          {projectCountries?.map((country: any) => {
-            const hasRequestedAccess = country.accessRequests.includes(projectCode);
+          {countries?.map(({ id, name, hasPendingAccess }) => {
             return (
               <Checkbox
-                id={country.id}
+                id={id}
                 inputRef={register({ validate: value => value.length > 0 })}
-                disabled={hasRequestedAccess}
-                key={country.id}
-                label={country.name}
+                disabled={hasPendingAccess}
+                key={id}
+                label={name}
                 name="entityIds"
-                value={country.id}
+                value={id}
                 tooltip={
-                  hasRequestedAccess
-                    ? 'You have already requested access to this country'
-                    : undefined
+                  hasPendingAccess ? 'You have already requested access to this country' : undefined
                 }
               />
             );
