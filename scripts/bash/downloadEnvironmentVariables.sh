@@ -44,13 +44,13 @@ load_env_file_from_bw () {
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
-    sed -i "" "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
+    sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
    
 
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
         if [[ ${FILE_NAME} == "aggregation" ]]; then
-            sed -i "" 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
+            sed -i -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
 
@@ -58,7 +58,7 @@ load_env_file_from_bw () {
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
-        sed -i "" 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+        sed -i -e 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
     fi
  
 
