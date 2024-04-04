@@ -27,12 +27,13 @@ describe('Access Requests', () => {
   };
 
   const requestCountryAccess = async (userId, entityId, projectCode) => {
-    return app.post(`user/${userId}/requestCountryAccess`, {
+    return app.post('user/requestCountryAccess', {
       body: {
         entityIds: [entityId],
         message: "E rab'a te kaitiboo! / Pleased to meet you",
         projectCode,
       },
+      userId,
     });
   };
 
