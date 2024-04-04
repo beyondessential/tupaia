@@ -46,13 +46,13 @@ export const getTypesToExclude = async (
   projectCode: string,
   useDefaultIfNoExclusions = true,
 ) => {
-  const project = await models.project.find({
+  const project = await models.project.findOne({
     code: projectCode,
   });
 
-  if (!project[0]) throw new Error(`Project with code '${projectCode}' not found`);
+  if (!project) throw new Error(`Project with code '${projectCode}' not found`);
 
-  const { config } = project[0];
+  const { config } = project;
   const { typesExcludedFromWebFrontend } = models.entity;
 
   if (config?.frontendExcluded) {
