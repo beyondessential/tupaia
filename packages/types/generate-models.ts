@@ -6,6 +6,7 @@
 // See https://rmp135.github.io/sql-ts/#/?id=totypescript
 
 import sqlts, { Table } from '@rmp135/sql-ts';
+import path from 'path';
 
 import Knex from 'knex';
 // @ts-ignore
@@ -13,7 +14,10 @@ import config from './config/models/config.json';
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-dotenv.config();
+dotenv.config({
+  path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
+  override: true,
+});
 
 const db = Knex({
   client: 'postgresql',

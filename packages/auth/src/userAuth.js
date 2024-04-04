@@ -9,18 +9,13 @@ import { getJwtToken } from './security';
 
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-export const constructAccessToken = ({ userId, apiClientUserId, refreshToken }) => {
+export const constructAccessToken = ({ userId, apiClientUserId }) => {
   if (!userId) {
     throw new Error('Cannot construct accessToken: missing userId');
   }
 
-  if (!refreshToken) {
-    throw new Error('Cannot construct accessToken: missing refreshToken');
-  }
-
   const jwtPayload = {
     userId,
-    refreshToken,
   };
 
   if (apiClientUserId) {
@@ -96,7 +91,6 @@ export const getAuthorizationObject = async ({
 }) => {
   const tokenClaims = {
     userId: user.id,
-    refreshToken,
   };
 
   if (apiClientUser) {

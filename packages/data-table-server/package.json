@@ -31,11 +31,11 @@
     "@tupaia/data-broker": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.2",
+    "express": "^4.19.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
