@@ -6,11 +6,8 @@
 import { ApiConnection, AuthHandler, SessionRecord } from '@tupaia/server-boilerplate';
 import { createBasicHeader } from '@tupaia/utils';
 
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
-const DEFAULT_AUTH_HEADER = createBasicHeader(
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_SECRET,
-);
+const { API_CLIENT_NAME, API_CLIENT_SECRET } = process.env;
+const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_SECRET);
 
 class SessionSwitchingAuthHandler implements AuthHandler {
   session?: SessionRecord;
