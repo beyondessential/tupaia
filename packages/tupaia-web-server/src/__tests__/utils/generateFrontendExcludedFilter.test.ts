@@ -7,21 +7,6 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { TupaiaWebServerModelRegistry } from '../../types';
 import { generateFrontendExcludedFilter, getTypesToExclude } from '../../utils';
 
-const COUNTRIES = [
-  {
-    code: 'AU',
-    name: 'Australia',
-  },
-  {
-    code: 'FJ',
-    name: 'Fiji',
-  },
-  {
-    code: 'TO',
-    name: 'Tonga',
-  },
-];
-
 const PROJECT = {
   code: 'test',
   config: {
@@ -32,23 +17,20 @@ const PROJECT = {
           permissionGroups: ['Admin'],
         },
       },
+      {
+        types: ['case'],
+      },
     ],
   },
 };
 
 const ACCESS_POLICY = {
-  getPermissionGroups: jest.fn().mockReturnValue(['Admin']),
+  allowsAnywhere: jest.fn().mockReturnValue(true),
 } as unknown as AccessPolicy;
 
 const TestModels = {
-  country: {
-    find: jest.fn().mockResolvedValue(COUNTRIES),
-  },
   project: {
-    find: jest.fn().mockResolvedValue([PROJECT]),
-  },
-  entity: {
-    typesExcludedFromWebFrontend: ['case'],
+    findOne: jest.fn().mockResolvedValue(PROJECT),
   },
 } as unknown as TupaiaWebServerModelRegistry;
 
@@ -60,7 +42,7 @@ describe('generateFrontendExcludedFilter', () => {
           {
             ...TestModels,
             project: {
-              find: jest.fn().mockResolvedValue([]),
+              findOne: jest.fn().mockResolvedValue(null),
             },
           } as unknown as TupaiaWebServerModelRegistry,
           ACCESS_POLICY,
@@ -69,43 +51,20 @@ describe('generateFrontendExcludedFilter', () => {
       ).rejects.toThrowError("Project with code 'nonexistent' not found");
     });
 
-    it('Returns typesExcludedFromWebFrontend if project does not have any frontendExcluded types and useDefaultIfNoExclusions param is not false', async () => {
+    it('Returns [] if project does not have any frontendExcluded types', async () => {
       await expect(
         getTypesToExclude(
           {
             ...TestModels,
             project: {
-              find: jest.fn().mockResolvedValue([
-                {
-                  ...PROJECT,
-                  config: {},
-                },
-              ]),
+              findOne: jest.fn().mockResolvedValue({
+                ...PROJECT,
+                config: {},
+              }),
             },
           } as unknown as TupaiaWebServerModelRegistry,
           ACCESS_POLICY,
           PROJECT.code,
-        ),
-      ).resolves.toEqual(['case']);
-    });
-
-    it('Returns [] if project does not have any frontendExcluded types and useDefaultIfNoExclusions param is false', async () => {
-      await expect(
-        getTypesToExclude(
-          {
-            ...TestModels,
-            project: {
-              find: jest.fn().mockResolvedValue([
-                {
-                  ...PROJECT,
-                  config: {},
-                },
-              ]),
-            },
-          } as unknown as TupaiaWebServerModelRegistry,
-          ACCESS_POLICY,
-          PROJECT.code,
-          false,
         ),
       ).resolves.toEqual([]);
     });
@@ -116,24 +75,25 @@ describe('generateFrontendExcludedFilter', () => {
           {
             ...TestModels,
             project: {
-              find: jest.fn().mockResolvedValue([
-                {
-                  ...PROJECT,
-                  config: {
-                    frontendExcluded: [
-                      {
-                        types: ['household'],
-                      },
-                    ],
-                  },
+              findOne: jest.fn().mockResolvedValue({
+                ...PROJECT,
+                config: {
+                  frontendExcluded: [
+                    {
+                      types: ['household'],
+                    },
+                    {
+                      types: ['case'],
+                    },
+                  ],
                 },
-              ]),
+              }),
             },
           } as unknown as TupaiaWebServerModelRegistry,
           ACCESS_POLICY,
           PROJECT.code,
         ),
-      ).resolves.toEqual(['household']);
+      ).resolves.toEqual(['household', 'case']);
     });
 
     it('Returns the excluded types if the user does not have the permissions to view the excluded types on the project', async () => {
@@ -141,20 +101,14 @@ describe('generateFrontendExcludedFilter', () => {
         getTypesToExclude(
           TestModels,
           {
-            getPermissionGroups: jest.fn().mockReturnValue(['Public']),
+            allowsAnywhere: jest.fn().mockReturnValue(false),
           } as unknown as AccessPolicy,
           PROJECT.code,
         ),
-      ).resolves.toEqual(['household']);
+      ).resolves.toEqual(['household', 'case']);
     });
 
-    it('Returns an empty array if the user does have the permissions to view the excluded types on the project and the useDefaultIfNoExclusions param is false', async () => {
-      await expect(
-        getTypesToExclude(TestModels, ACCESS_POLICY, PROJECT.code, false),
-      ).resolves.toEqual([]);
-    });
-
-    it('Returns the default excluded types if the user does have the permissions to view the excluded types on the project and the useDefaultIfNoExclusions param is not false', async () => {
+    it('Returns only the types the user does not have permission to view', async () => {
       await expect(getTypesToExclude(TestModels, ACCESS_POLICY, PROJECT.code)).resolves.toEqual([
         'case',
       ]);
@@ -178,8 +132,11 @@ describe('generateFrontendExcludedFilter', () => {
         generateFrontendExcludedFilter(
           {
             ...TestModels,
-            entity: {
-              typesExcludedFromWebFrontend: [],
+            project: {
+              findOne: jest.fn().mockResolvedValue({
+                ...PROJECT,
+                config: {},
+              }),
             },
           } as unknown as TupaiaWebServerModelRegistry,
           ACCESS_POLICY,

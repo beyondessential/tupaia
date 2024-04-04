@@ -4,47 +4,12 @@
  */
 
 import { AccessPolicy } from '@tupaia/access-policy';
-import { PermissionGroup } from '@tupaia/types';
 import { TupaiaWebServerModelRegistry } from '../types';
-
-type FrontEndExcludedException = {
-  permissionGroups: PermissionGroup['name'][];
-};
-
-const getShouldExcludeTypes = async (
-  models: TupaiaWebServerModelRegistry,
-  exceptions?: FrontEndExcludedException,
-  accessPolicy?: AccessPolicy,
-) => {
-  // If there are no exceptions, then exclude the types
-  if (!exceptions) return true;
-  const allCountries = await models.country.find({});
-
-  const allCountryCodes = allCountries.map(country => country.code);
-
-  // If there are no permission groups in the exceptions, then exclude the types
-  if (!exceptions?.permissionGroups) {
-    return true;
-  }
-
-  const permissionGroups = exceptions?.permissionGroups || [];
-  const userPermissionGroups = accessPolicy
-    ? accessPolicy?.getPermissionGroups(allCountryCodes)
-    : [];
-
-  const userHasAccessToExcludedTypes = permissionGroups.some(permissionGroup =>
-    userPermissionGroups.includes(permissionGroup),
-  );
-
-  // If the user has any of the permission groups in the exceptions, then do not exclude the types
-  return !userHasAccessToExcludedTypes;
-};
 
 export const getTypesToExclude = async (
   models: TupaiaWebServerModelRegistry,
-  accessPolicy: AccessPolicy | undefined,
+  accessPolicy: AccessPolicy,
   projectCode: string,
-  useDefaultIfNoExclusions = true,
 ) => {
   const project = await models.project.findOne({
     code: projectCode,
@@ -53,31 +18,30 @@ export const getTypesToExclude = async (
   if (!project) throw new Error(`Project with code '${projectCode}' not found`);
 
   const { config } = project;
-  const { typesExcludedFromWebFrontend } = models.entity;
 
   if (config?.frontendExcluded) {
     const typesFilter = [];
     for (const excludedConfig of config?.frontendExcluded) {
       const { types, exceptions } = excludedConfig;
-      const shouldExcludeTypes = await getShouldExcludeTypes(models, exceptions, accessPolicy);
+
+      const exceptedPermissionGroups = exceptions?.permissionGroups ?? [];
+      const shouldExcludeTypes = !exceptedPermissionGroups.some(permissionGroup =>
+        accessPolicy.allowsAnywhere(permissionGroup),
+      );
 
       if (shouldExcludeTypes) {
         typesFilter.push(...types);
-      } else {
-        if (useDefaultIfNoExclusions) {
-          typesFilter.push(...typesExcludedFromWebFrontend);
-        }
       }
     }
     return typesFilter;
   }
-  return useDefaultIfNoExclusions ? typesExcludedFromWebFrontend : [];
+  return [];
 };
 
 // In the db project.config.frontendExcluded is an array with one entry for some reason
 export async function generateFrontendExcludedFilter(
   models: TupaiaWebServerModelRegistry,
-  accessPolicy: AccessPolicy | undefined,
+  accessPolicy: AccessPolicy,
   projectCode: string,
 ) {
   const typesToExclude = await getTypesToExclude(models, accessPolicy, projectCode);

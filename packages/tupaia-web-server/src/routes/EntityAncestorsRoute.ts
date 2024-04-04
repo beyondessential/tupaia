@@ -30,14 +30,14 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
       projectCode,
     );
 
-    let shouldIncludeRootEntity = includeRootEntity;
-
     // make sure we don't include the root entity if it's a type that should be excluded
     if (includeRootEntity) {
       const excludedTypes = await getTypesToExclude(models, accessPolicy, projectCode);
       const rootEntity = await ctx.services.entity.getEntity(rootEntityCode, projectCode);
       if (excludedTypes.includes(rootEntity.type)) {
-        shouldIncludeRootEntity = false;
+        throw new Error(
+          `Access to entity of type '${rootEntity.type}' is denied. If you believe this is an error, please contact your system administrator.`,
+        );
       }
     }
 
@@ -49,7 +49,7 @@ export class EntityAncestorsRoute extends Route<EntityAncestorsRequest> {
         fields: DEFAULT_FIELDS,
         ...restOfQuery,
       },
-      shouldIncludeRootEntity,
+      includeRootEntity,
     );
 
     return camelcaseKeys(entities, { deep: true });

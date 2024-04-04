@@ -15,15 +15,20 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = function (db) {
-  return db.runSql(`  
-    ALTER TABLE project ALTER COLUMN config SET NOT NULL;
-  `);
+  return db.changeColumn('project', 'config', {
+    type: 'jsonb',
+    notNull: true,
+    defaultValue:
+      '{ "permanentRegionLabels": true, "frontendExcluded": [{ "types": ["case", "case_contact"] }] }',
+  });
 };
 
 exports.down = function (db) {
-  return db.runSql(`
-    ALTER TABLE project ALTER COLUMN config DROP NOT NULL;
-  `);
+  return db.changeColumn('project', 'config', {
+    type: 'jsonb',
+    notNull: false,
+    defaultValue: '{ "permanentRegionLabels": true }',
+  });
 };
 
 exports._meta = {
