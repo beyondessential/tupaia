@@ -1,6 +1,6 @@
 import { fetchWithTimeout } from '@tupaia/utils';
 
-const BASE_URL = process.env.CONFIG_SERVER_BASE_URL || 'http://localhost:8000/api/v1';
+const BASE_URL = process.env.WEB_CONFIG_API_URL || 'http://localhost:8000/api/v1';
 
 /**
  * Requests a URL, returning a promise

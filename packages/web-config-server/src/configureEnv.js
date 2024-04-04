@@ -15,6 +15,7 @@ export const configureEnv = () => {
     path.resolve(__dirname, '../../../env/pg.env'),
     path.resolve(__dirname, '../../../env/servers.env'),
     path.resolve(__dirname, '../../../env/superset.env'),
+    path.resolve(__dirname, '../../../env/api-client.env'),
     path.resolve(__dirname, '../.env'),
   ]);
 };

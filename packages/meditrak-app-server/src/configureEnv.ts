@@ -11,6 +11,7 @@ export const configureEnv = () => {
     path.resolve(__dirname, '../../../env/servers.env'),
     path.resolve(__dirname, '../../../env/db.env'),
     path.resolve(__dirname, '../../../env/aws.env'),
+    path.resolve(__dirname, '../../../env/api-client.env'),
     path.resolve(__dirname, '../.env'),
   ]);
 };
