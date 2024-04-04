@@ -12,3 +12,4 @@ export * from './FetchReportPreviewDataRoute';
 export * from './FetchReportSchemasRoute';
 export * from './UploadTestDataRoute';
 export * from './UserRoute';
+export * from './ExportEntityHierarchiesRoute';
