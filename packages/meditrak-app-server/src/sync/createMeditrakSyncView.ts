@@ -6,16 +6,15 @@
 // Exact copy of: @tupaia/central-server/src/createMeditrakSyncView.js
 // TODO: Tidy this up as part of RN-502
 
-import * as dotenv from 'dotenv';
-
 import winston from 'winston';
 import { TupaiaDatabase } from '@tupaia/database';
 import { configureWinston } from '@tupaia/server-boilerplate';
 import { isFeatureEnabled } from '@tupaia/utils';
+import { configureEnv } from '../configureEnv';
 import { createPermissionsBasedMeditrakSyncQueue } from './createPermissionsBasedMeditrakSyncQueue';
 
 configureWinston();
-dotenv.config(); // Load the environment variables into process.env
+configureEnv();
 
 (async () => {
   if (!isFeatureEnabled('SERVER_CHANGE_ENQUEUER')) {

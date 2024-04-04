@@ -1,5 +1,8 @@
 #!/bin/bash
 
+DIR=$(pwd "$0")
+source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+
 COMMAND=$1
 
 if [[ "$COMMAND" == "" ]]; then
@@ -16,11 +19,6 @@ VERSION=$2
 
 if [[ "$VERSION" == "" ]]; then
     echo "Version unspecified, defaulting to database mvrefresh version"
-    
-    # Use whatever existing .env vars have been specified
-    curenv=$(declare -p -x)
-    test -f .env && source .env
-    eval "$curenv"
 
     # Set default port in case it wasn't in .env
     : "${DB_PORT:=5432}"
