@@ -34,7 +34,6 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
       .reduce((result: CentralServerProjectCountryAccessListRequest.ResBody, name: string) => {
         const country = countryAccessList.find(({ name: countryName }) => countryName === name);
         if (!country) return result;
-        const hasPendingAccess = country.hasPendingAccess;
 
         const hasAccess = project.permissionGroups.some((permissionGroup: string) =>
           accessPolicy.allows(country.code, permissionGroup),
@@ -43,10 +42,10 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
         return [
           ...result,
           {
-            id: country?.id,
+            id: country.id,
             name,
             hasAccess,
-            hasPendingAccess,
+            hasPendingAccess: country.hasPendingAccess,
           },
         ];
       }, []);
