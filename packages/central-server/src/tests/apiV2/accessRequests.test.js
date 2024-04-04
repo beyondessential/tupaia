@@ -33,7 +33,6 @@ describe('Access Requests', () => {
         message: "E rab'a te kaitiboo! / Pleased to meet you",
         projectCode,
       },
-      userId,
     });
   };
 
