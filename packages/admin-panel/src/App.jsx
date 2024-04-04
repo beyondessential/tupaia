@@ -7,8 +7,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { TabsToolbar } from '@tupaia/ui-components';
-import { NavPanel, Footer } from './widgets';
+import { NavPanel, Footer, SecondaryNavbar } from './widgets';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getUser, PrivateRoute } from './authentication';
@@ -20,7 +19,9 @@ const Wrapper = styled.div`
   display: flex;
 `;
 
-const Main = styled.main``;
+const Main = styled.main`
+  flex-grow: 1;
+`;
 
 export const App = ({ user }) => {
   return (
@@ -46,12 +47,11 @@ export const App = ({ user }) => {
                   render={({ match }) => {
                     return (
                       <>
-                        <TabsToolbar
+                        <SecondaryNavbar
                           links={route.tabs.map(tab => ({
                             ...tab,
                             id: `app-subTab-${labelToId(tab.label)}`,
                           }))}
-                          maxWidth="xl"
                           baseRoute={match.url}
                         />
                         <Switch>

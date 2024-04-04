@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Header, PageBody } from '../widgets';
+import { PageHeader, PageBody } from '../widgets';
 
 const importConfig = {
   title: 'Import Lab Results or Vector Data',
@@ -22,7 +22,7 @@ const StyledBody = styled(PageBody)`
 export const StrivePage = () => {
   return (
     <StyledBody>
-      <Header title="Strive" importConfig={importConfig} />
+      <PageHeader title="Strive" importConfig={importConfig} />
       <Typography variant="h4" gutterBottom>
         Import lab results or vector data
       </Typography>

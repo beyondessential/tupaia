@@ -10,8 +10,7 @@ import MuiDivider from '@material-ui/core/Divider';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
-import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { PageHeader } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
 import { PasswordStrengthBar } from '../widgets/PasswordStrengthBar';
 
@@ -67,7 +66,7 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
 
   return (
     <Container>
-      <Header title={user.name} />
+      <PageHeader title={user.name} />
       <form onSubmit={onSubmit} noValidate>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}

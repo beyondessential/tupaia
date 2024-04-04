@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { Header, PageBody } from '../../widgets';
+import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
 import * as COLORS from '../../theme/colors';
 
@@ -31,7 +31,7 @@ export const TreeResourcePage = ({ title, fetchRoot, fetchBranch, ExportModalCom
   return (
     <>
       <Container>
-        <Header title={title} ExportModalComponent={ExportModalComponent} />
+        <PageHeader title={title} ExportModalComponent={ExportModalComponent} />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
       </Container>
       <LogsModal />

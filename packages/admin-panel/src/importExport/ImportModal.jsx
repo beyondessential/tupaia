@@ -205,13 +205,14 @@ export const ImportModalComponent = React.memo(
             <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
-        <LightOutlinedButton
+        <OutlinedButton
           id="page-import-button"
           startIcon={<ImportIcon />}
           onClick={handleOpen}
+          color="secondary"
         >
           {confirmButtonText}
-        </LightOutlinedButton>
+        </OutlinedButton>
       </>
     );
   },

@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
 import { useQuery } from 'react-query';
-import { Header, PageBody } from '../../widgets';
+import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
 import * as COLORS from '../../theme/colors';
 import { get } from '../../VizBuilderApp/api';
@@ -61,7 +61,7 @@ export const PermissionGroupsViewerPage = () => {
   return (
     <>
       <Container>
-        <Header title="Permission Groups" />
+        <PageHeader title="Permission Groups" />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} readOnly />
       </Container>
       <LogsModal />

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { Header, PageBody } from '../../widgets';
+import { PageHeader, PageBody } from '../../widgets';
 import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
@@ -59,7 +59,7 @@ export const ResourcePage = ({
   return (
     <>
       <Container>
-        <Header
+        <PageHeader
           title={title}
           importConfig={importConfig}
           exportConfig={exportConfig}

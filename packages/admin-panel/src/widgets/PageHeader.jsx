@@ -9,15 +9,14 @@ import styled from 'styled-components';
 import { ImportModal } from '../importExport';
 import { CreateButton as SingleCreateButton, BulkCreateButton } from '../editor';
 
-const HeaderButtonContainer = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  column-gap: 5px;
+const Container = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
-const HeaderMain = styled.header``;
+const Wrapper = styled.div``;
 
-export const Header = ({
+export const PageHeader = ({
   importConfig,
   createConfig,
   exportConfig,
@@ -28,18 +27,18 @@ export const Header = ({
     createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
 
   return (
-    <HeaderMain>
-      <HeaderButtonContainer>
+    <Wrapper>
+      <Container>
         {importConfig && <ImportModal {...importConfig} />}
         {createConfig && <CreateButton {...createConfig} />}
         {ExportModalComponent && <ExportModalComponent {...exportConfig} />}
         {LinksComponent && <LinksComponent />}
-      </HeaderButtonContainer>
-    </HeaderMain>
+      </Container>
+    </Wrapper>
   );
 };
 
-Header.propTypes = {
+PageHeader.propTypes = {
   title: PropTypes.string.isRequired,
   importConfig: PropTypes.object,
   createConfig: PropTypes.object,
@@ -48,7 +47,7 @@ Header.propTypes = {
   LinksComponent: PropTypes.elementType,
 };
 
-Header.defaultProps = {
+PageHeader.defaultProps = {
   importConfig: null,
   createConfig: null,
   exportConfig: {},

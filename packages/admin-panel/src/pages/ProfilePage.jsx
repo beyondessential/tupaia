@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
 import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { PageHeader } from '../widgets';
 import { updateProfile, getUser } from '../authentication';
 
 const Container = styled.section`
@@ -99,7 +99,7 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile }) => {
   return (
     <>
       <Container>
-        <Header title={user.name} />
+        <PageHeader title={user.name} />
         <form onSubmit={onSubmit} noValidate>
           {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
