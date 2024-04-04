@@ -15,7 +15,7 @@ import config from './config/models/config.json';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 dotenv.config({
-  path: [path.resolve(__dirname, '../../../env/db.env'), path.resolve(__dirname, '.env')],
+  path: [path.resolve(__dirname, '../../env/db.env'), path.resolve(__dirname, '.env')],
 });
 
 const db = Knex({
