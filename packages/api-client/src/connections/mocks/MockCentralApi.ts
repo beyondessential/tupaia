@@ -5,7 +5,7 @@
  */
 
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
-import { CentralServerProjectCountryAccessListRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { CentralApiInterface } from '..';
 import { RequestBody } from '../ApiConnection';
 
@@ -60,7 +60,7 @@ export class MockCentralApi implements CentralApiInterface {
   public getUser(): Promise<any> {
     throw new Error('Method not implemented.');
   }
-  public getCountryAccessList(): Promise<CentralServerProjectCountryAccessListRequest.ResBody> {
+  public getCountryAccessList(): Promise<ProjectCountryAccessListRequest.ResBody> {
     throw new Error('Method not implemented.');
   }
   public registerUserAccount(

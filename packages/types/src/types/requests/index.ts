@@ -3,10 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export {
-  CentralServerProjectCountryAccessListRequest,
-  MeditrakSurveyResponseRequest,
-} from './central-server';
+export { ProjectCountryAccessListRequest, MeditrakSurveyResponseRequest } from './central-server';
 export { DataTablePreviewRequest } from './data-table-server/DataTablePreviewRequest';
 export {
   DatatrakWebEntitiesRequest,

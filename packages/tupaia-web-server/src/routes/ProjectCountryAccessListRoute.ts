@@ -5,13 +5,13 @@
 
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { CentralServerProjectCountryAccessListRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
 
 export type ProjectCountryAccessListRequest = Request<
-  CentralServerProjectCountryAccessListRequest.Params,
-  CentralServerProjectCountryAccessListRequest.ResBody,
-  CentralServerProjectCountryAccessListRequest.ReqBody,
-  CentralServerProjectCountryAccessListRequest.ReqQuery
+  ProjectCountryAccessListRequest.Params,
+  ProjectCountryAccessListRequest.ResBody,
+  ProjectCountryAccessListRequest.ReqBody,
+  ProjectCountryAccessListRequest.ReqQuery
 >;
 
 export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessListRequest> {
@@ -29,25 +29,23 @@ export class ProjectCountryAccessListRoute extends Route<ProjectCountryAccessLis
     const { names } = project;
     const countryAccessList = await ctx.services.central.getCountryAccessList();
 
-    return names
-      .sort()
-      .reduce((result: CentralServerProjectCountryAccessListRequest.ResBody, name: string) => {
-        const country = countryAccessList.find(({ name: countryName }) => countryName === name);
-        if (!country) return result;
+    return names.sort().reduce((result: ProjectCountryAccessListRequest.ResBody, name: string) => {
+      const country = countryAccessList.find(({ name: countryName }) => countryName === name);
+      if (!country) return result;
 
-        const hasAccess = project.permissionGroups.some((permissionGroup: string) =>
-          accessPolicy.allows(country.code, permissionGroup),
-        );
+      const hasAccess = project.permissionGroups.some((permissionGroup: string) =>
+        accessPolicy.allows(country.code, permissionGroup),
+      );
 
-        return [
-          ...result,
-          {
-            id: country.id,
-            name,
-            hasAccess,
-            hasPendingAccess: country.hasPendingAccess,
-          },
-        ];
-      }, []);
+      return [
+        ...result,
+        {
+          id: country.id,
+          name,
+          hasAccess,
+          hasPendingAccess: country.hasPendingAccess,
+        },
+      ];
+    }, []);
   }
 }

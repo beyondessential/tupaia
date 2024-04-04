@@ -4,7 +4,7 @@
  */
 
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
-import { CentralServerProjectCountryAccessListRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { QueryParameters } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
@@ -32,7 +32,7 @@ export class CentralApi extends BaseApi {
     return this.connection.get('me');
   }
 
-  public async getCountryAccessList(): Promise<CentralServerProjectCountryAccessListRequest.ResBody> {
+  public async getCountryAccessList(): Promise<ProjectCountryAccessListRequest.ResBody> {
     return this.connection.get('me/countries');
   }
 

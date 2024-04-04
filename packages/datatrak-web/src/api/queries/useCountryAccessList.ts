@@ -4,13 +4,13 @@
  */
 
 import { useQuery } from 'react-query';
-import { CentralServerProjectCountryAccessListRequest, Project } from '@tupaia/types';
+import { Project, ProjectCountryAccessListRequest } from '@tupaia/types';
 import { get } from '../api';
 
 export const useCountryAccessList = (projectCode: Project['code']) => {
   return useQuery(
     ['countries', projectCode],
-    (): Promise<CentralServerProjectCountryAccessListRequest.ResBody> =>
+    (): Promise<ProjectCountryAccessListRequest.ResBody> =>
       get('me/countries', { params: { projectCode } }),
     {
       enabled: !!projectCode,
