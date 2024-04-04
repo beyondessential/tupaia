@@ -48,9 +48,8 @@ export const DateRangeField = () => {
    * local time on the system where VizBuilder is running.
    *
    * When inputting the date, the date picker interprets it in the user’s time zone. Under the hood,
-   * this is converted to UTC. But since we only need day-level granularity, this timezone
-   * conversion can make the date picker select a date different from what the user input (±1 day)
-   * when {@link getIsoDateString} discards the timestamp.
+   * this is converted to UTC, which can cause the picked date to be different from what the user
+   * input (±1 day).
    *
    * This helper function accounts for that discrepancy.
    *
