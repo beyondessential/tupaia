@@ -1185,7 +1185,7 @@ export interface PermissionsBasedMeditrakSyncQueueUpdate {
 }
 export interface Project {
   'code': string;
-  'config'?: {} | null;
+  'config': {};
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
@@ -1199,7 +1199,7 @@ export interface Project {
 }
 export interface ProjectCreate {
   'code': string;
-  'config'?: {} | null;
+  'config'?: {};
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
@@ -1212,7 +1212,7 @@ export interface ProjectCreate {
 }
 export interface ProjectUpdate {
   'code'?: string;
-  'config'?: {} | null;
+  'config'?: {};
   'dashboard_group_name'?: string | null;
   'default_measure'?: string | null;
   'description'?: string | null;
@@ -1746,8 +1746,14 @@ export enum EntityType {
   'msupply_store' = 'msupply_store',
   'complaint' = 'complaint',
   'water_sample' = 'water_sample',
+  'facility_building' = 'facility_building',
+  'facility_division' = 'facility_division',
+  'facility_section' = 'facility_section',
+  'hospital_ward' = 'hospital_ward',
   'farm' = 'farm',
   'repair_request' = 'repair_request',
+  'district_operational' = 'district_operational',
+  'commune' = 'commune',
   'business' = 'business',
   'health_clinic_boundary' = 'health_clinic_boundary',
   'enumeration_area' = 'enumeration_area',
