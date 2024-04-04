@@ -11,6 +11,9 @@ import { RECORDS } from '../records';
 export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
 
+  /**
+   * The countries which apply to this project.
+   */
   async countries() {
     const entityRelations = await this.otherModels.entityRelation.find({
       parent_id: this.entity_id,
