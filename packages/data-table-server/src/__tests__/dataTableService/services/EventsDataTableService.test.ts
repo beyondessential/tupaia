@@ -159,7 +159,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           startDate: 'cat',
         },
-        'startDate must be a `date` type',
+        'startDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'endDate wrong format',
@@ -169,7 +169,7 @@ describe('EventsDataTableService', () => {
           dataGroupCode: 'PSSS_WNR',
           endDate: 'dog',
         },
-        'endDate must be a `date` type',
+        'endDate must be a valid ISO 8601 date: YYYY-MM-DD',
       ],
       [
         'aggregations wrong format',
@@ -208,8 +208,8 @@ describe('EventsDataTableService', () => {
         config: { innerType: { required: true, type: 'string' }, type: 'dataElementCodes' },
         name: 'dataElementCodes',
       },
-      { config: { defaultValue: new Date('2018-12-01'), type: 'date' }, name: 'startDate' },
-      { config: { defaultValue: new Date('2023-12-31'), type: 'date' }, name: 'endDate' },
+      { config: { defaultValue: '2018-12-01', type: 'string' }, name: 'startDate' },
+      { config: { defaultValue: '2023-12-31', type: 'string' }, name: 'endDate' },
     ]);
   });
 
