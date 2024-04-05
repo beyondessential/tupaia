@@ -12,7 +12,7 @@ export const useProjectCountryAccessList = (projectCode: ProjectCode) => {
   return useQuery(
     ['countries', projectCode],
     (): Promise<ProjectCountryAccessListRequest.ResBody> =>
-      get(`/me/countries`, { params: { projectCode } }),
+      get(`me/countries`, { params: { projectCode } }),
     {
       placeholderData: [],
       enabled: !!projectCode,
