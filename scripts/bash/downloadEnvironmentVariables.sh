@@ -6,20 +6,23 @@ DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
 
+# Log in to Bitwarden
+echo -e "\033[34m==>️\033[m \033[1mLogging into Bitwarden\033[m"
+bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
+eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
+
+COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
+
+echo ""
+
 # Can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
-    echo "Fetching all .env files"
+    echo -e "\033[34m==>️\033[m \033[1mFetching environment variables for all packages\033[m"
     PACKAGES=$(${DIR}/getPackagesWithEnvFiles.sh)
 else
     PACKAGES=${@:2}
-    echo "Fetching environment variables for ${PACKAGES}"
+    echo -e "\033[34m==>️\033[m \033[1mFetching environment variables for ${PACKAGES}\033[m"
 fi
-
-# Login to bitwarden
-bw login --check || bw login $BITWARDEN_EMAIL $BITWARDEN_PASSWORD
-eval "$(bw unlock $BITWARDEN_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
-
-COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
 load_env_file_from_bw () {
     FILE_NAME=$1
@@ -27,10 +30,7 @@ load_env_file_from_bw () {
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
 
-    echo "Fetching environment variables for $FILE_NAME: $ENV_FILE_PATH"
-
-    echo "Fetching environment variables for $FILE_NAME"
-
+    echo -en "\033[33m🚚 Fetching variables for \033[1m${FILE_NAME}...\033[m"
 
     # Checkout deployment specific env vars, or dev as fallback
     DEPLOYMENT_ENV_VARS=$(bw list items --search "${FILE_NAME}.${DEPLOYMENT_NAME}.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
@@ -60,9 +60,9 @@ load_env_file_from_bw () {
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
         sed -i -e 's/^###DEV_ONLY###//g' "${ENV_FILE_PATH}"
     fi
- 
 
-     echo "downloaded .env vars for $FILE_NAME"
+    echo -en "\033[2K\033[G" # Clear current line and set cursor to start of line
+    echo -e "\033[32m✅ Downloaded variables for \033[1m$FILE_NAME\033[m → ${ENV_FILE_PATH}"
 }
  
 for PACKAGE in $PACKAGES; do
@@ -85,6 +85,7 @@ for file_name in $file_names; do
 done
 
 
-
-
+# Log out of Bitwarden
+echo ""
+echo -e "\033[34m==>️\033[m \033[1mLogging out of Bitwarden\033[m"
 bw logout
