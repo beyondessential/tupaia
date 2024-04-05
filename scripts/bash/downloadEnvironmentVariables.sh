@@ -32,14 +32,14 @@ load_env_file_from_bw () {
     echo "Fetching environment variables for $FILE_NAME"
 
     # checkout deployment specific env vars, or dev as fallback
-    DEPLOYMENT_ENV_VARS=$(bw list items --search ${FILE_NAME}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
+    DEPLOYMENT_ENV_VARS=$(bw list items --search "${FILE_NAME}.${DEPLOYMENT_NAME}.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
     if [ -n "$DEPLOYMENT_ENV_VARS" ]; then
-        echo "$DEPLOYMENT_ENV_VARS" > ${ENV_FILE_PATH}
+        echo "$DEPLOYMENT_ENV_VARS" > "${ENV_FILE_PATH}"
     else
-        DEV_ENV_VARS=$(bw list items --search ${FILE_NAME}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
-        echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
+        DEV_ENV_VARS=$(bw list items --search "${FILE_NAME}.dev.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+        echo "$DEV_ENV_VARS" > "${ENV_FILE_PATH}"
     fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
@@ -50,7 +50,7 @@ load_env_file_from_bw () {
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
         if [[ ${FILE_NAME} == "aggregation" ]]; then
-            sed -i -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
+            sed -i -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' "${ENV_FILE_PATH}"
         fi
     fi
 
@@ -58,7 +58,7 @@ load_env_file_from_bw () {
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
-        sed -i -e 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+        sed -i -e 's/^###DEV_ONLY###//g' "${ENV_FILE_PATH}"
     fi
  
 
@@ -67,21 +67,21 @@ load_env_file_from_bw () {
  
 for PACKAGE in $PACKAGES; do
     # only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
-    has_example_env_in_package=$(find $DIR/../../packages/$PACKAGE -type f -name '*.env.example' | wc -l)
-    if [ $has_example_env_in_package -eq 1 ]; then
-        load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
+    has_example_env_in_package=$(find "$DIR/../../packages/$PACKAGE" -type f -name '*.env.example' | wc -l)
+    if [ "$has_example_env_in_package" -eq 1 ]; then
+        load_env_file_from_bw $PACKAGE "$DIR/../../packages/$PACKAGE" ""
     fi
 done
  
 
 # get all .env.*.example files in the env directory
-file_names=$(find $DIR/../../env -type f -name '*.env.example' -exec basename {} \;)
+file_names=$(find "$DIR/../../env" -type f -name '*.env.example' -exec basename {} \;)
  
  
 # for each file, get the extract the filename without the .example extension
 for file_name in $file_names; do
     env_name=$(echo $file_name | sed 's/\.env.example//')
-    load_env_file_from_bw $env_name $DIR/../../env $env_name
+    load_env_file_from_bw $env_name "$DIR/../../env" $env_name
 done
 
 
