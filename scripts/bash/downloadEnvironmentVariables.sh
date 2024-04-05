@@ -6,7 +6,7 @@ DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
 
-# can provide one or more packages as command line arguments, or will default to all
+# Can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
     echo "Fetching all .env files"
     PACKAGES=$(${DIR}/getPackagesWithEnvFiles.sh)
@@ -31,8 +31,8 @@ load_env_file_from_bw () {
 
     echo "Fetching environment variables for $FILE_NAME"
 
-    # checkout deployment specific env vars, or dev as fallback
 
+    # Checkout deployment specific env vars, or dev as fallback
     DEPLOYMENT_ENV_VARS=$(bw list items --search "${FILE_NAME}.${DEPLOYMENT_NAME}.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
     if [ -n "$DEPLOYMENT_ENV_VARS" ]; then
@@ -66,7 +66,7 @@ load_env_file_from_bw () {
 }
  
 for PACKAGE in $PACKAGES; do
-    # only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
+    # Only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
     has_example_env_in_package=$(find "$DIR/../../packages/$PACKAGE" -type f -name '*.env.example' | wc -l)
     if [ "$has_example_env_in_package" -eq 1 ]; then
         load_env_file_from_bw $PACKAGE "$DIR/../../packages/$PACKAGE" ""
