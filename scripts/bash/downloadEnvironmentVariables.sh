@@ -3,21 +3,27 @@ set -e +x # Do not output commands in this script, as some would show credential
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
+. "$DIR/ansiControlSequences.sh"
+
+# Collection in BitWarden where .env vars are kept
+COLLECTION_PATH='Engineering/Tupaia General/Environment Variables'
 
 # Log in to bitwarden
+echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
 bw login --check || bw login $BITWARDEN_EMAIL $BITWARDEN_PASSWORD
 eval "$(bw unlock $BITWARDEN_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
+echo
+
 # Can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
-    echo "Fetching all .env files"
     PACKAGES=$(${DIR}/getPackagesWithEnvFiles.sh)
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for all packages${RESET}"
 else
     PACKAGES=${@:2}
-    echo "Fetching environment variables for ${PACKAGES}"
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for ${PACKAGES}${RESET}"
 fi
 
 
@@ -27,7 +33,7 @@ load_env_file_from_bw () {
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
 
-    echo "Fetching environment variables for $FILE_NAME: $ENV_FILE_PATH"
+    echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
     # checkout deployment specific env vars, or dev as fallback
     DEPLOYMENT_ENV_VARS=$(bw list items --search ${FILE_NAME}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
@@ -39,11 +45,10 @@ load_env_file_from_bw () {
         echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
     fi
 
-    # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
-    # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
+    # Replace any instances of the placeholder [deployment-name] in the .env file with the actual
+    # deployment name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
    
-
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
         if [[ ${FILE_NAME} == "aggregation" ]]; then
@@ -58,13 +63,14 @@ load_env_file_from_bw () {
         sed -i -e 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
     fi
 
-
-    echo "downloaded .env vars for $FILE_NAME"
+    echo -en "$CLEAR_LINE"
+    echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"
 }
 
 
 for PACKAGE in $PACKAGES; do
-    # only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
+    # Only download the env file if there is an example file in the package. If there isn’t, this
+    # means it is a package that doesn’t need env vars
     has_example_env_in_package=$(find $DIR/../../packages/$PACKAGE -type f -name '*.env.example' | wc -l)
     if [ $has_example_env_in_package -eq 1 ]; then
         load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
@@ -79,4 +85,6 @@ done
 
 
 # Log out of Bitwarden
+echo
+echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
 bw logout
