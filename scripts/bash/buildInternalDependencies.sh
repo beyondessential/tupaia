@@ -3,9 +3,10 @@
 DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=1
-CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
+CONCURRENTLY_BIN="$DIR/../../node_modules/.bin/concurrently"
 
-USAGE="Usage: \033[1mbuildInternalDependencies.sh\033[m [\033[1m--watch\033[m] [\033[1m--packagePath\033[m|\033[1m-p\033[m]"
+. "$DIR/ansiControlSequences.sh"
+USAGE="Usage: ${BOLD}buildInternalDependencies.sh${RESET} [${BOLD}--watch${RESET}] [${BOLD}--packagePath${RESET}|${BOLD}-p${RESET}]"
 
 watch=false
 package_path=""
@@ -44,12 +45,12 @@ for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
 done
 
 if [[ $watch == "true" ]]; then
-    echo -e "\033[1mConcurrently building and watching all internal dependencies\033[m"
+    echo -e "${BOLD}Concurrently building and watching all internal dependencies${RESET}"
     echo "> ${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
     echo ""
     eval   "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
-    echo -e "\033[1mConcurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}\033[m"
+    echo -e "${BOLD}Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}${RESET}"
     echo "> ${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
     echo ""
     eval   "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
