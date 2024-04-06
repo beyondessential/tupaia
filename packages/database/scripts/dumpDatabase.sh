@@ -31,7 +31,7 @@ function show_loading_spinner() {
 }
 
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+. "$DIR/../../scripts/bash/mergeEnvForDB.sh"
 
 DUMP_FILE_NAME="dump.sql"
 

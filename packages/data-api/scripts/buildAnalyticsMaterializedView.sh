@@ -2,7 +2,7 @@
 set -e
 
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+. "$DIR/../../scripts/bash/mergeEnvForDB.sh"
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"

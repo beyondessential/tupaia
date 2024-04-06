@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DIR=$(pwd "$0")
-source "$DIR/../../scripts/bash/mergeEnvForDB.sh" 
+. "$DIR/../../scripts/bash/mergeEnvForDB.sh"
 
 COMMAND=$1
 
