@@ -13,9 +13,10 @@ if [ "$(PGPASSWORD=$DB_PG_PASSWORD psql -p $DB_PORT -X -A -h $DB_URL -U $DB_PG_U
 fi
 
 echo -e "${RED}Error: $DB_NAME database does not exist!${RESET}"
-echo    "To create it, get the .env file from LastPass then run:"
+echo    'To create it, make sure you have the environment variables from Bitwarden and run:'
 echo
 echo -e "  ${BOLD}yarn workspace @tupaia/database setup-test-database${RESET}"
 echo
+echo -e "If you’re missing environment variables, see ${MAGENTA}https://beyond-essential.slab.com/posts/tupaia-monorepo-setup-v5egpdpq#hvfnz-set-environment-variables${RESET}."
 
 exit 1
