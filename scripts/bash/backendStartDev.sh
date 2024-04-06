@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+. ./ansiControlSequences.sh
 
 ##
 # usage:
@@ -9,7 +10,7 @@ set -e
 # Optionally provide '-ts' or '--typescript' to start typescript server
 
 ##
-USAGE="Usage: backendStartDev babel_port_inspector [-i --include-internal] [-ts --typescript]"
+USAGE="Usage: ${BOLD}backendStartDev babel_port_inspector${RESET} [${BOLD}-i${RESET}|${BOLD}--include-internal${RESET}] [${BOLD}-ts${RESET}|${BOLD}--typescript${RESET}]"
 DIR=$(dirname "$0")
 CONCURRENTLY_BIN="$DIR/../../node_modules/.bin/concurrently"
 watch_flags=""
