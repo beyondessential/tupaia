@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 # Fetch environment from LastPass, write to ${ENV_DEST}/${DEPLOYMENT_NAME}/.env
 # Is modified from ../../scripts/bash/downloadEnvironmentVariables.sh

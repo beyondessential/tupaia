@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 DIR=$(dirname "$0")
 if [ "$1" != "" ]; then

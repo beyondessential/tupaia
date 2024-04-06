@@ -1,4 +1,5 @@
-#!/bin/bash -ex
+#!/usr/bin/env bash
+set -ex
 
 PACKAGES="report-server admin-panel-server central-server data-table-server datatrak-web datatrak-web-server entity-server lesmis lesmis-server meditrak-app-server psss psss-server web-config-server tupaia-web tupaia-web-server"
 

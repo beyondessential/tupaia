@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 read -p "Enter migration name: " MIGRATION_NAME
 read -p "Enter the scope of this migration ('schema' or 'data'): " MIGRATION_SCOPE

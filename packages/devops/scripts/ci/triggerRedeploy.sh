@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+set -e
 
 STOPPED_INSTANCES=$(aws ec2 describe-instances \
       --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=stopped \
