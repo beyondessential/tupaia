@@ -40,7 +40,7 @@ build_commands=()
 build_prefixes=()
 
 # Build dependencies
-for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
+for PACKAGE in $("$DIR/getInternalDependencies.sh" "$package_path"); do
     build_commands+=("\"NODE_ENV=production yarn workspace @tupaia/${PACKAGE} build-dev $build_args\"")
     build_prefixes+=("${PACKAGE},")
 done
