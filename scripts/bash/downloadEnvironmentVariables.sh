@@ -72,12 +72,8 @@ for PACKAGE in $PACKAGES; do
 done
  
 
-# Get all *.env.example files in the env directory
-file_names=$(find $DIR/../../env -type f -name '*.env.example' -exec basename {} \;)
-
-# For each file, get its basename without the .env.example extension
-for file_name in $file_names; do
-    env_name=$(echo $file_name | sed 's/\.env.example//')
+for file_name in *.env.example; do
+    env_name="${file_name%.env.example}" # Get its basename without the .env.example extension
     load_env_file_from_bw $env_name $DIR/../../env $env_name
 done
 
