@@ -16,7 +16,7 @@ eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
 COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
-echo ""
+echo
 
 # Can provide one or more packages as command line arguments, or will default to all
 if [ "$2" = "" ]; then
@@ -88,6 +88,6 @@ done
 
 
 # Log out of Bitwarden
-echo ""
+echo
 echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
 bw logout
