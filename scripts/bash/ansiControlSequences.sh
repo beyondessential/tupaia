@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ANSI control sequences
 
@@ -55,4 +55,3 @@ else
     export BG_CYAN='\033[46m'
     export BG_WHITE='\033[47m'
 fi
-

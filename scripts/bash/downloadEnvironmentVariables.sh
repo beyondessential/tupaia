@@ -1,6 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
-set +x # do not output commands in this script, as some would show credentials in plain text
+set -e +x # Do not output commands in this script, as some would show credentials in plain text
 
 DEPLOYMENT_NAME="$1"
 DIR=$(dirname "$0")

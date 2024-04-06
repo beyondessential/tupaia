@@ -1,7 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
+set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
-
 . ./ansiControlSequences.sh
 
 if [[ $1 = '' ]]; then

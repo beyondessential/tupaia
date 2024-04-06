@@ -1,4 +1,6 @@
-#!/bin/bash -e 
+#!/usr/bin/env bash
+
+set -e
 
 # Function to get the directory of the package that's calling this script
 get_caller_package_directory() {

@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
+set -e
 DIR=$(dirname "$0")
 
 CONCURRENT_BUILD_BATCH_SIZE=1

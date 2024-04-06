@@ -1,5 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
+set -e
 DIR=$(dirname "$0")
 if [ "$1" != "" ]; then
   # pop the package_path off, and interpret the rest as dependencies that have been checked earlier
