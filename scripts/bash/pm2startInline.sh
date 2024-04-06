@@ -11,7 +11,7 @@ if [ -z "$1" ]; then
   ls -1 ../../packages/devops/configs/pm2/ | sed 's|.config.js||g' | grep -v 'base' | awk '$0="  "$0'
   echo
   echo    "Tips:"
-  echo -e "  - Normal PM2 commands work e.g. \033[1myarn pm2 status${RESET}"
+  echo -e "  - Normal PM2 commands work e.g. ${BOLD}yarn pm2 status${RESET}"
   echo    "  - Start multiple stacks by calling this command multiple times"
   exit 1
 fi
