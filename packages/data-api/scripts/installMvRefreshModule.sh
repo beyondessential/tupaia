@@ -1,5 +1,4 @@
 #!/bin/bash
-DIR=$(dirname "$0")
 
 
 DIR=$(pwd "$0")

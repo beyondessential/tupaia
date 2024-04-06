@@ -49,7 +49,6 @@ for dependency in ${internal_dependencies[@]}; do
 done
 
 # remove any duplicates
-deduplicated_union=()
 for i in "${!internal_dependencies[@]}"; do
   for j in "${!internal_dependencies[@]}"; do
     if [[ i -ne j ]] && [[ ${internal_dependencies[i]} = ${internal_dependencies[j]} ]]; then
