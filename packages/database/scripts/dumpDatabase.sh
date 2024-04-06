@@ -27,7 +27,7 @@ function show_loading_spinner() {
     sleep .5
     done
     printf "\r$1  "
-    echo "" # reset prompt
+    echo # reset prompt
 }
 
 DIR=$(pwd "$0")

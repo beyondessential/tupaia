@@ -48,7 +48,7 @@ mkdir -m 777 -p $LOGS_DIR
 if [[ $DEPLOYMENT_NAME == "production" ]]; then
   \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
   sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" > tmp.cron
-  sudo -u ubuntu crontab -l >> tmp.cron || echo "" >> tmp.cron
+  sudo -u ubuntu crontab -l >> tmp.cron || echo >> tmp.cron
   sudo -u ubuntu crontab tmp.cron
   rm tmp.cron
 fi

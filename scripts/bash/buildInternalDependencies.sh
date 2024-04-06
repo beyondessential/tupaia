@@ -47,11 +47,11 @@ done
 if [[ $watch == "true" ]]; then
     echo -e "\033[1mConcurrently building and watching all internal dependencies\033[m"
     echo "> ${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
-    echo ""
+    echo
     eval   "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
     echo -e "\033[1mConcurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}\033[m"
     echo "> ${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
-    echo ""
+    echo
     eval   "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
 fi
