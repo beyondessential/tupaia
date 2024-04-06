@@ -6,7 +6,7 @@ DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
-. './ansiControlSequences.sh' # Convenience variables for colour output et al
+. "$DIR/ansiControlSequences.sh" # Convenience variables for colour output et al
 
 
 # Log in to Bitwarden
@@ -28,14 +28,14 @@ else
 fi
 
 load_env_file_from_bw () {
-    FILE_NAME=$1
-    BASE_FILE_PATH=$2 
-    NEW_FILE_NAME=$3
-    ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
+    FILE_NAME="$1"
+    BASE_FILE_PATH="$2"
+    NEW_FILE_NAME="$3"
+    ENV_FILE_PATH="$BASE_FILE_PATH/$NEW_FILE_NAME.env"
 
     echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
-    # Checkout deployment specific env vars, or dev as fallback
+    # Checkout deployment-specific env vars, or dev as fallback
     DEPLOYMENT_ENV_VARS=$(bw list items --search "${FILE_NAME}.${DEPLOYMENT_NAME}.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
 
     if [ "$DEPLOYMENT_ENV_VARS" != "" ]; then
@@ -64,7 +64,7 @@ load_env_file_from_bw () {
         sed -i -e 's/^###DEV_ONLY###//g' "$ENV_FILE_PATH"
     fi
 
-    echo -en "${CLEAR_LINE}"
+    echo -en "$CLEAR_LINE"
     echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"
 }
  
