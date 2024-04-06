@@ -8,8 +8,7 @@ DIR=$(pwd "$0")
 # Set default port in case it wasn't in .env
 : "${DATA_LAKE_DB_PORT:=5432}"
 
-if [ "$(PGPASSWORD=$DB_PG_PASSWORD psql -p $DATA_LAKE_DB_PORT -X -A -h $DATA_LAKE_DB_URL -U $DB_PG_USER -t -c "SELECT 1 FROM pg_database WHERE datname='$DATA_LAKE_DB_NAME'" )" = '1' ]
-then
+if [[ "$(PGPASSWORD=$DB_PG_PASSWORD psql -p $DATA_LAKE_DB_PORT -X -A -h $DATA_LAKE_DB_URL -U $DB_PG_USER -t -c "SELECT 1 FROM pg_database WHERE datname='$DATA_LAKE_DB_NAME'" )" = '1' ]]; then
     exit 0
 fi
 

@@ -19,7 +19,7 @@ inspect_port=${1}
 # Start server command for JS
 start_server="nodemon -w src --exec \"babel-node src --inspect=${inspect_port} --config-file '../../babel.config.json'\""
 
-while [ "$2" != "" ]; do
+while [[ $2 != '' ]]; do
     case $2 in
     -ts | --typescript)
         type_script=true
@@ -30,7 +30,7 @@ while [ "$2" != "" ]; do
         shift
         ;;
     -s | --skip-internal)
-        echo -e "Skipping internal dependencies is now done by default. Remove the ${BOLD}--skip-internal${RESET} (${BOLD}-s${RESET}) flag, and if you want to include internal dependencies, add a ${BOLD}-i${RESET}. (Do try it - it’s a lot faster than it used to be, because it only builds those relevant to the current package!)"
+        echo -e "Skipping internal dependencies is now done by default. Remove the ${BOLD}--skip-internal${RESET} (${BOLD}-s${RESET}) flag, and if you want to include internal dependencies, add a ${BOLD}-i${RESET}. (Do try it - it’s a lot faster than it used to be, because it only builds those relevant to the current package$EXCLAMATION_MARK)"
         exit 1
         ;;
     *)
@@ -41,13 +41,13 @@ while [ "$2" != "" ]; do
 done
 
 # Start server command for TS
-if [[ ${type_script} == true ]]; then
+if [[ $type_script = true ]]; then
     start_server="nodemon --watch src -e ts,json --exec node --inspect=${inspect_port} -r ts-node/register src/index.ts"
 fi
 
 echo -e "${BOLD}Starting server...${RESET}"
 
-if [[ ${include_internal} == true ]]; then
+if [[ $include_internal = true ]]; then
     echo "Internal dependencies are under watch for hot reload"
     for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
         watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"

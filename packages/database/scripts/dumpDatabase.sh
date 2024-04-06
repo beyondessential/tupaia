@@ -40,7 +40,7 @@ identity_file=""
 server="dev"
 target_dir="."
 
-while [ "$1" != "" ]; do
+while [[ $1 != '' ]]; do
     case $1 in
     -s | --server)
         shift
@@ -57,7 +57,7 @@ while [ "$1" != "" ]; do
         exit
         ;;
     *)
-        if [ "$identity_file" == "" ]; then
+        if [[ $identity_file = '' ]]; then
             identity_file=$1
             shift
         else
@@ -68,12 +68,12 @@ while [ "$1" != "" ]; do
     esac
 done
 
-if [ "$identity_file" == "" ]; then
+if [[ $identity_file = '' ]]; then
     print_help
     exit 1
 fi
 
-if [ "$DB_PG_USER" == "" ] || [ "$DB_PG_PASSWORD" == "" ]; then
+if [[ $DB_PG_USER = '' || $DB_PG_PASSWORD = '' ]]; then
     echo -e "${RED}Missing Postgres user credential env vars in @tupaia/database .env file.${RESET} Check Bitwarden for variables and add them to the .env file"
     exit 1
 fi

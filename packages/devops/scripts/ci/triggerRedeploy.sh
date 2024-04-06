@@ -5,7 +5,7 @@ STOPPED_INSTANCES=$(aws ec2 describe-instances \
       --filters Name=tag:Branch,Values=${CI_BRANCH} Name=tag:DeploymentType,Values=tupaia Name=instance-state-name,Values=stopped \
       --no-cli-pager)
 
-if [[ $STOPPED_INSTANCES == *"Instances"* ]]; then
+if [[ $STOPPED_INSTANCES = *"Instances"* ]]; then
   echo "Can't redeploy while a deployment for ${CI_BRANCH} is stopped. Try again inside office hours, or start the app server and database then restart the build."
   exit 1
 fi

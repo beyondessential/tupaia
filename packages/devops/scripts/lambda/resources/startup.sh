@@ -25,7 +25,7 @@ BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
 # Set bash prompt to have deployment name in it
-if [[ $DEPLOYMENT_NAME == "production" ]]; then
+if [[ $DEPLOYMENT_NAME = production ]]; then
   BASH_PROMPT_NAME="PROD"
   BASH_PROMPT_COLOR="31"
 else
@@ -40,12 +40,12 @@ mkdir -m 777 -p $LOGS_DIR
 
 # Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
 # TODO currently broken
-# if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
+# if [[ $DEPLOYMENT_NAME = production || $DEPLOYMENT_NAME = dev ]]; then
 #     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
 # fi
 
 # Add preaggregation cron job if production
-if [[ $DEPLOYMENT_NAME == "production" ]]; then
+if [[ $DEPLOYMENT_NAME = production ]]; then
   \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
   sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" > tmp.cron
   sudo -u ubuntu crontab -l >> tmp.cron || echo >> tmp.cron
@@ -56,7 +56,7 @@ fi
 # Fetch the latest code
 cd $TUPAIA_DIR
 BRANCH_ON_REMOTE=$(sudo -Hu ubuntu git ls-remote --heads origin ${BRANCH})
-if [[ $BRANCH_ON_REMOTE == *${BRANCH} ]]; then
+if [[ $BRANCH_ON_REMOTE = *${BRANCH} ]]; then
   echo "${BRANCH} exists"
   BRANCH_TO_USE=${BRANCH}
 else

@@ -34,7 +34,7 @@ DIR=$(dirname "$0")
 
 
 # can provide one or more packages as command line arguments, or will default to all
-if [ -z $3 ]; then
+if [[ -z $3 ]]; then
     echo "Fetching all .env files"
     PACKAGES=$(${DIR}/../bash/getPackagesWithEnvFiles.sh)
 else
@@ -55,14 +55,14 @@ for PACKAGE in $PACKAGES; do
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" ${ENV_FILE_PATH}
 
-    if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
+    if [[ $DEPLOYMENT_NAME = *-e2e || $DEPLOYMENT_NAME = e2e ]]; then
         # Update e2e environment variables
-        if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
+        if [[ $PACKAGE = central-server || $PACKAGE = web-config-server ]]; then
             sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
 
-    if [[ "${DEPLOYMENT_NAME}" == dev ]]; then
+    if [[ $DEPLOYMENT_NAME = 'dev' ]]; then
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)

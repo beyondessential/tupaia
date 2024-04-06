@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 . ./ansiControlSequences.sh
 
-if [ -z "$1" ]; then
+if [[ -z $1 ]]; then
   echo -e "Usage: ${BOLD}yarn start-stack${RESET} ${UNDERLINE}stack${RESET}"
   echo
   echo -e "All ${UNDERLINE}stack${RESET}s:"

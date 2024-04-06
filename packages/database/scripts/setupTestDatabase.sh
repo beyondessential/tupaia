@@ -10,7 +10,7 @@ DIR=$(pwd "$0")
 TUPAIA_USER_EXISTS=`PGPASSWORD=$DB_PG_PASSWORD psql -p $DB_PORT -X -A -h $DB_URL -U $DB_PG_USER -t -c "SELECT rolname FROM pg_catalog.pg_roles WHERE rolname = '$DB_USER'"`
 IS_RDS=`PGPASSWORD=$DB_PG_PASSWORD psql -p $DB_PORT -X -A -h $DB_URL -U $DB_PG_USER -t -c "SELECT rolname FROM pg_catalog.pg_roles WHERE rolname = 'rds_superuser'"`
 
-if [ -z "$TUPAIA_USER_EXISTS" ]; then
+if [[ -z $TUPAIA_USER_EXISTS ]]; then
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE ROLE $DB_USER LOGIN SUPERUSER PASSWORD '$DB_PASSWORD'"
 fi
 
@@ -18,7 +18,7 @@ PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "DROP D
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE EXTENSION IF NOT EXISTS postgis"
 
-if [ -z "$IS_RDS" ]; then
+if [[ -z $IS_RDS ]]; then
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH SUPERUSER"
 else
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "GRANT rds_superuser TO $DB_USER"
@@ -26,7 +26,7 @@ fi
 
 PGPASSWORD=$DB_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_USER -d $DB_NAME -f ./src/__tests__/testData/testDataDump.sql
 
-if [ -z "$IS_RDS" ]; then
+if [[ -z $IS_RDS ]]; then
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH NOSUPERUSER"
 else
     PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "REVOKE rds_superuser FROM $DB_USER"

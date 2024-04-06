@@ -5,7 +5,7 @@ set -e
 get_caller_package_directory() {
     local dir
     dir=$(dirname "$(readlink -f "$0")")
-    while [[ "$dir" != "/" ]]; do
+    while [[ $dir != '/' ]]; do
         if [[ -f "$dir/package.json" ]]; then
             echo "$dir"
             return
@@ -30,7 +30,7 @@ common_files="$file1 $file2 $file3 $file4"
 
  # Remove files that don't exist
 for file in $common_files; do
-    if [ ! -f "$file" ]; then
+    if [[ ! -f $file ]]; then
         common_files=$(echo "$common_files" | sed "s|$file||g")
     fi
 done
@@ -40,7 +40,7 @@ merged_content="$(cat $common_files)"
 
 # Process command line arguments, overwriting values if present
 for var in $(env); do
-    if [[ "$var" == *=* ]]; then
+    if [[ $var = *=* ]]; then
         key="${var%%=*}"
         value="${var#*=}"
         # Override values from command line

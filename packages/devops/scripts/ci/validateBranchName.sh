@@ -18,12 +18,12 @@ function validate_name_ending() {
     local branch_name=$1
 
     for suffix in ${SUBDOMAIN_SUFFIXES[@]}; do
-        if [[ "$branch_name" == *$suffix ]]; then
+        if [[ $branch_name = *$suffix ]]; then
             log_error "❌ Invalid branch name ending: '$suffix'"
             exit 1
         fi
         # api is one of our suffixes so makes sure [branch]-api doesn't match any other api suffixes
-        if [[ "$suffix" == *-api && $branch_name-api == *$suffix ]]; then
+        if [[ $suffix = *-api && $branch_name-api = *$suffix ]]; then
             log_error "❌ Invalid branch name ending: '$suffix'"
             exit 1
         fi
@@ -49,7 +49,7 @@ function validate_name_chars() {
     fi
 
     for character in ${INVALID_CHARS[@]}; do
-        if [[ "$branch_name" == *"$character"* ]]; then
+        if [[ $branch_name = *"$character"* ]]; then
             log_error "❌ Invalid character in branch name: '$character'"
             exit 1
         fi

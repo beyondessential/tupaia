@@ -7,7 +7,7 @@ ROOT="${DIR}/../../../../"
 . ${DIR}/utils.sh
 
 function get_date_command() {
-  if [[ $(uname) == "Darwin" ]]; then
+  if [[ $(uname) = Darwin ]]; then
     echo "gdate" # install gdate on MacOs: brew install coreutils
   else
     echo "date"
@@ -48,13 +48,13 @@ function validate_migrations(){
     local errors="";
 
     while read -r migration_name; do
-      if [[ "$migration_name" == "" ]]; then
+      if [[ $migration_name = '' ]]; then
         break
       fi
       errors="$errors$(check_migration_outdated "$migration_name")"
     done <<< "$new_migration_names_in_string"
 
-    if [[ "$errors" != "" ]]; then
+    if [[ $errors != '' ]]; then
         echo $errors;
         exit 1;
     fi
@@ -64,7 +64,7 @@ current_branch_name=$(get_branch_name)
 origin_branch_name="master"
 
 # Skip validation if current branch name is master
-if [[ "$current_branch_name" == "$origin_branch_name" ]]; then
+if [[ $current_branch_name = "$origin_branch_name" ]]; then
   echo "Skipping validation step while current branch is the same as origin"
   exit 0
 fi

@@ -11,7 +11,7 @@ USAGE="Usage: ${BOLD}buildInternalDependencies.sh${RESET} [${BOLD}--watch${RESET
 
 watch=false
 package_path=""
-while [ "$1" != "" ]; do
+while [[ $1 != '' ]]; do
     case $1 in
     --watch)
         shift
@@ -33,8 +33,8 @@ while [ "$1" != "" ]; do
     esac
 done
 
-[[ $watch = "true" ]] && build_args="--watch" || build_args=""
-[[ $watch = "true" ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
+[[ $watch = true ]] && build_args="--watch" || build_args=""
+[[ $watch = true ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
 
 build_commands=()
 build_prefixes=()
@@ -45,7 +45,7 @@ for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
     build_prefixes+=("${PACKAGE},")
 done
 
-if [[ $watch == "true" ]]; then
+if [[ $watch = true ]]; then
     echo -e "${BOLD}Concurrently building and watching all internal dependencies${RESET}"
     echo "> ${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
     echo
