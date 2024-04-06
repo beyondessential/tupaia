@@ -1,13 +1,12 @@
 #!/bin/bash -e
 
-
 set +x # do not output commands in this script, as some would show credentials in plain text
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
-. "$DIR/ansiControlSequences.sh"
+. './ansiControlSequences.sh' # Convenience variables for colour output et al
 
 
 # Log in to Bitwarden
