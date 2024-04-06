@@ -1,13 +1,17 @@
 #!/bin/bash -e
+
+
 set +x # do not output commands in this script, as some would show credentials in plain text
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
 COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
 
+. "$DIR/ansiControlSequences.sh"
+
 
 # Log in to Bitwarden
-echo -e "\033[34m==>️\033[m \033[1mLogging into Bitwarden\033[m"
+echo -e "${BLUE}==>️${RESET} ${BOLD}Logging into Bitwarden${RESET}"
 bw login --check || bw login "$BITWARDEN_EMAIL" "$BITWARDEN_PASSWORD"
 eval "$(bw unlock "$BITWARDEN_PASSWORD" | grep -o -m 1 'export BW_SESSION=.*$')"
 
@@ -17,11 +21,11 @@ echo ""
 
 # Can provide one or more packages as command line arguments, or will default to all
 if [ "$2" = "" ]; then
-    echo -e "\033[34m==>️\033[m \033[1mFetching environment variables for all packages\033[m"
     PACKAGES=$("$DIR"/getPackagesWithEnvFiles.sh)
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for all packages${RESET}"
 else
     PACKAGES=${@:2}
-    echo -e "\033[34m==>️\033[m \033[1mFetching environment variables for ${PACKAGES}\033[m"
+    echo -e "${BLUE}==>️${RESET} ${BOLD}Fetching environment variables for ${PACKAGES}${RESET}"
 fi
 
 load_env_file_from_bw () {
@@ -30,7 +34,7 @@ load_env_file_from_bw () {
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
 
-    echo -en "\033[33m🚚 Fetching variables for \033[1m${FILE_NAME}...\033[m"
+    echo -en "${YELLOW}🚚 Fetching variables for ${BOLD}${FILE_NAME}...${RESET}"
 
     # Checkout deployment specific env vars, or dev as fallback
     DEPLOYMENT_ENV_VARS=$(bw list items --search "${FILE_NAME}.${DEPLOYMENT_NAME}.env" | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
@@ -61,8 +65,8 @@ load_env_file_from_bw () {
         sed -i -e 's/^###DEV_ONLY###//g' "$ENV_FILE_PATH"
     fi
 
-    echo -en "\033[2K\033[G" # Clear current line and set cursor to start of line
-    echo -e "\033[32m✅ Downloaded variables for \033[1m$FILE_NAME\033[m → $ENV_FILE_PATH"
+    echo -en "${CLEAR_LINE}"
+    echo -e "${GREEN}✅ Downloaded variables for ${BOLD}${FILE_NAME}${RESET} → $ENV_FILE_PATH"
 }
  
 for PACKAGE in $PACKAGES; do
@@ -86,5 +90,5 @@ done
 
 # Log out of Bitwarden
 echo ""
-echo -e "\033[34m==>️\033[m \033[1mLogging out of Bitwarden\033[m"
+echo -e "${BLUE}==>️${RESET} ${BOLD}Logging out of Bitwarden${RESET}"
 bw logout
