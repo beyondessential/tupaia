@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-set -e
-
-##
-# usage:
+# Usage:
 # $1 - port to run babel inspector on
 # Optionally provide '-i' or '--include-internal' to include build and watching internal dependencies
 # Optionally provide '-ts' or '--typescript' to start typescript server
 
-##
-USAGE="Usage: backendStartDev babel_port_inspector [-i --include-internal] [-ts --typescript]"
+set -e
+
 DIR=$(dirname "$0")
+. "$DIR/ansiControlSequences.sh"
+
+USAGE="Usage: ${BOLD}backendStartDev babel_port_inspector${RESET} [${BOLD}-i${RESET}|${BOLD}--include-internal${RESET}] [${BOLD}-ts${RESET}|${BOLD}--typescript${RESET}]"
 CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
 watch_flags=""
 include_internal=false
@@ -30,11 +30,11 @@ while [ "$2" != "" ]; do
         shift
         ;;
     -s | --skip-internal)
-        echo "Skipping internal dependencies is now done by default. Remove the -s | --skip-internal flag, and if you want to include internal dependencies, add a -i (do try it - it's a lot faster than it used to be, because it only builds those relevant to the current package!)"
+        echo -e "Skipping internal dependencies is now done by default. Remove the ${BOLD}--skip-internal${RESET} (${BOLD}-s${RESET}) flag, and if you want to include internal dependencies, add a ${BOLD}-i${RESET}. (Do try it - it’s a lot faster than it used to be, because it only builds those relevant to the current package!)"
         exit 1
         ;;
     *)
-        echo $USAGE
+        echo -e "$USAGE"
         exit 1
         ;;
     esac
@@ -45,7 +45,7 @@ if [[ ${type_script} == true ]]; then
     start_server="nodemon --watch src -e ts,json --exec node --inspect=${inspect_port} -r ts-node/register src/index.ts"
 fi
 
-echo "Starting server"
+echo -e "${BOLD}Starting server...${RESET}"
 
 if [[ ${include_internal} == true ]]; then
     echo "Internal dependencies are under watch for hot reload"
@@ -57,6 +57,6 @@ if [[ ${include_internal} == true ]]; then
     start_server="${start_server} --delay 1 ${watch_flags}"
     ${CONCURRENTLY_BIN} "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
 else
-    echo "Starting server without internal dependency build and watch. To include internal dependencies, add the -i flag - it's much faster than it used to be!"
+    echo -e "Starting server without internal dependency build and watch. To include internal dependencies, add the ${BOLD}-i${RESET} flag - it’s much faster than it used to be!"
     eval ${start_server}
 fi
