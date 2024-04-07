@@ -2,11 +2,12 @@
 
 DIR=$(pwd "$0")
 . "$DIR/../../scripts/bash/mergeEnvForDB.sh"
+. "$DIR/../../scripts/bash/ansiControlSequences.sh"
 
 COMMAND=$1
 
 if [[ $COMMAND = '' ]]; then
-    echo "Error: missing patch command! Must be one of: up, down, create"
+    echo "${RED}Error: missing patch command! Must be one of: up, down, create${RESET}"
     exit 1
 fi
 
@@ -28,11 +29,11 @@ if [[ $VERSION = '' ]]; then
     VERSION=$(psql -p $DB_PORT -X -A -h $DB_URL -d $DB_NAME -U $DB_USER -t -c "$VERSION_SQL_FUNC")
 
     if [[ $VERSION = '' ]]; then
-        echo "Error: failed to detect mvrefresh version from database"
+        echo "${RED}Error: failed to detect mvrefresh version from database${RESET}"
         exit 1
     fi
 
-    echo "Using version: $VERSION"
+    echo "Using version: ${BOLD}${GREEN}$VERSION${RESET}"
 fi
 
 if [[ ! -d ./scripts/patches/$VERSION && $COMMAND != create ]]; then
