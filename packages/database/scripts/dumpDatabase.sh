@@ -34,11 +34,11 @@ DIR=$(pwd "$0")
 . "$DIR/../../scripts/bash/mergeEnvForDB.sh"
 . "$DIR/../../scripts/bash/ansiControlSequences.sh"
 
-DUMP_FILE_NAME="dump.sql"
+DUMP_FILE_NAME='dump.sql'
 
-identity_file=""
-server="dev"
-target_dir="."
+identity_file=''
+server='dev'
+target_dir='.'
 
 while [[ $1 != '' ]]; do
     case $1 in

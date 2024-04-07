@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
-echo "Fully refreshing analytics table"
+
+echo 'Fully refreshing analytics table'
 
 DIR=$(pwd "$0")
 . "$DIR/../../scripts/bash/mergeEnvForDB.sh"

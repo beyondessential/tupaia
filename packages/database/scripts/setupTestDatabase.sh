@@ -33,14 +33,14 @@ else
 fi
 
 
-echo "Installing mvrefresh"
+echo 'Installing mvrefresh'
 DB_NAME=$DB_NAME yarn workspace @tupaia/data-api install-mv-refresh
-echo "Patching mvrefresh"
+echo 'Patching mvrefresh'
 DB_NAME=$DB_NAME yarn workspace @tupaia/data-api patch-mv-refresh up
-echo "Installing Analytics table"
+echo 'Installing Analytics table'
 DB_NAME=$DB_NAME yarn workspace @tupaia/data-api build-analytics-table
 
-echo "Deleting migrations that target data modifications, as there is no data to migrate on the test database"
+echo 'Deleting migrations that target data modifications, as there is no data to migrate on the test database'
 rm -rf ./src/migrations-backup
 mkdir ./src/migrations-backup
 cp -r ./src/migrations/* ./src/migrations-backup/

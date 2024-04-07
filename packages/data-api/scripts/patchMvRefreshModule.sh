@@ -12,14 +12,14 @@ if [[ $COMMAND = '' ]]; then
 fi
 
 if [[ $COMMAND = create ]]; then
-    echo "Enter patch name: "
+    echo 'Enter patch name: '
     read PATCH_NAME
 fi
 
 VERSION=$2
 
 if [[ $VERSION = '' ]]; then
-    echo "Version unspecified, defaulting to database mvrefresh version"
+    echo 'Version unspecified, defaulting to database mvrefresh version'
 
     # Set default port in case it wasn't in .env
     : "${DB_PORT:=5432}"
@@ -39,5 +39,5 @@ fi
 if [[ ! -d ./scripts/patches/$VERSION && $COMMAND != create ]]; then
     echo "No patches exist for version: $VERSION, skipping"
 else
-    ts-node ./scripts/patchMvRefresh.ts $COMMAND:$VERSION $PATCH_NAME --migrations-dir "./scripts/patches"  --table "patches" -v --config-file "../../babel.config.json"
+    ts-node ./scripts/patchMvRefresh.ts $COMMAND:$VERSION $PATCH_NAME --migrations-dir './scripts/patches'  --table 'patches' -v --config-file '../../babel.config.json'
 fi

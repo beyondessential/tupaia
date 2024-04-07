@@ -35,7 +35,7 @@ DIR=$(dirname "$0")
 
 # can provide one or more packages as command line arguments, or will default to all
 if [[ -z $3 ]]; then
-    echo "Fetching all .env files"
+    echo 'Fetching all .env files'
     PACKAGES=$(${DIR}/../bash/getPackagesWithEnvFiles.sh)
 else
     PACKAGES=${@:3}

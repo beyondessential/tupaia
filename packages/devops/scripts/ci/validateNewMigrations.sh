@@ -8,9 +8,9 @@ ROOT="${DIR}/../../../../"
 
 function get_date_command() {
   if [[ $(uname) = Darwin ]]; then
-    echo "gdate" # install gdate on MacOs: brew install coreutils
+    echo 'gdate' # install gdate on MacOs: brew install coreutils
   else
-    echo "date"
+    echo 'date'
   fi
 }
 
@@ -61,11 +61,11 @@ function validate_migrations(){
 }
 
 current_branch_name=$(get_branch_name)
-origin_branch_name="master"
+origin_branch_name='master'
 
 # Skip validation if current branch name is master
 if [[ $current_branch_name = "$origin_branch_name" ]]; then
-  echo "Skipping validation step while current branch is the same as origin"
+  echo 'Skipping validation step while current branch is the same as origin'
   exit 0
 fi
 

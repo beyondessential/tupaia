@@ -15,7 +15,7 @@ for PACKAGE in ${PACKAGES[@]}; do
             cd ${TUPAIA_DIR}
 
             # ensure that the analytics table is fully built
-            echo "Building analytics table"
+            echo 'Building analytics table'
             yarn workspace @tupaia/data-api install-mv-refresh
             yarn workspace @tupaia/data-api patch-mv-refresh up
             yarn workspace @tupaia/data-api build-analytics-table
@@ -44,4 +44,4 @@ pm2 save
 # Log dump file
 grep status /home/ubuntu/.pm2/dump.pm2
 
-echo "Finished deploying latest"
+echo 'Finished deploying latest'

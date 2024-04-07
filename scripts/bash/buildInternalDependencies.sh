@@ -33,8 +33,8 @@ while [[ $1 != '' ]]; do
     esac
 done
 
-[[ $watch = true ]] && build_args="--watch" || build_args=""
-[[ $watch = true ]] && build_ts_args="--watch --preserveWatchOutput" || build_ts_args=""
+[[ $watch = true ]] && build_args='--watch' || build_args=''
+[[ $watch = true ]] && build_ts_args='--watch --preserveWatchOutput' || build_ts_args=''
 
 build_commands=()
 build_prefixes=()

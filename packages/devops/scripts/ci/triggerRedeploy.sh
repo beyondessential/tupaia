@@ -16,7 +16,7 @@ RUNNING_INSTANCES=$(aws ec2 describe-instances \
       --no-cli-pager)
 
 if [[ $RUNNING_INSTANCES != *"Instances"* ]]; then
-  echo "No deployment running, skipping redeploy"
+  echo 'No deployment running, skipping redeploy'
   exit 0
 fi
 
@@ -31,7 +31,7 @@ AWS_MAX_ATTEMPTS=1 aws lambda invoke \
   $RESPONSE_FILE
 
 if grep -q errorMessage "$RESPONSE_FILE"; then
-  echo "Error while trying to redeploy"
+  echo 'Error while trying to redeploy'
   cat $RESPONSE_FILE
   exit 1
 fi
@@ -69,7 +69,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
         --cli-read-timeout 900 \
         $SWAP_OUT_RESPONSE_FILE
       if grep -q errorMessage "$SWAP_OUT_RESPONSE_FILE"; then
-        echo "Error while trying to swap out instances"
+        echo 'Error while trying to swap out instances'
         cat $SWAP_OUT_RESPONSE_FILE
         exit 1
       fi
@@ -77,7 +77,7 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
       break
     else
       if [ "$WAIT_ATTEMPTS" -ge 75 ]; then # 75 * 200 seconds = 4.16 hours, sitting within codeship's 5 hour timeout
-        echo "Build failed! Waited 75 times, but new instance is still not reachable"
+        echo 'Build failed! Waited 75 times, but new instance is still not reachable'
         exit 1
       else
         echo "Still waiting for ${DEPLOYMENT_NAME} startup build to complete. To watch detailed progress, connect to instance ${NEW_INSTANCE_ID} and run tail -f logs/deployment_log.txt"
@@ -87,4 +87,4 @@ for DEPLOYMENT_BASE64 in $DEPLOYMENTS; do
   done
 done
 
-echo "Redeploy complete"
+echo 'Redeploy complete'

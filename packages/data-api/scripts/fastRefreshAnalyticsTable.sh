@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Fast refreshing analytics table"
+echo 'Fast refreshing analytics table'
 
 DIR=$(pwd "$0")
 . "$DIR/../../scripts/bash/mergeEnvForDB.sh"

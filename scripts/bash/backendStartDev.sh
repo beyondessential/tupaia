@@ -12,6 +12,7 @@ DIR=$(dirname "$0")
 USAGE="Usage: ${BOLD}backendStartDev babel_port_inspector${RESET} [${BOLD}-i${RESET}|${BOLD}--include-internal${RESET}] [${BOLD}-ts${RESET}|${BOLD}--typescript${RESET}]"
 CONCURRENTLY_BIN="${DIR}/../../node_modules/.bin/concurrently"
 watch_flags=""
+watch_flags=''
 include_internal=false
 type_script=false
 inspect_port=${1}
@@ -48,7 +49,7 @@ fi
 echo -e "${BOLD}Starting server...${RESET}"
 
 if [[ $include_internal = true ]]; then
-    echo "Internal dependencies are under watch for hot reload"
+    echo 'Internal dependencies are under watch for hot reload'
     for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
         watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"
     done
