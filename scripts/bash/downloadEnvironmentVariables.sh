@@ -72,8 +72,8 @@ for PACKAGE in $PACKAGES; do
     # Only download the env file if there is an example file in the package. If there isn’t, this
     # means it is a package that doesn’t need env vars
     has_example_env_in_package=$(find $DIR/../../packages/$PACKAGE -type f -name '*.env.example' | wc -l)
-    if [[ $has_example_env_in_package -eq 1 ]]; then
         load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
+    if (( has_example_env_in_package > 0 )); then
     fi
 done
  

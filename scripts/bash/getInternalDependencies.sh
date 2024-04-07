@@ -41,7 +41,7 @@ fi
 
 # we are getting internal dependencies for a specific package.json
 internal_dependencies=($(sed -n '/"dependencies": {/,/}/p' ${PWD}/${package_path}/package.json | grep -o '@tupaia/[^"]*": "[0-9\.]*"' | cut -d / -f 2 | cut -d \" -f 1))
-if [[ ${#internal_dependencies[@]} -eq 0 ]]; then
+if (( ${#internal_dependencies[@]} = 0 )); then
   exit 0 # no internal dependencies of this package, early return
 fi
 
@@ -63,7 +63,7 @@ unset array_without_gaps
 for dependency in ${internal_dependencies[@]}; do
 
   nested_dependencies=($(${DIR}/getInternalDependencies.sh "${package_path}/../${dependency}" ${dependencies_already_visited[@]} ${internal_dependencies[@]} ))
-  if [[ ${#nested_dependencies[@]} -eq 0 ]]; then
+  if (( ${#nested_dependencies[@]} = 0 )); then
     continue
   fi
 
@@ -74,7 +74,7 @@ done
 # remove any duplicates
 for i in "${!internal_dependencies[@]}"; do
   for j in "${!internal_dependencies[@]}"; do
-    if [[ i -ne j && ${internal_dependencies[i]} = ${internal_dependencies[j]} ]]; then
+    if (( i != j )) && [[ ${internal_dependencies[i]} = ${internal_dependencies[j]} ]]; then
       unset 'internal_dependencies[i]'
     fi
   done

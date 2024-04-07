@@ -29,7 +29,7 @@ function get_max_length() {
 
     for item in "${array[@]}"; do
         length=${#item}
-        if [[ $length -gt $max ]]; then
+        if (( length > max )); then
             max=$length
         fi
     done
