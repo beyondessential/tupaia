@@ -5,7 +5,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { DatePicker as DatePickerComponent } from '@tupaia/ui-components';
-import { getIsoDateString } from '@tupaia/tsutils';
 import { useVizConfigContext } from '../../context';
 
 const DatePicker = styled(DatePickerComponent)`
@@ -62,7 +61,9 @@ export const DateRangeField = () => {
   const convertDateToIsoString = date => {
     if (!date || isNaN(new Date(date).getTime())) return null;
     const correctedDate = shiftEpoch(date);
-    return getIsoDateString(correctedDate);
+
+    // Slice to discard timestamp, keeping only "yyyy-mm-dd"
+    return correctedDate.toISOString().slice(0, 10);
   };
 
   const handleChangeStartDate = date => {

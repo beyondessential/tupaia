@@ -4,9 +4,9 @@
  */
 
 import {
-  getTestModels,
-  findOrCreateDummyRecord,
   findOrCreateDummyCountryEntity,
+  findOrCreateDummyRecord,
+  getTestModels,
 } from '../../testUtilities';
 
 const DASHBOARDS = [
