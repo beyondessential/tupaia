@@ -60,6 +60,12 @@ const dateOfData = {
   },
 };
 
+const approvalStatus = {
+  Header: 'Approval Status',
+  source: 'approval_status',
+  type: 'tooltip',
+};
+
 const entityName = {
   Header: 'Entity',
   source: 'entity.name',
@@ -79,6 +85,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   assessorName,
   date,
   dateOfData,
+  approvalStatus,
   {
     Header: 'Export',
     source: 'id',
