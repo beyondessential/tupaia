@@ -11701,7 +11701,7 @@ __metadata:
     lodash: ^4.17.4
     multer: ^1.4.3
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -11865,7 +11865,7 @@ __metadata:
     supertest: ^3.1.0
     urlencode: ^1.1.0
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
   languageName: unknown
   linkType: soft
 
@@ -12695,7 +12695,7 @@ __metadata:
     sanitize-filename: ^1.6.3
     validator: ^13.11.0
     winston: ^3.3.3
-    xlsx: ^0.10.9
+    xlsx: ^0.18.5
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -14966,18 +14966,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adler-32@npm:~1.1.0":
-  version: 1.1.0
-  resolution: "adler-32@npm:1.1.0"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    adler32: ./bin/adler32.njs
-  checksum: 462a2e7eda93e723737e0efc209ca4a6fc6b66bde90322d6917257de2dc14adb8192eb628315da6d3acac2eade737bc873844d4e075852dde9ca8c066053aff7
-  languageName: node
-  linkType: hard
-
 "adler-32@npm:~1.2.0":
   version: 1.2.0
   resolution: "adler-32@npm:1.2.0"
@@ -14987,6 +14975,13 @@ __metadata:
   bin:
     adler32: ./bin/adler32.njs
   checksum: aa611316fa224349b3eb1b7fcccc05195c38e425ff2b678fde67c0440b27074c42ad97b03efb7478f045b094f0dcb51a8711a2d5571d8940e1c5c52593af7bf6
+  languageName: node
+  linkType: hard
+
+"adler-32@npm:~1.3.0":
+  version: 1.3.1
+  resolution: "adler-32@npm:1.3.1"
+  checksum: c7f6b02df64a4392fcf1591862344f56733716a558e97a8b06a553dadeeaec792054512389000f42f371b13d2be5370e056e18db3b573944b595c4cb7742c5c6
   languageName: node
   linkType: hard
 
@@ -18022,15 +18017,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cfb@npm:~0.12.0":
-  version: 0.12.1
-  resolution: "cfb@npm:0.12.1"
+"cfb@npm:~1.2.1":
+  version: 1.2.2
+  resolution: "cfb@npm:1.2.2"
   dependencies:
-    commander: ~2.11.0
-    printj: ~1.1.0
-  bin:
-    cfb: ./bin/cfb.njs
-  checksum: 013ea895a491368da853a20fe13d6547b2b1f748dc5242591e14e57d5cb84e5f1d91733330613d8c6246f317a4d4228abb4b7f4c8510121485b851fd73a062ab
+    adler-32: ~1.3.0
+    crc-32: ~1.2.0
+  checksum: cfb63a7d630a7fa415c1b25655dca66666584f29c95fb0ee90866ada1a28090857827f2ba70a9a50df28bdce05728ae58d495bce417249f305ef7b3c85840024
   languageName: node
   linkType: hard
 
@@ -18623,19 +18616,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codepage@npm:~1.10.1":
-  version: 1.10.2
-  resolution: "codepage@npm:1.10.2"
-  dependencies:
-    commander: ~2.11.0
-    exit-on-epipe: ~1.0.1
-    voc: ~1.0.0
-  bin:
-    codepage: ./bin/codepage.njs
-  checksum: b5ca26ef954df1c31110b7a0f2c2d5a6ac236766de4176fcbd64113c374a44a11f0d7294d70ce507d75a8abd896803c8e166b01e94588b8f74501759f14d30ff
-  languageName: node
-  linkType: hard
-
 "codepage@npm:~1.14.0":
   version: 1.14.0
   resolution: "codepage@npm:1.14.0"
@@ -18645,6 +18625,13 @@ __metadata:
   bin:
     codepage: ./bin/codepage.njs
   checksum: ea06cbb7b646029d4e252b143b09048f1dee466d80be9e68cc4da05981f982a02f1199db0ea27d5e05a026bfa77b91e3ae8e0d3ed9665bd77ba54911bf2b82b7
+  languageName: node
+  linkType: hard
+
+"codepage@npm:~1.15.0":
+  version: 1.15.0
+  resolution: "codepage@npm:1.15.0"
+  checksum: 86bdfd8f8fd4d78ace6ddab02a1621cbb4a833686fe886984b4155d99cd0287581d69495774b816ab2f571c4dc851c1595e1dbb8d69bd6dbb5a631ebf317fab0
   languageName: node
   linkType: hard
 
@@ -18902,13 +18889,6 @@ __metadata:
   version: 9.5.0
   resolution: "commander@npm:9.5.0"
   checksum: c7a3e27aa59e913b54a1bafd366b88650bc41d6651f0cbe258d4ff09d43d6a7394232a4dadd0bf518b3e696fdf595db1028a0d82c785b88bd61f8a440cecfade
-  languageName: node
-  linkType: hard
-
-"commander@npm:~2.11.0":
-  version: 2.11.0
-  resolution: "commander@npm:2.11.0"
-  checksum: 0d0c622d129a801699b9bbf6fa518108c7e221e51ae12457119aec52f1142ab759b6cd3348ee253604e934639e200c8f0e1cf8342a2ba4b28b3565a7322ead14
   languageName: node
   linkType: hard
 
@@ -19506,18 +19486,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crc-32@npm:~1.1.0":
-  version: 1.1.1
-  resolution: "crc-32@npm:1.1.1"
-  dependencies:
-    exit-on-epipe: ~1.0.1
-    printj: ~1.1.0
-  bin:
-    crc32: ./bin/crc32.njs
-  checksum: 71acc63cc2955f1de1492f494549dfb76d1ded194cc393f93d33fc86ef9d3d805c8ac9001dc4d246d06786306a1453025388b7faf9b2f2fdfc43ffd37131d43a
-  languageName: node
-  linkType: hard
-
 "crc-32@npm:~1.2.0":
   version: 1.2.0
   resolution: "crc-32@npm:1.2.0"
@@ -19527,6 +19495,15 @@ __metadata:
   bin:
     crc32: ./bin/crc32.njs
   checksum: 7bcde8bea262f6629ac3c70e20bdfa3d058dc77091705ce8620513f76f19b41fc273ddd65a716eef9b4e33fbb61ff7f9b266653d214319aef27e4223789c6b9e
+  languageName: node
+  linkType: hard
+
+"crc-32@npm:~1.2.1":
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
+  bin:
+    crc32: bin/crc32.njs
+  checksum: ad2d0ad0cbd465b75dcaeeff0600f8195b686816ab5f3ba4c6e052a07f728c3e70df2e3ca9fd3d4484dc4ba70586e161ca5a2334ec8bf5a41bf022a6103ff243
   languageName: node
   linkType: hard
 
@@ -39475,17 +39452,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssf@npm:~0.10.0":
-  version: 0.10.2
-  resolution: "ssf@npm:0.10.2"
-  dependencies:
-    frac: ~1.1.2
-  bin:
-    ssf: ./bin/ssf.njs
-  checksum: 06272773018c75b42836ba668495d0ed1aee9e5daff3f34866909d6a9094115e9f20ec501aaad823874342ca4b303460d22f0a4bdcaf6605b2f9880688f588f8
-  languageName: node
-  linkType: hard
-
 "ssf@npm:~0.11.2":
   version: 0.11.2
   resolution: "ssf@npm:0.11.2"
@@ -42667,15 +42633,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"voc@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "voc@npm:1.0.0"
-  bin:
-    voc: ./voc.njs
-  checksum: b81e68662852ef4af6a8c933d5ae38a3c1b91ddf54159ad843d0617989921f374dc9f7c0f7b14ac96e3d16fbff8e20fc1c9621235a15d25d6e2d873e82c84a50
-  languageName: node
-  linkType: hard
-
 "w3c-xmlserializer@npm:^4.0.0":
   version: 4.0.0
   resolution: "w3c-xmlserializer@npm:4.0.0"
@@ -43430,23 +43387,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xlsx@npm:^0.10.9":
-  version: 0.10.9
-  resolution: "xlsx@npm:0.10.9"
-  dependencies:
-    adler-32: ~1.1.0
-    cfb: ~0.12.0
-    codepage: ~1.10.1
-    commander: ~2.11.0
-    crc-32: ~1.1.0
-    exit-on-epipe: ~1.0.1
-    ssf: ~0.10.0
-  bin:
-    xlsx: ./bin/xlsx.njs
-  checksum: bf811abefecfa6f7a9f9cfb616b5864b6eeb7fefa1f30a6c6d0e4cb226808a3c043d474ccbfde621e8891d25e7a3da37b601f8e0225df883643d2f48956e3db8
-  languageName: node
-  linkType: hard
-
 "xlsx@npm:^0.17.0":
   version: 0.17.0
   resolution: "xlsx@npm:0.17.0"
@@ -43464,6 +43404,23 @@ __metadata:
   bin:
     xlsx: bin/xlsx.njs
   checksum: 64e44eba53b64b989667b11655b88ef59a695aa07cce2415f9edff64ef6a48d936ed33208d98db3654e31769d79c42fd50e96d983d55e0850cb54a591b28960e
+  languageName: node
+  linkType: hard
+
+"xlsx@npm:^0.18.5":
+  version: 0.18.5
+  resolution: "xlsx@npm:0.18.5"
+  dependencies:
+    adler-32: ~1.3.0
+    cfb: ~1.2.1
+    codepage: ~1.15.0
+    crc-32: ~1.2.1
+    ssf: ~0.11.2
+    wmf: ~1.0.1
+    word: ~0.3.0
+  bin:
+    xlsx: bin/xlsx.njs
+  checksum: c5774d3c6abdf2db24f33a7b786e305255dac0e41a4e6bf6167c3f8517bfb5bfcb98e8207c39d5105f8304aa7416758da0400a993fb79aaf8e2ea4cfa8801f2e
   languageName: node
   linkType: hard
 
