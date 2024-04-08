@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -22,13 +22,13 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child Id',
-    source: 'child_id',
+    Header: 'Child Code',
+    source: 'map_overlay.code',
     type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.id',
-      optionValueKey: 'mapOverlay.id',
+      optionLabelKey: 'mapOverlay.code',
+      optionValueKey: 'mapOverlay.code',
       canCreateNewOptions: true,
       sourceKey: 'child_id',
     },
