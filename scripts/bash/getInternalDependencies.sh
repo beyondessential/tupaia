@@ -60,7 +60,7 @@ internal_dependencies=("${array_without_gaps[@]}")
 unset array_without_gaps
 
 # recursively build up an array of all internal dependencies this package depends on
-for dependency in ${internal_dependencies[@]}; do
+for dependency in "${internal_dependencies[@]}"; do
 
   nested_dependencies=($(${DIR}/getInternalDependencies.sh "${package_path}/../${dependency}" ${dependencies_already_visited[@]} ${internal_dependencies[@]} ))
   if (( ${#nested_dependencies[@]} = 0 )); then
@@ -86,6 +86,6 @@ internal_dependencies=("${array_without_gaps[@]}")
 unset array_without_gaps
 
 # echo out result for calling script to pick up
-echo ${internal_dependencies[@]}
+echo "${internal_dependencies[@]}"
 exit 0
 

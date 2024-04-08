@@ -26,7 +26,7 @@ if [[ $VERSION = '' ]]; then
 
     export PGPASSWORD=$DB_PASSWORD
     VERSION_SQL_FUNC="SELECT mv\$version()"
-    VERSION=$(psql -p $DB_PORT -X -A -h $DB_URL -d $DB_NAME -U $DB_USER -t -c "$VERSION_SQL_FUNC")
+    VERSION=$(psql -p "$DB_PORT" -X -A -h "$DB_URL" -d "$DB_NAME" -U "$DB_USER" -t -c "$VERSION_SQL_FUNC")
 
     if [[ $VERSION = '' ]]; then
         echo "${RED}Error: failed to detect mvrefresh version from database${RESET}"

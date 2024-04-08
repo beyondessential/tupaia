@@ -8,19 +8,19 @@ function ansi_color() {
 }
 
 function log_with_color() {
-    echo -e "$(ansi_color $2)$1$(ansi_color $COLOR_RESET)"
+    echo -e "$(ansi_color "$2")$1$(ansi_color "$COLOR_RESET")"
 }
 
 function log_error() {
-    log_with_color "$1" $COLOR_RED
+    log_with_color "$1" "$COLOR_RED"
 }
 
 function log_warn() {
-    log_with_color "$1" $COLOR_YELLOW
+    log_with_color "$1" "$COLOR_YELLOW"
 }
 
 function log_success() {
-    log_with_color "$1" $COLOR_GREEN
+    log_with_color "$1" "$COLOR_GREEN"
 }
 
 function get_max_length() {
@@ -34,7 +34,7 @@ function get_max_length() {
         fi
     done
 
-    echo $max
+    echo "$max"
 }
 
 function get_branch_name() {
@@ -44,5 +44,5 @@ function get_branch_name() {
         branch_name=$(git branch --show-current)
     fi
 
-    echo $branch_name
+    echo "$branch_name"
 }

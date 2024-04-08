@@ -2,9 +2,9 @@
 set -e
 
 DIR=$(dirname "$0")
-ROOT="${DIR}/../../../../"
+ROOT="$DIR/../../../../"
 
-. ${DIR}/utils.sh
+. "$DIR/utils.sh"
 
 function get_date_command() {
   if [[ $(uname) = Darwin ]]; then
@@ -19,7 +19,7 @@ date_command=$(get_date_command)
 function convert_timestamp_to_date() {
   local timestamp=$1
   local date=$($date_command -d @$timestamp '+%Y-%m-%d')
-  echo $date
+  echo "$date"
 }
 
 
@@ -55,7 +55,7 @@ function validate_migrations(){
     done <<< "$new_migration_names_in_string"
 
     if [[ $errors != '' ]]; then
-        echo $errors;
+        echo "$errors";
         exit 1;
     fi
 }
@@ -74,11 +74,11 @@ fi
 git remote remove origin
 git remote add origin https://github.com/beyondessential/tupaia.git
 # Remove this sub module because it uses ssh 
-git rm $ROOT/packages/data-api/scripts/pg-mv-fast-refresh
+git rm "$ROOT/packages/data-api/scripts/pg-mv-fast-refresh"
 
 git fetch --quiet
-git fetch origin $origin_branch_name:$origin_branch_name --quiet
-validate_migrations $current_branch_name $origin_branch_name
+git fetch origin "$origin_branch_name:$origin_branch_name" --quiet
+validate_migrations "$current_branch_name" "$origin_branch_name"
 
 log_success "✔ New migrations are valid!"
 exit 0

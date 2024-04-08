@@ -40,9 +40,9 @@ build_commands=()
 build_prefixes=()
 
 # Build dependencies
-for PACKAGE in $(${DIR}/getInternalDependencies.sh ${package_path}); do
-    build_commands+=("\"NODE_ENV=production yarn workspace @tupaia/${PACKAGE} build-dev $build_args\"")
-    build_prefixes+=("${PACKAGE},")
+for PACKAGE in $("$DIR/getInternalDependencies.sh" "$package_path"); do
+    build_commands+=("\"NODE_ENV=production yarn workspace @tupaia/$PACKAGE build-dev $build_args\"")
+    build_prefixes+=("$PACKAGE,")
 done
 
 if [[ $watch = true ]]; then
@@ -52,7 +52,7 @@ if [[ $watch = true ]]; then
     eval   "${CONCURRENTLY_BIN} --names \"${build_prefixes[*]}\" ${build_commands[@]}"
 else
     echo -e "${BOLD}Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}${RESET}"
-    echo "> ${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    echo "> $CONCURRENTLY_BIN -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
     echo
-    eval   "${CONCURRENTLY_BIN} -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
+    eval   "$CONCURRENTLY_BIN -m $CONCURRENT_BUILD_BATCH_SIZE --names \"${build_prefixes[*]}\" -k ${build_commands[*]}"
 fi

@@ -8,7 +8,7 @@ if [[ -z $1 ]]; then
   echo -e "Usage: ${BOLD}yarn start-stack${RESET} ${UNDERLINE}stack${RESET}"
   echo
   echo -e "All ${UNDERLINE}stack${RESET}s:"
-  ls -1 ../../packages/devops/configs/pm2/ | sed 's|.config.js||g' | grep -v 'base' | awk '$0="  "$0'
+  ls -1 ../../packages/devops/configs/pm2/ | sed 's|.config.js||g' | grep -v 'base' | awk '$0=" "$0'
   echo
   echo    "Tips:"
   echo -e "  - Normal PM2 commands work e.g. ${BOLD}yarn pm2 status${RESET}"

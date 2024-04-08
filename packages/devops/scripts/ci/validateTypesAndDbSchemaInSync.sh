@@ -5,7 +5,7 @@ set -ex
 SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )  
 
 # Load environment variables from .env files
-source $SCRIPT_DIR/../../../../scripts/bash/mergeEnvForDB.sh 
+source "$SCRIPT_DIR/../../../../scripts/bash/mergeEnvForDB.sh"
 
 cd "$SCRIPT_DIR"
  

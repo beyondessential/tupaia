@@ -50,14 +50,14 @@ echo -e "${BOLD}Starting server...${RESET}"
 
 if [[ $include_internal = true ]]; then
     echo 'Internal dependencies are under watch for hot reload'
-    for PACKAGE in $(${DIR}/getInternalDependencies.sh .); do
-        watch_flags="${watch_flags} --watch ../${PACKAGE}/dist"
+    for PACKAGE in $("$DIR/getInternalDependencies.sh" .); do
+        watch_flags+=" --watch ../$PACKAGE/dist"
     done
     # add the watch flags to the server start process, as well as a 1 second delay to debounce the
     # many restarts that otherwise happen during the initial build of internal dependencies
-    start_server="${start_server} --delay 1 ${watch_flags}"
-    ${CONCURRENTLY_BIN} "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
+    start_server+=" --delay 1 $watch_flags"
+    "$CONCURRENTLY_BIN" "${DIR}/buildInternalDependencies.sh --watch --packagePath ." "eval ${start_server}"
 else
     echo -e "Starting server without internal dependency build and watch. To include internal dependencies, add the ${BOLD}-i${RESET} flag - it’s much faster than it used to be!"
-    eval ${start_server}
+    eval "$start_server"
 fi

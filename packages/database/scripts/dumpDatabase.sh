@@ -14,13 +14,13 @@ EOF
 
 # https://stackoverflow.com/questions/12498304/using-bash-to-display-a-progress-indicator
 function show_loading_spinner() {
-    eval $2 &
+    eval "$2" &
     pid=$! # Process Id of the previous running command
 
     spin='-\|/'
 
     i=0
-    while kill -0 $pid 2>/dev/null
+    while kill -0 "$pid" 2>/dev/null
     do
     i=$(( (i+1) %4 ))
     printf "\r$1 ${spin:$i:1}"
