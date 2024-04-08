@@ -12,6 +12,7 @@ import {
   SessionSwitchingAuthHandler,
   forwardRequest,
 } from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { DataTrakSessionModel } from '../models';
 import {
   UserRoute,
@@ -47,14 +48,14 @@ import {
 } from '../routes';
 import { attachAccessPolicy } from './middleware';
 
-const {
-  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-} = process.env;
-
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp() {
+  const WEB_CONFIG_API_URL = getEnvVarOrDefault(
+    'WEB_CONFIG_API_URL',
+    'http://localhost:8000/api/v1',
+  );
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'datatrak-web-server')
     .useSessionModel(DataTrakSessionModel)
     .useAttachSession(attachSessionIfAvailable)

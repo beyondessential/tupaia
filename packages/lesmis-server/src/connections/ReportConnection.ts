@@ -5,8 +5,7 @@
 
 import { QueryParameters } from '@tupaia/server-boilerplate';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
-
-const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 type ReportObject = {
   results: Record<string, unknown>[];
@@ -16,7 +15,7 @@ type ReportObject = {
  * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends SessionHandlingApiConnection {
-  public baseUrl = REPORT_API_URL;
+  public baseUrl = getEnvVarOrDefault('REPORT_API_URL', 'http://localhost:8030/v1');
 
   public async fetchReport(reportCode: string, query: QueryParameters): Promise<ReportObject> {
     return this.get(`fetchReport/${reportCode}`, query);

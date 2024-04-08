@@ -95,6 +95,7 @@ jobs:
       API_CLIENT_PASSWORD: api-client
       API_CLIENT_SALT: abc132
       JWT_SECRET: abc132
+      TUPAIA_ADMIN_EMAIL_ADDRESS: test@tupaia.org
 
       # test database
       DB_PG_USER: postgres

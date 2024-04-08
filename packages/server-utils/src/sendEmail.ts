@@ -4,7 +4,7 @@
  */
 
 import nodemailer from 'nodemailer';
-import { getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
+import { getEnvVarOrDefault, getIsProductionEnvironment, requireEnv } from '@tupaia/utils';
 import Mail from 'nodemailer/lib/mailer';
 
 const TEXT_SIGN_OFF = 'Cheers,\n\nThe Tupaia Team';
@@ -26,7 +26,10 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
     attachments,
     signOff = html ? HTML_SIGN_OFF : TEXT_SIGN_OFF,
   } = mailOptions;
-  const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
+  const SMTP_HOST = getEnvVarOrDefault('SMTP_HOST', undefined);
+  const SMTP_USER = getEnvVarOrDefault('SMTP_USER', undefined);
+  const SMTP_PASSWORD = getEnvVarOrDefault('SMTP_PASSWORD', undefined);
+  const SITE_EMAIL_ADDRESS = getEnvVarOrDefault('SITE_EMAIL_ADDRESS', undefined);
 
   if (text && html) {
     throw new Error('Only text or HTML can be sent in an email, not both');
