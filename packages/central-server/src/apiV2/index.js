@@ -21,7 +21,7 @@ import {
   getUserRewards,
   postChanges,
 } from './meditrakApp';
-import { BESAdminCreateHandler } from './CreateHandler';
+import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
@@ -123,7 +123,12 @@ import {
   GETExternalDatabaseConnections,
   TestExternalDatabaseConnection,
 } from './externalDatabaseConnections';
-import { CreateLandingPage, EditLandingPage } from './landingPages';
+import {
+  CreateLandingPage,
+  DeleteLandingPage,
+  EditLandingPage,
+  GETLandingPages,
+} from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
 import { suggestSurveyCode } from './suggestSurveyCode';
 import {
@@ -260,7 +265,7 @@ apiV2.get(
   useRouteHandler(TestExternalDatabaseConnection),
 );
 apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
-apiV2.get('/landingPages/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 
 /**
@@ -285,7 +290,7 @@ apiV2.post(
   useRouteHandler(ResubmitSurveyResponse),
 );
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
@@ -382,7 +387,7 @@ apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/landingPages/:recordId', useRouteHandler(DeleteLandingPage));
 apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/supersetInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 

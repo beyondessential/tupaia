@@ -250,7 +250,6 @@ export const ROUTES = [
         label: 'Landing Pages',
         to: '/landing-pages',
         component: CustomLandingPagesPage,
-        isBESAdminOnly: true,
       },
     ],
   },
