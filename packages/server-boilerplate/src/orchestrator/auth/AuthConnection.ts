@@ -20,17 +20,18 @@ export interface AuthResponse {
   };
 }
 
+const basicAuthHandler = {
+  getAuthHeader: async () => {
+    const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+    const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+    return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
+  },
+};
+
 export class AuthConnection extends ApiConnection {
   public baseUrl = process.env.CENTRAL_API_URL || 'http://localhost:8090/v2'; // auth server is actually just central server
 
   public constructor() {
-    const basicAuthHandler = {
-      getAuthHeader: async () => {
-        const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
-        const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
-        return createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
-      },
-    };
     super(basicAuthHandler);
   }
 
