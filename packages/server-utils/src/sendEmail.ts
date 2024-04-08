@@ -26,7 +26,10 @@ export const sendEmail = async (to: string | string[], mailOptions: MailOptions 
     attachments,
     signOff = html ? HTML_SIGN_OFF : TEXT_SIGN_OFF,
   } = mailOptions;
-  const { SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SITE_EMAIL_ADDRESS } = process.env;
+  const SMTP_HOST = requireEnv('SMTP_HOST');
+  const SMTP_USER = requireEnv('SMTP_USER');
+  const SMTP_PASSWORD = requireEnv('SMTP_PASSWORD');
+  const SITE_EMAIL_ADDRESS = requireEnv('SITE_EMAIL_ADDRESS');
 
   if (text && html) {
     throw new Error('Only text or HTML can be sent in an email, not both');
