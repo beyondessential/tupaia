@@ -4,6 +4,7 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { PermissionsError } from '@tupaia/utils';
 import { TupaiaAdminGETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess, hasBESAdminAccess } from '../../permissions';
 import { assertUserHasAccessToLandingPage } from './assertUserHasAccessToLandingPage';
@@ -25,7 +26,7 @@ const createLandingPageDBFilter = async (accessPolicy, models, criteria) => {
     : projectCodes;
 
   if (projectCodeFilters?.length && !projectCodesToQuery.length)
-    throw new Error('No access to project codes in query');
+    throw new PermissionsError('No access to project codes in query');
 
   return {
     [QUERY_CONJUNCTIONS.RAW]: {

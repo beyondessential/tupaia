@@ -11,7 +11,7 @@ export const assertUserHasAccessToLandingPage = async (models, accessPolicy, lan
   const landingPage = await models.landingPage.findById(landingPageId);
   const hasAccess = userProjects.some(project => landingPage.project_codes.includes(project.code));
   if (!hasAccess) {
-    throw new Error('You do not have access to edit this landing page');
+    throw new Error('Need access to a project that the landing page belongs to.');
   }
   return true;
 };
