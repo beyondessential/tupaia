@@ -88,3 +88,12 @@ done
 
 
 bw logout
+
+
+# Clean up detritus on macOS
+# macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
+# that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
+# generate backup files which we don’t need.
+for backup_file in ./*.env-e; do
+    rm -f "$backup_file"
+done
