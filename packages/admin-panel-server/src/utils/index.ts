@@ -5,5 +5,4 @@
  */
 
 export { hasTupaiaAdminPanelAccess } from './hasTupaiaAdminPanelAccess';
-export { hasVizBuilderUserAccess } from './hasVizBuilderUserAccess';
 export { readFileContent } from './readFileContent';
