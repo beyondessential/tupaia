@@ -74,7 +74,7 @@ const getRelationParams = (options: RelationOptions) => {
  * @deprecated use @tupaia/api-client
  */
 export class EntityConnection extends ApiConnection {
-  baseUrl = getEnvVarOrDefault(ENTITY_API_URL, 'http://localhost:8050/v1');
+  baseUrl = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
 
   public fetchCountries = async () =>
     this.fetchDescendants(PSSS_ENTITY, {
