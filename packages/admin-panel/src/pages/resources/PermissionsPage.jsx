@@ -19,7 +19,7 @@ export const PERMISSIONS_COLUMNS = [
     },
   },
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_group.name',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
@@ -29,13 +29,17 @@ export const PERMISSIONS_COLUMNS = [
 
 const FIELDS = [
   {
-    Header: 'User',
+    Header: 'First name',
     source: 'user.first_name',
-    accessor: rowData => `${rowData['user.first_name']} ${rowData['user.last_name']}`,
     editable: false,
   },
   {
-    Header: 'Email',
+    Header: 'Last name',
+    source: 'user.last_name',
+    editable: false,
+  },
+  {
+    Header: 'Email address',
     source: 'user.email',
     editable: false,
   },
