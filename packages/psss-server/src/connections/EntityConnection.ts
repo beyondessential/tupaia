@@ -3,9 +3,11 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { getEnvVarOrDefault, removeAt } from '@tupaia/utils';
+import { removeAt } from '@tupaia/utils';
 import { PSSS_ENTITY, PSSS_HIERARCHY } from '../constants';
 import { ApiConnection } from './ApiConnection';
+
+const { ENTITY_API_URL = 'http://localhost:8050/v1' } = process.env;
 
 interface Entity {
   id: string;
@@ -74,7 +76,7 @@ const getRelationParams = (options: RelationOptions) => {
  * @deprecated use @tupaia/api-client
  */
 export class EntityConnection extends ApiConnection {
-  baseUrl = getEnvVarOrDefault('ENTITY_API_URL', 'http://localhost:8050/v1');
+  baseUrl = ENTITY_API_URL;
 
   public fetchCountries = async () =>
     this.fetchDescendants(PSSS_ENTITY, {

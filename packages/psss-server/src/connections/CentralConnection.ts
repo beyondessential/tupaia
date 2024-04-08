@@ -4,13 +4,11 @@
  */
 
 import { generateId } from '@tupaia/database';
-import {
-  convertPeriodStringToDateRange,
-  getEnvVarOrDefault,
-  stripTimezoneFromDate,
-} from '@tupaia/utils';
+import { convertPeriodStringToDateRange, stripTimezoneFromDate } from '@tupaia/utils';
 import { Entity, Survey } from '@tupaia/types';
 import { ApiConnection } from './ApiConnection';
+
+const { CENTRAL_API_URL = 'http://localhost:8090/v2' } = process.env;
 
 type SurveyResponseObject = {
   'entity.code': string;
@@ -28,7 +26,7 @@ type Answer = {
  * @deprecated use @tupaia/api-client
  */
 export class CentralConnection extends ApiConnection {
-  public baseUrl = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
+  public baseUrl = CENTRAL_API_URL;
 
   public async updateOrCreateSurveyResponse(
     surveyCode: string,

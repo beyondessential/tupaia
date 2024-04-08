@@ -3,9 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertPeriodStringToDateRange, getEnvVarOrDefault } from '@tupaia/utils';
+import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import { ApiConnection } from './ApiConnection';
 import { PSSS_HIERARCHY } from '../constants';
+
+const { REPORT_API_URL = 'http://localhost:8030/v1' } = process.env;
 
 const buildEmptyReport = (periods: string[]) => ({
   results: [],
@@ -25,7 +27,7 @@ type ReportObject = {
  * @deprecated use @tupaia/api-client
  */
 export class ReportConnection extends ApiConnection {
-  public baseUrl = getEnvVarOrDefault('REPORT_API_URL', 'http://localhost:8030/v1');
+  public baseUrl = REPORT_API_URL;
 
   public async fetchReport(
     reportCode: string,
