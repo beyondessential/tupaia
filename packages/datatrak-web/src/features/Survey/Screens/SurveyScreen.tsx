@@ -41,7 +41,7 @@ export const SurveyScreen = () => {
         >
           {screenHeader}
         </ScreenHeading>
-        <Typography variant="body1">{screenDetail}</Typography>
+        {screenDetail && <Typography variant="body1">{screenDetail}</Typography>}
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
       <SurveyPaginator />
