@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+import { getEnvVarOrDefault } from "@tupaia/utils";
+
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 type ServiceName = 'auth' | 'entity' | 'central' | 'report' | 'dataTable' | 'webConfig';
@@ -65,8 +67,6 @@ const SERVICES = {
   },
 };
 
-const DOMAIN = process.env.DOMAIN ?? 'tupaia.org';
-
 const getLocalUrl = (service: ServiceName): string => {
   const { prefix, localPort, version } = SERVICES[service];
   const base = `http://localhost:${localPort}`;
@@ -84,6 +84,7 @@ export const LOCALHOST_BASE_URLS: ServiceBaseUrlSet = {
 };
 
 const getServiceUrl = (service: ServiceName, subdomainPrefix?: string): string => {
+  const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   const { subdomain, version } = SERVICES[service];
   const fullSubdomain = subdomainPrefix ? `${subdomainPrefix}-${subdomain}` : subdomain;
   return `https://${fullSubdomain}.${DOMAIN}/${version}`;
@@ -128,6 +129,7 @@ const isLocalhost = (hostname: string) =>
   hostname.startsWith('10.0.2.2'); // Android Emulator out to host
 
 const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
+  const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   if (isLocalhost(hostname)) {
     return LOCALHOST_BASE_URLS;
   }

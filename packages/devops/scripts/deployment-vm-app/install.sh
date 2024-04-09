@@ -24,11 +24,14 @@ git checkout ${GIT_BRANCH}
 git reset --hard origin/${GIT_BRANCH}
 
 # Yarn install
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm use
+corepack enable yarn
 yarn install --immutable
 
 # Fetch env vars
-echo "Note: if lastpass fails, check email account $LASTPASS_EMAIL for a verification check"
-LASTPASS_EMAIL=$LASTPASS_EMAIL LASTPASS_PASSWORD=$LASTPASS_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
+BITWARDEN_EMAIL=$BITWARDEN_EMAIL BITWARDEN_PASSWORD=$BITWARDEN_PASSWORD yarn download-env-vars $DEPLOYMENT_NAME
 
 # Build
 yarn build:internal-dependencies

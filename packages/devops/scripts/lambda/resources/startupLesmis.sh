@@ -5,9 +5,6 @@
 set -o pipefail # fail pipe where scripts are e.g. piped out to deployment logs
 
 HOME_DIR=/home/ubuntu
-TUPAIA_DIR=$HOME_DIR/tupaia
-LOGS_DIR=$HOME_DIR/logs
-DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts/deployment-aws
 
 # Add tag for CI/CD to use as a health check
 INSTANCE_ID=$(ec2metadata --instance-id)
@@ -20,8 +17,18 @@ tag_errored() {
 }
 trap tag_errored ERR
 
-DEPLOYMENT_NAME=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentName)
-BRANCH=$(${DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
+cd $HOME_DIR
+sudo -Hu ubuntu git clone https://github.com/beyondessential/tupaia.git
+
+TUPAIA_DIR=$HOME_DIR/tupaia
+LOGS_DIR=$HOME_DIR/logs
+DEPLOYMENT_SCRIPTS=${TUPAIA_DIR}/packages/devops/scripts
+AWS_DEPLOYMENT_SCRIPTS=${DEPLOYMENT_SCRIPTS}/deployment-aws
+
+DEPLOYMENT_NAME=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentName)
+BRANCH=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
+DB_SNAPSHOT=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DbSnapshot)
+SUBDOMAINS=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh SubdomainsViaDns)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
 # Set bash prompt to have deployment name in it
@@ -37,21 +44,6 @@ echo "PS1=\"${BASH_PROMPT}\"" >> $HOME_DIR/.bashrc
 
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
-
-# Turn on cloudwatch agent for prod and dev (can be turned on manually if needed on feature instances)
-# TODO currently broken
-# if [[ $DEPLOYMENT_NAME == "production" || $DEPLOYMENT_NAME == "dev" ]]; then
-#     $DEPLOYMENT_SCRIPTS/startCloudwatchAgent.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
-# fi
-
-# Add preaggregation cron job if production
-if [[ $DEPLOYMENT_NAME == "production" ]]; then
-  \. "$HOME_DIR/.nvm/nvm.sh" # Load nvm so node is available on $PATH
-  sudo -u ubuntu echo "10 13 * * * PATH=$PATH $HOME_DIR/tupaia/packages/web-config-server/run_preaggregation.sh | while IFS= read -r line; do printf '\%s \%s\\n' \"\$(date)\" \"\$line\"; done > $LOGS_DIR/preaggregation.txt" > tmp.cron
-  sudo -u ubuntu crontab -l >> tmp.cron || echo "" >> tmp.cron
-  sudo -u ubuntu crontab tmp.cron
-  rm tmp.cron
-fi
 
 # Fetch the latest code
 cd $TUPAIA_DIR
@@ -69,12 +61,24 @@ sudo -Hu ubuntu git reset --hard # clear out any manual changes that have been m
 sudo -Hu ubuntu git checkout ${BRANCH_TO_USE}
 sudo -Hu ubuntu git reset --hard origin/${BRANCH_TO_USE}
 
-# Deploy each package, including injecting environment variables from LastPass
-sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/buildDeployablePackages.sh $DEPLOYMENT_NAME |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
-sudo -Hu ubuntu $DEPLOYMENT_SCRIPTS/startBackEnds.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+export DOMAIN=tupaia.org
+export DEFAULT_FRONTEND=lesmis
+export GIT_REPO=https://github.com/beyondessential/tupaia.git
+export GIT_BRANCH=$BRANCH
+export DEPLOYMENT_NAME=$DEPLOYMENT_NAME
+export USE_SSL=true
 
-# Set nginx config and start the service running
-$DEPLOYMENT_SCRIPTS/configureNginx.sh |& while IFS= read -r line; do printf '\%s \%s\n' "$(date)" "$line"; done  >> $LOGS_DIR/deployment_log.txt
+export BITWARDEN_EMAIL=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_EMAIL)
+export BITWARDEN_PASSWORD=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
+DB_DUMP=$HOME_DIR/dump.sql
+
+sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_SNAPSHOT $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-aws/setupSslCertificate.sh $DEPLOYMENT_NAME $DOMAIN $SUBDOMAINS &> /home/ubuntu/logs/setup_ssl_cert.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/setup.sh &> /home/ubuntu/logs/setup_app.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/setup.sh &> /home/ubuntu/logs/setup_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/install.sh &> /home/ubuntu/logs/install_app.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/initialiseDatabase.sh &> /home/ubuntu/logs/initialise_db.log
+sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/importDbDump.sh $DB_DUMP &> /home/ubuntu/logs/import_db.log
 
 # Tag as complete so CI/CD system can use the tag as a health check
 aws ec2 create-tags --resources ${INSTANCE_ID} --tags Key=StartupBuildProgress,Value=complete

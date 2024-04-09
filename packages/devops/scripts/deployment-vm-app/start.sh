@@ -9,7 +9,7 @@ cd "$SCRIPT_DIR"
 ./checkRequiredEnvVars.sh
 
 # Start servers
-./startBackEnds.sh
+../deployment-common/startBackEnds.sh
 
 # Restart nginx
 sudo service nginx restart

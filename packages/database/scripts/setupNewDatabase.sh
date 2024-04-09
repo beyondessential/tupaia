@@ -6,8 +6,7 @@ cd ..
 
 if [ "$1" != "OK" ]; then
   echo "Note: this script reads .env vars"
-  echo "   [1] Update DB_NAME etc... in database .env"
-  echo "   [2] Update DB_NAME etc... in data-api .env"
+  echo "   [1] Update DB_NAME etc... in database db.env"
   echo ""
   echo "re-run with OK to continue"
   exit 1;

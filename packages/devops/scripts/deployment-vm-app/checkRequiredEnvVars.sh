@@ -12,12 +12,12 @@ if [[ ! -v USE_SSL ]]; then
     echo "USE_SSL must be set"
     exit 1
 fi
-if [[ ! -v LASTPASS_EMAIL ]]; then
-    echo "LASTPASS_EMAIL must be set"
+if [[ ! -v BITWARDEN_EMAIL ]]; then
+    echo "BITWARDEN_EMAIL must be set"
     exit 1
 fi
-if [[ ! -v LASTPASS_PASSWORD ]]; then
-    echo "LASTPASS_PASSWORD must be set"
+if [[ ! -v BITWARDEN_PASSWORD ]]; then
+    echo "BITWARDEN_PASSWORD must be set"
     exit 1
 fi
 if [[ ! -v GIT_REPO ]]; then

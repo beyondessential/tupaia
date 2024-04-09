@@ -1,23 +1,38 @@
 #!/bin/bash -le
 
+HOME_DIR=/home/ubuntu
+CONFIG_DIR=$HOME_DIR/tupaia/packages/devops/configs
+TEMPLATE_DIR=$CONFIG_DIR/nginx-template
+
 # configure nginx
-DOMAIN_REGEX_ESCAPED=$(printf '%s\n' "$DOMAIN" | sed -e 's/[]\/$*.^[]/\\&/g');
-DOMAIN_REGEX_DOUBLE_ESCAPED=$(printf '%s\n' "$DOMAIN_REGEX_ESCAPED" | sed -e 's/[]\/$*.^[]/\\&/g');
-
-# Setup non-ssl
-sed "s/__DEFAULT_FRONTEND__/$DEFAULT_FRONTEND/g" $HOME_DIR/configs/servers-non-ssl.template.conf > $HOME_DIR/configs/servers-non-ssl.conf
-sed -i "s/__DOMAIN__/$DOMAIN/g" $HOME_DIR/configs/servers-non-ssl.conf
-sed -i "s/__DOMAIN_REGEX_ESCAPED__/$DOMAIN_REGEX_DOUBLE_ESCAPED/g" $HOME_DIR/configs/servers-non-ssl.conf
-
-# Setup ssl
-sed "s/__DEFAULT_FRONTEND__/$DEFAULT_FRONTEND/g" $HOME_DIR/configs/servers-ssl.template.conf > $HOME_DIR/configs/servers-ssl.conf
-sed -i "s/__DOMAIN__/$DOMAIN/g" $HOME_DIR/configs/servers-ssl.conf
-sed -i "s/__DOMAIN_REGEX_ESCAPED__/$DOMAIN_REGEX_DOUBLE_ESCAPED/g" $HOME_DIR/configs/servers-ssl.conf
-
-
-sudo cp $HOME_DIR/configs/nginx.conf /etc/nginx/nginx.conf
-if [ "$USE_SSL" = true ] then
-    sudo cp $HOME_DIR/configs/servers-ssl.conf /etc/nginx/conf.d/servers.conf
+if [[ $DEPLOYMENT_NAME == "production" ]]; then
+  DOMAIN_PREFIX=""
+  SUBDOMAIN_PREFIX=""
 else
-    sudo cp $HOME_DIR/configs/servers-non-ssl.conf /etc/nginx/conf.d/servers.conf
+  DOMAIN_PREFIX="$DEPLOYMENT_NAME."
+  SUBDOMAIN_PREFIX="$DEPLOYMENT_NAME-"
 fi
+
+if [ "$USE_SSL" = true ]; then 
+    PORT="443 ssl http2"
+else 
+    PORT="80"
+fi
+
+if [ "$USE_SSL" = true ]; then 
+    HTTPS_CONFIG_FILE=$TEMPLATE_DIR/https-config-ssl.snippet
+else 
+    HTTPS_CONFIG_FILE=$TEMPLATE_DIR/https-config-non-ssl.snippet 
+fi
+
+sed -e "/__HTTPS_CONFIG__/r $HTTPS_CONFIG_FILE" -e "s/__HTTPS_CONFIG__//g" $TEMPLATE_DIR/servers.template.conf > $HOME_DIR/servers.conf
+sed -i "s/__DEFAULT_FRONTEND__/$DEFAULT_FRONTEND/g" $HOME_DIR/servers.conf
+sed -i "s/__DOMAIN_PREFIX__/$DOMAIN_PREFIX/g" $HOME_DIR/servers.conf
+sed -i "s/__SUBDOMAIN_PREFIX__/$SUBDOMAIN_PREFIX/g" $HOME_DIR/servers.conf
+sed -i "s/__DOMAIN__/$DOMAIN/g" $HOME_DIR/servers.conf
+sed -i "s/__PORT__/$PORT/g" $HOME_DIR/servers.conf
+
+sudo cp $CONFIG_DIR/nginx.conf /etc/nginx/nginx.conf
+sudo cp $HOME_DIR/servers.conf /etc/nginx/conf.d/servers.conf
+
+rm $HOME_DIR/servers.conf

@@ -3,6 +3,13 @@
 # This script is used by Amazon Image Builder to pre-bake a Tupaia AMI
 # To deploy changes, upload the latest to the S3 bucket "tupaia_devops"
 
+HOME_DIR=/home/ubuntu
+TUPAIA_DIR=$HOME_DIR/tupaia
+
+cd $HOME_DIR
+
+sudo apt-get update
+
 # install nginx and add h5bp config
 if ! command -v nginx &> /dev/null
 then
@@ -83,7 +90,7 @@ then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  nvm install $(sudo cat tupaia/.nvmrc)
+  nvm install $(sudo cat "$TUPAIA_DIR/.nvmrc")
   npm install --global yarn
 else
   echo "nvm already installed, skipping"
@@ -110,10 +117,9 @@ else
   echo "bitwarden-cli already installed, skipping"
 fi
 
-HOME_DIR=/home/ubuntu
 LOGS_DIR=$HOME_DIR/logs
 # Create a directory for logs to go
 mkdir -m 777 -p $LOGS_DIR
 
-cd tupaia
+cd $TUPAIA_DIR
 yarn install # pre install to save time spinning up new ec2 instances

@@ -6,7 +6,7 @@ SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$SCRIPT_DIR"
 
 # install postgres 13
-if ! command -v psql &> /dev/null
+if ! command -v postgres &> /dev/null
 then
   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -28,14 +28,5 @@ sudo -u postgres sed -i "s/max_connections = 100/max_connections = 500/g" /etc/p
 
 # start postgres
 sudo service postgresql restart
-
-# Setup database
-echo -n "Set a password for Postgres user? (y/N)"
-read SET_NEW_PW
-if [ "$SET_NEW_PW" = "y" ]; then
-  echo -n "Enter a password for Postgres user:"
-  read DB_PG_PASSWORD
-  sudo -u postgres psql -c "alter user postgres with password '$DB_PG_PASSWORD'"
-fi
 
 echo "Db Server set up successfully"
