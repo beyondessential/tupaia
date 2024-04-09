@@ -89,7 +89,6 @@ export const SurveyContext = ({ children }) => {
     flattenedScreenComponents,
     screenNumber,
   );
-  console.log('activeScreen', activeScreen);
   const screenHeader = activeScreen?.[0]?.text;
   const screenDetail = activeScreen?.[0]?.detail;
 
