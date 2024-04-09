@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 DIR=$(pwd "$0")
 . "$DIR/../../scripts/bash/mergeEnvForDB.sh"
