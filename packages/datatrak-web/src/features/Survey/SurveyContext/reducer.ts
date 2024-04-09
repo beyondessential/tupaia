@@ -16,7 +16,7 @@ export type SurveyFormContextType = {
   numberOfScreens: number;
   screenNumber: number | null;
   screenHeader?: string;
-  screenDetail?: string;
+  screenDetail?: string | null;
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
