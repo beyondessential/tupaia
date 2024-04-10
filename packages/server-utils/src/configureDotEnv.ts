@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-import dotenv from 'dotenv';
+// @ts-ignore
+import dotenv from '@dotenvx/dotenvx';
 
 export const configureDotEnv = (envFiles: string[]) => {
   const filesThatExistInSystem = envFiles.filter(file => {
@@ -15,4 +15,5 @@ export const configureDotEnv = (envFiles: string[]) => {
     }
   });
   dotenv.config({ path: filesThatExistInSystem, override: true });
+  console.log(process.env);
 };
