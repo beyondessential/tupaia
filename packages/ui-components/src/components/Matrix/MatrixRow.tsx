@@ -26,6 +26,7 @@ const ExpandIcon = styled(KeyboardArrowRight)<{
 const RowHeaderCellContent = styled.div`
   display: flex;
   align-items: center;
+  line-height: 1.4;
   justify-content: flex-start;
   height: 100%;
   width: 100%;
