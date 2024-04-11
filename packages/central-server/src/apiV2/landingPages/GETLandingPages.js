@@ -30,8 +30,8 @@ const createLandingPageDBFilter = async (accessPolicy, models, criteria) => {
 
   return {
     [QUERY_CONJUNCTIONS.RAW]: {
-      sql: `project_codes <@ '{${projectCodesToQuery.join(',')}}'`,
-      parameters: { projectCodes: projectCodesToQuery },
+      sql: `project_codes <@ '{${projectCodesToQuery.map(_ => '?').join(',')}}'`,
+      parameters: projectCodesToQuery,
     },
   };
 };
