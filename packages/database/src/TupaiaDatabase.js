@@ -553,6 +553,12 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     }
   }
 
+  if (options.group) {
+    for (const groupByKey of options.group) {
+      query = query.groupBy(groupByKey);
+    }
+  }
+
   // Add raw SQL sort options
   if (options.rawSort) {
     query = query.orderByRaw(options.rawSort);
