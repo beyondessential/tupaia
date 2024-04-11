@@ -5,20 +5,21 @@
 
 import { CreateHandler } from '../CreateHandler';
 import {
-  assertAnyPermissions,
   assertAdminPanelAccess,
+  assertAnyPermissions,
   assertBESAdminAccess,
 } from '../../permissions';
 
 // If the user tries to create a permission group with a parent_id, we need to check if the user has access to the parent permission group. If the user does not have access to the parent permission group, we should throw an error.
 const assertUserHasAccessToParentPermissionGroup = async (accessPolicy, models, parentId) => {
+  assertAdminPanelAccess(accessPolicy);
   if (!parentId) return true;
   const permissionGroup = await models.permissionGroup.findOne({ id: parentId });
   if (!permissionGroup) {
     throw new Error(`Parent permission group with id '${parentId}' not found`);
   }
   if (!accessPolicy.allowsAnywhere(permissionGroup.name)) {
-    throw new Error('You do not have access to the parent permission group');
+    throw new Error('Need Tupaia Admin Panel access to the parent permission group');
   }
   return true;
 };
@@ -33,11 +34,7 @@ export class CreatePermissionGroup extends CreateHandler {
       );
 
     await this.assertPermissions(
-      assertAnyPermissions([
-        assertBESAdminAccess,
-        assertAdminPanelAccess,
-        parentPermissionGroupChecker,
-      ]),
+      assertAnyPermissions([assertBESAdminAccess, parentPermissionGroupChecker]),
     );
   }
 

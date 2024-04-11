@@ -27,8 +27,6 @@ export class GETPermissionGroups extends GETHandler {
     }
 
     // If we don't have BES Admin access, add a filter to the SQL query
-
-    // TODO: when adding a new permission group when not bes admin, this doesn't show the new one until the server restarts because the access policy needs to be reattached
     const permissionGroupNames = this.accessPolicy.getPermissionGroups();
 
     return {
