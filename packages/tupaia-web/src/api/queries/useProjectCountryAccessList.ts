@@ -10,7 +10,7 @@ import { ProjectCode } from '../../types';
 
 export const useProjectCountryAccessList = (projectCode: ProjectCode) => {
   return useQuery(
-    ['countries', projectCode],
+    ['me/countries', projectCode],
     (): Promise<ProjectCountryAccessListRequest.ResBody> =>
       get(`me/countries`, { params: { projectCode } }),
     {
