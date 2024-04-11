@@ -109,6 +109,7 @@ export const ROUTES = [
         label: 'Dashboards',
         to: '/dashboards',
         component: DashboardsPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Dashboard Relations',
@@ -131,6 +132,7 @@ export const ROUTES = [
         label: 'Map Overlays',
         to: '/map-overlays',
         component: MapOverlaysPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Map Overlay Groups',
