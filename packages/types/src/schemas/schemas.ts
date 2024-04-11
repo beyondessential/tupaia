@@ -83031,6 +83031,98 @@ export const ApprovalStatusSchema = {
 	"type": "string"
 } 
 
+export const ParamsSchema = {
+	"type": "object",
+	"properties": {
+		"projectCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectCode"
+	]
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"id": {
+				"type": "string"
+			},
+			"name": {
+				"type": "string"
+			},
+			"code": {
+				"type": "string"
+			},
+			"hasAccess": {
+				"type": "boolean"
+			},
+			"hasPendingAccess": {
+				"type": "boolean"
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"code",
+			"hasAccess",
+			"hasPendingAccess",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"projectId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectId"
+	]
+} 
+
 export const IdSchema = {
 	"type": "string"
 } 
@@ -83286,39 +83378,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 	]
 } 
 
-export const CountryAccessResponseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"code": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"code",
-		"hasAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const DataTablePreviewRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -83363,167 +83422,6 @@ export const DataTablePreviewRequestSchema = {
 		"config",
 		"permission_groups",
 		"type"
-	]
-} 
-
-export const ParamsSchema = {
-	"type": "object",
-	"properties": {
-		"entityCode": {
-			"type": "string"
-		},
-		"projectCode": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"entityCode",
-		"projectCode"
-	]
-} 
-
-export const ResBodySchema = {
-	"type": "object",
-	"properties": {
-		"attributes": {
-			"type": "object",
-			"properties": {
-				"type": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"bounds": {
-			"type": "string"
-		},
-		"code": {
-			"type": "string"
-		},
-		"countryCode": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"metadata": {
-			"type": "object",
-			"additionalProperties": false
-		},
-		"name": {
-			"type": "string"
-		},
-		"parentId": {
-			"type": "string"
-		},
-		"point": {
-			"type": "string"
-		},
-		"region": {
-			"type": "string"
-		},
-		"type": {
-			"enum": [
-				"asset",
-				"business",
-				"case",
-				"case_contact",
-				"catchment",
-				"city",
-				"complaint",
-				"country",
-				"disaster",
-				"district",
-				"enumeration_area",
-				"facility",
-				"farm",
-				"fetp_graduate",
-				"field_station",
-				"fiji_aspen_facility",
-				"health_clinic_boundary",
-				"household",
-				"incident",
-				"incident_reported",
-				"individual",
-				"institute",
-				"larval_habitat",
-				"local_government",
-				"medical_area",
-				"msupply_store",
-				"nursing_zone",
-				"postcode",
-				"project",
-				"repair_request",
-				"school",
-				"sub_catchment",
-				"sub_district",
-				"sub_facility",
-				"trap",
-				"village",
-				"water_sample",
-				"wish_sub_district",
-				"world"
-			],
-			"type": "string"
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"properties": {
-		"entityId": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"fields": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"filter": {
-			"type": "object",
-			"additionalProperties": false
-		}
-	},
-	"additionalProperties": false
-} 
-
-export const CountryAccessObjectSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
 	]
 } 
 
@@ -84082,34 +83980,6 @@ export const CamelCaseFeedItemSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id"
-	]
-} 
-
-export const CountryAccessSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"hasAccess",
-		"id",
-		"name"
 	]
 } 
 

@@ -6,8 +6,8 @@
 import {
   LandingPage,
   Project,
+  ProjectCountryAccessListRequest,
   TupaiaWebProjectRequest,
-  WebServerProjectCountryAccessListRequest,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
 
@@ -28,4 +28,4 @@ export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes
   projects: SingleProject[];
 };
 
-export type CountryAccessListItem = WebServerProjectCountryAccessListRequest.ResBody[number];
+export type CountryAccessListItem = ProjectCountryAccessListRequest.ResBody[number];
