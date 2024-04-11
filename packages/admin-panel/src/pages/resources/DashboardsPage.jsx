@@ -83,7 +83,7 @@ const RELATION_FIELDS = [
       canCreateNewOptions: true,
       optionLabelKey: 'entityTypes',
       optionValueKey: 'entityTypes',
-      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+      secondaryLabel: 'Input the entity types you want. e.g: ‘country’, ‘sub_district’',
     },
   },
   {
