@@ -299,7 +299,7 @@ apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailin
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/permissionGroups', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
