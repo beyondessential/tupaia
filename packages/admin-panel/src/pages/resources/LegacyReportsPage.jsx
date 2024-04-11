@@ -41,7 +41,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Legacy Report',
       editEndpoint: 'legacyReports',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
 ];

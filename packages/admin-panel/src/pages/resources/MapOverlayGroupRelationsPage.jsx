@@ -67,7 +67,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Map Overlay Group Relation',
       editEndpoint: 'mapOverlayGroupRelations',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {

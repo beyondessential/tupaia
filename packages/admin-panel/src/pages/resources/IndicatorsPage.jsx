@@ -46,7 +46,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Indicator',
       editEndpoint: 'indicators',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
 ];

@@ -44,7 +44,7 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'dataServiceSyncGroups',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {

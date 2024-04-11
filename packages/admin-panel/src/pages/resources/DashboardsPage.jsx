@@ -44,7 +44,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Dashboard',
       editEndpoint: 'dashboards',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {

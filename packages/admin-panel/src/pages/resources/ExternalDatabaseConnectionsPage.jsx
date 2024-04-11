@@ -49,7 +49,7 @@ const COLUMNS = [
     actionConfig: {
       editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
       title: 'Edit External Database Connection',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {
@@ -75,7 +75,7 @@ const CREATE_CONFIG = {
   actionConfig: {
     title: 'New external database connection',
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-    fields: [...FIELDS],
+    fields: FIELDS,
   },
 };
 
