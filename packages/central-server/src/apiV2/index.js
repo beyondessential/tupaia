@@ -34,7 +34,7 @@ import { GETFeedItems, EditFeedItems, CreateFeedItems } from './feedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
-import { GETPermissionGroups } from './GETPermissionGroups';
+import { GETPermissionGroups, CreatePermissionGroup } from './permissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { GETAnswers } from './answers';
@@ -299,7 +299,7 @@ apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailin
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/permissionGroups', useRouteHandler(TupaiaAdminCreateHandler));
+apiV2.post('/permissionGroups', useRouteHandler(CreatePermissionGroup));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
