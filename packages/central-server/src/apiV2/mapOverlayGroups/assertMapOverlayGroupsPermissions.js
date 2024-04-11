@@ -11,6 +11,7 @@ import {
   hasMapOverlayGetPermissions,
   hasMapOverlayEditPermissions,
 } from '../mapOverlays';
+import { mergeFilter } from '../utilities';
 
 export const hasMapOverlayGroupGetPermissions = async (accessPolicy, models, mapOverlayGroupId) => {
   const mapOverlayGroup = await models.mapOverlayGroup.findById(mapOverlayGroupId);
@@ -207,13 +208,40 @@ export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criter
   const dbConditions = { ...criteria };
 
   const permittedMapOverlayGroupIds = await getPermittedMapOverlayGroupIds(accessPolicy, models);
+  const rootMapOverlayGroup = await models.mapOverlayGroup.findRootMapOverlayGroup();
 
-  // Apply a filter to only show map overlay groups that have a relation to a map overlay we have access to, or have no relation at all. Any further id filtering will still be applied.
-  dbConditions[QUERY_CONJUNCTIONS.RAW] = {
-    sql: `(map_overlay_group.id IN (${permittedMapOverlayGroupIds.map(_ => '?').join(',')})
-      OR map_overlay_group_relation.child_id IS NULL)`,
-    parameters: permittedMapOverlayGroupIds,
+  // If we have no access to any map overlay groups, we should only show map overlay groups that have no relation to any map overlay, not including the root map overlay group.
+  const noRelationFilter = {
+    'map_overlay_group_relation.child_id': {
+      comparator: 'IS',
+      comparisonValue: null,
+    },
+    [QUERY_CONJUNCTIONS.AND]: {
+      'map_overlay_group.id': {
+        comparator: '!=',
+        comparisonValue: rootMapOverlayGroup.id,
+      },
+    },
   };
 
-  return dbConditions;
+  if (permittedMapOverlayGroupIds.length === 0) {
+    return {
+      ...dbConditions,
+      ...noRelationFilter,
+    };
+  }
+
+  // Apply a filter to only show map overlay groups that have a relation to a map overlay we have access to, or have no relation at all. Any further id filtering will still be applied.
+
+  dbConditions['map_overlay_group.id'] = mergeFilter(dbConditions['map_overlay_group.id'], {
+    comparator: 'IN',
+    comparisonValue: permittedMapOverlayGroupIds,
+  });
+
+  return {
+    ...dbConditions,
+    [QUERY_CONJUNCTIONS.OR]: {
+      ...noRelationFilter,
+    },
+  };
 };

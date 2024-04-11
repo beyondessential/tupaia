@@ -5,8 +5,11 @@
 
 import { expect } from 'chai';
 import { addBaselineTestCountries, buildAndInsertProjectsAndHierarchies } from '@tupaia/database';
-import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
-import { TestableApp, setupMapOverlayTestData } from '../testUtilities';
+import {
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+  BES_ADMIN_PERMISSION_GROUP,
+} from '../../../permissions';
+import { TestableApp, setupMapOverlayTestData } from '../../testUtilities';
 
 describe('Permissions checker for GETMapOverlayGroups', async () => {
   const DEFAULT_POLICY = {
@@ -41,11 +44,8 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
     ]);
 
     // Set up the map overlays
-    ({
-      nationalMapOverlayGroup1,
-      nationalMapOverlayGroup2,
-      projectLevelMapOverlayGroup1,
-    } = await setupMapOverlayTestData(models));
+    ({ nationalMapOverlayGroup1, nationalMapOverlayGroup2, projectLevelMapOverlayGroup1 } =
+      await setupMapOverlayTestData(models));
   });
 
   afterEach(() => {
@@ -71,7 +71,7 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
       const policy = {
         DL: ['Public'],
       };
-      app.grantAccess(policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`mapOverlayGroups/${nationalMapOverlayGroup1.id}`);
 
       expect(result).to.have.keys('error');
@@ -81,7 +81,7 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
       const policy = {
         DL: ['Public'],
       };
-      app.grantAccess(policy);
+      await app.grantAccess(policy);
       const { body: result } = await app.get(`mapOverlayGroups/${projectLevelMapOverlayGroup1.id}`);
 
       expect(result).to.have.keys('error');
@@ -106,10 +106,9 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
         KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
         SB: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Royal Australasian College of Surgeons'],
         VU: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP, 'Admin'],
-        /* LA: ['Admin'], */
         TO: ['Admin'],
       };
-      app.grantAccess(policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -119,7 +118,7 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
     });
 
     it('Sufficient permissions: Should return the full list of map overlay groups if we have BES admin access', async () => {
-      app.grantAccess(BES_ADMIN_POLICY);
+      await app.grantAccess(BES_ADMIN_POLICY);
       const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results.map(r => r.id)).to.deep.equal([
@@ -133,7 +132,7 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
       const policy = {
         DL: ['Public'],
       };
-      app.grantAccess(policy);
+      await app.grantAccess(policy);
       const { body: results } = await app.get(`mapOverlayGroups?${filterString}`);
 
       expect(results).to.be.empty;
