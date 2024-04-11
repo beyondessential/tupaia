@@ -107,8 +107,9 @@ const FIELDS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new relation between Dashboard and DashboardItem',
+  title: 'New dashboard relation',
   actionConfig: {
+    title: 'New dashboard relation',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
     fields: DASHBOARD_RELATION_COLUMNS,
   },

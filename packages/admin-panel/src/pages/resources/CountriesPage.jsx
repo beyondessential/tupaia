@@ -29,9 +29,9 @@ const EXPANSION_CONFIG = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Country',
+  title: 'New country',
   actionConfig: {
-    title: 'Create New Country',
+    title: 'New country',
     editEndpoint: 'countries',
     fields: FIELDS,
   },

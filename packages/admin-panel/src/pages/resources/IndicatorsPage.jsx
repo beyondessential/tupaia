@@ -52,8 +52,9 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Add Indicator',
+  title: 'New indicator',
   actionConfig: {
+    title: 'New indicator',
     editEndpoint: 'indicators',
     fields: FIELDS,
   },

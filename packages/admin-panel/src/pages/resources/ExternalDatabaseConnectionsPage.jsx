@@ -71,8 +71,9 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new External Database Connection',
+  title: 'New external database connection',
   actionConfig: {
+    title: 'New external database connection',
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
     fields: [...FIELDS],
   },

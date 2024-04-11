@@ -84,8 +84,9 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Data Table',
+  title: 'New data table',
   actionConfig: {
+    title: 'New data table',
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,

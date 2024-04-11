@@ -86,8 +86,9 @@ const EDITOR_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'Add Sync Group',
+  title: 'New sync group',
   actionConfig: {
+    title: 'New sync group',
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },

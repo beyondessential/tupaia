@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import {
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
-  SERVICE_TYPE_OPTIONS,
   DataSourceConfigView,
+  SERVICE_TYPE_OPTIONS,
 } from '../../common';
 
 const FIELDS = [
@@ -65,8 +65,9 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New Mapping',
+  title: 'New mapping',
   actionConfig: {
+    title: 'New mapping',
     editEndpoint: 'dataElementDataServices',
     fields: FIELDS,
   },

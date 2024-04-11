@@ -98,6 +98,7 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
+    title: 'New dashboard mailing list',
     editEndpoint: 'dashboardMailingLists',
     fields: [
       DASHBOARD_MAILING_LIST_FIELDS.project,
@@ -105,7 +106,6 @@ const CREATE_CONFIG = {
       DASHBOARD_MAILING_LIST_FIELDS.entity_name,
       DASHBOARD_MAILING_LIST_FIELDS.admin_permission_groups,
     ],
-    title: 'New dashboard mailing list',
   },
 };
 

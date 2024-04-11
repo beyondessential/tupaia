@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { ResourcePage } from './ResourcePage';
-import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
+import { PERMISSIONS_COLUMNS, PERMISSIONS_ENDPOINT } from './PermissionsPage';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
 
 // eslint-disable-next-line react/prop-types
@@ -135,8 +135,9 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New User',
+  title: 'New user',
   actionConfig: {
+    title: 'New user',
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,

@@ -278,7 +278,7 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New Landing Page',
+    title: 'New landing page',
     editEndpoint: LANDING_PAGES_ENDPOINT,
     fields: CREATE_FIELDS,
   },

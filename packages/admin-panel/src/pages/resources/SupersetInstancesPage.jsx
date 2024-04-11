@@ -45,8 +45,9 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Superset Instance',
+  title: 'New superset instance',
   actionConfig: {
+    title: 'New superset instance',
     editEndpoint: 'supersetInstances',
     fields: FIELDS,
   },

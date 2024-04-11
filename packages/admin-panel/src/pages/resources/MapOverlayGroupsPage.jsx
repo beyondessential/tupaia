@@ -104,8 +104,9 @@ const EXPANSION_CONFIG = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Map overlay group',
+  title: 'New map overlay group',
   actionConfig: {
+    title: 'New map overlay group',
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
     fields: EDIT_FIELDS,
   },

@@ -53,8 +53,9 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Dhis Instance',
+  title: 'New DHIS instance',
   actionConfig: {
+    title: 'New DHIS instance',
     editEndpoint: 'dhisInstances',
     fields: FIELDS,
   },

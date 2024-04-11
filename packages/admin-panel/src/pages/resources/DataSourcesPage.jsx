@@ -7,8 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import {
-  DataSourceConfigView,
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
+  DataSourceConfigView,
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
 
@@ -108,7 +108,7 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     createConfig={{
       title: 'New Data Group',
       actionConfig: {
-        title: 'Edit Data Group',
+        title: 'New Data Group',
         editEndpoint: 'dataGroups',
         fields: [...DATA_GROUP_FIELDS],
       },
@@ -137,9 +137,9 @@ export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
     importConfig={IMPORT_CONFIG}
     createConfig={{
-      title: 'New Data Element',
+      title: 'New data element',
       actionConfig: {
-        title: 'Edit Data Element',
+        title: 'New data element',
         editEndpoint: 'dataElements',
         fields: [...DATA_ELEMENT_FIELDS],
       },

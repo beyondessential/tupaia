@@ -100,8 +100,9 @@ export const SOCIAL_FEED_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Add Social Feed item',
+  title: 'New social feed post',
   actionConfig: {
+    title: 'New social feed post',
     editEndpoint: 'feedItems',
     fields: FIELDS,
   },
