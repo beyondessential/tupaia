@@ -4,9 +4,8 @@
  */
 
 import { keyBy, groupBy } from 'lodash';
-
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { hasBESAdminAccess } from '../../permissions';
-import { mergeFilter } from '../utilities';
 import {
   createMapOverlayDBFilter,
   hasMapOverlayGetPermissions,
@@ -145,7 +144,7 @@ export const assertMapOverlayGroupsEditPermissions = async (accessPolicy, models
 
 /**
  * We can have multi level map overlay groups. So to find all the permitted map overlay groups,
- * we have to traverse from the bottom map overlay group relations (that have map overlays as childrens) until
+ * we have to traverse from the bottom map overlay group relations (that have map overlays as children) until
  * we hit the root map overlay group (top) to also include any nested map overlay groups.
  */
 const findPermittedMapOverlayGroupIds = (
@@ -179,17 +178,11 @@ const findPermittedMapOverlayGroupIds = (
   return [...permittedMapOverlayGroupIds, ...nextPermittedMapOverlayGroupIds];
 };
 
-export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criteria) => {
-  if (hasBESAdminAccess(accessPolicy)) {
-    return criteria;
-  }
-
-  const dbConditions = { ...criteria };
-
+export const getPermittedMapOverlayGroupIds = async (accessPolicy, models) => {
   const allMapOverlayGroupRelations = await models.mapOverlayGroupRelation.find();
   const relationByChildId = keyBy(allMapOverlayGroupRelations, 'child_id');
 
-  // Pull the list of map overlays we have access to,
+  // Pull the list of map overlays we have access to
   // then pull the corresponding map overlay groups
   const mapOverlaysFilter = createMapOverlayDBFilter(accessPolicy);
   const permittedMapOverlays = await models.mapOverlay.find(mapOverlaysFilter);
@@ -203,11 +196,24 @@ export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criter
     permittedMapOverlayGroupRelations,
     rootMapOverlayGroup.id,
   );
+  return permittedMapOverlayGroupIds;
+};
 
-  dbConditions['map_overlay_group.id'] = mergeFilter(
-    permittedMapOverlayGroupIds,
-    dbConditions['map_overlay_group.id'],
-  );
+export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criteria) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return criteria;
+  }
+
+  const dbConditions = { ...criteria };
+
+  const permittedMapOverlayGroupIds = await getPermittedMapOverlayGroupIds(accessPolicy, models);
+
+  // Apply a filter to only show map overlay groups that have a relation to a map overlay we have access to, or have no relation at all. Any further id filtering will still be applied.
+  dbConditions[QUERY_CONJUNCTIONS.RAW] = {
+    sql: `(map_overlay_group.id IN (${permittedMapOverlayGroupIds.map(_ => '?').join(',')})
+      OR map_overlay_group_relation.child_id IS NULL)`,
+    parameters: permittedMapOverlayGroupIds,
+  };
 
   return dbConditions;
 };
