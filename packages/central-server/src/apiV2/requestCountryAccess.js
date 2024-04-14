@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
+import { requireEnv, respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { getUserInfoInString } from './utilities';
@@ -18,7 +18,7 @@ const checkUserPermission = (req, userId) => {
 };
 
 const sendRequest = (userInfo, countryNames, message, project) => {
-  const { TUPAIA_ADMIN_EMAIL_ADDRESS } = process.env;
+  const TUPAIA_ADMIN_EMAIL_ADDRESS = requireEnv('TUPAIA_ADMIN_EMAIL_ADDRESS');
 
   const emailText = `
 ${userInfo} has requested access to countries:

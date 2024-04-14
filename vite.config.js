@@ -15,7 +15,8 @@ dns.setDefaultResultOrder('verbatim');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), 'REACT_APP_');
+  // Load the environment variables, whether or not they are prefixed with REACT_APP_
+  const env = loadEnv(mode, process.cwd(), ['REACT_APP_', '']);
 
   const baseConfig = {
     build: {

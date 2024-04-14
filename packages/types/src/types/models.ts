@@ -1755,6 +1755,7 @@ export enum EntityType {
   'health_clinic_boundary' = 'health_clinic_boundary',
   'enumeration_area' = 'enumeration_area',
   'maintenance' = 'maintenance',
+  'larval_sample' = 'larval_sample',
 }
 export enum DataTableType {
   'analytics' = 'analytics',

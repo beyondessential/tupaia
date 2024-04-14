@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/admin-panel"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "./lib/library.js",
   "scripts": {
     "build": "run-s -c \"build:* {@}\" --",
@@ -32,13 +32,12 @@
     "@material-ui/lab": "^4.0.0-alpha.47",
     "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "workspace:*",
-    "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/ui-chart-components": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "ace-builds": "^1.10.1",
-    "axios": "^0.21.1",
+    "axios": "^1.6.8",
     "case": "^1.5.3",
     "content-disposition-header": "^0.6.0",
     "date-fns": "^2.29.2",
