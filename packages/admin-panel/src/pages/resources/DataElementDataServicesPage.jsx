@@ -65,7 +65,6 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New mapping',
   actionConfig: {
     title: 'New mapping',
     editEndpoint: 'dataElementDataServices',

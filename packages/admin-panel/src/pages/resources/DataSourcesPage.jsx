@@ -106,11 +106,10 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
       },
     ]}
     createConfig={{
-      title: 'New Data Group',
       actionConfig: {
-        title: 'New Data Group',
+        title: 'New data group',
         editEndpoint: 'dataGroups',
-        fields: [...DATA_GROUP_FIELDS],
+        fields: DATA_GROUP_FIELDS,
       },
     }}
     getHeaderEl={getHeaderEl}
@@ -137,11 +136,10 @@ export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
     importConfig={IMPORT_CONFIG}
     createConfig={{
-      title: 'New data element',
       actionConfig: {
         title: 'New data element',
         editEndpoint: 'dataElements',
-        fields: [...DATA_ELEMENT_FIELDS],
+        fields: DATA_ELEMENT_FIELDS,
       },
     }}
     getHeaderEl={getHeaderEl}

@@ -25,7 +25,6 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New permission group',
   actionConfig: {
     title: 'New permission group',
     editEndpoint: 'permissionGroups',

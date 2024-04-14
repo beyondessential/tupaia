@@ -125,7 +125,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New dashboard',
   actionConfig: {
     title: 'New dashboard',
     editEndpoint: DASHBOARDS_ENDPOINT,

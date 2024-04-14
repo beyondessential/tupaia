@@ -135,7 +135,6 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New user',
   actionConfig: {
     title: 'New user',
     editEndpoint: 'users',

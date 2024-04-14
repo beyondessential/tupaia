@@ -165,7 +165,6 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New project',
   actionConfig: {
     title: 'New project',
     editEndpoint: PROJECTS_ENDPOINT,

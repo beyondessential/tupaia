@@ -81,7 +81,6 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New map overlay group relation',
   actionConfig: {
     title: 'New map overlay group relation',
     editEndpoint: RELATION_ENDPOINT,

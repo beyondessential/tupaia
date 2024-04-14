@@ -65,7 +65,6 @@ const FIELDS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Give user permission',
   bulkCreate: true,
   actionConfig: {
     title: 'Give user permission',
