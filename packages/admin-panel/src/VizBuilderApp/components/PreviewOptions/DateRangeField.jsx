@@ -40,7 +40,31 @@ export const DateRangeField = () => {
     }
   }, [defaultStartDate, startDate, defaultEndDate, endDate]);
 
-  const convertDateToIsoString = date => (date ? date.toISOString() : null);
+  /**
+   * When you select a date in the date picker (either with the interactive calendar or by inserting
+   * a valid date string), the picker actually selects a specific moment in time on that date with
+   * the normal, millisecond granularity of a Date object. The time of day it selects is the current
+   * local time on the system where VizBuilder is running.
+   *
+   * When inputting the date, the date picker interprets it in the user’s time zone. Under the hood,
+   * this is converted to UTC, which can cause the picked date to be different from what the user
+   * input (±1 day).
+   *
+   * This helper function accounts for that discrepancy.
+   *
+   * @param date A valid date object
+   * @returns {Date}
+   */
+  const shiftEpoch = date =>
+    new Date(date.setMinutes(date.getMinutes() - date.getTimezoneOffset()));
+
+  const convertDateToIsoString = date => {
+    if (!date || isNaN(new Date(date).getTime())) return null;
+    const correctedDate = shiftEpoch(date);
+
+    // Slice to discard timestamp, keeping only "yyyy-mm-dd"
+    return correctedDate.toISOString().slice(0, 10);
+  };
 
   const handleChangeStartDate = date => {
     const newDate = convertDateToIsoString(date);

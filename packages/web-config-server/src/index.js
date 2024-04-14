@@ -1,6 +1,9 @@
 import winston from 'winston';
 import { createApp } from './app';
 import { runPreaggregation } from './preaggregation/runPreaggregation';
+import { configureEnv } from './configureEnv';
+
+configureEnv();
 
 async function start() {
   if (process.env.RUN_PREAGGREGATION) {
@@ -9,7 +12,7 @@ async function start() {
     const app = await createApp();
 
     // process.env.PORT as per run command PORT=XXXX npm run dev
-    const port = process.env.PORT || 8080;
+    const port = process.env.PORT || 8000;
     app.server.listen(port);
     winston.debug('Logging at debug level');
     winston.info(`Running on port ${port}`);

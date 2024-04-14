@@ -5,11 +5,11 @@
 
 // @ts-expect-error db-migrate has no types unfortunately
 import DBMigrate from 'db-migrate';
-import * as dotenv from 'dotenv';
 import { requireEnv } from '@tupaia/utils';
 import { getConnectionConfig } from '@tupaia/database';
+import { configureEnv } from '../src/configureEnv';
 
-dotenv.config(); // Load the environment variables into process.env
+configureEnv(); // Load the environment variables into process.env
 
 const exitWithError = (error: Error) => {
   console.error(error.message);
