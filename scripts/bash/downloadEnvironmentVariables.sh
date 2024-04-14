@@ -94,4 +94,4 @@ bw logout
 # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
 # that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
 # generate backup files which we don’t need.
-rm -f ./*.env-e
+rm -f ./env/*.env-e ./packages/*/.env-e
