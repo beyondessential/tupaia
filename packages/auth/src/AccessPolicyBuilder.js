@@ -16,12 +16,10 @@ export class AccessPolicyBuilder {
   }
 
   resetCaches() {
-    console.log('clearing all caches', this.id);
     this.cachedPolicyPromises = {};
   }
 
   resetCachesForUser(userId) {
-    console.log('clearing cache for user', userId);
     this.cachedPolicyPromises[getCacheKey(userId, true)] = null; // legacy
     this.cachedPolicyPromises[getCacheKey(userId, false)] = null; // modern
   }
