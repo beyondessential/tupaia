@@ -256,7 +256,7 @@ export class TupaiaDatabase {
    * @param {string} [queryMethod]
    * @returns
    */
-  find(recordType, where = {}, options = {}, queryMethod, queryMethodParameter) {
+  find(recordType, where = {}, options = {}, queryMethod = null, queryMethodParameter = null) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
