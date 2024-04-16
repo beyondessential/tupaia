@@ -93,7 +93,7 @@ export const constructForSingle = (models, recordType) => {
     case RECORDS.PERMISSION_GROUP:
       return {
         name: [hasContent],
-        parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
+        parent_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
     case RECORDS.DATA_ELEMENT:
       return {

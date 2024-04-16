@@ -82,14 +82,18 @@ describe('Create permission group', async () => {
       expect(response.status).to.equal(200);
     });
 
-    it('Should allow Tupaia Admin Panel users to create a permission group without a parent', async () => {
+    it('Should not allow Tupaia Admin Panel users to create a permission group without a parent', async () => {
       await app.grantAccess(ADMIN_PANEL_ACCESS_POLICY);
       const response = await app.post('permissionGroups', {
         body: {
-          name: 'Test Admin no child',
+          name: 'Test Admin no parent',
         },
       });
-      expect(response.status).to.equal(200);
+      expect(response.status).to.equal(403);
+      expect(response.body).to.have.property('error');
+      expect(response.body.error).to.equal(
+        'One of the following conditions need to be satisfied:\nNeed BES Admin access\nParent permission group is required\n',
+      );
     });
 
     it('Should not allow Tupaia Admin Panel users to create a permission group with a parent they do not have access to', async () => {
