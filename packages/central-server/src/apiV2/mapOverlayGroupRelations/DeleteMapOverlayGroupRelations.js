@@ -4,10 +4,16 @@
  */
 
 import { DeleteHandler } from '../DeleteHandler';
-import { assertBESAdminAccess } from '../../permissions';
+import {
+  assertAdminPanelAccess,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+} from '../../permissions';
 
 export class DeleteMapOverlayGroupRelations extends DeleteHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(assertBESAdminAccess);
+    await this.assertPermissions(
+      assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]),
+    );
   }
 }

@@ -24,7 +24,9 @@ export const hasMapOverlayGroupGetPermissions = async (accessPolicy, models, map
   });
 
   if (childMapOverlayRelations.length === 0) {
-    return true;
+    return {
+      result: true,
+    };
   }
 
   const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, 'child_type');
@@ -81,7 +83,9 @@ export const hasMapOverlayGroupEditPermissions = async (
   });
 
   if (childMapOverlayRelations.length === 0) {
-    return true;
+    return {
+      result: true,
+    };
   }
 
   const childMapOverlayRelationsByType = groupBy(childMapOverlayRelations, 'child_type');
@@ -233,10 +237,14 @@ export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criter
 
   // Apply a filter to only show map overlay groups that have a relation to a map overlay we have access to, or have no relation at all. Any further id filtering will still be applied.
 
-  dbConditions['map_overlay_group.id'] = mergeFilter(dbConditions['map_overlay_group.id'], {
-    comparator: 'IN',
-    comparisonValue: permittedMapOverlayGroupIds,
-  });
+  dbConditions['map_overlay_group.id'] = mergeFilter(
+    {
+      comparator: 'IN',
+      comparisonValue: permittedMapOverlayGroupIds,
+    },
+    // this needs to go last in case it is undefined, so the mergeFilter function can handle it
+    dbConditions['map_overlay_group.id'],
+  );
 
   return {
     ...dbConditions,

@@ -211,13 +211,11 @@ export const ROUTES = [
         label: 'Countries',
         to: '/countries',
         component: CountriesPage,
-        isBESAdminOnly: true,
       },
       {
         label: 'Entity Types',
         to: '/entityTypes',
         component: EntityTypesPage,
-        isBESAdminOnly: true,
       },
       {
         label: 'Entity Hierarchies',

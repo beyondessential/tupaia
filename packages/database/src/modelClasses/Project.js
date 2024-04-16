@@ -8,6 +8,7 @@ import { DatabaseRecord } from '../DatabaseRecord';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { RECORDS } from '../records';
 
+const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
 export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
 
@@ -17,6 +18,27 @@ export class ProjectRecord extends DatabaseRecord {
 
   async entity() {
     return this.otherModels.entity.findById(this.entity_id);
+  }
+
+  async hasAccess(accessPolicy) {
+    const entity = await this.entity();
+    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
+
+    return projectChildren.some(child =>
+      this.permission_groups.some(permissionGroup =>
+        accessPolicy.allows(child.country_code, permissionGroup),
+      ),
+    );
+  }
+
+  async hasAdminAccess(accessPolicy) {
+    if (!(await this.hasAccess(accessPolicy))) return false;
+    const entity = await this.entity();
+    const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
+    return accessPolicy.allowsSome(
+      projectChildren.map(c => c.country_code),
+      TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+    );
   }
 }
 
