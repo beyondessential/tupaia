@@ -9,7 +9,7 @@ import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   BES_ADMIN_PERMISSION_GROUP,
 } from '../../../permissions';
-import { TestableApp, setupMapOverlayTestData } from '../../testUtilities';
+import { TestableApp, resetTestData, setupMapOverlayTestData } from '../../testUtilities';
 
 describe('Permissions checker for GETMapOverlayGroups', async () => {
   const DEFAULT_POLICY = {
@@ -32,6 +32,7 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
   let filterString;
 
   before(async () => {
+    await resetTestData();
     // Still create these existing entities just in case test database for some reasons do not have these records.
     await addBaselineTestCountries(models);
 
@@ -50,6 +51,10 @@ describe('Permissions checker for GETMapOverlayGroups', async () => {
 
   afterEach(() => {
     app.revokeAccess();
+  });
+
+  after(async () => {
+    await resetTestData();
   });
 
   describe('GET /mapOverlayGroups/:id', async () => {
