@@ -58,6 +58,7 @@ export const ROUTES = [
         label: 'Questions',
         to: '/questions',
         component: QuestionsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Option Sets',

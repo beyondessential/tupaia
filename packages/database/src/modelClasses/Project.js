@@ -9,6 +9,7 @@ import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 import { RECORDS } from '../records';
 
 const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
+const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
 
@@ -21,6 +22,7 @@ export class ProjectRecord extends DatabaseRecord {
   }
 
   async hasAccess(accessPolicy) {
+    if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
     const entity = await this.entity();
     const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);
 
@@ -32,6 +34,7 @@ export class ProjectRecord extends DatabaseRecord {
   }
 
   async hasAdminAccess(accessPolicy) {
+    if (accessPolicy.allowsSome(undefined, BES_ADMIN_PERMISSION_GROUP)) return true;
     if (!(await this.hasAccess(accessPolicy))) return false;
     const entity = await this.entity();
     const projectChildren = await entity.getChildrenViaHierarchy(this.entity_hierarchy_id);

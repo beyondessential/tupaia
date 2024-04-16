@@ -8,10 +8,10 @@ import { EditHandler } from '../EditHandler';
 const assertEntityHierarchyEditPermissions = async (accessPolicy, models, entityHierarchyId) => {
   const project = await models.project.findOne({ entity_hierarchy_id: entityHierarchyId });
   if (!project) {
-    throw new Error(`No project found with entity hierarchy id ${entityHierarchyId}`);
+    throw new Error(`No project found with entity hierarchy id: '${entityHierarchyId}'`);
   }
   const error = new Error(
-    `Need Tupaia Admin Panel access to project with hierarchyId: '${entityHierarchyId}'`,
+    `Need Tupaia Admin Panel access to project with hierarchy id: '${entityHierarchyId}'`,
   );
   const hasAdminAccess = await project.hasAdminAccess(accessPolicy);
   if (!hasAdminAccess) {
