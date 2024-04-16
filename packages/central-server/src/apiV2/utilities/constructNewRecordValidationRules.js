@@ -96,6 +96,23 @@ export const constructForSingle = (models, recordType) => {
         parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
       };
     case RECORDS.DATA_ELEMENT:
+      return {
+        code: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
+        config: [hasContent],
+        permission_groups: [
+          hasContent,
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+      };
     case RECORDS.DATA_GROUP:
       return {
         code: [hasContent],

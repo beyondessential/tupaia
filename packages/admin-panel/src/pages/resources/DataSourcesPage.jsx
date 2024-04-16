@@ -56,9 +56,14 @@ const DATA_ELEMENT_FIELDS = [
   {
     Header: 'Permission Groups',
     source: 'permission_groups',
-    type: 'tooltip',
+    type: 'jsontooltip',
     editConfig: {
       type: 'jsonArray',
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'permission_groups',
+      allowMultipleValues: true,
     },
   },
 ];
