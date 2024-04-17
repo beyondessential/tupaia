@@ -169,13 +169,13 @@ const SECTIONS = {
   MAIN_IMAGE: {
     type: SECTION_FIELD_TYPE,
     title: 'Add main image',
-    description: '(Width:1500-2000px and height:900-2000px)',
+    description: '(Width: 1500–2000 px and height: 900–2000 px)',
     fields: [FIELDS.IMAGE],
   },
   LOGO: {
     type: SECTION_FIELD_TYPE,
     title: 'Add logo image',
-    description: '(Max 300px x 300px)',
+    description: '(Max 300 px × 300 px)',
     fields: [FIELDS.LOGO],
   },
   PRIMARY_COLOR: {

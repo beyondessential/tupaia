@@ -5,6 +5,7 @@
  */
 import { InternalServerError, RespondingError } from '@tupaia/utils';
 import { Request, Response, NextFunction } from 'express';
+import winston from 'winston';
 
 export const handleError = (
   err: RespondingError | Error,
@@ -19,5 +20,6 @@ export const handleError = (
   }
 
   const error = 'respond' in err ? err : new InternalServerError(err);
+  winston.error(error);
   error.respond(res);
 };
