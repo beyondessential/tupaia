@@ -9,6 +9,8 @@ import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'dashboard mailing list' };
+
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
     Header: 'Project',
@@ -98,7 +100,6 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New dashboard mailing list',
     editEndpoint: 'dashboardMailingLists',
     fields: [
       DASHBOARD_MAILING_LIST_FIELDS.project,
@@ -155,7 +156,7 @@ const EXPANSION_CONFIG = [
 
 export const DashboardMailingListsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboard Mailing Lists"
+    resourceName={RESOURCE_NAME}
     endpoint="dashboardMailingLists"
     columns={DASHBOARD_MAILING_LIST_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

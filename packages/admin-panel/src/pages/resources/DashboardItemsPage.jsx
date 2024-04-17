@@ -22,6 +22,8 @@ const StyledLink = styled(Link)`
   }
 `;
 
+const RESOURCE_NAME = { singular: 'dashboard item' };
+
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
 const FIELDS = [
@@ -110,8 +112,7 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
     </StyledLink>
   );
   const importConfig = {
-    title: 'Import Dashboard Visualisation',
-    subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+    subtitle: 'Please upload one or more JSON files with visualisations to be imported',
     actionConfig: {
       importEndpoint: 'dashboardVisualisations',
       multiple: true,
@@ -133,7 +134,7 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
 
   return (
     <ResourcePage
-      title="Dashboard Items"
+      resourceName={RESOURCE_NAME}
       endpoint={DASHBOARD_ITEMS_ENDPOINT}
       columns={columns}
       importConfig={importConfig}

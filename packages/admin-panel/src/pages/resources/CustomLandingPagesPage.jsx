@@ -11,6 +11,8 @@ import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'landing page' };
+
 const LANDING_PAGES_ENDPOINT = 'landingPages';
 
 // the URL prefix to display in the url_segment field
@@ -283,7 +285,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New landing page',
     editEndpoint: LANDING_PAGES_ENDPOINT,
     fields: CREATE_FIELDS,
   },
@@ -292,7 +293,7 @@ const CREATE_CONFIG = {
 export const CustomLandingPagesPage = ({ getHeaderEl }) => {
   return (
     <ResourcePage
-      title="Landing Pages"
+      resourceName={RESOURCE_NAME}
       endpoint={LANDING_PAGES_ENDPOINT}
       columns={COLUMNS}
       getHeaderEl={getHeaderEl}

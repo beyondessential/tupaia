@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'entity type' };
+
 const ENTITY_TYPES_ENDPOINT = 'entityTypes';
 
 export const ENTITY_TYPES_COLUMNS = [
@@ -21,7 +23,7 @@ export const ENTITY_TYPES_COLUMNS = [
 
 export const EntityTypesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Entity Types"
+    resourceName={RESOURCE_NAME}
     endpoint={ENTITY_TYPES_ENDPOINT}
     columns={ENTITY_TYPES_COLUMNS}
     getHeaderEl={getHeaderEl}

@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'dashboard' };
+
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
 const FIELDS = [
@@ -126,7 +128,6 @@ const EXPANSION_CONFIG = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New dashboard',
     editEndpoint: DASHBOARDS_ENDPOINT,
     fields: FIELDS,
   },
@@ -134,7 +135,7 @@ const CREATE_CONFIG = {
 
 export const DashboardsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboards"
+    resourceName={RESOURCE_NAME}
     endpoint={DASHBOARDS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

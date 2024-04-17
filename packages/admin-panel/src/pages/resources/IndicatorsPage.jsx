@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'indicator' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -53,7 +55,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New indicator',
     editEndpoint: 'indicators',
     fields: FIELDS,
   },
@@ -61,7 +62,7 @@ const CREATE_CONFIG = {
 
 export const IndicatorsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Indicators"
+    resourceName={RESOURCE_NAME}
     endpoint="indicators"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'question' };
+
 const QUESTION_FIELDS = [
   {
     Header: 'Code',
@@ -110,7 +112,7 @@ const EDITOR_CONFIG = {
 
 export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Questions"
+    resourceName={RESOURCE_NAME}
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

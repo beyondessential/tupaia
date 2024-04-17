@@ -13,6 +13,8 @@ import { prettyArray } from '../../utilities';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
+const RESOURCE_NAME = { singular: 'map overlay' };
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   &:focus,
@@ -179,8 +181,8 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
   ];
 
   const importConfig = {
-    title: 'Import Map Overlay Visualisation',
-    subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+    title: 'Import map overlay visualisations',
+    subtitle: 'Please upload one or more JSON files with visualisations to be imported',
     actionConfig: {
       importEndpoint: 'mapOverlayVisualisations',
       multiple: true,
@@ -208,7 +210,7 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
 
   return (
     <ResourcePage
-      title="Map Overlays"
+      resourceName={RESOURCE_NAME}
       endpoint="mapOverlays"
       columns={COLUMNS}
       importConfig={importConfig}

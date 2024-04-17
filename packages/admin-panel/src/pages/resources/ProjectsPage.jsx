@@ -9,6 +9,8 @@ import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
+const RESOURCE_NAME = { singular: 'project' };
+
 const PROJECTS_ENDPOINT = 'projects';
 
 const DEFAULT_FIELDS = [
@@ -166,7 +168,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New project',
     editEndpoint: PROJECTS_ENDPOINT,
     fields: NEW_PROJECT_COLUMNS,
   },
@@ -174,7 +175,7 @@ const CREATE_CONFIG = {
 
 export const ProjectsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Projects"
+    resourceName={RESOURCE_NAME}
     endpoint="projects"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

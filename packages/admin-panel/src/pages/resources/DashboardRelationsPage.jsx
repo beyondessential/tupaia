@@ -9,6 +9,8 @@ import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
+const RESOURCE_NAME = { singular: 'dashboard relation' };
+
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 export const DASHBOARD_RELATION_COLUMNS = [
@@ -116,7 +118,7 @@ const CREATE_CONFIG = {
 
 export const DashboardRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboard Relations"
+    resourceName={RESOURCE_NAME}
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}

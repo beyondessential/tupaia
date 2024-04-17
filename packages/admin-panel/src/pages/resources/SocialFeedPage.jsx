@@ -10,6 +10,8 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'social feed post' };
+
 const Image = styled.div`
   height: 200px;
   width: 200px;
@@ -101,7 +103,6 @@ export const SOCIAL_FEED_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New social feed post',
     editEndpoint: 'feedItems',
     fields: FIELDS,
   },
@@ -109,7 +110,8 @@ const CREATE_CONFIG = {
 
 export const SocialFeedPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Social Feed"
+    resourceName={RESOURCE_NAME}
+    title="Social feed"
     endpoint="feedItems"
     baseFilter={{ type: 'markdown' }}
     columns={SOCIAL_FEED_COLUMNS}

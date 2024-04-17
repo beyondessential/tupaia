@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'map overlay group relation' };
+
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
 const FIELDS = [
@@ -90,7 +92,7 @@ const CREATE_CONFIG = {
 
 export const MapOverlayGroupRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Map Overlay Group Relations"
+    resourceName={RESOURCE_NAME}
     endpoint="mapOverlayGroupRelations"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

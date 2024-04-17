@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'legacy report' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -48,7 +50,7 @@ const COLUMNS = [
 
 export const LegacyReportsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Legacy Reports"
+    resourceName={RESOURCE_NAME}
     endpoint="legacyReports"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

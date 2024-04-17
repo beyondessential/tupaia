@@ -11,7 +11,7 @@ import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
 
 const importConfig = {
-  title: 'Import Lab Results or Vector Data',
+  title: 'Import lab results or vector data',
   actionConfig: {
     importEndpoint: 'striveLabResults',
   },

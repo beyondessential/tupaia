@@ -12,6 +12,8 @@ import {
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
 
+const RESOURCE_NAME = { singular: 'mapping' };
+
 const FIELDS = [
   {
     Header: 'Data Element',
@@ -58,7 +60,7 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Mapping',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataElementDataServices',
   },
@@ -66,7 +68,6 @@ const IMPORT_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New mapping',
     editEndpoint: 'dataElementDataServices',
     fields: FIELDS,
   },
@@ -74,7 +75,8 @@ const CREATE_CONFIG = {
 
 export const DataElementDataServicesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Data Mapping"
+    resourceName={RESOURCE_NAME}
+    title="Data mapping"
     endpoint="dataElementDataServices"
     columns={COLUMNS}
     importConfig={IMPORT_CONFIG}

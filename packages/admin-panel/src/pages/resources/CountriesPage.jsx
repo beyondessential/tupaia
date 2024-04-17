@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { COLUMNS as ENTITIES_COLUMNS } from './EntitiesPage';
 
+const RESOURCE_NAME = { singular: 'country', plural: 'countries' };
+
 const FIELDS = [
   { source: 'id', show: false },
   {
@@ -30,7 +32,6 @@ const EXPANSION_CONFIG = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New country',
     editEndpoint: 'countries',
     fields: FIELDS,
   },
@@ -38,7 +39,7 @@ const CREATE_CONFIG = {
 
 export const CountriesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Countries"
+    resourceName={RESOURCE_NAME}
     endpoint="countries"
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}

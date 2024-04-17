@@ -10,6 +10,8 @@ import { ResourcePage } from './ResourcePage';
 import { PERMISSIONS_COLUMNS, PERMISSIONS_ENDPOINT } from './PermissionsPage';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
 
+const RESOURCE_NAME = { singular: 'user' };
+
 // eslint-disable-next-line react/prop-types
 const VerifiedCell = ({ value }) => {
   if (value === 'verified') {
@@ -128,7 +130,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Users',
   actionConfig: {
     importEndpoint: 'users',
   },
@@ -136,7 +137,6 @@ const IMPORT_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New user',
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
@@ -176,7 +176,7 @@ const CREATE_CONFIG = {
 
 export const UsersPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Users"
+    resourceName={RESOURCE_NAME}
     endpoint="users"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

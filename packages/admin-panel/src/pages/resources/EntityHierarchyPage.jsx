@@ -9,8 +9,9 @@ import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 
+const RESOURCE_NAME = { singular: 'entity hierarchy', plural: 'entity hierarchies' };
+
 const ENTITY_HIERARCHY_ENDPOINT = 'entityHierarchy';
-const TITLE = 'Entity Hierarchy';
 
 const FIELDS = [
   {
@@ -49,7 +50,7 @@ const COLUMNS = [
 
 export const EntityHierarchyPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title={TITLE}
+    resourceName={RESOURCE_NAME}
     endpoint={ENTITY_HIERARCHY_ENDPOINT}
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

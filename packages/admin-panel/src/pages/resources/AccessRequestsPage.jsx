@@ -7,6 +7,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
+const RESOURCE_NAME = { singular: 'access request' };
+
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
 
 const USER_FIELDS = [
@@ -176,7 +178,7 @@ const EXPANSION_CONFIG = [
 
 export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Access Requests"
+    resourceName={RESOURCE_NAME}
     endpoint="accessRequests"
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
