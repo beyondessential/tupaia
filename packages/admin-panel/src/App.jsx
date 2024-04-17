@@ -16,11 +16,14 @@ import { LogoutPage } from './pages/LogoutPage';
 import { labelToId } from './utilities';
 
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(15rem, 22rem) 1fr;
 `;
 
 const Main = styled.main`
-  flex-grow: 1;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const App = ({ user }) => {

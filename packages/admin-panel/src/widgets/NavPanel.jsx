@@ -44,7 +44,6 @@ const StyledNavBar = styled.div`
 `;
 
 const Wrapper = styled.div`
-  min-width: 240px;
   background-color: ${props => props.theme.palette.primary.main};
 `;
 
