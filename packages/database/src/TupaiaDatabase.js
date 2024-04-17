@@ -687,8 +687,11 @@ function getColSelector(connection, inputColStr) {
 
   const params = inputColStr.split(jsonOperatorPattern);
   const allButFirst = params.slice(1);
+  const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
+  const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
+  const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
 
   // Turn `config->item->>colour` into `config #>> '{item,colour}'`
   // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
-  return connection.raw(`?? #>> '{${allButFirst.map(() => '??').join(',')}}'`, params);
+  return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
 }

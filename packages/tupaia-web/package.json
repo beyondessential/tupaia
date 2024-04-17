@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/tupaia-web"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "scripts": {
     "build": "yarn package:build:types && yarn package:build:vite",
     "lint": "yarn package:lint",
@@ -31,7 +31,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/ui-map-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^1.4.0",
+    "axios": "^1.6.8",
     "dom-to-image": "2.6.0",
     "downloadjs": "1.4.7",
     "moment": "^2.24.0",
