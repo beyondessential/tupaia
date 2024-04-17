@@ -6,11 +6,11 @@
 import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
 import {
-  OrchestratorApiBuilder,
-  handleWith,
   attachSessionIfAvailable,
-  SessionSwitchingAuthHandler,
   forwardRequest,
+  handleWith,
+  OrchestratorApiBuilder,
+  SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
@@ -98,8 +98,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .use('login/oneTimeLogin', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resetPassword', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
-    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
-    .use('*', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }));
+    .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }));
   const app = builder.build();
 
   await builder.initialiseApiClient([
