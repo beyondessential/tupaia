@@ -20,7 +20,7 @@ export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
   const { parentId, grandparentId, type, attributes } = filter;
 
   if (type) {
-    filters.type = type.join(',');
+    filters.type = Array.isArray(type) ? type.join(',') : type;
   }
 
   if (parentId && parentId.questionId) {
