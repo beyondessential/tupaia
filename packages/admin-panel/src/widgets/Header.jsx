@@ -45,11 +45,11 @@ export const Header = ({
   const headerTitle = title ?? capitalize(plural);
   if (!!importConfig && !importConfig.title) {
     // eslint-disable-next-line no-param-reassign
-    importConfig.title = `🆕 Import ${plural}`;
+    importConfig.title = `Import ${plural}`;
   }
   if (!!createConfig?.actionConfig && !createConfig.actionConfig.title) {
     // eslint-disable-next-line no-param-reassign
-    createConfig.actionConfig.title = `🆕 New ${resourceName.singular}`;
+    createConfig.actionConfig.title = `New ${resourceName.singular}`;
   }
 
   const CreateButton =
