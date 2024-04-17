@@ -23,7 +23,7 @@ COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
 load_env_file_from_bw () {
     FILE_NAME=$1
-    BASE_FILE_PATH=$2 
+    BASE_FILE_PATH=$2
     NEW_FILE_NAME=$3
     ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
 
@@ -45,7 +45,7 @@ load_env_file_from_bw () {
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
-   
+
 
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
@@ -60,11 +60,11 @@ load_env_file_from_bw () {
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
         sed -i -e 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
     fi
- 
+
 
      echo "downloaded .env vars for $FILE_NAME"
 }
- 
+
 for PACKAGE in $PACKAGES; do
     # only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
     has_example_env_in_package=$(find $DIR/../../packages/$PACKAGE -type f -name '*.env.example' | wc -l)
@@ -72,12 +72,12 @@ for PACKAGE in $PACKAGES; do
         load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
     fi
 done
- 
+
 
 # get all .env.*.example files in the env directory
 file_names=$(find $DIR/../../env -type f -name '*.env.example' -exec basename {} \;)
- 
- 
+
+
 # for each file, get the extract the filename without the .example extension
 for file_name in $file_names; do
     env_name=$(echo $file_name | sed 's/\.env.example//')
@@ -94,4 +94,4 @@ bw logout
 # macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
 # that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
 # generate backup files which we don’t need.
-rm -f ./env/*.env-e ./packages/*/.env-e
+rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e
