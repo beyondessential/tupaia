@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity } from '../../models';
+import { Country, Entity, Project } from '../../models';
 import { KeysToCamelCase } from '../../../utils/casing';
 
 type EntityResponse = Entity & {
@@ -17,4 +17,14 @@ export type ReqBody = Record<string, unknown> & {
   filter: Record<string, unknown>;
   fields?: string[];
 };
-export type ReqQuery = Record<string, never>;
+export type ReqQuery = {
+  fields?: string[];
+  filter: Record<string, string> & {
+    countryCode: Country['code'];
+    projectCode: Project['code'];
+    grandparentId?: Entity['id'];
+    parentId?: Entity['id'];
+    type?: string;
+  };
+  searchString?: string;
+};

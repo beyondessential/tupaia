@@ -17,10 +17,10 @@ export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
     return filters;
   }
 
-  const { parentId, grandparentId, type } = filter;
+  const { parentId, grandparentId, type, attributes } = filter;
 
   if (type) {
-    filters.type = type;
+    filters.type = type.join(',');
   }
 
   if (parentId && parentId.questionId) {
@@ -29,34 +29,11 @@ export const useEntityBaseFilters = (config: SurveyScreenComponentConfig) => {
   if (grandparentId && grandparentId.questionId) {
     filters['grandparentId'] = getAnswerByQuestionId(grandparentId.questionId);
   }
-  return filters;
-};
-
-/*
- * Returns a function that filters entities based on configured attribute values and questions
- */
-export const useAttributeFilter = (questionConfig: SurveyScreenComponentConfig) => {
-  const { getAnswerByQuestionId } = useSurveyForm();
-  const attributesFilters = questionConfig.entity?.filter?.attributes;
-  if (!attributesFilters) {
-    return null;
-  }
-
-  const filterValues = Object.entries(attributesFilters).reduce((acc, [key, config]) => {
-    // Get the answer from the configured question
-    const filterValue = getAnswerByQuestionId(config.questionId);
-    return filterValue ? { ...acc, [key]: filterValue } : acc;
-  }, {});
-
-  // No answer was selected for the question to filter, return all
-  if (Object.keys(filterValues).length === 0) {
-    return null;
-  }
-
-  return entity =>
-    Object.entries(filterValues).every(([key, value]) => {
-      const { attributes } = entity;
-      if (!attributes) return false;
-      return attributes[key] === value;
+  if (attributes) {
+    Object.entries(attributes).forEach(([key, attrConfig]) => {
+      const filterValue = getAnswerByQuestionId(attrConfig.questionId);
+      filters[`attributes->>${key}`] = filterValue;
     });
+  }
+  return filters;
 };

@@ -4,7 +4,7 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, EntityType } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -37,29 +37,38 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     let recentEntities: string[] = [];
 
     const {
-      filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
+      filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
+      searchString,
       fields = DEFAULT_FIELDS,
     } = query;
+
+    const entityTypes = type?.split(',') ?? [];
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
       const { recent_entities: userRecentEntities } = currentUser.preferences;
-      recentEntities = userRecentEntities?.[countryCode]?.[type] || [];
+
+      recentEntities =
+        countryCode && type
+          ? entityTypes
+              .map(
+                entityType => userRecentEntities?.[countryCode]?.[entityType as EntityType] ?? [],
+              )
+              .flat()
+          : [];
     }
 
     const filter = {
       generational_distance: {},
       country_code: countryCode,
-      type: {
-        comparator: '=',
-        comparisonValue: type,
-      },
+      type,
       name: searchString
         ? {
             comparator: 'ilike',
             comparisonValue: `%${searchString}%`,
           }
         : undefined,
+      ...restOfFilter,
     };
 
     let entityCode = projectCode as string;

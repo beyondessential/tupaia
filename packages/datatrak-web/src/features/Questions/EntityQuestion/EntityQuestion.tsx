@@ -14,7 +14,7 @@ import { useDebounce } from '../../../utils';
 import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
-import { useEntityBaseFilters, useAttributeFilter } from './utils';
+import { useEntityBaseFilters } from './utils';
 
 const Container = styled.div`
   width: 100%;
@@ -35,19 +35,13 @@ const Label = styled(Typography).attrs({
 const useSearchResults = (searchValue, config) => {
   const filter = useEntityBaseFilters(config);
   const { surveyProjectCode } = useSurveyForm();
-  const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
-  const query = useProjectEntities(surveyProjectCode, {
-    searchString: debouncedSearch,
-    fields: ['id', 'parent_name', 'code', 'name', 'type', 'attributes'],
+  return useProjectEntities(surveyProjectCode, {
+    fields: ['id', 'parent_name', 'code', 'name', 'type'],
     filter,
+    searchString: debouncedSearch,
   });
-  let entities = query?.data;
-  if (attributeFilter) {
-    entities = entities?.filter(attributeFilter);
-  }
-  return { ...query, data: entities };
 };
 
 export const EntityQuestion = ({
