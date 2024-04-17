@@ -3,42 +3,22 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import winston from 'winston';
 import { respond } from './respond';
-
-/**
- * Logged errors print out to the server's logs so that we have a record of all errors. In future
- * this may change to saving the error info to the database, notifying the admin, or similar
- */
-class LoggedError extends Error {
-  constructor(message, originalError = null) {
-    super(message);
-    this.message = message;
-
-    // We may be in a context where winston is not defined (eg. frontend packages), just console log in that case
-    const logger = winston?.error ? winston.error : console.log;
-
-    if (originalError) {
-      logger('Original error:', { stack: originalError.stack });
-    }
-    logger(this.message, { stack: this.stack });
-  }
-}
 
 /**
  * Responding errors are able to respond to the client's request, informing them of the error with
  * the appropriate http status code
  */
-export class RespondingError extends LoggedError {
+export class RespondingError extends Error {
   constructor(message, statusCode, extraFields = {}, originalError = null) {
-    super(message, originalError);
+    super(message, { cause: originalError });
     this.statusCode = statusCode;
     this.extraFields = extraFields;
     this.respond = res => respond(res, { error: this.message, ...extraFields }, statusCode);
   }
 }
 
-export class HttpError extends LoggedError {
+export class HttpError extends Error {
   constructor(response) {
     super(`Attempt to post data returned ${response.status}: ${response.statusText}`);
     this.status = response.status;

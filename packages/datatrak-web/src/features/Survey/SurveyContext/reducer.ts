@@ -1,9 +1,9 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { SurveyScreenComponent, SurveyScreen } from '../../../types';
+import { SurveyScreen, SurveyScreenComponent } from '../../../types';
 import { ACTION_TYPES, SurveyFormAction } from './actions';
 
 export type SurveyFormContextType = {
@@ -16,6 +16,7 @@ export type SurveyFormContextType = {
   numberOfScreens: number;
   screenNumber: number | null;
   screenHeader?: string;
+  screenDetail?: string | null;
   displayQuestions: SurveyScreenComponent[];
   sideMenuOpen?: boolean;
   isReviewScreen?: boolean;
