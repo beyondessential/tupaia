@@ -152,7 +152,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
       />
     );
 
-  const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
+  const displayValue = value ?? '';
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>
