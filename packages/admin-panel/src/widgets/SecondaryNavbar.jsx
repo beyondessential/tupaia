@@ -17,11 +17,24 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
   overflow-x: hidden;
+  position: relative;
+  margin-block: 1.43rem;
+`;
+
+const Ellipsis = styled.div`
+  color: ${props => props.theme.palette.text.secondary};
+  position: absolute;
+  right: 0;
+  height: 100%;
+  top: 0;
+  background: ${props => props.theme.palette.background.default};
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0.43rem;
+  padding-inline-start: 0.2rem;
 `;
 
 const NavBar = styled.nav`
-  margin-block: 1.43rem;
-  margin-inline-start: 1.2rem;
   display: flex;
   flex-wrap: nowrap;
 `;
@@ -29,8 +42,8 @@ const NavBar = styled.nav`
 const NavLink = styled(BaseNavLink)`
   line-height: 1.5;
   text-decoration: none;
-  padding-inline: 1.43rem;
   padding-block: 0.43rem;
+  padding-inline-end: 1.43rem;
   white-space: nowrap;
   color: ${props => props.theme.palette.text.secondary};
   &.active {
@@ -40,6 +53,10 @@ const NavLink = styled(BaseNavLink)`
   &:not(:last-child) {
     border-right: 1px solid ${props => props.theme.palette.text.tertiary};
   }
+  &:not(:first-child) {
+    padding-inline-start: 1.43rem;
+  }
+
   &:hover {
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${props => props.theme.typography.fontWeightMedium};
@@ -51,7 +68,6 @@ const NavLink = styled(BaseNavLink)`
 
   display: inline-flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
   &:after {
     content: attr(data-text) / '';
@@ -67,16 +83,20 @@ const NavLink = styled(BaseNavLink)`
 const ScrollButton = styled(Button)`
   width: 2rem;
   min-width: 0;
+  &:last-child {
+    margin-inline-start: 0.5rem;
+  }
 `;
 
 const useScrollableMenu = (containerRef, navLinkRefs) => {
-  const [hasOverflow, setHasOverflow] = useState(false);
   const [overflows, setOverflows] = useState({ left: false, right: false });
+  const [numToScroll, setNumToScroll] = useState(0);
 
   useEffect(() => {
+    // observer for when we scroll, to see if we need to show the scroll buttons
     const observer = new IntersectionObserver(detectOverflow, {
       root: containerRef.current,
-      threshold: 1,
+      threshold: 0.5,
     });
 
     const firstLink = navLinkRefs.current[0];
@@ -89,66 +109,94 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
       observer.observe(lastLink.current);
     }
 
+    // resize event listener to see how many elements are visible and set the number of elements to scroll each time
+    window.addEventListener('resize', handleResizeEvent);
+    handleResizeEvent();
+
     return () => {
       if (observer) observer.disconnect();
+      window.removeEventListener('resize', handleResizeEvent);
     };
   }, [containerRef?.current, navLinkRefs?.current]);
 
   const detectOverflow = entries => {
-    const leftItem = entries.find(entry => entry.target === navLinkRefs.current[0].current);
-    const rightItem = entries.find(
+    if (entries.length === 0) return;
+
+    const leftEntry = entries.find(entry => entry.target === navLinkRefs.current[0].current);
+
+    const rightEntry = entries.find(
       entry => entry.target === navLinkRefs.current[navLinkRefs.current.length - 1].current,
     );
-    if (rightItem) {
-      console.log('rightItem', rightItem.isIntersecting);
-    }
 
-    const leftIsVisible = leftItem?.isIntersecting;
-    const rightIsVisible = rightItem?.isIntersecting;
+    const isLeftVisible = leftEntry?.isIntersecting;
+    const isRightVisible = rightEntry?.isIntersecting;
 
     setOverflows({
-      left: !leftIsVisible,
-      right: !rightIsVisible,
+      left: !isLeftVisible,
+      right: !isRightVisible,
     });
   };
 
-  const getIsElementVisible = element => {
-    if (element) {
-      const boundingRect = element.getBoundingClientRect();
-      const containerBoundingRect = containerRef.current.getBoundingClientRect();
-      const { left, right } = boundingRect;
-      return left >= containerBoundingRect.left && right <= containerBoundingRect.right;
-    }
-    return false;
+  const handleResizeEvent = () => {
+    // see how many elements are visible and set the number of elements to scroll each time
+    const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current));
+    setNumToScroll(visibleElements.length);
+
+    // check if the first and last elements are visible, and set the overflows accordingly
+    const leftOverflow = !getIsElementVisible(navLinkRefs.current[0].current);
+    const rightOverflow = !getIsElementVisible(
+      navLinkRefs.current[navLinkRefs.current.length - 1].current,
+    );
+
+    setOverflows({
+      left: leftOverflow,
+      right: rightOverflow,
+    });
+  };
+
+  const getIsElementVisible = (element, buffer = 20) => {
+    if (!element) return false;
+
+    const boundingRect = element.getBoundingClientRect();
+    const containerBoundingRect = containerRef.current.getBoundingClientRect();
+    const { left, right } = boundingRect;
+    const { left: containerLeft, right: containerRight } = containerBoundingRect;
+
+    // include a buffer to account say that within 20px of the edge is still considered visible
+    const isVisible = left >= containerLeft - buffer && right <= containerRight + buffer;
+    return isVisible;
   };
 
   const handleScroll = item => {
-    if (item) {
-      item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    if (!item) return;
+
+    // scroll to the item, with smooth behavior and aligning to the start of the container
+    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
   };
 
-  const scrollToNextVisibleItems = () => {
+  const scrollToNextVisibleItem = () => {
+    // get the currently visible elements
     const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current));
-    const remainingElements = navLinkRefs.current.slice(visibleElements.length);
-    const numToScroll = Math.min(remainingElements.length, visibleElements.length);
-    const currentLastVisibleElementIndex = navLinkRefs.current.indexOf(
+
+    // get the index of the last visible element
+    const lastVisibleElementIndex = navLinkRefs.current.indexOf(
       visibleElements[visibleElements.length - 1],
     );
-    const nextIndex = currentLastVisibleElementIndex + numToScroll;
 
+    // the next item to scroll to is the one after the last visible element
+    const nextIndex = lastVisibleElementIndex + 1;
     const nextItem = navLinkRefs.current[nextIndex];
     if (!nextItem) return;
-
     handleScroll(nextItem.current);
   };
 
-  const scrollToPrevVisibleItems = () => {
+  const scrollToPrevVisibleItem = () => {
+    // get the currently visible elements
     const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current));
-    const elsBeforeVisible = navLinkRefs.current.slice(0, visibleElements.length);
-    const numToScroll = Math.min(visibleElements.length, elsBeforeVisible.length);
-    const currentFirstVisibleElementIndex = navLinkRefs.current.indexOf(visibleElements[0]);
-    const prevIndex = Math.max(0, currentFirstVisibleElementIndex - numToScroll);
+    // get the index of the first visible element
+    const firstVisibleElementIndex = navLinkRefs.current.indexOf(visibleElements[0]);
+    // the previous item to scroll to is the current first visible element minus the number of elements to scroll or 0 if it's negative
+    const prevIndex = Math.max(firstVisibleElementIndex - numToScroll, 0);
 
     const prevItem = navLinkRefs.current[prevIndex];
     if (!prevItem) return;
@@ -156,9 +204,8 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
   };
 
   return {
-    hasOverflow,
-    scrollToNextVisibleItems,
-    scrollToPrevVisibleItems,
+    scrollToNextVisibleItem,
+    scrollToPrevVisibleItem,
     overflows,
   };
 };
@@ -171,13 +218,39 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
     target: link.exact ? link.to : `${baseRoute}${link.to}`,
   }));
 
-  const { hasOverflow, scrollToNextVisibleItems, scrollToPrevVisibleItems, overflows } =
-    useScrollableMenu(containerRef, navLinkRefs);
+  const { scrollToNextVisibleItem, scrollToPrevVisibleItem, overflows } = useScrollableMenu(
+    containerRef,
+    navLinkRefs,
+  );
+
+  // calculate the visible text of the nav link, so that we can show a truncated version if it overflows. The reason we need to do this is because the text-overflow: ellipsis doesn't work with our scrollable menu setup
+  const truncateText = (el, label) => {
+    // if the menu is not overflowing to the right, return the full label
+    if (!overflows.right) return label;
+
+    const containerBoundingRect = containerRef.current.getBoundingClientRect();
+    // use the inner span element to get the bounding rect of the text, because the link element itself has padding that we don't want to include in the calculation
+    const childEl = el.firstChild;
+    const elBoundingRect = childEl.getBoundingClientRect();
+    const isPartiallyVisible = elBoundingRect.right > containerBoundingRect.right;
+    if (!isPartiallyVisible) {
+      return label;
+    }
+
+    // calculate how many characters are visible in the container
+    const charsInView = Math.floor((containerBoundingRect.right - elBoundingRect.left) / 10);
+
+    // if there are no characters visible, return the first character, otherwise return the number of characters visible
+    const sliceIndex = charsInView >= 1 ? charsInView : 1;
+
+    // return the truncated label with an ellipsis
+    return `${label.slice(0, sliceIndex)}...`;
+  };
 
   return (
     <Wrapper>
       {overflows?.left && (
-        <ScrollButton onClick={scrollToPrevVisibleItems}>
+        <ScrollButton onClick={scrollToPrevVisibleItem}>
           <KeyboardArrowLeft />
         </ScrollButton>
       )}
@@ -196,13 +269,13 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
               data-text={link.label}
               ref={navLinkRefs.current[i]}
             >
-              {link.label}
+              <span>{truncateText(navLinkRefs.current[i].current, link.label)}</span>
             </NavLink>
           ))}
         </NavBar>
       </Container>
       {overflows.right && (
-        <ScrollButton onClick={scrollToNextVisibleItems}>
+        <ScrollButton onClick={scrollToNextVisibleItem}>
           <KeyboardArrowRight />
         </ScrollButton>
       )}
