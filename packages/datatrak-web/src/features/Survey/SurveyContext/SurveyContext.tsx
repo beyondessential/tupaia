@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 202 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { createContext, Dispatch, useContext, useEffect, useReducer } from 'react';
