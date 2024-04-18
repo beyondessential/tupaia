@@ -199,9 +199,7 @@ const AdminPanelApp = ({ user }) => {
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
       <LesmisAdminRoute path={`${path}/viz-builder`} hasAdminPanelAccess={userHasAdminPanelAccess}>
-        <VizBuilderApp
-          Navbar={({ user: vizBuilderUser }) => <AdminPanelNavbar user={vizBuilderUser} />}
-        />
+        <VizBuilderApp />
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <AdminPanelNavbar user={user} links={routes} />

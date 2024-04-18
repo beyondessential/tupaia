@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
-import { usePortalWithCallback } from '../utilities';
 import { PageHeader } from '../widgets';
 import { updateProfile, getUser } from '../authentication';
 
