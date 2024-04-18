@@ -101,23 +101,21 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
   return (
     <DataCell $characterLength={0}>
       <DataCellContent>
-        {isNullish || (
-          <Pill
-            color={presentation?.color}
-            tooltip={
-              showTooltip ? (
-                <>
-                  {presentation?.label && (
-                    <TooltipSubheading>{presentation?.label}</TooltipSubheading>
-                  )}
-                  <Markdown>{bodyText.replace(/\\n/g, '\n\n')}</Markdown>
-                </>
-              ) : null
-            }
-          >
-            {value}
-          </Pill>
-        )}
+        <Pill
+          color={presentation?.color}
+          tooltip={
+            showTooltip ? (
+              <>
+                {presentation?.label && (
+                  <TooltipSubheading>{presentation?.label}</TooltipSubheading>
+                )}
+                <Markdown>{bodyText.replace(/\\n/g, '\n\n')}</Markdown>
+              </>
+            ) : null
+          }
+        >
+          {isNullish ? '—' /* em dash */ : value}
+        </Pill>
       </DataCellContent>
     </DataCell>
   );
