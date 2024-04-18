@@ -4,7 +4,7 @@
  */
 
 import React, { useContext } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { PresentationOptionCondition, PresentationOptionRange } from '@tupaia/types';
 import Markdown from 'markdown-to-jsx';
 import { MatrixColumnType, MatrixRowType } from '../../types';
@@ -44,7 +44,7 @@ const DataCellContent = styled.div<{
   // data, show it as normal.)
   ${({ $isCategory }) => {
     if ($isCategory)
-      return `
+      return css`
         &.${MATRIX_CELL_CLASS_NO_DATA} {
           visibility: collapse;
         }
