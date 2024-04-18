@@ -18,6 +18,8 @@ import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 import { Pill } from './Pill';
 
+const EMPTY_CELL_CLASS = 'empty';
+
 const DataCell = styled(Cell)`
   vertical-align: middle;
   position: relative;
@@ -36,6 +38,12 @@ const DataCellContent = styled.div<{
     $characterLength > 30
       ? '25ch'
       : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
+
+  // If cell is in an expandable row, show nothing in its empty state (instead of the default em
+  // dash). This ‘parent’ class comes from {@link MatrixRow}.
+  .parent &.${EMPTY_CELL_CLASS} {
+    visibility: collapse;
+  }
 `;
 
 const TooltipSubheading = styled.h3`
@@ -114,7 +122,7 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
             ) : null
           }
         >
-          {isNullish ? '—' /* em dash */ : value}
+          {value ?? '—' /* em dash */}
         </Pill>
       </DataCellContent>
     </DataCell>
@@ -150,11 +158,14 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
       />
     );
 
-  const displayValue = value ?? '';
+  const displayValue = value ?? '—'; // em dash
+  const classes = !!value ? undefined : EMPTY_CELL_CLASS;
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>
-      <DataCellContent $characterLength={characterLength}>{displayValue}</DataCellContent>
+      <DataCellContent className={classes} $characterLength={characterLength}>
+        {displayValue}
+      </DataCellContent>
     </DataCell>
   );
 };
