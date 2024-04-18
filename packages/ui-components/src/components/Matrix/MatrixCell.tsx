@@ -40,8 +40,8 @@ const DataCellContent = styled.div<{
       ? '25ch'
       : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 
-  // If cell is in an expandable row, show nothing in its empty state instead of the default em
-  // dash. (If it has data, show it as normal.)
+  // If an empty cell is in an expandable row, show nothing instead of the default dash. (If it has
+  // data, show it as normal.)
   ${({ $isCategory }) => {
     if ($isCategory)
       return `
