@@ -65,10 +65,10 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-export const NavPanel = ({ links, user }) => {
+export const NavPanel = ({ links, user, logo, homeLink, userLinks }) => {
   return (
     <Wrapper>
-      <HomeLink />
+      <HomeLink logo={logo} homeLink={homeLink} />
       <Container>
         {links.length && (
           <Nav>
@@ -84,7 +84,7 @@ export const NavPanel = ({ links, user }) => {
             </List>
           </Nav>
         )}
-        <UserProfileInfo user={user} />
+        <UserProfileInfo user={user} userLinks={userLinks} />
       </Container>
     </Wrapper>
   );
@@ -98,8 +98,25 @@ NavPanel.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  }),
+  homeLink: PropTypes.string,
+  userLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+    }).isRequired,
+  ),
 };
 
 NavPanel.defaultProps = {
   links: [],
+  logo: {
+    url: '/admin-panel-logo-white.svg',
+    alt: 'Tupaia Admin Panel Logo',
+  },
+  homeLink: '/',
+  userLinks: [],
 };

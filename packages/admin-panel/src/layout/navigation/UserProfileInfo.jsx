@@ -25,7 +25,7 @@ const UserEmail = styled(Typography)`
   margin-block-end: 0.9rem;
 `;
 
-export const UserProfileInfo = ({ user }) => {
+export const UserProfileInfo = ({ user, userLinks }) => {
   if (!user) return null;
 
   const name = user.firstName || user.lastName ? `${user.firstName} ${user.lastName}` : null;
@@ -34,8 +34,12 @@ export const UserProfileInfo = ({ user }) => {
       {name && <UserName>{name}</UserName>}
       <UserEmail>{user.email}</UserEmail>
       <Divider />
-      <UserLink to="/profile">Edit profile</UserLink>
-      <UserLink to="/logout">Logout</UserLink>
+      {userLinks &&
+        userLinks.map(({ label, to }) => (
+          <UserLink key={to} to={to}>
+            {label}
+          </UserLink>
+        ))}
     </Wrapper>
   );
 };
@@ -47,4 +51,14 @@ UserProfileInfo.propTypes = {
     lastName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  userLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+    }).isRequired,
+  ),
+};
+
+UserProfileInfo.defaultProps = {
+  userLinks: [],
 };

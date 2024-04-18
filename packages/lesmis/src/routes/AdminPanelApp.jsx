@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
-import { TabsToolbar } from '@tupaia/ui-components';
 import {
   LogoutPage,
   PrivateRoute,
@@ -27,6 +26,10 @@ import {
   EntitiesPage,
   ExternalDatabaseConnectionsPage,
   DataTablesPage,
+  PageWrapper,
+  Main,
+  SecondaryNavbar,
+  PageContentWrapper,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -39,6 +42,7 @@ import {
 import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
+import { Footer } from '../components';
 
 const getRoutes = (adminUrl, translate) => {
   return [
@@ -202,32 +206,43 @@ const AdminPanelApp = ({ user }) => {
         <VizBuilderApp />
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
-        <AdminPanelNavbar user={user} links={routes} />
-        <Switch>
-          {[...routes].map(route => (
-            <LesmisAdminRoute
-              key={route.to}
-              path={`${route.to}`}
-              hasAdminPanelAccess={userHasAdminPanelAccess}
-              render={({ match }) => {
-                return (
-                  <>
-                    <TabsToolbar links={route.tabs} maxWidth="xl" baseRoute={match.url} />
-                    <Switch>
-                      {route.tabs.map(tab => (
-                        <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                          <tab.component translate={translate} />
-                        </Route>
-                      ))}
-                      <Redirect to={`${route.to}`} />
-                    </Switch>
-                  </>
-                );
-              }}
-            />
-          ))}
-          <Redirect to={`${path}/survey-responses`} />
-        </Switch>
+        <PageWrapper>
+          <AdminPanelNavbar user={user} links={routes} />
+          <Main>
+            <Switch>
+              {[...routes].map(route => (
+                <LesmisAdminRoute
+                  key={route.to}
+                  path={`${route.to}`}
+                  hasAdminPanelAccess={userHasAdminPanelAccess}
+                  render={({ match }) => {
+                    return (
+                      <>
+                        <SecondaryNavbar links={route.tabs} baseRoute={match.url} />
+                        <PageContentWrapper>
+                          <Switch>
+                            {route.tabs.map(tab => (
+                              <Route
+                                key={`${route.to}-${tab.to}`}
+                                path={`${route.to}${tab.to}`}
+                                exact
+                              >
+                                <tab.component translate={translate} />
+                              </Route>
+                            ))}
+                            <Redirect to={`${route.to}`} />
+                          </Switch>
+                          <Footer />
+                        </PageContentWrapper>
+                      </>
+                    );
+                  }}
+                />
+              ))}
+              <Redirect to={`${path}/survey-responses`} />
+            </Switch>
+          </Main>
+        </PageWrapper>
       </PrivateRoute>
       <Redirect to={`${path}/login`} />
     </Switch>

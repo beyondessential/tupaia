@@ -5,29 +5,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import MuiContainer from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
-import { Footer } from './Footer';
 
-const MinHeightContainer = styled(MuiContainer).attrs({
-  maxWidth: false,
-})`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-// This is a wrapper around the main content so that the footer is always at the bottom of the page
+// This is a wrapper around the page content so that the footer is always at the bottom of the page
 const PageContent = styled.div`
   flex: 1;
+  padding-inline: 1.5rem;
 `;
 
 export const PageBody = ({ children, className }) => (
-  <MinHeightContainer className={className}>
-    <PageContent> {children}</PageContent>
-    <Footer />
-  </MinHeightContainer>
+  <PageContent className={className}>{children}</PageContent>
 );
 
 PageBody.propTypes = {

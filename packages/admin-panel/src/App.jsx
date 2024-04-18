@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { NavPanel, SecondaryNavbar } from './layout';
+import { Footer, NavPanel, PageContentWrapper, SecondaryNavbar } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getUser, PrivateRoute } from './authentication';
@@ -43,42 +43,49 @@ export const App = ({ user }) => {
           <NavPanel
             links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
             user={user}
+            userLinks={[
+              { label: 'Profile', to: '/profile' },
+              { label: 'Logout', to: '/logout' },
+            ]}
           />
           <Main>
-            <Switch>
-              {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-                <Route
-                  key={route.to}
-                  path={route.to}
-                  render={({ match }) => {
-                    return (
-                      <>
-                        <SecondaryNavbar
-                          links={route.tabs.map(tab => ({
-                            ...tab,
-                            id: `app-subTab-${labelToId(tab.label)}`,
-                          }))}
-                          baseRoute={match.url}
-                        />
-                        <Switch>
-                          {route.tabs.map(tab => (
-                            <Route
-                              key={`${route.to}-${tab.to}`}
-                              path={`${route.to}${tab.to}`}
-                              exact
-                            >
-                              <tab.component />
-                            </Route>
-                          ))}
-                          <Redirect to={route.to} />
-                        </Switch>
-                      </>
-                    );
-                  }}
-                />
-              ))}
-              <Redirect to="surveys" />
-            </Switch>
+            <PageContentWrapper>
+              <Switch>
+                {[...ROUTES, ...PROFILE_ROUTES].map(route => (
+                  <Route
+                    key={route.to}
+                    path={route.to}
+                    render={({ match }) => {
+                      return (
+                        <>
+                          <SecondaryNavbar
+                            links={route.tabs.map(tab => ({
+                              ...tab,
+                              id: `app-subTab-${labelToId(tab.label)}`,
+                            }))}
+                            baseRoute={match.url}
+                          />
+                          <Switch>
+                            {route.tabs.map(tab => (
+                              <Route
+                                key={`${route.to}-${tab.to}`}
+                                path={`${route.to}${tab.to}`}
+                                exact
+                              >
+                                <tab.component />
+                              </Route>
+                            ))}
+                            <Redirect to={route.to} />
+                          </Switch>
+                        </>
+                      );
+                    }}
+                  />
+                ))}
+                <Redirect to="surveys" />
+              </Switch>
+              <Footer />
+            </PageContentWrapper>
           </Main>
         </Wrapper>
       </PrivateRoute>
