@@ -182,7 +182,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 
   const scrollToPrevVisibleItem = () => {
     // get the currently visible elements
-    const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current));
+    const visibleElements = navLinkRefs.current.filter(ref => getIsElementVisible(ref.current, 50));
     // get the index of the first visible element
     const firstVisibleElementIndex = navLinkRefs.current.indexOf(visibleElements[0]);
     // the previous item to scroll to is the current first visible element minus the number of elements to scroll or 0 if it's negative
@@ -213,30 +213,6 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
     navLinkRefs,
   );
 
-  // calculate the visible text of the nav link, so that we can show a truncated version if it overflows. The reason we need to do this is because the text-overflow: ellipsis doesn't work with our scrollable menu setup
-  const truncateText = (el, label) => {
-    // if the menu is not overflowing to the right, return the full label
-    if (!overflows.right) return label;
-
-    const containerBoundingRect = containerRef.current.getBoundingClientRect();
-    // use the inner span element to get the bounding rect of the text, because the link element itself has padding that we don't want to include in the calculation
-    const childEl = el.firstChild;
-    const elBoundingRect = childEl.getBoundingClientRect();
-    const isPartiallyVisible = elBoundingRect.right > containerBoundingRect.right;
-    if (!isPartiallyVisible) {
-      return label;
-    }
-
-    // calculate how many characters are visible in the container
-    const charsInView = Math.floor((containerBoundingRect.right - elBoundingRect.left) / 10);
-
-    // if there are no characters visible, return the first character, otherwise return the number of characters visible
-    const sliceIndex = charsInView >= 1 ? charsInView : 1;
-
-    // return the truncated label with an ellipsis
-    return `${label.slice(0, sliceIndex)}...`;
-  };
-
   return (
     <Wrapper>
       {overflows?.left && (
@@ -246,20 +222,20 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map((link, i) => (
+          {links.map(({ to, label, target }, i) => (
             <NavLink
-              key={link.to}
-              to={link.target}
+              key={to}
+              to={target}
               isActive={(match, location) => {
                 if (!match) {
                   return false;
                 }
                 return match.url === location.pathname;
               }}
-              data-text={link.label}
+              data-text={label}
               ref={navLinkRefs.current[i]}
             >
-              <span>{truncateText(navLinkRefs.current[i].current, link.label)}</span>
+              {label}
             </NavLink>
           ))}
         </NavBar>
