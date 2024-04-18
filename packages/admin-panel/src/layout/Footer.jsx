@@ -8,6 +8,7 @@ import MuiLink from '@material-ui/core/Link';
 
 const Container = styled.footer`
   padding-block: 1rem;
+  padding-inline: 1.5rem;
 
   span,
   a {

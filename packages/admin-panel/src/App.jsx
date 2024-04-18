@@ -6,28 +6,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { Footer, NavPanel, PageContentWrapper, SecondaryNavbar } from './layout';
+import { Footer, Main, NavPanel, PageContentWrapper, PageWrapper, SecondaryNavbar } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { labelToId } from './utilities';
-
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 18rem 1fr;
-`;
-
-const Main = styled.main`
-  width: 100%;
-  overflow-x: auto;
-  height: 100vh;
-  // This is so that we can make the PageBody component fill the whole remaining height of the screen
-  display: flex;
-  flex-direction: column;
-`;
 
 export const App = ({ user }) => {
   return (
@@ -39,7 +24,7 @@ export const App = ({ user }) => {
         <LogoutPage />
       </Route>
       <PrivateRoute path="/">
-        <Wrapper>
+        <PageWrapper>
           <NavPanel
             links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
             user={user}
@@ -87,7 +72,7 @@ export const App = ({ user }) => {
               <Footer />
             </PageContentWrapper>
           </Main>
-        </Wrapper>
+        </PageWrapper>
       </PrivateRoute>
       <Redirect
         to={{
