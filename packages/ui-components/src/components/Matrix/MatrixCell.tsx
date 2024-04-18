@@ -17,8 +17,9 @@ import {
 import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 import { Pill } from './Pill';
+import { MATRIX_ROW_CLASS_PARENT } from './MatrixRow';
 
-const EMPTY_CELL_CLASS = 'empty';
+const NO_DATA_CELL_CLASS = 'no-data';
 
 const DataCell = styled(Cell)`
   vertical-align: middle;
@@ -41,7 +42,7 @@ const DataCellContent = styled.div<{
 
   // If cell is in an expandable row, show nothing in its empty state (instead of the default em
   // dash). This ‘parent’ class comes from {@link MatrixRow}.
-  .parent &.${EMPTY_CELL_CLASS} {
+  .${MATRIX_ROW_CLASS_PARENT} &.${NO_DATA_CELL_CLASS} {
     visibility: collapse;
   }
 `;
@@ -159,7 +160,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
     );
 
   const displayValue = value ?? '—'; // em dash
-  const classes = !!value ? undefined : EMPTY_CELL_CLASS;
+  const classes = !!value ? undefined : NO_DATA_CELL_CLASS;
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>

@@ -14,6 +14,10 @@ import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixCont
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
 
+export const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
+export const MATRIX_ROW_CLASS_PARENT = 'parent';
+export const MATRIX_ROW_CLASS_CHILD = 'child';
+
 const depthCalc = (depth: number) => `${1.5 + depth * 2}rem`;
 
 const ExpandIcon = styled(KeyboardArrowRight)<{
@@ -86,7 +90,7 @@ const TableRow = styled(MuiTableRow)<{
   }
   // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
   &.child
-    + &.parent.highlighted:not(
+    + &.${MATRIX_ROW_CLASS_PARENT}.${MATRIX_ROW_CLASS_HIGHLIGHTED}:not(
       :has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible))
     ) {
     ${Cell}:before {
@@ -269,15 +273,17 @@ export const MatrixRow = ({ row, parents = [], index }: MatrixRowProps) => {
   const isCategory = children ? children.length > 0 : false;
 
   const getClassNames = () => {
-    const highlightedClass =
-      isExpanded || depth > 0 || (isCategory && disableExpand) ? 'highlighted' : '';
-    const matrixClass = 'matrix';
-    const childClass = depth > 0 ? 'child' : 'parent';
+    const isHighlighted = isExpanded || depth > 0 || (isCategory && disableExpand);
+    const isChild = depth > 0;
+    const shouldAlternateRowColor = !(depth > 0 || index === undefined);
 
-    const baseClass = `${matrixClass} ${highlightedClass} ${childClass}`;
-    if (depth > 0 || index === undefined) return baseClass;
-    if (index % 2 === 0) return `${baseClass} even`;
-    return `${baseClass} odd`;
+    const childOrParentClass = isChild ? MATRIX_ROW_CLASS_CHILD : MATRIX_ROW_CLASS_PARENT;
+
+    const classes = ['matrix', childOrParentClass];
+    if (isHighlighted) classes.push(MATRIX_ROW_CLASS_HIGHLIGHTED);
+    if (shouldAlternateRowColor) classes.push(index % 2 === 0 ? 'even' : 'odd');
+
+    return classes.join(' ');
   };
 
   const classNames = getClassNames();
