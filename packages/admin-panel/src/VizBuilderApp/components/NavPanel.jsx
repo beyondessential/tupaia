@@ -4,19 +4,25 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { HomeLink } from '../../layout';
+import { HomeLink, UserLink } from '../../layout';
 
 const Wrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
-  padding: 0.625rem;
+  padding-block: 0.3rem;
+  padding-inline: 1.25rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  ${UserLink} {
+    font-size: 0.875rem;
+  }
 `;
 
 export const NavPanel = () => {
   return (
     <Wrapper>
       <HomeLink />
+      <UserLink to="/logout">Logout</UserLink>
     </Wrapper>
   );
 };

@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Divider, Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { UserLink } from './UserLink';
 
 const Wrapper = styled.div`
   padding-inline: 1.25rem;
@@ -23,16 +23,6 @@ const UserEmail = styled(Typography)`
   font-size: 0.6875rem;
   margin-block-start: 0.25rem;
   margin-block-end: 0.9rem;
-`;
-
-const UserLink = styled(Link)`
-  font-size: 0.6875rem;
-  margin-block-start: 0.5rem;
-  text-decoration: none;
-  &:hover,
-  &:focus {
-    text-decoration: underline;
-  }
 `;
 
 export const UserProfileInfo = ({ user }) => {

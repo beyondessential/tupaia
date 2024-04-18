@@ -4,4 +4,4 @@
  */
 export { Footer } from './Footer';
 export { PageBody } from './PageBody';
-export { NavPanel, SecondaryNavbar, HomeLink } from './navigation';
+export { NavPanel, SecondaryNavbar, HomeLink, UserLink } from './navigation';
