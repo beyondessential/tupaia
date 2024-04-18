@@ -50,7 +50,6 @@ export class FetchReportPreviewDataRoute extends Route<FetchReportPreviewDataReq
     if (hierarchy) parameters.hierarchy = hierarchy;
     if (entityCode) parameters.organisationUnitCodes = entityCode;
     if (startDate) parameters.startDate = startDate;
-    if (startDate) parameters.startDate = startDate;
     if (endDate) parameters.endDate = endDate;
     if (permissionGroup) parameters.permissionGroup = permissionGroup;
 

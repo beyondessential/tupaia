@@ -4,15 +4,14 @@
  */
 
 import { QueryParameters } from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { SessionHandlingApiConnection } from './SessionHandlingApiConnection';
-
-const { WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1' } = process.env;
 
 /**
  * @deprecated use @tupaia/api-client
  */
 export class WebConfigConnection extends SessionHandlingApiConnection {
-  public baseUrl = WEB_CONFIG_API_URL;
+  public baseUrl = getEnvVarOrDefault('WEB_CONFIG_API_URL', 'http://localhost:8000/api/v1');
 
   public async fetchDashboard(query: QueryParameters) {
     return this.get('dashboards', query);

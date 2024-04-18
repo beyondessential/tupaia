@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/types"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "installConfig": {
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@rmp135/sql-ts": "^1.15.1",
     "dotenv": "^16.4.5",
-    "knex": "^2.3.0",
+    "knex": "^3.1.0",
     "ts-node": "^10.9.1",
     "typescript-json-schema": "^0.55.0"
   }
