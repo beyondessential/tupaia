@@ -13,13 +13,12 @@ import {
   getFlattenedColumns,
   getIsUsingPillCell,
   getPresentationOption,
+  MATRIX_CELL_CLASS_NO_DATA,
+  MATRIX_ROW_CLASS_PARENT,
 } from './utils';
 import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 import { Pill } from './Pill';
-import { MATRIX_ROW_CLASS_PARENT } from './MatrixRow';
-
-const NO_DATA_CELL_CLASS = 'no-data';
 
 const DataCell = styled(Cell)`
   vertical-align: middle;
@@ -41,8 +40,8 @@ const DataCellContent = styled.div<{
       : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
 
   // If cell is in an expandable row, show nothing in its empty state (instead of the default em
-  // dash). This ‘parent’ class comes from {@link MatrixRow}.
-  .${MATRIX_ROW_CLASS_PARENT} &.${NO_DATA_CELL_CLASS} {
+  // dash).
+  .${MATRIX_ROW_CLASS_PARENT} &.${MATRIX_CELL_CLASS_NO_DATA} {
     visibility: collapse;
   }
 `;
@@ -160,7 +159,7 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
     );
 
   const displayValue = value ?? '—'; // em dash
-  const classes = !!value ? undefined : NO_DATA_CELL_CLASS;
+  const classes = !!value ? undefined : MATRIX_CELL_CLASS_NO_DATA;
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>

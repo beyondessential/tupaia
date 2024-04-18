@@ -1,20 +1,27 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *
+ * This file contains any utils that useful for the matrix component. This is mainly used for
+ * presentation options.
  */
-import { find, isString, isNumber } from 'lodash';
+
+import { find, isNumber, isString } from 'lodash';
 import {
-  ConditionValue,
-  RangePresentationOptions,
   ConditionalPresentationOptions,
-  PresentationOptionCondition,
+  ConditionValue,
   MatrixPresentationOptions,
+  PresentationOptionCondition,
+  RangePresentationOptions,
 } from '@tupaia/types';
 import { MatrixColumnType } from '../../types';
 
-/**
- * This file contains any utils that useful for the matrix component. This is mainly used for presentation options
- */
+/* These are used as classes and CSS selectors for styling */
+export const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
+export const MATRIX_ROW_CLASS_PARENT = 'parent';
+export const MATRIX_ROW_CLASS_CHILD = 'child';
+export const MATRIX_CELL_CLASS_NO_DATA = 'no-data';
+
 export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()
