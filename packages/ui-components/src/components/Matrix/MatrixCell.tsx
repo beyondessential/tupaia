@@ -13,8 +13,6 @@ import {
   getFlattenedColumns,
   getIsUsingPillCell,
   getPresentationOption,
-  MATRIX_CELL_CLASS_NO_DATA,
-  MATRIX_ROW_CLASS_PARENT,
 } from './utils';
 import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
@@ -29,6 +27,7 @@ const DataCell = styled(Cell)`
 
 const DataCellContent = styled.div<{
   $characterLength?: number;
+  $isCategory?: boolean;
 }>`
   height: 100%;
   width: 100%;
@@ -41,9 +40,9 @@ const DataCellContent = styled.div<{
 
   // If cell is in an expandable row, show nothing in its empty state (instead of the default em
   // dash).
-  .${MATRIX_ROW_CLASS_PARENT} &.${MATRIX_CELL_CLASS_NO_DATA} {
-    visibility: collapse;
-  }
+  ${({ $isCategory }) => {
+    if ($isCategory) return 'visibility: collapse;';
+  }}
 `;
 
 const TooltipSubheading = styled.h3`
@@ -159,11 +158,10 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
     );
 
   const displayValue = value ?? '—'; // em dash
-  const classes = !!value ? undefined : MATRIX_CELL_CLASS_NO_DATA;
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>
-      <DataCellContent className={classes} $characterLength={characterLength}>
+      <DataCellContent $characterLength={characterLength} $isCategory={isCategory}>
         {displayValue}
       </DataCellContent>
     </DataCell>

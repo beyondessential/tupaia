@@ -16,12 +16,6 @@ import {
 } from '@tupaia/types';
 import { MatrixColumnType } from '../../types';
 
-/* These are used as classes and CSS selectors for styling */
-export const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
-export const MATRIX_ROW_CLASS_PARENT = 'parent';
-export const MATRIX_ROW_CLASS_CHILD = 'child';
-export const MATRIX_CELL_CLASS_NO_DATA = 'no-data';
-
 export const areStringsEqual = (a: string, b: string, caseSensitive = true) =>
   a
     .toString()

@@ -13,11 +13,10 @@ import { MatrixCell } from './MatrixCell';
 import { ACTION_TYPES, MatrixContext, MatrixDispatchContext } from './MatrixContext';
 import { CellButton } from './CellButton';
 import { Cell } from './Cell';
-import {
-  MATRIX_ROW_CLASS_CHILD,
-  MATRIX_ROW_CLASS_HIGHLIGHTED,
-  MATRIX_ROW_CLASS_PARENT,
-} from './utils';
+
+const MATRIX_ROW_CLASS_HIGHLIGHTED = 'highlighted';
+const MATRIX_ROW_CLASS_PARENT = 'parent';
+const MATRIX_ROW_CLASS_CHILD = 'child';
 
 const depthCalc = (depth: number) => `${1.5 + depth * 2}rem`;
 
