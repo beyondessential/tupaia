@@ -5,24 +5,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { LightOutlinedButton } from '@tupaia/ui-components';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
 import { prettyArray } from '../../utilities';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  &:focus,
-  &:hover,
-  &:visited,
-  &:link,
-  &:active {
-    text-decoration: none;
-  }
-`;
+import { CreateActionButton } from '../../editor';
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
@@ -201,9 +188,9 @@ export const MapOverlaysPage = ({ vizBuilderBaseUrl, ...props }) => {
   };
 
   const renderNewMapOverlayVizButton = () => (
-    <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/map-overlay/new`}>
-      <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-    </StyledLink>
+    <CreateActionButton to={`${vizBuilderBaseUrl}/viz-builder/map-overlay/new`} component={Link}>
+      New
+    </CreateActionButton>
   );
 
   return (

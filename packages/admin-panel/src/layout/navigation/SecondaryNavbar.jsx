@@ -13,25 +13,16 @@ const Wrapper = styled.div`
   max-width: 100%;
   padding-inline: 1.5rem;
   display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: ${props => props.theme.palette.background.default};
 `;
 
 const Container = styled.div`
   overflow-x: hidden;
   position: relative;
   margin-block: 1.43rem;
-`;
-
-const Ellipsis = styled.div`
-  color: ${props => props.theme.palette.text.secondary};
-  position: absolute;
-  right: 0;
-  height: 100%;
-  top: 0;
-  background: ${props => props.theme.palette.background.default};
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 0.43rem;
-  padding-inline-start: 0.2rem;
 `;
 
 const NavBar = styled.nav`
@@ -43,23 +34,22 @@ const NavLink = styled(BaseNavLink)`
   line-height: 1.5;
   text-decoration: none;
   padding-block: 0.43rem;
-  padding-inline-end: 1.43rem;
+  padding-inline: 1.43rem;
   white-space: nowrap;
   color: ${props => props.theme.palette.text.secondary};
   &.active {
     color: ${props => props.theme.palette.text.primary};
-    border-bottom: 4px solid ${props => props.theme.palette.secondary.main};
+    border-bottom: 4px solid ${props => props.theme.palette.primary.main};
   }
   &:not(:last-child) {
     border-right: 1px solid ${props => props.theme.palette.text.tertiary};
   }
-  &:not(:first-child) {
-    padding-inline-start: 1.43rem;
-  }
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${props => props.theme.palette.text.primary};
     font-weight: ${props => props.theme.typography.fontWeightMedium};
+    outline: none;
   }
   /**
    * The following is a workaround to stop the bold text on hover from shifting the layout of the navbar

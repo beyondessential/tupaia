@@ -12,15 +12,16 @@ import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
+import { NavPanel } from './components';
 
 const Container = styled.main`
   display: flex;
   flex-direction: column;
-  background: #f9f9f9;
+  background: ${props => props.theme.palette.background.default};
   min-height: 100vh;
 `;
 
-export const App = ({ NavPanel, Footer }) => {
+export const App = ({ Footer }) => {
   const { data, isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
@@ -34,7 +35,7 @@ export const App = ({ NavPanel, Footer }) => {
   return (
     <StateProvider>
       <Container>
-        {NavPanel && <NavPanel user={user} />}
+        <NavPanel user={user} />
         <Switch>
           <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
             <CreateNew />
@@ -50,11 +51,9 @@ export const App = ({ NavPanel, Footer }) => {
 };
 
 App.propTypes = {
-  NavPanel: PropTypes.node,
   Footer: PropTypes.node,
 };
 
 App.defaultProps = {
-  NavPanel: null,
   Footer: null,
 };

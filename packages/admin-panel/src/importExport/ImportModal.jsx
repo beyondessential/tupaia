@@ -20,6 +20,7 @@ import { InputField, ModalContentProvider } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
+import { ActionButton } from '../editor';
 
 const STATUS = {
   IDLE: 'idle',
@@ -205,14 +206,9 @@ export const ImportModalComponent = React.memo(
             <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
-        <OutlinedButton
-          id="page-import-button"
-          startIcon={<ImportIcon />}
-          onClick={handleOpen}
-          color="secondary"
-        >
+        <ActionButton id="page-import-button" startIcon={<ImportIcon />} onClick={handleOpen}>
           {confirmButtonText}
-        </OutlinedButton>
+        </ActionButton>
       </>
     );
   },

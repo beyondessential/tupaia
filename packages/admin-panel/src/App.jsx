@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { NavPanel, Footer, SecondaryNavbar } from './widgets';
+import { NavPanel, SecondaryNavbar } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getUser, PrivateRoute } from './authentication';
@@ -17,13 +17,16 @@ import { labelToId } from './utilities';
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: minmax(15rem, 22rem) 1fr;
+  grid-template-columns: 18rem 1fr;
 `;
 
 const Main = styled.main`
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
+  height: 100vh;
+  // This is so that we can make the PageBody component fill the whole remaining height of the screen
+  display: flex;
+  flex-direction: column;
 `;
 
 export const App = ({ user }) => {
@@ -76,7 +79,6 @@ export const App = ({ user }) => {
               ))}
               <Redirect to="surveys" />
             </Switch>
-            <Footer />
           </Main>
         </Wrapper>
       </PrivateRoute>

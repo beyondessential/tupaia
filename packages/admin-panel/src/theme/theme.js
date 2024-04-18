@@ -10,12 +10,12 @@ const themeName = 'Tupaia';
 
 const palette = {
   primary: {
-    main: COLORS.LIGHT_BLACK,
+    main: COLORS.BLUE,
     light: COLORS.LIGHT_BLUE,
     dark: COLORS.DARK_BLUE,
   },
   secondary: {
-    main: COLORS.DARK_BLUE,
+    main: COLORS.LIGHT_BLACK,
     light: COLORS.LIGHT_BLUE,
   },
   error: {
@@ -31,7 +31,7 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
