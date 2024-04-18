@@ -22,7 +22,7 @@ const Container = styled.main`
 `;
 
 export const App = ({ Footer }) => {
-  const { data, isLoading: isUserLoading } = useUser();
+  const { isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
 
@@ -30,12 +30,10 @@ export const App = ({ Footer }) => {
     return <FullPageLoader />;
   }
 
-  const user = { ...data, name: `${data.firstName} ${data.lastName}` };
-
   return (
     <StateProvider>
       <Container>
-        <NavPanel user={user} />
+        <NavPanel />
         <Switch>
           <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
             <CreateNew />

@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { HomeLink } from '../../layout';
 
 const Wrapper = styled.div`
@@ -14,19 +13,10 @@ const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const NavPanel = ({ user }) => {
+export const NavPanel = () => {
   return (
     <Wrapper>
       <HomeLink />
     </Wrapper>
   );
-};
-
-NavPanel.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
 };

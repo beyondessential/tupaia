@@ -9,13 +9,20 @@ import { NavLink as BaseNavLink } from 'react-router-dom';
 import { List, ListItem as BaseListItem } from '@material-ui/core';
 import { WHITE } from '../../theme/colors';
 import { HomeLink } from './HomeLink';
+import { UserProfileInfo } from './UserProfileInfo';
 
 const Wrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
   padding-inline: 0.625rem;
-  padding-block: 1.8rem;
+  padding-block: 1.5rem;
+  display: flex;
+  flex-direction: column;
+
   ${HomeLink} {
     width: 100%;
+  }
+  * {
+    color: ${WHITE};
   }
 `;
 
@@ -27,7 +34,6 @@ const NavLink = styled(BaseNavLink)`
   font-weight: ${props => props.theme.typography.fontWeightMedium};
   width: 100%;
   text-decoration: none;
-  color: ${WHITE};
   display: flex;
   align-items: center;
   border-radius: 4px;
@@ -52,24 +58,34 @@ const ListItem = styled(BaseListItem)`
   margin-block-end: 0.5rem;
 `;
 
+const Container = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
 export const NavPanel = ({ links, user }) => {
   return (
     <Wrapper>
       <HomeLink />
-      {links.length && (
-        <Nav>
-          <List>
-            {links.map(link => (
-              <ListItem key={link.label} disableGutters>
-                <NavLink to={link.to}>
-                  {link.icon}
-                  {link.label}
-                </NavLink>
-              </ListItem>
-            ))}
-          </List>
-        </Nav>
-      )}
+      <Container>
+        {links.length && (
+          <Nav>
+            <List>
+              {links.map(link => (
+                <ListItem key={link.label} disableGutters>
+                  <NavLink to={link.to}>
+                    {link.icon}
+                    {link.label}
+                  </NavLink>
+                </ListItem>
+              ))}
+            </List>
+          </Nav>
+        )}
+        <UserProfileInfo user={user} />
+      </Container>
     </Wrapper>
   );
 };
