@@ -65,8 +65,8 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       rootEntityCode,
       {
         filter: {
-          ...frontendExcludedFilter,
           ...formattedFilter,
+          ...frontendExcludedFilter, // this needs to be after the filter so that if there is a type filter it will be overwritten by the frontendExcludedFilter so the user can't see the types they shouldn't
         },
         fields,
       },
