@@ -1753,6 +1753,7 @@ export enum EntityType {
   'enumeration_area' = 'enumeration_area',
   'maintenance' = 'maintenance',
   'larval_sample' = 'larval_sample',
+  'transfer' = 'transfer',
 }
 export enum DataTableType {
   'analytics' = 'analytics',
