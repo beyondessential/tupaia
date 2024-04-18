@@ -1,8 +1,7 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
@@ -31,7 +30,8 @@ const ScreenHeading = styled(Typography)<{
  * This is the component that renders survey questions.
  */
 export const SurveyScreen = () => {
-  const { displayQuestions, screenHeader, screenDetail, activeScreen } = useSurveyForm();
+  const { displayQuestions, screenHeader, activeScreen } = useSurveyForm();
+
   return (
     <>
       <ScrollableBody $hasSidebar>
@@ -41,7 +41,6 @@ export const SurveyScreen = () => {
         >
           {screenHeader}
         </ScreenHeading>
-        {screenDetail && <Typography variant="body1">{screenDetail}</Typography>}
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
       <SurveyPaginator />
