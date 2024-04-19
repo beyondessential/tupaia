@@ -1,11 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'question' };
 
 const QUESTION_FIELDS = [
   {
@@ -110,7 +112,7 @@ const EDITOR_CONFIG = {
 
 export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Questions"
+    resourceName={RESOURCE_NAME}
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

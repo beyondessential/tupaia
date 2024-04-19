@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -11,6 +11,9 @@ import {
   DataSourceConfigView,
   SERVICE_TYPE_OPTIONS,
 } from '../../common';
+
+const DATA_GROUP_RESOURCE_NAME = { singular: 'data group' };
+const DATA_ELEMENT_RESOURCE_NAME = { singular: 'data element' };
 
 const getButtonsConfig = (fields, recordType) => [
   {
@@ -94,7 +97,7 @@ const EDITOR_CONFIG = {
 
 export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Data Groups"
+    resourceName={DATA_GROUP_RESOURCE_NAME}
     endpoint="dataGroups"
     reduxId="dataGroups"
     columns={[...DATA_GROUP_FIELDS, ...getButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')]}
@@ -107,7 +110,6 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
     ]}
     createConfig={{
       actionConfig: {
-        title: 'New data group',
         editEndpoint: 'dataGroups',
         fields: DATA_GROUP_FIELDS,
       },
@@ -118,7 +120,6 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
 );
 
 const IMPORT_CONFIG = {
-  title: 'Import Data Elements',
   actionConfig: {
     importEndpoint: 'dataElements',
   },
@@ -130,14 +131,13 @@ DataGroupsPage.propTypes = {
 
 export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
   <ResourcePage
-    title="Data Elements"
+    resourceName={DATA_ELEMENT_RESOURCE_NAME}
     endpoint="dataElements"
     reduxId="dataElements"
     columns={[...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement')]}
     importConfig={IMPORT_CONFIG}
     createConfig={{
       actionConfig: {
-        title: 'New data element',
         editEndpoint: 'dataElements',
         fields: DATA_ELEMENT_FIELDS,
       },

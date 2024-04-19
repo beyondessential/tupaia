@@ -1,11 +1,13 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'DHIS instance' };
 
 const FIELDS = [
   {
@@ -54,7 +56,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New DHIS instance',
     editEndpoint: 'dhisInstances',
     fields: FIELDS,
   },
@@ -62,7 +63,7 @@ const CREATE_CONFIG = {
 
 export const DhisInstancesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="DHIS Instances"
+    resourceName={RESOURCE_NAME}
     endpoint="dhisInstances"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

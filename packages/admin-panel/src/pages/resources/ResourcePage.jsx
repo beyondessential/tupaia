@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -39,6 +39,7 @@ TableComponent.propTypes = {
 };
 
 export const ResourcePage = ({
+  resourceName,
   columns,
   createConfig,
   endpoint,
@@ -59,6 +60,7 @@ export const ResourcePage = ({
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
+      resourceName={resourceName}
       title={title}
       importConfig={importConfig}
       exportConfig={exportConfig}
@@ -93,6 +95,10 @@ export const ResourcePage = ({
 };
 
 ResourcePage.propTypes = {
+  resourceName: PropTypes.shape({
+    singular: PropTypes.string.isRequired,
+    plural: PropTypes.string,
+  }).isRequired,
   getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
@@ -113,7 +119,7 @@ ResourcePage.propTypes = {
   ExportModalComponent: PropTypes.elementType,
   TableComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
@@ -129,6 +135,7 @@ ResourcePage.defaultProps = {
   ExportModalComponent: null,
   TableComponent: null,
   LinksComponent: null,
+  title: null,
   onProcessDataForSave: null,
   baseFilter: {},
   defaultSorting: [],

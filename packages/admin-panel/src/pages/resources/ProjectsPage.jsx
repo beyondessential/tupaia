@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+
+const RESOURCE_NAME = { singular: 'project' };
 
 const PROJECTS_ENDPOINT = 'projects';
 
@@ -166,7 +168,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New project',
     editEndpoint: PROJECTS_ENDPOINT,
     fields: NEW_PROJECT_COLUMNS,
   },
@@ -174,7 +175,7 @@ const CREATE_CONFIG = {
 
 export const ProjectsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Projects"
+    resourceName={RESOURCE_NAME}
     endpoint="projects"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

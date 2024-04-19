@@ -58,7 +58,10 @@ const usePermissionGroups = () => {
   return { fetchRoot, fetchBranch };
 };
 export const PermissionGroupsViewerPage = ({ getHeaderEl }) => {
-  const HeaderPortal = usePortalWithCallback(<Header title="Permission Groups" />, getHeaderEl);
+  const HeaderPortal = usePortalWithCallback(
+    <Header title="Permission groups viewer" />,
+    getHeaderEl,
+  );
   const { fetchRoot, fetchBranch } = usePermissionGroups();
 
   return (

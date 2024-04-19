@@ -1,11 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'permission' };
 
 // export for use on users page
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
@@ -101,7 +103,6 @@ const CREATE_CONFIG = {
 };
 
 const IMPORT_CONFIG = {
-  title: 'Import User Permissions',
   actionConfig: {
     importEndpoint: 'userPermissions',
   },
@@ -143,7 +144,7 @@ const processDataForSave = (fieldsToSave, recordData) => {
 
 export const PermissionsPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Permissions"
+    resourceName={RESOURCE_NAME}
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}

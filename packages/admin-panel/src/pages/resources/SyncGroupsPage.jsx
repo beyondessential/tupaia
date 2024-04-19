@@ -1,11 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'sync group' };
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
@@ -87,7 +89,6 @@ const EDITOR_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New sync group',
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },
@@ -95,7 +96,7 @@ const CREATE_CONFIG = {
 
 export const SyncGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Sync Groups"
+    resourceName={RESOURCE_NAME}
     endpoint="dataServiceSyncGroups"
     columns={COLUMNS}
     editorConfig={EDITOR_CONFIG}

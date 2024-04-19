@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
+
+const RESOURCE_NAME = { singular: 'external database connection' };
 
 const EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT = 'externalDatabaseConnections';
 
@@ -72,7 +74,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New external database connection',
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
     fields: FIELDS,
   },
@@ -80,7 +81,7 @@ const CREATE_CONFIG = {
 
 export const ExternalDatabaseConnectionsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="External Database Connections"
+    resourceName={RESOURCE_NAME}
     endpoint={EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT}
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

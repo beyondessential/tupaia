@@ -1,12 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
+import { ANSWER_COLUMNS, SURVEY_RESPONSE_COLUMNS } from './SurveyResponsesPage';
+
+const RESOURCE_NAME = { singular: 'entity', plural: 'entities' };
 
 const ENTITIES_ENDPOINT = 'entities';
 
@@ -87,7 +89,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Entities',
   subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
@@ -115,7 +116,7 @@ const IMPORT_CONFIG = {
 
 export const EntitiesPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Entities"
+    resourceName={RESOURCE_NAME}
     endpoint={ENTITIES_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

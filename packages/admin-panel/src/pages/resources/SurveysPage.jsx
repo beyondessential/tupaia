@@ -1,12 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
+
+const RESOURCE_NAME = { singular: 'survey' };
 
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
@@ -243,7 +245,6 @@ const SURVEY_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New survey',
     editEndpoint: 'surveys',
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
@@ -543,7 +544,7 @@ const EXPANSION_CONFIG = [
 
 export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Surveys"
+    resourceName={RESOURCE_NAME}
     endpoint="surveys"
     columns={SURVEY_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

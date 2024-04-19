@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -10,6 +10,8 @@ import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
+
+const RESOURCE_NAME = { singular: 'data table' };
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
 
@@ -85,7 +87,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New data table',
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,
@@ -97,7 +98,7 @@ const CREATE_CONFIG = {
 };
 
 const IMPORT_CONFIG = {
-  title: 'Import Data Table',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataTables',
   },
@@ -106,7 +107,7 @@ const EDITOR_CONFIG = { displayUsedBy: true };
 
 export const DataTablesPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Data-Tables"
+    resourceName={RESOURCE_NAME}
     endpoint={DATA_TABLES_ENDPOINT}
     columns={COLUMNS}
     importConfig={IMPORT_CONFIG}

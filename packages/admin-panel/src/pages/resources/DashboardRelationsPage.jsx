@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+
+const RESOURCE_NAME = { singular: 'dashboard relation' };
 
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
@@ -116,7 +118,7 @@ const CREATE_CONFIG = {
 
 export const DashboardRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
   <ResourcePage
-    title="Dashboard Relations"
+    resourceName={RESOURCE_NAME}
     endpoint={DASHBOARD_RELATION_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}

@@ -1,6 +1,6 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -10,6 +10,8 @@ import { getBrowserTimeZone } from '@tupaia/utils';
 import { ApprovalStatus } from '@tupaia/types';
 import { ResourcePage } from './ResourcePage';
 import { SurveyResponsesExportModal } from '../../importExport';
+
+const RESOURCE_NAME = { singular: 'survey response' };
 
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
@@ -148,7 +150,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Survey Responses',
   actionConfig: {
     importEndpoint: 'surveyResponses',
     extraQueryParameters: {
@@ -171,7 +172,7 @@ const IMPORT_CONFIG = {
 
 export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
   <ResourcePage
-    title="Survey Responses"
+    resourceName={RESOURCE_NAME}
     endpoint="surveyResponses"
     columns={SURVEY_RESPONSE_PAGE_COLUMNS}
     defaultFilters={[{ id: 'outdated', value: false }]}

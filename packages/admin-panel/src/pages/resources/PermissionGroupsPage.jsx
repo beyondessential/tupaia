@@ -1,12 +1,14 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
+
+const RESOURCE_NAME = { singular: 'permission group' };
 
 const COLUMNS = [
   {
@@ -26,7 +28,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New permission group',
     editEndpoint: 'permissionGroups',
     fields: [
       {
@@ -46,7 +47,7 @@ const CREATE_CONFIG = {
 
 export const PermissionGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Permission Groups"
+    resourceName={RESOURCE_NAME}
     endpoint="permissionGroups"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}

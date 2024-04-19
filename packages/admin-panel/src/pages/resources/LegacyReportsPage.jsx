@@ -1,11 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'legacy report' };
 
 const FIELDS = [
   {
@@ -48,7 +50,7 @@ const COLUMNS = [
 
 export const LegacyReportsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Legacy Reports"
+    resourceName={RESOURCE_NAME}
     endpoint="legacyReports"
     columns={COLUMNS}
     getHeaderEl={getHeaderEl}

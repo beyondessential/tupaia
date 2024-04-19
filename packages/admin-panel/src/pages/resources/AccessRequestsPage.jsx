@@ -1,11 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'access request' };
 
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
 
@@ -176,7 +178,7 @@ const EXPANSION_CONFIG = [
 
 export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Access Requests"
+    resourceName={RESOURCE_NAME}
     endpoint="accessRequests"
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

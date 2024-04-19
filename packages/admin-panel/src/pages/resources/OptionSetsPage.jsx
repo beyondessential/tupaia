@@ -1,11 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'option set' };
 
 const OPTION_SET_FIELDS = [
   {
@@ -71,7 +73,6 @@ const EXPANSION_CONFIG = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Option Sets',
   actionConfig: {
     importEndpoint: 'optionSets',
   },
@@ -91,7 +92,7 @@ const IMPORT_CONFIG = {
 
 export const OptionSetsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Option Sets"
+    resourceName={RESOURCE_NAME}
     endpoint="optionSets"
     columns={OPTION_SET_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}

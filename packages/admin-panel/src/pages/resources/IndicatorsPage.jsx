@@ -1,11 +1,13 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+
+const RESOURCE_NAME = { singular: 'indicator' };
 
 const FIELDS = [
   {
@@ -53,7 +55,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New indicator',
     editEndpoint: 'indicators',
     fields: FIELDS,
   },
@@ -61,7 +62,7 @@ const CREATE_CONFIG = {
 
 export const IndicatorsPage = ({ getHeaderEl }) => (
   <ResourcePage
-    title="Indicators"
+    resourceName={RESOURCE_NAME}
     endpoint="indicators"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
