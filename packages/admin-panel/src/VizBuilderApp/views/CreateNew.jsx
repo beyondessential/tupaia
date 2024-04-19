@@ -21,6 +21,7 @@ const Container = styled(MuiContainer)`
   justify-content: center;
   padding-top: 5%;
   padding-bottom: 10%;
+  overflow-y: auto;
 `;
 
 const Card = styled.div`

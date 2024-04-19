@@ -14,14 +14,22 @@ import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
 import { NavPanel } from './components';
 
-const Container = styled.main`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   background: ${props => props.theme.palette.background.default};
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 `;
 
-export const App = ({ Footer }) => {
+const Container = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const App = ({ Footer, homeLink, logo }) => {
   const { isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
@@ -32,26 +40,39 @@ export const App = ({ Footer }) => {
 
   return (
     <StateProvider>
-      <Container>
-        <NavPanel />
-        <Switch>
-          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
-            <CreateNew />
-          </Route>
-          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
-            <Main />
-          </Route>
-        </Switch>
-        {Footer && <Footer />}
-      </Container>
+      <Wrapper>
+        <NavPanel logo={logo} homeLink={homeLink} />
+
+        <Container>
+          <Switch>
+            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
+              <CreateNew />
+            </Route>
+            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
+              <Main />
+            </Route>
+          </Switch>
+          {Footer && <Footer />}
+        </Container>
+      </Wrapper>
     </StateProvider>
   );
 };
 
 App.propTypes = {
   Footer: PropTypes.node,
+  homeLink: PropTypes.string,
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  }),
 };
 
 App.defaultProps = {
   Footer: null,
+  homeLink: '/',
+  logo: {
+    url: '/admin-panel-logo-white.svg',
+    alt: 'Tupaia Admin Panel Logo',
+  },
 };

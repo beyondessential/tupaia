@@ -203,17 +203,24 @@ const AdminPanelApp = ({ user }) => {
         <LogoutPage redirectTo={`${adminUrl}/login`} />
       </Route>
       <LesmisAdminRoute path={`${path}/viz-builder`} hasAdminPanelAccess={userHasAdminPanelAccess}>
-        <VizBuilderApp />
+        <VizBuilderApp
+          logo={{
+            url: '/lesmis-logo-white.svg',
+            alt: 'LESMIS Admin Panel Logo',
+          }}
+          homeLink={adminUrl}
+          Footer={Footer}
+        />
       </LesmisAdminRoute>
       <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
         <PageWrapper>
           <AdminPanelNavbar user={user} links={routes} />
           <Main>
             <Switch>
-              {[...routes].map(route => (
+              {routes.map(route => (
                 <LesmisAdminRoute
                   key={route.to}
-                  path={`${route.to}`}
+                  path={route.to}
                   hasAdminPanelAccess={userHasAdminPanelAccess}
                   render={({ match }) => {
                     return (
@@ -230,7 +237,7 @@ const AdminPanelApp = ({ user }) => {
                                 <tab.component translate={translate} />
                               </Route>
                             ))}
-                            <Redirect to={`${route.to}`} />
+                            <Redirect to={route.to} />
                           </Switch>
                           <Footer />
                         </PageContentWrapper>
