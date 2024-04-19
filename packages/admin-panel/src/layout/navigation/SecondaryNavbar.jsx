@@ -76,7 +76,7 @@ const ScrollButton = styled(Button)`
   min-width: 0;
   color: ${props => props.theme.palette.text.secondary};
   &:last-child {
-    margin-inline-start: 0.5rem;
+    margin-inline-start: 1rem;
   }
 `;
 
