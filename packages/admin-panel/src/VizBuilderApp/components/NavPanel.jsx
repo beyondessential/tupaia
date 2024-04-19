@@ -22,7 +22,7 @@ export const NavPanel = () => {
   return (
     <Wrapper>
       <HomeLink />
-      <UserLink to="/logout">Logout</UserLink>
+      <UserLink to="/logout">Log out</UserLink>
     </Wrapper>
   );
 };
