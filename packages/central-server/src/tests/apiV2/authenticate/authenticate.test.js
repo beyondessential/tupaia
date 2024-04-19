@@ -3,7 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
 import { encryptPassword, hashAndSaltPassword, getTokenClaims } from '@tupaia/auth';
@@ -11,6 +10,9 @@ import { findOrCreateDummyRecord, findOrCreateDummyCountryEntity } from '@tupaia
 import { createBasicHeader } from '@tupaia/utils';
 
 import { TestableApp } from '../../testUtilities';
+import { configureEnv } from '../../../configureEnv';
+
+configureEnv();
 
 const app = new TestableApp();
 const { models } = app;

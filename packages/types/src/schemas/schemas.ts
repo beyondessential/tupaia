@@ -15094,6 +15094,427 @@ export const DataDownloadViewConfigSchema = {
 	]
 } 
 
+export const DataDownloadViewVizBuilderConfigSchema = {
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"name": {
+			"description": "The title of the viz",
+			"type": "string"
+		},
+		"description": {
+			"description": "A short description that appears above a viz",
+			"type": "string"
+		},
+		"periodGranularity": {
+			"description": "Granularity of dates in the viz. Controls the date picker and x axis granularity",
+			"enum": [
+				"day",
+				"month",
+				"one_day_at_a_time",
+				"one_month_at_a_time",
+				"one_quarter_at_a_time",
+				"one_week_at_a_time",
+				"one_year_at_a_time",
+				"quarter",
+				"week",
+				"year"
+			],
+			"type": "string"
+		},
+		"defaultTimePeriod": {
+			"description": "Initial date range for this viz.\nEither a single offset, or an ISO string / offset for start/end date\neg.\n// Single offset\n\"defaultTimePeriod\": {\n  \"unit\": \"week\",\n  \"offset\": 7\n}\n\n// Explicit start/end dates\n\"defaultTimePeriod\": {\n  \"start\": \"2022-10-01\",\n  \"end\": \"2023-06-30\"\n}\n\n// Start/end date offsets\n\"defaultTimePeriod\": {\n  \"start\": {\n    \"unit\": \"week\",\n    \"offset\": -52\n  },\n  \"end\": {\n    \"unit\": \"week\",\n    \"offset\": 3\n  }\n}",
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"start": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						},
+						"end": {
+							"description": "Either an ISO Date string, or an offset object",
+							"anyOf": [
+								{
+									"type": "object",
+									"properties": {
+										"unit": {
+											"description": "Time unit to offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										},
+										"offset": {
+											"description": "Offset distance (can be negative to offset to an earlier date)",
+											"type": "number"
+										},
+										"modifier": {
+											"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+											"enum": [
+												"end_of",
+												"start_of"
+											],
+											"type": "string"
+										},
+										"modifierUnit": {
+											"description": "Time unit to modify the offset by",
+											"enum": [
+												"day",
+												"month",
+												"quarter",
+												"week",
+												"year"
+											],
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"offset",
+										"unit"
+									]
+								},
+								{
+									"type": "string"
+								}
+							]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"datePickerLimits": {
+			"description": "Maximum date ranges that the date picker can be used to choose from",
+			"type": "object",
+			"properties": {
+				"start": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				},
+				"end": {
+					"type": "object",
+					"properties": {
+						"unit": {
+							"description": "Time unit to offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						},
+						"offset": {
+							"description": "Offset distance (can be negative to offset to an earlier date)",
+							"type": "number"
+						},
+						"modifier": {
+							"description": "Used to modify the offset by either moving the date to the start/end of the modifier unit",
+							"enum": [
+								"end_of",
+								"start_of"
+							],
+							"type": "string"
+						},
+						"modifierUnit": {
+							"description": "Time unit to modify the offset by",
+							"enum": [
+								"day",
+								"month",
+								"quarter",
+								"week",
+								"year"
+							],
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"offset",
+						"unit"
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"exportConfig": {
+			"description": "Extra config options for exporting",
+			"type": "object",
+			"properties": {
+				"dataElementHeader": {
+					"description": "Sets the header for the data element in xls exports",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"noDataMessage": {
+			"description": "Message which shows if no data is found",
+			"type": "string"
+		},
+		"noDataFetch": {
+			"description": "If true, Tupaia will not fetch any data for this viz. Usually used with custom vizes of type: component, e.g. ProjectDescription.",
+			"default": false,
+			"type": "boolean"
+		},
+		"drillDown": {
+			"description": "Configure drill down functionality in this viz to allow clicking through to another visual",
+			"type": "object",
+			"properties": {
+				"itemCode": {
+					"description": "The code of the dashboard item that drilling down through this viz should take you to",
+					"type": "string"
+				},
+				"keyLink": {
+					"type": "string"
+				},
+				"parameterLink": {
+					"description": "Parameter that the value which is drilled through should link to when fetching data for the drill down dashboard item",
+					"type": "string"
+				},
+				"itemCodeByEntry": {
+					"description": "A map of series codes to dashboard item codes that drilling down each series should take you to",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"entityHeader": {
+			"description": "",
+			"type": "string"
+		},
+		"reference": {
+			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
+			"type": "object",
+			"properties": {
+				"link": {
+					"description": "url",
+					"type": "string"
+				},
+				"name": {
+					"description": "label",
+					"type": "string"
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"link",
+				"name"
+			]
+		},
+		"source": {
+			"description": "If specified allows the frontend to know where the data is coming from, so if there is no data it can show a custom no-data message e.g. \"Requires mSupply\".",
+			"type": "string"
+		},
+		"weekDisplayFormat": {
+			"description": "Allows customising how weeks are displayed, e.g. 'W/C 6 Jan 2020' or 'ISO Week 2 2020'",
+			"default": "'WEEK_COMMENCING_ABBR'",
+			"enum": [
+				"ISO_WEEK_NUMBER",
+				"WEEK_COMMENCING",
+				"WEEK_COMMENCING_ABBR",
+				"WEEK_ENDING",
+				"WEEK_ENDING_ABBR"
+			],
+			"type": "string"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"view"
+			]
+		},
+		"viewType": {
+			"type": "string",
+			"enum": [
+				"dataDownload"
+			]
+		},
+		"valueType": {
+			"enum": [
+				"boolean",
+				"color",
+				"currency",
+				"fraction",
+				"fractionAndPercentage",
+				"number",
+				"oneDecimalPlace",
+				"percentage",
+				"text",
+				"view"
+			],
+			"type": "string"
+		},
+		"value_metadata": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"output": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"rawDataExport"
+					]
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"type"
+			]
+		}
+	},
+	"required": [
+		"name",
+		"output",
+		"type",
+		"viewType"
+	]
+} 
+
 export const SingleDateViewConfigSchema = {
 	"additionalProperties": false,
 	"type": "object",
@@ -30068,6 +30489,7 @@ export const MeasureConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -30257,6 +30679,7 @@ export const EntityLevelSchema = {
 		"SubCatchment",
 		"SubDistrict",
 		"SubFacility",
+		"Transfer",
 		"Trap",
 		"Village",
 		"WaterSample",
@@ -30597,6 +31020,7 @@ export const BaseMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -30738,6 +31162,7 @@ export const BaseMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -30869,6 +31294,7 @@ export const BaseMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -31291,6 +31717,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -31432,6 +31859,7 @@ export const SpectrumMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -31563,6 +31991,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32093,6 +32522,7 @@ export const IconMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32234,6 +32664,7 @@ export const IconMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -32365,6 +32796,7 @@ export const IconMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32817,6 +33249,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -32958,6 +33391,7 @@ export const RadiusMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -33089,6 +33523,7 @@ export const RadiusMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -33515,6 +33950,7 @@ export const ColorMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -33656,6 +34092,7 @@ export const ColorMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -33787,6 +34224,7 @@ export const ColorMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -34228,6 +34666,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -34369,6 +34808,7 @@ export const ShadingMapOverlayConfigSchema = {
 							"SubCatchment",
 							"SubDistrict",
 							"SubFacility",
+							"Transfer",
 							"Trap",
 							"Village",
 							"WaterSample",
@@ -34500,6 +34940,7 @@ export const ShadingMapOverlayConfigSchema = {
 				"SubCatchment",
 				"SubDistrict",
 				"SubFacility",
+				"Transfer",
 				"Trap",
 				"Village",
 				"WaterSample",
@@ -34932,6 +35373,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35073,6 +35515,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -35204,6 +35647,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35733,6 +36177,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -35874,6 +36319,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -36005,6 +36451,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -36456,6 +36903,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -36597,6 +37045,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -36728,6 +37177,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37153,6 +37603,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37294,6 +37745,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -37425,6 +37877,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -37865,6 +38318,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -38006,6 +38460,7 @@ export const MapOverlayConfigSchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -38137,6 +38592,7 @@ export const MapOverlayConfigSchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -38769,6 +39225,7 @@ export const EntityQuestionConfigSchema = {
 									"sub_catchment",
 									"sub_district",
 									"sub_facility",
+									"transfer",
 									"trap",
 									"village",
 									"water_sample",
@@ -38816,6 +39273,7 @@ export const EntityQuestionConfigSchema = {
 								"sub_catchment",
 								"sub_district",
 								"sub_facility",
+								"transfer",
 								"trap",
 								"village",
 								"water_sample",
@@ -39285,6 +39743,7 @@ export const SurveyScreenComponentConfigSchema = {
 											"sub_catchment",
 											"sub_district",
 											"sub_facility",
+											"transfer",
 											"trap",
 											"village",
 											"water_sample",
@@ -39332,6 +39791,7 @@ export const SurveyScreenComponentConfigSchema = {
 										"sub_catchment",
 										"sub_district",
 										"sub_facility",
+										"transfer",
 										"trap",
 										"village",
 										"water_sample",
@@ -39804,6 +40264,12 @@ export const RecentEntitiesForCountrySchema = {
 			}
 		},
 		"larval_sample": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"transfer": {
 			"type": "array",
 			"items": {
 				"type": "string"
@@ -66239,6 +66705,7 @@ export const DashboardRelationSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -66332,6 +66799,7 @@ export const DashboardRelationCreateSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -66420,6 +66888,7 @@ export const DashboardRelationUpdateSchema = {
 					"sub_catchment",
 					"sub_district",
 					"sub_facility",
+					"transfer",
 					"trap",
 					"village",
 					"water_sample",
@@ -67617,6 +68086,7 @@ export const EntitySchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -67715,6 +68185,7 @@ export const EntityCreateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -67813,6 +68284,7 @@ export const EntityUpdateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -69045,6 +69517,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69186,6 +69659,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -69317,6 +69791,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69846,6 +70321,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -69987,6 +70463,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -70118,6 +70595,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -70569,6 +71047,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -70710,6 +71189,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -70841,6 +71321,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71266,6 +71747,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71407,6 +71889,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -71538,6 +72021,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -71978,6 +72462,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72119,6 +72604,7 @@ export const MapOverlaySchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -72250,6 +72736,7 @@ export const MapOverlaySchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72743,6 +73230,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -72884,6 +73372,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -73015,6 +73504,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -73544,6 +74034,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -73685,6 +74176,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -73816,6 +74308,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74267,6 +74760,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74408,6 +74902,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -74539,6 +75034,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -74964,6 +75460,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75105,6 +75602,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -75236,6 +75734,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75676,6 +76175,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -75817,6 +76317,7 @@ export const MapOverlayCreateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -75948,6 +76449,7 @@ export const MapOverlayCreateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -76434,6 +76936,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -76575,6 +77078,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -76706,6 +77210,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -77235,6 +77740,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -77376,6 +77882,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -77507,6 +78014,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -77958,6 +78466,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78099,6 +78608,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -78230,6 +78740,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78655,6 +79166,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -78796,6 +79308,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -78927,6 +79440,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -79367,6 +79881,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -79508,6 +80023,7 @@ export const MapOverlayUpdateSchema = {
 											"SubCatchment",
 											"SubDistrict",
 											"SubFacility",
+											"Transfer",
 											"Trap",
 											"Village",
 											"WaterSample",
@@ -79639,6 +80155,7 @@ export const MapOverlayUpdateSchema = {
 								"SubCatchment",
 								"SubDistrict",
 								"SubFacility",
+								"Transfer",
 								"Trap",
 								"Village",
 								"WaterSample",
@@ -80612,6 +81129,7 @@ export const PermissionsBasedMeditrakSyncQueueSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -80692,6 +81210,7 @@ export const PermissionsBasedMeditrakSyncQueueCreateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -80769,6 +81288,7 @@ export const PermissionsBasedMeditrakSyncQueueUpdateSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -82989,6 +83509,7 @@ export const EntityTypeSchema = {
 		"sub_catchment",
 		"sub_district",
 		"sub_facility",
+		"transfer",
 		"trap",
 		"village",
 		"water_sample",
@@ -83222,6 +83743,7 @@ export const MeditrakSurveyResponseRequestSchema = {
 							"sub_catchment",
 							"sub_district",
 							"sub_facility",
+							"transfer",
 							"trap",
 							"village",
 							"water_sample",
@@ -84119,6 +84641,7 @@ export const EntityResponseSchema = {
 				"sub_catchment",
 				"sub_district",
 				"sub_facility",
+				"transfer",
 				"trap",
 				"village",
 				"water_sample",
@@ -92943,6 +93466,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93084,6 +93608,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -93215,6 +93740,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93767,6 +94293,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -93908,6 +94435,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -94039,6 +94567,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -94513,6 +95042,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -94654,6 +95184,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -94785,6 +95316,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95233,6 +95765,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95374,6 +95907,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -95505,6 +96039,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -95968,6 +96503,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",
@@ -96109,6 +96645,7 @@ export const TranslatedMapOverlaySchema = {
 									"SubCatchment",
 									"SubDistrict",
 									"SubFacility",
+									"Transfer",
 									"Trap",
 									"Village",
 									"WaterSample",
@@ -96240,6 +96777,7 @@ export const TranslatedMapOverlaySchema = {
 						"SubCatchment",
 						"SubDistrict",
 						"SubFacility",
+						"Transfer",
 						"Trap",
 						"Village",
 						"WaterSample",

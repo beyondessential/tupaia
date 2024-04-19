@@ -12,17 +12,18 @@ import {
   OrchestratorApiBuilder,
   SessionSwitchingAuthHandler,
 } from '@tupaia/server-boilerplate';
+import { getEnvVarOrDefault } from '@tupaia/utils';
 import { TupaiaWebSessionModel } from '../models';
 import * as routes from '../routes';
-
-const {
-  WEB_CONFIG_API_URL = 'http://localhost:8000/api/v1',
-  CENTRAL_API_URL = 'http://localhost:8090/v2',
-} = process.env;
 
 const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 
 export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
+  const WEB_CONFIG_API_URL = getEnvVarOrDefault(
+    'WEB_CONFIG_API_URL',
+    'http://localhost:8000/api/v1',
+  );
+  const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const builder = new OrchestratorApiBuilder(db, 'tupaia-web')
     .useSessionModel(TupaiaWebSessionModel)
     .useAttachSession(attachSessionIfAvailable)
