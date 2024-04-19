@@ -30,8 +30,7 @@ export const StyledReactTable = styled(ReactTable)`
       font-size: 1rem;
       color: ${COLORS.TEXT_DARKGREY};
       text-align: left;
-      padding-block: 0.375rem;
-      padding-inline: 0.32rem;
+      padding: 0.375rem;
     }
   }
 
