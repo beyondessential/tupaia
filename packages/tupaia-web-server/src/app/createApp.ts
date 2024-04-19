@@ -95,8 +95,10 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
+    .use('dashboards', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('landingPage/:landingPageUrl', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('login/oneTimeLogin', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
+    .use('projects', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resendEmail', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('resetPassword', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('signup', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }));
