@@ -38,9 +38,11 @@ const NavLink = styled(BaseNavLink)`
   align-items: center;
   border-radius: 4px;
   padding: 0.625rem;
+
   border: 1px solid transparent;
   .MuiSvgIcon-root {
     margin-inline-end: 0.8rem;
+    font-size: 1.2rem;
   }
   &.active {
     background-color: ${WHITE}33; // 33 is 20% opacity
