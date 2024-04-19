@@ -28,6 +28,7 @@ const Container = styled.div`
 const NavBar = styled.nav`
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
 `;
 
 const NavLink = styled(BaseNavLink)`
@@ -73,6 +74,7 @@ const NavLink = styled(BaseNavLink)`
 const ScrollButton = styled(Button)`
   width: 2rem;
   min-width: 0;
+  color: ${props => props.theme.palette.text.secondary};
   &:last-child {
     margin-inline-start: 0.5rem;
   }
