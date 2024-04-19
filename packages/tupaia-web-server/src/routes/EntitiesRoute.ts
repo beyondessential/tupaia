@@ -41,7 +41,7 @@ const FILTER_PARSERS = {
     comparisonValue: parseInt(filterVal),
   }),
 };
-const parseFilter = (filter: Record<string, any>) =>
+const parseFilter = (filter: Record<string, any>): Record<string, any> =>
   Object.entries(filter).reduce((newFilter, [key, value]) => {
     const parser = FILTER_PARSERS[key as keyof typeof FILTER_PARSERS];
     return { ...newFilter, [key]: parser ? parser(value) : value };
@@ -52,12 +52,13 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
     const { params, query, ctx, models, accessPolicy } = this.req;
     const { rootEntityCode, projectCode } = params;
     const { filter = DEFAULT_FILTER, fields = DEFAULT_FIELDS } = query;
-    const formattedFilter = parseFilter(filter);
+    const { type, ...restOfFilter } = parseFilter(filter);
 
     const frontendExcludedFilter = await generateFrontendExcludedFilter(
       models,
       accessPolicy,
       projectCode,
+      type,
     );
 
     const flatEntities = await ctx.services.entity.getDescendantsOfEntity(
@@ -65,7 +66,7 @@ export class EntitiesRoute extends Route<EntitiesRequest> {
       rootEntityCode,
       {
         filter: {
-          ...formattedFilter,
+          ...restOfFilter,
           ...frontendExcludedFilter, // this needs to be after the filter so that if there is a type filter it will be overwritten by the frontendExcludedFilter so the user can't see the types they shouldn't
         },
         fields,

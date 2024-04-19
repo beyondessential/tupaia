@@ -144,5 +144,52 @@ describe('generateFrontendExcludedFilter', () => {
         ),
       ).resolves.toEqual({});
     });
+
+    it('Handles merging an existing types filter that is a string', async () => {
+      await expect(
+        generateFrontendExcludedFilter(TestModels, ACCESS_POLICY, PROJECT.code, 'case,contact'),
+      ).resolves.toEqual({
+        type: 'contact',
+      });
+    });
+
+    it('Handles merging an existing types filter that is an object with != comparator', async () => {
+      await expect(
+        generateFrontendExcludedFilter(TestModels, ACCESS_POLICY, PROJECT.code, {
+          comparator: '!=',
+          comparisonValue: ['household'],
+        }),
+      ).resolves.toEqual({
+        type: {
+          comparator: '!=',
+          comparisonValue: ['household', 'case'],
+        },
+      });
+    });
+
+    it('Handles merging an existing types filter that is an object without != comparator', async () => {
+      await expect(
+        generateFrontendExcludedFilter(TestModels, ACCESS_POLICY, PROJECT.code, {
+          comparator: '==',
+          comparisonValue: ['household', 'case'],
+        }),
+      ).resolves.toEqual({
+        type: 'household',
+      });
+    });
+
+    it('Handles merging an existing types filter where there are no types remaining to include', async () => {
+      await expect(
+        generateFrontendExcludedFilter(TestModels, ACCESS_POLICY, PROJECT.code, {
+          comparator: '==',
+          comparisonValue: ['case'],
+        }),
+      ).resolves.toEqual({
+        type: {
+          comparator: '!=',
+          comparisonValue: ['case'],
+        },
+      });
+    });
   });
 });
