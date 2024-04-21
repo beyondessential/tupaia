@@ -22,7 +22,8 @@
     "public.map_overlay.config": "MapOverlayConfig",
     "public.entity.attributes": "EntityAttributes",
     "public.user_account.preferences": "UserAccountPreferences",
-    "public.dashboard_relation.entity_types": "EntityType[]"
+    "public.dashboard_relation.entity_types": "EntityType[]",
+    "public.project.config": "ProjectConfig"
   },
   "typeMap": {
     "string": ["geography"],
@@ -35,7 +36,8 @@
       "DashboardItemConfig": "./models-extra",
       "MapOverlayConfig": "./models-extra",
       "EntityAttributes": "./models-extra",
-      "UserAccountPreferences": "./models-extra"
+      "UserAccountPreferences": "./models-extra",
+      "ProjectConfig": "./models-extra"
     }
   }
 }

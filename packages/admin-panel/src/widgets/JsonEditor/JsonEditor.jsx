@@ -227,6 +227,7 @@ export class JsonEditor extends Component {
     return React.createElement(tag, {
       ...htmlElementProps,
       ref: this.setRef,
+      set: this.set,
     });
   }
 }
