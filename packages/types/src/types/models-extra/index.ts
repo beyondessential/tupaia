@@ -105,3 +105,4 @@ export {
 } from './feedItem';
 export { VizPeriodGranularity } from './common';
 export { UserAccountPreferences } from './user';
+export { ProjectConfig } from './project';
