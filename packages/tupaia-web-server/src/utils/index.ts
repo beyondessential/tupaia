@@ -4,4 +4,7 @@
  */
 
 export { downloadDashboardAsPdf } from './downloadDashboardAsPdf';
-export { generateFrontendExcludedFilter } from './generateFrontendExcludedFilter';
+export {
+  generateFrontendExcludedFilter,
+  getTypesToExclude,
+} from './generateFrontendExcludedFilter';
