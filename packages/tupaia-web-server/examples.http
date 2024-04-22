@@ -9,7 +9,7 @@
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
-### Login
+### Log in
 # @name login
 POST {{host}}/login HTTP/1.1
 content-type: {{contentType}}
@@ -19,10 +19,21 @@ content-type: {{contentType}}
     "password": "{{password}}"
 }
 
-### Logout
+### Log out
 # @name logout
 POST {{host}}/logout HTTP/1.1
 content-type: {{contentType}}
+
+### Change password
+POST {{host}}/changePassword HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+{
+    "oldPassword": "{{password}}",
+    "password": "very_secure_pwd",
+    "passwordConfirm": "very_secure_pwd"
+}
 
 ### Get projects
 GET {{host}}/projects?showExcludedProjects=false HTTP/1.1
