@@ -1,5 +1,5 @@
-@localhost = http://localhost:8100/v1
-@dev = https://dev-config.tupaia.org
+@localhost = http://localhost:{{$dotenv PORT}}/v1
+@dev = https://dev-config.tupaia.org/api/v1
 @host = {{localhost}}
 # Uncomment the line below to point at dev rather than localhost
 # @host = {{dev}}
@@ -21,7 +21,7 @@ content-type: {{contentType}}
 
 ### Logout
 # @name logout
-GET {{host}}/logout HTTP/1.1
+POST {{host}}/logout HTTP/1.1
 content-type: {{contentType}}
 
 ### Get projects
