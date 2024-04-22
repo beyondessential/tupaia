@@ -54,7 +54,6 @@ const HeaderCell = styled(Cell)`
   .MuiTableSortLabel-icon {
     opacity: 1;
   }
-  white-space: nowrap;
 `;
 
 const Wrapper = styled.div`
