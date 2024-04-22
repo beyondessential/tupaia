@@ -5,21 +5,22 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { useTable, useSortBy, usePagination } from 'react-table';
+import { useTable, usePagination, useSortBy } from 'react-table';
 import {
   TableCell,
   TableHead,
-  TableSortLabel,
   TableContainer,
   TableRow,
   TableBody,
   Table,
   Tooltip,
+  Typography,
+  TableSortLabel,
 } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { ConfirmDeleteModal } from '@tupaia/ui-components';
+import { ConfirmDeleteModal, IconButton } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
@@ -63,17 +64,21 @@ const HeaderCell = styled(Cell)`
   white-space: nowrap;
 `;
 
-const getColumnId = ({ id, accessor, Header }) => {
-  if (id) {
-    return id;
-  }
-
-  if (typeof accessor === 'string') {
-    return accessor;
-  }
-
-  return Header;
-};
+const Wrapper = styled.div`
+  position: relative;
+`;
+const LoadingWrapper = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+`;
 
 const getDataType = value => (value === null ? 'null' : typeof value);
 
@@ -129,6 +134,8 @@ const DataFetchingTableComponent = ({
   deleteConfig,
   onFilteredChange,
   totalRecords,
+  isFetchingData,
+  onSortedChange,
 }) => {
   const {
     getTableProps,
@@ -140,22 +147,19 @@ const DataFetchingTableComponent = ({
     gotoPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex: tablePageIndex, pageSize: tablePageSize },
+    state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
   } = useTable(
     {
       columns,
       data,
       initialState: {
-        sortBy: [
-          {
-            id: getColumnId(columns[0]),
-          },
-        ],
         pageIndex,
         pageSize,
+        sortBy: sorting,
       },
       manualPagination: true,
       pageCount: numberOfPages,
+      manualSortBy: true,
     },
     useSortBy,
     usePagination,
@@ -169,6 +173,10 @@ const DataFetchingTableComponent = ({
   useEffect(() => {
     onPageSizeChange(tablePageSize);
   }, [tablePageSize]);
+
+  useEffect(() => {
+    onSortedChange(tableSorting);
+  }, [tableSorting]);
 
   useEffect(() => {
     onRefreshData();
@@ -201,8 +209,15 @@ const DataFetchingTableComponent = ({
     };
   });
 
+  const isLoading = isFetchingData || isChangingDataOnServer;
+
   return (
-    <>
+    <Wrapper>
+      {isLoading && (
+        <LoadingWrapper>
+          <Typography variant="body2">Loading</Typography>
+        </LoadingWrapper>
+      )}
       <TableContainer>
         <Table {...getTableProps()}>
           <TableHead>
@@ -214,6 +229,7 @@ const DataFetchingTableComponent = ({
                     // eslint-disable-next-line react/no-array-index-key
                     <HeaderCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
                       {render('Header')}
+
                       <TableSortLabel
                         active={isSorted}
                         direction={isSortedDesc ? 'asc' : 'desc'}
@@ -303,7 +319,7 @@ const DataFetchingTableComponent = ({
         cancelButtonText={deleteConfig.cancelButtonText}
         confirmButtonText={deleteConfig.confirmButtonText}
       />
-    </>
+    </Wrapper>
   );
 };
 
