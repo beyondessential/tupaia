@@ -56,6 +56,7 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
+  actionColumns,
 }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header
@@ -82,6 +83,7 @@ export const ResourcePage = ({
           TableComponent={TableComponent}
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
+          actionColumns={actionColumns}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />

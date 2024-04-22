@@ -212,9 +212,11 @@ const SURVEY_COLUMNS = [
     Header: 'Service Type',
     source: 'data_group.service_type',
   },
+];
+
+const ACTION_COLUMNS = [
   {
     Header: 'Export',
-    source: 'id',
     type: 'export',
     actionConfig: {
       exportEndpoint: 'surveys',
@@ -224,7 +226,6 @@ const SURVEY_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Survey',
       editEndpoint: 'surveys',
@@ -233,7 +234,6 @@ const SURVEY_COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'surveys',
@@ -549,6 +549,7 @@ export const SurveysPage = ({ getHeaderEl, ...restOfProps }) => (
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
     getHeaderEl={getHeaderEl}
+    actionColumns={ACTION_COLUMNS}
     {...restOfProps}
   />
 );

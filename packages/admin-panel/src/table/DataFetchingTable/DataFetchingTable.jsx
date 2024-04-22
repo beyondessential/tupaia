@@ -10,9 +10,9 @@ import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
 import queryString from 'query-string';
-import { Tabs } from '../widgets';
-import { TableHeadCell } from './TableHeadCell';
-import { ColumnFilter } from './ColumnFilter';
+import { Tabs } from '../../widgets';
+import { TableHeadCell } from '../TableHeadCell';
+import { ColumnFilter } from '../ColumnFilter';
 import {
   cancelAction,
   changeExpansions,
@@ -24,14 +24,14 @@ import {
   changeSorting,
   confirmAction,
   refreshData,
-} from './actions';
-import { getTableState, getIsFetchingData } from './selectors';
-import { generateConfigForColumnType } from './columnTypes';
-import { getIsChangingDataOnServer } from '../dataChangeListener';
-import { makeSubstitutionsInString } from '../utilities';
-import { customPagination } from './customPagination';
-import { ExpansionContainer } from './ExpansionContainer';
-import { StyledReactTable } from './StyledReactTable';
+} from '../actions';
+import { getTableState, getIsFetchingData } from '../selectors';
+import { generateConfigForColumnType } from '../columnTypes';
+import { getIsChangingDataOnServer } from '../../dataChangeListener';
+import { makeSubstitutionsInString } from '../../utilities';
+import { customPagination } from '../customPagination';
+import { ExpansionContainer } from '../ExpansionContainer';
+import { StyledReactTable } from '../StyledReactTable';
 
 const StyledAlert = styled(SmallAlert)`
   margin-top: 30px;

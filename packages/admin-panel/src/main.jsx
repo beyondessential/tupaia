@@ -9,7 +9,6 @@ import { render as renderReactApp } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import 'react-table-v6/react-table.css';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
@@ -76,4 +75,3 @@ renderReactApp(
   </Router>,
   document.getElementById('root'),
 );
-

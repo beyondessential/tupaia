@@ -90,7 +90,7 @@ const refreshDataWithDebounce = debounce(
     const sortString = JSON.stringify(sortObjects);
 
     // Set up columns
-    const columnSources = columns.map(column => column.source);
+    const columnSources = [...columns.map(column => column.source).filter(source => source), 'id'];
     const columnsString = JSON.stringify(columnSources);
 
     // Prepare for request
@@ -111,6 +111,7 @@ const refreshDataWithDebounce = debounce(
       };
       const response = await api.get(endpoint, queryParameters);
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
+      const totalRecords = parseInt(response.headers.get('X-Total-Count'), 10);
       const lastPageNumber = parseInt(linkHeader.last.page, 10);
       dispatch({
         type: DATA_FETCH_SUCCESS,
@@ -118,6 +119,7 @@ const refreshDataWithDebounce = debounce(
         data: response.body,
         numberOfPages: lastPageNumber,
         fetchId,
+        totalRecords,
       });
     } catch (error) {
       dispatch({

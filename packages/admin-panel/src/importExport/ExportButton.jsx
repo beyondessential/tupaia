@@ -12,7 +12,7 @@ import { useApiContext } from '../utilities/ApiProvider';
 
 const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryParameters) => {
   if (!rowIdQueryParameter && !filterQueryParameters) return null;
-  const queryParameters = rowIdQueryParameter ? { [rowIdQueryParameter]: rowData.id } : {};
+  const queryParameters = rowIdQueryParameter ? { [rowIdQueryParameter]: rowData.original.id } : {};
   if (filterQueryParameters) {
     return { ...queryParameters, ...filterQueryParameters };
   }

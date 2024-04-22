@@ -1,0 +1,58 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Search } from '@material-ui/icons';
+import { TextField } from '@tupaia/ui-components';
+import styled from 'styled-components';
+
+const FilterInput = styled(TextField)`
+  margin-block-end: 0;
+  font-size: inherit;
+  width: 100%;
+  min-width: 6rem;
+  .MuiInputBase-input,
+  .MuiOutlinedInput-root {
+    font-size: inherit;
+  }
+  .MuiSvgIcon-root {
+    font-size: 1.25rem;
+  }
+  .MuiInputBase-input {
+    padding-block: 0.6rem;
+  }
+`;
+
+export const FilterCell = ({ filters, onFilteredChange, column }) => {
+  const { id } = column;
+  const filterValue = filters?.find(f => f.id === id)?.value;
+  const handleUpdate = e => {
+    const updatedFilters = filterValue
+      ? filters.map(f => (f.id === id ? { ...f, value: e.target.value } : f))
+      : [...filters, { id, value: e.target.value }];
+
+    onFilteredChange(updatedFilters);
+  };
+  return (
+    <FilterInput
+      value={filterValue || ''}
+      onChange={handleUpdate}
+      placeholder="Search..."
+      aria-label={`Search ${column.Header}`}
+      InputProps={{
+        startAdornment: <Search />,
+      }}
+    />
+  );
+};
+
+FilterCell.propTypes = {
+  filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  onFilteredChange: PropTypes.func.isRequired,
+  column: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    Header: PropTypes.string.isRequired,
+  }).isRequired,
+};
