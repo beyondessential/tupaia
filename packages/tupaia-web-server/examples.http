@@ -75,3 +75,21 @@ GET {{host}}/entities/strive/PG_Lae_Abb
   &fields[]=attributes
   &fields[]=child_codes
 content-type: {{contentType}}
+
+### Download file(s)
+GET {{host}}/downloadFiles
+  ?uniqueFileNames=cat_pic.pdf HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{authorization}}
+
+### Survey data download
+GET {{host}}/export/surveyDataDownload
+  ?legacy=true
+  &isExpanded=true
+  &dashboardCode=TO_Asset_Management_Asset_Level
+  &itemCode=asset_management_to_register_an_asset_survey_download
+  &projectCode=asset_management
+  &organisationUnitCode=TO_fs084
+  &timeZone=Pacific%2FAuckland
+  &surveyCodes=TAR
+content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
