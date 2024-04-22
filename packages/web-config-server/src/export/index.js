@@ -3,5 +3,6 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+export { ExportSurveyDataHandler } from './ExportSurveyDataHandler';
 export { buildExportUrl } from './buildExportUrl';
 export { exportChartHandler } from './exportChartHandler';
