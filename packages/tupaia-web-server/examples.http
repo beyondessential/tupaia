@@ -80,7 +80,6 @@ content-type: {{contentType}}
 GET {{host}}/downloadFiles
   ?uniqueFileNames=cat_pic.pdf HTTP/1.1
 content-type: {{contentType}}
-Authorization: {{authorization}}
 
 ### Survey data download
 GET {{host}}/export/surveyDataDownload
