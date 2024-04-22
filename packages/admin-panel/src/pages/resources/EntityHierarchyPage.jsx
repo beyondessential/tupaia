@@ -38,7 +38,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Entity Hierarchy',
       editEndpoint: ENTITY_HIERARCHY_ENDPOINT,

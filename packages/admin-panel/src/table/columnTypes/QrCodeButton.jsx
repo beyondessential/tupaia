@@ -40,8 +40,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         'QR code button misconfigured. Must specify qrCodeContentsKey and humanReadableIdKey',
       );
     }
-    const qrCodeContents = row[qrCodeContentsKey];
-    const humanReadableId = row[humanReadableIdKey];
+    const qrCodeContents = row.original[qrCodeContentsKey];
+    const humanReadableId = row.original[humanReadableIdKey];
     dispatch(openQrCodeModal(`${qrCodePrefix}${qrCodeContents}`, humanReadableId));
   },
 });

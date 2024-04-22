@@ -41,7 +41,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     width: 70,
     actionConfig: {
       title: 'Edit Indicator',

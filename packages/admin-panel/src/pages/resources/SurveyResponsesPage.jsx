@@ -95,7 +95,6 @@ export const SURVEY_RESPONSE_COLUMNS = [
   approvalStatus,
   {
     Header: 'Export',
-    source: 'id',
     type: 'export',
     actionConfig: {
       exportEndpoint: 'surveyResponses',
@@ -113,11 +112,9 @@ export const SURVEY_RESPONSE_PAGE_COLUMNS = [
   {
     Header: 'Resubmit',
     type: 'resubmitSurveyResponse',
-    source: 'id',
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'surveyResponses',

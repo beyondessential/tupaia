@@ -74,7 +74,6 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Dashboard Mailing List',
       editEndpoint: 'dashboardMailingLists',
@@ -88,7 +87,6 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'dashboardMailingLists',
@@ -128,7 +126,6 @@ const ENTRY_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Entry',
       editEndpoint: 'dashboardMailingListEntries',
@@ -137,7 +134,6 @@ const ENTRY_COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'dashboardMailingListEntries',

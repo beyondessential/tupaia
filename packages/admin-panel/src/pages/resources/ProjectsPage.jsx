@@ -155,7 +155,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',

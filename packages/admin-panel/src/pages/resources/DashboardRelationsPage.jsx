@@ -88,7 +88,6 @@ const FIELDS = [
   ...DASHBOARD_RELATION_COLUMNS,
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     actionConfig: {
       title: 'Edit Dashboard Relation',
@@ -98,7 +97,6 @@ const FIELDS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: DASHBOARD_RELATION_ENDPOINT,

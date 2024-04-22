@@ -25,20 +25,21 @@ const FilterInput = styled(TextField)`
   }
 `;
 
-export const FilterCell = ({ filters, onFilteredChange, column }) => {
-  const { id } = column;
-  const filterValue = filters?.find(f => f.id === id)?.value;
-  const handleUpdate = e => {
-    const updatedFilters = filterValue
-      ? filters.map(f => (f.id === id ? { ...f, value: e.target.value } : f))
-      : [...filters, { id, value: e.target.value }];
+export const FilterCell = ({ column, filters, onFilteredChange }) => {
+  const { id, Filter } = column;
+  const existingFilter = filters?.find(f => f.id === id);
+  const handleUpdate = value => {
+    const updatedFilters = existingFilter
+      ? filters.map(f => (f.id === id ? { ...f, value } : f))
+      : [...filters, { id, value }];
 
     onFilteredChange(updatedFilters);
   };
+  if (Filter) return <Filter column={column} filter={existingFilter} onChange={handleUpdate} />;
   return (
     <FilterInput
-      value={filterValue || ''}
-      onChange={handleUpdate}
+      value={existingFilter?.value || ''}
+      onChange={e => handleUpdate(e.target.value)}
       placeholder="Search..."
       aria-label={`Search ${column.Header}`}
       InputProps={{
@@ -54,5 +55,6 @@ FilterCell.propTypes = {
   column: PropTypes.shape({
     id: PropTypes.string.isRequired,
     Header: PropTypes.string.isRequired,
+    Filter: PropTypes.func,
   }).isRequired,
 };

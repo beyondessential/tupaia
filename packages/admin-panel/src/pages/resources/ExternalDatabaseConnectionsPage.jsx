@@ -44,7 +44,6 @@ const COLUMNS = [
   ...FIELDS,
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     actionConfig: {
       editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
@@ -54,15 +53,13 @@ const COLUMNS = [
   },
   {
     Header: 'Test',
-    source: 'id',
     filterable: false,
-    sortable: false,
+    disableSortBy: false,
     type: 'testDatabaseConnection',
     width: 70,
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,

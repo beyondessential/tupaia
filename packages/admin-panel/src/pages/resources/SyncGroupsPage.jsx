@@ -41,7 +41,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'dataServiceSyncGroups',
       fields: [...FIELDS],
@@ -49,7 +48,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'dataServiceSyncGroups',
@@ -58,7 +56,6 @@ const COLUMNS = [
   {
     Header: 'Logs',
     type: 'logs',
-    source: 'id',
     actionConfig: {
       title: '{code} sync group logs',
       logsCountEndpoint: 'dataServiceSyncGroups/{id}/logs/count',
@@ -71,7 +68,7 @@ const COLUMNS = [
     type: 'sync',
     source: 'sync_status',
     filterable: false,
-    sortable: false,
+    disableSortBy: true,
     width: 180,
     actionConfig: {
       syncStatusEndpoint: 'dataServiceSyncGroups/{id}',

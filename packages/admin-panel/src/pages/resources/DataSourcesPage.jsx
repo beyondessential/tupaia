@@ -16,7 +16,6 @@ const getButtonsConfig = (fields, recordType) => [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: `${recordType}s`,
       fields,
@@ -26,7 +25,6 @@ const getButtonsConfig = (fields, recordType) => [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: `${recordType}s`,

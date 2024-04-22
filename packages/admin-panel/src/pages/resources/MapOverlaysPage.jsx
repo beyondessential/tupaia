@@ -151,7 +151,6 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
     ...FIELDS,
     {
       Header: 'Export',
-      source: 'id',
       type: 'export',
       actionConfig: {
         exportEndpoint: 'mapOverlayVisualisation',
@@ -161,7 +160,6 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
     {
       Header: 'Edit',
       type: 'edit',
-      source: 'id',
       actionConfig: {
         title: 'Edit Map Overlay',
         editEndpoint: MAP_OVERLAYS_ENDPOINT,
@@ -170,7 +168,6 @@ export const MapOverlaysPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) =>
     },
     {
       Header: 'Delete',
-      source: 'id',
       type: 'delete',
       actionConfig: {
         endpoint: MAP_OVERLAYS_ENDPOINT,

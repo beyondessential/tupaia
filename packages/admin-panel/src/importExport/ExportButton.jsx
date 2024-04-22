@@ -9,6 +9,7 @@ import ExportIcon from '@material-ui/icons/GetApp';
 import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
 import { useApiContext } from '../utilities/ApiProvider';
+import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
 
 const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryParameters) => {
   if (!rowIdQueryParameter && !filterQueryParameters) return null;
@@ -23,7 +24,7 @@ export const ExportButton = ({ actionConfig, row }) => {
   const api = useApiContext();
 
   return (
-    <IconButton
+    <ColumnActionButton
       className="export-button"
       onClick={async () => {
         const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
@@ -41,7 +42,7 @@ export const ExportButton = ({ actionConfig, row }) => {
       }}
     >
       <ExportIcon />
-    </IconButton>
+    </ColumnActionButton>
   );
 };
 

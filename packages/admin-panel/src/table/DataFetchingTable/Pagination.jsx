@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { IconButton, Input, Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -117,6 +118,12 @@ const PageSelectComponent = ({ onChangePage, page, pageCount }) => {
   );
 };
 
+PageSelectComponent.propTypes = {
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  pageCount: PropTypes.number.isRequired,
+};
+
 const RowsSelectComponent = ({ pageSize, setPageSize }) => {
   const pageSizes = [5, 10, 20, 25, 50, 100];
   return (
@@ -131,7 +138,13 @@ const RowsSelectComponent = ({ pageSize, setPageSize }) => {
   );
 };
 
+RowsSelectComponent.propTypes = {
+  pageSize: PropTypes.number.isRequired,
+  setPageSize: PropTypes.func.isRequired,
+};
+
 export const Pagination = ({ page, pageCount, gotoPage, pageSize, setPageSize, totalRecords }) => {
+  if (!totalRecords) return null;
   const currentDisplayStart = page * pageSize + 1;
   const currentDisplayEnd = Math.min((page + 1) * pageSize, totalRecords);
 
@@ -151,4 +164,13 @@ export const Pagination = ({ page, pageCount, gotoPage, pageSize, setPageSize, t
       </ActionsWrapper>
     </Wrapper>
   );
+};
+
+Pagination.propTypes = {
+  page: PropTypes.number.isRequired,
+  pageCount: PropTypes.number.isRequired,
+  gotoPage: PropTypes.func.isRequired,
+  pageSize: PropTypes.number.isRequired,
+  setPageSize: PropTypes.func.isRequired,
+  totalRecords: PropTypes.number.isRequired,
 };

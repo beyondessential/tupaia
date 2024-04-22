@@ -81,7 +81,6 @@ export const SOCIAL_FEED_COLUMNS = [
   ...FIELDS,
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     actionConfig: {
       title: 'Edit Social Feed item',
@@ -91,7 +90,6 @@ export const SOCIAL_FEED_COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'feedItems',

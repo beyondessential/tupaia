@@ -49,7 +49,6 @@ const COLUMNS = [
   ...FIELDS,
   {
     Header: 'Export',
-    source: 'id',
     type: 'export',
     actionConfig: {
       exportEndpoint: 'dataTable',
@@ -59,7 +58,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Data Table',
       editEndpoint: DATA_TABLES_ENDPOINT,
@@ -75,7 +73,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: DATA_TABLES_ENDPOINT,

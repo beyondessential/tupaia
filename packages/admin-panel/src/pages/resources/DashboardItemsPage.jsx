@@ -77,7 +77,6 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
     ...FIELDS,
     {
       Header: 'Export',
-      source: 'id',
       type: 'export',
       actionConfig: {
         exportEndpoint: 'dashboardVisualisation',
@@ -87,7 +86,6 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
     {
       Header: 'Edit',
       type: 'edit',
-      source: 'id',
       actionConfig: {
         title: 'Edit Dashboard Item',
         editEndpoint: DASHBOARD_ITEMS_ENDPOINT,
@@ -96,7 +94,6 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
     },
     {
       Header: 'Delete',
-      source: 'id',
       type: 'delete',
       actionConfig: {
         endpoint: DASHBOARD_ITEMS_ENDPOINT,

@@ -19,7 +19,6 @@ const OPTION_SET_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Option Set',
       editEndpoint: 'optionSets',
@@ -54,7 +53,6 @@ const OPTION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'options',
       fields: OPTION_FIELDS,

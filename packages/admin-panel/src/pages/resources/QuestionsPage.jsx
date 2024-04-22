@@ -57,7 +57,6 @@ const QUESTION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Question',
       editEndpoint: 'questions',
@@ -88,7 +87,6 @@ const OPTION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'options',
       fields: OPTION_FIELDS,

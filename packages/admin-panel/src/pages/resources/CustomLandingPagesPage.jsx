@@ -259,7 +259,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Landing page',
       editEndpoint: LANDING_PAGES_ENDPOINT,
@@ -268,7 +267,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: LANDING_PAGES_ENDPOINT,

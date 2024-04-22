@@ -9,13 +9,25 @@ import PropTypes from 'prop-types';
 import MuiChip from '@material-ui/core/Chip';
 import { Autocomplete, Select } from '@tupaia/ui-components';
 
+const StyledSelect = styled(Select)`
+  font-size: inherit;
+  margin-block-end: 0;
+  min-width: 8rem;
+  .MuiInputBase-root,
+  .MuiInputBase-input {
+    font-size: inherit;
+  }
+  .MuiSelect-root {
+    padding-block: 0.6rem;
+  }
+`;
+
 /*
  * Makes boolean fields work with the database filter
- * https://github.com/tannerlinsley/react-table/tree/v6/examples/custom-filtering
  */
 
 export const BooleanSelectFilter = ({ filter, onChange, column }) => (
-  <Select
+  <StyledSelect
     id={column.id}
     options={[
       { label: 'Show All', value: '' },
@@ -44,7 +56,7 @@ BooleanSelectFilter.defaultProps = {
 };
 
 export const VerifiedFilter = ({ filter, onChange, column }) => (
-  <Select
+  <StyledSelect
     id={column.id}
     options={[
       { label: 'Show All', value: '' },

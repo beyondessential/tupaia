@@ -80,7 +80,6 @@ const USER_COLUMNS = [
   ...USER_FIELDS,
   {
     Header: 'Edit',
-    source: 'user_id',
     type: 'bulkEdit',
     width: 150,
     actionConfig: {
@@ -146,7 +145,6 @@ const EXPANSION_COLUMNS = [
     Header: 'Approve/Decline',
     width: 140,
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit & Approve Access Request',
       editEndpoint: 'accessRequests',

@@ -40,7 +40,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Dashboard',
       editEndpoint: 'dashboards',
@@ -49,7 +48,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: DASHBOARDS_ENDPOINT,
@@ -108,7 +106,6 @@ const RELATION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'dashboardRelations',
       fields: RELATION_FIELDS,

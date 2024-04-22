@@ -43,7 +43,6 @@ export const COLUMNS = [
   },
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
@@ -53,7 +52,6 @@ export const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: ENTITIES_ENDPOINT,
@@ -61,7 +59,6 @@ export const COLUMNS = [
   },
   {
     Header: 'QR',
-    source: 'id',
     type: 'qrCode',
     actionConfig: {
       qrCodeContentsKey: 'id',

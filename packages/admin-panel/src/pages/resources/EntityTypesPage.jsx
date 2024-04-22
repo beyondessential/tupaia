@@ -15,7 +15,7 @@ export const ENTITY_TYPES_COLUMNS = [
     Header: 'Type',
     source: 'type',
     filterable: false,
-    sortable: false,
+    disableSortBy: true,
   },
 ];
 

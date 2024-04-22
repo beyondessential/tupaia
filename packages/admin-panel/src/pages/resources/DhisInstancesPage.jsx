@@ -36,7 +36,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'dhisInstances',
       fields: FIELDS,
@@ -44,7 +43,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: `dhisInstances`,

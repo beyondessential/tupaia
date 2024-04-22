@@ -37,7 +37,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Legacy Report',
       editEndpoint: 'legacyReports',

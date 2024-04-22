@@ -37,7 +37,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Map Overlay Group',
       editEndpoint: 'mapOverlayGroups',
@@ -87,7 +86,6 @@ export const RELATION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       editEndpoint: 'mapOverlayGroupRelations',
       fields: RELATION_FIELDS,

@@ -13,14 +13,13 @@ import {
   TableRow,
   TableBody,
   Table,
-  Tooltip,
   Typography,
   TableSortLabel,
 } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { ConfirmDeleteModal, IconButton } from '@tupaia/ui-components';
+import { ConfirmDeleteModal } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
@@ -36,16 +35,6 @@ import {
   confirmAction,
   refreshData,
 } from '../actions';
-import { BulkEditButton } from '../columnTypes/BulkEditButton';
-import { EditButton } from '../columnTypes/EditButton';
-import { ExportButton } from '../../importExport';
-import { DeleteButton } from '../columnTypes/DeleteButton';
-import { JSONTooltip } from '../columnTypes/Tooltip';
-import { LogsButton } from '../../logsTable';
-import { SyncStatus } from '../../sync';
-import { TestDatabaseConnectionButton } from '../columnTypes/TestDatabaseConnectionButton';
-import { QrCodeButton } from '../columnTypes/QrCodeButton';
-import { ResubmitSurveyResponseButton } from '../columnTypes/ResubmitSurveyResponseButton';
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
 
@@ -53,6 +42,10 @@ const Cell = styled(TableCell)`
   vertical-align: middle;
   font-size: 0.75rem;
   padding: 0.7rem;
+  overflow: hidden;
+  max-width: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const HeaderCell = styled(Cell)`
@@ -80,37 +73,6 @@ const LoadingWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.5);
 `;
 
-const getDataType = value => (value === null ? 'null' : typeof value);
-
-const formatValue = value => {
-  const type = getDataType(value);
-  switch (type) {
-    case 'null':
-      return '';
-    case 'object':
-      return JSON.stringify(value);
-    case 'boolean': {
-      return value ? 'Yes' : 'No';
-    }
-    default:
-      return `${value}`;
-  }
-};
-
-const CUSTOM_CELL_COMPONENTS = {
-  bulkEdit: BulkEditButton,
-  edit: EditButton,
-  export: ExportButton,
-  delete: DeleteButton,
-  tooltip: Tooltip,
-  jsonTooltip: JSONTooltip,
-  logs: LogsButton,
-  sync: SyncStatus,
-  testDatabaseConnection: TestDatabaseConnectionButton,
-  qrCode: QrCodeButton,
-  resubmitSurveyResponse: ResubmitSurveyResponseButton,
-};
-
 const DataFetchingTableComponent = ({
   columns,
   data = [],
@@ -126,8 +88,6 @@ const DataFetchingTableComponent = ({
   isChangingDataOnServer,
   errorMessage,
   onRefreshData,
-  actionColumns,
-  reduxId,
   confirmActionMessage,
   onConfirmAction,
   onCancelAction,
@@ -146,6 +106,7 @@ const DataFetchingTableComponent = ({
     pageCount,
     gotoPage,
     setPageSize,
+    visibleColumns,
     // Get the state from the instance
     state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
   } = useTable(
@@ -156,6 +117,7 @@ const DataFetchingTableComponent = ({
         pageIndex,
         pageSize,
         sortBy: sorting,
+        hiddenColumns: columns.filter(column => column.show === false).map(column => column.id),
       },
       manualPagination: true,
       pageCount: numberOfPages,
@@ -200,16 +162,9 @@ const DataFetchingTableComponent = ({
     }
   }, []);
 
-  const actionColumnCellComponents = actionColumns.map(column => {
-    const { type, ...restOfColumn } = column;
-    const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];
-    return {
-      Content: CustomCellComponent || TableCell,
-      ...restOfColumn,
-    };
-  });
-
   const isLoading = isFetchingData || isChangingDataOnServer;
+
+  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
 
   return (
     <Wrapper>
@@ -225,73 +180,66 @@ const DataFetchingTableComponent = ({
               // eslint-disable-next-line react/no-array-index-key
               <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
                 {headers.map(
-                  ({ getHeaderProps, render, isSorted, isSortedDesc, getSortByToggleProps }, i) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <HeaderCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
-                      {render('Header')}
-
-                      <TableSortLabel
-                        active={isSorted}
-                        direction={isSortedDesc ? 'asc' : 'desc'}
-                        IconComponent={KeyboardArrowDown}
-                      />
-                    </HeaderCell>
-                  ),
+                  (
+                    {
+                      getHeaderProps,
+                      render,
+                      isSorted,
+                      isSortedDesc,
+                      getSortByToggleProps,
+                      canSort,
+                    },
+                    i,
+                  ) => {
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <HeaderCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
+                        {render('Header')}
+                        {canSort && (
+                          <TableSortLabel
+                            active={isSorted}
+                            direction={isSortedDesc ? 'asc' : 'desc'}
+                            IconComponent={KeyboardArrowDown}
+                          />
+                        )}
+                      </HeaderCell>
+                    );
+                  },
                 )}
-                {actionColumns.map((column, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <HeaderCell key={`action-column-${i}`}>{column.Header}</HeaderCell>
-                ))}
               </TableRow>
             ))}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
             <TableRow>
-              {columns.map(column => {
-                return (
-                  <Cell key={column.id}>
-                    <FilterCell
-                      column={column}
-                      onFilteredChange={onFilteredChange}
-                      filters={filters}
-                    />
-                  </Cell>
-                );
-              })}
-              {
-                // Add empty cells for action columns
-                actionColumns.map((column, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Cell key={`action-column-${i}-filter-row`} />
-                ))
-              }
+              {displayFilterRow &&
+                visibleColumns.map(column => {
+                  return (
+                    <Cell key={column.id}>
+                      {column.filterable ? (
+                        <FilterCell
+                          column={column}
+                          onFilteredChange={onFilteredChange}
+                          filters={filters}
+                        />
+                      ) : null}
+                    </Cell>
+                  );
+                })}
             </TableRow>
             {rows.map((row, index) => {
               prepareRow(row);
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                  {row.cells.map(({ getCellProps, value }, i) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <Cell
-                      value={value}
-                      {...getCellProps()}
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`table-row-${index}-cell-${i}`}
-                    >
-                      {formatValue(value)}
-                    </Cell>
-                  ))}
-                  {actionColumnCellComponents.map(({ Content, ...cellProps }, i) => {
+                  {row.cells.map(({ getCellProps, value, render }, i) => {
                     return (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <Cell key={`action-column-${i}-row-${index}`}>
-                        <Content
-                          {...cellProps}
-                          row={row.original}
-                          reduxId={reduxId}
-                          value={row.original.id}
-                        />
+                      <Cell
+                        value={value}
+                        {...getCellProps()}
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`table-row-${index}-cell-${i}`}
+                      >
+                        {render('Cell')}
                       </Cell>
                     );
                   })}
@@ -426,13 +374,18 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
 };
 
 const formatColumnForReactTable = (originalColumn, reduxId) => {
-  const { source, type, actionConfig, ...restOfColumn } = originalColumn;
+  const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
   const id = source || type;
   return {
     id,
     accessor: id?.includes('.') ? row => row[source] : id, // react-table doesn't like .'s
+    actionConfig,
+    reduxId,
+    type,
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
+    disableSortBy: !source, // disable action columns from being sortable
+    filterable: filterable !== false && !!source,
   };
 };
 

@@ -103,7 +103,6 @@ const COLUMNS = [
   },
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     width: 150,
     actionConfig: {
@@ -111,11 +110,6 @@ const COLUMNS = [
       editEndpoint: 'users',
       fields: EDIT_FIELDS,
     },
-  },
-  // Invisible columns
-  {
-    source: 'last_name',
-    show: false,
   },
 ];
 

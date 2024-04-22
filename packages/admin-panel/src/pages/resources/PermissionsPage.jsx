@@ -46,7 +46,6 @@ const FIELDS = [
   ...PERMISSIONS_COLUMNS,
   {
     Header: 'Edit',
-    source: 'id',
     type: 'edit',
     actionConfig: {
       title: "Edit User's Permission",
@@ -56,7 +55,6 @@ const FIELDS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: PERMISSIONS_ENDPOINT,

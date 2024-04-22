@@ -63,7 +63,6 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
-    source: 'id',
     actionConfig: {
       title: 'Edit Map Overlay Group Relation',
       editEndpoint: 'mapOverlayGroupRelations',
@@ -72,7 +71,6 @@ const COLUMNS = [
   },
   {
     Header: 'Delete',
-    source: 'id',
     type: 'delete',
     actionConfig: {
       endpoint: 'mapOverlayGroupRelations',
