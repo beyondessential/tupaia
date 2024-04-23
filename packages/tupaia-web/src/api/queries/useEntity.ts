@@ -11,7 +11,11 @@ import { DEFAULT_BOUNDS, MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants
 import { useModal } from '../../utils';
 import { useUser } from './useUser';
 
-export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) => {
+export const useEntity = (
+  projectCode?: ProjectCode,
+  entityCode?: EntityCode,
+  enabled?: boolean,
+) => {
   const { isLoggedIn } = useUser();
   const { navigateToModal, navigateToLogin } = useModal();
   const location = useLocation();
@@ -32,7 +36,7 @@ export const useEntity = (projectCode?: ProjectCode, entityCode?: EntityCode) =>
       return entity;
     },
     {
-      enabled: !!entityCode && !!projectCode,
+      enabled: !!entityCode && !!projectCode && (enabled === undefined || !!enabled),
       onError: (e: any) => {
         if (e.code !== 403) return;
         if (!isLoggedIn) return navigateToLogin();

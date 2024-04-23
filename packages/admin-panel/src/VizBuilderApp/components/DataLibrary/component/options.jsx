@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Done, Close, ChevronRight, Add } from '@material-ui/icons';
+import { Done, Close, ChevronRight } from '@material-ui/icons';
 import { IconButton as MuiIconButton, Input as MuiInput } from '@material-ui/core';
 import { Draggable } from 'react-beautiful-dnd';
 import {
@@ -14,6 +14,7 @@ import {
   Tooltip as BaseTooltip,
 } from '@tupaia/ui-components';
 import { ALICE_BLUE } from './constant';
+import { ExpandIcon } from '../../ExpandIcon';
 
 const FlexSpaceBetween = styled(MuiFlexSpaceBetween)`
   width: 100%;
@@ -40,7 +41,7 @@ const StyledOption = styled.div`
 
 const StyledSelectableOption = styled(StyledOption)`
   & .MuiSvgIcon-root {
-    color: #418bbd;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
   &.selected {
     background: #f9f9f9;
@@ -60,7 +61,7 @@ const StyledSelectableOption = styled(StyledOption)`
 
 const StyledSelectableMultipleTimesOption = styled(StyledOption)`
   & .MuiSvgIcon-root {
-    color: #418bbd;
+    color: ${({ theme }) => theme.palette.text.primary};
   }
   cursor: pointer;
   &:hover {
@@ -119,6 +120,7 @@ const IconWrapper = styled.div`
 
 const IconButton = styled(IconWrapper).attrs({ as: MuiIconButton })`
   padding-block: 0.2rem;
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 const OptionType = PropTypes.shape({
@@ -265,8 +267,8 @@ export const EditableSelectedOption = ({ option, onRemove, onTitleChange, onOpen
           setTitle={setTitle}
         />
         {onOpenModal && (
-          <IconButton onClick={onClickOpenModal} title="Open JSON editor window">
-            <Add />
+          <IconButton onClick={onClickOpenModal} title="Open editor window">
+            <ExpandIcon />
           </IconButton>
         )}
         {onRemove && (
