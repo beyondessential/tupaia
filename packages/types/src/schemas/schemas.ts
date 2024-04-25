@@ -40296,6 +40296,105 @@ export const UserAccountPreferencesSchema = {
 	"additionalProperties": false
 } 
 
+export const FrontEndExcludedExceptionSchema = {
+	"type": "object",
+	"properties": {
+		"permissionGroups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"permissionGroups"
+	]
+} 
+
+export const FrontEndExcludedConfigSchema = {
+	"type": "object",
+	"properties": {
+		"types": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"exceptions": {
+			"type": "object",
+			"properties": {
+				"permissionGroups": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"additionalProperties": false,
+			"required": [
+				"permissionGroups"
+			]
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"types"
+	]
+} 
+
+export const ProjectConfigSchema = {
+	"type": "object",
+	"properties": {
+		"frontendExcluded": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"types": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"exceptions": {
+						"type": "object",
+						"properties": {
+							"permissionGroups": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"permissionGroups"
+						]
+					}
+				},
+				"additionalProperties": false,
+				"required": [
+					"types"
+				]
+			}
+		},
+		"permanentRegionLabels": {
+			"type": "boolean"
+		},
+		"tileSets": {
+			"type": "string"
+		},
+		"includeDefaultTileSets": {
+			"type": "boolean"
+		},
+		"projectDashboardHeader": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+} 
+
 export const AccessRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -81327,7 +81426,54 @@ export const ProjectSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -81366,6 +81512,7 @@ export const ProjectSchema = {
 	"additionalProperties": false,
 	"required": [
 		"code",
+		"config",
 		"id",
 		"permission_groups"
 	]
@@ -81379,7 +81526,54 @@ export const ProjectCreateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -81426,7 +81620,54 @@ export const ProjectUpdateSchema = {
 		},
 		"config": {
 			"type": "object",
-			"properties": {}
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
 		},
 		"dashboard_group_name": {
 			"type": "string"
@@ -83910,6 +84151,53 @@ export const ProjectResponseSchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"dashboardGroupName": {
@@ -83960,6 +84248,7 @@ export const ProjectResponseSchema = {
 	},
 	"required": [
 		"code",
+		"config",
 		"hasAccess",
 		"hasPendingAccess",
 		"homeEntityCode",
@@ -83978,6 +84267,53 @@ export const ResBodySchema = {
 		},
 		"config": {
 			"type": "object",
+			"properties": {
+				"frontendExcluded": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"types": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"exceptions": {
+								"type": "object",
+								"properties": {
+									"permissionGroups": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								},
+								"additionalProperties": false,
+								"required": [
+									"permissionGroups"
+								]
+							}
+						},
+						"additionalProperties": false,
+						"required": [
+							"types"
+						]
+					}
+				},
+				"permanentRegionLabels": {
+					"type": "boolean"
+				},
+				"tileSets": {
+					"type": "string"
+				},
+				"includeDefaultTileSets": {
+					"type": "boolean"
+				},
+				"projectDashboardHeader": {
+					"type": "string"
+				}
+			},
 			"additionalProperties": false
 		},
 		"dashboardGroupName": {
@@ -84028,6 +84364,7 @@ export const ResBodySchema = {
 	},
 	"required": [
 		"code",
+		"config",
 		"hasAccess",
 		"hasPendingAccess",
 		"homeEntityCode",
