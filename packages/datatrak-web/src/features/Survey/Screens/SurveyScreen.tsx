@@ -32,16 +32,18 @@ const ScreenHeading = styled(Typography)<{
  */
 export const SurveyScreen = () => {
   const { displayQuestions, screenHeader, screenDetail, activeScreen } = useSurveyForm();
+  const pageHasOnlyInstructions = activeScreen.every(
+    question => question.type === QuestionType.Instruction,
+  );
   return (
     <>
       <ScrollableBody $hasSidebar>
-        <ScreenHeading
-          variant="h2"
-          $centered={activeScreen.every(question => question.type === QuestionType.Instruction)}
-        >
+        <ScreenHeading variant="h2" $centered={pageHasOnlyInstructions}>
           {screenHeader}
         </ScreenHeading>
-        {screenDetail && <Typography variant="body1">{screenDetail}</Typography>}
+        {pageHasOnlyInstructions && screenDetail && (
+          <Typography variant="body1">{screenDetail}</Typography>
+        )}
         <SurveyQuestionGroup questions={displayQuestions} />
       </ScrollableBody>
       <SurveyPaginator />
