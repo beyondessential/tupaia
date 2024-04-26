@@ -82,7 +82,7 @@ export class SubscribeDashboardRoute extends Route<SubscribeDashboardRequest> {
       );
     }
 
-    const [upsertedEntry] = await await ctx.services.central.fetchResources(
+    const [upsertedEntry] = await ctx.services.central.fetchResources(
       'dashboardMailingListEntries',
       {
         filter: {
