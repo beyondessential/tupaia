@@ -167,8 +167,8 @@ export async function startSyncWithKoBo(models) {
     // Put all kobo sync groups in an idle state, just in case they're stuck in an 'syncing' state due to a server shutdown
     await Promise.all(koboDataServiceSyncGroups.map(async syncGroup => syncGroup.setSyncIdle()));
 
-    koboDataServiceSyncGroups.forEach(dssg =>
-      setInterval(() => syncWithKoBo(models, dataBroker, dssg.code), PERIOD_BETWEEN_SYNCS),
-    );
+    for (const dssg of koboDataServiceSyncGroups) {
+      setInterval(() => syncWithKoBo(models, dataBroker, dssg.code), PERIOD_BETWEEN_SYNCS);
+    }
   }
 }

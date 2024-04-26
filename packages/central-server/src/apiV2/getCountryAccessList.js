@@ -3,17 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { respond, reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary, respond } from '@tupaia/utils';
 
 const mapRequestsToEntities = (requestedEntities, projectCodeById) => {
   const entityRequests = {};
-  requestedEntities.forEach(request => {
+  for (const request of requestedEntities) {
     if (!(request.entity_id in entityRequests)) {
       entityRequests[request.entity_id] = [];
     }
     const projectCode = request.project_id != null ? projectCodeById[request.project_id] : 'none';
     entityRequests[request.entity_id].push(projectCode);
-  });
+  }
   return entityRequests;
 };
 

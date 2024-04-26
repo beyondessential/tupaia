@@ -14,10 +14,10 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   async generateEntityDetails(entities) {
     if (entities.length === 0) return {};
     const changeDetailsById = {};
-    entities.forEach(entity => {
+    for (const entity of entities) {
       const isDataRegional = get(entity, 'metadata.dhis.isDataRegional', true);
       changeDetailsById[entity.id] = { isDataRegional, organisationUnitCode: entity.country_code };
-    });
+    }
     return changeDetailsById;
   }
 
@@ -27,9 +27,9 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponses);
     const changeDetailsById = {};
-    answers.forEach(answer => {
+    for (const answer of answers) {
       changeDetailsById[answer.id] = surveyResponseDetailsById[answer.survey_response_id];
-    });
+    }
     return changeDetailsById;
   }
 
@@ -45,7 +45,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       }),
     );
     const changeDetailsById = {};
-    surveyResponses.forEach(surveyResponse => {
+    for (const surveyResponse of surveyResponses) {
       // Check whether to use the regional or a country specific dhis2 instance
       const isDataRegional = isDataRegionalBySurveyId[surveyResponse.survey_id];
 
@@ -53,7 +53,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       const { code: organisationUnitCode } = orgUnitByEntityId[surveyResponse.entity_id];
 
       changeDetailsById[surveyResponse.id] = { isDataRegional, organisationUnitCode };
-    });
+    }
     return changeDetailsById;
   }
 

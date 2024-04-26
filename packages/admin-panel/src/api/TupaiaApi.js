@@ -1,12 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { saveAs } from 'file-saver';
 import { parse } from 'content-disposition-header';
 
-import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
+import { stringifyQuery, verifyResponseStatus } from '@tupaia/utils';
 
 import { logout } from '../authentication';
 
@@ -17,10 +17,8 @@ const isJsonResponse = response => {
   return contentType.startsWith('application/json');
 };
 
-const {
-  REACT_APP_API_URL = 'http://localhost:8070/v1',
-  REACT_APP_CLIENT_BASIC_AUTH_HEADER,
-} = import.meta.env;
+const { REACT_APP_API_URL = 'http://localhost:8070/v1', REACT_APP_CLIENT_BASIC_AUTH_HEADER } =
+  import.meta.env;
 
 export class TupaiaApi {
   constructor(config) {
@@ -144,7 +142,7 @@ export class TupaiaApi {
 
   upload(endpoint, fileName, files, queryParameters) {
     const body = new FormData();
-    files.forEach(file => body.append(fileName, file));
+    for (const file of files) body.append(fileName, file);
     const fetchConfig = this.buildFetchConfig('POST', null, body, false);
     return this.requestJson(endpoint, queryParameters, fetchConfig);
   }

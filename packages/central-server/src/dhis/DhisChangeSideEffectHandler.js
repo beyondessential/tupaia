@@ -30,9 +30,9 @@ export class DhisChangeSideEffectHandler extends ChangeSideEffectHandler {
         `,
         batchOfSurveyResponseIds,
       );
-      batchOfResponses.forEach(r => {
+      for (const r of batchOfResponses) {
         responsesToMarkAsChangedById[r.id] = r;
-      });
+      }
     }
     const responsesToMarkAsChanged = Object.values(responsesToMarkAsChangedById);
     await this.models.surveyResponse.markRecordsAsChanged(responsesToMarkAsChanged);

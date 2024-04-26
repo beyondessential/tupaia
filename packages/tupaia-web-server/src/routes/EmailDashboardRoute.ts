@@ -115,7 +115,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     const html = `<p>Latest data for the ${dashboard.name} dashboard in ${entity.name}.</p>`;
     const filename = `${projectEntity.name}-${entity.name}-${dashboard.name}-export.pdf`;
 
-    emails.forEach(email => {
+    for (const email of emails) {
       const unsubscribeToken = generateUnsubscribeToken(email);
       const unsubscribeUrl = stringifyQuery(baseUrl, 'unsubscribe', {
         email,
@@ -124,13 +124,14 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
       });
       const unsubscribeHtml = `If you wish to unsubscribe from these emails please click <a href='${unsubscribeUrl}'>here</a>`;
       const signOff = `<p>Cheers,<br><br>The Tupaia Team</p><br><p style="font-size: 11px; text-align: center;">${unsubscribeHtml}</p>`;
-      return sendEmail(email, {
+
+      sendEmail(email, {
         subject,
         html,
         signOff,
         attachments: [{ filename, content: buffer }],
       });
-    });
+    }
 
     return { message: 'Export successfully sent!' };
   }
