@@ -14,11 +14,11 @@ const Legend = styled.legend`
   margin-bottom: 1rem;
 `;
 
-const Error = styled(Typography).attrs({
+const ErrorLabel = styled(Typography).attrs({
   color: 'error',
 })`
-  text-align: left;
-  margin-bottom: 0.5rem;
+  margin-block-end: 0.5rem;
+  text-align: start;
 `;
 
 interface CheckboxListProps {
@@ -44,7 +44,7 @@ export const CheckboxList = ({ options, legend, name, required }: CheckboxListPr
           helperText={null}
         />
       ))}
-      {errors[name] && <Error>{errors[name].message}</Error>}
+      {errors[name] && <ErrorLabel>{errors[name].message}</ErrorLabel>}
     </fieldset>
   );
 };
