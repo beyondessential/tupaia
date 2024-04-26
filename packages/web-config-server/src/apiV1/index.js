@@ -13,13 +13,12 @@ import {
   appVerifyEmail,
 } from '/appServer';
 import { oneTimeLogin } from '/authSession';
-import { exportChartHandler, ExportSurveyDataHandler } from '/export';
+import { exportChartHandler, ExportSurveyResponsesHandler } from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import DashboardsHandler from './dashboards';
 import { ReportHandler } from './report';
-
 import { getProjects } from './projects';
 import { getLandingPage } from './landingPages';
 
@@ -38,6 +37,7 @@ export const getRoutesForApiV1 = () => {
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.get('/export/chart', catchAsyncErrors(exportChartHandler));
   api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
+  api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/projects', catchAsyncErrors(getProjects));
