@@ -53,9 +53,7 @@ export const SurveyScreen = () => {
   return (
     <>
       <ScrollableBody $hasSidebar>
-        <ScreenHeader
-          $centered={activeScreen.every(question => question.type === QuestionType.Instruction)}
-        >
+        <ScreenHeader $centered={pageHasOnlyInstructions}>
           <Heading>{instructionHeading}</Heading>
           {pageHasOnlyInstructions && instructionDetail && (
             <Typography variant="subtitle1">{instructionDetail}</Typography>
