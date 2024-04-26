@@ -33,6 +33,6 @@ export class UnsubscribeDashboardMailingListRoute extends Route<UnsubscribeDashb
       { subscribed: false, unsubscribed_time: new Date() },
     );
 
-    return { message: `Successfully unsubscribed from the mailing list` };
+    return { message: 'Successfully unsubscribed from the mailing list' };
   }
 }

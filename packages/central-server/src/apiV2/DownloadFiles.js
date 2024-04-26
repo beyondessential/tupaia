@@ -4,11 +4,11 @@
  */
 
 import {
-  ValidationError,
-  respondWithDownload,
-  writeStreamToFile,
-  getUniqueFileNameParts,
   getDeDuplicatedFileName,
+  getUniqueFileNameParts,
+  respondWithDownload,
+  ValidationError,
+  writeStreamToFile,
 } from '@tupaia/utils';
 import { S3, S3Client } from '@tupaia/server-utils';
 import { RouteHandler } from './RouteHandler';
@@ -35,7 +35,7 @@ export class DownloadFiles extends RouteHandler {
       uniqueFileNames.map(uniqueFileName => s3Client.downloadFile(uniqueFileName)),
     );
 
-    const tempDir = getTempDirectory(`downloads/`);
+    const tempDir = getTempDirectory('downloads/');
 
     const writeFileToTempDir = async (uniqueFilename, file) => {
       const filePath = `${tempDir}/${uniqueFilename}`;

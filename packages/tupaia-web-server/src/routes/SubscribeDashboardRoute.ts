@@ -76,7 +76,7 @@ export class SubscribeDashboardRoute extends Route<SubscribeDashboardRequest> {
       );
     } else {
       await ctx.services.central.createResource(
-        `dashboardMailingListEntries`,
+        'dashboardMailingListEntries',
         {},
         dashboardMailingListEntry,
       );

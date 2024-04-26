@@ -34,7 +34,7 @@ export const assertAllPermissions = (assertions, errorMessage) => async accessPo
  * @param {string} errorMessage
  */
 export const assertAnyPermissions = (assertions, errorMessage) => async accessPolicy => {
-  let combinedErrorMessages = `One of the following conditions need to be satisfied:\n`;
+  let combinedErrorMessages = 'One of the following conditions need to be satisfied:\n';
 
   for (const assertion of assertions) {
     try {
@@ -115,5 +115,5 @@ export const assertPermissionGroupsAccess = (accessPolicy, permissionGroupNames)
     return true;
   }
 
-  throw new Error(`You do not have access to all related permission groups`);
+  throw new Error('You do not have access to all related permission groups');
 };

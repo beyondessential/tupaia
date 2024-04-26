@@ -32,7 +32,7 @@ export class EmailDashboardRoute extends Route<EmailDashboardRequest> {
     const { cookie } = this.req.headers;
 
     if (!cookie) {
-      throw new Error(`Must have a valid session to export a dashboard`);
+      throw new Error('Must have a valid session to export a dashboard');
     }
 
     const [project] = (await this.req.ctx.services.central.fetchResources('projects', {

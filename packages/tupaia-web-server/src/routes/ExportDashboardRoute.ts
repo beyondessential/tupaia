@@ -25,7 +25,7 @@ export class ExportDashboardRoute extends Route<ExportDashboardRequest> {
     const { cookie } = this.req.headers;
 
     if (!cookie) {
-      throw new Error(`Must have a valid session to export a dashboard`);
+      throw new Error('Must have a valid session to export a dashboard');
     }
 
     const [dashboard] = (await this.req.ctx.services.central.fetchResources('dashboards', {
