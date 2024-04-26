@@ -5,10 +5,14 @@
 
 import { SECTION_FIELD_TYPE } from '../editor/constants';
 
-// This function is used to explode fields that are nested in sections
+/**
+ * Used to explode fields that are nested in sections.
+ */
 export const getExplodedFields = items => {
-  return items.reduce((result, item) => {
-    if (item.type === SECTION_FIELD_TYPE) return [...result, ...item.fields];
-    return [...result, item];
-  }, []);
+  const fields = [];
+  for (const item of items) {
+    fields.push(item.type === SECTION_FIELD_TYPE ? item.fields : item);
+  }
+
+  return fields;
 };
