@@ -5,7 +5,7 @@
 
 import winston from 'winston';
 
-import { getPusherForEntity, EventPusher, AggregateDataPusher } from './pushers';
+import { AggregateDataPusher, EventPusher, getPusherForEntity } from './pushers';
 
 export async function pushChange(models, change, dhisApi, dataBroker) {
   try {
@@ -28,11 +28,7 @@ async function checkIsEventBased(models, change) {
     // but it also doesn't matter as both push handlers will just discard "delete" changes for
     // records without a sync log record
     const existingSyncLogRecord = await models.dhisSyncLog.findOne({ record_id: recordId });
-    return (
-      existingSyncLogRecord &&
-      existingSyncLogRecord.data &&
-      existingSyncLogRecord.data.includes('"program":')
-    );
+    return existingSyncLogRecord?.data?.includes('"program":');
   }
 
   return models.surveyResponse.checkIsEventBased(change.record_id);

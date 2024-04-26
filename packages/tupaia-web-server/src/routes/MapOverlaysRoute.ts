@@ -36,7 +36,7 @@ const DEFAULT_PAGE_SIZE = 'ALL';
 // removes the reference from the children and adds it to the info object of the parent
 const integrateMapOverlayItemsReference = (children: OverlayChild[]) => {
   const getReference = (mapOverlayItem: OverlayChild) => {
-    if (mapOverlayItem.info && mapOverlayItem.info.reference) return mapOverlayItem.info.reference;
+    if (mapOverlayItem.info?.reference) return mapOverlayItem.info.reference;
     return undefined;
   };
 

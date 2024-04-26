@@ -29,7 +29,7 @@ const SurveyPageRedirect = ({ children }) => {
   const { screenNumber } = useParams();
   const { visibleScreens } = useSurveyForm();
 
-  if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
+  if (visibleScreens?.length && visibleScreens.length < Number(screenNumber)) {
     return <SurveyStartRedirect />;
   }
   return children;
