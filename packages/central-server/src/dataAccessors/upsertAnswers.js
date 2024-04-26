@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { S3, S3Client, S3_BUCKET_PATH, getS3ImageFilePath } from '@tupaia/server-utils';
+import { getS3ImageFilePath, S3, S3_BUCKET_PATH, S3Client } from '@tupaia/server-utils';
 import { QuestionType } from '@tupaia/types';
 import { DatabaseError, UploadError } from '@tupaia/utils';
 
@@ -17,7 +17,7 @@ export async function upsertAnswers(models, answers, surveyResponseId) {
       survey_response_id: surveyResponseId,
     };
     if (answer.type === QuestionType.Photo) {
-      const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
+      const validFileIdRegex = /^[a-f\d]{24}$/;
       if (validFileIdRegex.test(answer.body)) {
         // if this is passed a valid id in the answer body
         answerDocument.text = `${S3_BUCKET_PATH}${getS3ImageFilePath()}${answer.body}.png`;
