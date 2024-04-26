@@ -111,7 +111,7 @@ const refreshDataWithDebounce = debounce(
       };
       const response = await api.get(endpoint, queryParameters);
       const linkHeader = parseLinkHeader(response.headers.get('Link'));
-      const lastPageNumber = parseInt(linkHeader.last.page, 10);
+      const lastPageNumber = Number.parseInt(linkHeader.last.page, 10);
       dispatch({
         type: DATA_FETCH_SUCCESS,
         reduxId,

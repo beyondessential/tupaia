@@ -7,7 +7,7 @@ import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
 import { Route } from '@tupaia/server-boilerplate';
 import { DatatrakWebActivityFeedRequest, FeedItemTypes } from '@tupaia/types';
-import { JOIN_TYPES, RECORDS, QUERY_CONJUNCTIONS } from '@tupaia/database';
+import { JOIN_TYPES, QUERY_CONJUNCTIONS, RECORDS } from '@tupaia/database';
 
 export type ActivityFeedRequest = Request<
   DatatrakWebActivityFeedRequest.Params,
@@ -54,7 +54,7 @@ export class ActivityFeedRoute extends Route<ActivityFeedRequest> {
     const { query, models, accessPolicy } = this.req;
     const { page: queryPage, projectId } = query;
 
-    const page = queryPage ? parseInt(queryPage, 10) : 0;
+    const page = queryPage ? Number.parseInt(queryPage, 10) : 0;
 
     const pinned = page === 0 ? await this.getPinnedItem() : undefined;
 
