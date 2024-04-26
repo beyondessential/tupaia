@@ -30,9 +30,9 @@ export class ExternalApiSyncQueue {
     this.sideEffectHandler = sideEffectHandler;
     this.unprocessedChanges = [];
     this.isProcessing = false;
-    for (const type of subscriptionTypes) {
-      models.addChangeHandlerForCollection(type, this.add, syncQueueKey);
-    }
+    subscriptionTypes.forEach(type =>
+      models.addChangeHandlerForCollection(type, this.add, syncQueueKey),
+    );
   }
 
   /**

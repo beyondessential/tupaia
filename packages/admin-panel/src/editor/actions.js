@@ -62,9 +62,9 @@ export const openBulkEditModal =
         });
       }
     } else {
-      // Set default values
-      for (const field of explodedFields) {
-        if (field.editConfig?.default) {
+      // set default values
+      explodedFields.forEach(field => {
+        if (field.editConfig && field.editConfig.default) {
           const {
             source: fieldKey,
             editConfig: { default: newValue },
@@ -76,7 +76,7 @@ export const openBulkEditModal =
             newValue,
           });
         }
-      }
+      });
 
       dispatch({
         type: EDITOR_OPEN,
@@ -146,9 +146,9 @@ export const openEditModal =
         });
       }
     } else {
-      // Set default values
-      for (const field of explodedFields) {
-        if (field.editConfig?.default) {
+      // set default values
+      explodedFields.forEach(field => {
+        if (field.editConfig && field.editConfig.default) {
           const {
             source: fieldKey,
             editConfig: { default: newValue },
@@ -160,7 +160,7 @@ export const openEditModal =
             newValue,
           });
         }
-      }
+      });
     }
   };
 

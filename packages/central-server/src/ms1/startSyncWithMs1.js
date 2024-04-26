@@ -114,27 +114,27 @@ export async function pushChange(models, change, ms1Api) {
   });
   const questions = await findQuestionsInSurvey(models, surveyResponse.survey_id);
   const questionIdToMs1Variable = {};
-  for (const question of questions) {
-    if (!question.name) continue;
+  questions.forEach(question => {
+    if (!question.name) return;
     questionIdToMs1Variable[question.id] = generateMs1VariableName(question.name);
-  }
+  });
 
   const questionIds = questions.map(question => question.id);
   let body = { distributionId };
-  for (const answer of answers) {
+  answers.forEach(answer => {
     if (!questionIds.includes(answer.question_id)) {
       // eslint-disable-next-line no-console
       console.log(
         `Skipping answer:${answer.id} as question_id:${answer.question_id} is not in survey:${surveyResponse.survey_id}`,
       );
-      continue;
+      return;
     }
 
     body = {
       ...body,
       ...findParam(answer, questionIdToMs1Variable),
     };
-  }
+  });
   const data = {
     payload: body,
     metadata,
