@@ -1,9 +1,9 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import fs from 'fs';
+import fs from 'node:fs';
 
 import { readJsonFile } from '@tupaia/utils';
 

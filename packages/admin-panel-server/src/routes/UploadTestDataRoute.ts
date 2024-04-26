@@ -1,10 +1,10 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { Request } from 'express';
-import fs from 'fs';
+import fs from 'node:fs';
 
 import { Route } from '@tupaia/server-boilerplate';
 import { readJsonFile, UploadError } from '@tupaia/utils';

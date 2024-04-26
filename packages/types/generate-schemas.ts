@@ -1,5 +1,5 @@
-import { resolve } from 'path';
-import * as fs from 'fs';
+import { resolve } from 'node:path';
+import * as fs from 'node:fs';
 import * as TJS from 'typescript-json-schema';
 
 // @ts-ignore
