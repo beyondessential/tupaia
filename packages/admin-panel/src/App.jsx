@@ -14,6 +14,56 @@ import { getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { labelToId } from './utilities';
+import { ResourcePage } from './pages/resources/ResourcePage';
+
+const RecursiveChildRoute = ({ route, getHeaderEl, basePath }) => {
+  return (
+    <Switch>
+      {route.childViews?.map(child => {
+        return (
+          <Route
+            key={`${basePath}-${child.to}`}
+            path={`${basePath}${child.to}`}
+            render={({ match, ...rest }) => {
+              console.log(rest, match);
+              return (
+                <>
+                  {/** Only render the component when the match is exact, i.e. not when it should be the child component rendered */}
+                  {match.isExact &&
+                    (child.Component ? ( // If the child has a component, render it
+                      <child.Component getHeaderEl={getHeaderEl} />
+                    ) : (
+                      // Otherwise, render the ResourcePage
+                      <ResourcePage
+                        getHeaderEl={getHeaderEl}
+                        {...match.params}
+                        {...child}
+                        endpoint={child.endpoint?.replace('{id}', match.params.id)}
+                      />
+                    ))}
+                  {child.childViews && (
+                    <RecursiveChildRoute
+                      route={child}
+                      getHeaderEl={getHeaderEl}
+                      basePath={`${basePath}${child.to}`}
+                    />
+                  )}
+                </>
+              );
+            }}
+          />
+        );
+      })}
+      <Redirect to={basePath} />
+    </Switch>
+  );
+};
+
+RecursiveChildRoute.propTypes = {
+  route: PropTypes.object.isRequired,
+  getHeaderEl: PropTypes.func.isRequired,
+  basePath: PropTypes.string.isRequired,
+};
 
 export const App = ({ user }) => {
   const headerEl = React.useRef(null);
@@ -45,21 +95,18 @@ export const App = ({ user }) => {
                 return (
                   <>
                     <TabsToolbar
-                      links={route.tabs.map(tab => ({
+                      links={route.childViews.map(tab => ({
                         ...tab,
                         id: `app-subTab-${labelToId(tab.label)}`,
                       }))}
                       maxWidth="xl"
                       baseRoute={match.url}
                     />
-                    <Switch>
-                      {route.tabs.map(tab => (
-                        <Route key={`${route.to}-${tab.to}`} path={`${route.to}${tab.to}`} exact>
-                          <tab.component getHeaderEl={getHeaderEl} />
-                        </Route>
-                      ))}
-                      <Redirect to={route.to} />
-                    </Switch>
+                    <RecursiveChildRoute
+                      route={route}
+                      getHeaderEl={getHeaderEl}
+                      basePath={route.to}
+                    />
                   </>
                 );
               }}

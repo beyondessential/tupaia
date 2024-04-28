@@ -43,7 +43,6 @@ export const ResourcePage = ({
   createConfig,
   endpoint,
   reduxId,
-  expansionTabs,
   importConfig,
   ExportModalComponent,
   exportConfig,
@@ -57,6 +56,7 @@ export const ResourcePage = ({
   deleteConfig,
   editorConfig,
 }) => {
+  console.log(columns);
   const HeaderPortal = usePortalWithCallback(
     <Header
       title={title}
@@ -75,7 +75,6 @@ export const ResourcePage = ({
         <DataFetchingTable
           columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={endpoint}
-          expansionTabs={expansionTabs}
           reduxId={reduxId || endpoint}
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
@@ -99,14 +98,6 @@ ResourcePage.propTypes = {
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
   reduxId: PropTypes.string,
-  expansionTabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      endpoint: PropTypes.string,
-      columns: PropTypes.array,
-      expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
-    }),
-  ),
   importConfig: PropTypes.object,
   exportConfig: PropTypes.object,
   deleteConfig: PropTypes.object,
@@ -122,7 +113,6 @@ ResourcePage.propTypes = {
 
 ResourcePage.defaultProps = {
   createConfig: null,
-  expansionTabs: null,
   importConfig: null,
   exportConfig: {},
   deleteConfig: {},

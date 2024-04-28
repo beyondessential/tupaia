@@ -25,8 +25,6 @@ import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import {
   cancelAction,
-  changeExpansions,
-  changeExpansionsTab,
   changeFilters,
   changePage,
   changePageSize,
@@ -286,15 +284,6 @@ DataFetchingTableComponent.propTypes = {
   confirmActionMessage: PropTypes.string,
   errorMessage: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({})),
-  expansionTabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      endpoint: PropTypes.string,
-      columns: PropTypes.array,
-      expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
-    }),
-  ),
-  expansions: PropTypes.object.isRequired,
   filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
@@ -302,7 +291,6 @@ DataFetchingTableComponent.propTypes = {
   TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
-  onExpandedChange: PropTypes.func.isRequired,
   onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
@@ -315,8 +303,6 @@ DataFetchingTableComponent.propTypes = {
   reduxId: PropTypes.string.isRequired,
   resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
-  expansionTabStates: PropTypes.object.isRequired,
-  onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
@@ -325,7 +311,6 @@ DataFetchingTableComponent.propTypes = {
 
 DataFetchingTableComponent.defaultProps = {
   confirmActionMessage: null,
-  expansionTabs: null,
   data: [],
   errorMessage: '',
   numberOfPages: 0,
@@ -351,8 +336,6 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
   onPageSizeChange: (newPageSize, newPageIndex) =>
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
-  onExpandedChange: newExpansions => dispatch(changeExpansions(reduxId, newExpansions)),
-  onExpandedTabChange: (rowId, tabValue) => dispatch(changeExpansionsTab(reduxId, rowId, tabValue)),
   onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
   onResizedChange: newResized => dispatch(changeResizedColumns(reduxId, newResized)),
 });
