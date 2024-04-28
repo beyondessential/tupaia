@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { IconButton } from '@material-ui/core';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import styled from 'styled-components';
@@ -26,38 +27,27 @@ const OptionPanelWithEditor = styled.div`
   overflow: hidden;
 `;
 
-const DownArrowIconWrapper = styled.div`
+const DownArrowIconButton = styled(IconButton)`
   display: flex;
-
-  .icon-wrapper {
-    cursor: pointer;
-  }
-
+  padding: 0.2rem;
   .MuiSvgIcon-root {
     transition: transform 0.3s ease;
     transform: rotate(${({ $expanded }) => ($expanded ? '0deg' : '-90deg')});
   }
 `;
 
-export const SelectedOption = ({
+export const SelectedOptionWithEditor = ({
   option, // **************************************************
   basicOption, // Option panel configs (title, description etc)
   supportsTitleEditing,
   onRemove, // ************************************************
   onChange,
-  editor,
+  children,
+  isExpanded,
+  onToggleExpanded,
+  onOpenModal,
+  isModal,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleToggleExpanded = newIsExpanded => {
-    if (!newIsExpanded) {
-      // When collapsing, any invalid state is thrown away. To tell our parents
-      // this we have to trigger an onChange event
-      onChange(option);
-    }
-    setIsExpanded(newIsExpanded);
-  };
-
   return (
     <OptionPanelWithEditor>
       <FlexBetweenPanel>
@@ -72,13 +62,17 @@ export const SelectedOption = ({
           }}
           size="small"
         />
-        <DownArrowIconWrapper
-          $expanded={isExpanded}
-          className="icon-wrapper"
-          onClick={() => handleToggleExpanded(!isExpanded)}
-        >
-          <DownArrow />
-        </DownArrowIconWrapper>
+        {!isModal && (
+          <DownArrowIconButton
+            $expanded={isExpanded}
+            className="icon-wrapper"
+            onClick={onToggleExpanded}
+            title={`Open ${basicOption.title || basicOption.code} editor`}
+          >
+            <DownArrow />
+          </DownArrowIconButton>
+        )}
+
         {supportsTitleEditing ? (
           <EditableSelectedOption
             option={basicOption}
@@ -86,19 +80,27 @@ export const SelectedOption = ({
             onTitleChange={title => {
               onChange({ ...option, title });
             }}
+            onOpenModal={onOpenModal}
           />
         ) : (
           <BaseSelectedOption option={basicOption} onRemove={onRemove} />
         )}
       </FlexBetweenPanel>
-      {isExpanded && editor}
+      {isExpanded && children}
     </OptionPanelWithEditor>
   );
 };
 
-SelectedOption.defaultProps = { optionMetaData: null, supportsTitleEditing: false };
+SelectedOptionWithEditor.defaultProps = {
+  optionMetaData: null,
+  supportsTitleEditing: false,
+  isExpanded: false,
+  isModal: false,
+  onToggleExpanded: null,
+  onOpenModal: null,
+};
 
-SelectedOption.propTypes = {
+SelectedOptionWithEditor.propTypes = {
   option: PropTypes.shape({
     id: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
@@ -114,5 +116,9 @@ SelectedOption.propTypes = {
     description: PropTypes.string,
   }),
   basicOption: PropTypes.object.isRequired,
-  editor: PropTypes.element.isRequired,
+  isExpanded: PropTypes.bool,
+  onToggleExpanded: PropTypes.func,
+  onOpenModal: PropTypes.func,
+  isModal: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };

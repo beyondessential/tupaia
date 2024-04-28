@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   display: flex;
 `;
 
-export const ExpandedSelectedOption = ({ onClose, children }) => {
+export const TransformModal = ({ onClose, children }) => {
   return (
     <Dialog open onClose={onClose} maxWidth={false}>
       <DialogHeader onClose={onClose} />
@@ -25,7 +25,7 @@ export const ExpandedSelectedOption = ({ onClose, children }) => {
   );
 };
 
-ExpandedSelectedOption.propTypes = {
+TransformModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
 };

@@ -5,12 +5,12 @@
 
 import {
   EMAIL_ADDRESS_CHANGE,
-  REMEMBER_ME_CHANGE,
+  LOGIN_ERROR,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
-  LOGIN_ERROR,
   LOGOUT,
   PROFILE_SUCCESS,
+  REMEMBER_ME_CHANGE,
 } from './constants';
 
 export const changeEmailAddress = emailAddress => ({
@@ -73,8 +73,8 @@ export const logout =
 export const updateProfile =
   payload =>
   async (dispatch, getState, { api }) => {
-    await api.put(`me`, null, payload);
-    const { body: user } = await api.get(`me`);
+    await api.put('me', null, payload);
+    const { body: user } = await api.get('me');
     dispatch({
       type: PROFILE_SUCCESS,
       ...user,
@@ -85,4 +85,4 @@ export const updateProfile =
 export const updatePassword =
   payload =>
   async (dispatch, getState, { api }) =>
-    api.post(`me/changePassword`, null, payload);
+    api.post('me/changePassword', null, payload);
