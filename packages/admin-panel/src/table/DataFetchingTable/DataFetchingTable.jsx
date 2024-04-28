@@ -1,18 +1,28 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { SmallAlert, ConfirmDeleteModal } from '@tupaia/ui-components';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
+import { connect } from 'react-redux';
+import { useTable, usePagination, useSortBy } from 'react-table';
+import {
+  TableCell,
+  TableHead,
+  TableContainer,
+  TableRow,
+  TableBody,
+  Table,
+  Typography,
+  TableSortLabel,
+} from '@material-ui/core';
+import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
-import { Tabs } from '../../widgets';
-import { TableHeadCell } from '../TableHeadCell';
-import { ColumnFilter } from '../ColumnFilter';
+import PropTypes from 'prop-types';
+import { ConfirmDeleteModal } from '@tupaia/ui-components';
+import { generateConfigForColumnType } from '../columnTypes';
+import { getIsFetchingData, getTableState } from '../selectors';
+import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import {
   cancelAction,
   changeExpansions,
@@ -25,53 +35,239 @@ import {
   confirmAction,
   refreshData,
 } from '../actions';
-import { getTableState, getIsFetchingData } from '../selectors';
-import { generateConfigForColumnType } from '../columnTypes';
-import { getIsChangingDataOnServer } from '../../dataChangeListener';
-import { makeSubstitutionsInString } from '../../utilities';
-import { customPagination } from '../customPagination';
-import { ExpansionContainer } from '../ExpansionContainer';
-import { StyledReactTable } from '../StyledReactTable';
+import { FilterCell } from './FilterCell';
+import { Pagination } from './Pagination';
 
-const StyledAlert = styled(SmallAlert)`
-  margin-top: 30px;
+const BUTTON_COLUMN_WIDTH = '4.5rem';
+
+const Cell = styled(TableCell)`
+  vertical-align: middle;
+  font-size: 0.75rem;
+  padding: 0.7rem;
+  overflow: hidden;
+  max-width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : '0')};
+  width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : 'auto')};
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
-const ExpandRowIcon = styled(AddBox)`
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: ${props => props.theme.palette.primary.main};
+const HeaderCell = styled(Cell)`
+  color: ${({ theme }) => theme.palette.text.secondary};
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
+  .MuiTableSortLabel-icon {
+    opacity: 1;
   }
 `;
 
-class DataFetchingTableComponent extends React.Component {
-  componentWillMount() {
-    if (this.props.nestingLevel === 0) {
+const Wrapper = styled.div`
+  position: relative;
+`;
+const LoadingWrapper = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+`;
+
+const DataFetchingTableComponent = ({
+  columns,
+  data = [],
+  numberOfPages,
+  pageSize,
+  pageIndex,
+  onPageChange,
+  onPageSizeChange,
+  initialiseTable,
+  nestingLevel,
+  filters,
+  sorting,
+  isChangingDataOnServer,
+  errorMessage,
+  onRefreshData,
+  confirmActionMessage,
+  onConfirmAction,
+  onCancelAction,
+  deleteConfig,
+  onFilteredChange,
+  totalRecords,
+  isFetchingData,
+  onSortedChange,
+}) => {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    pageCount,
+    gotoPage,
+    setPageSize,
+    visibleColumns,
+    // Get the state from the instance
+    state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        pageIndex,
+        pageSize,
+        sortBy: sorting,
+        hiddenColumns: columns.filter(column => column.show === false).map(column => column.id),
+      },
+      manualPagination: true,
+      pageCount: numberOfPages,
+      manualSortBy: true,
+    },
+    useSortBy,
+    usePagination,
+  );
+
+  // Listen for changes in pagination and use the state to fetch our new data
+  useEffect(() => {
+    onPageChange(tablePageIndex);
+  }, [tablePageIndex]);
+
+  useEffect(() => {
+    onPageSizeChange(tablePageSize);
+  }, [tablePageSize]);
+
+  useEffect(() => {
+    onSortedChange(tableSorting);
+  }, [tableSorting]);
+
+  useEffect(() => {
+    onRefreshData();
+  }, [filters, pageIndex, pageSize, sorting]);
+
+  useEffect(() => {
+    if (!isChangingDataOnServer && !errorMessage) {
+      onRefreshData();
+    }
+  }, [errorMessage, isChangingDataOnServer]);
+
+  // initial render
+  useEffect(() => {
+    if (nestingLevel === 0) {
       // Page-level filters only apply to top-level data tables
       const params = queryString.parse(location.search); // set filters from query params
-      const filters = params.filters ? JSON.parse(params.filters) : undefined;
-      this.props.initialiseTable(filters);
+      const parsedFilters = params.filters ? JSON.parse(params.filters) : undefined;
+      initialiseTable(parsedFilters);
     } else {
-      this.props.initialiseTable();
+      initialiseTable();
     }
-  }
+  }, []);
 
-  componentWillReceiveProps(nextProps) {
-    const propsCausingDataRefresh = ['filters', 'pageIndex', 'pageSize', 'sorting'];
-    if (
-      propsCausingDataRefresh.some(propKey => this.props[propKey] !== nextProps[propKey]) ||
-      (this.props.isChangingDataOnServer &&
-        !nextProps.isChangingDataOnServer &&
-        !nextProps.errorMessage)
-    ) {
-      nextProps.onRefreshData();
-    }
-  }
+  const isLoading = isFetchingData || isChangingDataOnServer;
 
-  renderConfirmModal() {
-    const { confirmActionMessage, onConfirmAction, onCancelAction, deleteConfig } = this.props;
-    return (
+  const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
+
+  return (
+    <Wrapper>
+      {isLoading && (
+        <LoadingWrapper>
+          <Typography variant="body2">Loading</Typography>
+        </LoadingWrapper>
+      )}
+      <TableContainer>
+        <Table {...getTableProps()}>
+          <TableHead>
+            {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <TableRow {...getHeaderGroupProps()} key={`table-header-row-${index}`}>
+                {headers.map(
+                  (
+                    {
+                      getHeaderProps,
+                      render,
+                      isSorted,
+                      isSortedDesc,
+                      getSortByToggleProps,
+                      canSort,
+                      isButtonColumn,
+                    },
+                    i,
+                  ) => {
+                    return (
+                      <HeaderCell
+                        {...getHeaderProps(getSortByToggleProps())}
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`header-${i}`}
+                        $isButtonColumn={isButtonColumn}
+                      >
+                        {render('Header')}
+                        {canSort && (
+                          <TableSortLabel
+                            active={isSorted}
+                            direction={isSortedDesc ? 'asc' : 'desc'}
+                            IconComponent={KeyboardArrowDown}
+                          />
+                        )}
+                      </HeaderCell>
+                    );
+                  },
+                )}
+              </TableRow>
+            ))}
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            <TableRow>
+              {displayFilterRow &&
+                visibleColumns.map(column => {
+                  return (
+                    <Cell
+                      key={column.id}
+                      // $width={column.width}
+                    >
+                      {column.filterable ? (
+                        <FilterCell
+                          column={column}
+                          onFilteredChange={onFilteredChange}
+                          filters={filters}
+                        />
+                      ) : null}
+                    </Cell>
+                  );
+                })}
+            </TableRow>
+            {rows.map((row, index) => {
+              prepareRow(row);
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
+                  {row.cells.map(({ getCellProps, value, render }, i) => {
+                    return (
+                      <Cell
+                        value={value}
+                        {...getCellProps()}
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`table-row-${index}-cell-${i}`}
+                        // $width={visibleColumns[i].width}
+                      >
+                        {render('Cell')}
+                      </Cell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Pagination
+        page={tablePageIndex}
+        pageCount={pageCount}
+        gotoPage={gotoPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        totalRecords={totalRecords}
+      />
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
@@ -82,114 +278,9 @@ class DataFetchingTableComponent extends React.Component {
         cancelButtonText={deleteConfig.cancelButtonText}
         confirmButtonText={deleteConfig.confirmButtonText}
       />
-    );
-  }
-
-  renderReactTable() {
-    const {
-      reduxId,
-      columns,
-      data,
-      expansionTabs,
-      isFetchingData,
-      isChangingDataOnServer,
-      numberOfPages,
-      onPageChange,
-      onPageSizeChange,
-      onSortedChange,
-      onExpandedChange,
-      onFilteredChange,
-      onResizedChange,
-      pageIndex,
-      pageSize,
-      sorting,
-      expansions,
-      filters,
-      resizedColumns,
-      expansionTabStates,
-      onExpandedTabChange,
-      TableComponent,
-      nestingLevel,
-    } = this.props;
-
-    return (
-      <StyledReactTable
-        columns={columns}
-        data={data}
-        manual
-        onPageChange={onPageChange}
-        onPageSizeChange={onPageSizeChange}
-        onSortedChange={onSortedChange}
-        onExpandedChange={onExpandedChange}
-        onFilteredChange={onFilteredChange}
-        onResizedChange={onResizedChange}
-        page={pageIndex}
-        pageSize={pageSize}
-        sorted={sorting}
-        expanded={expansions}
-        filtered={filters}
-        resized={resizedColumns}
-        pages={numberOfPages}
-        loading={isFetchingData || isChangingDataOnServer}
-        filterable
-        freezeWhenExpanded
-        FilterComponent={ColumnFilter}
-        ThComponent={TableHeadCell}
-        TableComponent={TableComponent}
-        ExpanderComponent={({ isExpanded }) => (
-          <div className="expander">
-            {isExpanded ? <IndeterminateCheckBox color="primary" /> : <ExpandRowIcon />}
-          </div>
-        )}
-        getPaginationProps={customPagination}
-        SubComponent={
-          expansionTabs &&
-          (({ original: rowData }) => {
-            const { id } = rowData;
-            const expansionTab = expansionTabStates[id] || 0;
-            const expansionItem = expansionTabs[expansionTab];
-            const { title, endpoint, ...restOfProps } = expansionItem;
-            // Each table needs a unique id so that we can keep track of state separately in redux
-            return (
-              <ExpansionContainer>
-                <Tabs
-                  tabs={expansionTabs.map(({ title: tabTitle }, tabIndex) => ({
-                    label: tabTitle,
-                    value: tabIndex,
-                  }))}
-                  activeValue={expansionTab}
-                  onSelectTab={tabValue => onExpandedTabChange(id, tabValue)}
-                />
-                <DataFetchingTable
-                  reduxId={`${reduxId}_${id}_${expansionTab}`}
-                  endpoint={makeSubstitutionsInString(endpoint, rowData)}
-                  key={expansionTab} // Triggers refresh of data.
-                  {...restOfProps}
-                  nestingLevel={nestingLevel + 1}
-                />
-              </ExpansionContainer>
-            );
-          })
-        }
-      />
-    );
-  }
-
-  render() {
-    const { errorMessage } = this.props;
-    return (
-      <>
-        {errorMessage && (
-          <StyledAlert severity="error" variant="standard">
-            {errorMessage}
-          </StyledAlert>
-        )}
-        {this.renderReactTable()}
-        {this.renderConfirmModal()}
-      </>
-    );
-  }
-}
+    </Wrapper>
+  );
+};
 
 DataFetchingTableComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -229,6 +320,8 @@ DataFetchingTableComponent.propTypes = {
   onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
+  actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
+  totalRecords: PropTypes.number,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -240,6 +333,8 @@ DataFetchingTableComponent.defaultProps = {
   nestingLevel: 0,
   deleteConfig: {},
   TableComponent: undefined,
+  actionColumns: [],
+  totalRecords: 0,
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({
@@ -290,12 +385,18 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => {
 };
 
 const formatColumnForReactTable = (originalColumn, reduxId) => {
-  const { source, type, actionConfig, ...restOfColumn } = originalColumn;
+  const { source, type, actionConfig, filterable, ...restOfColumn } = originalColumn;
+  const id = source || type;
   return {
-    id: source,
-    accessor: source.includes('.') ? row => row[source] : source, // react-table doesn't like .'s
+    id,
+    accessor: id?.includes('.') ? row => row[source] : id, // react-table doesn't like .'s
+    actionConfig,
+    reduxId,
+    type,
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
+    disableSortBy: !source, // disable action columns from being sortable
+    filterable: filterable !== false && !!source,
   };
 };
 

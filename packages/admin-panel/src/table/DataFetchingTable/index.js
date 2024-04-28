@@ -1,1 +1,1 @@
-export { DataFetchingTableNew } from './DataFetchingTableNew';
+export { DataFetchingTable } from './DataFetchingTable';
