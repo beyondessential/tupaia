@@ -7,20 +7,34 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiChip from '@material-ui/core/Chip';
-import { Autocomplete, Select } from '@tupaia/ui-components';
+import { Autocomplete, Select, TextField } from '@tupaia/ui-components';
+import { Search } from '@material-ui/icons';
 
-const StyledSelect = styled(Select)`
-  font-size: inherit;
+export const DefaultFilter = styled(TextField).attrs(props => ({
+  InputProps: {
+    ...props.InputProps,
+    startAdornment: <Search />,
+  },
+  placeholder: 'Search...',
+}))`
   margin-block-end: 0;
-  min-width: 8rem;
-  .MuiInputBase-root,
-  .MuiInputBase-input {
-    font-size: inherit;
-  }
-  .MuiSelect-root {
+  font-size: inherit;
+  width: 100%;
+  min-width: 6rem;
+  max-width: 100%;
+  // The following is overriding the padding in ui-components to make sure all filters match styling
+  .MuiInputBase-input,
+  .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
     padding-block: 0.6rem;
+    padding-inline: 0.2rem;
+  }
+  .MuiInputBase-root,
+  .MuiAutocomplete-inputRoot.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
+    padding-inline-start: 0.3rem;
   }
 `;
+
+const StyledSelect = styled(Select)``;
 
 /*
  * Makes boolean fields work with the database filter
@@ -91,10 +105,6 @@ const Chip = styled(MuiChip)`
   }
 `;
 
-const StyledAutocomplete = styled(Autocomplete)`
-  flex: 1;
-`;
-
 export const ArrayFilter = React.memo(({ onChange }) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selection, setSelection] = React.useState([]);
@@ -113,14 +123,13 @@ export const ArrayFilter = React.memo(({ onChange }) => {
   };
 
   return (
-    <StyledAutocomplete
+    <Autocomplete
       value={selection || []}
       inputValue={searchTerm}
       onInputChange={(event, newSearchTerm) => setSearchTerm(newSearchTerm)}
       options={searchTerm.length > 0 ? [searchTerm] : []}
       getOptionSelected={(option, selected) => option === selected}
       onChange={onChangeSelection}
-      placeholder={selection.length === 0 ? 'Enter values' : ''}
       muiProps={{
         freeSolo: true,
         multiple: true,
@@ -131,6 +140,8 @@ export const ArrayFilter = React.memo(({ onChange }) => {
           values.map((option, index) => (
             <Chip color="primary" label={option} {...getTagProps({ index })} />
           )),
+        renderInput: params => <DefaultFilter {...params} />,
+        disablePortal: true,
       }}
     />
   );

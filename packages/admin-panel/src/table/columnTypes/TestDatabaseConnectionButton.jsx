@@ -11,8 +11,8 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Tooltip } from '@material-ui/core';
 import styled from 'styled-components';
 import { useApiContext } from '../../utilities/ApiProvider';
-import { IconButton } from '../../widgets';
 import { makeSubstitutionsInString } from '../../utilities';
+import { ColumnActionButton } from './ColumnActionButton';
 
 const BUTTON_STATES = {
   IDLE: 'idle',
@@ -38,10 +38,6 @@ const FailedIcon = styled(ErrorIcon)`
   color: ${props => props.theme.palette.error.main};
 `;
 
-const TestConnectionIconButton = styled(IconButton)`
-  display: flex;
-`;
-
 export const TestDatabaseConnectionButton = ({ row }) => {
   const api = useApiContext();
   const [buttonState, setButtonState] = useState(BUTTON_STATES.IDLE);
@@ -49,7 +45,7 @@ export const TestDatabaseConnectionButton = ({ row }) => {
 
   const testConnectionEndpoint = makeSubstitutionsInString(
     testDatabaseConnectionEndpointTemplate,
-    row,
+    row.original,
   );
 
   const testConnection = async () => {
@@ -66,9 +62,9 @@ export const TestDatabaseConnectionButton = ({ row }) => {
 
   const TestConnectionButton = ({ disabled = false }) => (
     <Tooltip title="Click to test database connection">
-      <TestConnectionIconButton disabled={disabled} onClick={testConnection}>
+      <ColumnActionButton disabled={disabled} onClick={testConnection}>
         <NetworkCheck />
-      </TestConnectionIconButton>
+      </ColumnActionButton>
     </Tooltip>
   );
 

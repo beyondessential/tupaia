@@ -110,7 +110,7 @@ const typography = {
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -132,6 +132,11 @@ const overrides = {
   MuiDivider: {
     root: {
       backgroundColor: COLORS.GREY_DE,
+    },
+  },
+  MuiMenuItem: {
+    root: {
+      fontSize: '0.875rem',
     },
   },
 };

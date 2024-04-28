@@ -53,10 +53,7 @@ const COLUMNS = [
   },
   {
     Header: 'Test',
-    filterable: false,
-    disableSortBy: false,
     type: 'testDatabaseConnection',
-    width: 70,
   },
   {
     Header: 'Delete',

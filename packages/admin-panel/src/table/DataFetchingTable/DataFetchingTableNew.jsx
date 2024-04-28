@@ -38,12 +38,15 @@ import {
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
 
+const BUTTON_COLUMN_WIDTH = '4.5rem';
+
 const Cell = styled(TableCell)`
   vertical-align: middle;
   font-size: 0.75rem;
   padding: 0.7rem;
   overflow: hidden;
-  max-width: 0;
+  max-width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : '0')};
+  width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : 'auto')};
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
@@ -187,12 +190,17 @@ const DataFetchingTableComponent = ({
                       isSortedDesc,
                       getSortByToggleProps,
                       canSort,
+                      isButtonColumn,
                     },
                     i,
                   ) => {
                     return (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <HeaderCell {...getHeaderProps(getSortByToggleProps())} key={`header-${i}`}>
+                      <HeaderCell
+                        {...getHeaderProps(getSortByToggleProps())}
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`header-${i}`}
+                        $isButtonColumn={isButtonColumn}
+                      >
                         {render('Header')}
                         {canSort && (
                           <TableSortLabel
@@ -213,7 +221,10 @@ const DataFetchingTableComponent = ({
               {displayFilterRow &&
                 visibleColumns.map(column => {
                   return (
-                    <Cell key={column.id}>
+                    <Cell
+                      key={column.id}
+                      // $width={column.width}
+                    >
                       {column.filterable ? (
                         <FilterCell
                           column={column}
@@ -237,6 +248,7 @@ const DataFetchingTableComponent = ({
                         {...getCellProps()}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
+                        // $width={visibleColumns[i].width}
                       >
                         {render('Cell')}
                       </Cell>

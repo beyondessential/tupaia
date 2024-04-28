@@ -4,15 +4,13 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Search } from '@material-ui/icons';
-import { TextField } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import { DefaultFilter } from '../columnTypes/columnFilters';
 
-const FilterInput = styled(TextField)`
-  margin-block-end: 0;
-  font-size: inherit;
-  width: 100%;
-  min-width: 6rem;
+const FilterWrapper = styled.div`
+  .MuiFormControl-root {
+    margin-block-end: 0;
+  }
   .MuiInputBase-input,
   .MuiOutlinedInput-root {
     font-size: inherit;
@@ -22,6 +20,22 @@ const FilterInput = styled(TextField)`
   }
   .MuiInputBase-input {
     padding-block: 0.6rem;
+    padding-inline: 0.6rem;
+    line-height: 1.2;
+  }
+  .MuiAutocomplete-popperDisablePortal,
+  .MuiPaper-root,
+  .MuiAutocomplete-option,
+  .MuiAutocomplete-popperDisablePortal,
+  .MuiPaper-root,
+  .MuiAutocomplete-option {
+    font-size: inherit;
+  }
+  .MuiAutocomplete-listbox {
+    padding-block: 0.3rem;
+  }
+  .MuiAutocomplete-option {
+    padding-block: 0.5rem;
   }
 `;
 
@@ -35,17 +49,18 @@ export const FilterCell = ({ column, filters, onFilteredChange }) => {
 
     onFilteredChange(updatedFilters);
   };
-  if (Filter) return <Filter column={column} filter={existingFilter} onChange={handleUpdate} />;
   return (
-    <FilterInput
-      value={existingFilter?.value || ''}
-      onChange={e => handleUpdate(e.target.value)}
-      placeholder="Search..."
-      aria-label={`Search ${column.Header}`}
-      InputProps={{
-        startAdornment: <Search />,
-      }}
-    />
+    <FilterWrapper>
+      {Filter ? (
+        <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+      ) : (
+        <DefaultFilter
+          value={existingFilter?.value || ''}
+          onChange={e => handleUpdate(e.target.value)}
+          aria-label={`Search ${column.Header}`}
+        />
+      )}
+    </FilterWrapper>
   );
 };
 

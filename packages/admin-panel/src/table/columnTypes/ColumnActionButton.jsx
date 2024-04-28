@@ -9,5 +9,5 @@ import styled from 'styled-components';
 export const ColumnActionButton = styled(IconButton).attrs({
   color: 'primary',
 })`
-  padding: 0.5rem;
+  padding: 0.3rem;
 `;
