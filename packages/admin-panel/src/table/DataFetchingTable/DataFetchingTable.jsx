@@ -248,7 +248,6 @@ const DataFetchingTableComponent = ({
                         {...getCellProps()}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
-                        // $width={visibleColumns[i].width}
                       >
                         {render('Cell')}
                       </Cell>
