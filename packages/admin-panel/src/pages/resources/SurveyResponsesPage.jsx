@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { ApprovalStatus } from '@tupaia/types';
@@ -166,7 +165,7 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
+export const SurveyResponsesPage = props => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
@@ -175,12 +174,7 @@ export const SurveyResponsesPage = ({ getHeaderEl, ...props }) => (
     defaultSorting={[{ id: 'data_time', desc: true }]}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
     ExportModalComponent={SurveyResponsesExportModal}
     {...props}
   />
 );
-
-SurveyResponsesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

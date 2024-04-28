@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { Header, PageBody } from '../../widgets';
-import { getExplodedFields, usePortalWithCallback } from '../../utilities';
+import { PageHeader, PageBody } from '../../widgets';
+import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -50,28 +50,22 @@ export const ResourcePage = ({
   onProcessDataForSave,
   baseFilter,
   title,
-  getHeaderEl,
   defaultFilters,
   defaultSorting,
   deleteConfig,
   editorConfig,
 }) => {
-  console.log(columns);
-  const HeaderPortal = usePortalWithCallback(
-    <Header
-      title={title}
-      importConfig={importConfig}
-      exportConfig={exportConfig}
-      createConfig={createConfig}
-      ExportModalComponent={ExportModalComponent}
-      LinksComponent={LinksComponent}
-    />,
-    getHeaderEl,
-  );
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader
+          title={title}
+          importConfig={importConfig}
+          exportConfig={exportConfig}
+          createConfig={createConfig}
+          ExportModalComponent={ExportModalComponent}
+          LinksComponent={LinksComponent}
+        />
         <DataFetchingTable
           columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={endpoint}
@@ -92,7 +86,6 @@ export const ResourcePage = ({
 };
 
 ResourcePage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,

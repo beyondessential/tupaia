@@ -150,7 +150,6 @@ export const DashboardItemsPage = ({ isBESAdmin, vizBuilderBaseUrl, translate, .
 };
 
 DashboardItemsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   isBESAdmin: PropTypes.bool,
   vizBuilderBaseUrl: PropTypes.string,
   translate: PropTypes.func.isRequired,

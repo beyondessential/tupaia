@@ -5,22 +5,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { LightOutlinedButton } from '@tupaia/ui-components';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  &:focus,
-  &:hover,
-  &:visited,
-  &:link,
-  &:active {
-    text-decoration: none;
-  }
-`;
+import { CreateActionButton } from '../../editor';
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -49,7 +36,7 @@ const FIELDS = [
   },
 ];
 
-export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props }) => {
+export const DashboardItemsPage = ({ vizBuilderBaseUrl, ...props }) => {
   const extraEditFields = [
     // ID field for constructing viz-builder path only, not for showing or editing
     {
@@ -102,9 +89,9 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
   ];
 
   const renderNewDashboardVizButton = () => (
-    <StyledLink to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/new`}>
-      <LightOutlinedButton startIcon={<AddCircleIcon />}>New</LightOutlinedButton>
-    </StyledLink>
+    <CreateActionButton to={`${vizBuilderBaseUrl}/viz-builder/dashboard-item/new`} component={Link}>
+      New
+    </CreateActionButton>
   );
   const importConfig = {
     title: 'Import Dashboard Visualisation',
@@ -135,14 +122,12 @@ export const DashboardItemsPage = ({ getHeaderEl, vizBuilderBaseUrl, ...props })
       columns={columns}
       importConfig={importConfig}
       LinksComponent={renderNewDashboardVizButton}
-      getHeaderEl={getHeaderEl}
       {...props}
     />
   );
 };
 
 DashboardItemsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   vizBuilderBaseUrl: PropTypes.string,
 };
 

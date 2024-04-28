@@ -14,7 +14,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 
-export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
+export const DashboardRelationsPage = ({ translate }) => {
   const ArrayFilter = getArrayFilter(translate);
 
   const DASHBOARD_RELATION_COLUMNS = [
@@ -118,12 +118,10 @@ export const DashboardRelationsPage = ({ getHeaderEl, translate }) => {
       createConfig={createConfig}
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 DashboardRelationsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

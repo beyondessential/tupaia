@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { ResourcePage } from './ResourcePage';
 import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
@@ -168,7 +167,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const UsersPage = ({ getHeaderEl, ...props }) => (
+export const UsersPage = props => (
   <ResourcePage
     title="Users"
     endpoint="users"
@@ -176,11 +175,6 @@ export const UsersPage = ({ getHeaderEl, ...props }) => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-UsersPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

@@ -12,3 +12,4 @@ export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
 export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction } from './editor';
 export { App as VizBuilderApp } from './VizBuilderApp/App';
+export { NavPanel, PageWrapper, Main, SecondaryNavbar, PageContentWrapper } from './layout';
