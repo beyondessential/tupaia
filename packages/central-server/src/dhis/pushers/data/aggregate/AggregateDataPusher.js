@@ -29,7 +29,7 @@ export class AggregateDataPusher extends DataPusher {
   }
 
   get isSurveyResponse() {
-    return this.recordType === this.models.surveyResponse.databaseType;
+    return this.recordType === this.models.surveyResponse.databaseRecord;
   }
 
   async wrapFetchInCache(cacheKey, fetch) {
@@ -160,7 +160,7 @@ export class AggregateDataPusher extends DataPusher {
     // check whether this update is redundant, i.e. there is a matching record later in the same day/week/month/year
     const matchingRecord = await this.findMoreRecentResponse();
     if (matchingRecord) {
-      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseType} later in the same period (id: ${matchingRecord.id})`;
+      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseRecord} later in the same period (id: ${matchingRecord.id})`;
       // mark this sync as successful so it is cleared from the queue
       return { ...SUCCESS_DIAGNOSTICS, errors: [syncLogMessage], dataToLog };
     }
@@ -324,7 +324,7 @@ export class AggregateDataPusher extends DataPusher {
       },
     );
     if (laterSamePeriodSurveyResponses.length === 0) return null;
-    if (this.recordType === this.models.surveyResponse.databaseType) {
+    if (this.recordType === this.models.surveyResponse.databaseRecord) {
       // This is a survey response, and there was a matching response later on the same day, so this
       // update is redundant and should not sync. Send the first (latest) survey response.
       return laterSamePeriodSurveyResponses[0];
@@ -388,7 +388,7 @@ export class AggregateDataPusher extends DataPusher {
       },
     };
     switch (this.recordType) {
-      case this.models.surveyResponse.databaseType: {
+      case this.models.surveyResponse.databaseRecord: {
         // Add matching survey responses to sync queue
         const survey = await this.models.survey.findById(surveyId);
         // We need to resync any survey response for a survey with *the same survey code* as there is
@@ -403,7 +403,7 @@ export class AggregateDataPusher extends DataPusher {
         break;
       }
       default:
-      case this.models.answer.databaseType: {
+      case this.models.answer.databaseRecord: {
         // Add matching answers to sync queue
         const matchingSurveyResponses = await this.models.surveyResponse.find(
           duplicateSurveyResponseCriteria,

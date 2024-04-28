@@ -25,6 +25,7 @@ export {
   MatrixConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
@@ -93,6 +94,10 @@ export {
   isChartReport,
   isViewReport,
   isMatrixReport,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
+  ProjectConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

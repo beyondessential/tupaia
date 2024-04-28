@@ -42,7 +42,9 @@ export function combineDashboardVisualisation(
     presentation,
   };
   if (!dashboardItem.legacy) {
-    visualisation.permissionGroup = (report as Report).permissionGroup;
+    const { latestDataParameters, permissionGroup } = report as Report;
+    visualisation.permissionGroup = permissionGroup;
+    visualisation.latestDataParameters = latestDataParameters;
   }
 
   return visualisation as DashboardViz;

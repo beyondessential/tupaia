@@ -6,8 +6,8 @@ import keyBy from 'lodash.keyby';
 
 import { fetchPatiently, translatePoint, translateRegion, translateBounds } from '@tupaia/utils';
 import { MaterializedViewLogDatabaseModel } from '../analytics';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
 // NOTE: These hard coded entity types are now a legacy pattern
@@ -17,7 +17,6 @@ import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
-const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SUB_FACILITY = 'sub_facility';
@@ -45,7 +44,6 @@ const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
   COUNTRY,
-  DISASTER,
   DISTRICT,
   FACILITY,
   SUB_FACILITY,
@@ -87,17 +85,13 @@ const ORG_UNIT_TYPE_LEVELS = {
   [VILLAGE]: 6,
 };
 
-// some entity types are just used to store data against for aggregation, and shouldn't be
-// individually shown on tupaia.org
-const TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND = [CASE, CASE_CONTACT];
-
 const ENTITY_RELATION_TYPE = {
   ANCESTORS: 'ancestors',
   DESCENDANTS: 'descendants',
 };
 
-export class EntityType extends DatabaseType {
-  static databaseType = TYPES.ENTITY;
+export class EntityRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.ENTITY;
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -238,7 +232,7 @@ export class EntityType extends DatabaseType {
             },
           },
           {
-            joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+            joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
             sort: ['entity_hierarchy.name ASC'],
           },
         ),
@@ -255,7 +249,7 @@ export class EntityType extends DatabaseType {
    * Fetches the closest node in the entity hierarchy that is an organisation unit,
    * starting from the entity itself and traversing the hierarchy up
    *
-   * @returns {EntityType}
+   * @returns {EntityRecord}
    */
   async fetchNearestOrgUnitAncestor(hierarchyId) {
     const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
@@ -316,8 +310,8 @@ export class EntityType extends DatabaseType {
 }
 
 export class EntityModel extends MaterializedViewLogDatabaseModel {
-  get DatabaseTypeClass() {
-    return EntityType;
+  get DatabaseRecordClass() {
+    return EntityRecord;
   }
 
   get cacheEnabled() {
@@ -326,7 +320,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
 
   // ancestor_descendant_relation will be manually flagged as changed once it's been rebuilt
   get cacheDependencies() {
-    return [TYPES.ANCESTOR_DESCENDANT_RELATION];
+    return [RECORDS.ANCESTOR_DESCENDANT_RELATION];
   }
 
   customColumnSelectors = {
@@ -338,8 +332,6 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
-
-  typesExcludedFromWebFrontend = TYPES_EXCLUDED_FROM_TUPAIA_FRONTEND;
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
@@ -450,7 +442,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
    * @param {*} ancestorsOrDescendants
    * @param {*} entityIds
    * @param {*} criteria
-   * @returns {Promise<EntityType[]>}
+   * @returns {Promise<EntityRecord[]>}
    */
   async getRelationsOfEntities(ancestorsOrDescendants, entityIds, criteria) {
     const cacheKey = this.getCacheKey(this.getRelationsOfEntities.name, arguments);
@@ -466,7 +458,7 @@ export class EntityModel extends MaterializedViewLogDatabaseModel {
           [filterByEntityId]: entityIds,
         },
         {
-          joinWith: TYPES.ANCESTOR_DESCENDANT_RELATION,
+          joinWith: RECORDS.ANCESTOR_DESCENDANT_RELATION,
           joinCondition: ['entity.id', joinTablesOn],
           sort: ['generational_distance ASC'],
         },

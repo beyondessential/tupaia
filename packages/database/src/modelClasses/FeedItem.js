@@ -8,12 +8,14 @@ import { AccessPolicy } from '@tupaia/access-policy';
 import { FeedItemTypes } from '@tupaia/types';
 import { reduceToDictionary } from '@tupaia/utils';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { QUERY_CONJUNCTIONS } from '../TupaiaDatabase';
 
-export class FeedItemType extends DatabaseType {
-  static databaseType = TYPES.FEED_ITEM;
+export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
+
+export class FeedItemRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.FEED_ITEM;
 
   constructor(...args) {
     super(...args);
@@ -25,8 +27,8 @@ export class FeedItemType extends DatabaseType {
 }
 
 export class FeedItemModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return FeedItemType;
+  get DatabaseRecordClass() {
+    return FeedItemRecord;
   }
 
   async createAccessPolicyQueryClause(accessPolicy) {
@@ -104,7 +106,7 @@ export class FeedItemModel extends DatabaseModel {
         sort,
         limit,
         offset,
-        columns: [`${TYPES.FEED_ITEM}.*`],
+        columns: [`${RECORDS.FEED_ITEM}.*`],
         ...options,
       },
     );

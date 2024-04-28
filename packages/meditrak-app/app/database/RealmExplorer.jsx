@@ -4,12 +4,17 @@
  */
 
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
+import Menu, {
+  MenuContext,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-menu';
 
-import { database } from './singleton';
+import {database} from './singleton';
 import * as dataTypes from './types';
-import { TupaiaBackground } from '../widgets';
+import {TupaiaBackground} from '../widgets';
 
 const DATA_TYPES = Object.keys(dataTypes);
 
@@ -44,8 +49,8 @@ export class RealmExplorer extends React.Component {
   };
 
   setDataTypeDisplayed = type => {
-    const databaseType = type === 'GeographicalArea' ? 'Area' : type;
-    const rawData = database.objects(databaseType);
+    const databaseRecord = type === 'GeographicalArea' ? 'Area' : type;
+    const rawData = database.objects(databaseRecord);
     const data = rawData.map(row => {
       const rowData = {};
       Object.keys(row).forEach(key => {
@@ -58,7 +63,8 @@ export class RealmExplorer extends React.Component {
             typeof value.getMonth === 'function')
         )
           rowData[key] = String(value);
-        else if (typeof value === 'boolean') rowData[key] = value ? 'True' : 'False';
+        else if (typeof value === 'boolean')
+          rowData[key] = value ? 'True' : 'False';
         else if (value && value.length) rowData[key] = value.length;
         // Most likely a realm list
         else if (value && value.id) rowData[key] = value.id;
@@ -84,10 +90,11 @@ export class RealmExplorer extends React.Component {
               style={localStyles.menu}
               onSelect={value => {
                 this.setDataTypeDisplayed(value);
-              }}
-            >
+              }}>
               <MenuTrigger>
-                <Text style={localStyles.menuButton}>{this.state.selectedType}</Text>
+                <Text style={localStyles.menuButton}>
+                  {this.state.selectedType}
+                </Text>
               </MenuTrigger>
               <MenuOptions optionsContainerStyle={localStyles.options}>
                 {DATA_TYPES.map(typeName => (
@@ -99,7 +106,7 @@ export class RealmExplorer extends React.Component {
             </Menu>
           </View>
           <View style={localStyles.rowContainer}>
-            {this.state.columns.map(({ key, title }) => (
+            {this.state.columns.map(({key, title}) => (
               <Text key={key} style={localStyles.cell}>
                 {title}
               </Text>
@@ -107,9 +114,9 @@ export class RealmExplorer extends React.Component {
           </View>
           <FlatList
             data={this.state.data}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={localStyles.rowContainer}>
-                {this.state.columns.map(({ key }) => (
+                {this.state.columns.map(({key}) => (
                   <Text key={key} style={localStyles.cell}>
                     {item[key]}
                   </Text>

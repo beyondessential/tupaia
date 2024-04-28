@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/datatrak-web"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "dependencies": {
     "@hookform/resolvers": "1.3.8",
     "@material-ui/core": "^4.9.11",
@@ -21,7 +21,7 @@
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/ui-map-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "axios": "^1.4.0",
+    "axios": "^1.6.8",
     "bson-objectid": "^1.2.2",
     "downloadjs": "1.4.7",
     "leaflet": "^1.7.1",
@@ -48,7 +48,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "msw": "^1.3.1",
     "npm-run-all": "^4.1.5",
-    "vite": "^4.3.2"
+    "vite": "^4.5.3"
   },
   "scripts": {
     "build": "yarn package:build:types && yarn package:build:vite",

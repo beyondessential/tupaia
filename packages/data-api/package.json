@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/data-api"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -28,13 +28,13 @@
   },
   "dependencies": {
     "@tupaia/database": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^1.2.2",
     "deep-equal-in-any-order": "^1.0.27",
-    "dotenv": "^8.2.0",
     "lodash.groupby": "^4.6.0",
     "moment": "^2.24.0"
   },

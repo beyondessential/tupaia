@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export { ReferenceProps, PlaintextReferenceProps, LinkReferenceProps } from './common';
+export {
+  ReferenceProps,
+  PlaintextReferenceProps,
+  LinkReferenceProps,
+  EntityAttributes,
+} from './common';
 export type {
   ReportConfig,
   StandardReportConfig,
@@ -37,6 +42,7 @@ export {
   MatrixConfig,
   PresentationOptionCondition,
   MatrixPresentationOptions,
+  ConditionsObject,
   ConditionValue,
   ConditionType,
   RangePresentationOptions,
@@ -87,6 +93,9 @@ export {
   EntityQuestionConfig,
   ConditionQuestionConfig,
   ArithmeticQuestionConfig,
+  EntityQuestionConfigFields,
+  EntityQuestionConfigFieldValue,
+  EntityQuestionConfigFieldKey,
 } from './survey';
 export { LeaderboardItem } from './leaderboard';
 export {
@@ -97,3 +106,5 @@ export {
 } from './feedItem';
 export { VizPeriodGranularity, DashboardItemType } from './common';
 export { isChartReport, isViewReport, isMatrixReport } from './report';
+export { UserAccountPreferences } from './user';
+export { ProjectConfig } from './project';

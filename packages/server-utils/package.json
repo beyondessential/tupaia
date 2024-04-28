@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia.git",
     "directory": "packages/server-utils"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -25,7 +25,8 @@
     "@aws-sdk/lib-storage": "^3.348.0",
     "@tupaia/utils": "workspace:*",
     "cookie": "^0.5.0",
-    "nodemailer": "^6.9.7",
+    "dotenv": "^16.4.5",
+    "nodemailer": "^6.9.12",
     "puppeteer": "^15.4.0",
     "sha256": "^0.2.0"
   },

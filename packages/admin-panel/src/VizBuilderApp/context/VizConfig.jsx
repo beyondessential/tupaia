@@ -1,8 +1,9 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useReducer, createContext, useContext } from 'react';
+
+import React, { createContext, useContext, useReducer } from 'react';
 
 /**
  * This store is designed to hold the state for the vizBuilderConfig
@@ -47,24 +48,18 @@ function configReducer(state, action) {
   switch (type) {
     case SET_LOCATION:
       return set(state, 'location', action.value);
-    case SET_PROJECT: {
+    case SET_PROJECT:
       return set(state, 'project', action.value);
-    }
-    case SET_START_DATE: {
+    case SET_START_DATE:
       return set(state, 'startDate', action.value);
-    }
-    case SET_END_DATE: {
+    case SET_END_DATE:
       return set(state, 'endDate', action.value);
-    }
-    case SET_TEST_DATA: {
+    case SET_TEST_DATA:
       return set(state, 'testData', action.value);
-    }
-    case SET_VIZ_TYPE: {
+    case SET_VIZ_TYPE:
       return set(state, 'vizType', action.value);
-    }
-    case SET_VISUALISATION: {
+    case SET_VISUALISATION:
       return set(state, 'visualisation', action.value);
-    }
     case SET_VISUALISATION_VALUE: {
       const { key, value } = action;
       return {
@@ -109,7 +104,7 @@ function configReducer(state, action) {
       };
     }
     default:
-      throw new Error('Type not found');
+      throw new Error(`Unexpected viz type: ‘${type}’`);
   }
 }
 
@@ -172,14 +167,9 @@ const amendStepsToBaseConfig = visualisation => {
 
   // Remove frontend configs (isDisabled, id, schema) in transform steps. If it is an alias return as a string.
   const filteredTransform = Array.isArray(transform)
-    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) => {
-        if (restOfConfig.alias) {
-          return restOfConfig.transform;
-        }
-        return {
-          ...restOfConfig,
-        };
-      })
+    ? transform.map(({ isDisabled, id, schema, ...restOfConfig }) =>
+        restOfConfig.alias ? restOfConfig.transform : restOfConfig,
+      )
     : transform;
 
   const filteredData = { ...data, transform: filteredTransform };
@@ -221,14 +211,10 @@ const VizConfigProvider = ({ children }) => {
   );
 };
 
-const useVisualisation = () => {
-  return useContext(VisualisationContext);
-};
+const useVisualisationContext = () => useContext(VisualisationContext);
 
-const useVizConfig = () => {
-  return useContext(VizBuilderConfigContext);
-};
+const useVizConfigContext = () => useContext(VizBuilderConfigContext);
 
 // Note: the store can be debugged in dev tools using a chrome plugin.
-// https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf?hl=en
-export { useVisualisation, useVizConfig, VizConfigProvider };
+// https://chrome.google.com/webstore/detail/react-context-devtool/oddhnidmicpefilikhgeagedibnefkcf
+export { useVisualisationContext, useVizConfigContext, VizConfigProvider };

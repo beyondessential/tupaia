@@ -27,7 +27,6 @@ import { BESAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
 import { GETCountries } from './GETCountries';
 import { GETClinics } from './GETClinics';
-import { GETDisasters } from './GETDisasters';
 import { GETDataElements, EditDataElements, DeleteDataElements } from './dataElements';
 import { GETDataGroups, EditDataGroups, DeleteDataGroups } from './dataGroups';
 import { GETDataTables } from './dataTables';
@@ -156,14 +155,6 @@ apiV2.use(logApiRequest); // log every request to the api_request_log table
 apiV2.use(ensurePermissionCheck); // ensure permissions checking is handled by each endpoint
 
 /**
- * Legacy routes to be eventually removed
- */
-apiV2.post(
-  '/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
-  allowAnyone(requestCountryAccess),
-);
-
-/**
  * /export and /import routes
  */
 apiV2.use('/export', exportRoutes);
@@ -181,7 +172,6 @@ apiV2.get('/me', useRouteHandler(GETUserForMe));
 apiV2.get('/me/rewards', allowAnyone(getUserRewards));
 apiV2.get('/me/countries', allowAnyone(getCountryAccessList));
 apiV2.get('/answers/:recordId?', useRouteHandler(GETAnswers));
-apiV2.get('/disasters/:recordId?', useRouteHandler(GETDisasters));
 apiV2.get('/dashboards/:recordId?', useRouteHandler(GETDashboards));
 apiV2.get('/dashboards/:parentRecordId/dashboardRelations', useRouteHandler(GETDashboardRelations));
 apiV2.get(
@@ -301,7 +291,6 @@ apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
 apiV2.post('/dashboardMailingLists', useRouteHandler(CreateDashboardMailingList));
 apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailingListEntry));
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
-apiV2.post('/disasters', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
@@ -330,7 +319,6 @@ apiV2.put('/surveyScreenComponents/:recordId', useRouteHandler(EditSurveyScreenC
 apiV2.put('/dataElements/:recordId', useRouteHandler(EditDataElements));
 apiV2.put('/dataGroups/:recordId', useRouteHandler(EditDataGroups));
 apiV2.put('/dataTables/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/disasters/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/feedItems/:recordId', useRouteHandler(EditFeedItems));
 apiV2.put('/options/:recordId', useRouteHandler(EditOptions));
 apiV2.put('/optionSets/:recordId', useRouteHandler(EditOptionSets));
@@ -369,7 +357,6 @@ apiV2.delete('/surveyScreenComponents/:recordId', useRouteHandler(DeleteSurveySc
 apiV2.delete('/dataElements/:recordId', useRouteHandler(DeleteDataElements));
 apiV2.delete('/dataGroups/:recordId', useRouteHandler(DeleteDataGroups));
 apiV2.delete('/dataTables/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/disasters/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/entities/:recordId', useRouteHandler(DeleteEntity));
 apiV2.delete('/feedItems/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/options/:recordId', useRouteHandler(DeleteOptions));

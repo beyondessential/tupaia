@@ -101,6 +101,49 @@ your changes and provide feedback. If your pull request has been approved by a r
 will then go through a round of internal testing. Once your changes have passed testing, they
 can be merged into main and be included in an upcoming Tupaia release.
 
+#### Pull request title rules
+
+We use a squash-and-merge strategy when merging PRs into dev. This means the commit messages in dev will match the PR titles. We like to keep standardised commit messages as an easy way to track release changes and for record keeping purposes.
+
+The title of pull requests must be in [Conventional Commit](https://beyond-essential.slab.com/posts/pr-titles-conventional-commits-avgsj3xb) format. This is used to generate
+changelogs, and to provide a consistent format for commits landing in the main branch, as pull
+requests are merged in “squash” mode.
+
+```plain
+type: <description>
+type(scope): <description>
+```
+
+When a Linear card is applicable, the Linear card number should be included:
+
+```plain
+type: TEAM-123: <description>
+type(scope): TEAM-123: <description>
+```
+
+The following types are conventional:
+
+- `ci` for changes to the CI/CD workflows
+- `db` for changes to the database schema, migrations, etc
+- `deps` for changes to dependencies or dependency upgrades
+- `doc` for documentation changes
+- `env` for changes to the environment variables
+- `feat` for new features
+- `fix` for bug fixes
+- `fmt` for automatic formatting changes
+- `merge` for merging between branches (generally between `master` and `dev`)
+- `refactor` for code refactoring
+- `repo` for changes to the repository structure (e.g. `.gitignore`, `.editorconfig`, etc)
+- `revert` for reverting a previous commit
+- `style` for stylistic changes that do not affect the meaning of the code
+- `test` for adding missing tests or correcting existing tests
+- `tweak` for minor changes that do not fit into any other category
+
+When merging, additional change lines may be added to the squashed commit message to provide further
+context to be pulled into changelogs.
+
+Using Conventional Commit format for actual commit messages within pull requests is not required.
+
 ### Note on Forking
 
 While Tupaia is open-source, there is always the possibility for forking the repository, which

@@ -3,19 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { ApiConnection, AuthHandler, SessionType } from '@tupaia/server-boilerplate';
-import { createBasicHeader } from '@tupaia/utils';
-
-const { MICROSERVICE_CLIENT_USERNAME, MICROSERVICE_CLIENT_SECRET } = process.env;
-const DEFAULT_AUTH_HEADER = createBasicHeader(
-  MICROSERVICE_CLIENT_USERNAME,
-  MICROSERVICE_CLIENT_SECRET,
-);
+import { ApiConnection, AuthHandler, SessionRecord } from '@tupaia/server-boilerplate';
+import { createBasicHeader, requireEnv } from '@tupaia/utils';
 
 class SessionSwitchingAuthHandler implements AuthHandler {
-  session?: SessionType;
+  session?: SessionRecord;
 
-  constructor(session?: SessionType) {
+  constructor(session?: SessionRecord) {
     this.session = session;
   }
 
@@ -27,7 +21,9 @@ class SessionSwitchingAuthHandler implements AuthHandler {
     if (this.session) {
       return this.session.getAuthHeader();
     }
-
+    const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
+    const API_CLIENT_SECRET = requireEnv('API_CLIENT_SECRET');
+    const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_SECRET);
     return DEFAULT_AUTH_HEADER;
   }
 }
@@ -35,7 +31,7 @@ class SessionSwitchingAuthHandler implements AuthHandler {
 export abstract class SessionHandlingApiConnection extends ApiConnection {
   authHandler: SessionSwitchingAuthHandler;
 
-  constructor(session?: SessionType) {
+  constructor(session?: SessionRecord) {
     const authHandler = new SessionSwitchingAuthHandler(session);
     super(authHandler);
     this.authHandler = authHandler;

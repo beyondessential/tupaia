@@ -8,7 +8,7 @@ import { oneSecondSleep, randomIntBetween } from '@tupaia/utils';
 import {
   generateId,
   generateValueOfType,
-  TYPES,
+  RECORDS,
   buildAndInsertSurveys,
   upsertDummyRecord,
   findOrCreateDummyCountryEntity,
@@ -204,10 +204,10 @@ describe('POST /surveyResponse', async () => {
       it('adds the survey response to the sync queue after it is submitted', async function () {
         this.retries(10);
         await oneSecondSleep(1000);
-        expect(syncQueue.count(TYPES.SURVEY_RESPONSE), 'survey responses added').to.equal(
+        expect(syncQueue.count(RECORDS.SURVEY_RESPONSE), 'survey responses added').to.equal(
           numberOfSurveyResponsesToAdd,
         );
-        expect(syncQueue.count(TYPES.ANSWER), 'answers added').to.equal(
+        expect(syncQueue.count(RECORDS.ANSWER), 'answers added').to.equal(
           numberOfAnswersInEachSurvey * numberOfSurveyResponsesToAdd,
         );
       });

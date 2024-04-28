@@ -4,17 +4,13 @@
  */
 
 import pluralize from 'pluralize';
-
-import { TYPES } from '../types';
 import { generateValueOfType } from './generateValueOfType';
 import { generateId } from '../utilities';
+import { RECORDS } from '../records';
 
-const { DISASTER, ENTITY, SURVEY_RESPONSE } = TYPES;
+const { ENTITY, SURVEY_RESPONSE } = RECORDS;
 
 const CUSTOM_DUMMY_VALUES = {
-  [DISASTER]: {
-    type: 'cyclone',
-  },
   [ENTITY]: {
     type: 'facility', // default testing entity should be facility
     country_code: 'DL', // use demo land by default in testing
@@ -54,12 +50,12 @@ const generateDummyRecord = async (model, overrides = {}) => {
       // - the value passed in explicitly in overrides, generally hard coded for the specific test
       if (overrides[fieldName] !== undefined) return overrides[fieldName];
       // - the value stored in CUSTOM_DUMMY_VALUES, even if that is 'null'
-      const { databaseType } = model;
+      const { databaseRecord } = model;
       if (
-        CUSTOM_DUMMY_VALUES[databaseType] &&
-        CUSTOM_DUMMY_VALUES[databaseType][fieldName] !== undefined
+        CUSTOM_DUMMY_VALUES[databaseRecord] &&
+        CUSTOM_DUMMY_VALUES[databaseRecord][fieldName] !== undefined
       )
-        return CUSTOM_DUMMY_VALUES[databaseType][fieldName];
+        return CUSTOM_DUMMY_VALUES[databaseRecord][fieldName];
       // - the default value from the database schema
       if (columnInfo.defaultValue !== null)
         return processDefaultValue(columnInfo.defaultValue, columnInfo.type);

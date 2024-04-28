@@ -7,12 +7,12 @@ import {
   BarChartConfigSchema,
   ColorMapOverlayConfigSchema,
   ComposedChartConfigSchema,
-  DataDownloadViewConfigSchema,
+  DataDownloadViewVizBuilderConfigSchema,
   DownloadFilesViewConfigSchema,
   GaugeChartConfigSchema,
   IconMapOverlayConfigSchema,
   LineChartConfigSchema,
-  MatrixConfigSchema,
+  MatrixVizBuilderConfigSchema,
   MultiPhotographViewConfigSchema,
   MultiSingleValueViewConfigSchema,
   MultiValueRowViewConfigSchema,
@@ -133,10 +133,14 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   },
   DATA_DOWNLOAD_VIEW: {
     name: 'Data Download View',
-    schema: DataDownloadViewConfigSchema,
+    schema: DataDownloadViewVizBuilderConfigSchema,
+    vizMatchesType: viz => viz.type === 'view' && viz.viewType === 'dataDownload',
     initialConfig: {
       type: 'view',
       viewType: 'dataDownload',
+      output: {
+        type: 'rawDataExport',
+      },
     },
   },
   SINGLE_DATE_VIEW: {
@@ -167,9 +171,14 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   // Matrix
   MATRIX: {
     name: 'Matrix',
-    schema: MatrixConfigSchema,
+    schema: MatrixVizBuilderConfigSchema,
+    vizMatchesType: viz => viz.type === 'matrix',
     initialConfig: {
       type: 'matrix',
+      output: {
+        type: 'matrix',
+        rowField: '',
+      },
     },
   },
 
@@ -185,6 +194,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
   ICON: {
     name: 'Icon',
     schema: IconMapOverlayConfigSchema,
+    vizMatchesType: viz => viz.displayType === 'icon',
     initialConfig: {
       displayType: 'icon',
       icon: 'pin',
@@ -214,6 +224,7 @@ export const MAP_OVERLAY_VIZ_TYPES = {
   SPECTRUM: {
     name: 'Spectrum',
     schema: SpectrumMapOverlayConfigSchema,
+    vizMatchesType: viz => viz.displayType === 'shaded-spectrum',
     initialConfig: {
       displayType: 'shaded-spectrum',
       scaleColorScheme: 'default',

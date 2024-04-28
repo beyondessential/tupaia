@@ -73,7 +73,8 @@ modes.allValues = values;
  * @property {Function} [innerRef] - callback to get html element reference
  * @property {Function} [editorRef] - callback to get JSONEditor reference
  * @property {boolean} [sortObjectKeys=false] If true, object keys in 'tree',
- * 'view' or 'form' mode list be listed alphabetically instead by their insertion order..
+ * 'view' or 'form' mode list be listed alphabetically instead by their insertion order.
+ * @property {Function} [editorRef] - callback to get the json editor instance, to programmatically change values, for example
  */
 export class JsonEditor extends Component {
   constructor(props) {
@@ -111,6 +112,7 @@ export class JsonEditor extends Component {
     tag,
     onChange,
     onInvalidChange,
+    value,
     editorRef,
     ...rest
   }) {
@@ -163,6 +165,10 @@ export class JsonEditor extends Component {
       onChange: this.handleChange,
       ...rest,
     });
+
+    if (this.props.editorRef) {
+      this.props.editorRef(this.jsonEditor);
+    }
 
     this.jsonEditor.set(value);
     if (this.props.editorRef) {
@@ -221,6 +227,7 @@ export class JsonEditor extends Component {
     return React.createElement(tag, {
       ...htmlElementProps,
       ref: this.setRef,
+      set: this.set,
     });
   }
 }

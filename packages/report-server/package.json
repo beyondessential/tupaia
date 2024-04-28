@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -22,7 +22,8 @@
     "start": "node dist",
     "start-dev": "yarn package:start:backend-start-dev 9995 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
-    "test": "yarn package:test",
+    "setup-test": "yarn workspace @tupaia/database setup-test-database",
+    "test": "yarn package:test:withdb",
     "test:coverage": "yarn test --coverage",
     "test:watch": "yarn test --watch"
   },
@@ -35,6 +36,7 @@
     "@tupaia/database": "workspace:*",
     "@tupaia/expression-parser": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
@@ -43,8 +45,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.2",
+    "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.keyby": "^4.6.0",

@@ -32,7 +32,7 @@ export class EditHandler extends CRUDHandler {
 
   async updateRecord() {
     await this.models
-      .getModelForDatabaseType(this.recordType)
+      .getModelForDatabaseRecord(this.recordType)
       .updateById(this.recordId, this.updatedFields);
   }
 
