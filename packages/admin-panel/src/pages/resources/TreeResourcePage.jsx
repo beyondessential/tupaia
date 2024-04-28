@@ -7,8 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
-import { Header, PageBody } from '../../widgets';
-import { usePortalWithCallback } from '../../utilities';
+import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
 import * as COLORS from '../../theme/colors';
 
@@ -28,22 +27,11 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   }
 `;
 
-export const TreeResourcePage = ({
-  title,
-  getHeaderEl,
-  fetchRoot,
-  fetchBranch,
-  ExportModalComponent,
-}) => {
-  const HeaderPortal = usePortalWithCallback(
-    <Header title={title} ExportModalComponent={ExportModalComponent} />,
-    getHeaderEl,
-  );
-
+export const TreeResourcePage = ({ title, fetchRoot, fetchBranch, ExportModalComponent }) => {
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader title={title} ExportModalComponent={ExportModalComponent} />
         <StyledHorizontalTree fetchRoot={fetchRoot} fetchBranch={fetchBranch} />
       </Container>
       <LogsModal />
@@ -56,7 +44,6 @@ TreeResourcePage.defaultProps = {
 };
 
 TreeResourcePage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   fetchRoot: PropTypes.func.isRequired,
   fetchBranch: PropTypes.func.isRequired,
