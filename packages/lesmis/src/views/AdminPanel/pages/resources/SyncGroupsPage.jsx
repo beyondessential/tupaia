@@ -73,7 +73,7 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
       type: 'sync',
       source: 'sync_status',
       filterable: false,
-      disableSortBy: false,
+      disableSortBy: true,
       width: 180,
       actionConfig: {
         syncStatusEndpoint: 'dataServiceSyncGroups/{id}',

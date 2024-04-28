@@ -71,7 +71,7 @@ export const DraftSurveyResponsesView = props => {
       source: 'id',
       Cell: ApproveButton,
       filterable: false,
-      disableSortBy: false,
+      disableSortBy: true,
       width: 75,
     },
     {
