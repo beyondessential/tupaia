@@ -12,7 +12,6 @@ export class AccessPolicyBuilder {
     this.models = models;
     this.cachedPolicyPromises = {};
     this.setupCacheInvalidation();
-    this.id = Math.random() * 10;
   }
 
   resetCaches() {
