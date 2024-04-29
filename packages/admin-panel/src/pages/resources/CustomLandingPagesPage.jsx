@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from '@material-ui/core';
 import { SECTION_FIELD_TYPE } from '../../editor/constants';
 import { ResourcePage } from './ResourcePage';
@@ -290,18 +289,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CustomLandingPagesPage = ({ getHeaderEl }) => {
+export const CustomLandingPagesPage = () => {
   return (
     <ResourcePage
       resourceName={RESOURCE_NAME}
       endpoint={LANDING_PAGES_ENDPOINT}
       columns={COLUMNS}
-      getHeaderEl={getHeaderEl}
       createConfig={CREATE_CONFIG}
     />
   );
-};
-
-CustomLandingPagesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
 };

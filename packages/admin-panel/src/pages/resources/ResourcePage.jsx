@@ -1,6 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { Header, PageBody } from '../../widgets';
-import { getExplodedFields, usePortalWithCallback } from '../../utilities';
+import { PageBody, PageHeader } from '../../widgets';
+import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -52,28 +52,23 @@ export const ResourcePage = ({
   onProcessDataForSave,
   baseFilter,
   title,
-  getHeaderEl,
   defaultFilters,
   defaultSorting,
   deleteConfig,
   editorConfig,
 }) => {
-  const HeaderPortal = usePortalWithCallback(
-    <Header
-      resourceName={resourceName}
-      title={title}
-      importConfig={importConfig}
-      exportConfig={exportConfig}
-      createConfig={createConfig}
-      ExportModalComponent={ExportModalComponent}
-      LinksComponent={LinksComponent}
-    />,
-    getHeaderEl,
-  );
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader
+          resourceName={resourceName}
+          title={title}
+          importConfig={importConfig}
+          exportConfig={exportConfig}
+          createConfig={createConfig}
+          ExportModalComponent={ExportModalComponent}
+          LinksComponent={LinksComponent}
+        />
         <DataFetchingTable
           columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={endpoint}
@@ -99,7 +94,6 @@ ResourcePage.propTypes = {
     singular: PropTypes.string.isRequired,
     plural: PropTypes.string,
   }).isRequired,
-  getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,

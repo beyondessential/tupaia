@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'access request' };
@@ -176,14 +175,13 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const AccessRequestsPage = ({ getHeaderEl }) => (
+export const AccessRequestsPage = () => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint="accessRequests"
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     baseFilter={{ approved: null }}
-    getHeaderEl={getHeaderEl}
     onProcessDataForSave={(editedFields, recordData) => {
       if (!Array.isArray(recordData)) {
         return editedFields;
@@ -194,7 +192,3 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
     }}
   />
 );
-
-AccessRequestsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

@@ -12,7 +12,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
-export const DashboardsPage = ({ getHeaderEl, translate }) => {
+export const DashboardsPage = ({ translate }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -143,12 +143,10 @@ export const DashboardsPage = ({ getHeaderEl, translate }) => {
       createConfig={createConfig}
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 DashboardsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -173,12 +172,11 @@ const CREATE_CONFIG = {
   },
 };
 
-export const ProjectsPage = ({ getHeaderEl }) => (
+export const ProjectsPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint="projects"
     columns={COLUMNS}
-    getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={(editedFields, recordData) => {
       // If the project is being edited, and the code field is not being edited, then include the existing code in the edited fields so that it can be used for generating project image names.
@@ -187,9 +185,6 @@ export const ProjectsPage = ({ getHeaderEl }) => (
       }
       return editedFields;
     }}
+    {...props}
   />
 );
-
-ProjectsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

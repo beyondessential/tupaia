@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'DHIS instance' };
@@ -61,17 +60,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const DhisInstancesPage = ({ getHeaderEl, ...props }) => (
+export const DhisInstancesPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint="dhisInstances"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-DhisInstancesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

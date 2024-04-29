@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'map overlay group' };
@@ -112,21 +111,16 @@ const CREATE_CONFIG = {
   },
 };
 
-export const MapOverlayGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const MapOverlayGroupsPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
-    getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     editConfig={{
       title: 'Edit Map Overlay Group',
     }}
-    {...restOfProps}
+    {...props}
   />
 );
-
-MapOverlayGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

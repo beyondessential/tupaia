@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'dashboard' };
@@ -133,18 +132,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const DashboardsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const DashboardsPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint={DASHBOARDS_ENDPOINT}
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-DashboardsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

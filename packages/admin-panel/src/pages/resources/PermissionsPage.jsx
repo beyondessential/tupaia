@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'permission' };
@@ -142,19 +141,14 @@ const processDataForSave = (fieldsToSave, recordData) => {
   return records;
 };
 
-export const PermissionsPage = ({ getHeaderEl, ...props }) => (
+export const PermissionsPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
     createConfig={CREATE_CONFIG}
     importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
     onProcessDataForSave={processDataForSave}
   />
 );
-
-PermissionsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

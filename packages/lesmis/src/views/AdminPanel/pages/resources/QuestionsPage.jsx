@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { QuestionsPage as BaseQuestionsPage } from '@tupaia/admin-panel';
 import { getQuestionPageConfigs } from '../helpers/getQuestionPageConfigs';
 
-export const QuestionsPage = ({ getHeaderEl, translate }) => {
+export const QuestionsPage = ({ translate }) => {
   const { QUESTION_COLUMNS, EXPANSION_CONFIG, EDITOR_CONFIG } = getQuestionPageConfigs(translate);
 
   return (
@@ -17,13 +17,11 @@ export const QuestionsPage = ({ getHeaderEl, translate }) => {
       endpoint="questions"
       columns={QUESTION_COLUMNS}
       expansionTabs={EXPANSION_CONFIG}
-      getHeaderEl={getHeaderEl}
       editorConfig={EDITOR_CONFIG}
     />
   );
 };
 
 QuestionsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

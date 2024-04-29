@@ -9,3 +9,4 @@ export { DataChangeAction } from './DataChangeAction';
 export { BulkCreateButton } from './BulkCreateButton';
 export { EditModal } from './EditModal';
 export { reducer } from './reducer';
+export { CreateActionButton, ActionButton } from './ActionButton';

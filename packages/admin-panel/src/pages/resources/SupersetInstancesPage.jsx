@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const RESOURCE_NAME = { singular: 'superset instance' };
@@ -53,18 +52,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SupersetInstancesPage = ({ getHeaderEl, ...props }) => (
+export const SupersetInstancesPage = props => (
   <ResourcePage
     resourceName={RESOURCE_NAME}
     title="mSupply superset instances"
     endpoint="supersetInstances"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-SupersetInstancesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

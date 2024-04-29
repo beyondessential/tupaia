@@ -12,7 +12,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
-export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
+export const SyncGroupsPage = ({ translate }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -98,12 +98,10 @@ export const SyncGroupsPage = ({ getHeaderEl, translate }) => {
       columns={COLUMNS}
       editorConfig={editorConfig}
       createConfig={createConfig}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 SyncGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };
