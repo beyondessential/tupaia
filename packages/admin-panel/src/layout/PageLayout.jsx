@@ -15,9 +15,9 @@ import { PROFILE_ROUTES } from '../profileRoutes';
 
 export const PageLayout = ({ user }) => {
   const location = useLocation();
-  const route = [...ROUTES, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.to));
+  const activeRoute = [...ROUTES, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.to));
 
-  const baseRoute = route?.to;
+  const baseRoute = activeRoute?.to;
   return (
     <PrivateRoute>
       <PageWrapper>
@@ -31,9 +31,10 @@ export const PageLayout = ({ user }) => {
         />
         <Main>
           <PageContentWrapper>
-            {route && (
+            {activeRoute && (
               <SecondaryNavbar
-                links={route?.childViews?.map(childRoute => ({
+                activeRoute={activeRoute}
+                links={activeRoute?.childViews?.map(childRoute => ({
                   ...childRoute,
                   id: `app-sub-view-${labelToId(childRoute.label)}`,
                 }))}

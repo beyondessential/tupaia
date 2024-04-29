@@ -17,6 +17,7 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 import { ConfirmDeleteModal } from '@tupaia/ui-components';
@@ -35,6 +36,7 @@ import {
 } from '../actions';
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
+import { CellContent } from './CellContent';
 
 const BUTTON_COLUMN_WIDTH = '4.5rem';
 
@@ -96,6 +98,7 @@ const DataFetchingTableComponent = ({
   totalRecords,
   isFetchingData,
   onSortedChange,
+  detailUrl,
 }) => {
   const {
     getTableProps,
@@ -219,10 +222,7 @@ const DataFetchingTableComponent = ({
               {displayFilterRow &&
                 visibleColumns.map(column => {
                   return (
-                    <Cell
-                      key={column.id}
-                      // $width={column.width}
-                    >
+                    <Cell key={column.id}>
                       {column.filterable ? (
                         <FilterCell
                           column={column}
@@ -239,7 +239,7 @@ const DataFetchingTableComponent = ({
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                  {row.cells.map(({ getCellProps, value, render }, i) => {
+                  {row.cells.map(({ getCellProps, value, render, ...cell }, i) => {
                     return (
                       <Cell
                         value={value}
@@ -247,7 +247,9 @@ const DataFetchingTableComponent = ({
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
                       >
-                        {render('Cell')}
+                        <CellContent row={row} detailUrl={detailUrl}>
+                          {render('Cell')}
+                        </CellContent>
                       </Cell>
                     );
                   })}
@@ -307,6 +309,7 @@ DataFetchingTableComponent.propTypes = {
   deleteConfig: PropTypes.object,
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
+  detailUrl: PropTypes.string,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -319,6 +322,7 @@ DataFetchingTableComponent.defaultProps = {
   TableComponent: undefined,
   actionColumns: [],
   totalRecords: 0,
+  detailUrl: '',
 };
 
 const mapStateToProps = (state, { columns, reduxId }) => ({

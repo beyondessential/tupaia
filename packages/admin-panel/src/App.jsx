@@ -1,6 +1,6 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -14,14 +14,50 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 
-const RecursiveChildRoute = ({ route, ...props }) => {
+const PageRoute = ({ route }) => {
   const { childViews } = route;
 
   if (!childViews) return null;
 
+  const params = useParams();
+
+  const replaceParams = endpoint => {
+    if (!endpoint) return null;
+    let updatedEndpoint = endpoint;
+    Object.keys(params).forEach(key => {
+      updatedEndpoint = endpoint.replace(`{${key}}`, params[key]);
+    });
+    return updatedEndpoint;
+  };
+
+  // Flatten child views to include details view to create a route for each
+  const flattenedChildViews = childViews.reduce((acc, childView) => {
+    const { detailsView } = childView;
+
+    const updatedDetailsView = detailsView
+      ? {
+          ...detailsView,
+          to: `${childView.to}${detailsView.to}`,
+          endpoint: replaceParams(detailsView.endpoint),
+          parent: childView,
+        }
+      : null;
+
+    const childViewWithRoute = {
+      ...childView,
+      parent: route,
+      detailsView: updatedDetailsView,
+    };
+
+    if (detailsView) {
+      return [...acc, childViewWithRoute, updatedDetailsView];
+    }
+    return [...acc, childViewWithRoute];
+  }, []);
+
   return (
     <Routes>
-      {childViews?.map(childRoute => (
+      {flattenedChildViews?.map(childRoute => (
         <Route
           key={childRoute.to}
           path={childRoute.to}
@@ -29,11 +65,7 @@ const RecursiveChildRoute = ({ route, ...props }) => {
             childRoute.Component ? (
               <childRoute.Component />
             ) : (
-              <ResourcePage
-                {...props}
-                {...childRoute}
-                endpoint={childRoute.endpoint?.replace('{id}', useParams().id)}
-              />
+              <ResourcePage {...childRoute} endpoint={replaceParams(childRoute.endpoint)} />
             )
           }
         />
@@ -42,7 +74,7 @@ const RecursiveChildRoute = ({ route, ...props }) => {
   );
 };
 
-RecursiveChildRoute.propTypes = {
+PageRoute.propTypes = {
   route: PropTypes.object.isRequired,
 };
 
@@ -54,11 +86,7 @@ export const App = ({ user }) => {
       <Route path="/" element={<PageLayout user={user} />}>
         <Route index element={<Navigate to="/surveys" replace />} />
         {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-          <Route
-            key={route.to}
-            path={`${route.to}/*`}
-            element={<RecursiveChildRoute route={route} />}
-          />
+          <Route key={route.to} path={`${route.to}/*`} element={<PageRoute route={route} />} />
         ))}
       </Route>
     </Routes>

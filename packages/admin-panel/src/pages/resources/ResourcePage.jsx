@@ -1,11 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader, PageBody } from '../../widgets';
@@ -13,6 +14,7 @@ import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
+import { Breadcrumbs } from '../../layout';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -54,10 +56,27 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
+  detailsView,
+  parent,
+  displayValue,
 }) => {
+  const params = useParams();
+
+  const replaceParams = () => {
+    if (!endpoint) return null;
+    let updatedEndpoint = endpoint;
+    Object.keys(params).forEach(key => {
+      updatedEndpoint = endpoint.replace(`{${key}}`, params[key]);
+    });
+    return updatedEndpoint;
+  };
+  const { to } = detailsView || {};
+
+  const updatedEndpoint = replaceParams();
   return (
     <>
       <Container>
+        <Breadcrumbs parent={parent} title={title} displayValue={displayValue} />
         <PageHeader
           title={title}
           importConfig={importConfig}
@@ -68,13 +87,14 @@ export const ResourcePage = ({
         />
         <DataFetchingTable
           columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
-          endpoint={endpoint}
-          reduxId={reduxId || endpoint}
+          endpoint={updatedEndpoint}
+          reduxId={reduxId || updatedEndpoint}
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           TableComponent={TableComponent}
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
+          detailUrl={to}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
@@ -102,6 +122,9 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
+  detailsView: PropTypes.object,
+  parent: PropTypes.object,
+  displayValue: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -118,4 +141,7 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
+  detailsView: null,
+  parent: null,
+  displayValue: null,
 };

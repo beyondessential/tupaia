@@ -4,10 +4,11 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { NavLink as BaseNavLink } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+import { matchPath, Link, useLocation } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { labelToId } from '../../utilities';
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -31,25 +32,21 @@ const NavBar = styled.nav`
   align-items: center;
 `;
 
-const NavLink = styled(BaseNavLink)`
+const RouteLink = styled(Link)`
   line-height: 1.5;
   text-decoration: none;
   padding-block: 0.43rem;
   padding-inline: 1.43rem;
   white-space: nowrap;
-  color: ${props => props.theme.palette.text.secondary};
-  &.active {
-    color: ${props => props.theme.palette.text.primary};
-    border-bottom: 4px solid ${props => props.theme.palette.primary.main};
-  }
+  color: ${({ theme }) => theme.palette.text.secondary};
   &:not(:last-child) {
-    border-right: 1px solid ${props => props.theme.palette.text.tertiary};
+    border-right: 1px solid ${({ theme }) => theme.palette.text.tertiary};
   }
 
   &:hover,
   &:focus {
-    color: ${props => props.theme.palette.text.primary};
-    font-weight: ${props => props.theme.typography.fontWeightMedium};
+    color: ${({ theme }) => theme.palette.text.primary};
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     outline: none;
   }
   /**
@@ -69,6 +66,12 @@ const NavLink = styled(BaseNavLink)`
     font-weight: ${props => props.theme.typography.fontWeightMedium};
     visibility: hidden;
   }
+  ${({ $active, theme }) =>
+    $active &&
+    css`
+      color: ${theme.palette.text.primary};
+      border-bottom: 4px solid ${theme.palette.primary.main};
+    `}
 `;
 
 const ScrollButton = styled(Button)`
@@ -204,11 +207,31 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 
 export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
   const containerRef = useRef(null);
+  const location = useLocation();
   const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
-  const links = linkInput.map(({ exact, to, ...rest }) => ({
-    ...rest,
-    target: exact ? to : `${baseRoute}${to}`,
-  }));
+
+  const getIsActive = link => {
+    const matchResult = matchPath(link.target, location.pathname);
+    const detailsViewMatch = link.detailsView
+      ? matchPath(`${link.target}${link.detailsView.to}`, location.pathname)
+      : false;
+
+    return !!matchResult || !!detailsViewMatch;
+  };
+
+  const links = linkInput?.map(({ exact, to, label, ...rest }) => {
+    const target = exact ? to : `${baseRoute}${to}`;
+    return {
+      ...rest,
+      label,
+      target,
+      id: `app-sub-view-${labelToId(label)}`,
+      active: getIsActive({
+        ...rest,
+        target,
+      }),
+    };
+  });
 
   const { scrollToNextVisibleItem, scrollToPrevVisibleItem, overflows } = useScrollableMenu(
     containerRef,
@@ -224,22 +247,16 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ to, label, target }, i) => (
-            <NavLink
+          {links.map(({ to, label, target, active }, i) => (
+            <RouteLink
               key={to}
               to={target}
-              isActive={(match, location) => {
-                console.log(match);
-                if (!match) {
-                  return false;
-                }
-                return match.url === location.pathname;
-              }}
               data-text={label}
               ref={navLinkRefs.current[i]}
+              $active={active}
             >
               {label}
-            </NavLink>
+            </RouteLink>
           ))}
         </NavBar>
       </Container>
@@ -255,8 +272,9 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
 SecondaryNavbar.propTypes = {
   links: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string.isRequired,
       to: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      exact: PropTypes.bool,
     }),
   ).isRequired,
   baseRoute: PropTypes.string.isRequired,

@@ -526,21 +526,19 @@ const QUESTION_COLUMNS = [
   },
 ];
 
-export const surveys = [
-  {
-    label: 'Surveys',
-    to: '',
-    title: 'Surveys',
-    endpoint: 'surveys',
-    columns: SURVEY_COLUMNS,
-    createConfig: CREATE_CONFIG,
-    childViews: [
-      {
-        to: '/:id',
-        endpoint: 'surveys/{id}/surveyScreenComponents',
-        columns: QUESTION_COLUMNS,
-        title: 'Questions',
-      },
-    ],
+export const surveys = {
+  label: 'Surveys',
+  to: '',
+  default: true,
+  title: 'Surveys',
+  endpoint: 'surveys',
+  columns: SURVEY_COLUMNS,
+  createConfig: CREATE_CONFIG,
+  detailsView: {
+    to: '/:id/questions',
+    endpoint: 'surveys/{id}/surveyScreenComponents',
+    columns: QUESTION_COLUMNS,
+    title: 'Questions',
+    displayValue: 'name', // gets used to determine what to display in the breadcrumbs
   },
-];
+};

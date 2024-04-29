@@ -7,3 +7,4 @@ export { PageBody } from './PageBody';
 export { NavPanel, SecondaryNavbar, HomeLink, UserLink } from './navigation';
 export { PageWrapper, Main, PageContentWrapper } from './Page';
 export { PageLayout } from './PageLayout';
+export { Breadcrumbs } from './Breadcrumbs';

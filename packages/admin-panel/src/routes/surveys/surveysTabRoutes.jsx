@@ -6,17 +6,15 @@
 import React from 'react';
 import { Assignment } from '@material-ui/icons';
 import { surveys } from './surveys';
+import { questions } from './questions';
 
 export const surveysTabRoutes = {
   label: 'Surveys',
   to: '/surveys',
   exact: true,
   icon: <Assignment />,
-  childViews: surveys,
-  // {
-  //   label: 'Questions',
-  //   to: '/questions',
-  // },
+  childViews: [surveys, questions],
+
   // {
   //   label: 'Option Sets',
   //   to: '/option-sets',
