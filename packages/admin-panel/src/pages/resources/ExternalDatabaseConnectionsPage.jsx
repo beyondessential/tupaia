@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
@@ -78,17 +77,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const ExternalDatabaseConnectionsPage = ({ getHeaderEl, ...props }) => (
+export const ExternalDatabaseConnectionsPage = props => (
   <ResourcePage
     title="External Database Connections"
     endpoint={EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT}
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-ExternalDatabaseConnectionsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

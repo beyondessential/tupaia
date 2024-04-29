@@ -10,3 +10,4 @@ export * from './PreviewSection';
 export * from './PreviewOptions';
 export * from './PlayButton';
 export * from './SaveButton';
+export { NavPanel } from './NavPanel';

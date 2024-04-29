@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
@@ -59,17 +58,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const IndicatorsPage = ({ getHeaderEl, ...props }) => (
+export const IndicatorsPage = props => (
   <ResourcePage
     title="Indicators"
     endpoint="indicators"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-IndicatorsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

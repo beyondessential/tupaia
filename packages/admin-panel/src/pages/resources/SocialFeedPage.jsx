@@ -5,7 +5,6 @@
 
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import moment from 'moment';
 import styled from 'styled-components';
 import { ResourcePage } from './ResourcePage';
@@ -107,7 +106,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SocialFeedPage = ({ getHeaderEl, ...props }) => (
+export const SocialFeedPage = props => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
@@ -115,11 +114,6 @@ export const SocialFeedPage = ({ getHeaderEl, ...props }) => (
     columns={SOCIAL_FEED_COLUMNS}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={data => ({ ...data, type: 'markdown' })}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-SocialFeedPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

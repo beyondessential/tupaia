@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { COLUMNS as ENTITIES_COLUMNS } from './EntitiesPage';
 
@@ -37,18 +36,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CountriesPage = ({ getHeaderEl, ...props }) => (
+export const CountriesPage = props => (
   <ResourcePage
     title="Countries"
     endpoint="countries"
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-CountriesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

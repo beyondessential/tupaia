@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { Header, PageBody } from '../../widgets';
-import { getExplodedFields, usePortalWithCallback } from '../../utilities';
+import { PageHeader, PageBody } from '../../widgets';
+import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
@@ -51,7 +51,6 @@ export const ResourcePage = ({
   onProcessDataForSave,
   baseFilter,
   title,
-  getHeaderEl,
   defaultFilters,
   defaultSorting,
   deleteConfig,
@@ -69,26 +68,21 @@ export const ResourcePage = ({
   const canExport = getHasPermission('export');
   const canCreate = getHasPermission('create');
 
-  const HeaderPortal = usePortalWithCallback(
-    <Header
-      title={title}
-      importConfig={canImport && importConfig}
-      exportConfig={canExport && exportConfig}
-      createConfig={canCreate && createConfig}
-      ExportModalComponent={canExport && ExportModalComponent}
-      LinksComponent={LinksComponent}
-    />,
-    getHeaderEl,
-  );
-
   // Explode columns to support nested fields, since the table doesn't want to nest these, and then filter out columns that the user doesn't have permission to see
   const accessibleColumns = getExplodedFields(columns).filter(
     column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
   );
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader
+          title={title}
+          importConfig={canImport && importConfig}
+          exportConfig={canExport && exportConfig}
+          createConfig={canCreate && createConfig}
+          ExportModalComponent={canExport && ExportModalComponent}
+          LinksComponent={LinksComponent}
+        />
         <DataFetchingTable
           columns={accessibleColumns}
           endpoint={endpoint}
@@ -110,7 +104,6 @@ export const ResourcePage = ({
 };
 
 ResourcePage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,

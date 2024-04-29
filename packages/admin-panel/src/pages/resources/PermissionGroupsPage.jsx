@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 
@@ -45,18 +44,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionGroupsPage = ({ getHeaderEl, ...props }) => (
+export const PermissionGroupsPage = props => (
   <ResourcePage
     title="Permission Groups"
     endpoint="permissionGroups"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     defaultSorting={[{ id: 'name', desc: false }]}
     {...props}
   />
 );
-
-PermissionGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

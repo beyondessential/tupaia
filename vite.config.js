@@ -77,6 +77,7 @@ export default defineConfig(({ command, mode }) => {
         ...baseConfig.resolve,
         alias: {
           ...baseConfig.resolve.alias,
+          '@tupaia/admin-panel': path.resolve(__dirname, './packages/admin-panel/src/library.js'),
           // this is to allow for hot reloading in dev
           '@tupaia/ui-chart-components': path.resolve(
             __dirname,

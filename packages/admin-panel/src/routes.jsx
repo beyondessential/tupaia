@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Assignment, InsertChart, PeopleAlt, Flag, Storage, Language } from '@material-ui/icons';
+import { Assignment, PeopleAlt, Language } from '@material-ui/icons';
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
@@ -42,6 +42,7 @@ import {
   SupersetInstancesPage,
   DashboardMailingListsPage,
 } from './pages/resources';
+import { EntitiesIcon, ProjectsIcon, VizIcon } from './icons';
 
 export const ROUTES = [
   {
@@ -61,34 +62,34 @@ export const ROUTES = [
         isBESAdminOnly: true,
       },
       {
-        label: 'Option Sets',
+        label: 'Option sets',
         to: '/option-sets',
         component: OptionSetsPage,
       },
       {
-        label: 'Data Elements',
+        label: 'Data elements',
         to: '/data-elements',
         component: DataElementsPage,
       },
       {
-        label: 'Data Groups',
+        label: 'Data groups',
         to: '/data-groups',
         component: DataGroupsPage,
         isBESAdminOnly: true,
       },
       {
-        label: 'Survey Responses',
+        label: 'Survey responses',
         to: '/survey-responses',
         component: SurveyResponsesPage,
       },
       {
-        label: 'Sync Groups',
+        label: 'Sync groups',
         to: '/sync-groups',
         component: SyncGroupsPage,
         isBESAdminOnly: true,
       },
       {
-        label: 'Data Mapping',
+        label: 'Data mapping',
         to: '/data-mapping',
         component: DataElementDataServicesPage,
         isBESAdminOnly: true,
@@ -98,10 +99,10 @@ export const ROUTES = [
   {
     label: 'Visualisations',
     to: '/visualisations',
-    icon: <InsertChart />,
+    icon: <VizIcon />,
     tabs: [
       {
-        label: 'Dashboard Items',
+        label: 'Dashboard items',
         to: '',
         component: DashboardItemsPage,
         needsBESAdminAccess: ['delete'],
@@ -113,35 +114,35 @@ export const ROUTES = [
         needsBESAdminAccess: ['delete'],
       },
       {
-        label: 'Dashboard Relations',
+        label: 'Dashboard relations',
         to: '/dashboard-relations',
         component: DashboardRelationsPage,
       },
       {
-        label: 'Dashboard Mailing Lists',
+        label: 'Dashboard mailing lists',
         to: '/dashboard-mailing-lists',
         component: DashboardMailingListsPage,
         isBESAdminOnly: true,
       },
       {
-        label: 'Legacy Reports',
+        label: 'Legacy reports',
         to: '/legacy-reports',
         component: LegacyReportsPage,
         isBESAdminOnly: true,
       },
       {
-        label: 'Map Overlays',
+        label: 'Map overlays',
         to: '/map-overlays',
         component: MapOverlaysPage,
         needsBESAdminAccess: ['delete'],
       },
       {
-        label: 'Map Overlay Groups',
+        label: 'Map overlay groups',
         to: '/map-overlay-groups',
         component: MapOverlayGroupsPage,
       },
       {
-        label: 'Map Overlay Group Relations',
+        label: 'Map overlay group relations',
         to: '/map-overlay-group-relations',
         component: MapOverlayGroupRelationsPage,
       },
@@ -152,13 +153,13 @@ export const ROUTES = [
         isBESAdminOnly: true,
       },
       {
-        label: 'Data-Tables',
+        label: 'Data-tables',
         to: '/dataTables',
         component: DataTablesPage,
         isBESAdminOnly: true,
       },
       {
-        label: 'Social Feed',
+        label: 'Social feed',
         to: '/social-feed',
         component: SocialFeedPage,
         isBESAdminOnly: true,
@@ -166,7 +167,7 @@ export const ROUTES = [
     ],
   },
   {
-    label: 'Users & Permissions',
+    label: 'Users & permissions',
     to: '/users',
     icon: <PeopleAlt />,
     tabs: [
@@ -181,17 +182,17 @@ export const ROUTES = [
         component: PermissionsPage,
       },
       {
-        label: 'Permission Groups',
+        label: 'Permission groups',
         to: '/permission-groups',
         component: PermissionGroupsPage,
       },
       {
-        label: 'Permission Groups Viewer',
+        label: 'Permission groups viewer',
         to: '/permission-groups-viewer',
         component: PermissionGroupsViewerPage,
       },
       {
-        label: 'Access Requests',
+        label: 'Access requests',
         to: '/access-requests',
         component: AccessRequestsPage,
       },
@@ -200,7 +201,7 @@ export const ROUTES = [
   {
     label: 'Entities',
     to: '/entities',
-    icon: <Storage />,
+    icon: <EntitiesIcon />,
     tabs: [
       {
         label: 'Entities',
@@ -214,12 +215,12 @@ export const ROUTES = [
         component: CountriesPage,
       },
       {
-        label: 'Entity Types',
+        label: 'Entity types',
         to: '/entityTypes',
         component: EntityTypesPage,
       },
       {
-        label: 'Entity Hierarchies',
+        label: 'Entity hierarchies',
         to: '/entityHierarchies',
         component: EntityHierarchiesPage,
       },
@@ -228,7 +229,7 @@ export const ROUTES = [
   {
     label: 'Projects',
     to: '/projects',
-    icon: <Flag />,
+    icon: <ProjectsIcon />,
     tabs: [
       {
         label: 'Projects',
@@ -243,35 +244,35 @@ export const ROUTES = [
         isBESAdminOnly: true,
       },
       {
-        label: 'Entity Hierarchy',
+        label: 'Entity hierarchy',
         to: '/hierarchy',
         component: EntityHierarchyPage,
       },
       {
-        label: 'Landing Pages',
+        label: 'Landing pages',
         to: '/landing-pages',
         component: CustomLandingPagesPage,
       },
     ],
   },
   {
-    label: 'External Data',
+    label: 'External data',
     to: '/external-database-connections',
     isBESAdminOnly: true,
     icon: <Language />,
     tabs: [
       {
-        label: 'External Database Connections',
+        label: 'External database connections',
         to: '',
         component: ExternalDatabaseConnectionsPage,
       },
       {
-        label: 'DHIS Instances',
+        label: 'DHIS instances',
         to: '/dhis-instances',
         component: DhisInstancesPage,
       },
       {
-        label: 'mSupply Superset Instances',
+        label: 'mSupply superset instances',
         to: '/superset-instances',
         component: SupersetInstancesPage,
       },
