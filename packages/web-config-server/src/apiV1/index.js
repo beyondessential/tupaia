@@ -13,7 +13,7 @@ import {
   appVerifyEmail,
 } from '/appServer';
 import { oneTimeLogin } from '/authSession';
-import { exportChartHandler, ExportSurveyResponsesHandler } from '/export';
+import { exportChartHandler, ExportSurveyDataHandler, ExportSurveyResponsesHandler } from '/export';
 import { getUser } from './getUser';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
