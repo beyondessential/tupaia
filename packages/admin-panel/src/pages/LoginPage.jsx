@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -63,7 +63,7 @@ const Logo = () => <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />;
 
 const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
   if (isLoggedIn) {
-    return <Redirect to={redirectTo} />;
+    return <Navigate to={redirectTo} />;
   }
 
   return (
@@ -98,4 +98,4 @@ const mapStateToProps = (state, ownProps) => ({
   redirectTo: ownProps.redirectTo || ownProps.location?.state?.from || '/',
 });
 
-export const LoginPage = withRouter(connect(mapStateToProps)(LoginPageComponent));
+export const LoginPage = connect(mapStateToProps)(LoginPageComponent);

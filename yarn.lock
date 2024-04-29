@@ -11749,7 +11749,8 @@ __metadata:
     react-password-strength-bar: ^0.3.2
     react-query: ^3.19.0
     react-redux: ^5.0.6
-    react-router-dom: ^5.2.0
+    react-router: 6.3.0
+    react-router-dom: 6.3.0
     react-select: ^1.2.1
     react-table: ^7.8.0
     reactstrap: ^5.0.0

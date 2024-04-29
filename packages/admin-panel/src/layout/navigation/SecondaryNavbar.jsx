@@ -205,9 +205,9 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
 export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
   const containerRef = useRef(null);
   const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
-  const links = linkInput.map(link => ({
-    ...link,
-    target: link.exact ? link.to : `${baseRoute}${link.to}`,
+  const links = linkInput.map(({ exact, to, ...rest }) => ({
+    ...rest,
+    target: exact ? to : `${baseRoute}${to}`,
   }));
 
   const { scrollToNextVisibleItem, scrollToPrevVisibleItem, overflows } = useScrollableMenu(
@@ -229,6 +229,7 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
               key={to}
               to={target}
               isActive={(match, location) => {
+                console.log(match);
                 if (!match) {
                   return false;
                 }
