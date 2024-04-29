@@ -223,7 +223,6 @@ const DataFetchingTableComponent = ({
                   return (
                     <Cell
                       key={column.id}
-                      // $width={column.width}
                     >
                       {column.filterable ? (
                         <FilterCell
