@@ -31,6 +31,18 @@ GET {{baseUrl}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
+### Get all option sets
+
+GET {{baseUrl}}/optionSets
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get option sets by ID
+
+GET {{baseUrl}}/optionSets/5c625e11f013d60db4249466
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
 ### Get survey responses
 
 GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
