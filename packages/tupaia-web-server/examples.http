@@ -9,6 +9,21 @@
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
+### Sign up
+POST {{host}}/signup HTTP/1.1
+content-type: {{contentType}}
+
+{
+  "contactNumber": "123",
+  "emailAddress": "christopher@100acre.wood",
+  "employer": "Self-employed",
+  "firstName": "Christopher",
+  "lastName": "Robin",
+  "passwordConfirm": "nowweare6",
+  "password": "nowweare6",
+  "position": "Friend of Pooh Bear"
+}
+
 ### Log in
 # @name login
 POST {{host}}/login HTTP/1.1
