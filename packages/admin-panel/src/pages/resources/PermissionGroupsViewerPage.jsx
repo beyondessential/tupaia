@@ -17,13 +17,12 @@ const Container = styled(PageBody)`
 `;
 
 const StyledHorizontalTree = styled(HorizontalTree)`
-  margin-top: 40px;
-  margin-bottom: 40px;
-  max-height: 870px;
   color: ${COLORS.TEXT_MIDGREY};
+  margin-block: 2.5rem;
+  max-height: 54.375rem;
 
   .MuiTypography-body1 {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
 `;
 
