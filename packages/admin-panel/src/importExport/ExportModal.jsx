@@ -127,8 +127,8 @@ export const ExportModal = React.memo(
           id="page-export-button"
           startIcon={<ExportIcon />}
           onClick={handleOpen}
-          isLoading={STATUS === STATUS.LOADING}
-          disabled={STATUS === STATUS.ERROR}
+          isLoading={status === STATUS.LOADING}
+          disabled={status === STATUS.ERROR}
         >
           {exportButtonText}
         </ActionButton>
