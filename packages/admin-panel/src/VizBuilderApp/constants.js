@@ -7,7 +7,7 @@ import {
   BarChartConfigSchema,
   ColorMapOverlayConfigSchema,
   ComposedChartConfigSchema,
-  DataDownloadViewConfigSchema,
+  DataDownloadViewVizBuilderConfigSchema,
   DownloadFilesViewConfigSchema,
   GaugeChartConfigSchema,
   IconMapOverlayConfigSchema,
@@ -133,10 +133,14 @@ export const DASHBOARD_ITEM_VIZ_TYPES = {
   },
   DATA_DOWNLOAD_VIEW: {
     name: 'Data Download View',
-    schema: DataDownloadViewConfigSchema,
+    schema: DataDownloadViewVizBuilderConfigSchema,
+    vizMatchesType: viz => viz.type === 'view' && viz.viewType === 'dataDownload',
     initialConfig: {
       type: 'view',
       viewType: 'dataDownload',
+      output: {
+        type: 'rawDataExport',
+      },
     },
   },
   SINGLE_DATE_VIEW: {
