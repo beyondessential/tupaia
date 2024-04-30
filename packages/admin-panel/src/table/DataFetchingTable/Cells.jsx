@@ -41,6 +41,8 @@ const CellContentWrapper = styled.div`
   td:first-child & {
     padding-inline-start: 0;
   }
+
+  ${({ $width }) => $width && `width: ${$width}px`};
 `;
 
 // Flex does not support ellipsis so we need to have another container to handle the ellipsis
@@ -55,6 +57,7 @@ const HeaderCell = styled(Cell)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
+
   .MuiTableSortLabel-icon {
     opacity: 1;
   }
@@ -67,10 +70,10 @@ const HeaderCell = styled(Cell)`
   }
 `;
 
-export const HeaderDisplayCell = ({ children, isButtonColumn, ...props }) => {
+export const HeaderDisplayCell = ({ children, isButtonColumn, width, ...props }) => {
   return (
     <HeaderCell $isButtonColumn={isButtonColumn} {...props}>
-      <CellContentWrapper>
+      <CellContentWrapper $width={width}>
         <CellContentContainer>{children}</CellContentContainer>
       </CellContentWrapper>
     </HeaderCell>
@@ -80,16 +83,18 @@ export const HeaderDisplayCell = ({ children, isButtonColumn, ...props }) => {
 HeaderDisplayCell.propTypes = {
   children: PropTypes.node.isRequired,
   isButtonColumn: PropTypes.bool,
+  width: PropTypes.string,
 };
 
 HeaderDisplayCell.defaultProps = {
   isButtonColumn: false,
+  width: null,
 };
 
-export const TableCell = ({ children }) => {
+export const TableCell = ({ children, width }) => {
   return (
     <Cell>
-      <CellContentWrapper>
+      <CellContentWrapper $width={width}>
         <CellContentContainer>{children}</CellContentContainer>
       </CellContentWrapper>
     </Cell>
@@ -98,6 +103,11 @@ export const TableCell = ({ children }) => {
 
 TableCell.propTypes = {
   children: PropTypes.node.isRequired,
+  width: PropTypes.number,
+};
+
+TableCell.defaultProps = {
+  width: null,
 };
 
 const CellLink = styled(Link)`

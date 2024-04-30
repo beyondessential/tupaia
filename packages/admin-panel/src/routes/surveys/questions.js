@@ -95,7 +95,7 @@ const EDITOR_CONFIG = {
 };
 
 export const questions = {
-  label: 'Questions',
+  title: 'Questions',
   url: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,

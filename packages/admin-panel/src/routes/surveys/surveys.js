@@ -527,10 +527,9 @@ const QUESTION_COLUMNS = [
 ];
 
 export const surveys = {
-  label: 'Surveys',
+  title: 'Surveys',
   url: '',
   default: true,
-  title: 'Surveys',
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,

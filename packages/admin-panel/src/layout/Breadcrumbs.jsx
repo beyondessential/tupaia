@@ -33,7 +33,7 @@ export const Breadcrumbs = ({ parent, displayValue, title, details }) => {
       </BackButton>
       <MuiBreadcrumbs separator="|">
         <ActiveBreadcrumb component={Link} to={parent?.to || '/'}>
-          {parent?.label}
+          {parent?.title}
         </ActiveBreadcrumb>
         <ActiveBreadcrumb>{title}</ActiveBreadcrumb>
         {details && <Typography>{details[displayValue]}</Typography>}

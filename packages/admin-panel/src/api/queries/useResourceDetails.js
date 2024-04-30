@@ -12,6 +12,9 @@ export const useItemDetails = (id, parent) => {
       return get(parent?.endpoint, {
         params: {
           filter: JSON.stringify({ id }),
+          columns: JSON.stringify(
+            parent?.columns?.map(column => column.source).filter(source => source),
+          ),
         },
       });
     },

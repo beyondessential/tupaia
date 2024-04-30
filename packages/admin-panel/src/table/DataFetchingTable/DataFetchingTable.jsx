@@ -195,6 +195,7 @@ const DataFetchingTableComponent = ({
                         // eslint-disable-next-line react/no-array-index-key
                         key={`header-${i}`}
                         isButtonColumn={isButtonColumn}
+                        width={visibleColumns[i].colWidth}
                       >
                         {render('Header')}
                         {canSort && (
@@ -220,6 +221,7 @@ const DataFetchingTableComponent = ({
                       column={column}
                       onFilteredChange={onFilteredChange}
                       filters={filters}
+                      width={column.colWidth}
                     />
                   );
                 })}
@@ -238,6 +240,7 @@ const DataFetchingTableComponent = ({
                         row={row}
                         detailUrl={detailUrl}
                         getIsLink={getIsLink}
+                        width={visibleColumns[i].colWidth}
                       >
                         {render('Cell')}
                       </DisplayCell>

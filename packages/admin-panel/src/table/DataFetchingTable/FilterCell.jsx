@@ -40,7 +40,7 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const FilterCell = ({ column, filters, onFilteredChange }) => {
+export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
   const { id, Filter } = column;
   const existingFilter = filters?.find(f => f.id === id);
   const handleUpdate = value => {
@@ -52,7 +52,7 @@ export const FilterCell = ({ column, filters, onFilteredChange }) => {
   };
   if (!column.filterable) return <TableCell />;
   return (
-    <TableCell>
+    <TableCell width={width}>
       <FilterWrapper>
         {Filter ? (
           <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
@@ -77,4 +77,9 @@ FilterCell.propTypes = {
     Filter: PropTypes.func,
     filterable: PropTypes.bool,
   }).isRequired,
+  width: PropTypes.number,
+};
+
+FilterCell.defaultProps = {
+  width: null,
 };

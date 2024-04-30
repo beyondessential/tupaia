@@ -50,13 +50,15 @@ TableComponent.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const useEndpoint = (endpoint, details) => {
-  if (!details) return endpoint;
+const useEndpoint = (endpoint, details, params) => {
+  if (!details && !params) return endpoint;
+
+  const mergedDetails = { ...details, ...params };
 
   const replaceParams = () => {
     let updatedEndpoint = endpoint;
-    Object.keys(details).forEach(key => {
-      updatedEndpoint = updatedEndpoint.replace(`{${key}}`, details[key]);
+    Object.keys(mergedDetails).forEach(key => {
+      updatedEndpoint = updatedEndpoint.replace(`{${key}}`, mergedDetails[key]);
     });
     return updatedEndpoint;
   };
@@ -85,16 +87,16 @@ export const ResourcePage = ({
   displayValue,
   getIsLink,
 }) => {
-  const { id } = useParams();
-  const { data: details } = useItemDetails(id, parent);
+  const params = useParams();
+  const { data: details } = useItemDetails(params.id, parent);
 
   const { to } = detailsView || {};
-  const updatedEndpoint = useEndpoint(endpoint, details);
+  const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   return (
     <>
       <Container>
-        {id && (
+        {params.id && (
           <Breadcrumbs
             parent={parent}
             title={title}
