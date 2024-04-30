@@ -7,6 +7,7 @@ import { Request } from 'express';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { Route } from '@tupaia/server-boilerplate';
 import { NullableKeysToOptional, FeedItem } from '@tupaia/types';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
@@ -68,7 +69,7 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
   }
 
   public async buildResponse() {
-    const { query, models } = this.req;
+    const { query, models, accessPolicy = new AccessPolicy({}) } = this.req;
     const {
       countryId,
       earliestCreationDate,
@@ -94,9 +95,6 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
       };
     }
 
-    // Fetch an extra record on page 0 to check to see if the page range exceeded the toDate.
-    const limit = numberPerPage + 1;
-
     if (earliestCreationDate) {
       conditions.creation_date = {
         comparator: '>',
@@ -104,18 +102,13 @@ export class SocialFeedRoute extends Route<SocialFeedRequest> {
       };
     }
 
-    const feedItems = await models.feedItem.find(conditions, {
-      limit,
-      offset: pageNumber * numberPerPage,
-      sort: ['creation_date DESC'],
-    });
-
-    const hasMorePages = feedItems.length > numberPerPage;
-    const items = (await Promise.all(feedItems.slice(0, numberPerPage).map(f => f.getData()))).map(
-      item => ({
-        ...item,
-        creation_date: item.creation_date ? new Date(item.creation_date).toJSON() : undefined,
-      }),
+    const { items, hasMorePages } = await models.feedItem.findByAccessPolicy(
+      accessPolicy,
+      conditions,
+      {
+        pageLimit: numberPerPage,
+        page: pageNumber,
+      },
     );
 
     await this.intersperseDynamicFeedItems(items, pageNumber);
