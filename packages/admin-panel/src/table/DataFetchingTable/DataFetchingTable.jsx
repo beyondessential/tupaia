@@ -40,9 +40,6 @@ const TableContainer = styled(MuiTableContainer)`
   position: relative;
   flex: 1;
   overflow: auto;
-  border-color: ${({ theme }) => theme.palette.grey[400]};
-  border-width: 1px 0;
-  border-style: solid;
   table {
     min-width: 45rem;
     border-collapse: collapse;
@@ -53,6 +50,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
   overflow: hidden;
 `;
 
@@ -93,6 +91,8 @@ const DataFetchingTableComponent = ({
   isFetchingData,
   onSortedChange,
   detailUrl,
+  getIsLink,
+  endpoint,
 }) => {
   const {
     getTableProps,
@@ -147,7 +147,7 @@ const DataFetchingTableComponent = ({
     }
   }, [errorMessage, isChangingDataOnServer]);
 
-  // initial render
+  // initial render/re-render when endpoint changes
   useEffect(() => {
     if (nestingLevel === 0) {
       // Page-level filters only apply to top-level data tables
@@ -157,7 +157,7 @@ const DataFetchingTableComponent = ({
     } else {
       initialiseTable();
     }
-  }, []);
+  }, [endpoint]);
 
   const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -237,6 +237,7 @@ const DataFetchingTableComponent = ({
                         key={`table-row-${index}-cell-${i}`}
                         row={row}
                         detailUrl={detailUrl}
+                        getIsLink={getIsLink}
                       >
                         {render('Cell')}
                       </DisplayCell>
@@ -300,6 +301,8 @@ DataFetchingTableComponent.propTypes = {
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
+  getIsLink: PropTypes.func,
+  endpoint: PropTypes.string.isRequired,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -313,12 +316,14 @@ DataFetchingTableComponent.defaultProps = {
   actionColumns: [],
   totalRecords: 0,
   detailUrl: '',
+  getIsLink: null,
 };
 
-const mapStateToProps = (state, { columns, reduxId }) => ({
+const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({
   isFetchingData: getIsFetchingData(state, reduxId),
   columns: columns.map(originalColumn => formatColumnForReactTable(originalColumn, reduxId)),
   isChangingDataOnServer: getIsChangingDataOnServer(state),
+  ...ownProps,
   ...getTableState(state, reduxId),
 });
 

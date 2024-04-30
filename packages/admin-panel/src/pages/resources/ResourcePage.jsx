@@ -15,6 +15,7 @@ import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
+import { useItemDetails } from '../../api/queries/useResourceDetails';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -49,6 +50,20 @@ TableComponent.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
+const useEndpoint = (endpoint, details) => {
+  if (!details) return endpoint;
+
+  const replaceParams = () => {
+    let updatedEndpoint = endpoint;
+    Object.keys(details).forEach(key => {
+      updatedEndpoint = updatedEndpoint.replace(`{${key}}`, details[key]);
+    });
+    return updatedEndpoint;
+  };
+  const updatedEndpoint = replaceParams();
+  return updatedEndpoint;
+};
+
 export const ResourcePage = ({
   columns,
   createConfig,
@@ -68,24 +83,25 @@ export const ResourcePage = ({
   detailsView,
   parent,
   displayValue,
+  getIsLink,
 }) => {
-  const params = useParams();
+  const { id } = useParams();
+  const { data: details } = useItemDetails(id, parent);
 
-  const replaceParams = () => {
-    if (!endpoint) return null;
-    let updatedEndpoint = endpoint;
-    Object.keys(params).forEach(key => {
-      updatedEndpoint = endpoint.replace(`{${key}}`, params[key]);
-    });
-    return updatedEndpoint;
-  };
   const { to } = detailsView || {};
+  const updatedEndpoint = useEndpoint(endpoint, details);
 
-  const updatedEndpoint = replaceParams();
   return (
     <>
       <Container>
-        <Breadcrumbs parent={parent} title={title} displayValue={displayValue} />
+        {id && (
+          <Breadcrumbs
+            parent={parent}
+            title={title}
+            displayValue={displayValue}
+            details={details}
+          />
+        )}
         <PageHeader
           title={title}
           importConfig={importConfig}
@@ -104,6 +120,7 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
           detailUrl={to}
+          getIsLink={getIsLink}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
@@ -134,6 +151,7 @@ ResourcePage.propTypes = {
   detailsView: PropTypes.object,
   parent: PropTypes.object,
   displayValue: PropTypes.string,
+  getIsLink: PropTypes.func,
 };
 
 ResourcePage.defaultProps = {
@@ -153,4 +171,5 @@ ResourcePage.defaultProps = {
   detailsView: null,
   parent: null,
   displayValue: null,
+  getIsLink: null,
 };

@@ -213,14 +213,14 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);
     const detailsViewMatch = link.detailsView
-      ? matchPath(`${link.target}${link.detailsView.to}`, location.pathname)
+      ? matchPath(`${link.target}${link.detailsView.url}`, location.pathname)
       : false;
 
     return !!matchResult || !!detailsViewMatch;
   };
 
-  const links = linkInput?.map(({ exact, to, label, ...rest }) => {
-    const target = exact ? to : `${baseRoute}${to}`;
+  const links = linkInput?.map(({ exact, url, label, ...rest }) => {
+    const target = exact ? url : `${baseRoute}${url}`;
     return {
       ...rest,
       label,
@@ -247,9 +247,9 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ to, label, target, active }, i) => (
+          {links.map(({ url, label, target, active }, i) => (
             <RouteLink
-              key={to}
+              key={url}
               to={target}
               data-text={label}
               ref={navLinkRefs.current[i]}

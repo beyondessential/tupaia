@@ -14,8 +14,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  // position: sticky;
-  // bottom: 0;
+  border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
   background-color: ${({ theme }) => theme.palette.background.paper};
   padding-block: 0.5rem;
   padding-inline: 1rem;

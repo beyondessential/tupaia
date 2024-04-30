@@ -15,9 +15,9 @@ import { PROFILE_ROUTES } from '../profileRoutes';
 
 export const PageLayout = ({ user }) => {
   const location = useLocation();
-  const activeRoute = [...ROUTES, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.to));
+  const activeRoute = [...ROUTES, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.url));
 
-  const baseRoute = activeRoute?.to;
+  const baseRoute = activeRoute?.url;
   return (
     <PrivateRoute>
       <PageWrapper>

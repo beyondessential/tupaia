@@ -11,17 +11,17 @@ import { ChangePasswordPage } from './pages/ChangePasswordPage';
 
 export const PROFILE_ROUTES = [
   {
-    to: '/profile',
+    url: '/profile',
     childViews: [
       {
         label: 'Profile',
-        to: '',
+        url: '',
         icon: <AccountCircleIcon />,
         Component: ProfilePage,
       },
       {
         label: 'Change Password',
-        to: '/change-password',
+        url: '/change-password',
         icon: <LockIcon />,
         Component: ChangePasswordPage,
       },

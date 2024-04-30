@@ -96,14 +96,16 @@ const EDITOR_CONFIG = {
 
 export const questions = {
   label: 'Questions',
-  to: '/questions',
+  url: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,
   editorConfig: EDITOR_CONFIG,
+  getIsLink: ({ option_set_id: optionSetId }) => !!optionSetId,
   detailsView: {
     title: 'Options',
     endpoint: 'optionSets/{option_set_id}/options',
     columns: OPTION_COLUMNS,
-    to: '/:option_set_id/options',
+    url: '/:id/options',
+    displayValue: 'code',
   },
 };

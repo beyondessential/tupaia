@@ -17,6 +17,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
   padding-block: 0.7rem;
   padding-inline: 1.5rem;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
 `;
 
 export const PageHeader = ({
@@ -28,6 +29,10 @@ export const PageHeader = ({
 }) => {
   const CreateButton =
     createConfig && createConfig.bulkCreate ? BulkCreateButton : SingleCreateButton;
+
+  if (!importConfig && !createConfig && !ExportModalComponent && !LinksComponent) {
+    return null;
+  }
 
   return (
     <Wrapper>

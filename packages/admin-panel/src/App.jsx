@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { PageLayout } from './layout';
 import { ROUTES } from './routes';
@@ -19,27 +19,22 @@ const PageRoute = ({ route }) => {
 
   if (!childViews) return null;
 
-  const params = useParams();
-
-  const replaceParams = endpoint => {
-    if (!endpoint) return null;
-    let updatedEndpoint = endpoint;
-    Object.keys(params).forEach(key => {
-      updatedEndpoint = endpoint.replace(`{${key}}`, params[key]);
-    });
-    return updatedEndpoint;
-  };
-
   // Flatten child views to include details view to create a route for each
   const flattenedChildViews = childViews.reduce((acc, childView) => {
     const { detailsView } = childView;
 
+    const detailsParent = {
+      ...childView,
+      to: `${route.url}${childView.url}`,
+      parent: route,
+    };
+
     const updatedDetailsView = detailsView
       ? {
           ...detailsView,
-          to: `${childView.to}${detailsView.to}`,
-          endpoint: replaceParams(detailsView.endpoint),
-          parent: childView,
+          to: `${route.url}${childView.url}${detailsView.url}`,
+          url: `${childView.url}${detailsView.url}`,
+          parent: detailsParent,
         }
       : null;
 
@@ -59,14 +54,10 @@ const PageRoute = ({ route }) => {
     <Routes>
       {flattenedChildViews?.map(childRoute => (
         <Route
-          key={childRoute.to}
-          path={childRoute.to}
+          key={childRoute.url}
+          path={childRoute.url}
           element={
-            childRoute.Component ? (
-              <childRoute.Component />
-            ) : (
-              <ResourcePage {...childRoute} endpoint={replaceParams(childRoute.endpoint)} />
-            )
+            childRoute.Component ? <childRoute.Component /> : <ResourcePage {...childRoute} />
           }
         />
       ))}
@@ -86,7 +77,7 @@ export const App = ({ user }) => {
       <Route path="/" element={<PageLayout user={user} />}>
         <Route index element={<Navigate to="/surveys" replace />} />
         {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-          <Route key={route.to} path={`${route.to}/*`} element={<PageRoute route={route} />} />
+          <Route key={route.to} path={`${route.url}/*`} element={<PageRoute route={route} />} />
         ))}
       </Route>
     </Routes>

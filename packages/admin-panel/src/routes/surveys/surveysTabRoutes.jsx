@@ -10,7 +10,7 @@ import { questions } from './questions';
 
 export const surveysTabRoutes = {
   label: 'Surveys',
-  to: '/surveys',
+  url: '/surveys',
   exact: true,
   icon: <Assignment />,
   childViews: [surveys, questions],
