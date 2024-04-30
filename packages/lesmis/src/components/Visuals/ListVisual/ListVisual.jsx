@@ -109,15 +109,15 @@ const DrillDownLink = ({ pathname, reportCode, children }) => {
 };
 
 const ListVisualContent = React.memo(
-  ({ viewContent, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
-    const { data, ...config } = viewContent;
+  ({ config, report, isLoading, isError, error, drilldownPathname, reportCodes, isEnlarged }) => {
+    const { data } = report;
 
     const list = processData(config, data, reportCodes);
 
-    if (!isLoading && !getIsChartData(viewContent)) {
+    if (!isLoading && !getIsChartData(config?.chartType, report)) {
       return (
         <NoDataContainer>
-          <NoData viewContent={viewContent} />
+          <NoData config={config} report={report} />
         </NoDataContainer>
       );
     }
@@ -157,7 +157,8 @@ const ListVisualContent = React.memo(
 
 ListVisualContent.propTypes = {
   drilldownPathname: PropTypes.string,
-  viewContent: PropTypes.object,
+  config: PropTypes.object,
+  report: PropTypes.object,
   reportCodes: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
@@ -168,7 +169,8 @@ ListVisualContent.propTypes = {
 
 ListVisualContent.defaultProps = {
   drilldownPathname: null,
-  viewContent: null,
+  config: {},
+  report: {},
   reportCodes: null,
   isLoading: false,
   isFetching: false,

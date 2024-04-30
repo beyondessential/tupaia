@@ -26,9 +26,9 @@ const ChartContainer = styled.div`
 `;
 
 export const LightThemeChartTemplate = args => {
-  const { viewContent } = args;
+  const { config, report } = args;
 
-  const { doExport } = useChartDataExport(viewContent);
+  const { doExport } = useChartDataExport(config, report);
 
   return (
     <>
@@ -53,9 +53,9 @@ const DarkContainer = styled(LightContainer)`
 `;
 
 export const DarkThemeTemplate = args => {
-  const { viewContent } = args;
+  const { config, report } = args;
 
-  const { doExport } = useChartDataExport(viewContent);
+  const { doExport } = useChartDataExport(config, report);
 
   return (
     <>
