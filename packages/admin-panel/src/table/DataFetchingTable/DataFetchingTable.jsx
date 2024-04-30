@@ -7,9 +7,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import {
-  TableCell,
   TableHead,
-  TableContainer,
+  TableContainer as MuiTableContainer,
   TableRow,
   TableBody,
   Table,
@@ -17,7 +16,6 @@ import {
   TableSortLabel,
 } from '@material-ui/core';
 import { KeyboardArrowDown } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 import { ConfirmDeleteModal } from '@tupaia/ui-components';
@@ -36,32 +34,28 @@ import {
 } from '../actions';
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
-import { CellContent } from './CellContent';
+import { DisplayCell, HeaderDisplayCell } from './Cells';
 
-const BUTTON_COLUMN_WIDTH = '4.5rem';
-
-const Cell = styled(TableCell)`
-  vertical-align: middle;
-  font-size: 0.75rem;
-  padding: 0.7rem;
-  overflow: hidden;
-  max-width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : '0')};
-  width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : 'auto')};
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const HeaderCell = styled(Cell)`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  .MuiTableSortLabel-icon {
-    opacity: 1;
+const TableContainer = styled(MuiTableContainer)`
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  border-color: ${({ theme }) => theme.palette.grey[400]};
+  border-width: 1px 0;
+  border-style: solid;
+  table {
+    min-width: 45rem;
+    border-collapse: collapse;
   }
 `;
 
 const Wrapper = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 `;
+
 const LoadingWrapper = styled.div`
   position: absolute;
   z-index: 1;
@@ -177,7 +171,7 @@ const DataFetchingTableComponent = ({
         </LoadingWrapper>
       )}
       <TableContainer>
-        <Table {...getTableProps()}>
+        <Table {...getTableProps()} stickyHeader>
           <TableHead>
             {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -196,11 +190,11 @@ const DataFetchingTableComponent = ({
                     i,
                   ) => {
                     return (
-                      <HeaderCell
+                      <HeaderDisplayCell
                         {...getHeaderProps(getSortByToggleProps())}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`header-${i}`}
-                        $isButtonColumn={isButtonColumn}
+                        isButtonColumn={isButtonColumn}
                       >
                         {render('Header')}
                         {canSort && (
@@ -210,7 +204,7 @@ const DataFetchingTableComponent = ({
                             IconComponent={KeyboardArrowDown}
                           />
                         )}
-                      </HeaderCell>
+                      </HeaderDisplayCell>
                     );
                   },
                 )}
@@ -222,15 +216,11 @@ const DataFetchingTableComponent = ({
               {displayFilterRow &&
                 visibleColumns.map(column => {
                   return (
-                    <Cell key={column.id}>
-                      {column.filterable ? (
-                        <FilterCell
-                          column={column}
-                          onFilteredChange={onFilteredChange}
-                          filters={filters}
-                        />
-                      ) : null}
-                    </Cell>
+                    <FilterCell
+                      column={column}
+                      onFilteredChange={onFilteredChange}
+                      filters={filters}
+                    />
                   );
                 })}
             </TableRow>
@@ -239,18 +229,17 @@ const DataFetchingTableComponent = ({
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                  {row.cells.map(({ getCellProps, value, render, ...cell }, i) => {
+                  {row.cells.map(({ getCellProps, render }, i) => {
                     return (
-                      <Cell
-                        value={value}
+                      <DisplayCell
                         {...getCellProps()}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
+                        row={row}
+                        detailUrl={detailUrl}
                       >
-                        <CellContent row={row} detailUrl={detailUrl}>
-                          {render('Cell')}
-                        </CellContent>
-                      </Cell>
+                        {render('Cell')}
+                      </DisplayCell>
                     );
                   })}
                 </TableRow>
@@ -267,6 +256,7 @@ const DataFetchingTableComponent = ({
         setPageSize={setPageSize}
         totalRecords={totalRecords}
       />
+
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}

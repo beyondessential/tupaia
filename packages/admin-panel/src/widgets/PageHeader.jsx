@@ -14,7 +14,10 @@ const Container = styled.div`
   justify-content: flex-end;
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  padding-block: 0.7rem;
+  padding-inline: 1.5rem;
+`;
 
 export const PageHeader = ({
   importConfig,

@@ -6,23 +6,24 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import { useParams, Link } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
+import { ArrowBack } from '@material-ui/icons';
+import { Typography, Breadcrumbs as MuiBreadcrumbs, IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import { get } from '../VizBuilderApp/api';
 
-const Wrapper = styled.ul`
+const Wrapper = styled.div`
   display: flex;
-  list-style: none;
-  padding: 0;
+  align-items: center;
 `;
 
-const Breadcrumb = styled.li``;
-
-const BreadcrumbContent = styled(Typography).attrs({
-  variant: 'body2',
-})`
-  font-weight: ${({ theme }) => theme.typography.fontWeightBold};
+const BackButton = styled(IconButton)`
   color: ${({ theme }) => theme.palette.text.primary};
+  margin-right: 0.5rem;
+`;
+
+const ActiveBreadcrumb = styled(Typography)`
+  color: ${({ theme }) => theme.palette.text.primary};
+  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
 const useItemDetails = (id, parent) => {
@@ -46,18 +47,20 @@ export const Breadcrumbs = ({ parent, displayValue, title }) => {
   const params = useParams();
   const { id } = params;
   const { data: itemDetails } = useItemDetails(id, parent);
-  if (!itemDetails) return null;
+  if (!parent || !id) return null;
 
   return (
     <Wrapper>
-      <Breadcrumb to={parent?.to || '/'}>
-        <BreadcrumbContent component={Link} to={parent?.to || '/'}>
+      <BackButton component={Link} to={parent?.to || '/'}>
+        <ArrowBack />
+      </BackButton>
+      <MuiBreadcrumbs separator="|">
+        <ActiveBreadcrumb component={Link} to={parent?.to || '/'}>
           {parent?.title}
-        </BreadcrumbContent>
-      </Breadcrumb>
-      <Breadcrumb>
-        <BreadcrumbContent>{title}</BreadcrumbContent>
-      </Breadcrumb>
+        </ActiveBreadcrumb>
+        <ActiveBreadcrumb>{title}</ActiveBreadcrumb>
+        {itemDetails && <Typography>{itemDetails[displayValue]}</Typography>}
+      </MuiBreadcrumbs>
     </Wrapper>
   );
 };

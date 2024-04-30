@@ -104,9 +104,9 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1.125rem',
+    fontSize: '1rem',
     fontWeight: 400,
-    lineHeight: 1.18,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   body2: {
@@ -137,6 +137,13 @@ const overrides = {
   MuiMenuItem: {
     root: {
       fontSize: '0.875rem',
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.MuiButtonBase-root': {
+        fontSize: '0.875rem',
+      },
     },
   },
 };

@@ -28,4 +28,6 @@ export const PageContentWrapper = styled(Container).attrs({
   flex-direction: column;
   justify-content: space-between;
   padding: 0;
+  max-height: 100%;
+  overflow: hidden;
 `;

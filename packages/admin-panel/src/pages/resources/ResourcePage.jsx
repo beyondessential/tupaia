@@ -28,6 +28,15 @@ const Container = styled(PageBody)`
       transform: rotateX(180deg);
     }
   }
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  margin-inline: 0.6rem;
+  padding-inline: 0;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 const TableComponent = ({ children }) => (

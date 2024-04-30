@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
+import { TableCell } from './Cells';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -49,18 +50,21 @@ export const FilterCell = ({ column, filters, onFilteredChange }) => {
 
     onFilteredChange(updatedFilters);
   };
+  if (!column.filterable) return <TableCell />;
   return (
-    <FilterWrapper>
-      {Filter ? (
-        <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
-      ) : (
-        <DefaultFilter
-          value={existingFilter?.value || ''}
-          onChange={e => handleUpdate(e.target.value)}
-          aria-label={`Search ${column.Header}`}
-        />
-      )}
-    </FilterWrapper>
+    <TableCell>
+      <FilterWrapper>
+        {Filter ? (
+          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+        ) : (
+          <DefaultFilter
+            value={existingFilter?.value || ''}
+            onChange={e => handleUpdate(e.target.value)}
+            aria-label={`Search ${column.Header}`}
+          />
+        )}
+      </FilterWrapper>
+    </TableCell>
   );
 };
 
@@ -71,5 +75,6 @@ FilterCell.propTypes = {
     id: PropTypes.string.isRequired,
     Header: PropTypes.string.isRequired,
     Filter: PropTypes.func,
+    filterable: PropTypes.bool,
   }).isRequired,
 };
