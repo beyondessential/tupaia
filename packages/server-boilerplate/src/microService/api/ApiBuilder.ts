@@ -3,7 +3,14 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import express, { Express, NextFunction, Request, Response, RequestHandler } from 'express';
+import express, {
+  Express,
+  NextFunction,
+  Request,
+  Response,
+  RequestHandler,
+  ErrorRequestHandler,
+} from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
@@ -31,6 +38,7 @@ export class ApiBuilder {
   private version: number;
 
   private logApiRequestMiddleware: RequestHandler;
+  private errorHander: ErrorRequestHandler = handleError;
 
   public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
     this.models = new ModelRegistry(transactingConnection) as ServerBoilerplateModelRegistry;
@@ -76,6 +84,11 @@ export class ApiBuilder {
   public setVersion(version: number) {
     this.version = version;
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
+    return this;
+  }
+
+  public useErrorHandler(errorHander: ErrorRequestHandler) {
+    this.errorHander = errorHander;
     return this;
   }
 
@@ -148,7 +161,7 @@ export class ApiBuilder {
      */
     this.get('test', handleWith(TestRoute));
 
-    this.app.use(handleError);
+    this.app.use(this.errorHander);
     return this.app;
   }
 

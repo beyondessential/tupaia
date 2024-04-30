@@ -1,3 +1,4 @@
+export * from './apiErrorFormatting';
 export * from './datetime';
 export * from './getSyncQueueChangeTime';
 export * from './hashStringToInt';

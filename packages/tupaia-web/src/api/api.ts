@@ -5,6 +5,7 @@
  */
 import axios from 'axios';
 import FetchError from './fetchError';
+import { formatApiErrorForFrontend } from '@tupaia/tsutils';
 
 export const API_URL = import.meta.env.REACT_APP_TUPAIA_WEB_API_URL || 'http://localhost:8100/v1';
 
@@ -48,7 +49,7 @@ const getErrorMessage = (error: any) => {
   }
 
   // remove axios `api error ...:` prefix
-  return message?.includes(':') ? message?.split(': ').slice(1).join(': ') : message;
+  return message ? formatApiErrorForFrontend(message) : message;
 };
 
 // Todo: Move api request util to ui-components and allow for mapping to backend request type safety

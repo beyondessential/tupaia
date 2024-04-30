@@ -25,7 +25,7 @@ import {
   UserRewardsRoute,
 } from '../routes';
 import { authHandlerProvider, buildAuthMiddleware } from '../auth';
-import { checkAppVersion } from '../middleware';
+import { checkAppVersion, errorHandler } from '../middleware';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 
 /**
@@ -36,6 +36,7 @@ export function createApp(database = new TupaiaDatabase()) {
   const authMiddleware = buildAuthMiddleware(database);
   const builder = new MicroServiceApiBuilder(database, 'meditrak')
     .attachApiClientToContext(authHandlerProvider)
+    .useErrorHandler(errorHandler)
     .use('*', checkAppVersion)
     .post<AuthRequest>('auth', handleWith(AuthRoute))
     .post<RegisterUserRequest>('user', handleWith(RegisterUserRoute))
