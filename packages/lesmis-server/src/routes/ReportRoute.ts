@@ -62,12 +62,11 @@ export class ReportRoute extends TranslatableRoute<
     if (legacy === 'true') {
       switch (type) {
         case 'dashboard': {
-          const legacyReport = await this.webConfigConnection.fetchDashboardReport(reportCode, {
+          return this.webConfigConnection.fetchDashboardReport(reportCode, {
             organisationUnitCode: entityCode,
             projectCode: LESMIS_PROJECT_NAME,
             ...this.req.query,
           });
-          return legacyReport.data;
         }
         case 'mapOverlay': {
           return this.webConfigConnection.fetchMapOverlayData({
@@ -82,12 +81,16 @@ export class ReportRoute extends TranslatableRoute<
       }
     }
     // Otherwise just pull from report server
-    const report = await this.reportConnection.fetchReport(reportCode, {
+    const { results: data, ...report } = await this.reportConnection.fetchReport(reportCode, {
       // Report server can accept arrays so the parameters are plural
       organisationUnitCodes: entityCode,
       hierarchy: LESMIS_HIERARCHY_NAME,
       ...this.req.query,
     });
-    return report.results;
+    // format to match the legacy response so that the frontend can handle it
+    return {
+      data,
+      ...report,
+    };
   }
 }
