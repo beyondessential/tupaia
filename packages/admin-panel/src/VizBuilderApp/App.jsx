@@ -12,16 +12,25 @@ import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
+import { NavPanel } from './components';
 
-const Container = styled.main`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
-  background: #f9f9f9;
-  min-height: 100vh;
+  background: ${props => props.theme.palette.background.default};
+  height: 100vh;
+  overflow: hidden;
 `;
 
-export const App = ({ Navbar, Footer }) => {
-  const { data, isLoading: isUserLoading } = useUser();
+const Container = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const App = ({ Footer, homeLink, logo }) => {
+  const { isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
 
@@ -29,32 +38,41 @@ export const App = ({ Navbar, Footer }) => {
     return <FullPageLoader />;
   }
 
-  const user = { ...data, name: `${data.firstName} ${data.lastName}` };
-
   return (
     <StateProvider>
-      <Container>
-        {Navbar && <Navbar user={user} />}
-        <Switch>
-          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
-            <CreateNew />
-          </Route>
-          <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
-            <Main />
-          </Route>
-        </Switch>
-        {Footer && <Footer />}
-      </Container>
+      <Wrapper>
+        <NavPanel logo={logo} homeLink={homeLink} />
+
+        <Container>
+          <Switch>
+            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
+              <CreateNew />
+            </Route>
+            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
+              <Main />
+            </Route>
+          </Switch>
+          {Footer && <Footer />}
+        </Container>
+      </Wrapper>
     </StateProvider>
   );
 };
 
 App.propTypes = {
-  Navbar: PropTypes.node,
   Footer: PropTypes.node,
+  homeLink: PropTypes.string,
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  }),
 };
 
 App.defaultProps = {
-  Navbar: null,
   Footer: null,
+  homeLink: '/',
+  logo: {
+    url: '/admin-panel-logo-white.svg',
+    alt: 'Tupaia Admin Panel Logo',
+  },
 };

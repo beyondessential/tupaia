@@ -33,7 +33,6 @@ export * from './Layout';
 export * from './Loaders';
 export * from './Matrix';
 export * from './Modal';
-export * from './NavBar';
 export * from './NoData';
 export * from './PDFExportComponent';
 export * from './PasswordStrengthBar';
