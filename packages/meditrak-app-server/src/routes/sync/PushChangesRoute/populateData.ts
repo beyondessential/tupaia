@@ -33,8 +33,8 @@ const getDataTime = (surveyResponse: MeditrakSurveyResponseRequest) => {
 
   if (suppliedDataTime) {
     if (suppliedTimezone) {
-      // Timezone specified, strip it
-      return stripTimezoneFromDate(momentTimezone(suppliedDataTime).tz(suppliedTimezone).format());
+      // Timezone specified, strip it from data time
+      return stripTimezoneFromDate(suppliedDataTime);
     }
 
     // No timezone specified. We are submitting the data_time explicitly without a tz.
