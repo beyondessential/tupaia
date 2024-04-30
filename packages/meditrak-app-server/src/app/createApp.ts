@@ -54,7 +54,8 @@ export function createApp(database = new TupaiaDatabase()) {
     )
     .get<PullChangesRequest>('changes', authMiddleware, handleWith(PullChangesRoute))
     .post<PushChangesRequest>('changes', authMiddleware, handleWith(PushChangesRoute))
-    .post('me/requestCountryAccess', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
+    .post('me/requestCountryAccess', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    .post('me/deleteAccount', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
 
   const app = builder.build();
 
