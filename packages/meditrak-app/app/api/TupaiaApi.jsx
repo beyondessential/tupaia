@@ -54,7 +54,7 @@ export class TupaiaApi {
       AUTH_API_ENDPOINT,
       null,
       JSON.stringify(loginCredentials),
-      Config.CLIENT_BASIC_AUTH_HEADER,
+      false,
       false,
     );
     if (response.error) return response;
@@ -129,7 +129,7 @@ export class TupaiaApi {
         JSON.stringify({
           refreshToken: this.refreshToken,
         }),
-        Config.CLIENT_BASIC_AUTH_HEADER,
+        false,
         false,
       );
     } catch (error) {
@@ -149,7 +149,7 @@ export class TupaiaApi {
       CREATE_USER_ENDPOINT,
       null,
       JSON.stringify(userFields),
-      Config.CLIENT_BASIC_AUTH_HEADER,
+      false,
       false,
     );
 
@@ -226,12 +226,9 @@ export class TupaiaApi {
     apiEndpoint,
     queryParameters,
     body,
-    overriddenAuthHeader = null,
+    shouldAddAuthHeader = true,
     shouldReauthenticateIfUnauthorized = true,
   ) {
-    const authHeader =
-      overriddenAuthHeader || (await this.getBearerAuthHeader());
-
     analytics.trackEvent('Request attempted', {
       requestMethod,
       apiEndpoint,
@@ -245,13 +242,18 @@ export class TupaiaApi {
       throw new Error('Network not connected');
     }
 
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    if (shouldAddAuthHeader) {
+      headers.Authorization = await this.getBearerAuthHeader();
+    }
+
     const queryUrl = this.getQueryUrl(apiEndpoint, queryParameters);
     const fetchConfig = {
       method: requestMethod,
-      headers: {
-        Authorization: authHeader,
-        'Content-Type': 'application/json',
-      },
+      headers,
     };
     if (body) fetchConfig.body = body;
     const response = await fetchWithTimeout(queryUrl, fetchConfig);
