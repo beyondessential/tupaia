@@ -29,7 +29,7 @@ const StyledLink = styled(Link)`
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
-export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, translate }) => {
+export const MapOverlaysPage = ({ isBESAdmin, vizBuilderBaseUrl, translate }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -210,13 +210,11 @@ export const MapOverlaysPage = ({ getHeaderEl, isBESAdmin, vizBuilderBaseUrl, tr
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
       LinksComponent={renderNewMapOverlayVizButton}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 MapOverlaysPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
   isBESAdmin: PropTypes.bool,
   vizBuilderBaseUrl: PropTypes.string,

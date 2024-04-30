@@ -10,8 +10,7 @@ import MuiDivider from '@material-ui/core/Divider';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
-import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { PageHeader } from '../widgets';
 import { updatePassword, getUser } from '../authentication';
 import { PasswordStrengthBar } from '../widgets/PasswordStrengthBar';
 
@@ -42,12 +41,11 @@ const Divider = styled(MuiDivider)`
   margin: 0.5rem 0 1.8rem;
 `;
 
-const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHeaderEl }) => {
+const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, register, errors, watch } = useForm();
-  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async (data, event) => {
     setIsLoading(true);
@@ -68,7 +66,7 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
 
   return (
     <Container>
-      {HeaderPortal}
+      <PageHeader title={user.name} />
       <form onSubmit={onSubmit} noValidate>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
@@ -127,7 +125,6 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword, getHea
 });
 
 ChangePasswordPageComponent.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   onUpdatePassword: PropTypes.func.isRequired,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,

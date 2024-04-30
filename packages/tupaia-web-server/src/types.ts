@@ -4,6 +4,7 @@
  */
 import { ModelRegistry } from '@tupaia/database';
 import {
+  CountryModel,
   DashboardItemModel,
   DashboardMailingListEntryModel,
   DashboardModel,
@@ -11,10 +12,12 @@ import {
   EntityModel,
   MapOverlayGroupModel,
   MapOverlayGroupRelationModel,
+  ProjectModel,
   UserModel,
 } from '@tupaia/server-boilerplate';
 
 export interface TupaiaWebServerModelRegistry extends ModelRegistry {
+  readonly country: CountryModel;
   readonly dashboard: DashboardModel;
   readonly dashboardItem: DashboardItemModel;
   readonly dashboardMailingListEntry: DashboardMailingListEntryModel;
@@ -23,4 +26,5 @@ export interface TupaiaWebServerModelRegistry extends ModelRegistry {
   readonly mapOverlayGroup: MapOverlayGroupModel;
   readonly mapOverlayGroupRelation: MapOverlayGroupRelationModel;
   readonly user: UserModel;
+  readonly project: ProjectModel;
 }
