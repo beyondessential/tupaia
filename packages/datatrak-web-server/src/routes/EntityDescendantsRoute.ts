@@ -4,7 +4,7 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest, EntityType } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, EntityType, UserAccount } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -28,6 +28,29 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   return code;
 }
 
+const getRecentEntities = (
+  currentUser: UserAccount,
+  countryCode: string | undefined,
+  type: string | undefined,
+) => {
+  const { recent_entities: userRecentEntities } = currentUser.preferences;
+  if (!userRecentEntities || !countryCode || !type) {
+    return [];
+  }
+
+  const recentEntitiesForCountry = userRecentEntities[countryCode];
+  if (!recentEntitiesForCountry) {
+    return [];
+  }
+
+  const entityTypes = type.split(',');
+  const recentEntitiesOfTypes = entityTypes
+    .map(entityType => userRecentEntities[countryCode][entityType as EntityType] ?? [])
+    .flat();
+
+  return recentEntitiesOfTypes;
+};
+
 export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
   public async buildResponse() {
     const { query, ctx, session, models } = this.req;
@@ -42,20 +65,10 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
       fields = DEFAULT_FIELDS,
     } = query;
 
-    const entityTypes = type?.split(',') ?? [];
-
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-      const { recent_entities: userRecentEntities } = currentUser.preferences;
 
-      recentEntities =
-        countryCode && type
-          ? entityTypes
-              .map(
-                entityType => userRecentEntities?.[countryCode]?.[entityType as EntityType] ?? [],
-              )
-              .flat()
-          : [];
+      recentEntities = getRecentEntities(currentUser, countryCode, type);
     }
 
     const filter = {
