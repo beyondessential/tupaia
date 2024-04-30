@@ -117,6 +117,7 @@ export const openEditModal =
     });
 
     // And then fetch data / set default field values for edit/new respectively
+
     if (recordId) {
       const endpoint = `${editEndpoint}/${recordId}`;
       dispatch({

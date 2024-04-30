@@ -84,24 +84,28 @@ export const ResourcePage = ({
   editorConfig,
   detailsView,
   parent,
-  displayValue,
+  displayProperty,
   getIsLink,
+  getDisplayValue,
 }) => {
-  const params = useParams();
-  const { data: details } = useItemDetails(params.id, parent);
+  const { '*': unusedParam, ...params } = useParams();
+  const { data: details } = useItemDetails(params, parent);
 
   const { to } = detailsView || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
+  const isDetailsPage = Object.keys(params).length > 0;
+
   return (
     <>
       <Container>
-        {params.id && (
+        {isDetailsPage && (
           <Breadcrumbs
             parent={parent}
             title={title}
-            displayValue={displayValue}
+            displayProperty={displayProperty}
             details={details}
+            getDisplayValue={getDisplayValue}
           />
         )}
         <PageHeader
@@ -152,8 +156,9 @@ ResourcePage.propTypes = {
   editorConfig: PropTypes.object,
   detailsView: PropTypes.object,
   parent: PropTypes.object,
-  displayValue: PropTypes.string,
+  displayProperty: PropTypes.string,
   getIsLink: PropTypes.func,
+  getDisplayValue: PropTypes.func,
 };
 
 ResourcePage.defaultProps = {
@@ -172,6 +177,7 @@ ResourcePage.defaultProps = {
   editorConfig: {},
   detailsView: null,
   parent: null,
-  displayValue: null,
+  displayProperty: null,
   getIsLink: null,
+  getDisplayValue: null,
 };

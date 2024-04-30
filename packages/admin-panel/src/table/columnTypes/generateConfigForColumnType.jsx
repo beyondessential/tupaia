@@ -48,6 +48,7 @@ const BUTTON_COLUMN_TYPES = [
   'resubmitSurveyResponse',
   'qrCode',
   'testDatabaseConnection',
+  'bulkEdit',
 ];
 
 export const generateConfigForColumnType = (type, actionConfig, reduxId) => {

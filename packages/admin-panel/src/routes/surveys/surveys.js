@@ -220,6 +220,7 @@ const SURVEY_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Survey',
       editEndpoint: 'surveys',
@@ -313,6 +314,7 @@ const QUESTION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Question',
       editEndpoint: 'surveyScreenComponents',
@@ -538,6 +540,6 @@ export const surveys = {
     endpoint: 'surveys/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,
     title: 'Questions',
-    displayValue: 'name', // gets used to determine what to display in the breadcrumbs
+    displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
   },
 };

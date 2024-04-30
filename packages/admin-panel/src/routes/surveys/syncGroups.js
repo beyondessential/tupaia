@@ -37,6 +37,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       editEndpoint: 'dataServiceSyncGroups',
       fields: [...FIELDS],
@@ -87,7 +88,7 @@ const CREATE_CONFIG = {
 };
 
 export const syncGroups = {
-  title: 'Sync Groups',
+  title: 'Sync groups',
   url: '/sync-groups',
   endpoint: 'dataServiceSyncGroups',
   columns: COLUMNS,

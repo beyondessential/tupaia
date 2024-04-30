@@ -15,6 +15,7 @@ const OPTION_SET_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Option Set',
       editEndpoint: 'optionSets',
@@ -49,6 +50,7 @@ const OPTION_COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       editEndpoint: 'options',
       fields: OPTION_FIELDS,
@@ -76,7 +78,7 @@ const IMPORT_CONFIG = {
 };
 
 export const optionSets = {
-  title: 'Option Sets',
+  title: 'Option sets',
   endpoint: 'optionSets',
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,
@@ -86,6 +88,6 @@ export const optionSets = {
     endpoint: 'optionSets/{id}/options',
     columns: OPTION_COLUMNS,
     url: '/:id/options',
-    displayValue: 'name',
+    displayProperty: 'name',
   },
 };

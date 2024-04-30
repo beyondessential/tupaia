@@ -38,6 +38,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       editEndpoint: 'dataElementDataServices',
       fields: FIELDS,
@@ -68,7 +69,7 @@ const CREATE_CONFIG = {
 };
 
 export const dataMapping = {
-  title: 'Data Mapping',
+  title: 'Data mapping',
   url: '/data-mapping',
   endpoint: 'dataElementDataServices',
   columns: COLUMNS,

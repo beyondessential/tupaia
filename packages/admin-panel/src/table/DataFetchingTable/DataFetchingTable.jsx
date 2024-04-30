@@ -238,7 +238,7 @@ const DataFetchingTableComponent = ({
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
                         row={row}
-                        detailUrl={detailUrl}
+                        detailUrl={visibleColumns[i].isButtonColumn ? '' : detailUrl}
                         getIsLink={getIsLink}
                         width={visibleColumns[i].colWidth}
                       >

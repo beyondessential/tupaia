@@ -17,7 +17,7 @@ const EDITOR_CONFIG = {
 };
 
 export const dataElements = {
-  title: 'Data Elements',
+  title: 'Data elements',
   endpoint: 'dataElements',
   columns: [
     ...DATA_ELEMENT_FIELDS,

@@ -93,6 +93,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   {
     Header: 'Export',
     type: 'export',
+    source: 'id',
     actionConfig: {
       exportEndpoint: 'surveyResponses',
       extraQueryParameters: {
@@ -156,7 +157,7 @@ const IMPORT_CONFIG = {
 };
 
 export const surveyResponses = {
-  title: 'Survey Responses',
+  title: 'Survey responses',
   url: '/survey-responses',
   endpoint: 'surveyResponses',
   columns: SURVEY_RESPONSE_PAGE_COLUMNS,
@@ -169,6 +170,6 @@ export const surveyResponses = {
     columns: ANSWER_COLUMNS,
     endpoint: 'surveyResponses/{id}/answers',
     url: '/:id/answers',
-    displayValue: 'survey.name',
+    displayProperty: 'survey.name',
   },
 };

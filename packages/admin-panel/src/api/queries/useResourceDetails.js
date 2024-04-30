@@ -5,13 +5,13 @@
 import { useQuery } from 'react-query';
 import { get } from '../../VizBuilderApp/api/api';
 
-export const useItemDetails = (id, parent) => {
+export const useItemDetails = (params, parent) => {
   return useQuery(
-    ['itemDetails', parent?.endpoint, id],
+    ['itemDetails', parent?.endpoint, params],
     async () => {
       return get(parent?.endpoint, {
         params: {
-          filter: JSON.stringify({ id }),
+          filter: JSON.stringify(params),
           columns: JSON.stringify(
             parent?.columns?.map(column => column.source).filter(source => source),
           ),
@@ -19,7 +19,7 @@ export const useItemDetails = (id, parent) => {
       });
     },
     {
-      enabled: !!id && !!parent?.endpoint,
+      enabled: !!params && !!parent?.endpoint,
       select: data => data?.[0] ?? null,
     },
   );

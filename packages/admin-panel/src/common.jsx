@@ -127,6 +127,7 @@ export const getDataSourceButtonsConfig = (fields, recordType) => [
       displayUsedBy: true,
       recordType,
     },
+    source: 'id',
   },
   {
     Header: 'Delete',

@@ -4,7 +4,7 @@
  */
 import React, { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -65,7 +65,7 @@ renderReactApp(
                 <CssBaseline />
                 <Routes>
                   <Route
-                    path="/viz-builder"
+                    path="/viz-builder/*"
                     element={<VizBuilder NavPanel={NavPanel} Footer={Footer} />}
                   />
                   <Route path="*" default element={<AdminPanelRoute />} />

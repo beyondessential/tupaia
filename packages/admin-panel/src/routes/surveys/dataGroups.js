@@ -36,7 +36,7 @@ const EDITOR_CONFIG = {
 };
 
 export const dataGroups = {
-  title: 'Data Groups',
+  title: 'Data groups',
   endpoint: 'dataGroups',
   columns: [...DATA_GROUP_FIELDS, ...getDataSourceButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')],
   url: '/data-groups',
@@ -50,13 +50,13 @@ export const dataGroups = {
   },
   editorConfig: EDITOR_CONFIG,
   detailsView: {
-    title: 'Data Elements',
+    title: 'Data elements',
     endpoint: 'dataGroups/{id}/dataElements',
     columns: [
       ...DATA_ELEMENT_FIELDS,
       ...getDataSourceButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement'),
     ],
     url: '/:id/data-elements',
-    displayValue: 'code',
+    displayProperty: 'code',
   },
 };

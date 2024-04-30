@@ -90,7 +90,7 @@ const refreshDataWithDebounce = debounce(
     const sortString = JSON.stringify(sortObjects);
 
     // Set up columns
-    const columnSources = [...columns.map(column => column.source).filter(source => source), 'id'];
+    const columnSources = columns.map(column => column.source).filter(source => source);
     const columnsString = JSON.stringify(columnSources);
 
     // Prepare for request
