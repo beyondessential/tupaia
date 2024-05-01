@@ -87,6 +87,7 @@ export const ResourcePage = ({
   displayProperty,
   getIsLink,
   getDisplayValue,
+  getLink,
 }) => {
   const { '*': unusedParam, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -127,6 +128,7 @@ export const ResourcePage = ({
           deleteConfig={deleteConfig}
           detailUrl={to}
           getIsLink={getIsLink}
+          getLink={getLink}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
@@ -159,6 +161,7 @@ ResourcePage.propTypes = {
   displayProperty: PropTypes.string,
   getIsLink: PropTypes.func,
   getDisplayValue: PropTypes.func,
+  getLink: PropTypes.func,
 };
 
 ResourcePage.defaultProps = {
@@ -180,4 +183,5 @@ ResourcePage.defaultProps = {
   displayProperty: null,
   getIsLink: null,
   getDisplayValue: null,
+  getLink: null,
 };

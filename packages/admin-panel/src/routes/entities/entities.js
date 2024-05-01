@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { ANSWER_COLUMNS, SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
+import { SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
 
 const ENTITIES_ENDPOINT = 'entities';
 
@@ -105,12 +105,6 @@ export const entities = {
     columns: SURVEY_RESPONSE_COLUMNS,
     url: '/:id/surveyResponses',
     displayProperty: 'name',
-    // TODO: handle links here
-    detailsView: {
-      title: 'Answers',
-      endpoint: 'surveyResponses/{id}/answers',
-      columns: ANSWER_COLUMNS,
-      url: '/:id/answers',
-    },
+    getLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
   },
 };

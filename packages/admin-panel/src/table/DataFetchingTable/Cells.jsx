@@ -129,14 +129,19 @@ const formatDetailUrl = (detailUrl, row) => {
   return matches.reduce((url, match) => url.replace(`:${match}`, row[match]), detailUrl);
 };
 
-export const CellValue = ({ row, detailUrl, children, getIsLink }) => {
-  if (!detailUrl) return children;
+export const CellValue = ({ row, detailUrl, children, getIsLink, getLink }) => {
+  if (!detailUrl && !getLink) return children;
   if (getIsLink && !getIsLink(row.original)) return children;
-  const formattedDetailUrl = formatDetailUrl(detailUrl, row.original);
+  const generateLink = () => {
+    if (getLink) {
+      return getLink(row.original);
+    }
+    return formatDetailUrl(detailUrl, row.original);
+  };
+  const url = generateLink();
+  if (!url) return children;
 
-  if (!formattedDetailUrl) return children;
-
-  return <CellLink to={formattedDetailUrl}>{children}</CellLink>;
+  return <CellLink to={url}>{children}</CellLink>;
 };
 
 CellValue.propTypes = {
@@ -144,17 +149,19 @@ CellValue.propTypes = {
   children: PropTypes.node.isRequired,
   detailUrl: PropTypes.string,
   getIsLink: PropTypes.func,
+  getLink: PropTypes.func,
 };
 
 CellValue.defaultProps = {
   detailUrl: null,
   getIsLink: null,
+  getLink: null,
 };
 
-export const DisplayCell = ({ row, children, detailUrl, getIsLink, ...props }) => {
+export const DisplayCell = ({ row, children, detailUrl, getIsLink, getLink, ...props }) => {
   return (
     <TableCell {...props}>
-      <CellValue row={row} detailUrl={detailUrl} getIsLink={getIsLink}>
+      <CellValue row={row} detailUrl={detailUrl} getIsLink={getIsLink} getLink={getLink}>
         {children}
       </CellValue>
     </TableCell>
@@ -166,9 +173,11 @@ DisplayCell.propTypes = {
   children: PropTypes.node.isRequired,
   detailUrl: PropTypes.string,
   getIsLink: PropTypes.func,
+  getLink: PropTypes.func,
 };
 
 DisplayCell.defaultProps = {
   detailUrl: null,
   getIsLink: null,
+  getLink: null,
 };
