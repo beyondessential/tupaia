@@ -4,6 +4,7 @@
  */
 
 import { CssColor } from '../../../css';
+import { DashboardItemType } from '../../common';
 import { BaseConfig, ExportPresentationOptions, ValueType } from '../common';
 
 /**
@@ -96,7 +97,7 @@ export type YAxisDomain = {
  * @description The base chart config on all chart types
  */
 export type BaseChartConfig = BaseConfig & {
-  type: 'chart';
+  type: `${DashboardItemType.Chart}`;
   chartType: ChartType;
 
   /**

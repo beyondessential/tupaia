@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
@@ -104,19 +103,14 @@ const IMPORT_CONFIG = {
 };
 const EDITOR_CONFIG = { displayUsedBy: true };
 
-export const DataTablesPage = ({ getHeaderEl }) => (
+export const DataTablesPage = () => (
   <ResourcePage
     title="Data-Tables"
     endpoint={DATA_TABLES_ENDPOINT}
     columns={COLUMNS}
     importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={onProcessDataForSave}
     editorConfig={EDITOR_CONFIG}
   />
 );
-
-DataTablesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

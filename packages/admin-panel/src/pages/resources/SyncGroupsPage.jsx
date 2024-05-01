@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
@@ -93,18 +92,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SyncGroupsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const SyncGroupsPage = props => (
   <ResourcePage
     title="Sync Groups"
     endpoint="dataServiceSyncGroups"
     columns={COLUMNS}
     editorConfig={EDITOR_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-SyncGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

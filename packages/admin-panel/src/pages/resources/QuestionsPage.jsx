@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const QUESTION_FIELDS = [
@@ -108,18 +107,13 @@ const EDITOR_CONFIG = {
   displayUsedBy: true,
 };
 
-export const QuestionsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const QuestionsPage = props => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
-    getHeaderEl={getHeaderEl}
     editorConfig={EDITOR_CONFIG}
-    {...restOfProps}
+    {...props}
   />
 );
-
-QuestionsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};
