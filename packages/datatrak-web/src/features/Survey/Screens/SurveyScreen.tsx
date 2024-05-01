@@ -50,12 +50,20 @@ export const SurveyScreen = () => {
     question => question.type === QuestionType.Instruction,
   );
 
+  const firstQuestionIsInstruction =
+    pageHasOnlyInstructions || activeScreen[0].type === QuestionType.Instruction;
+
   return (
     <>
       <ScrollableBody $hasSidebar>
+        {/*
+         * If the first question on the active screen is an instruction, then display it in full
+         * (heading and detail). Otherwise, display only its heading without its detail; any detail
+         * it has will appear with the question itself.
+         */}
         <ScreenHeader $centered={pageHasOnlyInstructions}>
           <Heading>{instructionHeading}</Heading>
-          {pageHasOnlyInstructions && instructionDetail && (
+          {firstQuestionIsInstruction && instructionDetail && (
             <Typography variant="subtitle1">{instructionDetail}</Typography>
           )}
         </ScreenHeader>
