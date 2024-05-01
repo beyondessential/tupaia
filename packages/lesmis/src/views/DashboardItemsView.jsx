@@ -35,6 +35,7 @@ const DashboardItemsView = ({
               .map(item => (
                 <DashboardReport
                   key={item.code}
+                  itemCode={item.code}
                   reportCode={item.reportCode}
                   name={item.name}
                   useYearSelector={useYearSelector}
