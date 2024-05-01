@@ -4,16 +4,13 @@
  */
 
 import { DeleteHandler } from '../DeleteHandler';
-import {
-  assertAdminPanelAccess,
-  assertAnyPermissions,
-  assertBESAdminAccess,
-} from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertMapOverlayGroupRelationsEditPermissions } from './assertMapOverlayGroupRelationsPermissions';
 
 export class DeleteMapOverlayGroupRelations extends DeleteHandler {
   async assertUserHasAccess() {
-    await this.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, assertAdminPanelAccess]),
-    );
+    const mapOverlayChecker = accessPolicy =>
+      assertMapOverlayGroupRelationsEditPermissions(accessPolicy, this.models, this.recordId);
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, mapOverlayChecker]));
   }
 }
