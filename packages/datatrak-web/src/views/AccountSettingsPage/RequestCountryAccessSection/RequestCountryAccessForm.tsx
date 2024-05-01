@@ -140,9 +140,11 @@ export const RequestCountryAccessForm = ({
     return isValid ? undefined : 'Select countries to request access';
   };
 
+  const hasAccessToEveryCountry = (countries ?? []).every(c => c.hasAccess);
+  const noRequestableCountries = !project || hasAccessToEveryCountry;
+
   const formIsSubmitting = isSubmitting || requestIsLoading;
-  const formIsInsubmissible =
-    !project || isValidating || !isValid || accessListIsLoading || formIsSubmitting;
+  const formIsInsubmissible = isValidating || !isValid || accessListIsLoading || formIsSubmitting;
 
   function onSubmit({ entityIds, message }: RequestCountryAccessFormFields) {
     requestCountryAccess({
@@ -154,7 +156,7 @@ export const RequestCountryAccessForm = ({
 
   return (
     <StyledForm formContext={formContext} onSubmit={handleSubmit(onSubmit)}>
-      <StyledFieldset disabled={!project || formIsSubmitting}>
+      <StyledFieldset disabled={noRequestableCountries || formIsSubmitting}>
         <CountryChecklistWrapper>
           <StyledFormLabel>Select countries</StyledFormLabel>
           <RequestableCountryChecklist
@@ -184,7 +186,11 @@ export const RequestCountryAccessForm = ({
             label="Reason for access"
             name="message"
           />
-          <Button disabled={formIsInsubmissible} tooltip={getTooltip()} type="submit">
+          <Button
+            disabled={noRequestableCountries || formIsInsubmissible}
+            tooltip={getTooltip()}
+            type="submit"
+          >
             {formIsSubmitting ? 'Submitting request' : 'Request access'}
           </Button>
         </Flexbox>
