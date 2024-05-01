@@ -213,6 +213,7 @@ export const ROUTES = [
         label: 'Countries',
         to: '/countries',
         component: CountriesPage,
+        needsBESAdminAccess: ['create'],
       },
       {
         label: 'Entity types',
