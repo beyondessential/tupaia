@@ -63,7 +63,7 @@ export const RequestableCountryChecklist = ({
 
   const selectCountry = (id: Entity['id'], select = true) =>
     setSelectedCountries(
-      select ? [...selectedCountries, id] : selectedCountries.filter(element => element !== id),
+      select ? selectedCountries.concat([id]) : selectedCountries.filter(element => element !== id),
     );
 
   const getTooltip = (hasAccess: boolean, hasPendingAccess: boolean) => {
