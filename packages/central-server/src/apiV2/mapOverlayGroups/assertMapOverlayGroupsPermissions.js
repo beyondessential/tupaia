@@ -214,28 +214,22 @@ export const createMapOverlayGroupDBFilter = async (accessPolicy, models, criter
   const permittedMapOverlayGroupIds = await getPermittedMapOverlayGroupIds(accessPolicy, models);
   const rootMapOverlayGroup = await models.mapOverlayGroup.findRootMapOverlayGroup();
 
-  // If we have no access to any map overlay groups, we should only show map overlay groups that have no relation to any map overlay, not including the root map overlay group.
-  const noRelationFilter =
-    Object.keys(dbConditions).length > 0
-      ? {}
-      : {
-          'map_overlay_group_relation.child_id': {
-            comparator: 'IS',
-            comparisonValue: null,
-          },
-          [QUERY_CONJUNCTIONS.AND]: {
-            'map_overlay_group.id': {
-              comparator: '!=',
-              comparisonValue: rootMapOverlayGroup.id,
-            },
-          },
-        };
-
-  if (permittedMapOverlayGroupIds.length === 0) {
-    return {
-      ...dbConditions,
-      ...noRelationFilter,
+  if (permittedMapOverlayGroupIds.length === 0 && Object.keys(dbConditions).length === 0) {
+    // If we have no access to any map overlay groups and no query conditions, we should only show map overlay groups that have no relation to any map overlay, not including the root map overlay group.
+    const noRelationFilter = {
+      'map_overlay_group_relation.child_id': {
+        comparator: 'IS',
+        comparisonValue: null,
+      },
+      [QUERY_CONJUNCTIONS.AND]: {
+        'map_overlay_group.id': {
+          comparator: '!=',
+          comparisonValue: rootMapOverlayGroup.id,
+        },
+      },
     };
+
+    return noRelationFilter;
   }
 
   // Apply a filter to only show map overlay groups that have a relation to a map overlay we have access to, or have no relation at all. Any further id filtering will still be applied.
