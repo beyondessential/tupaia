@@ -50,49 +50,40 @@ const PageRoute = ({ route }) => {
 
   if (!childViews) return null;
 
-  const flattenChildViews = (routeChildViews, parentRoute) => {
-    // Flatten child views to include details view to create a route for each
-    const flattenedChildViews = routeChildViews.reduce((acc, childView) => {
-      const { detailsView } = childView;
+  const flattenedChildViews = childViews.reduce((acc, childView) => {
+    const { detailsView } = childView;
 
-      const childViewWithRoute = {
-        ...childView,
-        parent: route,
-      };
+    const childViewWithRoute = {
+      ...childView,
+      parent: route,
+    };
 
-      if (!detailsView) return [...acc, childViewWithRoute];
+    if (!detailsView) return [...acc, childViewWithRoute];
 
-      const detailsParent = {
-        ...childView,
-        to: `${route.url}${childView.url}`,
-        parent: parentRoute,
-      };
+    const detailsParent = {
+      ...childView,
+      to: `${route.url}${childView.url}`,
+      parent: route,
+    };
 
-      const updatedDetailsView = detailsView
-        ? {
-            ...detailsView,
-            to: `${route.url}${childView.url}${detailsView.url}`,
-            url: `${childView.url}${detailsView.url}`,
-            parent: detailsParent,
-          }
-        : null;
+    const updatedDetailsView = detailsView
+      ? {
+          ...detailsView,
+          to: `${route.url}${childView.url}${detailsView.url}`,
+          url: `${childView.url}${detailsView.url}`,
+          parent: detailsParent,
+        }
+      : null;
 
-      return [
-        ...acc,
-        {
-          ...childViewWithRoute,
-          detailsView: updatedDetailsView,
-        },
-        updatedDetailsView,
-      ];
-    }, []);
-
-    return flattenedChildViews;
-  };
-
-  const flattenedChildViews = flattenChildViews(childViews, route);
-
-  // need to make a recursive function that expands nested details views
+    return [
+      ...acc,
+      {
+        ...childViewWithRoute,
+        detailsView: updatedDetailsView,
+      },
+      updatedDetailsView,
+    ];
+  }, []);
 
   return (
     <Routes>
