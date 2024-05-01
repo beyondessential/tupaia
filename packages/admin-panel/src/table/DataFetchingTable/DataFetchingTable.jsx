@@ -381,10 +381,10 @@ const formatColumnForReactTable = (originalColumn, reduxId) => {
     actionConfig,
     reduxId,
     type,
+    disableSortBy: !source, // disable action columns from being sortable
+    filterable: filterable !== false,
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
-    disableSortBy: !source, // disable action columns from being sortable
-    filterable: filterable !== false && !!source,
   };
 };
 
