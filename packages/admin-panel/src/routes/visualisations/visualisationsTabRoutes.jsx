@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { InsertChart } from '@material-ui/icons';
 import React from 'react';
 import { dashboardItems } from './dashboardItems';
 import { dashboards } from './dashboards';
@@ -16,11 +15,12 @@ import { mapOverlayGroupRelations } from './mapOverlayGroupRelations';
 import { indicators } from './indicators';
 import { dataTables } from './dataTables';
 import { socialFeed } from './socialFeed';
+import { VizIcon } from '../../icons';
 
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
   url: '/visualisations',
-  icon: <InsertChart />,
+  icon: <VizIcon />,
   childViews: [
     dashboardItems,
     dashboards,
