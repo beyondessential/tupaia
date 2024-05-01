@@ -10,7 +10,7 @@ import { assertDashboardRelationEditPermissions } from './assertDashboardRelatio
 export class DeleteDashboardRelation extends DeleteHandler {
   async assertUserHasAccess() {
     const permissionsChecker = async accessPolicy =>
-      assertDashboardRelationEditPermissions(accessPolicy, this.recordId, this.models);
+      assertDashboardRelationEditPermissions(accessPolicy, this.models, this.recordId);
 
     await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, permissionsChecker]));
   }
