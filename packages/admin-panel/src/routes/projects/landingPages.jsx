@@ -1,7 +1,11 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import { Link } from '@material-ui/core';
 import { SECTION_FIELD_TYPE } from '../../editor/constants';
-import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
@@ -258,6 +262,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Landing page',
       editEndpoint: LANDING_PAGES_ENDPOINT,
@@ -281,13 +286,10 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CustomLandingPagesPage = () => {
-  return (
-    <ResourcePage
-      title="Landing Pages"
-      endpoint={LANDING_PAGES_ENDPOINT}
-      columns={COLUMNS}
-      createConfig={CREATE_CONFIG}
-    />
-  );
+export const landingPages = {
+  title: 'Landing pages',
+  url: '/landing-pages',
+  endpoint: LANDING_PAGES_ENDPOINT,
+  columns: COLUMNS,
+  createConfig: CREATE_CONFIG,
 };

@@ -105,6 +105,7 @@ export const entities = {
     columns: SURVEY_RESPONSE_COLUMNS,
     url: '/:id/surveyResponses',
     displayProperty: 'name',
+    // TODO: handle links here
     detailsView: {
       title: 'Answers',
       endpoint: 'surveyResponses/{id}/answers',

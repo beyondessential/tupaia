@@ -1,12 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { prettyArray } from '../../utilities';
 
 const PROJECTS_ENDPOINT = 'projects';
 
@@ -154,6 +152,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Project',
       editEndpoint: 'projects',
@@ -170,19 +169,17 @@ const CREATE_CONFIG = {
   },
 };
 
-export const ProjectsPage = props => (
-  <ResourcePage
-    title="Projects"
-    endpoint="projects"
-    columns={COLUMNS}
-    createConfig={CREATE_CONFIG}
-    onProcessDataForSave={(editedFields, recordData) => {
-      // If the project is being edited, and the code field is not being edited, then include the existing code in the edited fields so that it can be used for generating project image names.
-      if (recordData.code && !editedFields.code) {
-        return { ...editedFields, code: recordData.code };
-      }
-      return editedFields;
-    }}
-    {...props}
-  />
-);
+export const projects = {
+  title: 'Projects',
+  url: '',
+  columns: COLUMNS,
+  createConfig: CREATE_CONFIG,
+  endpoint: PROJECTS_ENDPOINT,
+  onProcessDataForSave: (editedFields, recordData) => {
+    // If the project is being edited, and the code field is not being edited, then include the existing code in the edited fields so that it can be used for generating project image names.
+    if (recordData.code && !editedFields.code) {
+      return { ...editedFields, code: recordData.code };
+    }
+    return editedFields;
+  },
+};

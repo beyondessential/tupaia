@@ -1,15 +1,12 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { prettyArray } from '../../utilities';
 
 const ENTITY_HIERARCHY_ENDPOINT = 'entityHierarchy';
-const TITLE = 'Entity Hierarchy';
 
 const FIELDS = [
   {
@@ -37,6 +34,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       title: 'Edit Entity Hierarchy',
       editEndpoint: ENTITY_HIERARCHY_ENDPOINT,
@@ -45,6 +43,9 @@ const COLUMNS = [
   },
 ];
 
-export const EntityHierarchyPage = () => (
-  <ResourcePage title={TITLE} endpoint={ENTITY_HIERARCHY_ENDPOINT} columns={COLUMNS} />
-);
+export const entityHierarchy = {
+  title: 'Entity hierarchy',
+  endpoint: ENTITY_HIERARCHY_ENDPOINT,
+  columns: COLUMNS,
+  url: '/hierarchy',
+};

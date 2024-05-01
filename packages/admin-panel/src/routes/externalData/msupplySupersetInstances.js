@@ -1,10 +1,7 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-import React from 'react';
-import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
   {
@@ -27,6 +24,7 @@ const COLUMNS = [
   {
     Header: 'Edit',
     type: 'edit',
+    source: 'id',
     actionConfig: {
       editEndpoint: 'supersetInstances',
       fields: FIELDS,
@@ -49,12 +47,10 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SupersetInstancesPage = props => (
-  <ResourcePage
-    title="mSupply Superset Instances"
-    endpoint="supersetInstances"
-    columns={COLUMNS}
-    createConfig={CREATE_CONFIG}
-    {...props}
-  />
-);
+export const supersetInstances = {
+  title: 'mSupply superset Instances',
+  endpoint: 'supersetInstances',
+  columns: COLUMNS,
+  createConfig: CREATE_CONFIG,
+  url: '/superset-instances',
+};
