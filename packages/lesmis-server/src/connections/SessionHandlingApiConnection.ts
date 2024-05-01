@@ -22,8 +22,8 @@ class SessionSwitchingAuthHandler implements AuthHandler {
       return this.session.getAuthHeader();
     }
     const API_CLIENT_NAME = requireEnv('API_CLIENT_NAME');
-    const API_CLIENT_SECRET = requireEnv('API_CLIENT_SECRET');
-    const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_SECRET);
+    const API_CLIENT_PASSWORD = requireEnv('API_CLIENT_PASSWORD');
+    const DEFAULT_AUTH_HEADER = createBasicHeader(API_CLIENT_NAME, API_CLIENT_PASSWORD);
     return DEFAULT_AUTH_HEADER;
   }
 }

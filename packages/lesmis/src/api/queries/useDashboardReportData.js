@@ -9,14 +9,15 @@ import { useDashboardData } from './useDashboardData';
 import { combineQueries } from './utils';
 import { QUERY_OPTIONS } from './constants';
 
-const useDashboardReportData = ({ entityCode, reportCode, startDate, endDate }) => {
+const useDashboardReportData = ({ entityCode, reportCode, startDate, endDate, itemCode }) => {
   const params = {
     startDate,
     endDate,
     type: 'dashboard',
+    itemCode,
   };
 
-  const enabled = startDate !== undefined && endDate !== undefined && !!reportCode;
+  const enabled = startDate !== undefined && endDate !== undefined && !!reportCode && !!itemCode;
 
   return useQuery(
     ['dashboardReport', entityCode, reportCode, params],
@@ -48,9 +49,10 @@ export const useDashboardReportDataWithConfig = ({
   reportCode,
   startDate,
   endDate,
+  itemCode,
 }) => {
   const query = combineQueries({
-    reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate }),
+    reportData: useDashboardReportData({ entityCode, reportCode, startDate, endDate, itemCode }),
     dashboards: useDashboardData({ entityCode }),
   });
 
