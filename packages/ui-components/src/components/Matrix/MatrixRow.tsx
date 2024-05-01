@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
@@ -69,10 +69,11 @@ const TableRow = styled(MuiTableRow)<{
   $isChild?: boolean;
   $depth: number;
 }>`
-  height: 100%; // this is so the modal button for the cell fills the whole height of the cell
-  position: relative; // this is so that the hover border can be positioned absolutely over just the row
+  height: 100%; // so the modal button for the cell fills the whole height of the cell
+  position: relative; // so the hover border can be positioned absolutely over just the row
 
-  // apply a border to the top of the child rows using pseudo classes so we can control the width and the still see the border when the row is scrolled horizontally
+  // Apply a border to the top of the child rows using pseudo-classes so we can control the width
+  // and still see the border when the row is scrolled horizontally
   ${Cell}:before {
     content: '';
     position: absolute;
@@ -81,14 +82,16 @@ const TableRow = styled(MuiTableRow)<{
     width: 100%;
     height: 100%;
     pointer-events: none; // don't let the cell interfere with the button events
-    border-style: solid;
     border-color: ${({ theme }) => theme.palette.divider};
+    border-style: solid;
     border-width: ${({ $isChild }) => ($isChild ? '1px 0 0 0' : '0')};
     :is(th) {
       width: ${({ $depth }) => `calc(100% - ${depthCalc($depth)})`}; // the row header is indented
     }
   }
-  // for the first row of a group that is expanded and the immediate sibling of another expanded tow, add a border to the top of the row
+
+  // For the first row of a group that is expanded and the immediate sibling of another expanded
+  // row, add a border to the top of the row
   &.child
     + &.${MATRIX_ROW_CLASS_PARENT}.${MATRIX_ROW_CLASS_HIGHLIGHTED}:not(
       :has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible))
@@ -103,7 +106,8 @@ const TableRow = styled(MuiTableRow)<{
     }
   }
 
-  // apply the hover effect to the cells instead of the row, so that when the row is scrolled horizontally, the left border doesn't get hidden
+  // Apply the hover effect to the cells instead of the row, so that when the row is scrolled
+  // horizontally, the left border doesn’t get hidden
   &:has(${ExpandableRowHeaderCellContent}:where(:hover, :focus-visible)) {
     ${Cell}:before {
       content: ''; // set this to an empty string so the border always shows when the button is hovered
@@ -211,7 +215,8 @@ const ClickableRowHeaderCell = ({
 };
 
 /**
- * This component renders the first cell of a row. It renders a button to expand/collapse the row if it has children, otherwise it renders a regular cell.
+ * This component renders the first cell of a row. It renders a button to expand/collapse the row if
+ * it has children, otherwise it renders a regular cell.
  */
 const RowHeaderCell = ({
   rowTitle,
