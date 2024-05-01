@@ -14,37 +14,6 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 
-const recursivelyFlattenDetailsView = (route, parentRoute) => {
-  const { detailsView } = route;
-
-  if (!detailsView) return route;
-
-  const detailsParent = {
-    ...route,
-    to: `${parentRoute.url}${route.url}`,
-    parent: parentRoute,
-  };
-
-  const updatedDetailsView = {
-    ...detailsView,
-    to: `${parentRoute.url}${route.url}${detailsView.url}`,
-    url: `${route.url}${detailsView.url}`,
-    parent: detailsParent,
-  };
-
-  if (updatedDetailsView.detailsView) {
-    return {
-      ...route,
-      detailsView: recursivelyFlattenDetailsView(updatedDetailsView, detailsParent),
-    };
-  }
-
-  return {
-    ...route,
-    detailsView: updatedDetailsView,
-  };
-};
-
 const PageRoute = ({ route }) => {
   const { childViews } = route;
 
