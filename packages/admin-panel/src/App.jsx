@@ -14,41 +14,85 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 
+const recursivelyFlattenDetailsView = (route, parentRoute) => {
+  const { detailsView } = route;
+
+  if (!detailsView) return route;
+
+  const detailsParent = {
+    ...route,
+    to: `${parentRoute.url}${route.url}`,
+    parent: parentRoute,
+  };
+
+  const updatedDetailsView = {
+    ...detailsView,
+    to: `${parentRoute.url}${route.url}${detailsView.url}`,
+    url: `${route.url}${detailsView.url}`,
+    parent: detailsParent,
+  };
+
+  if (updatedDetailsView.detailsView) {
+    return {
+      ...route,
+      detailsView: recursivelyFlattenDetailsView(updatedDetailsView, detailsParent),
+    };
+  }
+
+  return {
+    ...route,
+    detailsView: updatedDetailsView,
+  };
+};
+
 const PageRoute = ({ route }) => {
   const { childViews } = route;
 
   if (!childViews) return null;
 
-  // Flatten child views to include details view to create a route for each
-  const flattenedChildViews = childViews.reduce((acc, childView) => {
-    const { detailsView } = childView;
+  const flattenChildViews = (routeChildViews, parentRoute) => {
+    // Flatten child views to include details view to create a route for each
+    const flattenedChildViews = routeChildViews.reduce((acc, childView) => {
+      const { detailsView } = childView;
 
-    const detailsParent = {
-      ...childView,
-      to: `${route.url}${childView.url}`,
-      parent: route,
-    };
+      const childViewWithRoute = {
+        ...childView,
+        parent: route,
+      };
 
-    const updatedDetailsView = detailsView
-      ? {
-          ...detailsView,
-          to: `${route.url}${childView.url}${detailsView.url}`,
-          url: `${childView.url}${detailsView.url}`,
-          parent: detailsParent,
-        }
-      : null;
+      if (!detailsView) return [...acc, childViewWithRoute];
 
-    const childViewWithRoute = {
-      ...childView,
-      parent: route,
-      detailsView: updatedDetailsView,
-    };
+      const detailsParent = {
+        ...childView,
+        to: `${route.url}${childView.url}`,
+        parent: parentRoute,
+      };
 
-    if (detailsView) {
-      return [...acc, childViewWithRoute, updatedDetailsView];
-    }
-    return [...acc, childViewWithRoute];
-  }, []);
+      const updatedDetailsView = detailsView
+        ? {
+            ...detailsView,
+            to: `${route.url}${childView.url}${detailsView.url}`,
+            url: `${childView.url}${detailsView.url}`,
+            parent: detailsParent,
+          }
+        : null;
+
+      return [
+        ...acc,
+        {
+          ...childViewWithRoute,
+          detailsView: updatedDetailsView,
+        },
+        updatedDetailsView,
+      ];
+    }, []);
+
+    return flattenedChildViews;
+  };
+
+  const flattenedChildViews = flattenChildViews(childViews, route);
+
+  // need to make a recursive function that expands nested details views
 
   return (
     <Routes>

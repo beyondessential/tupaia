@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { entitiesTabRoutes } from './entities';
 import { surveysTabRoutes } from './surveys';
 import { usersTabRoutes } from './users';
 import { visualisationsTabRoutes } from './visualisations';
@@ -11,38 +12,7 @@ export const ROUTES = [
   surveysTabRoutes,
   visualisationsTabRoutes,
   usersTabRoutes,
-  // {
-  //   label: 'Users & Permissions',
-  //   to: '/users',
-  //   icon: <PeopleAlt />,
-  //   childViews: [
-  //     {
-  //       label: 'Users',
-  //       to: '',
-  //       component: UsersPage,
-  //     },
-  //     {
-  //       label: 'Permissions',
-  //       to: '/permissions',
-  //       component: PermissionsPage,
-  //     },
-  //     {
-  //       label: 'Permission Groups',
-  //       to: '/permission-groups',
-  //       component: PermissionGroupsPage,
-  //     },
-  //     {
-  //       label: 'Permission Groups Viewer',
-  //       to: '/permission-groups-viewer',
-  //       component: PermissionGroupsViewerPage,
-  //     },
-  //     {
-  //       label: 'Access Requests',
-  //       to: '/access-requests',
-  //       component: AccessRequestsPage,
-  //     },
-  //   ],
-  // },
+  entitiesTabRoutes,
   // {
   //   label: 'Entities',
   //   to: '/entities',
