@@ -47,7 +47,7 @@ const processDataForSave = (fieldsToSave, recordData) => {
   return records;
 };
 
-export const PermissionsPage = ({ getHeaderEl, translate }) => {
+export const PermissionsPage = ({ translate }) => {
   const PERMISSIONS_COLUMNS = [
     {
       Header: translate('admin.entity'),
@@ -145,7 +145,6 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
       createConfig={createConfig}
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
-      getHeaderEl={getHeaderEl}
       onProcessDataForSave={processDataForSave}
       importConfig={null}
       LinksComponent={null}
@@ -154,6 +153,5 @@ export const PermissionsPage = ({ getHeaderEl, translate }) => {
 };
 
 PermissionsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import {
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
@@ -72,18 +71,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const DataElementDataServicesPage = ({ getHeaderEl, ...props }) => (
+export const DataElementDataServicesPage = props => (
   <ResourcePage
     title="Data Mapping"
     endpoint="dataElementDataServices"
     columns={COLUMNS}
     importConfig={IMPORT_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
     {...props}
   />
 );
-
-DataElementDataServicesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

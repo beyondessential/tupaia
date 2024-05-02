@@ -21,16 +21,8 @@ type QueryParams = Record<string, unknown> & {
 };
 
 export const useReport = (reportCode: DashboardItem['reportCode'], params: QueryParams) => {
-  const {
-    dashboardCode,
-    projectCode,
-    entityCode,
-    itemCode,
-    startDate,
-    endDate,
-    legacy,
-    ...rest
-  } = params;
+  const { dashboardCode, projectCode, entityCode, itemCode, startDate, endDate, legacy, ...rest } =
+    params;
   const timeZone = getBrowserTimeZone();
   const formattedStartDate = formatDateForApi(startDate, null);
   const formattedEndDate = formatDateForApi(endDate, null);

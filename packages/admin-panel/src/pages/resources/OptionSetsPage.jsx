@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const OPTION_SET_FIELDS = [
@@ -89,17 +88,13 @@ const IMPORT_CONFIG = {
   ],
 };
 
-export const OptionSetsPage = ({ getHeaderEl }) => (
+export const OptionSetsPage = props => (
   <ResourcePage
     title="Option Sets"
     endpoint="optionSets"
     columns={OPTION_SET_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
-    getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
-
-OptionSetsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

@@ -13,6 +13,7 @@ module.exports = {
     'lesmis-server',
     'web-config-server',
     'data-table-server',
+    'admin-panel-server',
     'lesmis',
   ]),
 };

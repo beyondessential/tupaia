@@ -40,6 +40,7 @@ export const DashboardReportPage = ({
           <Typography variant="h5">{item.name}</Typography>
         </DashboardTitleContainer>
         <DashboardReport
+          itemCode={item.code}
           reportCode={item.reportCode}
           name={item.name}
           exportOptions={exportOptions}

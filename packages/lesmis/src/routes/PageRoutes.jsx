@@ -53,7 +53,6 @@ export const PageRoutes = React.memo(() => {
       <Route path={`${path}/admin`}>
         <AdminPanelDataProviders config={adminPanelConfig}>
           <AdminPanel />
-          <Footer />
         </AdminPanelDataProviders>
       </Route>
       <Route path={`${path}/about`}>

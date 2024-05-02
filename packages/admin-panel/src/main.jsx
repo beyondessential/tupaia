@@ -14,7 +14,7 @@ import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
 import { StoreProvider } from './utilities/StoreProvider';
-import { Footer, Navbar } from './widgets';
+import { Footer, NavPanel } from './widgets';
 import { TupaiaApi } from './api';
 import { theme } from './theme';
 
@@ -58,7 +58,7 @@ renderReactApp(
                 <CssBaseline />
                 <Switch>
                   <Route path="/viz-builder">
-                    <VizBuilder Navbar={Navbar} Footer={Footer} />
+                    <VizBuilder NavPanel={NavPanel} Footer={Footer} />
                   </Route>
                   <Route path="/">
                     <AdminPanelProviders>
@@ -76,4 +76,3 @@ renderReactApp(
   </Router>,
   document.getElementById('root'),
 );
-
