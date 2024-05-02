@@ -55,20 +55,36 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
+  hasBESAdminAccess,
+  needsBESAdminAccess,
 }) => {
+  const getHasPermission = actionType => {
+    if (!needsBESAdminAccess) return true;
+    if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
+    return true;
+  };
+
+  const canImport = getHasPermission('import');
+  const canExport = getHasPermission('export');
+  const canCreate = getHasPermission('create');
+
+  // Explode columns to support nested fields, since the table doesn't want to nest these, and then filter out columns that the user doesn't have permission to see
+  const accessibleColumns = getExplodedFields(columns).filter(
+    column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
+  );
   return (
     <>
       <Container>
         <PageHeader
           title={title}
-          importConfig={importConfig}
-          exportConfig={exportConfig}
-          createConfig={createConfig}
-          ExportModalComponent={ExportModalComponent}
+          importConfig={canImport && importConfig}
+          exportConfig={canExport && exportConfig}
+          createConfig={canCreate && createConfig}
+          ExportModalComponent={canExport && ExportModalComponent}
           LinksComponent={LinksComponent}
         />
         <DataFetchingTable
-          columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
+          columns={accessibleColumns}
           endpoint={endpoint}
           expansionTabs={expansionTabs}
           reduxId={reduxId || endpoint}
@@ -112,6 +128,8 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
+  hasBESAdminAccess: PropTypes.bool.isRequired,
+  needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
 };
 
 ResourcePage.defaultProps = {
@@ -129,4 +147,5 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
+  needsBESAdminAccess: [],
 };

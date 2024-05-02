@@ -18,10 +18,11 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
-export const EntityTypesPage = () => (
+export const EntityTypesPage = props => (
   <ResourcePage
     title="Entity Types"
     endpoint={ENTITY_TYPES_ENDPOINT}
     columns={ENTITY_TYPES_COLUMNS}
+    {...props}
   />
 );

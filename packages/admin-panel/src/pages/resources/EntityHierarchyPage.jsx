@@ -46,6 +46,6 @@ const COLUMNS = [
   },
 ];
 
-export const EntityHierarchyPage = () => (
-  <ResourcePage title={TITLE} endpoint={ENTITY_HIERARCHY_ENDPOINT} columns={COLUMNS} />
+export const EntityHierarchyPage = props => (
+  <ResourcePage title={TITLE} endpoint={ENTITY_HIERARCHY_ENDPOINT} columns={COLUMNS} {...props} />
 );

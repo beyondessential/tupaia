@@ -36,12 +36,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CountriesPage = () => (
+export const CountriesPage = props => (
   <ResourcePage
     title="Countries"
     endpoint="countries"
     columns={FIELDS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
+    {...props}
   />
 );

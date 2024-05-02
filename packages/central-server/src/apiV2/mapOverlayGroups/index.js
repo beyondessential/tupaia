@@ -13,4 +13,5 @@ export {
   hasMapOverlayGroupEditPermissions,
   assertMapOverlayGroupsGetPermissions,
   assertMapOverlayGroupsEditPermissions,
+  getPermittedMapOverlayGroupIds,
 } from './assertMapOverlayGroupsPermissions';

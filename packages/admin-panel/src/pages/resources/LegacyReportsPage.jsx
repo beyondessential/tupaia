@@ -45,6 +45,6 @@ const COLUMNS = [
   },
 ];
 
-export const LegacyReportsPage = () => (
-  <ResourcePage title="Legacy Reports" endpoint="legacyReports" columns={COLUMNS} />
+export const LegacyReportsPage = props => (
+  <ResourcePage title="Legacy Reports" endpoint="legacyReports" columns={COLUMNS} {...props} />
 );

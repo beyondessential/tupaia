@@ -5,14 +5,17 @@
 import { findOrCreateDummyRecord } from '@tupaia/database';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { BES_ADMIN_PERMISSION_GROUP } from '../../../permissions';
+import {
+  BES_ADMIN_PERMISSION_GROUP,
+  TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
+} from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 import * as UploadImage from '../../../apiV2/utilities/uploadImage';
 
 describe('Creating a landing page', async () => {
   let uploadImageStub;
   const BES_ADMIN_POLICY = {
-    DL: [BES_ADMIN_PERMISSION_GROUP],
+    DL: [BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],
   };
 
   const EXAMPLE_UPLOADED_IMAGE_URL = 'https://example.com/image.jpg';
