@@ -12,7 +12,6 @@ import { labelToId } from '../../utilities';
 
 const Wrapper = styled.div`
   max-width: 100%;
-  padding-inline: 1.5rem;
   display: flex;
   position: sticky;
   top: 0;
@@ -78,9 +77,6 @@ const ScrollButton = styled(Button)`
   width: 2rem;
   min-width: 0;
   color: ${props => props.theme.palette.text.secondary};
-  &:last-child {
-    margin-inline-start: 1rem;
-  }
 `;
 
 const useScrollableMenu = (containerRef, navLinkRefs) => {
@@ -272,8 +268,8 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
 SecondaryNavbar.propTypes = {
   links: PropTypes.arrayOf(
     PropTypes.shape({
-      to: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
       exact: PropTypes.bool,
     }),
   ).isRequired,
