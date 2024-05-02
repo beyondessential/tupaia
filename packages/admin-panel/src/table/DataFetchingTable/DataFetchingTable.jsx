@@ -18,7 +18,7 @@ import {
 import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { ConfirmDeleteModal } from '@tupaia/ui-components';
+import { Alert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
@@ -35,6 +35,12 @@ import {
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
 import { DisplayCell, HeaderDisplayCell } from './Cells';
+
+const ErrorAlert = styled(Alert).attrs({
+  severity: 'error',
+})`
+  margin: 0.5rem;
+`;
 
 const TableContainer = styled(MuiTableContainer)`
   position: relative;
@@ -59,7 +65,7 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const LoadingWrapper = styled.div`
+const MessageWrapper = styled.div`
   position: absolute;
   z-index: 1;
   top: 0;
@@ -171,10 +177,16 @@ const DataFetchingTableComponent = ({
 
   return (
     <Wrapper>
+      {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
       {isLoading && (
-        <LoadingWrapper>
+        <MessageWrapper>
           <Typography variant="body2">Loading</Typography>
-        </LoadingWrapper>
+        </MessageWrapper>
+      )}
+      {data.length === 0 && !isLoading && (
+        <MessageWrapper>
+          <Typography variant="body2">No data to display</Typography>
+        </MessageWrapper>
       )}
       <TableContainer>
         <Table {...getTableProps()} stickyHeader>
