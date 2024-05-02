@@ -42,7 +42,12 @@ const TableContainer = styled(MuiTableContainer)`
   overflow: auto;
   table {
     min-width: 45rem;
-    border-collapse: collapse;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: ${({ theme }) => theme.palette.background.paper};
   }
 `;
 
@@ -212,8 +217,6 @@ const DataFetchingTableComponent = ({
                 )}
               </TableRow>
             ))}
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
             <TableRow>
               {displayFilterRow &&
                 visibleColumns.map(column => {
@@ -227,6 +230,8 @@ const DataFetchingTableComponent = ({
                   );
                 })}
             </TableRow>
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
             {rows.map((row, index) => {
               prepareRow(row);
               return (
@@ -243,6 +248,7 @@ const DataFetchingTableComponent = ({
                         getIsLink={getIsLink}
                         width={visibleColumns[i].colWidth}
                         getLink={getLink}
+                        isButtonColumn={visibleColumns[i].isButtonColumn}
                       >
                         {render('Cell')}
                       </DisplayCell>

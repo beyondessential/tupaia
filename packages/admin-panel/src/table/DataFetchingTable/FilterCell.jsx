@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
-import { TableCell } from './Cells';
+import { HeaderDisplayCell } from './Cells';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -50,9 +50,9 @@ export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
 
     onFilteredChange(updatedFilters);
   };
-  if (!column.filterable) return <TableCell />;
+  if (!column.filterable) return <HeaderDisplayCell />;
   return (
-    <TableCell width={width}>
+    <HeaderDisplayCell width={width}>
       <FilterWrapper>
         {Filter ? (
           <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
@@ -64,7 +64,7 @@ export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
           />
         )}
       </FilterWrapper>
-    </TableCell>
+    </HeaderDisplayCell>
   );
 };
 

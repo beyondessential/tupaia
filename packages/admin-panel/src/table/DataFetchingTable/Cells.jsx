@@ -28,12 +28,13 @@ const Cell = styled(MuiTableCell)`
 `;
 
 const CellContentWrapper = styled.div`
-  padding-block: 0.7rem;
-  padding-inline: 0.7rem 0;
+  padding: 0.7rem;
   height: 100%;
 
   display: flex;
   align-items: center;
+  justify-content: ${({ $shouldCenterContent }) =>
+    $shouldCenterContent ? 'center' : 'flex-start'};
 
   tr:not(:last-child) & {
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
@@ -57,25 +58,18 @@ const HeaderCell = styled(Cell)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
-
+  padding: 0.7rem;
+  position: initial; // override this because we have 2 sticky header rows so we will apply sticky to the thead element
+  background-color: ${({ theme }) => theme.palette.background.paper};
   .MuiTableSortLabel-icon {
     opacity: 1;
-  }
-  padding-inline: 0.7rem;
-  &:first-child {
-    padding-inline-start: 1.5rem;
-  }
-  &:last-child {
-    padding-inline-end: 1.5rem;
   }
 `;
 
 export const HeaderDisplayCell = ({ children, isButtonColumn, width, ...props }) => {
   return (
-    <HeaderCell $isButtonColumn={isButtonColumn} {...props}>
-      <CellContentWrapper $width={width}>
-        <CellContentContainer>{children}</CellContentContainer>
-      </CellContentWrapper>
+    <HeaderCell $isButtonColumn={isButtonColumn} $width={width} {...props}>
+      <CellContentContainer>{children}</CellContentContainer>
     </HeaderCell>
   );
 };
@@ -91,10 +85,10 @@ HeaderDisplayCell.defaultProps = {
   width: null,
 };
 
-export const TableCell = ({ children, width }) => {
+export const TableCell = ({ children, width, isButtonColumn }) => {
   return (
     <Cell>
-      <CellContentWrapper $width={width}>
+      <CellContentWrapper $width={width} $shouldCenterContent={isButtonColumn}>
         <CellContentContainer>{children}</CellContentContainer>
       </CellContentWrapper>
     </Cell>
@@ -104,10 +98,12 @@ export const TableCell = ({ children, width }) => {
 TableCell.propTypes = {
   children: PropTypes.node.isRequired,
   width: PropTypes.number,
+  isButtonColumn: PropTypes.bool,
 };
 
 TableCell.defaultProps = {
   width: null,
+  isButtonColumn: false,
 };
 
 const CellLink = styled(Link)`
@@ -174,10 +170,12 @@ DisplayCell.propTypes = {
   detailUrl: PropTypes.string,
   getIsLink: PropTypes.func,
   getLink: PropTypes.func,
+  isButtonColumn: PropTypes.bool,
 };
 
 DisplayCell.defaultProps = {
   detailUrl: null,
   getIsLink: null,
   getLink: null,
+  isButtonColumn: false,
 };
