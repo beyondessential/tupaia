@@ -89,6 +89,7 @@ export interface LinkReferenceProps {
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
 
-export type EntityAttributes = Record<string, unknown> & {
+export type EntityAttributes = {
   type?: string;
+  [key: string]: unknown;
 };

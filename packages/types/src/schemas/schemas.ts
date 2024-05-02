@@ -316,8 +316,8 @@ export const ReferencePropsSchema = {
 } 
 
 export const EntityAttributesSchema = {
-	"additionalProperties": false,
 	"type": "object",
+	"additionalProperties": {},
 	"properties": {
 		"type": {
 			"type": "string"
@@ -38853,8 +38853,8 @@ export const EntityQuestionConfigFieldValueSchema = {
 			"properties": {}
 		},
 		{
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -38896,8 +38896,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -38928,8 +38928,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -38960,8 +38960,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -38992,8 +38992,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39024,8 +39024,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39056,8 +39056,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39088,8 +39088,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39120,8 +39120,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39152,8 +39152,8 @@ export const EntityQuestionConfigSchema = {
 							"properties": {}
 						},
 						{
-							"additionalProperties": false,
 							"type": "object",
+							"additionalProperties": {},
 							"properties": {
 								"type": {
 									"type": "string"
@@ -39414,8 +39414,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39446,8 +39446,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39478,8 +39478,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39510,8 +39510,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39542,8 +39542,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39574,8 +39574,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39606,8 +39606,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39638,8 +39638,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -39670,8 +39670,8 @@ export const SurveyScreenComponentConfigSchema = {
 									"properties": {}
 								},
 								{
-									"additionalProperties": false,
 									"type": "object",
+									"additionalProperties": {},
 									"properties": {
 										"type": {
 											"type": "string"
@@ -68258,8 +68258,8 @@ export const EntitySchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -68360,8 +68360,8 @@ export const EntityCreateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -68459,8 +68459,8 @@ export const EntityUpdateSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
@@ -84315,8 +84315,8 @@ export const MeditrakSurveyResponseRequestSchema = {
 				"type": "object",
 				"properties": {
 					"attributes": {
-						"additionalProperties": false,
 						"type": "object",
+						"additionalProperties": {},
 						"properties": {
 							"type": {
 								"type": "string"
@@ -85307,8 +85307,8 @@ export const EntityResponseSchema = {
 	"type": "object",
 	"properties": {
 		"attributes": {
-			"additionalProperties": false,
 			"type": "object",
+			"additionalProperties": {},
 			"properties": {
 				"type": {
 					"type": "string"
