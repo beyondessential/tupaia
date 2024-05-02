@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
+import moment from 'moment';
+
 export const GONDOR = {
   name: 'Gondor',
   code: 'GND',
@@ -17,26 +19,27 @@ export const COUNTRIES = [GONDOR, MORDOR];
 
 export const PERMISSION_GROUPS = [{ name: 'Public' }];
 
+const formatFeedItemDate = (date: Date) => moment(date).format('YYYY-MM-DD HH:mm:ss.SSSZZ');
 // Sorted by creation_date desc
 export const FEED_ITEMS = [
   {
     country: MORDOR.code,
     type: 'SurveyResponse',
-    creation_date: new Date('2020-01-04').toJSON(),
+    creation_date: formatFeedItemDate(new Date('2020-01-04')),
   },
   {
     country: GONDOR.code,
     type: 'SurveyResponse',
-    creation_date: new Date('2020-01-03').toJSON(),
+    creation_date: formatFeedItemDate(new Date('2020-01-03')),
   },
   {
     country: GONDOR.code,
     type: 'markdown',
-    creation_date: new Date('2020-01-02').toJSON(),
+    creation_date: formatFeedItemDate(new Date('2020-01-02')),
   },
   {
-    country: null,
+    country: GONDOR.code,
     type: 'SurveyResponse',
-    creation_date: new Date('2020-01-01').toJSON(),
+    creation_date: formatFeedItemDate(new Date('2020-01-01')),
   },
 ];

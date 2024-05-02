@@ -65,11 +65,8 @@ describe('socialFeed', () => {
       countryCodeToId[country.code] = country.id;
     });
 
-    const databaseTimezone = await models.database.getTimezone();
-
     const timezoneConvertedFeedItems = FEED_ITEMS.map(feedItem => ({
       ...feedItem,
-      creation_date: new Date(feedItem.creation_date).toLocaleString(databaseTimezone), // Adjust for timezone so tests work regardless of db timezone
     }));
 
     const feedItemsToInsert = addCountryIdAndPermissionGroupId(
