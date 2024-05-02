@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 
 import { useUrlParams, I18n } from '../utils';
@@ -18,7 +18,7 @@ const LoginLinkButton = styled(MuiButton)`
 `;
 
 export const LoginLink = () => {
-  const history = useHistory();
+  const location = useLocation();
   const { locale } = useUrlParams();
 
   return (
@@ -27,7 +27,7 @@ export const LoginLink = () => {
       component={RouterLink}
       to={{
         pathname: `/${locale}/login`,
-        state: { referer: history.location },
+        state: { referer: `${location.pathname}${location.search}` },
       }}
       className="login-link"
     >

@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Route, useMatch, Routes } from 'react-router-dom';
 import { AdminPanelDataProviders } from '@tupaia/admin-panel';
 import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
@@ -28,65 +28,111 @@ const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}` };
  * eg. /en/LA/dashboard
  */
 export const PageRoutes = React.memo(() => {
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
 
   return (
-    <Switch>
-      <Route exact path={`${path}/`}>
-        <NavBar hideSearch />
-        <HomeView />
-      </Route>
-      <Route path={`${path}/login`}>
-        <LoginView />
-      </Route>
-      <Route path={`${path}/verify-email`}>
-        <VerifyEmailView />
-      </Route>
-      <Route path={`${path}/register`}>
-        <RegisterView />
-      </Route>
-      <Route path={`${path}/profile`}>
-        <NavBar />
-        <ProfileView />
-        <Footer />
-      </Route>
-      <Route path={`${path}/admin`}>
-        <AdminPanelDataProviders config={adminPanelConfig}>
-          <AdminPanel />
-        </AdminPanelDataProviders>
-      </Route>
-      <Route path={`${path}/about`}>
-        <NavBar />
-        <PageView content={ABOUT_PAGE} />
-        <Footer />
-      </Route>
-      <Route path={`${path}/fundamental-quality-standards`}>
-        <NavBar />
-        <TwoColumnPageView content={FQS_PAGE} />
-        <Footer />
-      </Route>
-      <Route path={`${path}/contact`}>
-        <NavBar />
-        <PageView content={CONTACT_PAGE} />
-        <Footer />
-      </Route>
-      <Route path={`${path}/page-not-found`}>
-        <NavBar />
-        <NotFoundView />
-        <Footer />
-      </Route>
-      <Route path={`${path}/not-authorised`}>
-        <NavBar />
-        <NotAuthorisedView />
-        <Footer />
-      </Route>
-      <Route path={`${path}/pdf-export/:entityCode?`}>
-        <ExportView viewType={PDF_DOWNLOAD_VIEW} />
-      </Route>
-      <Route path={`${path}/:entityCode/:view?`}>
-        <NavBar />
-        <EntityView />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route
+        exact
+        path={`${path}/`}
+        element={
+          <>
+            <NavBar hideSearch />
+            <HomeView />
+          </>
+        }
+      />
+      <Route path={`${path}/login`} element={<LoginView />} />
+
+      <Route path={`${path}/verify-email`} element={<VerifyEmailView />} />
+
+      <Route path={`${path}/register`} element={<RegisterView />} />
+
+      <Route
+        path={`${path}/profile`}
+        element={
+          <>
+            <NavBar />
+            <ProfileView />
+            <Footer />
+          </>
+        }
+      />
+
+      <Route
+        path={`${path}/admin`}
+        element={
+          <AdminPanelDataProviders config={adminPanelConfig}>
+            <AdminPanel />
+          </AdminPanelDataProviders>
+        }
+      />
+      <Route
+        path={`${path}/about`}
+        element={
+          <>
+            <NavBar />
+            <PageView content={ABOUT_PAGE} />
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path={`${path}/fundamental-quality-standards`}
+        element={
+          <>
+            {' '}
+            <NavBar />
+            <TwoColumnPageView content={FQS_PAGE} />
+            <Footer />
+          </>
+        }
+      />
+
+      <Route
+        path={`${path}/contact`}
+        element={
+          <>
+            <NavBar />
+            <PageView content={CONTACT_PAGE} />
+            <Footer />
+          </>
+        }
+      />
+
+      <Route
+        path={`${path}/page-not-found`}
+        element={
+          <>
+            <NavBar />
+            <NotFoundView />
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path={`${path}/not-authorised`}
+        element={
+          <>
+            <NavBar />
+            <NotAuthorisedView />
+            <Footer />
+          </>
+        }
+      />
+      <Route
+        path={`${path}/pdf-export/:entityCode?`}
+        element={<ExportView viewType={PDF_DOWNLOAD_VIEW} />}
+      />
+      <Route
+        path={`${path}/:entityCode/:view?`}
+        element={
+          <>
+            <NavBar />
+            <EntityView />
+          </>
+        }
+      />
+    </Routes>
   );
 });

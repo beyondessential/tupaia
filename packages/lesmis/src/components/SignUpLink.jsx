@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 
 import { useUrlParams, I18n } from '../utils';
@@ -24,7 +24,7 @@ const TextButton = styled(MuiButton)`
 `;
 
 export const SignUpLink = ({ isRound }) => {
-  const history = useHistory();
+  const location = useLocation();
   const { locale } = useUrlParams();
 
   return (
@@ -33,7 +33,7 @@ export const SignUpLink = ({ isRound }) => {
       component={RouterLink}
       to={{
         pathname: `/${locale}/register`,
-        state: { referer: history.location },
+        state: { referer: location.pathname },
       }}
       className={isRound && 'round'}
     >

@@ -1,11 +1,10 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import { PropTypes } from 'prop-types';
-
-import { SurveyResponsesPage } from '@tupaia/admin-panel';
+import { SurveyResponsesPage, ResourcePage } from '@tupaia/admin-panel';
 import { ApproveButton, getRejectButton } from './components';
 import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
 
@@ -42,7 +41,7 @@ export const RejectedSurveyResponsesView = props => {
   } = getSurveyResponsePageConfigs(props);
 
   return (
-    <SurveyResponsesPage
+    <ResourcePage
       title={props.translate('admin.rejectedSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'rejected' } }}
       columns={COLUMNS.filter(column => column.type !== 'delete')}
@@ -86,7 +85,7 @@ export const DraftSurveyResponsesView = props => {
   ];
 
   return (
-    <SurveyResponsesPage
+    <ResourcePage
       {...props}
       title={props.translate('admin.surveyResponsesForReview')}
       baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
@@ -119,7 +118,7 @@ export const NonApprovalSurveyResponsesView = props => {
   };
   const NON_APPROVAL_COLUMNS = [...COLUMNS.filter(column => column.type !== 'edit'), EDIT_COLUMN];
   return (
-    <SurveyResponsesPage
+    <ResourcePage
       {...props}
       title={props.translate('admin.approvalNotRequiredSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'not_required' } }}

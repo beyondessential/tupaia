@@ -4,7 +4,7 @@
  *
  */
 import React, { useState } from 'react';
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
+import { Route, useMatch, Routes, Navigate } from 'react-router-dom';
 import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
@@ -13,7 +13,7 @@ import { LocaleMenu } from '../components/LocaleMenu';
 
 export const EntityView = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const match = useRouteMatch();
+  const match = useMatch();
   const { locale, entityCode, view } = useUrlParams();
   const { breadcrumbs, isLoading } = useEntityBreadcrumbs();
 
@@ -26,15 +26,14 @@ export const EntityView = () => {
         </FlexSpaceBetween>
       </Toolbar>
       <LocationHeader setIsOpen={setIsOpen} />
-      <Switch>
-        <Route path={`${match.path}/dashboard`}>
-          <DashboardView isOpen={isOpen} setIsOpen={setIsOpen} />
-        </Route>
-        <Route path={`${match.path}/map`}>
-          <MapView />
-        </Route>
-        <Redirect to={`/${locale}/${entityCode}/dashboard`} />
-      </Switch>
+      <Routes>
+        <Route
+          path={`${match.path}/dashboard`}
+          element={<DashboardView isOpen={isOpen} setIsOpen={setIsOpen} />}
+        />
+        <Route path={`${match.path}/map`} element={<MapView />} />
+        <Route path="*" element={<Navigate to={`/${locale}/${entityCode}/dashboard`} />} />
+      </Routes>
       {view !== 'map' && <Footer />}
     </>
   );

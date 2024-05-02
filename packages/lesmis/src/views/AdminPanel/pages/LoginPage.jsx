@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -64,7 +64,7 @@ const Logo = () => <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />;
 
 const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
   if (isLoggedIn) {
-    return <Redirect to={redirectTo} />;
+    return <Navigate to={redirectTo} />;
   }
   const { translate } = useI18n();
 

@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { generatePath, useHistory, useLocation } from 'react-router-dom';
+import { generatePath, useNavigate, useLocation } from 'react-router-dom';
 import MuiButton from '@material-ui/core/Button';
 import MuiMenu from '@material-ui/core/Menu';
 import MuiMenuItem from '@material-ui/core/MenuItem';
@@ -88,7 +88,7 @@ const options = [
 
 export const LocaleMenu = ({ className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { locale, entityCode, view } = useUrlParams();
   const { search } = useLocation();
   const queryClient = useQueryClient();
@@ -100,7 +100,9 @@ export const LocaleMenu = ({ className }) => {
       view,
     });
     const link = `${path}${search}`;
-    history.replace(link);
+    navigate(link, {
+      replace: true,
+    });
     setAnchorEl(null);
     queryClient.clear();
 

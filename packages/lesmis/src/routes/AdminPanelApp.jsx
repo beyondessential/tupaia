@@ -4,32 +4,16 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
+import { Route, useMatch, Outlet, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
 import {
   LogoutPage,
   PrivateRoute,
   VizBuilderApp,
-  DashboardsPage,
-  QuestionsPage,
-  SurveysPage,
-  SyncGroupsPage,
-  DataElementsPage,
-  DashboardItemsPage,
-  DashboardRelationsPage,
-  MapOverlaysPage,
-  MapOverlayGroupsPage,
-  MapOverlayGroupRelationsPage,
-  UsersPage,
-  PermissionsPage,
-  EntitiesPage,
-  ExternalDatabaseConnectionsPage,
-  DataTablesPage,
+  TabRoutes,
   PageWrapper,
   Main,
-  SecondaryNavbar,
-  PageContentWrapper,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -47,212 +31,224 @@ import { Footer } from '../components';
 const getRoutes = (adminUrl, translate) => {
   return [
     {
-      label: translate('admin.surveyData'),
-      to: `${adminUrl}/survey-responses`,
+      title: translate('admin.surveyData'),
+      url: `${adminUrl}/survey-responses`,
       icon: <Assignment />,
-      tabs: [
+      childViews: [
         {
-          label: translate('admin.review'),
-          to: '',
-          component: DraftSurveyResponsesView,
+          title: translate('admin.review'),
+          url: '',
+          Component: DraftSurveyResponsesView,
         },
         {
-          label: translate('admin.approved'),
-          to: '/approved',
-          component: ApprovedSurveyResponsesView,
+          title: translate('admin.approved'),
+          url: '/approved',
+          Component: ApprovedSurveyResponsesView,
         },
         {
-          label: translate('admin.rejected'),
-          to: '/rejected',
-          component: RejectedSurveyResponsesView,
+          title: translate('admin.rejected'),
+          url: '/rejected',
+          Component: RejectedSurveyResponsesView,
         },
         {
-          label: translate('admin.approvalNotRequired'),
-          to: '/non-approval',
-          component: NonApprovalSurveyResponsesView,
-        },
-      ],
-    },
-    {
-      label: translate('admin.surveys'),
-      to: `${adminUrl}/surveys`,
-      icon: <Assignment />,
-      tabs: [
-        {
-          label: translate('admin.surveys'),
-          to: '',
-          component: SurveysPage,
-        },
-        {
-          label: translate('admin.questions'),
-          to: '/questions',
-          component: QuestionsPage,
-        },
-        {
-          label: translate('admin.dataElements'),
-          to: '/data-elements',
-          component: DataElementsPage,
-        },
-        {
-          label: translate('admin.syncGroups'),
-          to: '/sync-groups',
-          component: SyncGroupsPage,
+          title: translate('admin.approvalNotRequired'),
+          url: '/non-approval',
+          Component: NonApprovalSurveyResponsesView,
         },
       ],
     },
-    {
-      label: translate('admin.visualisations'),
-      to: `${adminUrl}/visualisations`,
-      icon: <InsertChart />,
-      tabs: [
-        {
-          label: translate('admin.dashboardItems'),
-          to: '',
-          component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        },
-        {
-          label: translate('admin.dashboards'),
-          to: '/dashboards',
-          component: DashboardsPage,
-        },
-        {
-          label: translate('admin.dashboardRelations'),
-          to: '/dashboard-relations',
-          component: DashboardRelationsPage,
-        },
-        {
-          label: translate('admin.mapOverlays'),
-          to: '/map-overlays',
-          component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        },
-        {
-          label: translate('admin.mapOverlayGroups'),
-          to: '/map-overlay-groups',
-          component: MapOverlayGroupsPage,
-        },
-        {
-          label: translate('admin.mapOverlayGroupRelations'),
-          to: '/map-overlay-group-relations',
-          component: MapOverlayGroupRelationsPage,
-        },
-        {
-          label: translate('admin.dataTables'),
-          to: '/dataTables',
-          component: DataTablesPage,
-        },
-      ],
-    },
-    {
-      label: `${translate('admin.users')} & ${translate('admin.permissions')}`,
-      to: `${adminUrl}/users`,
-      icon: <PeopleAlt />,
-      tabs: [
-        {
-          label: translate('admin.users'),
-          to: '',
-          component: UsersPage,
-        },
-        {
-          label: translate('admin.permissions'),
-          to: '/permissions',
-          component: PermissionsPage,
-        },
-      ],
-    },
-    {
-      label: translate('admin.entities'),
-      to: `${adminUrl}/entities`,
-      icon: <Storage />,
-      tabs: [
-        {
-          label: translate('admin.entities'),
-          to: '',
-          component: EntitiesPage,
-        },
-      ],
-    },
-    {
-      label: translate('admin.externalData'),
-      to: `${adminUrl}/external-database-connections`,
-      icon: <Language />,
-      tabs: [
-        {
-          label: translate('admin.externalDatabaseConnections'),
-          to: '',
-          component: ExternalDatabaseConnectionsPage,
-        },
-      ],
-    },
+    // {
+    //   title: translate('admin.surveys'),
+    //   url: `${adminUrl}/surveys`,
+    //   icon: <Assignment />,
+    //   tabs: [
+    //     {
+    //       title: translate('admin.surveys'),
+    //       url: '',
+    //       component: SurveysPage,
+    //     },
+    //     {
+    //       title: translate('admin.questions'),
+    //       url: '/questions',
+    //       component: QuestionsPage,
+    //     },
+    //     {
+    //       title: translate('admin.dataElements'),
+    //       url: '/data-elements',
+    //       component: DataElementsPage,
+    //     },
+    //     {
+    //       title: translate('admin.syncGroups'),
+    //       url: '/sync-groups',
+    //       component: SyncGroupsPage,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: translate('admin.visualisations'),
+    //   url: `${adminUrl}/visualisations`,
+    //   icon: <InsertChart />,
+    //   tabs: [
+    //     {
+    //       title: translate('admin.dashboardItems'),
+    //       url: '',
+    //       component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
+    //     },
+    //     {
+    //       title: translate('admin.dashboards'),
+    //       url: '/dashboards',
+    //       component: DashboardsPage,
+    //     },
+    //     {
+    //       title: translate('admin.dashboardRelations'),
+    //       url: '/dashboard-relations',
+    //       component: DashboardRelationsPage,
+    //     },
+    //     {
+    //       title: translate('admin.mapOverlays'),
+    //       url: '/map-overlays',
+    //       component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
+    //     },
+    //     {
+    //       title: translate('admin.mapOverlayGroups'),
+    //       url: '/map-overlay-groups',
+    //       component: MapOverlayGroupsPage,
+    //     },
+    //     {
+    //       title: translate('admin.mapOverlayGroupRelations'),
+    //       url: '/map-overlay-group-relations',
+    //       component: MapOverlayGroupRelationsPage,
+    //     },
+    //     {
+    //       title: translate('admin.dataTables'),
+    //       url: '/dataTables',
+    //       component: DataTablesPage,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: `${translate('admin.users')} & ${translate('admin.permissions')}`,
+    //   url: `${adminUrl}/users`,
+    //   icon: <PeopleAlt />,
+    //   tabs: [
+    //     {
+    //       title: translate('admin.users'),
+    //       url: '',
+    //       component: UsersPage,
+    //     },
+    //     {
+    //       title: translate('admin.permissions'),
+    //       url: '/permissions',
+    //       component: PermissionsPage,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: translate('admin.entities'),
+    //   url: `${adminUrl}/entities`,
+    //   icon: <Storage />,
+    //   tabs: [
+    //     {
+    //       title: translate('admin.entities'),
+    //       url: '',
+    //       component: EntitiesPage,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: translate('admin.externalData'),
+    //   url: `${adminUrl}/external-database-connections`,
+    //   icon: <Language />,
+    //   tabs: [
+    //     {
+    //       title: translate('admin.externalDatabaseConnections'),
+    //       url: '',
+    //       component: ExternalDatabaseConnectionsPage,
+    //     },
+    //   ],
+    // },
   ];
+};
+
+const PageLayout = ({ user, routes }) => {
+  return (
+    <PageWrapper>
+      <AdminPanelNavbar user={user} links={routes} />
+      <Main>
+        <Outlet />
+      </Main>
+    </PageWrapper>
+  );
 };
 
 const AdminPanelApp = ({ user }) => {
   const { translate } = useI18n();
-  const { path } = useRouteMatch();
+  const { path } = useMatch();
   const adminUrl = useAdminPanelUrl();
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
   const routes = getRoutes(adminUrl, translate);
 
   return (
-    <Switch>
-      <Route path={`${path}/login`} exact>
-        <AdminPanelLoginPage />
+    <Routes>
+      <Route path={`${path}/login`} exact element={<AdminPanelLoginPage />} />
+      <Route
+        path={`${path}/logout`}
+        exact
+        element={<LogoutPage redirectTo={`${adminUrl}/login`} />}
+      />
+
+      <LesmisAdminRoute
+        path={`${path}/viz-builder`}
+        hasAdminPanelAccess={userHasAdminPanelAccess}
+        element={
+          <VizBuilderApp
+            logo={{
+              url: '/lesmis-logo-white.svg',
+              alt: 'LESMIS Admin Panel Logo',
+            }}
+            homeLink={adminUrl}
+            Footer={Footer}
+          />
+        }
+      />
+      <Route path={`${path}`} element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+        <Route element={<PageLayout user={user} routes={routes} />}>
+          {routes.map(route => (
+            <Route key={route.url} path={`${route.url}/*`} element={<TabRoutes route={route} />} />
+            // <LesmisAdminRoute
+            //   key={route.url}
+            //   path={route.url}
+            //   hasAdminPanelAccess={userHasAdminPanelAccess}
+            //   render={({ match }) => {
+            //     return (
+            //       <>
+            //         <SecondaryNavbar links={route.tabs} baseRoute={match.url} />
+            //         <PageContentWrapper>
+            //           <Switch>
+            //             {route.tabs.map(tab => (
+            //               <Route
+            //                 key={`${route.url}-${tab.url}`}
+            //                 path={`${route.url}${tab.url}`}
+            //                 exact
+            //               >
+            //                 <tab.component translate={translate} />
+            //               </Route>
+            //             ))}
+            //             <Redirect to={route.url} />
+            //           </Switch>
+            //           <Footer />
+            //         </PageContentWrapper>
+            //       </>
+            //     );
+            //   }}
+            // />
+          ))}
+          {/* <Redirect to={`${path}/survey-responses`} /> */}
+        </Route>
       </Route>
-      <Route path={`${path}/logout`} exact>
-        <LogoutPage redirectTo={`${adminUrl}/login`} />
-      </Route>
-      <LesmisAdminRoute path={`${path}/viz-builder`} hasAdminPanelAccess={userHasAdminPanelAccess}>
-        <VizBuilderApp
-          logo={{
-            url: '/lesmis-logo-white.svg',
-            alt: 'LESMIS Admin Panel Logo',
-          }}
-          homeLink={adminUrl}
-          Footer={Footer}
-        />
-      </LesmisAdminRoute>
-      <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
-        <PageWrapper>
-          <AdminPanelNavbar user={user} links={routes} />
-          <Main>
-            <Switch>
-              {routes.map(route => (
-                <LesmisAdminRoute
-                  key={route.to}
-                  path={route.to}
-                  hasAdminPanelAccess={userHasAdminPanelAccess}
-                  render={({ match }) => {
-                    return (
-                      <>
-                        <SecondaryNavbar links={route.tabs} baseRoute={match.url} />
-                        <PageContentWrapper>
-                          <Switch>
-                            {route.tabs.map(tab => (
-                              <Route
-                                key={`${route.to}-${tab.to}`}
-                                path={`${route.to}${tab.to}`}
-                                exact
-                              >
-                                <tab.component translate={translate} />
-                              </Route>
-                            ))}
-                            <Redirect to={route.to} />
-                          </Switch>
-                          <Footer />
-                        </PageContentWrapper>
-                      </>
-                    );
-                  }}
-                />
-              ))}
-              <Redirect to={`${path}/survey-responses`} />
-            </Switch>
-          </Main>
-        </PageWrapper>
-      </PrivateRoute>
-      <Redirect to={`${path}/login`} />
-    </Switch>
+      {/* <Redirect to={`${path}/login`} /> */}
+    </Routes>
   );
 };
 

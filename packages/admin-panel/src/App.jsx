@@ -14,7 +14,7 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 
-const TabRoutes = ({ route }) => {
+export const TabRoutes = ({ route }) => {
   const { childViews } = route;
 
   if (!childViews) return null;

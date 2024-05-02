@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  *
  */
-import { useRouteMatch } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 
 export const useUrlParams = () => {
-  const { params } = useRouteMatch();
+  const { params } = useMatch();
   const { locale, entityCode, view } = params;
 
   return {
