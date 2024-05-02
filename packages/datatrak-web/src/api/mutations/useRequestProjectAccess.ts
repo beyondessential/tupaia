@@ -44,8 +44,8 @@ export const useRequestProjectAccess = (options?: RequestProjectAccessOptions) =
         if (options?.onSettled) options.onSettled();
       },
       async onSuccess(response: ResponseBody) {
-        queryClient.invalidateQueries({
-          queryKey: ['projects'],
+        await queryClient.invalidateQueries({
+          queryKey: ['countries'],
         });
         if (options?.onSuccess) options.onSuccess(response);
       },
