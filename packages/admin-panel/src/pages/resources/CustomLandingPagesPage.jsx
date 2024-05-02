@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from '@material-ui/core';
 import { SECTION_FIELD_TYPE } from '../../editor/constants';
 import { ResourcePage } from './ResourcePage';
@@ -162,13 +161,13 @@ const SECTIONS = {
   MAIN_IMAGE: {
     type: SECTION_FIELD_TYPE,
     title: 'Add main image',
-    description: '(Width:1500-2000px and height:900-2000px)',
+    description: '(Width: 1500–2000 px and height: 900–2000 px)',
     fields: [FIELDS.IMAGE],
   },
   LOGO: {
     type: SECTION_FIELD_TYPE,
     title: 'Add logo image',
-    description: '(Max 300px x 300px)',
+    description: '(Max 300 px × 300 px)',
     fields: [FIELDS.LOGO],
   },
   PRIMARY_COLOR: {
@@ -284,18 +283,14 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CustomLandingPagesPage = ({ getHeaderEl }) => {
+export const CustomLandingPagesPage = props => {
   return (
     <ResourcePage
       title="Landing Pages"
       endpoint={LANDING_PAGES_ENDPOINT}
       columns={COLUMNS}
-      getHeaderEl={getHeaderEl}
       createConfig={CREATE_CONFIG}
+      {...props}
     />
   );
-};
-
-CustomLandingPagesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
 };

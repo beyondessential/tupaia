@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
@@ -88,17 +87,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const MapOverlayGroupRelationsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const MapOverlayGroupRelationsPage = props => (
   <ResourcePage
     title="Map Overlay Group Relations"
     endpoint="mapOverlayGroupRelations"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-MapOverlayGroupRelationsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

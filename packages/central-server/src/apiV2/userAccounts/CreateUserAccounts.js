@@ -8,6 +8,7 @@ import { CreateHandler } from '../CreateHandler';
 import {
   TUPAIA_ADMIN_PANEL_PERMISSION_GROUP,
   assertAdminPanelAccess,
+  assertAdminPanelAccessToCountry,
   assertAnyPermissions,
   assertBESAdminAccess,
   hasTupaiaAdminPanelAccessToCountry,
@@ -70,10 +71,8 @@ export class CreateUserAccounts extends CreateHandler {
       throw new Error(`No such country: ${countryName}`);
     }
 
-    const countryPermissionChecker = accessPolicy => {
-      if (!hasTupaiaAdminPanelAccessToCountry(accessPolicy, country.code)) {
-        throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${country.name}`);
-      }
+    const countryPermissionChecker = async accessPolicy => {
+      await assertAdminPanelAccessToCountry(accessPolicy, transactingModels, country.id);
 
       if (!accessPolicy.allows(country.code, permissionGroup.name)) {
         throw new Error(`Need ${permissionGroup.name} access to ${country.name}`);

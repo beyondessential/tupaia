@@ -12,7 +12,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import styled from 'styled-components';
-import { SpinningLoader } from '@tupaia/ui-components';
+import { Alert, SpinningLoader } from '@tupaia/ui-components';
 import { CountryAccessListItem } from '../../types';
 import { DEFAULT_URL, MODAL_ROUTES, ROUTE_STRUCTURE, URL_SEARCH_PARAMS } from '../../constants';
 import { LoadingScreen, Modal } from '../../components';
@@ -22,6 +22,7 @@ import {
   useLandingPage,
   useProject,
   useUser,
+  useEntity,
 } from '../../api/queries';
 import { ModalHeader } from './ModalHeader';
 import { ProjectHero } from './ProjectHero';
@@ -35,6 +36,10 @@ const ModalBody = styled.div`
   padding: 0.2rem 0 0;
   width: 30rem;
   max-width: 100%;
+
+  .MuiAlert-root + .MuiAlert-root {
+    margin-block-start: 1rem;
+  }
 `;
 
 export const RequestProjectAccessModal = () => {
@@ -100,6 +105,20 @@ export const RequestProjectAccessModal = () => {
     requestingProject?.hasAccess
   );
 
+  // only request the entity if the project code is the same as the selected project, or if the alt project code is not set, so that we don't get any false errors. This query is just to check if the user has been directed here from the useEntity hook because of a 403 error
+  const showCheckForEntityError = !altProjectCode || params.projectCode === altProjectCode;
+  const { error, isError } = useEntity(
+    params.projectCode,
+    params.entityCode,
+    showCheckForEntityError,
+  );
+
+  // show the error if the user is getting a 403 error when trying to access an entity, as this means they have been redirected here from the useEntity hook
+  const showError = isError && error.code === 403;
+
+  // show the no countries message if the country access list has loaded and there are no countries available
+  const showNoCountriesMessage = !isLoadingCountryAccessList && !availableCountries?.length;
+
   const getBaseCloseLocation = () => {
     if (isLandingPage) return location;
     // if the user has accessed the request access modal and does have access to that project in some way, then return to the project. This would happen if the user went directly to the project with the request access modal details in the url
@@ -150,6 +169,14 @@ export const RequestProjectAccessModal = () => {
           <SpinningLoader />
         ) : (
           <>
+            {showError && <Alert severity="error">{error.message}</Alert>}
+            {showNoCountriesMessage && (
+              <Alert severity="info">
+                There are no countries available to request access to for this project. This means
+                you already have access to all countries in this project. If you need to change your
+                permissions, please contact your system administrator.
+              </Alert>
+            )}
             {showRequestedCountries && (
               <RequestedCountries
                 requestedCountries={requestedCountries}

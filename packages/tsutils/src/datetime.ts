@@ -6,7 +6,7 @@
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 
-export const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+export const ISO_DATE_PATTERN = /\d{4}-\d{2}-\d{2}/;
 
 /**
  * @returns ISO date string in the format "yyyy-mm-dd", discarding the timestamp.

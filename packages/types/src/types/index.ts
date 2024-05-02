@@ -89,9 +89,15 @@ export {
   ComponentConfig,
   LineChartChartConfig,
   VizPeriodGranularity,
+  ExportPresentationOptions,
+  DashboardItemType,
+  isChartReport,
+  isViewReport,
+  isMatrixReport,
   EntityQuestionConfigFields,
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
+  ProjectConfig,
 } from './models-extra';
 export * from './requests';
 export * from './css';

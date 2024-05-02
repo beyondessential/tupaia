@@ -1,13 +1,14 @@
 @hostname = localhost
 @port = 8090
-@host = {{hostname}}:{{port}}
 @version = v2
+@baseUrl = http://{{hostname}}:{{port}}/{{version}}
 
 @contentType = application/json
 
-### Login
+### Log in
+
 # @name login
-POST http://{{host}}/{{version}}/auth HTTP/2.0
+POST {{baseUrl}}/auth HTTP/2.0
 Authorization: Basic meditrak_client:{{meditrak-app-secret}}
 content-type: {{contentType}}
 
@@ -26,17 +27,31 @@ content-type: {{contentType}}
 
 ### Download files
 
-GET http://{{host}}/{{version}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
+GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
-### GET surveyResponses
-GET http://{{host}}/{{version}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
+### Get survey responses
+
+GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
 
-### Get socialFeed
-GET http://{{host}}/{{version}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
+### Get social feed
+
+GET {{baseUrl}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+
+### GET entity hierarchy
+GET http://{{host}}/{{version}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+
+### GET entity hierarchies
+GET http://{{host}}/{{version}}/entityHierarchy HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}

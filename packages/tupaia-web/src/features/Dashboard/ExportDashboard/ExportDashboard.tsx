@@ -86,6 +86,7 @@ export const ExportDashboard = () => {
           exportFormat: ExportFormats.PNG,
           exportWithLabels: false,
           exportWithTable: true,
+          exportWithTableDisabled: false,
         }}
       >
         <Wrapper>

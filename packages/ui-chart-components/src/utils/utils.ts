@@ -8,7 +8,10 @@ import { useTheme } from '@material-ui/core/styles';
 import {
   CartesianChartPresentationOptions,
   ChartData,
+  ChartReport,
   ChartType,
+  DashboardItemReport,
+  ViewDataItem,
   VizPeriodGranularity,
 } from '@tupaia/types';
 import { GRANULARITY_CONFIG } from '@tupaia/utils';
@@ -44,7 +47,10 @@ export const formatTimestampForChart = (
   return moment.utc(timestamp).format(formatString);
 };
 
-export const getIsTimeSeries = (data: ChartData[]) => data && data.length > 0 && data[0]?.timestamp;
+export const getIsTimeSeries = (data?: ChartData[] | ViewDataItem[]) => {
+  if (!data || !data[0] || !('timestamp' in data[0])) return false;
+  return !!data[0]?.timestamp;
+};
 
 export const isDataKey = (key: string) =>
   !(['name', 'timestamp'].includes(key) || key.substr(-9) === '_metadata');
@@ -54,17 +60,15 @@ export const getContrastTextColor = () => {
   return theme.palette.type === 'light' ? theme.palette.text.secondary : 'white';
 };
 
-export const getIsChartData = ({
-  chartType,
-  data,
-}: {
-  chartType: ChartType;
-  data: ChartData[];
-}): boolean => {
+export const getIsChartData = (chartType: ChartType, report: ChartReport): boolean => {
   // If all segments of a pie chart are "0", display the no data message
-  if (chartType === ChartType.Pie && data && data.every(segment => segment.value === 0)) {
+  if (
+    chartType === ChartType.Pie &&
+    report?.data &&
+    report?.data.every(segment => segment.value === 0)
+  ) {
     return false;
   }
 
-  return data && data.length > 0;
+  return (report?.data && report?.data.length > 0) || false;
 };
