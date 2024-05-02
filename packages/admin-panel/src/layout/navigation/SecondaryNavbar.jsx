@@ -87,7 +87,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
     // observer for when we scroll, to see if we need to show the scroll buttons
     const observer = new IntersectionObserver(detectOverflow, {
       root: containerRef.current,
-      threshold: 0.5,
+      threshold: 0.8,
     });
 
     const firstLink = navLinkRefs.current[0];

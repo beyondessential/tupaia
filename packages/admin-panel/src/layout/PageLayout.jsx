@@ -33,6 +33,8 @@ export const PageLayout = ({ user }) => {
           <PageContentWrapper>
             {activeRoute && (
               <SecondaryNavbar
+                // adding a key here is to force the component to re-render when the route changes. This is so that the link refs get regenerated and the scroll buttons work correctly when navigating between different routes
+                key={baseRoute}
                 links={activeRoute?.childViews?.map(childRoute => ({
                   ...childRoute,
                   id: `app-sub-view-${labelToId(childRoute.label)}`,
