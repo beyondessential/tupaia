@@ -55,3 +55,13 @@ Authorization: {{user-authorization}}
 GET {{baseUrl}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### Export survey response
+GET {{baseUrl}}/export/surveyResponses/6631d8b281240914d69f5432?timeZone=Pacific%2FAuckland HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Export option set
+GET {{baseUrl}}/export/optionSet/602360f561f76a47b0076328 HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
