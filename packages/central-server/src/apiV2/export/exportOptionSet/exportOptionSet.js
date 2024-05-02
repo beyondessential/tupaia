@@ -4,7 +4,7 @@
  */
 
 export async function exportOptionSet(req, res) {
-  const { models, accessPolicy, userId } = req;
+  const { models, userId } = req;
   const { optionSetId } = req.params;
 
   const optionSetRecord = await models.optionSet.findOne({ id: optionSetId });
