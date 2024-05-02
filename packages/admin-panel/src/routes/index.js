@@ -4,3 +4,13 @@
  */
 
 export { ROUTES } from './routes';
+export { surveys, questions, surveyResponses, dataElements, syncGroups } from './surveys';
+export { users, permissions } from './users';
+export {
+  dashboardItems,
+  dashboards,
+  dashboardRelations,
+  mapOverlays,
+  mapOverlayGroups,
+  mapOverlayGroupRelations,
+} from './visualisations';

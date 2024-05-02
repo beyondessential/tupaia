@@ -4,3 +4,4 @@
  */
 
 export { entitiesTabRoutes } from './entitiesTabRoutes';
+export { entities } from './entities';

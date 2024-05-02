@@ -8,24 +8,22 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { labelToId } from '../utilities';
 import { Main, PageContentWrapper, PageWrapper } from './Page';
 import { NavPanel, SecondaryNavbar } from './navigation';
-import { ROUTES } from '../routes';
 import { Footer } from './Footer';
 import { PROFILE_ROUTES } from '../profileRoutes';
 
-export const PageLayout = ({ user }) => {
+export const PageLayout = ({ user, routes, logo, homeLink, userLinks }) => {
   const location = useLocation();
-  const activeRoute = [...ROUTES, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.url));
+  const activeRoute = [...routes, ...PROFILE_ROUTES].find(r => location.pathname.startsWith(r.url));
 
   const baseRoute = activeRoute?.url;
   return (
     <PageWrapper>
       <NavPanel
-        links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+        links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
         user={user}
-        userLinks={[
-          { label: 'Profile', to: '/profile' },
-          { label: 'Logout', to: '/logout' },
-        ]}
+        userLinks={userLinks}
+        logo={logo}
+        homeLink={homeLink}
       />
       <Main>
         <PageContentWrapper>
@@ -56,4 +54,46 @@ PageLayout.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      childViews: PropTypes.arrayOf(
+        PropTypes.shape({
+          label: PropTypes.string.isRequired,
+          url: PropTypes.string.isRequired,
+          component: PropTypes.elementType.isRequired,
+        }),
+      ),
+    }),
+  ).isRequired,
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  }),
+  homeLink: PropTypes.string,
+  userLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+    }).isRequired,
+  ),
+};
+
+PageLayout.defaultProps = {
+  logo: {
+    url: '/admin-panel-logo-white.svg',
+    alt: 'Tupaia Admin Panel Logo',
+  },
+  homeLink: '/',
+  userLinks: [
+    {
+      label: 'Profile',
+      to: '/profile',
+    },
+    {
+      label: 'Logout',
+      to: '/logout',
+    },
+  ],
 };
