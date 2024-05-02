@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { PageLayout } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getUser } from './authentication';
+import { PrivateRoute, getUser } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
@@ -65,6 +65,7 @@ const TabRoutes = ({ route }) => {
           }
         />
       ))}
+      <Route path="*" element={<Navigate to={flattenedChildViews[0].url} replace />} />
     </Routes>
   );
 };
@@ -78,11 +79,14 @@ export const App = ({ user }) => {
     <Routes>
       <Route path="/login" exact element={<LoginPage />} />
       <Route path="/logout" exact element={<LogoutPage />} />
-      <Route path="/" element={<PageLayout user={user} />}>
-        <Route index element={<Navigate to="/surveys" replace />} />
-        {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-          <Route key={route.url} path={`${route.url}/*`} element={<TabRoutes route={route} />} />
-        ))}
+      <Route path="/" element={<PrivateRoute />}>
+        <Route element={<PageLayout user={user} />}>
+          <Route index element={<Navigate to="/surveys" replace />} />
+          <Route path="*" element={<Navigate to="/surveys" replace />} />
+          {[...ROUTES, ...PROFILE_ROUTES].map(route => (
+            <Route key={route.url} path={`${route.url}/*`} element={<TabRoutes route={route} />} />
+          ))}
+        </Route>
       </Route>
     </Routes>
   );

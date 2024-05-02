@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Outlet, useLocation } from 'react-router-dom';
 import { labelToId } from '../utilities';
-import { PrivateRoute } from '../authentication';
 import { Main, PageContentWrapper, PageWrapper } from './Page';
 import { NavPanel, SecondaryNavbar } from './navigation';
 import { ROUTES } from '../routes';
@@ -19,36 +18,34 @@ export const PageLayout = ({ user }) => {
 
   const baseRoute = activeRoute?.url;
   return (
-    <PrivateRoute>
-      <PageWrapper>
-        <NavPanel
-          links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
-          user={user}
-          userLinks={[
-            { label: 'Profile', to: '/profile' },
-            { label: 'Logout', to: '/logout' },
-          ]}
-        />
-        <Main>
-          <PageContentWrapper>
-            {activeRoute && (
-              <SecondaryNavbar
-                // adding a key here is to force the component to re-render when the route changes. This is so that the link refs get regenerated and the scroll buttons work correctly when navigating between different routes
-                key={baseRoute}
-                links={activeRoute?.childViews?.map(childRoute => ({
-                  ...childRoute,
-                  id: `app-sub-view-${labelToId(childRoute.label)}`,
-                }))}
-                baseRoute={baseRoute}
-              />
-            )}
-            <Outlet />
+    <PageWrapper>
+      <NavPanel
+        links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+        user={user}
+        userLinks={[
+          { label: 'Profile', to: '/profile' },
+          { label: 'Logout', to: '/logout' },
+        ]}
+      />
+      <Main>
+        <PageContentWrapper>
+          {activeRoute && (
+            <SecondaryNavbar
+              // adding a key here is to force the component to re-render when the route changes. This is so that the link refs get regenerated and the scroll buttons work correctly when navigating between different routes
+              key={baseRoute}
+              links={activeRoute?.childViews?.map(childRoute => ({
+                ...childRoute,
+                id: `app-sub-view-${labelToId(childRoute.label)}`,
+              }))}
+              baseRoute={baseRoute}
+            />
+          )}
+          <Outlet />
 
-            <Footer />
-          </PageContentWrapper>
-        </Main>
-      </PageWrapper>
-    </PrivateRoute>
+          <Footer />
+        </PageContentWrapper>
+      </Main>
+    </PageWrapper>
   );
 };
 

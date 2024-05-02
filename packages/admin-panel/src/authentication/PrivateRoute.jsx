@@ -5,23 +5,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { getIsUserAuthenticated } from './selectors';
 
 /*
  * A wrapper for <Route> that redirects to the login
  * screen if you're not yet authenticated.
  */
-export const PrivateRouteComponent = ({ loginPath, isLoggedIn, children }) => {
+export const PrivateRouteComponent = ({ loginPath, isLoggedIn }) => {
   const location = useLocation();
   if (!isLoggedIn) {
     return <Navigate to={loginPath} state={{ from: location.pathname }} />;
   }
-  return children;
+  return <Outlet />;
 };
 
 PrivateRouteComponent.propTypes = {
-  children: PropTypes.node.isRequired,
   isLoggedIn: PropTypes.bool,
   loginPath: PropTypes.string,
 };

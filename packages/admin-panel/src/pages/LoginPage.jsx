@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiCard from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -62,8 +62,10 @@ const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 const Logo = () => <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />;
 
 const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
+  const location = useLocation();
   if (isLoggedIn) {
-    return <Navigate to={redirectTo} />;
+    const redirectUrl = redirectTo || location.state?.from || '/';
+    return <Navigate to={redirectUrl} />;
   }
 
   return (
@@ -89,13 +91,12 @@ LoginPageComponent.propTypes = {
 };
 
 LoginPageComponent.defaultProps = {
-  redirectTo: '/',
+  redirectTo: null,
   LogoComponent: Logo,
 };
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
   isLoggedIn: getIsUserAuthenticated(state),
-  redirectTo: ownProps.redirectTo || ownProps.location?.state?.from || '/',
 });
 
 export const LoginPage = connect(mapStateToProps)(LoginPageComponent);
