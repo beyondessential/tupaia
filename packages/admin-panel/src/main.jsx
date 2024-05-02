@@ -69,7 +69,6 @@ renderReactApp(
                     element={<VizBuilder NavPanel={NavPanel} Footer={Footer} />}
                   />
                   <Route path="*" default element={<AdminPanelRoute />} />
-                  {/* <Redirect to="/login" /> */}
                 </Routes>
               </ThemeProvider>
             </MuiThemeProvider>
