@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 
-import momentTimezone from 'moment-timezone';
 import { constructAccessToken } from '@tupaia/auth';
 import {
   clearTestData,
@@ -302,10 +301,6 @@ describe('changes (POST)', () => {
         return response;
       };
 
-      const stripTimezone = (date: string | undefined) => {
-        return stripTimezoneFromDate(momentTimezone(date).tz(defaultTimezone).format());
-      };
-
       it('data_time should override all others', async () => {
         const dataTime = new Date().toISOString();
         const surveyResponseObject = generateDummySurveyResponse({
@@ -316,7 +311,7 @@ describe('changes (POST)', () => {
         const response = await submitSurveyResponse(surveyResponseObject);
         expect(response).toHaveProperty('statusCode', 200);
 
-        const expectedDateTime = stripTimezone(dataTime);
+        const expectedDateTime = stripTimezoneFromDate(dataTime);
         expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
           expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
         );
@@ -331,7 +326,7 @@ describe('changes (POST)', () => {
         const response = await submitSurveyResponse(surveyResponseObject);
         expect(response).toHaveProperty('statusCode', 200);
 
-        const expectedDateTime = stripTimezone(submissionTime);
+        const expectedDateTime = stripTimezoneFromDate(submissionTime);
         expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
           expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
         );
@@ -343,7 +338,7 @@ describe('changes (POST)', () => {
 
         expect(response).toHaveProperty('statusCode', 200);
         const endTime = surveyResponseObject.end_time as string;
-        const expectedDateTime = stripTimezone(endTime);
+        const expectedDateTime = stripTimezoneFromDate(endTime);
         expect(upsertSurveyResponsesMock).toHaveBeenCalledWith(
           expect.arrayContaining([expect.objectContaining({ data_time: expectedDateTime })]),
         );

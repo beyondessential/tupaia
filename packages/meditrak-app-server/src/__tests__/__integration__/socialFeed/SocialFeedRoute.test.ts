@@ -20,9 +20,9 @@ import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../.
 import {
   addLeaderboardAsThirdItem,
   filterItemFields,
-  replaceItemsCountryWithCountryId,
+  addCountryIdAndPermissionGroupId,
 } from './helper';
-import { COUNTRIES, FEED_ITEMS, GONDOR } from './SocialFeedRoute.fixtures';
+import { COUNTRIES, FEED_ITEMS, GONDOR, PERMISSION_GROUPS } from './SocialFeedRoute.fixtures';
 
 describe('socialFeed', () => {
   const CURRENT_DATE_STUB = '2020-12-15T00:00:00.000Z';
@@ -39,6 +39,7 @@ describe('socialFeed', () => {
   };
 
   const countryCodeToId: Record<string, string> = {};
+  let publicPermissionGroupId: string;
 
   let app: TestableServer;
   let authHeader: string;
@@ -53,6 +54,13 @@ describe('socialFeed', () => {
       }),
     );
 
+    const [publicPermissionGroup] = await Promise.all(
+      PERMISSION_GROUPS.map(async permissionGroup => {
+        return findOrCreateDummyRecord(models.permissionGroup, permissionGroup, {});
+      }),
+    );
+    publicPermissionGroupId = publicPermissionGroup.id;
+
     insertedCountries.forEach(({ country }) => {
       countryCodeToId[country.code] = country.id;
     });
@@ -64,9 +72,10 @@ describe('socialFeed', () => {
       creation_date: new Date(feedItem.creation_date).toLocaleString(databaseTimezone), // Adjust for timezone so tests work regardless of db timezone
     }));
 
-    const feedItemsToInsert = replaceItemsCountryWithCountryId(
+    const feedItemsToInsert = addCountryIdAndPermissionGroupId(
       timezoneConvertedFeedItems,
       countryCodeToId,
+      publicPermissionGroupId,
     );
 
     await Promise.all(
@@ -83,7 +92,7 @@ describe('socialFeed', () => {
         apiClientUserId: undefined,
       }),
     );
-    grantUserAccess(user.id);
+    grantUserAccess(user.id, { GND: ['Public'], MOR: ['Public'] });
   });
 
   afterAll(async () => {
@@ -111,7 +120,11 @@ describe('socialFeed', () => {
 
       expect(hasMorePages).toBe(false);
       expect(pageNumber).toBe(0);
-      const expectedItems = replaceItemsCountryWithCountryId(FEED_ITEMS, countryCodeToId);
+      const expectedItems = addCountryIdAndPermissionGroupId(
+        FEED_ITEMS,
+        countryCodeToId,
+        publicPermissionGroupId,
+      );
 
       addLeaderboardAsThirdItem(expectedItems, LEADERBOARD_ITEM);
       expect(filterItemFields(items)).toEqual(expectedItems);
@@ -129,9 +142,10 @@ describe('socialFeed', () => {
 
       expect(hasMorePages).toBe(false);
       expect(pageNumber).toBe(0);
-      const expectedItems = replaceItemsCountryWithCountryId(
+      const expectedItems = addCountryIdAndPermissionGroupId(
         FEED_ITEMS.filter(item => !item.country || item.country === GONDOR.code),
         countryCodeToId,
+        publicPermissionGroupId,
       );
       addLeaderboardAsThirdItem(expectedItems, LEADERBOARD_ITEM);
       expect(filterItemFields(items)).toEqual(expectedItems);
@@ -150,9 +164,10 @@ describe('socialFeed', () => {
 
       expect(hasMorePages).toBe(false);
       expect(pageNumber).toBe(0);
-      const expectedItems = replaceItemsCountryWithCountryId(
+      const expectedItems = addCountryIdAndPermissionGroupId(
         FEED_ITEMS.filter(item => new Date(item.creation_date) > new Date(earliestCreationDate)),
         countryCodeToId,
+        publicPermissionGroupId,
       );
       addLeaderboardAsThirdItem(expectedItems, LEADERBOARD_ITEM);
       expect(filterItemFields(items)).toEqual(expectedItems);
@@ -174,9 +189,10 @@ describe('socialFeed', () => {
 
       expect(firstPageHasMorePages).toBe(true);
       expect(firstPagePageNumber).toBe(0);
-      const firstPageExpectedItems = replaceItemsCountryWithCountryId(
+      const firstPageExpectedItems = addCountryIdAndPermissionGroupId(
         FEED_ITEMS.filter((_, index) => index < 2),
         countryCodeToId,
+        publicPermissionGroupId,
       );
       addLeaderboardAsThirdItem(firstPageExpectedItems, LEADERBOARD_ITEM);
       expect(filterItemFields(firstPageItems)).toEqual(firstPageExpectedItems);
@@ -196,9 +212,10 @@ describe('socialFeed', () => {
 
       expect(secondPageHasMorePages).toBe(false);
       expect(secondPagePageNumber).toBe(1);
-      const secondPageExpectedItems = replaceItemsCountryWithCountryId(
+      const secondPageExpectedItems = addCountryIdAndPermissionGroupId(
         FEED_ITEMS.filter((_, index) => index >= 2),
         countryCodeToId,
+        publicPermissionGroupId,
       );
       expect(filterItemFields(secondPageItems)).toEqual(secondPageExpectedItems);
     });

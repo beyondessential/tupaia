@@ -15,6 +15,8 @@ export const MORDOR = {
 
 export const COUNTRIES = [GONDOR, MORDOR];
 
+export const PERMISSION_GROUPS = [{ name: 'Public' }];
+
 // Sorted by creation_date desc
 export const FEED_ITEMS = [
   {
