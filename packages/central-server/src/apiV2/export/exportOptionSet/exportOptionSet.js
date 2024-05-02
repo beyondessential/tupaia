@@ -3,6 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import xlsx from 'xlsx';
+import { respondWithDownload, toFilename } from '@tupaia/utils';
+import { getExportPathForUser } from '../getExportPathForUser';
+
 export async function exportOptionSet(req, res) {
   const { models, userId } = req;
   const { optionSetId } = req.params;
@@ -16,5 +20,15 @@ export async function exportOptionSet(req, res) {
     attributes: option.attributes,
   }));
 
-  res.status(418).type('json').send(options);
+  const worksheet = xlsx.utils.json_to_sheet(options);
+  const sheetName = optionSetRecord.name.substring(0, 31); // Sheet name max. length is hard-coded in Excel
+  const workbook = xlsx.utils.book_new(worksheet, sheetName);
+
+  const dirname = getExportPathForUser(userId);
+  const basename = toFilename(`Option Set - ${optionSetRecord.name}.xlsx`);
+  const filepath = `${dirname}/${basename}`;
+  xlsx.writeFile(workbook, filepath);
+
+  // res.status(418).type('json').send(options);
+  respondWithDownload(res, filepath);
 }
