@@ -14,7 +14,7 @@ import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 
-const PageRoute = ({ route }) => {
+const TabRoutes = ({ route }) => {
   const { childViews } = route;
 
   if (!childViews) return null;
@@ -58,7 +58,7 @@ const PageRoute = ({ route }) => {
     <Routes>
       {flattenedChildViews?.map(childRoute => (
         <Route
-          key={childRoute.url}
+          key={childRoute.title}
           path={childRoute.url}
           element={
             childRoute.Component ? <childRoute.Component /> : <ResourcePage {...childRoute} />
@@ -69,7 +69,7 @@ const PageRoute = ({ route }) => {
   );
 };
 
-PageRoute.propTypes = {
+TabRoutes.propTypes = {
   route: PropTypes.object.isRequired,
 };
 
@@ -81,7 +81,7 @@ export const App = ({ user }) => {
       <Route path="/" element={<PageLayout user={user} />}>
         <Route index element={<Navigate to="/surveys" replace />} />
         {[...ROUTES, ...PROFILE_ROUTES].map(route => (
-          <Route key={route.to} path={`${route.url}/*`} element={<PageRoute route={route} />} />
+          <Route key={route.url} path={`${route.url}/*`} element={<TabRoutes route={route} />} />
         ))}
       </Route>
     </Routes>

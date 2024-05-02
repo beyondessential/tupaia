@@ -58,24 +58,27 @@ const HeaderCell = styled(Cell)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
   background-color: ${({ theme }) => theme.palette.background.paper};
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
-  padding: 0.7rem;
+  padding-block: 0.7rem;
+  padding-inline: 0.7rem 0;
   position: initial; // override this because we have 2 sticky header rows so we will apply sticky to the thead element
   background-color: ${({ theme }) => theme.palette.background.paper};
   .MuiTableSortLabel-icon {
     opacity: 1;
   }
+  // apply a min width to the button column to prevent it from shrinking the filter input too much
+  ${({ $isButtonColumn }) => !$isButtonColumn && `min-width: 9rem;`};
 `;
 
 export const HeaderDisplayCell = ({ children, isButtonColumn, width, ...props }) => {
   return (
     <HeaderCell $isButtonColumn={isButtonColumn} $width={width} {...props}>
-      <CellContentContainer>{children}</CellContentContainer>
+      {children}
     </HeaderCell>
   );
 };
 
 HeaderDisplayCell.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   isButtonColumn: PropTypes.bool,
   width: PropTypes.string,
 };
@@ -83,6 +86,7 @@ HeaderDisplayCell.propTypes = {
 HeaderDisplayCell.defaultProps = {
   isButtonColumn: false,
   width: null,
+  children: null,
 };
 
 export const TableCell = ({ children, width, isButtonColumn }) => {

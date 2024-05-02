@@ -50,7 +50,7 @@ export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
 
     onFilteredChange(updatedFilters);
   };
-  if (!column.filterable) return <HeaderDisplayCell />;
+  if (!column.filterable) return <HeaderDisplayCell isButtonColumn />;
   return (
     <HeaderDisplayCell width={width}>
       <FilterWrapper>

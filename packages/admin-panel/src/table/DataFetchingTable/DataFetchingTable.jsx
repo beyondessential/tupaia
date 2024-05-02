@@ -222,6 +222,7 @@ const DataFetchingTableComponent = ({
                 visibleColumns.map(column => {
                   return (
                     <FilterCell
+                      key={column.id}
                       column={column}
                       onFilteredChange={onFilteredChange}
                       filters={filters}

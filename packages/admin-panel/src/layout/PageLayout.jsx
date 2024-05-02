@@ -33,7 +33,6 @@ export const PageLayout = ({ user }) => {
           <PageContentWrapper>
             {activeRoute && (
               <SecondaryNavbar
-                activeRoute={activeRoute}
                 links={activeRoute?.childViews?.map(childRoute => ({
                   ...childRoute,
                   id: `app-sub-view-${labelToId(childRoute.label)}`,
