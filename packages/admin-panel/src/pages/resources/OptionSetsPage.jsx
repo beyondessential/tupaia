@@ -20,7 +20,7 @@ const OPTION_SET_COLUMNS = [
     source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'optionSets',
+      exportEndpoint: 'optionSet',
       fileName: '{name}',
     },
   },
@@ -30,7 +30,7 @@ const OPTION_SET_COLUMNS = [
     source: 'id',
     actionConfig: {
       title: 'Edit Option Set',
-      editEndpoint: 'optionSets',
+      editEndpoint: 'optionSet',
       fields: [...OPTION_SET_FIELDS],
     },
   },
