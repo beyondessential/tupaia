@@ -30,7 +30,7 @@ const createLandingPageDBFilter = async (accessPolicy, models, criteria) => {
 
   return {
     [QUERY_CONJUNCTIONS.RAW]: {
-      sql: `project_codes <@ ARRAY[${projectCodesToQuery.map(_ => '?')}]`,
+      sql: `project_codes && ARRAY[${projectCodesToQuery.map(_ => '?')}]`,
       parameters: projectCodesToQuery,
     },
   };
@@ -57,6 +57,7 @@ export class GETLandingPages extends TupaiaAdminGETHandler {
 
   async getPermissionsFilter(criteria, options) {
     const dbConditions = await createLandingPageDBFilter(this.accessPolicy, this.models, criteria);
+
     return { dbConditions, dbOptions: options };
   }
 }
