@@ -9,6 +9,21 @@
 # see: https://marketplace.visualstudio.com/items?itemName=humao.rest-client#environment-variables
 @authorization  = Basic {{email}}:{{password}}
 
+### Sign up
+POST {{host}}/signup HTTP/1.1
+content-type: {{contentType}}
+
+{
+  "contactNumber": "123",
+  "emailAddress": "christopher@100acre.wood",
+  "employer": "Self-employed",
+  "firstName": "Christopher",
+  "lastName": "Robin",
+  "passwordConfirm": "nowweare6",
+  "password": "nowweare6",
+  "position": "Friend of Pooh Bear"
+}
+
 ### Login
 # @name login
 POST {{host}}/login HTTP/1.1
@@ -19,13 +34,13 @@ content-type: {{contentType}}
     "password": "{{password}}"
 }
 
- 
 
-### Get Activity feed 
+
+### Get Activity feed
 GET {{host}}/activityFeed?projectId=64df18f22ecffb2ac901a2b3 HTTP/1.1
 content-type: {{contentType}}
 
- 
+
 ### Get projects
 GET {{host}}/projects HTTP/1.1
 content-type: {{contentType}}
@@ -33,7 +48,7 @@ content-type: {{contentType}}
 ### Get user
 GET {{host}}/getUser HTTP/1.1
 content-type: {{contentType}}
- 
+
 ### Get survey
 GET {{host}}/surveys/TAR HTTP/1.1
 content-type: {{contentType}}

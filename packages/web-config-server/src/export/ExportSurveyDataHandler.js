@@ -1,7 +1,11 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
 import xlsx from 'xlsx';
 import fs from 'fs';
 import { getExportDatesString } from '@tupaia/utils';
-
 import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
@@ -32,7 +36,11 @@ export class ExportSurveyDataHandler extends RouteHandler {
     const sessionCookie = cookies[sessionCookieName];
     // If we used an auth header rather than a session, pass it along to the next request
     const authHeader = headers.authorization || headers.Authorization;
-    const { report_code: reportCode, legacy, config } = await this.models.dashboardItem.findOne({
+    const {
+      report_code: reportCode,
+      legacy,
+      config,
+    } = await this.models.dashboardItem.findOne({
       code: itemCode,
     });
 
