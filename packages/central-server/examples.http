@@ -27,7 +27,7 @@ content-type: {{contentType}}
 
 ### Download files
 
-GET {{baseUrl}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
+GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
