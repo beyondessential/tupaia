@@ -4,9 +4,10 @@
  */
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { SurveyResponsesPage, ResourcePage } from '@tupaia/admin-panel';
+import { ResourcePage } from '@tupaia/admin-panel';
 import { ApproveButton, getRejectButton } from './components';
 import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
+import { useI18n } from '../../utils';
 
 export const ApprovedSurveyResponsesView = props => {
   const {
@@ -18,7 +19,7 @@ export const ApprovedSurveyResponsesView = props => {
   } = getSurveyResponsePageConfigs(props);
 
   return (
-    <SurveyResponsesPage
+    <ResourcePage
       title={props.translate('admin.approvedSurveyResponses')}
       baseFilter={{ approval_status: { comparisonValue: 'approved' } }}
       columns={COLUMNS.filter(column => column.type !== 'delete')}
@@ -54,29 +55,21 @@ export const RejectedSurveyResponsesView = props => {
   );
 };
 
-export const DraftSurveyResponsesView = props => {
-  const {
-    columns: COLUMNS,
-    importConfig,
-    exportConfig,
-    editorConfig,
-    ExportModalComponent,
-  } = getSurveyResponsePageConfigs(props);
+export const draftSurveyResponses = translate => {
+  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfigs({ translate });
 
   const DRAFT_COLUMNS = [
     ...COLUMNS.filter(column => column.type !== 'delete'),
     {
-      Header: props.translate('admin.approve'),
-      source: 'id',
+      Header: translate('admin.approve'),
       Cell: ApproveButton,
       filterable: false,
       disableSortBy: true,
       width: 75,
     },
     {
-      Header: props.translate('admin.reject'),
-      source: 'id',
-      Cell: getRejectButton(props.translate),
+      Header: translate('admin.reject'),
+      Cell: getRejectButton(translate),
       type: 'delete',
       actionConfig: {
         endpoint: 'surveyResponses',
@@ -84,18 +77,15 @@ export const DraftSurveyResponsesView = props => {
     },
   ];
 
-  return (
-    <ResourcePage
-      {...props}
-      title={props.translate('admin.surveyResponsesForReview')}
-      baseFilter={{ approval_status: { comparisonValue: 'pending' } }}
-      columns={DRAFT_COLUMNS}
-      importConfig={importConfig}
-      exportConfig={exportConfig}
-      editorConfig={editorConfig}
-      ExportModalComponent={ExportModalComponent}
-    />
-  );
+  return {
+    ...configs,
+    title: translate('admin.review'),
+    url: '',
+    exact: true,
+    default: true,
+    baseFilter: { approval_status: { comparisonValue: 'pending' } },
+    columns: DRAFT_COLUMNS,
+  };
 };
 
 export const NonApprovalSurveyResponsesView = props => {
@@ -134,9 +124,7 @@ export const NonApprovalSurveyResponsesView = props => {
 ApprovedSurveyResponsesView.propTypes = {
   translate: PropTypes.func.isRequired,
 };
-DraftSurveyResponsesView.propTypes = {
-  translate: PropTypes.func.isRequired,
-};
+
 RejectedSurveyResponsesView.propTypes = {
   translate: PropTypes.func.isRequired,
 };

@@ -3,6 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import moment from 'moment';
+import { surveyResponses } from '@tupaia/admin-panel';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { getImportConfigs } from './getImportConfigs';
 import { getSurveyResponsesExportModal } from '../../components';
@@ -110,13 +111,13 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
   };
 
   return {
+    ...surveyResponses,
     columns: [
       entityName,
       ...SURVEY_RESPONSE_COLUMNS,
       {
         Header: translate('admin.edit'),
         type: 'edit',
-        source: 'id',
         actionConfig: {
           title: translate('admin.edit'),
           editEndpoint: 'surveyResponses',
@@ -142,6 +143,5 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     exportConfig,
     editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
-    SURVEY_RESPONSE_COLUMNS,
   };
 };

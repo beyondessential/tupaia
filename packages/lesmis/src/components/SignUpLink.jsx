@@ -31,10 +31,8 @@ export const SignUpLink = ({ isRound }) => {
     <TextButton
       variant={isRound && 'outlined'}
       component={RouterLink}
-      to={{
-        pathname: `/${locale}/register`,
-        state: { referer: location.pathname },
-      }}
+      to={`/${locale}/register`}
+      state={{ referer: location.pathname }}
       className={isRound && 'round'}
     >
       <I18n t="home.signUp" />

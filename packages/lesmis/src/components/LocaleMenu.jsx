@@ -93,12 +93,27 @@ export const LocaleMenu = ({ className }) => {
   const { search } = useLocation();
   const queryClient = useQueryClient();
 
-  const handleChange = (event, newLocale) => {
-    const path = generatePath(`/:locale/:entityCode?/:view?`, {
+  const generateNewPath = newLocale => {
+    if (entityCode && view) {
+      return generatePath(`/:locale/:entityCode/:view`, {
+        locale: newLocale,
+        entityCode,
+        view,
+      });
+    }
+    if (entityCode) {
+      return generatePath(`/:locale/:entityCode`, {
+        locale: newLocale,
+        entityCode,
+      });
+    }
+    return generatePath(`/:locale`, {
       locale: newLocale,
-      entityCode,
-      view,
     });
+  };
+
+  const handleChange = (event, newLocale) => {
+    const path = generateNewPath(newLocale);
     const link = `${path}${search}`;
     navigate(link, {
       replace: true,

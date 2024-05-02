@@ -27,7 +27,7 @@ export const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/:locale(en|lo)" element={<PageRoutes />} />
+        <Route path="/:locale/*" element={<PageRoutes />} />
         <Route path="/" element={<Navigate to={`/${locale}`} replace />} />
       </Routes>
     </Router>

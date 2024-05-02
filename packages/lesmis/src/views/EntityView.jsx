@@ -4,7 +4,7 @@
  *
  */
 import React, { useState } from 'react';
-import { Route, useMatch, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { LocationHeader, Toolbar, Breadcrumbs, Footer, FlexSpaceBetween } from '../components';
 import { DashboardView } from './DashboardView';
 import { MapView } from './MapView';
@@ -13,9 +13,10 @@ import { LocaleMenu } from '../components/LocaleMenu';
 
 export const EntityView = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const match = useMatch();
   const { locale, entityCode, view } = useUrlParams();
   const { breadcrumbs, isLoading } = useEntityBreadcrumbs();
+
+  const redirectPath = `/${locale}/${entityCode}/dashboard`;
 
   return (
     <>
@@ -28,11 +29,11 @@ export const EntityView = () => {
       <LocationHeader setIsOpen={setIsOpen} />
       <Routes>
         <Route
-          path={`${match.path}/dashboard`}
+          path="/dashboard"
           element={<DashboardView isOpen={isOpen} setIsOpen={setIsOpen} />}
         />
-        <Route path={`${match.path}/map`} element={<MapView />} />
-        <Route path="*" element={<Navigate to={`/${locale}/${entityCode}/dashboard`} />} />
+        <Route path="/map" element={<MapView />} />
+        <Route path="*" element={<Navigate to={redirectPath} />} />
       </Routes>
       {view !== 'map' && <Footer />}
     </>

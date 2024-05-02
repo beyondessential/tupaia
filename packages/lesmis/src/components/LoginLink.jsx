@@ -25,10 +25,8 @@ export const LoginLink = () => {
     <LoginLinkButton
       variant="outlined"
       component={RouterLink}
-      to={{
-        pathname: `/${locale}/login`,
-        state: { referer: `${location.pathname}${location.search}` },
-      }}
+      to={`/${locale}/login`}
+      state={{ referer: `${location.pathname}${location.search}` }}
       className="login-link"
     >
       <I18n t="home.logIn" />

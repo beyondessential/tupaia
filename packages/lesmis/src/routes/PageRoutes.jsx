@@ -4,7 +4,7 @@
  *
  */
 import React from 'react';
-import { Route, useMatch, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { AdminPanelDataProviders } from '@tupaia/admin-panel';
 import { NavBar, Footer } from '../components';
 import { HomeView } from '../views/HomeView';
@@ -28,13 +28,10 @@ const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}` };
  * eg. /en/LA/dashboard
  */
 export const PageRoutes = React.memo(() => {
-  const { path } = useMatch();
-
   return (
     <Routes>
       <Route
-        exact
-        path={`${path}/`}
+        path="/"
         element={
           <>
             <NavBar hideSearch />
@@ -42,14 +39,14 @@ export const PageRoutes = React.memo(() => {
           </>
         }
       />
-      <Route path={`${path}/login`} element={<LoginView />} />
+      <Route path="/login" element={<LoginView />} />
 
-      <Route path={`${path}/verify-email`} element={<VerifyEmailView />} />
+      <Route path="/verify-email" element={<VerifyEmailView />} />
 
-      <Route path={`${path}/register`} element={<RegisterView />} />
+      <Route path="/register" element={<RegisterView />} />
 
       <Route
-        path={`${path}/profile`}
+        path="/profile"
         element={
           <>
             <NavBar />
@@ -60,7 +57,7 @@ export const PageRoutes = React.memo(() => {
       />
 
       <Route
-        path={`${path}/admin`}
+        path="/admin/*"
         element={
           <AdminPanelDataProviders config={adminPanelConfig}>
             <AdminPanel />
@@ -68,7 +65,7 @@ export const PageRoutes = React.memo(() => {
         }
       />
       <Route
-        path={`${path}/about`}
+        path="/about"
         element={
           <>
             <NavBar />
@@ -78,10 +75,9 @@ export const PageRoutes = React.memo(() => {
         }
       />
       <Route
-        path={`${path}/fundamental-quality-standards`}
+        path="/fundamental-quality-standards"
         element={
           <>
-            {' '}
             <NavBar />
             <TwoColumnPageView content={FQS_PAGE} />
             <Footer />
@@ -90,7 +86,7 @@ export const PageRoutes = React.memo(() => {
       />
 
       <Route
-        path={`${path}/contact`}
+        path="/contact"
         element={
           <>
             <NavBar />
@@ -101,7 +97,7 @@ export const PageRoutes = React.memo(() => {
       />
 
       <Route
-        path={`${path}/page-not-found`}
+        path="/page-not-found"
         element={
           <>
             <NavBar />
@@ -111,7 +107,7 @@ export const PageRoutes = React.memo(() => {
         }
       />
       <Route
-        path={`${path}/not-authorised`}
+        path="/not-authorised"
         element={
           <>
             <NavBar />
@@ -121,11 +117,11 @@ export const PageRoutes = React.memo(() => {
         }
       />
       <Route
-        path={`${path}/pdf-export/:entityCode?`}
+        path="/pdf-export/:entityCode?"
         element={<ExportView viewType={PDF_DOWNLOAD_VIEW} />}
       />
       <Route
-        path={`${path}/:entityCode/:view?`}
+        path="/:entityCode/*"
         element={
           <>
             <NavBar />

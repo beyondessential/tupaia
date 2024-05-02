@@ -56,10 +56,8 @@ export const NotAuthorisedView = () => {
         {!isLoggedIn && !isLoading && (
           <Button
             component={RouterLink}
-            to={{
-              pathname: `/${locale}/login`,
-              state: { referer: location.pathname },
-            }}
+            to={`/${locale}/login`}
+            state={{ referer: `${location.pathname}${location.search}` }}
           >
             Login
           </Button>
