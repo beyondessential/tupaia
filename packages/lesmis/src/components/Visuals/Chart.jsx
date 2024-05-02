@@ -79,7 +79,8 @@ const Toggle = ({ value, onChange }) => (
 
 /* eslint-disable react/prop-types */
 const ChartTable = ({
-  viewContent,
+  report,
+  config,
   exportOptions,
   isLoading,
   isError,
@@ -87,10 +88,10 @@ const ChartTable = ({
   selectedTab,
   isExporting,
 }) => {
-  const newViewContent = {
-    ...viewContent,
+  const newConfig = {
+    ...config,
     presentationOptions: {
-      ...viewContent?.presentationOptions,
+      ...config?.presentationOptions,
       ...exportOptions,
     },
   };
@@ -99,13 +100,14 @@ const ChartTable = ({
     return (
       <ExportContainer>
         <ChartComponent
-          viewContent={newViewContent}
+          report={report}
+          config={newConfig}
           legendPosition="top"
           isExporting={isExporting}
         />
         {exportOptions?.exportWithTable && (
           <FlexStart my={5}>
-            <BaseChartTable viewContent={viewContent} />
+            <BaseChartTable config={config} report={report} />
           </FlexStart>
         )}
       </ExportContainer>
@@ -117,14 +119,15 @@ const ChartTable = ({
       {selectedTab === TABS.CHART ? (
         <ChartWrapper>
           <ChartComponent
-            viewContent={newViewContent}
+            report={report}
+            config={newConfig}
             legendPosition="top"
             isExporting={isExporting}
           />
         </ChartWrapper>
       ) : (
         <Wrapper>
-          <BaseChartTable viewContent={viewContent} />
+          <BaseChartTable config={config} report={report} />
         </Wrapper>
       )}
     </FetchLoader>
@@ -134,7 +137,8 @@ const ChartTable = ({
 export const Chart = ({
   name,
   exportOptions,
-  viewContent,
+  report,
+  config,
   isLoading,
   isFetching,
   isError,
@@ -155,7 +159,8 @@ export const Chart = ({
 
   // loading whole chart (i.e. show full loading spinner) if first load, or fetching in background
   // from a no data state
-  const isLoadingWholeChart = isLoading || (!getIsChartData(viewContent) && isFetching);
+  const isLoadingWholeChart =
+    isLoading || (!getIsChartData(config?.chartType, report) && isFetching);
   const isFetchingInBackground = isFetching && !isLoadingWholeChart;
 
   return isEnlarged ? (
@@ -166,7 +171,8 @@ export const Chart = ({
         </FlexEnd>
       )}
       <ChartTable
-        viewContent={viewContent}
+        report={report}
+        config={config}
         isLoading={isLoading}
         isError={isError}
         error={error}
@@ -187,7 +193,8 @@ export const Chart = ({
       </VisualHeader>
       <Body>
         <ChartTable
-          viewContent={viewContent}
+          report={report}
+          config={config}
           isLoading={isLoadingWholeChart}
           isError={isError}
           error={error}
@@ -200,7 +207,8 @@ export const Chart = ({
 };
 
 Chart.propTypes = {
-  viewContent: PropTypes.object,
+  report: PropTypes.object,
+  config: PropTypes.object,
   exportOptions: PropTypes.object,
   isLoading: PropTypes.bool,
   isFetching: PropTypes.bool,
@@ -213,7 +221,8 @@ Chart.propTypes = {
 };
 
 Chart.defaultProps = {
-  viewContent: null,
+  report: null,
+  config: null,
   exportOptions: null,
   isLoading: false,
   isFetching: false,

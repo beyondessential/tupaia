@@ -6,13 +6,13 @@
 import React from 'react';
 import { ReferenceLine } from 'recharts';
 import { formatDataValueByType } from '@tupaia/utils';
-import { ChartType } from '@tupaia/types';
+import { CartesianChartConfig, ChartReport, ChartType } from '@tupaia/types';
 import { TUPAIA_ORANGE } from '../../constants';
-import { CartesianChartViewContent } from '../../types';
 import { ReferenceLabel } from './ReferenceLabel';
 
 interface ReferenceLineProps {
-  viewContent: CartesianChartViewContent;
+  config: CartesianChartConfig;
+  report: ChartReport;
   isExporting?: boolean;
   isEnlarged?: boolean;
 }
@@ -35,11 +35,10 @@ interface ReferenceLineProps {
  * @see https://recharts.org/en-US/api/ReferenceLine
  * @see https://recharts.org/en-US/examples/LineChartWithReferenceLines
  */
-const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) => {
-  if (!viewContent.presentationOptions?.referenceLines?.targetLine) return null;
+const ValueReferenceLine = ({ config, isExporting }: ReferenceLineProps) => {
+  if (!config.presentationOptions?.referenceLines?.targetLine) return null;
 
-  const { referenceLabel, referenceValue } =
-    viewContent.presentationOptions.referenceLines.targetLine;
+  const { referenceLabel, referenceValue } = config.presentationOptions.referenceLines.targetLine;
   const color = isExporting ? 'black' : 'white';
   return (
     <ReferenceLine
@@ -62,10 +61,10 @@ const ValueReferenceLine = ({ viewContent, isExporting }: ReferenceLineProps) =>
  *   "hideAverage": true
  * }
  */
-const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
-  const { valueType, data } = viewContent;
-  const presentationOptions =
-    'presentationOptions' in viewContent && viewContent.presentationOptions;
+const AverageReferenceLine = ({ report, config }: ReferenceLineProps) => {
+  const { valueType } = config;
+  const { data = [] } = report;
+  const presentationOptions = 'presentationOptions' in config && config.presentationOptions;
   // show reference line by default
   const shouldHideReferenceLine = presentationOptions && presentationOptions.hideAverage;
   // average is null for stacked charts that don't have a "value" key in data
@@ -92,12 +91,12 @@ const AverageReferenceLine = ({ viewContent }: ReferenceLineProps) => {
  * explicitly defined, then a reference line showing the average is displayed.
  */
 const BarReferenceLine = (props: ReferenceLineProps) =>
-  props.viewContent.presentationOptions?.referenceLines
+  props.config.presentationOptions?.referenceLines
     ? ValueReferenceLine(props)
     : AverageReferenceLine(props);
 
 export const ReferenceLines = (props: ReferenceLineProps) => {
-  return props.viewContent.chartType === ChartType.Bar
+  return props.config.chartType === ChartType.Bar
     ? BarReferenceLine(props)
     : ValueReferenceLine(props);
 };
