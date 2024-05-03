@@ -60,5 +60,5 @@ export const dhisInstances = {
   endpoint: 'dhisInstances',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
-  url: '/dhis-instances',
+  path: '/dhis-instances',
 };

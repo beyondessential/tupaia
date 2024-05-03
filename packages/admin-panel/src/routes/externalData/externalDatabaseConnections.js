@@ -52,6 +52,7 @@ const COLUMNS = [
   {
     Header: 'Test',
     type: 'testDatabaseConnection',
+    colWidth: 100,
   },
   {
     Header: 'Delete',
@@ -72,7 +73,7 @@ const CREATE_CONFIG = {
 
 export const externalDatabaseConnections = {
   title: 'External database connections',
-  url: '',
+  path: '',
   endpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

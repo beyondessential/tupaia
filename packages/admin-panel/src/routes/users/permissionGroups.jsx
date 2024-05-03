@@ -44,7 +44,7 @@ const CREATE_CONFIG = {
 
 export const permissionGroups = {
   title: 'Permission groups',
-  url: '/permission-groups',
+  path: '/permission-groups',
   endpoint: 'permissionGroups',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

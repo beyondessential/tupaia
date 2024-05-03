@@ -82,12 +82,12 @@ export const optionSets = {
   endpoint: 'optionSets',
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,
-  url: '/option-sets',
+  path: '/option-sets',
   detailsView: {
     title: 'Options',
     endpoint: 'optionSets/{id}/options',
     columns: OPTION_COLUMNS,
-    url: '/:id/options',
+    path: '/:id/options',
     displayProperty: 'name',
   },
 };

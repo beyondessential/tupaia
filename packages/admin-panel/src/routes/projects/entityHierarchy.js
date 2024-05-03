@@ -47,5 +47,5 @@ export const entityHierarchy = {
   title: 'Entity hierarchy',
   endpoint: ENTITY_HIERARCHY_ENDPOINT,
   columns: COLUMNS,
-  url: '/hierarchy',
+  path: '/hierarchy',
 };

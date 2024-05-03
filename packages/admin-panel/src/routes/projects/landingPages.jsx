@@ -288,7 +288,7 @@ const CREATE_CONFIG = {
 
 export const landingPages = {
   title: 'Landing pages',
-  url: '/landing-pages',
+  path: '/landing-pages',
   endpoint: LANDING_PAGES_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

@@ -24,7 +24,7 @@ export const dataElements = {
     ...getDataSourceButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement'),
   ],
   importConfig: IMPORT_CONFIG,
-  url: '/data-elements',
+  path: '/data-elements',
   createConfig: {
     title: 'New Data Element',
     actionConfig: {

@@ -11,7 +11,7 @@ import { ProjectsIcon } from '../../icons';
 
 export const projectsTabRoutes = {
   label: 'Projects',
-  url: '/projects',
+  path: '/projects',
   icon: <ProjectsIcon />,
   childViews: [projects, strive, entityHierarchy, landingPages],
 };

@@ -7,6 +7,6 @@ import { EntityHierarchiesPage } from '../../pages/resources/EntityHierarchiesPa
 
 export const entityHierarchies = {
   title: 'Entity hierarchies',
-  url: '/permission-groups-viewer',
+  path: '/permission-groups-viewer',
   Component: EntityHierarchiesPage,
 };

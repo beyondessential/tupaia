@@ -91,7 +91,7 @@ export const ResourcePage = ({
   const { '*': unusedParam, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
-  const { to } = detailsView || {};
+  const { path } = detailsView || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = Object.keys(params).length > 0;
@@ -125,7 +125,7 @@ export const ResourcePage = ({
           TableComponent={TableComponent}
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
-          detailUrl={to}
+          detailUrl={path}
           getIsLink={getIsLink}
           getLink={getLink}
         />

@@ -99,7 +99,7 @@ const CREATE_CONFIG = {
 
 export const mapOverlayGroups = {
   title: 'Map overlay groups',
-  url: '/map-overlay-groups',
+  path: '/map-overlay-groups',
   endpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
@@ -107,7 +107,7 @@ export const mapOverlayGroups = {
     title: 'Map Overlay Group Relations',
     columns: RELATION_COLUMNS,
     endpoint: 'mapOverlayGroups/{id}/mapOverlayGroupRelations',
-    url: '/:id/map-overlay-group-relations',
+    path: '/:id/map-overlay-group-relations',
     displayProperty: 'code',
   },
 };

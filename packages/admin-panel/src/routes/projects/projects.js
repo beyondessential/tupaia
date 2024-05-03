@@ -171,7 +171,7 @@ const CREATE_CONFIG = {
 
 export const projects = {
   title: 'Projects',
-  url: '',
+  path: '',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
   endpoint: PROJECTS_ENDPOINT,

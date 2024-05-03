@@ -101,7 +101,7 @@ const EDITOR_CONFIG = { displayUsedBy: true };
 
 export const dataTables = {
   title: 'Data tables',
-  url: '/data-tables',
+  path: '/data-tables',
   endpoint: DATA_TABLES_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

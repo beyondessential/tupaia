@@ -530,13 +530,13 @@ const QUESTION_COLUMNS = [
 
 export const surveys = {
   title: 'Surveys',
-  url: '',
+  path: '',
   default: true,
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,
   detailsView: {
-    url: '/:id/questions',
+    path: '/:id/questions',
     endpoint: 'surveys/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,
     title: 'Questions',

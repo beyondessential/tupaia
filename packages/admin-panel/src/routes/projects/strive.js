@@ -7,6 +7,6 @@ import { StrivePage } from '../../pages/StrivePage';
 
 export const strive = {
   title: 'Strive',
-  url: '/strive',
+  path: '/strive',
   Component: StrivePage,
 };

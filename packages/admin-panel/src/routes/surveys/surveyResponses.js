@@ -158,7 +158,7 @@ const IMPORT_CONFIG = {
 
 export const surveyResponses = {
   title: 'Survey responses',
-  url: '/survey-responses',
+  path: '/survey-responses',
   endpoint: 'surveyResponses',
   columns: SURVEY_RESPONSE_PAGE_COLUMNS,
   importConfig: IMPORT_CONFIG,
@@ -169,7 +169,7 @@ export const surveyResponses = {
     title: 'Answers',
     columns: ANSWER_COLUMNS,
     endpoint: 'surveyResponses/{id}/answers',
-    url: '/:id/answers',
+    path: '/:id/answers',
     displayProperty: 'survey.name',
   },
 };

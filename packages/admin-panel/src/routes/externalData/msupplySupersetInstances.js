@@ -52,5 +52,5 @@ export const supersetInstances = {
   endpoint: 'supersetInstances',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
-  url: '/superset-instances',
+  path: '/superset-instances',
 };

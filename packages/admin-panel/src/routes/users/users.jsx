@@ -160,7 +160,7 @@ const CREATE_CONFIG = {
 
 export const users = {
   title: 'Users',
-  url: '',
+  path: '',
   endpoint: 'users',
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
@@ -169,7 +169,7 @@ export const users = {
     title: 'Permissions',
     endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,
-    url: '/:id/permissions',
+    path: '/:id/permissions',
     getDisplayValue: user => {
       if (!user) return '';
       const { first_name: firstName, last_name: lastName } = user;

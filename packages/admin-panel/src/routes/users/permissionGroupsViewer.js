@@ -6,6 +6,6 @@ import { PermissionGroupsViewerPage } from '../../pages/resources/PermissionGrou
 
 export const permissionGroupsViewer = {
   title: 'Permission Groups Viewer',
-  url: '/permission-groups-viewer',
+  path: '/permission-groups-viewer',
   Component: PermissionGroupsViewerPage,
 };

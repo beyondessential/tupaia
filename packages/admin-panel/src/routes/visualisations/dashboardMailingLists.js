@@ -142,7 +142,7 @@ const ENTRY_COLUMNS = [
 
 export const dashboardMailingLists = {
   title: 'Dashboard mailing lists',
-  url: '/dashboard-mailing-lists',
+  path: '/dashboard-mailing-lists',
   endpoint: 'dashboardMailingLists',
   columns: DASHBOARD_MAILING_LIST_COLUMNS,
   createConfig: CREATE_CONFIG,
@@ -150,7 +150,7 @@ export const dashboardMailingLists = {
     title: 'Entries',
     endpoint: 'dashboardMailingLists/{id}/dashboardMailingListEntries',
     columns: ENTRY_COLUMNS,
-    url: '/:id/entries',
+    path: '/:id/entries',
     displayProperty: 'dashboard.name',
   },
 };

@@ -113,7 +113,7 @@ const LinksComponent = () => (
 
 export const dashboardItems = {
   title: 'Dashboard items',
-  url: '',
+  path: '',
   default: true,
   endpoint: DASHBOARD_ITEMS_ENDPOINT,
   importConfig: IMPORT_CONFIG,

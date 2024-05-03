@@ -57,7 +57,7 @@ const CREATE_CONFIG = {
 
 export const indicators = {
   title: 'Indicators',
-  url: '/indicators',
+  path: '/indicators',
   endpoint: 'indicators',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

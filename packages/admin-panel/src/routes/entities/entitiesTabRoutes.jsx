@@ -11,7 +11,7 @@ import { EntitiesIcon } from '../../icons';
 
 export const entitiesTabRoutes = {
   label: 'Entities',
-  url: '/entities',
+  path: '/entities',
   icon: <EntitiesIcon />,
   childViews: [entities, countries, entityTypes, entityHierarchies],
 };

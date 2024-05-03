@@ -112,7 +112,7 @@ const CREATE_CONFIG = {
 
 export const dashboardRelations = {
   title: 'Dashboard relations',
-  url: '/dashboard-relations',
+  path: '/dashboard-relations',
   endpoint: DASHBOARD_RELATION_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

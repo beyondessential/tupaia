@@ -44,7 +44,7 @@ const COLUMNS = [
 
 export const legacyReports = {
   title: 'Legacy reports',
-  url: '/legacy-reports',
+  path: '/legacy-reports',
   endpoint: 'legacyReports',
   columns: COLUMNS,
 };
