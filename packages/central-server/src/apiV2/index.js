@@ -21,7 +21,7 @@ import {
   getUserRewards,
   postChanges,
 } from './meditrakApp';
-import { BESAdminCreateHandler } from './CreateHandler';
+import { BESAdminCreateHandler, TupaiaAdminCreateHandler } from './CreateHandler';
 import { BESAdminDeleteHandler } from './DeleteHandler';
 import { BESAdminEditHandler } from './EditHandler';
 import { BESAdminGETHandler, TupaiaAdminGETHandler } from './GETHandler';
@@ -34,7 +34,7 @@ import { GETFeedItems, EditFeedItems, CreateFeedItems } from './feedItems';
 import { GETGeographicalAreas } from './GETGeographicalAreas';
 import { GETSurveyGroups } from './GETSurveyGroups';
 import { DeleteQuestions, EditQuestions, GETQuestions } from './questions';
-import { GETPermissionGroups } from './GETPermissionGroups';
+import { GETPermissionGroups, CreatePermissionGroup } from './permissionGroups';
 import { DeleteOptions, EditOptions, GETOptions } from './options';
 import { DeleteOptionSets, EditOptionSets, GETOptionSets } from './optionSets';
 import { GETAnswers } from './answers';
@@ -123,7 +123,12 @@ import {
   GETExternalDatabaseConnections,
   TestExternalDatabaseConnection,
 } from './externalDatabaseConnections';
-import { CreateLandingPage, EditLandingPage } from './landingPages';
+import {
+  CreateLandingPage,
+  DeleteLandingPage,
+  EditLandingPage,
+  GETLandingPages,
+} from './landingPages';
 import { DownloadFiles } from './DownloadFiles';
 import { suggestSurveyCode } from './suggestSurveyCode';
 import {
@@ -138,6 +143,7 @@ import {
   EditDashboardMailingListEntry,
   GETDashboardMailingListEntries,
 } from './dashboardMailingListEntries';
+import { EditEntityHierarchy, GETEntityHierarchy } from './entityHierarchy';
 
 // quick and dirty permission wrapper for open endpoints
 const allowAnyone = routeHandler => (req, res, next) => {
@@ -258,8 +264,8 @@ apiV2.get(
   '/externalDatabaseConnections/:recordId/test',
   useRouteHandler(TestExternalDatabaseConnection),
 );
-apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(BESAdminGETHandler));
-apiV2.get('/landingPages/:recordId?', useRouteHandler(BESAdminGETHandler));
+apiV2.get('/entityHierarchy/:recordId?', useRouteHandler(GETEntityHierarchy));
+apiV2.get('/landingPages/:recordId?', useRouteHandler(GETLandingPages));
 apiV2.get('/suggestSurveyCode', catchAsyncErrors(suggestSurveyCode));
 
 /**
@@ -284,7 +290,7 @@ apiV2.post(
   useRouteHandler(ResubmitSurveyResponse),
 );
 apiV2.post('/countries', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/dataElements', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/dataElements', useRouteHandler(TupaiaAdminCreateHandler));
 apiV2.post('/dataGroups', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dataTables', useRouteHandler(BESAdminCreateHandler));
 apiV2.post('/dashboards', useRouteHandler(CreateDashboard));
@@ -293,7 +299,7 @@ apiV2.post('/dashboardMailingListEntries', useRouteHandler(CreateDashboardMailin
 apiV2.post('/mapOverlayGroups', useRouteHandler(CreateMapOverlayGroups));
 apiV2.post('/feedItems', useRouteHandler(CreateFeedItems));
 apiV2.post('/indicators', useRouteHandler(BESAdminCreateHandler));
-apiV2.post('/permissionGroups', useRouteHandler(BESAdminCreateHandler));
+apiV2.post('/permissionGroups', useRouteHandler(CreatePermissionGroup));
 apiV2.post('/dashboardRelations', useRouteHandler(CreateDashboardRelation));
 apiV2.post('/dashboardVisualisations', useRouteHandler(CreateDashboardVisualisation));
 apiV2.post('/mapOverlayVisualisations', useRouteHandler(CreateMapOverlayVisualisation));
@@ -341,7 +347,7 @@ apiV2.put('/me', useRouteHandler(EditUserForMe));
 apiV2.put('/dataServiceSyncGroups/:recordId', useRouteHandler(EditSyncGroups));
 apiV2.put('/dataElementDataServices/:recordId', useRouteHandler(BESAdminEditHandler));
 apiV2.put('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminEditHandler));
-apiV2.put('/entityHierarchy/:recordId', useRouteHandler(BESAdminEditHandler));
+apiV2.put('/entityHierarchy/:recordId', useRouteHandler(EditEntityHierarchy));
 apiV2.put('/landingPages/:recordId', useRouteHandler(EditLandingPage));
 apiV2.put('/surveys/:recordId', multipartJson(), useRouteHandler(EditSurvey));
 apiV2.put('/dhisInstances/:recordId', useRouteHandler(BESAdminEditHandler));
@@ -381,7 +387,7 @@ apiV2.delete('/indicators/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/dataServiceSyncGroups/:recordId', useRouteHandler(DeleteSyncGroups));
 apiV2.delete('/dataElementDataServices/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/externalDatabaseConnections/:recordId', useRouteHandler(BESAdminDeleteHandler));
-apiV2.delete('/landingPages/:recordId', useRouteHandler(BESAdminDeleteHandler));
+apiV2.delete('/landingPages/:recordId', useRouteHandler(DeleteLandingPage));
 apiV2.delete('/dhisInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 apiV2.delete('/supersetInstances/:recordId', useRouteHandler(BESAdminDeleteHandler));
 

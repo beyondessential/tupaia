@@ -103,7 +103,7 @@ const IMPORT_CONFIG = {
 };
 const EDITOR_CONFIG = { displayUsedBy: true };
 
-export const DataTablesPage = () => (
+export const DataTablesPage = props => (
   <ResourcePage
     title="Data-Tables"
     endpoint={DATA_TABLES_ENDPOINT}
@@ -112,5 +112,6 @@ export const DataTablesPage = () => (
     createConfig={CREATE_CONFIG}
     onProcessDataForSave={onProcessDataForSave}
     editorConfig={EDITOR_CONFIG}
+    {...props}
   />
 );

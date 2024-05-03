@@ -2,13 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import { JOIN_TYPES, RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlayGroupsGetPermissions,
   createMapOverlayGroupDBFilter,
 } from './assertMapOverlayGroupsPermissions';
+import { mergeMultiJoin } from '../utilities';
+
 /**
  * Handles endpoints:
  * - /mapOverlayGroups
@@ -30,12 +32,31 @@ export class GETMapOverlayGroups extends GETHandler {
     return mapOverlayGroup;
   }
 
-  async getPermissionsFilter(criteria, options) {
+  async getPermissionsFilter(criteria, options = {}) {
     const dbConditions = await createMapOverlayGroupDBFilter(
       this.accessPolicy,
       this.models,
       criteria,
     );
-    return { dbConditions, dbOptions: options };
+
+    const dbOptions = { ...options };
+
+    // Join with map_overlay_group_relation so that we can also fetch map overlay groups with no children so they can be displayed and edited
+    dbOptions.multiJoin = mergeMultiJoin(
+      [
+        {
+          joinWith: RECORDS.MAP_OVERLAY_GROUP_RELATION,
+          joinType: JOIN_TYPES.LEFT,
+          joinCondition: [
+            `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+            `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.map_overlay_group_id`,
+          ],
+        },
+      ],
+      dbOptions?.multiJoin,
+    );
+    // should be distinct to avoid duplicates that are caused by the multiJoin with map_overlay_group_relation
+    dbOptions.distinct = true;
+    return { dbConditions, dbOptions };
   }
 }

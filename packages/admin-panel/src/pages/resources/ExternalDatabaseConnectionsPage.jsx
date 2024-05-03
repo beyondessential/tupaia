@@ -77,11 +77,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const ExternalDatabaseConnectionsPage = () => (
+export const ExternalDatabaseConnectionsPage = props => (
   <ResourcePage
     title="External Database Connections"
     endpoint={EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT}
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
+    {...props}
   />
 );

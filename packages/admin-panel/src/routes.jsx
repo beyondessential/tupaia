@@ -59,6 +59,7 @@ export const ROUTES = [
         label: 'Questions',
         to: '/questions',
         component: QuestionsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Option sets',
@@ -74,6 +75,7 @@ export const ROUTES = [
         label: 'Data groups',
         to: '/data-groups',
         component: DataGroupsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Survey responses',
@@ -84,11 +86,13 @@ export const ROUTES = [
         label: 'Sync groups',
         to: '/sync-groups',
         component: SyncGroupsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Data mapping',
         to: '/data-mapping',
         component: DataElementDataServicesPage,
+        isBESAdminOnly: true,
       },
     ],
   },
@@ -101,11 +105,13 @@ export const ROUTES = [
         label: 'Dashboard items',
         to: '',
         component: DashboardItemsPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Dashboards',
         to: '/dashboards',
         component: DashboardsPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Dashboard relations',
@@ -116,16 +122,19 @@ export const ROUTES = [
         label: 'Dashboard mailing lists',
         to: '/dashboard-mailing-lists',
         component: DashboardMailingListsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Legacy reports',
         to: '/legacy-reports',
         component: LegacyReportsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Map overlays',
         to: '/map-overlays',
         component: MapOverlaysPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Map overlay groups',
@@ -141,16 +150,19 @@ export const ROUTES = [
         label: 'Indicators',
         to: '/indicators',
         component: IndicatorsPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Data-tables',
         to: '/dataTables',
         component: DataTablesPage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Social feed',
         to: '/social-feed',
         component: SocialFeedPage,
+        isBESAdminOnly: true,
       },
     ],
   },
@@ -195,11 +207,13 @@ export const ROUTES = [
         label: 'Entities',
         to: '',
         component: EntitiesPage,
+        needsBESAdminAccess: ['delete'],
       },
       {
         label: 'Countries',
         to: '/countries',
         component: CountriesPage,
+        needsBESAdminAccess: ['create'],
       },
       {
         label: 'Entity types',
@@ -222,11 +236,13 @@ export const ROUTES = [
         label: 'Projects',
         to: '',
         component: ProjectsPage,
+        needsBESAdminAccess: ['create'],
       },
       {
         label: 'Strive',
         to: '/strive',
         component: StrivePage,
+        isBESAdminOnly: true,
       },
       {
         label: 'Entity hierarchy',
@@ -243,6 +259,7 @@ export const ROUTES = [
   {
     label: 'External data',
     to: '/external-database-connections',
+    isBESAdminOnly: true,
     icon: <Language />,
     tabs: [
       {

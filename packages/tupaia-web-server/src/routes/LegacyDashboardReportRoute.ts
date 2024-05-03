@@ -17,8 +17,8 @@ export type LegacyDashboardReportRequest = Request<
 
 export class LegacyDashboardReportRoute extends Route<LegacyDashboardReportRequest> {
   public async buildResponse() {
-    const { query, ctx } = this.req;
-    const { reportCode } = this.req.params;
+    const { query, ctx, params } = this.req;
+    const { reportCode } = params;
 
     return ctx.services.webConfig.fetchReport(reportCode, {
       legacy: 'true',

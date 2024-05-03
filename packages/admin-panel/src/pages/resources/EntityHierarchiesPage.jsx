@@ -38,11 +38,12 @@ const fetchBranch = async (rootNode, node) => {
   }));
 };
 
-export const EntityHierarchiesPage = () => (
+export const EntityHierarchiesPage = props => (
   <TreeResourcePage
     title="Entity Hierarchies"
     fetchRoot={fetchRoot}
     fetchBranch={fetchBranch}
     ExportModalComponent={EntityHierarchyExportModal}
+    {...props}
   />
 );

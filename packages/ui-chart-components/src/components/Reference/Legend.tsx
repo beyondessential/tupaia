@@ -8,8 +8,9 @@ import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import { TooltipPayload } from 'recharts';
+import { CartesianChartConfig, ChartReport, PieChartConfig } from '@tupaia/types';
 import { formatDataValueByType } from '@tupaia/utils';
-import { CartesianChartViewContent, LegendPosition, PieChartViewContent } from '../../types';
+import { LegendPosition } from '../../types';
 import { isMobile } from '../../utils';
 
 const LegendContainer = styled.div<{
@@ -106,25 +107,25 @@ interface PieLegendProps {
   isEnlarged?: boolean;
   isExporting?: boolean;
   legendPosition?: LegendPosition;
-  viewContent: PieChartViewContent;
+  config: PieChartConfig;
 }
 
 const getPieLegendDisplayValue = (
   value: TooltipPayload['value'],
   item: any,
-  viewContent: PieLegendProps['viewContent'],
+  config: PieLegendProps['config'],
   isEnlarged?: PieLegendProps['isEnlarged'],
   isMobileSize?: boolean,
 ) => {
   const metadata = item[`${value}_metadata`];
-  const labelSuffix = formatDataValueByType({ value: item.value, metadata }, viewContent.valueType);
+  const labelSuffix = formatDataValueByType({ value: item.value, metadata }, config.valueType);
 
   // on mobile the legend will show the actual formatDataValueByType after the label value
   return isMobileSize && isEnlarged ? `${value} ${labelSuffix}` : value;
 };
 
 export const getPieLegend =
-  ({ isEnlarged, isExporting, legendPosition, viewContent }: PieLegendProps) =>
+  ({ isEnlarged, isExporting, legendPosition, config }: PieLegendProps) =>
   ({ payload }: any) => {
     const isMobileSize = isMobile(isExporting);
     return (
@@ -133,7 +134,7 @@ export const getPieLegend =
           const displayValue = getPieLegendDisplayValue(
             value,
             item,
-            viewContent,
+            config,
             isEnlarged,
             isMobileSize,
           );
@@ -160,7 +161,7 @@ export const getPieLegend =
   };
 
 interface CartesianLegendProps {
-  chartConfig: CartesianChartViewContent['chartConfig'];
+  chartConfig: CartesianChartConfig['chartConfig'];
   onClick: Function;
   getIsActiveKey: Function;
   isExporting?: boolean;
