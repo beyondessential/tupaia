@@ -11,7 +11,7 @@ import { getColumnFilter } from '../../table/columnTypes';
 
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
-export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
+export const MapOverlayGroupsPage = ({ translate }) => {
   const EDIT_FIELDS = [
     {
       Header: translate('admin.code'),
@@ -126,7 +126,6 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
       endpoint={MAP_OVERLAY_GROUPS_ENDPOINT}
       columns={COLUMNS}
       expansionTabs={expansionConfig}
-      getHeaderEl={getHeaderEl}
       createConfig={createConfig}
       editorConfig={editorConfig}
     />
@@ -134,6 +133,5 @@ export const MapOverlayGroupsPage = ({ getHeaderEl, translate }) => {
 };
 
 MapOverlayGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

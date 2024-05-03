@@ -10,8 +10,7 @@ import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import MuiDivider from '@material-ui/core/Divider';
 import { Button, SmallAlert, TextField, ImageUploadField } from '@tupaia/ui-components';
-import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { PageHeader } from '../widgets';
 import { updateProfile, getUser } from '../authentication';
 
 const Container = styled.section`
@@ -49,7 +48,7 @@ const STATUS = {
   DISABLED: 'disabled',
 };
 
-const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl }) => {
+const ProfilePageComponent = React.memo(({ user, onUpdateProfile }) => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -58,7 +57,6 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
     data: user.profileImage,
   });
   const { handleSubmit, register, errors } = useForm();
-  const HeaderPortal = usePortalWithCallback(<Header title={user.name} />, getHeaderEl);
 
   const onSubmit = handleSubmit(async ({ firstName, lastName, role, employer }) => {
     setStatus(STATUS.LOADING);
@@ -99,8 +97,8 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
 
   return (
     <>
-      {HeaderPortal}
       <Container>
+        <PageHeader title={user.name} />
         <form onSubmit={onSubmit} noValidate>
           {status === STATUS.ERROR && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {status === STATUS.SUCCESS && <SuccessMessage>{successMessage}</SuccessMessage>}
@@ -176,7 +174,6 @@ const ProfilePageComponent = React.memo(({ user, onUpdateProfile, getHeaderEl })
 });
 
 ProfilePageComponent.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   onUpdateProfile: PropTypes.func.isRequired,
   user: PropTypes.PropTypes.shape({
     id: PropTypes.string,

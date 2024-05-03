@@ -15,7 +15,7 @@ const palette = {
     dark: COLORS.DARK_BLUE,
   },
   secondary: {
-    main: COLORS.DARK_BLUE,
+    main: COLORS.LIGHT_BLACK,
     light: COLORS.LIGHT_BLUE,
   },
   error: {
@@ -31,7 +31,7 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
@@ -110,7 +110,7 @@ const typography = {
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,

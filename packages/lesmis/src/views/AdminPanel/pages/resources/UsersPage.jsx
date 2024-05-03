@@ -11,7 +11,7 @@ import { PERMISSIONS_ENDPOINT } from './PermissionsPage';
 import { getColumnFilter, getVerifiedFilter } from '../../table/columnTypes';
 import { getBaseEditorConfigs, getCreateConfigs, getImportConfigs } from '../helpers';
 
-export const UsersPage = ({ getHeaderEl, translate }) => {
+export const UsersPage = ({ translate }) => {
   // eslint-disable-next-line react/prop-types
   const VerifiedCell = ({ value }) => {
     if (value === 'verified') {
@@ -182,12 +182,10 @@ export const UsersPage = ({ getHeaderEl, translate }) => {
       importConfig={importConfig}
       editorConfig={editorConfig}
       createConfig={createConfig}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 UsersPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

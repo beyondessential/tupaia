@@ -39,6 +39,7 @@ module.exports = async ({ config }) => {
     '@aws-sdk/credential-providers': path.resolve(__dirname, 'awsModuleMock.js'),
     '@aws-sdk/client-s3': path.resolve(__dirname, 'awsModuleMock.js'),
     '@aws-sdk/lib-storage': path.resolve(__dirname, 'awsModuleMock.js'),
+    http: path.resolve(__dirname, './moduleMock.js'),
   };
 
   config.module.rules.push({

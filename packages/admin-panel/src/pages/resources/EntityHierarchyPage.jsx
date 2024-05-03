@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -47,15 +46,6 @@ const COLUMNS = [
   },
 ];
 
-export const EntityHierarchyPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title={TITLE}
-    endpoint={ENTITY_HIERARCHY_ENDPOINT}
-    columns={COLUMNS}
-    getHeaderEl={getHeaderEl}
-  />
+export const EntityHierarchyPage = props => (
+  <ResourcePage title={TITLE} endpoint={ENTITY_HIERARCHY_ENDPOINT} columns={COLUMNS} {...props} />
 );
-
-EntityHierarchyPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

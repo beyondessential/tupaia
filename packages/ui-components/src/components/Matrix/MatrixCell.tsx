@@ -1,10 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useContext } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { PresentationOptionCondition, PresentationOptionRange } from '@tupaia/types';
 import Markdown from 'markdown-to-jsx';
 import { MatrixColumnType, MatrixRowType } from '../../types';
@@ -18,6 +18,8 @@ import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 import { Pill } from './Pill';
 
+const MATRIX_CELL_CLASS_NO_DATA = 'no-data';
+
 const DataCell = styled(Cell)`
   vertical-align: middle;
   position: relative;
@@ -27,22 +29,33 @@ const DataCell = styled(Cell)`
 
 const DataCellContent = styled.div<{
   $characterLength?: number;
+  $isCategory?: boolean;
 }>`
+  align-items: center;
+  display: flex;
   height: 100%;
   width: 100%;
-  display: flex;
-  align-items: center;
-  min-width: ${({ $characterLength = 0 }) =>
-    $characterLength > 30
-      ? '25ch'
-      : '13ch'}; // Apply the min width to the content because the cell has padding and we want the content to have a min width and then the padding on top of that
+
+  // Apply the min width to the content because the cell has padding and we want the content to have
+  // a min width and then the padding on top of that
+  min-width: ${({ $characterLength = 0 }) => ($characterLength > 30 ? '25ch' : '13ch')};
+
+  // If an empty cell is in an expandable row, show nothing instead of the default dash. (If it has
+  // data, show it as normal.)
+  ${({ $isCategory }) => {
+    if ($isCategory)
+      return css`
+        &.${MATRIX_CELL_CLASS_NO_DATA} {
+          visibility: collapse;
+        }
+      `;
+  }}
 `;
 
 const TooltipSubheading = styled.h3`
-  margin: 0;
   font-size: 1rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem;
 `;
 
 interface MatrixCellProps {
@@ -59,14 +72,9 @@ interface PillCellProps
 const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCellProps) => {
   const { presentationOptions, categoryPresentationOptions, rows } = useContext(MatrixContext);
 
-  // If it is a category header cell, use the category presentation options, otherwise use the normal presentation options
-  const getPresentationOptionsToUse = () => {
-    if (isCategory) {
-      return categoryPresentationOptions;
-    }
-    return presentationOptions;
-  };
-  const presentationOptionsToUse = getPresentationOptionsToUse();
+  // If it is a category header cell, use the category presentation options, otherwise use the
+  // normal presentation options
+  const presentationOptionsToUse = isCategory ? categoryPresentationOptions : presentationOptions;
 
   const getNestedRowData = () => {
     const fullRow = rows.find(({ title }) => title === rowTitle);
@@ -80,6 +88,10 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
       .join('\\n');
   };
 
+  /**
+   * Render the description, and also value if showRawValue is true. Also handle newlines in
+   * markdown
+   */
   const getBodyText = () => {
     if (isCategory && presentationOptionsToUse?.showNestedRows) {
       return getNestedRowData();
@@ -91,11 +103,9 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
     }`;
   };
 
-  // Render the description, and also value if showRawValue is true. Also handle newlines in markdown
   const bodyText = getBodyText();
 
   const isNullish = value === undefined || value === null;
-
   const showTooltip = !isNullish && !!bodyText && bodyText !== value;
 
   return (
@@ -114,7 +124,7 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
             ) : null
           }
         >
-          {isNullish ? '—' /* em dash */ : value}
+          {value ?? '—' /* em dash */}
         </Pill>
       </DataCellContent>
     </DataCell>
@@ -122,15 +132,18 @@ const PillCell = ({ rowTitle, value, presentation, isCategory, colKey }: PillCel
 };
 
 /**
- * This renders a cell in the matrix table. It can either be a category header cell or a data cell. If it has presentation options, it will be a button that can be clicked to expand the data. Otherwise, it will just display the data as normal
+ * This renders a cell in the matrix table. It can either be a category header cell or a data cell.
+ * If it has presentation options, it will be a button that can be clicked to expand the data.
+ * Otherwise, it will just display the data as normal
  */
 export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellProps) => {
   const { presentationOptions, categoryPresentationOptions, columns } = useContext(MatrixContext);
-  // If the cell is a category, it means it is a category header cell and should use the category presentation options. Otherwise, it should use the normal presentation options
 
   const allColumns = getFlattenedColumns(columns);
   const colIndex = allColumns.findIndex(({ key }) => key === colKey);
 
+  // If the cell is a category, it means it is a category header cell and should use the category
+  // presentation options. Otherwise, it should use the normal presentation options
   const presentationOptionsForCell = isCategory ? categoryPresentationOptions : presentationOptions;
 
   const isPillCell =
@@ -150,11 +163,18 @@ export const MatrixCell = ({ value, rowTitle, isCategory, colKey }: MatrixCellPr
       />
     );
 
-  const displayValue = value === undefined || value === null ? '—' /* em dash */ : value;
+  const displayValue = value ?? '—'; // em dash
+  const classes = !!value ? undefined : MATRIX_CELL_CLASS_NO_DATA;
   const characterLength = isPillCell ? 0 : String(displayValue).length;
   return (
     <DataCell $characterLength={characterLength}>
-      <DataCellContent $characterLength={characterLength}>{displayValue}</DataCellContent>
+      <DataCellContent
+        className={classes}
+        $characterLength={characterLength}
+        $isCategory={isCategory}
+      >
+        {displayValue}
+      </DataCellContent>
     </DataCell>
   );
 };

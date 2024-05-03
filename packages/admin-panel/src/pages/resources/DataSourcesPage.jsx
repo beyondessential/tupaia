@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import {
   DataSourceConfigView,
@@ -56,9 +55,14 @@ const DATA_ELEMENT_FIELDS = [
   {
     Header: 'Permission Groups',
     source: 'permission_groups',
-    type: 'tooltip',
+    type: 'jsontooltip',
     editConfig: {
       type: 'jsonArray',
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'permission_groups',
+      allowMultipleValues: true,
     },
   },
 ];
@@ -92,7 +96,7 @@ const EDITOR_CONFIG = {
   displayUsedBy: true,
 };
 
-export const DataGroupsPage = ({ getHeaderEl }) => (
+export const DataGroupsPage = () => (
   <ResourcePage
     title="Data Groups"
     endpoint="dataGroups"
@@ -113,7 +117,6 @@ export const DataGroupsPage = ({ getHeaderEl }) => (
         fields: [...DATA_GROUP_FIELDS],
       },
     }}
-    getHeaderEl={getHeaderEl}
     editorConfig={EDITOR_CONFIG}
   />
 );
@@ -125,11 +128,7 @@ const IMPORT_CONFIG = {
   },
 };
 
-DataGroupsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};
-
-export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
+export const DataElementsPage = props => (
   <ResourcePage
     title="Data Elements"
     endpoint="dataElements"
@@ -144,12 +143,7 @@ export const DataElementsPage = ({ getHeaderEl, ...restOfConfigs }) => (
         fields: [...DATA_ELEMENT_FIELDS],
       },
     }}
-    getHeaderEl={getHeaderEl}
     editorConfig={EDITOR_CONFIG}
-    {...restOfConfigs}
+    {...props}
   />
 );
-
-DataElementsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

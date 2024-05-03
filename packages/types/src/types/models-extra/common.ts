@@ -89,6 +89,13 @@ export interface LinkReferenceProps {
  */
 export type ReferenceProps = PlaintextReferenceProps | LinkReferenceProps;
 
+export enum DashboardItemType {
+  View = 'view',
+  Chart = 'chart',
+  Matrix = 'matrix',
+  Component = 'component',
+}
+
 export type EntityAttributes = {
   type?: string;
   [key: string]: unknown;
