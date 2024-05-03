@@ -35,9 +35,9 @@ export class ApiBuilder {
   private readonly app: Express;
   private readonly models: ServerBoilerplateModelRegistry;
   private readonly apiName: string;
-  private version: number;
+  private version: number | string; // Can be a number, or a regex eg. [1-3]
 
-  private logApiRequestMiddleware: RequestHandler;
+  private readonly logApiRequestMiddleware: RequestHandler;
   private errorHander: ErrorRequestHandler = handleError;
 
   public constructor(transactingConnection: TupaiaDatabase, apiName: string) {
@@ -46,7 +46,7 @@ export class ApiBuilder {
     this.app = express();
 
     this.version = 1; // Default version
-    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
+    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName);
 
     /**
      * Access logs
@@ -81,9 +81,8 @@ export class ApiBuilder {
     });
   }
 
-  public setVersion(version: number) {
+  public setVersion(version: number | string) {
     this.version = version;
-    this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     return this;
   }
 

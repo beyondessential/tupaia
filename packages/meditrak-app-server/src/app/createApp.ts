@@ -35,6 +35,7 @@ export function createApp(database = new TupaiaDatabase()) {
   const CENTRAL_API_URL = getEnvVarOrDefault('CENTRAL_API_URL', 'http://localhost:8090/v2');
   const authMiddleware = buildAuthMiddleware(database);
   const builder = new MicroServiceApiBuilder(database, 'meditrak')
+    .setVersion('(1|2)') // Support either v1 or v2 as we're rerouting requests to the central-server here for legacy versions
     .attachApiClientToContext(authHandlerProvider)
     .useErrorHandler(errorHandler)
     .use('*', checkAppVersion)
