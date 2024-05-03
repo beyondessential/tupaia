@@ -27,7 +27,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.code',
-      optionValueKey: 'mapOverlay.code',
+      optionValueKey: 'mapOverlay.id',
       canCreateNewOptions: true,
       sourceKey: 'child_id',
     },
