@@ -70,7 +70,7 @@ const CREATE_CONFIG = {
 
 export const dataMapping = {
   title: 'Data mapping',
-  url: '/data-mapping',
+  path: '/data-mapping',
   endpoint: 'dataElementDataServices',
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,

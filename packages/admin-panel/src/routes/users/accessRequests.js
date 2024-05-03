@@ -158,7 +158,7 @@ const DETAILS_COLUMNS = [
 
 export const accessRequests = {
   title: 'Access requests',
-  url: '/access-requests',
+  path: '/access-requests',
   endpoint: ACCESS_REQUESTS_ENDPOINT,
   columns: USER_COLUMNS,
   baseFilter: { approved: null },
@@ -175,7 +175,7 @@ export const accessRequests = {
     endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
     columns: DETAILS_COLUMNS,
     baseFilter: { approved: null },
-    url: '/:user_id/access-requests',
+    path: '/:user_id/access-requests',
     getDisplayValue: user => {
       if (!user) return '';
       return `${user['user.first_name']} ${user['user.last_name']}`;

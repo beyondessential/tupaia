@@ -121,7 +121,7 @@ const CREATE_CONFIG = {
 
 export const dashboards = {
   title: 'Dashboards',
-  url: '/dashboards',
+  path: '/dashboards',
   endpoint: DASHBOARDS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
@@ -129,7 +129,7 @@ export const dashboards = {
     title: 'Dashboard Relations',
     columns: RELATION_COLUMNS,
     endpoint: 'dashboards/{id}/dashboardRelations',
-    url: '/:id/dashboard-relations',
+    path: '/:id/dashboard-relations',
     displayProperty: 'name',
   },
 };

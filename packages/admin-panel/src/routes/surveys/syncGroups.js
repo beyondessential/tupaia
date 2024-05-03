@@ -89,7 +89,7 @@ const CREATE_CONFIG = {
 
 export const syncGroups = {
   title: 'Sync groups',
-  url: '/sync-groups',
+  path: '/sync-groups',
   endpoint: 'dataServiceSyncGroups',
   columns: COLUMNS,
   editorConfig: EDITOR_CONFIG,

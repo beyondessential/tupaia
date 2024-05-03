@@ -98,7 +98,7 @@ const EDITOR_CONFIG = {
 
 export const questions = {
   title: 'Questions',
-  url: '/questions',
+  path: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,
   editorConfig: EDITOR_CONFIG,
@@ -107,7 +107,7 @@ export const questions = {
     title: 'Options',
     endpoint: 'optionSets/{option_set_id}/options',
     columns: OPTION_COLUMNS,
-    url: '/:id/options',
+    path: '/:id/options',
     displayProperty: 'code',
   },
 };

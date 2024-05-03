@@ -16,7 +16,7 @@ import { dataMapping } from './dataMapping';
 
 export const surveysTabRoutes = {
   label: 'Surveys',
-  url: '/surveys',
+  path: '/surveys',
   exact: true,
   icon: <Assignment />,
   childViews: [

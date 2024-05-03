@@ -19,7 +19,7 @@ import { VizIcon } from '../../icons';
 
 export const visualisationsTabRoutes = {
   label: 'Visualisations',
-  url: '/visualisations',
+  path: '/visualisations',
   icon: <VizIcon />,
   childViews: [
     dashboardItems,

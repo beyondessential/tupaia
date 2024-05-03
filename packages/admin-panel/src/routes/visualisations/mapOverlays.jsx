@@ -187,7 +187,7 @@ const LinksComponent = () => (
 
 export const mapOverlays = {
   title: 'Map overlays',
-  url: '/map-overlays',
+  path: '/map-overlays',
   endpoint: 'mapOverlays',
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,

@@ -94,7 +94,7 @@ const IMPORT_CONFIG = {
 
 export const entities = {
   title: 'Entities',
-  url: '',
+  path: '',
   default: true,
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
@@ -103,7 +103,7 @@ export const entities = {
     title: 'Survey Responses',
     endpoint: 'entities/{id}/surveyResponses',
     columns: SURVEY_RESPONSE_COLUMNS,
-    url: '/:id/surveyResponses',
+    path: '/:id/surveyResponses',
     displayProperty: 'name',
     getLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
   },

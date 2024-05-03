@@ -29,14 +29,14 @@ const CREATE_CONFIG = {
 export const countries = {
   title: 'Countries',
   endpoint: 'countries',
-  url: '/countries',
+  path: '/countries',
   columns: FIELDS,
   createConfig: CREATE_CONFIG,
   detailsView: {
     title: 'Entities',
     endpoint: 'countries/{id}/entities',
     columns: ENTITIES_COLUMNS,
-    url: '/:id/entities',
+    path: '/:id/entities',
     displayProperty: 'name',
   },
 };

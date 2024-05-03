@@ -39,7 +39,7 @@ export const dataGroups = {
   title: 'Data groups',
   endpoint: 'dataGroups',
   columns: [...DATA_GROUP_FIELDS, ...getDataSourceButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')],
-  url: '/data-groups',
+  path: '/data-groups',
   createConfig: {
     title: 'New Data Group',
     actionConfig: {
@@ -56,7 +56,7 @@ export const dataGroups = {
       ...DATA_ELEMENT_FIELDS,
       ...getDataSourceButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement'),
     ],
-    url: '/:id/data-elements',
+    path: '/:id/data-elements',
     displayProperty: 'code',
   },
 };

@@ -17,7 +17,7 @@ export const ENTITY_TYPES_COLUMNS = [
 
 export const entityTypes = {
   title: 'Entity types',
-  url: '/entityTypes',
+  path: '/entityTypes',
   endpoint: ENTITY_TYPES_ENDPOINT,
   columns: ENTITY_TYPES_COLUMNS,
 };

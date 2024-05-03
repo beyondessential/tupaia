@@ -10,7 +10,7 @@ import { supersetInstances } from './msupplySupersetInstances';
 
 export const externalDataTabRoutes = {
   label: 'External data',
-  url: '/external-database-connections',
+  path: '/external-database-connections',
   icon: <Language />,
   childViews: [externalDatabaseConnections, dhisInstances, supersetInstances],
 };

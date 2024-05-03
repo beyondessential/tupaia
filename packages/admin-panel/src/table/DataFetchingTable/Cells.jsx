@@ -51,6 +51,7 @@ const CellContentContainer = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
 `;
 
 const HeaderCell = styled(Cell)`
@@ -117,6 +118,7 @@ const CellLink = styled(Link)`
 `;
 
 const formatDetailUrl = (detailUrl, row) => {
+  console.log('formatDetailUrl', detailUrl, row);
   if (!detailUrl) {
     return null;
   }

@@ -13,7 +13,7 @@ import { accessRequests } from './accessRequests';
 
 export const usersTabRoutes = {
   label: 'Users & Permissions',
-  url: '/users',
+  path: '/users',
   icon: <PeopleAlt />,
   childViews: [users, permissions, permissionGroups, permissionGroupsViewer, accessRequests],
 };

@@ -132,7 +132,7 @@ const onProcessDataForSave = (fieldsToSave, recordData) => {
 
 export const permissions = {
   title: 'Permissions',
-  url: '/permissions',
+  path: '/permissions',
   endpoint: PERMISSIONS_ENDPOINT,
   columns: FIELDS,
   importConfig: IMPORT_CONFIG,

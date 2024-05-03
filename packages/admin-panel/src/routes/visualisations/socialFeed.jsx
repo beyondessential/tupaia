@@ -104,7 +104,7 @@ const CREATE_CONFIG = {
 };
 export const socialFeed = {
   title: 'Social feed',
-  url: '/social-feed',
+  path: '/social-feed',
   endpoint: 'feedItems',
   baseFilter: { type: 'markdown' },
   columns: SOCIAL_FEED_COLUMNS,
