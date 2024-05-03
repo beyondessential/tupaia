@@ -105,6 +105,8 @@ const DataFetchingTableComponent = ({
   getIsLink,
   endpoint,
   getLink,
+  baseFilter,
+  basePath,
 }) => {
   const {
     getTableProps,
@@ -169,7 +171,7 @@ const DataFetchingTableComponent = ({
     } else {
       initialiseTable();
     }
-  }, [endpoint]);
+  }, [endpoint, baseFilter]);
 
   const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -262,6 +264,7 @@ const DataFetchingTableComponent = ({
                         width={visibleColumns[i].colWidth}
                         getLink={getLink}
                         isButtonColumn={visibleColumns[i].isButtonColumn}
+                        basePath={basePath}
                       >
                         {render('Cell')}
                       </DisplayCell>
@@ -328,6 +331,8 @@ DataFetchingTableComponent.propTypes = {
   getIsLink: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
   getLink: PropTypes.func,
+  baseFilter: PropTypes.object,
+  basePath: PropTypes.string,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -343,6 +348,8 @@ DataFetchingTableComponent.defaultProps = {
   detailUrl: '',
   getIsLink: null,
   getLink: null,
+  baseFilter: null,
+  basePath: '',
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({

@@ -1,10 +1,11 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
-import { getEditorConfigs } from './getEditorConfigs';
+import { questions } from '@tupaia/admin-panel';
+import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
+import { getEditorConfigs } from '../helpers/getEditorConfigs';
 
 export const getQuestionPageConfigs = translate => {
   const QUESTION_FIELDS = [
@@ -93,15 +94,17 @@ export const getQuestionPageConfigs = translate => {
     },
   ];
 
-  const EXPANSION_CONFIG = [
-    {
-      title: translate('admin.options'),
-      endpoint: 'optionSets/{option_set_id}/options',
-      columns: OPTION_COLUMNS,
-    },
-  ];
-
   const EDITOR_CONFIG = getEditorConfigs(translate);
 
-  return { QUESTION_COLUMNS, EXPANSION_CONFIG, EDITOR_CONFIG };
+  return {
+    ...questions,
+    title: translate('admin.questions'),
+    columns: QUESTION_COLUMNS,
+    editorConfig: EDITOR_CONFIG,
+    detailsView: {
+      ...questions.detailsView,
+      title: translate('admin.options'),
+      columns: OPTION_COLUMNS,
+    },
+  };
 };

@@ -87,14 +87,15 @@ export const ResourcePage = ({
   getIsLink,
   getDisplayValue,
   getLink,
+  basePath,
 }) => {
-  const { '*': unusedParam, ...params } = useParams();
+  const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
   const { path } = detailsView || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
-  const isDetailsPage = Object.keys(params).length > 0;
+  const isDetailsPage = !!parent;
 
   return (
     <>
@@ -128,6 +129,7 @@ export const ResourcePage = ({
           detailUrl={path}
           getIsLink={getIsLink}
           getLink={getLink}
+          basePath={basePath}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
@@ -161,6 +163,7 @@ ResourcePage.propTypes = {
   getIsLink: PropTypes.func,
   getDisplayValue: PropTypes.func,
   getLink: PropTypes.func,
+  basePath: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -183,4 +186,5 @@ ResourcePage.defaultProps = {
   getIsLink: null,
   getDisplayValue: null,
   getLink: null,
+  basePath: '',
 };

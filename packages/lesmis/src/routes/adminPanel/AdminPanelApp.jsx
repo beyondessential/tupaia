@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, useMatch, Outlet, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
+import { InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
 import {
   LogoutPage,
   PrivateRoute,
@@ -16,75 +16,17 @@ import {
   AppPageLayout,
 } from '@tupaia/admin-panel';
 
-import { LesmisAdminRoute } from './LesmisAdminRoute';
-import {
-  ApprovedSurveyResponsesView,
-  RejectedSurveyResponsesView,
-  NonApprovalSurveyResponsesView,
-  draftSurveyResponses,
-} from '../views/AdminPanel/SurveyResponsesView';
-import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
-import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
-import { Footer } from '../components';
+import { LesmisAdminRoute } from '../LesmisAdminRoute';
+import { AdminPanelLoginPage } from '../../views/AdminPanel/AdminPanelLoginPage';
+import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../../utils';
+import { Footer } from '../../components';
+import { getSurveyResponsesTabRoutes, getSurveysTabRoutes } from './routes';
 
 const getRoutes = (adminUrl, translate) => {
   return [
-    {
-      label: translate('admin.surveyData'),
-      path: '/survey-responses',
-      icon: <Assignment />,
-      childViews: [
-        draftSurveyResponses(translate),
-        // {
-        //   title: translate('admin.review'),
-        //   path: '',
-        //   Component: DraftSurveyResponsesView,
-        // },
-        // {
-        //   title: translate('admin.approved'),
-        //   path: '/approved',
-        //   Component: ApprovedSurveyResponsesView,
-        // },
-        // {
-        //   title: translate('admin.rejected'),
-        //   path: '/rejected',
-        //   Component: RejectedSurveyResponsesView,
-        // },
-        // {
-        //   title: translate('admin.approvalNotRequired'),
-        //   path: '/non-approval',
-        //   Component: NonApprovalSurveyResponsesView,
-        // },
-      ],
-    },
-    {
-      label: translate('admin.surveys'),
-      path: '/surveys',
-      icon: <Assignment />,
-      childViews: [
-        // {
-        //   title: translate('admin.surveys'),
-        //   path: '',
-        //   component: SurveysPage,
-        // },
-        // {
-        //   title: translate('admin.questions'),
-        //   path: '/questions',
-        //   component: QuestionsPage,
-        // },
-        // {
-        //   title: translate('admin.dataElements'),
-        //   path: '/data-elements',
-        //   component: DataElementsPage,
-        // },
-        // {
-        //   title: translate('admin.syncGroups'),
-        //   path: '/sync-groups',
-        //   component: SyncGroupsPage,
-        // },
-      ],
-    },
+    getSurveyResponsesTabRoutes(translate, adminUrl),
+    getSurveysTabRoutes(translate, adminUrl),
+
     {
       label: translate('admin.visualisations'),
       path: '/visualisations',
@@ -177,7 +119,8 @@ const AdminPanelApp = ({ user }) => {
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
   const routes = getRoutes(adminUrl, translate);
-  console.log(routes);
+
+  console.log(routes.map(route => getFlattenedChildViews(route)));
   return (
     <Routes>
       <Route path="/login" element={<AdminPanelLoginPage />} />
@@ -221,9 +164,9 @@ const AdminPanelApp = ({ user }) => {
                 <TabPageLayout routes={route.childViews} basePath={`${adminUrl}${route.path}`} />
               }
             >
-              {getFlattenedChildViews(route).map(childRoute => (
+              {getFlattenedChildViews(route, adminUrl).map(childRoute => (
                 <Route
-                  key={childRoute.title}
+                  key={childRoute.path}
                   path={childRoute.path}
                   element={
                     childRoute.Component ? (

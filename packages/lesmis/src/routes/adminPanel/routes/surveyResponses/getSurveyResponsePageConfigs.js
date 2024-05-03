@@ -1,15 +1,16 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import moment from 'moment';
 import { surveyResponses } from '@tupaia/admin-panel';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { getImportConfigs } from './getImportConfigs';
-import { getSurveyResponsesExportModal } from '../../components';
-import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
-import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
-import { getBaseEditorConfigs } from './getEditorConfigs';
+import { getImportConfigs } from '../helpers/getImportConfigs';
+import { getSurveyResponsesExportModal } from '../../../../views/AdminPanel/components';
+import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
+import { getBaseEditorConfigs } from '../helpers/getEditorConfigs';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },
@@ -17,7 +18,7 @@ const APPROVAL_STATUS_TYPES = [
   { label: 'Approved', value: 'approved' },
 ];
 
-export const getSurveyResponsePageConfigs = ({ translate }) => {
+export const getSurveyResponsePageConfigs = (translate, path, adminUrl) => {
   const surveyName = {
     Header: translate('admin.survey'),
     source: 'survey.name',
@@ -70,7 +71,6 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     dateOfData,
     {
       Header: translate('admin.export'),
-      source: 'id',
       type: 'export',
       actionConfig: {
         exportEndpoint: 'surveyResponses',
@@ -116,6 +116,11 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
       entityName,
       ...SURVEY_RESPONSE_COLUMNS,
       {
+        Header: 'id',
+        source: 'id',
+        show: false,
+      },
+      {
         Header: translate('admin.edit'),
         type: 'edit',
         actionConfig: {
@@ -143,5 +148,6 @@ export const getSurveyResponsePageConfigs = ({ translate }) => {
     exportConfig,
     editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
+    getLink: record => `${adminUrl}/survey-responses${path}/${record.id}/answers`, // custom because the link needs to include the adminUrl
   };
 };

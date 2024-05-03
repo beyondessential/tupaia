@@ -217,6 +217,7 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
 
   const links = linkInput?.map(({ exact, path, title, ...rest }) => {
     const target = exact ? path : `${basePath}${path}`;
+
     return {
       ...rest,
       title,
@@ -243,9 +244,9 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ path, title, target, active }, i) => (
+          {links.map(({ title, target, active }, i) => (
             <RouteLink
-              key={path}
+              key={title}
               to={target}
               data-text={title}
               ref={navLinkRefs.current[i]}

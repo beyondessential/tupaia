@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, Route, Routes, matchPath, matchRoutes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AppPageLayout } from './layout';
 import { ROUTES } from './routes';
@@ -15,14 +15,15 @@ import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 
-export const getFlattenedChildViews = route => {
+export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
     const { detailsView } = childView;
 
     const childViewWithRoute = {
       ...childView,
+      basePath,
       path: `${route.path}${childView.path}`,
-      parent: route,
+      to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
     if (!detailsView) return [...acc, childViewWithRoute];
@@ -59,7 +60,7 @@ export const App = ({ user }) => {
             <Route
               key={route.path}
               path={route.path}
-              element={<TabPageLayout routes={route.childViews} baseUrl={route.path} />}
+              element={<TabPageLayout routes={route.childViews} basePath={route.path} />}
             >
               {/* <Route index element={<Navigate to={route.childViews[0].path} replace />} /> */}
               {getFlattenedChildViews(route).map(childRoute => (

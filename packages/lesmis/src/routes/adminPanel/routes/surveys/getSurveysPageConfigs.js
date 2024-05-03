@@ -2,15 +2,15 @@
  * Tupaia Admin
  * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
  */
+import { surveys } from '@tupaia/admin-panel';
+import { getBooleanSelectFilter } from '../../../../views/AdminPanel/table/columnTypes/getBooleanSelectFilter';
+import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
+import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
+import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
+import { getBaseEditorConfigs } from '../helpers/getEditorConfigs';
+import { getImportConfigs } from '../helpers/getImportConfigs';
 
-import { getBooleanSelectFilter } from '../../table/columnTypes/getBooleanSelectFilter';
-import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
-import { getDeleteColumnConfigs } from './getDeleteColumnConfigs';
-import { getDeleteConfigs } from './getDeleteConfigs';
-import { getBaseEditorConfigs } from './getEditorConfigs';
-import { getImportConfigs } from './getImportConfigs';
-
-export const getSurveysPageConfigs = translate => {
+export const getSurveysPageConfigs = (translate, adminUrl) => {
   const PERIOD_GRANULARITIES = [
     { label: translate('admin.daily'), value: 'daily' },
     { label: translate('admin.weekly'), value: 'weekly' },
@@ -75,7 +75,6 @@ export const getSurveysPageConfigs = translate => {
     ...SURVEY_FIELDS,
     {
       Header: translate('admin.export'),
-      source: 'id',
       type: 'export',
       actionConfig: {
         exportEndpoint: 'surveys',
@@ -343,14 +342,6 @@ export const getSurveysPageConfigs = translate => {
     },
   ];
 
-  const EXPANSION_CONFIG = [
-    {
-      title: translate('admin.questions'),
-      endpoint: 'surveys/{id}/surveyScreenComponents',
-      columns: QUESTION_COLUMNS,
-    },
-  ];
-
   const IMPORT_CONFIG = getImportConfigs(translate, {
     actionConfig: {
       importEndpoint: 'surveys',
@@ -425,10 +416,16 @@ export const getSurveysPageConfigs = translate => {
   });
 
   return {
-    SURVEY_COLUMNS,
-    EXPANSION_CONFIG,
-    IMPORT_CONFIG,
-    DELETE_CONFIG: getDeleteConfigs(translate),
-    EDITOR_CONFIG: getBaseEditorConfigs(translate),
+    ...surveys,
+    title: translate('admin.surveys'),
+    columns: SURVEY_COLUMNS,
+    importConfig: IMPORT_CONFIG,
+    deleteConfig: getDeleteConfigs(translate),
+    editorConfig: getBaseEditorConfigs(translate),
+    detailsView: {
+      ...surveys.detailsView,
+      title: translate('admin.questions'),
+      columns: QUESTION_COLUMNS,
+    },
   };
 };
