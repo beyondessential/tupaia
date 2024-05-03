@@ -201,7 +201,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
   };
 };
 
-export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
+export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
   const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
@@ -216,7 +216,7 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
   };
 
   const links = linkInput?.map(({ exact, path, title, ...rest }) => {
-    const target = exact ? path : `${baseRoute}${path}`;
+    const target = exact ? path : `${basePath}${path}`;
     return {
       ...rest,
       title,
@@ -273,5 +273,5 @@ SecondaryNavbar.propTypes = {
       exact: PropTypes.bool,
     }),
   ).isRequired,
-  baseRoute: PropTypes.string.isRequired,
+  basePath: PropTypes.string.isRequired,
 };

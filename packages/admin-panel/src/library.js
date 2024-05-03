@@ -31,8 +31,9 @@ export {
   PageWrapper,
   Main,
   SecondaryNavbar,
+  TabPageLayout,
   PageContentWrapper,
-  PageLayout,
+  AppPageLayout,
 } from './layout';
-export { TabRoutes } from './App';
+export { getFlattenedChildViews } from './App';
 export { ExportModal } from './importExport';

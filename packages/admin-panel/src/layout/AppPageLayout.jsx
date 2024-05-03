@@ -10,16 +10,16 @@ import { Main, PageWrapper } from './Page';
 import { NavPanel } from './navigation';
 import { ROUTES } from '../routes';
 
-export const AppPageLayout = ({ user }) => {
+export const AppPageLayout = ({ user, routes = ROUTES, logo, homeLink, userLinks, basePath }) => {
   return (
     <PageWrapper>
       <NavPanel
-        links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+        links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
         user={user}
-        userLinks={[
-          { label: 'Profile', to: '/profile' },
-          { label: 'Logout', to: '/logout' },
-        ]}
+        userLinks={userLinks}
+        logo={logo}
+        homeLink={homeLink}
+        basePath={basePath}
       />
       <Main>
         <Outlet />
@@ -35,4 +35,35 @@ AppPageLayout.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  logo: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+  }),
+  homeLink: PropTypes.string,
+  userLinks: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      to: PropTypes.string.isRequired,
+    }),
+  ),
+  basePath: PropTypes.string,
+};
+
+AppPageLayout.defaultProps = {
+  logo: {
+    url: '/admin-panel-logo-white.svg',
+    alt: 'Tupaia Admin Panel Logo',
+  },
+  homeLink: '/',
+  userLinks: [
+    { label: 'Profile', to: '/profile' },
+    { label: 'Logout', to: '/logout' },
+  ],
+  basePath: '',
 };

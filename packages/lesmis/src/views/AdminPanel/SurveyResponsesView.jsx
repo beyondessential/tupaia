@@ -7,7 +7,6 @@ import { PropTypes } from 'prop-types';
 import { ResourcePage } from '@tupaia/admin-panel';
 import { ApproveButton, getRejectButton } from './components';
 import { getSurveyResponsePageConfigs } from './pages/helpers/getSurveyResponsePageConfigs';
-import { useI18n } from '../../utils';
 
 export const ApprovedSurveyResponsesView = props => {
   const {
@@ -80,8 +79,7 @@ export const draftSurveyResponses = translate => {
   return {
     ...configs,
     title: translate('admin.review'),
-    url: '',
-    exact: true,
+    path: '',
     default: true,
     baseFilter: { approval_status: { comparisonValue: 'pending' } },
     columns: DRAFT_COLUMNS,

@@ -64,7 +64,7 @@ const Logo = () => <StyledImg src="/admin-panel-logo.svg" alt="psss-logo" />;
 
 const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
   if (isLoggedIn) {
-    return <Navigate to={redirectTo} />;
+    return <Navigate to={redirectTo} replace />;
   }
   const { translate } = useI18n();
 
