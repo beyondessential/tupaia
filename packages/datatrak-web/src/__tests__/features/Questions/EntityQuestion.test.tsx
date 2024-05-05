@@ -6,10 +6,10 @@ import React, { Ref } from 'react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
+import { EntityType } from '@tupaia/types';
 import { spyOnMockRequest } from '../../helpers/spyOnMockRequest';
 import { renderComponent } from '../../helpers/render';
 import { EntityQuestion } from '../../../features/Questions';
-import { EntityType } from '@tupaia/types';
 
 jest.mock('../../../features/Survey/SurveyContext/SurveyContext.tsx', () => ({
   useSurveyForm: () => ({
@@ -128,6 +128,11 @@ describe('Entity Question', () => {
               parentId: {
                 questionId: 'theParentQuestionId',
               },
+              attributes: {
+                code: {
+                  questionId: 'theCodeQuestionId',
+                },
+              },
             },
           },
         }}
@@ -140,30 +145,7 @@ describe('Entity Question', () => {
     expect(queryParams.get('filter[countryCode]')).toBe('DL');
     expect(queryParams.get('filter[projectCode]')).toBe('explore');
     expect(queryParams.get('filter[parentId]')).toBe('blue');
-  });
-
-  it('renders only the filtered options when there are attribute filters defined', async () => {
-    renderComponent(
-      <EntityQuestion
-        {...props}
-        config={{
-          entity: {
-            filter: {
-              attributes: {
-                color: {
-                  questionId: 'someOtherQuestionId',
-                },
-              },
-            },
-          },
-        }}
-      />,
-    );
-
-    const displayOptions = await screen.findAllByRole('button');
-    expect(displayOptions.length).toBe(2);
-    expect(displayOptions[0]).toHaveTextContent('North');
-    expect(displayOptions[1]).toHaveTextContent('South East');
+    expect(queryParams.get('filter[attributes->>code]')).toBe('blue');
   });
 
   it('Does not crash if there is legacy config ', async () => {
