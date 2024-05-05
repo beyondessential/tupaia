@@ -13,4 +13,5 @@ export {
   mapOverlays,
   mapOverlayGroups,
   mapOverlayGroupRelations,
+  visualisationsTabRoutes,
 } from './visualisations';

@@ -19,7 +19,7 @@ import { VerifyEmailView } from '../views/VerifyEmailView';
 import { ABOUT_PAGE, FQS_PAGE, CONTACT_PAGE } from '../constants';
 import { ExportView, PDF_DOWNLOAD_VIEW } from '../views/ExportView';
 import { getAdminApiUrl } from '../utils/getAdminApiUrl';
-import AdminPanel from './adminPanel';
+import AdminPanel from './AdminPanelApp';
 
 const adminPanelConfig = { apiUrl: `${getAdminApiUrl()}` };
 

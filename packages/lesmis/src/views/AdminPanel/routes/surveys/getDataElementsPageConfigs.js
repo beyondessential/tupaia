@@ -8,13 +8,15 @@ import {
   DataSourceConfigView,
   SERVICE_TYPE_OPTIONS,
   getDataElementFieldEditConfig,
-} from '../../../../views/AdminPanel/common';
-import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
-import { getCreateConfigs } from '../helpers/getCreateConfigs';
-import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
-import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
-import { getEditorConfigs } from '../helpers/getEditorConfigs';
-import { getImportConfigs } from '../helpers/getImportConfigs';
+} from '../../common';
+import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import {
+  getCreateConfigs,
+  getDeleteColumnConfigs,
+  getDeleteConfigs,
+  getEditorConfigs,
+  getImportConfigs,
+} from '../helpers';
 
 const getButtonsConfig = (fields, recordType, translate) => [
   {

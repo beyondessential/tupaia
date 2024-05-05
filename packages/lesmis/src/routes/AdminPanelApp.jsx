@@ -14,61 +14,25 @@ import {
   TabPageLayout,
   getFlattenedChildViews,
   AppPageLayout,
+  VizBuilderApp,
 } from '@tupaia/admin-panel';
 
-import { LesmisAdminRoute } from '../LesmisAdminRoute';
-import { AdminPanelLoginPage } from '../../views/AdminPanel/AdminPanelLoginPage';
-import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../../utils';
-import { Footer } from '../../components';
-import { getSurveyResponsesTabRoutes, getSurveysTabRoutes } from './routes';
+import { LesmisAdminRoute } from './LesmisAdminRoute';
+import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
+import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
+import { Footer } from '../components';
+import {
+  getSurveyResponsesTabRoutes,
+  getSurveysTabRoutes,
+  getVisualisationsTabsRoutes,
+} from '../views/AdminPanel/routes';
 
 const getRoutes = (adminUrl, translate) => {
   return [
     getSurveyResponsesTabRoutes(translate, adminUrl),
     getSurveysTabRoutes(translate, adminUrl),
+    getVisualisationsTabsRoutes(translate, adminUrl),
 
-    {
-      label: translate('admin.visualisations'),
-      path: '/visualisations',
-      icon: <InsertChart />,
-      childViews: [
-        // {
-        //   title: translate('admin.dashboardItems'),
-        //   path: '',
-        //   component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        // },
-        // {
-        //   title: translate('admin.dashboards'),
-        //   path: '/dashboards',
-        //   component: DashboardsPage,
-        // },
-        // {
-        //   title: translate('admin.dashboardRelations'),
-        //   path: '/dashboard-relations',
-        //   component: DashboardRelationsPage,
-        // },
-        // {
-        //   title: translate('admin.mapOverlays'),
-        //   path: '/map-overlays',
-        //   component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        // },
-        // {
-        //   title: translate('admin.mapOverlayGroups'),
-        //   path: '/map-overlay-groups',
-        //   component: MapOverlayGroupsPage,
-        // },
-        // {
-        //   title: translate('admin.mapOverlayGroupRelations'),
-        //   path: '/map-overlay-group-relations',
-        //   component: MapOverlayGroupRelationsPage,
-        // },
-        // {
-        //   title: translate('admin.dataTables'),
-        //   path: '/dataTables',
-        //   component: DataTablesPage,
-        // },
-      ],
-    },
     {
       label: `${translate('admin.users')} & ${translate('admin.permissions')}`,
       path: '/users',
@@ -120,27 +84,26 @@ const AdminPanelApp = ({ user }) => {
 
   const routes = getRoutes(adminUrl, translate);
 
-  console.log(routes.map(route => getFlattenedChildViews(route)));
   return (
     <Routes>
       <Route path="/login" element={<AdminPanelLoginPage />} />
       <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
 
-      {/* <LesmisAdminRoute
-        path={`${path}/viz-builder`}
-        hasAdminPanelAccess={userHasAdminPanelAccess}
-        element={
-          <VizBuilderApp
-            logo={{
-              path: '/lesmis-logo-white.svg',
-              alt: 'LESMIS Admin Panel Logo',
-            }}
-            homeLink={adminUrl}
-            Footer={Footer}
-          />
-        }
-      /> */}
       <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+        <Route
+          path="/viz-builder/*"
+          hasAdminPanelAccess={userHasAdminPanelAccess}
+          element={
+            <VizBuilderApp
+              logo={{
+                url: '/lesmis-logo-white.svg',
+                alt: 'LESMIS Admin Panel Logo',
+              }}
+              homeLink={adminUrl}
+              Footer={Footer}
+            />
+          }
+        />
         <Route
           element={
             <AppPageLayout

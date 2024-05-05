@@ -16,6 +16,7 @@ export {
   mapOverlays,
   mapOverlayGroups,
   mapOverlayGroupRelations,
+  visualisationsTabRoutes,
 } from './routes';
 export { LoginPage, LogoutPage } from './pages';
 export { PrivateRoute } from './authentication';
@@ -37,3 +38,4 @@ export {
 } from './layout';
 export { getFlattenedChildViews } from './App';
 export { ExportModal } from './importExport';
+export { ActionButton } from './editor';

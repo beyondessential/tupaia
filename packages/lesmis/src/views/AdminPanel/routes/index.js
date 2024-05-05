@@ -5,3 +5,4 @@
 
 export { getSurveyResponsesTabRoutes } from './surveyResponses';
 export { getSurveysTabRoutes } from './surveys';
+export { getVisualisationsTabsRoutes } from './visualisations';
