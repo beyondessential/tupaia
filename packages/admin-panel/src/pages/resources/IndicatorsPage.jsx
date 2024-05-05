@@ -57,11 +57,12 @@ const CREATE_CONFIG = {
   },
 };
 
-export const IndicatorsPage = () => (
+export const IndicatorsPage = props => (
   <ResourcePage
     title="Indicators"
     endpoint="indicators"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
+    {...props}
   />
 );

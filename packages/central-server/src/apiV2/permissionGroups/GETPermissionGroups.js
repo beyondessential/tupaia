@@ -1,10 +1,10 @@
 /**
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { GETHandler } from './GETHandler';
-import { assertAdminPanelAccess, hasBESAdminAccess } from '../permissions';
+import { GETHandler } from '../GETHandler';
+import { assertAdminPanelAccess, hasBESAdminAccess } from '../../permissions';
 
 export class GETPermissionGroups extends GETHandler {
   permissionsFilteredInternally = true;

@@ -281,13 +281,14 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CustomLandingPagesPage = () => {
+export const CustomLandingPagesPage = props => {
   return (
     <ResourcePage
       title="Landing Pages"
       endpoint={LANDING_PAGES_ENDPOINT}
       columns={COLUMNS}
       createConfig={CREATE_CONFIG}
+      {...props}
     />
   );
 };

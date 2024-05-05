@@ -25,9 +25,10 @@ import { LoginRoute, LogoutRoute, OneTimeLoginRoute } from '../routes';
 import { attachSession as defaultAttachSession } from '../session';
 import { ExpressRequest, Params, ReqBody, ResBody, Query } from '../../routes/Route';
 import { SessionModel } from '../models';
-import { attachAccessPolicy, logApiRequest } from '../utils';
+import { buildAttachAccessPolicy, logApiRequest } from '../utils';
 import { ServerBoilerplateModelRegistry } from '../../types';
 import { sessionCookie } from './sessionCookie';
+import { AccessPolicyBuilder } from '@tupaia/auth';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const i18n = require('i18n');
@@ -60,7 +61,7 @@ export class ApiBuilder {
     this.logApiRequestMiddleware = logApiRequest(this.models, this.apiName, this.version);
     this.attachVerifyLogin = emptyMiddleware;
     this.verifyAuthMiddleware = emptyMiddleware; // Do nothing by default
-    this.attachAccessPolicy = attachAccessPolicy;
+    this.attachAccessPolicy = buildAttachAccessPolicy(new AccessPolicyBuilder(this.models));
     /**
      * Access logs
      */
