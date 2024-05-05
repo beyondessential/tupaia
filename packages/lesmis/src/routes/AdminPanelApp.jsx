@@ -14,42 +14,14 @@ import {
   getFlattenedChildViews,
   AppPageLayout,
   VizBuilderApp,
-  externalDataTabRoutes,
-  externalDatabaseConnections,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
 import { Footer } from '../components';
-import {
-  getEntitiesTabRoutes,
-  getSurveyResponsesTabRoutes,
-  getSurveysTabRoutes,
-  getUsersTabRoutes,
-  getVisualisationsTabsRoutes,
-} from '../views/AdminPanel/routes';
+import { getRoutes } from '../views/AdminPanel/routes';
 import { getIsBESAdmin } from '../views/AdminPanel/authentication';
-
-const getRoutes = (adminUrl, translate) => {
-  return [
-    getSurveyResponsesTabRoutes(translate, adminUrl),
-    getSurveysTabRoutes(translate, adminUrl),
-    getVisualisationsTabsRoutes(translate, adminUrl),
-    getUsersTabRoutes(translate),
-    getEntitiesTabRoutes(translate, adminUrl),
-    {
-      ...externalDataTabRoutes,
-      label: translate('admin.externalData'),
-      childViews: [
-        {
-          ...externalDatabaseConnections,
-          title: translate('admin.externalDatabaseConnections'),
-        },
-      ],
-    },
-  ];
-};
 
 const AdminPanelApp = ({ user, isBESAdmin }) => {
   const { translate } = useI18n();
