@@ -4,4 +4,4 @@
  */
 
 export { entitiesTabRoutes } from './entitiesTabRoutes';
-export { entities } from './entities';
+export { entities, QRCodeColumn } from './entities';

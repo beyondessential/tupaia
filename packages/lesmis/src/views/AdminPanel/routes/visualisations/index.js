@@ -3,4 +3,4 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-export { getVisualisationsTabsRoutes } from './visualisationsTabsRoutes';
+export { getVisualisationsTabsRoutes } from './getVisualisationsTabsRoutes';

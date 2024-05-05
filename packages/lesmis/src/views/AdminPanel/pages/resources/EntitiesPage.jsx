@@ -14,7 +14,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 const ENTITIES_ENDPOINT = 'entities';
 
 export const EntitiesPage = ({ translate }) => {
-  const { SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfigs({ translate });
+  const { SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfigs(translate);
   const ANSWER_FIELDS = [
     {
       Header: translate('admin.question'),

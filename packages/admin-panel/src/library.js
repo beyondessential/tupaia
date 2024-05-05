@@ -19,6 +19,12 @@ export {
   visualisationsTabRoutes,
   dataTables,
   usersTabRoutes,
+  surveysTabRoutes,
+  entities,
+  entitiesTabRoutes,
+  externalDatabaseConnections,
+  QRCodeColumn,
+  externalDataTabRoutes,
 } from './routes';
 export { LoginPage, LogoutPage } from './pages';
 export { PrivateRoute, getHasBESAdminPanelAccess } from './authentication';

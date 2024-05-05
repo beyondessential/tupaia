@@ -64,7 +64,7 @@ export const getSurveyResponsePageConfigs = (translate, path, adminUrl) => {
     Filter: getColumnFilter(translate),
   };
 
-  const SURVEY_RESPONSE_COLUMNS = [
+  const baseColumns = [
     surveyName,
     assessorName,
     date,
@@ -114,7 +114,7 @@ export const getSurveyResponsePageConfigs = (translate, path, adminUrl) => {
     ...surveyResponses,
     columns: [
       entityName,
-      ...SURVEY_RESPONSE_COLUMNS,
+      ...baseColumns,
       {
         Header: 'id',
         source: 'id',
@@ -148,6 +148,7 @@ export const getSurveyResponsePageConfigs = (translate, path, adminUrl) => {
     exportConfig,
     editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
+    baseColumns,
     getLink: record => `${adminUrl}/survey-responses${path}/${record.id}/answers`, // custom because the link needs to include the adminUrl
   };
 };

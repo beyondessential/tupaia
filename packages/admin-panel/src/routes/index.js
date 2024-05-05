@@ -4,7 +4,14 @@
  */
 
 export { ROUTES } from './routes';
-export { surveys, questions, surveyResponses, dataElements, syncGroups } from './surveys';
+export {
+  surveys,
+  questions,
+  surveyResponses,
+  dataElements,
+  syncGroups,
+  surveysTabRoutes,
+} from './surveys';
 export { users, permissions, usersTabRoutes } from './users';
 export {
   dashboardItems,
@@ -16,3 +23,5 @@ export {
   visualisationsTabRoutes,
   dataTables,
 } from './visualisations';
+export { entities, entitiesTabRoutes, QRCodeColumn } from './entities';
+export { externalDatabaseConnections, externalDataTabRoutes } from './externalData';

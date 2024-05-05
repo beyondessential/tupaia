@@ -32,6 +32,16 @@ export const FIELDS = {
   },
 };
 
+export const QRCodeColumn = {
+  Header: 'QR',
+  type: 'qrCode',
+  actionConfig: {
+    qrCodeContentsKey: 'id',
+    humanReadableIdKey: 'name',
+    qrCodePrefix: 'entity-', // TODO: Consolidate id prefixing into a common util (RN-968)
+  },
+};
+
 export const COLUMNS = [
   ...Object.values(FIELDS),
   {
@@ -54,15 +64,7 @@ export const COLUMNS = [
       endpoint: ENTITIES_ENDPOINT,
     },
   },
-  {
-    Header: 'QR',
-    type: 'qrCode',
-    actionConfig: {
-      qrCodeContentsKey: 'id',
-      humanReadableIdKey: 'name',
-      qrCodePrefix: 'entity-', // TODO: Consolidate id prefixing into a common util (RN-968)
-    },
-  },
+  QRCodeColumn,
 ];
 
 const IMPORT_CONFIG = {
@@ -99,7 +101,6 @@ export const entities = {
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
-  needsBESAdminAccess: ['delete'],
   detailsView: {
     title: 'Survey Responses',
     endpoint: 'entities/{id}/surveyResponses',

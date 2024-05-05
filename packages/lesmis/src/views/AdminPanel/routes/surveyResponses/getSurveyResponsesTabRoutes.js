@@ -2,10 +2,9 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import { Assignment } from '@material-ui/icons';
+import { surveysTabRoutes } from '@tupaia/admin-panel';
 import { getSurveyResponsePageConfigs } from './getSurveyResponsePageConfigs';
-import { ApproveButton, getRejectButton } from '../../../../views/AdminPanel/components';
+import { ApproveButton, getRejectButton } from '../../components';
 
 const approvedSurveyResponses = (translate, adminUrl) => {
   const path = '/approved';
@@ -94,7 +93,7 @@ const nonApprovalSurveyResponses = (translate, adminUrl) => {
 export const getSurveyResponsesTabRoutes = (translate, adminUrl) => ({
   label: translate('admin.surveyData'),
   path: '/survey-responses',
-  icon: <Assignment />,
+  icon: surveysTabRoutes.icon,
   childViews: [
     draftSurveyResponses(translate, adminUrl),
     approvedSurveyResponses(translate, adminUrl),

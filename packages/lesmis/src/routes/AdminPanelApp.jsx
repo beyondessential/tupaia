@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Language, PeopleAlt, Storage } from '@material-ui/icons';
 import {
   LogoutPage,
   PrivateRoute,
@@ -15,6 +14,8 @@ import {
   getFlattenedChildViews,
   AppPageLayout,
   VizBuilderApp,
+  externalDataTabRoutes,
+  externalDatabaseConnections,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRoute } from './LesmisAdminRoute';
@@ -22,6 +23,7 @@ import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
 import { Footer } from '../components';
 import {
+  getEntitiesTabRoutes,
   getSurveyResponsesTabRoutes,
   getSurveysTabRoutes,
   getUsersTabRoutes,
@@ -35,28 +37,15 @@ const getRoutes = (adminUrl, translate) => {
     getSurveysTabRoutes(translate, adminUrl),
     getVisualisationsTabsRoutes(translate, adminUrl),
     getUsersTabRoutes(translate),
+    getEntitiesTabRoutes(translate, adminUrl),
     {
-      label: translate('admin.entities'),
-      path: '/entities',
-      icon: <Storage />,
-      childViews: [
-        // {
-        //   title: translate('admin.entities'),
-        //   path: '',
-        //   component: EntitiesPage,
-        // },
-      ],
-    },
-    {
+      ...externalDataTabRoutes,
       label: translate('admin.externalData'),
-      path: '/external-database-connections',
-      icon: <Language />,
       childViews: [
-        // {
-        //   title: translate('admin.externalDatabaseConnections'),
-        //   path: '',
-        //   component: ExternalDatabaseConnectionsPage,
-        // },
+        {
+          ...externalDatabaseConnections,
+          title: translate('admin.externalDatabaseConnections'),
+        },
       ],
     },
   ];

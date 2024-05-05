@@ -130,8 +130,16 @@ const formatDetailUrl = (detailUrl, row) => {
   return matches.reduce((url, match) => url.replace(`:${match}`, row[match]), detailUrl);
 };
 
-export const CellValue = ({ row, detailUrl, children, getIsLink, getLink, basePath }) => {
-  if (!detailUrl && !getLink) return children;
+export const CellValue = ({
+  row,
+  detailUrl,
+  children,
+  getIsLink,
+  getLink,
+  basePath,
+  isButtonColumn,
+}) => {
+  if (isButtonColumn || (!detailUrl && !getLink)) return children;
   if (getIsLink && !getIsLink(row.original)) return children;
   const generateLink = () => {
     if (getLink) {
@@ -154,6 +162,7 @@ CellValue.propTypes = {
   getIsLink: PropTypes.func,
   getLink: PropTypes.func,
   basePath: PropTypes.string,
+  isButtonColumn: PropTypes.bool,
 };
 
 CellValue.defaultProps = {
@@ -161,6 +170,7 @@ CellValue.defaultProps = {
   getIsLink: null,
   getLink: null,
   basePath: null,
+  isButtonColumn: false,
 };
 
 export const DisplayCell = ({
@@ -170,16 +180,18 @@ export const DisplayCell = ({
   getIsLink,
   getLink,
   basePath,
+  isButtonColumn,
   ...props
 }) => {
   return (
-    <TableCell {...props}>
+    <TableCell {...props} isButtonColumn={isButtonColumn}>
       <CellValue
         row={row}
         detailUrl={detailUrl}
         getIsLink={getIsLink}
         getLink={getLink}
         basePath={basePath}
+        isButtonColumn={isButtonColumn}
       >
         {children}
       </CellValue>
