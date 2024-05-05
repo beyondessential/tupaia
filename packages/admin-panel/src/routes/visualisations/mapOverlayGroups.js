@@ -4,7 +4,7 @@
  */
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
-const EDIT_FIELDS = [
+const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
@@ -13,18 +13,8 @@ const EDIT_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
-    width: 140,
     type: 'tooltip',
   },
-];
-
-const FIELDS = [
-  {
-    Header: 'ID',
-    source: 'id',
-    type: 'tooltip',
-  },
-  ...EDIT_FIELDS,
 ];
 
 const COLUMNS = [
@@ -35,7 +25,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Map Overlay Group',
       editEndpoint: 'mapOverlayGroups',
-      fields: EDIT_FIELDS,
+      fields: FIELDS,
     },
   },
 ];
@@ -93,7 +83,7 @@ const CREATE_CONFIG = {
   title: 'Create a new Map overlay group',
   actionConfig: {
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
-    fields: EDIT_FIELDS,
+    fields: FIELDS,
   },
 };
 
