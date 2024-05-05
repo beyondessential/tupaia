@@ -6,16 +6,10 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
-import {
-  Button,
-  Dialog,
-  DialogFooter,
-  DialogHeader,
-  LightOutlinedButton,
-  OutlinedButton,
-} from '@tupaia/ui-components';
+import { Button, Dialog, DialogFooter, DialogHeader, OutlinedButton } from '@tupaia/ui-components';
 import { ModalContentProvider } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
+import { ActionButton } from '../editor';
 
 const STATUS = {
   IDLE: 'idle',
@@ -129,7 +123,7 @@ export const ExportModal = React.memo(
             <DialogFooter>{renderButtons()}</DialogFooter>
           </form>
         </Dialog>
-        <LightOutlinedButton
+        <ActionButton
           id="page-export-button"
           startIcon={<ExportIcon />}
           onClick={handleOpen}
@@ -137,7 +131,7 @@ export const ExportModal = React.memo(
           disabled={STATUS === STATUS.ERROR}
         >
           {exportButtonText}
-        </LightOutlinedButton>
+        </ActionButton>
       </>
     );
   },

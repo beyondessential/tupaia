@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
@@ -46,15 +45,6 @@ const COLUMNS = [
   },
 ];
 
-export const LegacyReportsPage = ({ getHeaderEl }) => (
-  <ResourcePage
-    title="Legacy Reports"
-    endpoint="legacyReports"
-    columns={COLUMNS}
-    getHeaderEl={getHeaderEl}
-  />
+export const LegacyReportsPage = props => (
+  <ResourcePage title="Legacy Reports" endpoint="legacyReports" columns={COLUMNS} {...props} />
 );
-
-LegacyReportsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

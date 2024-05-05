@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
@@ -174,14 +173,13 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const AccessRequestsPage = ({ getHeaderEl }) => (
+export const AccessRequestsPage = props => (
   <ResourcePage
     title="Access Requests"
     endpoint="accessRequests"
     columns={USER_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     baseFilter={{ approved: null }}
-    getHeaderEl={getHeaderEl}
     onProcessDataForSave={(editedFields, recordData) => {
       if (!Array.isArray(recordData)) {
         return editedFields;
@@ -190,9 +188,6 @@ export const AccessRequestsPage = ({ getHeaderEl }) => (
       // Return an array of records for bulk editing on the server
       return recordData.map(record => ({ ...record, ...editedFields }));
     }}
+    {...props}
   />
 );
-
-AccessRequestsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

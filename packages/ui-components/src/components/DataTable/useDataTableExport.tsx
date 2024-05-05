@@ -15,7 +15,11 @@ export const useDataTableExport = (
   startDate: Moment | string | Date | undefined,
   endDate: Moment | string | Date | undefined,
 ) => {
-  const { headerGroups, rows: tableData, columns: tableColumns } = useTable({
+  const {
+    headerGroups,
+    rows: tableData,
+    columns: tableColumns,
+  } = useTable({
     columns,
     data,
   });

@@ -1,0 +1,31 @@
+{
+  "report": {
+    "data": [
+      { "timestamp": 1585699200000, "value": 0.29983333333333334 },
+      { "timestamp": 1588291200000, "value": 0.35827272727272724 },
+      { "timestamp": 1590969600000, "value": 0.18787500000000001 },
+      { "timestamp": 1593561600000, "value": 0 },
+      { "timestamp": 1596240000000, "value": 0.08609090909090909 },
+      { "timestamp": 1598918400000, "value": 0 },
+      { "timestamp": 1601510400000, "value": 0.34854545454545455 },
+      { "timestamp": 1604188800000, "value": 0 },
+      { "timestamp": 1606780800000, "value": 0 },
+      { "timestamp": 1609459200000, "value": 0 },
+      { "timestamp": 1612137600000, "value": 0.03628571428571429 },
+      { "timestamp": 1614556800000, "value": 0 }
+    ],
+    "startDate": "2020-04-01",
+    "endDate": "2021-04-30"
+  },
+  "config": {
+    "name": "% Availability of Medicines from Facilities Surveyed Each Month",
+    "type": "chart",
+    "xName": "Month",
+    "yName": "%",
+    "chartType": "line",
+    "valueType": "percentage",
+    "description": "Average each month is calculated across operational facilities that submitted data. If a facility was marked as non-operational, or did not submit data in a given month, it is not included in the average.",
+    "defaultTimePeriod": { "start": { "unit": "year", "offset": -1 } },
+    "periodGranularity": "month"
+  }
+}

@@ -27,7 +27,7 @@ content-type: {{contentType}}
 
 ### Download files
 
-GET {{baseUrl}}/downloadFiles?files=cat_pic.pdf HTTP/2.0
+GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
@@ -45,6 +45,18 @@ Authorization: {{user-authorization}}
 
 ### Get country access list for a project
 
-GET http://{{host}}/{{version}}/me/countries?projectCode=explore
+GET {{baseUrl}}/{{version}}/me/countries?projectCode=explore
 content-type: {{contentType}}
 Authorization: Basic {{user-authorization}}
+
+### GET entity hierarchies
+
+GET {{baseUrl}}/{{version}}/entityHierarchy HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### GET entity hierarchy
+
+GET {{baseUrl}}/{{version}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}

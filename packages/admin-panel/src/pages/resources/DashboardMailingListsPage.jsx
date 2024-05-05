@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
@@ -153,18 +152,13 @@ const EXPANSION_CONFIG = [
   },
 ];
 
-export const DashboardMailingListsPage = ({ getHeaderEl, ...restOfProps }) => (
+export const DashboardMailingListsPage = props => (
   <ResourcePage
     title="Dashboard Mailing Lists"
     endpoint="dashboardMailingLists"
     columns={DASHBOARD_MAILING_LIST_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    getHeaderEl={getHeaderEl}
-    {...restOfProps}
+    {...props}
   />
 );
-
-DashboardMailingListsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};

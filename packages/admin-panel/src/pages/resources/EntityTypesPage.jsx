@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const ENTITY_TYPES_ENDPOINT = 'entityTypes';
@@ -19,15 +18,11 @@ export const ENTITY_TYPES_COLUMNS = [
   },
 ];
 
-export const EntityTypesPage = ({ getHeaderEl }) => (
+export const EntityTypesPage = props => (
   <ResourcePage
     title="Entity Types"
     endpoint={ENTITY_TYPES_ENDPOINT}
     columns={ENTITY_TYPES_COLUMNS}
-    getHeaderEl={getHeaderEl}
+    {...props}
   />
 );
-
-EntityTypesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
-};
