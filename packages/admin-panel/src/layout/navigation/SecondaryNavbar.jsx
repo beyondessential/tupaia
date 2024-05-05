@@ -43,7 +43,8 @@ const RouteLink = styled(Link)`
   }
 
   &:hover,
-  &:focus {
+  &:focus,
+  &:focus-visible {
     color: ${({ theme }) => theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     outline: none;

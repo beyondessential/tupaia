@@ -45,7 +45,7 @@ export const dataGroups = {
     actionConfig: {
       title: 'Edit Data Group',
       editEndpoint: 'dataGroups',
-      fields: [...DATA_GROUP_FIELDS],
+      fields: DATA_GROUP_FIELDS,
     },
   },
   editorConfig: EDITOR_CONFIG,

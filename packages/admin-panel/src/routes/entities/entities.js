@@ -72,7 +72,7 @@ const IMPORT_CONFIG = {
   subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
-    importEndpoint: 'entities',
+    importEndpoint: ENTITIES_ENDPOINT,
   },
   queryParameters: [
     {
@@ -103,7 +103,7 @@ export const entities = {
   importConfig: IMPORT_CONFIG,
   detailsView: {
     title: 'Survey Responses',
-    endpoint: 'entities/{id}/surveyResponses',
+    endpoint: `${ENTITIES_ENDPOINT}/{id}/surveyResponses`,
     columns: SURVEY_RESPONSE_COLUMNS,
     path: '/:id/surveyResponses',
     displayProperty: 'name',

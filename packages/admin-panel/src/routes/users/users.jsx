@@ -102,7 +102,6 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     source: 'id',
-    width: 150,
     actionConfig: {
       title: 'Edit User',
       editEndpoint: 'users',

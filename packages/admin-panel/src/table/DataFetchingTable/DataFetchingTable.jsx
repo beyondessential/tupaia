@@ -49,6 +49,7 @@ const TableContainer = styled(MuiTableContainer)`
   table {
     min-width: 45rem;
   }
+  // Because we want two header rows to be sticky, we need to set the position of the thead to sticky
   thead {
     position: sticky;
     top: 0;
