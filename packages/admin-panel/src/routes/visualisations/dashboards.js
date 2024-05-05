@@ -132,4 +132,5 @@ export const dashboards = {
     path: '/:id/dashboard-relations',
     displayProperty: 'name',
   },
+  needsBESAdminAccess: ['delete'],
 };

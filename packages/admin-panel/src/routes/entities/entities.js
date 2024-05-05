@@ -99,6 +99,7 @@ export const entities = {
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
+  needsBESAdminAccess: ['delete'],
   detailsView: {
     title: 'Survey Responses',
     endpoint: 'entities/{id}/surveyResponses',

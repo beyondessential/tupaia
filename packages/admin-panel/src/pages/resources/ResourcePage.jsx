@@ -88,6 +88,8 @@ export const ResourcePage = ({
   getDisplayValue,
   getLink,
   basePath,
+  hasBESAdminAccess,
+  needsBESAdminAccess,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -97,6 +99,20 @@ export const ResourcePage = ({
 
   const isDetailsPage = !!parent;
 
+  const getHasPermission = actionType => {
+    if (!needsBESAdminAccess) return true;
+    if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
+    return true;
+  };
+
+  const canImport = getHasPermission('import');
+  const canExport = getHasPermission('export');
+  const canCreate = getHasPermission('create');
+
+  // Explode columns to support nested fields, since the table doesn't want to nest these, and then filter out columns that the user doesn't have permission to see
+  const accessibleColumns = getExplodedFields(columns).filter(
+    column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
+  );
   return (
     <>
       <Container>
@@ -111,16 +127,16 @@ export const ResourcePage = ({
         )}
         <PageHeader
           title={title}
-          importConfig={importConfig}
-          exportConfig={exportConfig}
-          createConfig={createConfig}
-          ExportModalComponent={ExportModalComponent}
+          importConfig={canImport && importConfig}
+          exportConfig={canExport && exportConfig}
+          createConfig={canCreate && createConfig}
+          ExportModalComponent={canExport && ExportModalComponent}
           LinksComponent={LinksComponent}
         />
         <DataFetchingTable
-          columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
           endpoint={updatedEndpoint}
           reduxId={reduxId || updatedEndpoint}
+          columns={accessibleColumns}
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           TableComponent={TableComponent}
@@ -164,6 +180,8 @@ ResourcePage.propTypes = {
   getDisplayValue: PropTypes.func,
   getLink: PropTypes.func,
   basePath: PropTypes.string,
+  hasBESAdminAccess: PropTypes.bool.isRequired,
+  needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
 };
 
 ResourcePage.defaultProps = {
@@ -187,4 +205,5 @@ ResourcePage.defaultProps = {
   getDisplayValue: null,
   getLink: null,
   basePath: '',
+  needsBESAdminAccess: [],
 };

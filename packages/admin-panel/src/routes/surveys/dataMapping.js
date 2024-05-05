@@ -75,4 +75,5 @@ export const dataMapping = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   createConfig: CREATE_CONFIG,
+  isBESAdminOnly: true,
 };

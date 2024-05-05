@@ -8,9 +8,8 @@ import { Outlet } from 'react-router-dom';
 import { labelToId } from '../utilities';
 import { Main, PageWrapper } from './Page';
 import { NavPanel } from './navigation';
-import { ROUTES } from '../routes';
 
-export const AppPageLayout = ({ user, routes = ROUTES, logo, homeLink, userLinks, basePath }) => {
+export const AppPageLayout = ({ user, routes, logo, homeLink, userLinks, basePath }) => {
   return (
     <PageWrapper>
       <NavPanel

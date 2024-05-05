@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { AppPageLayout } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { PrivateRoute, getUser } from './authentication';
+import { getHasBESAdminPanelAccess, getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
@@ -47,16 +47,37 @@ export const getFlattenedChildViews = (route, basePath = '') => {
   }, []);
 };
 
-export const App = ({ user }) => {
+export const App = ({ user, hasBESAdminAccess }) => {
+  const userHasAccessToTab = tab => {
+    if (tab.isBESAdminOnly) {
+      return !!hasBESAdminAccess;
+    }
+    return true;
+  };
+
+  // Filter out tabs that the user does not have access to, and hide routes that have no accessible tabs
+  const getAccessibleRoutes = () => {
+    return ROUTES.map(route => {
+      return {
+        ...route,
+        childViews: route.childViews.filter(childView => userHasAccessToTab(childView)),
+      };
+    }).filter(route => {
+      if (route.isBESAdminOnly) return !!hasBESAdminAccess;
+      return route.childViews.length > 0;
+    });
+  };
+
+  const accessibleRoutes = getAccessibleRoutes();
   return (
     <Routes>
       <Route path="/login" exact element={<LoginPage />} />
       <Route path="/logout" exact element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout user={user} />}>
+        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
-          {[...ROUTES, ...PROFILE_ROUTES].map(route => (
+          {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
             <Route
               key={route.path}
               path={route.path}
@@ -85,6 +106,10 @@ export const App = ({ user }) => {
   );
 };
 
+App.defaultProps = {
+  hasBESAdminAccess: false,
+};
+
 App.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -92,11 +117,13 @@ App.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  hasBESAdminAccess: PropTypes.bool,
 };
 
 export default connect(
   state => ({
     user: getUser(state),
+    hasBESAdminAccess: getHasBESAdminPanelAccess(state),
   }),
   null,
 )(App);

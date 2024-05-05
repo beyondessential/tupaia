@@ -110,4 +110,5 @@ export const socialFeed = {
   columns: SOCIAL_FEED_COLUMNS,
   createConfig: CREATE_CONFIG,
   onProcessDataForSave: data => ({ ...data, type: 'markdown' }),
+  isBESAdminOnly: true,
 };

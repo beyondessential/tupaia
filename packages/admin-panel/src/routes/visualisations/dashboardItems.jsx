@@ -119,4 +119,5 @@ export const dashboardItems = {
   importConfig: IMPORT_CONFIG,
   columns: COLUMNS,
   LinksComponent,
+  needsBESAdminAccess: ['delete'],
 };

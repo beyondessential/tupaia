@@ -49,6 +49,7 @@ export const dataGroups = {
     },
   },
   editorConfig: EDITOR_CONFIG,
+  isBESAdminOnly: true,
   detailsView: {
     title: 'Data elements',
     endpoint: 'dataGroups/{id}/dataElements',

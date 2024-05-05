@@ -61,4 +61,5 @@ export const indicators = {
   endpoint: 'indicators',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
+  isBESAdminOnly: true,
 };

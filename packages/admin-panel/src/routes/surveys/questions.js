@@ -101,6 +101,7 @@ export const questions = {
   path: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,
+  isBESAdminOnly: true,
   editorConfig: EDITOR_CONFIG,
   getIsLink: ({ option_set_id: optionSetId }) => !!optionSetId,
   detailsView: {

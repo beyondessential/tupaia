@@ -47,4 +47,5 @@ export const legacyReports = {
   path: '/legacy-reports',
   endpoint: 'legacyReports',
   columns: COLUMNS,
+  isBESAdminOnly: true,
 };

@@ -153,4 +153,5 @@ export const dashboardMailingLists = {
     path: '/:id/entries',
     displayProperty: 'dashboard.name',
   },
+  isBESAdminOnly: true,
 };

@@ -9,4 +9,5 @@ export const strive = {
   title: 'Strive',
   path: '/strive',
   Component: StrivePage,
+  isBESAdminOnly: true,
 };

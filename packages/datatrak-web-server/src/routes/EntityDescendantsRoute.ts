@@ -4,7 +4,7 @@
  */
 
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebEntityDescendantsRequest } from '@tupaia/types';
+import { DatatrakWebEntityDescendantsRequest, EntityType, UserAccount } from '@tupaia/types';
 import { TupaiaApiClient } from '@tupaia/api-client';
 import { Request } from 'express';
 import camelcaseKeys from 'camelcase-keys';
@@ -28,6 +28,29 @@ async function getEntityCodeFromId(services: TupaiaApiClient, id: string) {
   return code;
 }
 
+const getRecentEntities = (
+  currentUser: UserAccount,
+  countryCode: string | undefined,
+  type: string | undefined,
+) => {
+  const { recent_entities: userRecentEntities } = currentUser.preferences;
+  if (!userRecentEntities || !countryCode || !type) {
+    return [];
+  }
+
+  const recentEntitiesForCountry = userRecentEntities[countryCode];
+  if (!recentEntitiesForCountry) {
+    return [];
+  }
+
+  const entityTypes = type.split(',');
+  const recentEntitiesOfTypes = entityTypes
+    .map(entityType => userRecentEntities[countryCode][entityType as EntityType] ?? [])
+    .flat();
+
+  return recentEntitiesOfTypes;
+};
+
 export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
   public async buildResponse() {
     const { query, ctx, session, models } = this.req;
@@ -37,29 +60,28 @@ export class EntityDescendantsRoute extends Route<EntityDescendantsRequest> {
     let recentEntities: string[] = [];
 
     const {
-      filter: { countryCode, projectCode, grandparentId, parentId, searchString, type },
+      filter: { countryCode, projectCode, grandparentId, parentId, type, ...restOfFilter },
+      searchString,
       fields = DEFAULT_FIELDS,
     } = query;
 
     if (isLoggedIn) {
       const currentUser = await models.user.findOne({ email: session.email });
-      const { recent_entities: userRecentEntities } = currentUser.preferences;
-      recentEntities = userRecentEntities?.[countryCode]?.[type] || [];
+
+      recentEntities = getRecentEntities(currentUser, countryCode, type);
     }
 
     const filter = {
       generational_distance: {},
       country_code: countryCode,
-      type: {
-        comparator: '=',
-        comparisonValue: type,
-      },
+      type,
       name: searchString
         ? {
             comparator: 'ilike',
             comparisonValue: `%${searchString}%`,
           }
         : undefined,
+      ...restOfFilter,
     };
 
     let entityCode = projectCode as string;

@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
 import { fetchFromCentralServerUsingTokens } from '/appServer/requestHelpers';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
