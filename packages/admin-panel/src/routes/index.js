@@ -5,7 +5,7 @@
 
 export { ROUTES } from './routes';
 export { surveys, questions, surveyResponses, dataElements, syncGroups } from './surveys';
-export { users, permissions } from './users';
+export { users, permissions, usersTabRoutes } from './users';
 export {
   dashboardItems,
   dashboards,
@@ -14,4 +14,5 @@ export {
   mapOverlayGroups,
   mapOverlayGroupRelations,
   visualisationsTabRoutes,
+  dataTables,
 } from './visualisations';

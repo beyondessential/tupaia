@@ -129,5 +129,6 @@ export const getDashboardItemsPageConfig = (translate, adminUrl, isBESAdmin) => 
     editorConfig,
     deleteConfig,
     LinksComponent: renderNewDashboardVizButton,
+    needsBESAdminAccess: [],
   };
 };

@@ -17,9 +17,11 @@ export {
   mapOverlayGroups,
   mapOverlayGroupRelations,
   visualisationsTabRoutes,
+  dataTables,
+  usersTabRoutes,
 } from './routes';
 export { LoginPage, LogoutPage } from './pages';
-export { PrivateRoute } from './authentication';
+export { PrivateRoute, getHasBESAdminPanelAccess } from './authentication';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export { IconButton } from './widgets';

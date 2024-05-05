@@ -6,3 +6,4 @@
 export { getSurveyResponsesTabRoutes } from './surveyResponses';
 export { getSurveysTabRoutes } from './surveys';
 export { getVisualisationsTabsRoutes } from './visualisations';
+export { getUsersTabRoutes } from './users';

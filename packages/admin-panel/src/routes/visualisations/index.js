@@ -10,3 +10,4 @@ export { dashboardRelations } from './dashboardRelations';
 export { mapOverlays } from './mapOverlays';
 export { mapOverlayGroups } from './mapOverlayGroups';
 export { mapOverlayGroupRelations } from './mapOverlayGroupRelations';
+export { dataTables } from './dataTables';

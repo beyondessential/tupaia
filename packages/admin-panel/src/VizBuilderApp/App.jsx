@@ -5,7 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Route, Routes, matchRoutes } from 'react-router-dom';
+import { renderMatches, useLocation } from 'react-router';
+import { matchRoutes } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
@@ -13,7 +14,6 @@ import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
 import { NavPanel } from './components';
-import { renderMatches, useLocation } from 'react-router';
 
 const Wrapper = styled.main`
   display: flex;

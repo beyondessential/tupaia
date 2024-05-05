@@ -92,7 +92,7 @@ HeaderDisplayCell.defaultProps = {
 
 export const TableCell = ({ children, width, isButtonColumn }) => {
   return (
-    <Cell>
+    <Cell $isButtonColumn={isButtonColumn}>
       <CellContentWrapper $width={width} $shouldCenterContent={isButtonColumn}>
         <CellContentContainer>{children}</CellContentContainer>
       </CellContentWrapper>
@@ -194,6 +194,7 @@ DisplayCell.propTypes = {
   getIsLink: PropTypes.func,
   getLink: PropTypes.func,
   isButtonColumn: PropTypes.bool,
+  basePath: PropTypes.string,
 };
 
 DisplayCell.defaultProps = {
@@ -201,4 +202,5 @@ DisplayCell.defaultProps = {
   getIsLink: null,
   getLink: null,
   isButtonColumn: false,
+  basePath: '',
 };

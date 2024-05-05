@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
+import { Language, PeopleAlt, Storage } from '@material-ui/icons';
 import {
   LogoutPage,
   PrivateRoute,
@@ -24,32 +24,17 @@ import { Footer } from '../components';
 import {
   getSurveyResponsesTabRoutes,
   getSurveysTabRoutes,
+  getUsersTabRoutes,
   getVisualisationsTabsRoutes,
 } from '../views/AdminPanel/routes';
+import { getIsBESAdmin } from '../views/AdminPanel/authentication';
 
 const getRoutes = (adminUrl, translate) => {
   return [
     getSurveyResponsesTabRoutes(translate, adminUrl),
     getSurveysTabRoutes(translate, adminUrl),
     getVisualisationsTabsRoutes(translate, adminUrl),
-
-    {
-      label: `${translate('admin.users')} & ${translate('admin.permissions')}`,
-      path: '/users',
-      icon: <PeopleAlt />,
-      childViews: [
-        // {
-        //   title: translate('admin.users'),
-        //   path: '',
-        //   component: UsersPage,
-        // },
-        // {
-        //   title: translate('admin.permissions'),
-        //   path: '/permissions',
-        //   component: PermissionsPage,
-        // },
-      ],
-    },
+    getUsersTabRoutes(translate),
     {
       label: translate('admin.entities'),
       path: '/entities',
@@ -77,12 +62,12 @@ const getRoutes = (adminUrl, translate) => {
   ];
 };
 
-const AdminPanelApp = ({ user }) => {
+const AdminPanelApp = ({ user, isBESAdmin }) => {
   const { translate } = useI18n();
   const adminUrl = useAdminPanelUrl();
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
-  const routes = getRoutes(adminUrl, translate);
+  const routes = getRoutes(adminUrl, translate, isBESAdmin);
 
   return (
     <Routes>
@@ -185,11 +170,17 @@ AdminPanelApp.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+AdminPanelApp.defaultProps = {
+  isBESAdmin: false,
 };
 
 export default connect(
   state => ({
     user: state?.authentication?.user || {},
+    isBESAdmin: getIsBESAdmin(state),
   }),
   null,
 )(AdminPanelApp);

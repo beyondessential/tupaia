@@ -92,7 +92,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
                     childRoute.Component ? (
                       <childRoute.Component />
                     ) : (
-                      <ResourcePage {...childRoute} />
+                      <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
                     )
                   }
                 />
