@@ -21,12 +21,12 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child Code',
-    source: 'map_overlay.code',
+    Header: 'Child ID',
+    source: 'child_id',
     type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'mapOverlay.code',
+      optionLabelKey: 'mapOverlay.id',
       optionValueKey: 'mapOverlay.id',
       canCreateNewOptions: true,
       sourceKey: 'child_id',
