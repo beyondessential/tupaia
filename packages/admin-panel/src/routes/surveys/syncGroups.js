@@ -94,4 +94,5 @@ export const syncGroups = {
   columns: COLUMNS,
   editorConfig: EDITOR_CONFIG,
   createConfig: CREATE_CONFIG,
+  isBESAdminOnly: true,
 };

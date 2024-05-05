@@ -32,6 +32,7 @@ export const countries = {
   path: '/countries',
   columns: FIELDS,
   createConfig: CREATE_CONFIG,
+  needsBESAdminAccess: ['create'],
   detailsView: {
     title: 'Entities',
     endpoint: 'countries/{id}/entities',

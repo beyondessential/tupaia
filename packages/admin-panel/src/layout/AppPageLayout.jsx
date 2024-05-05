@@ -8,13 +8,12 @@ import { Outlet } from 'react-router-dom';
 import { labelToId } from '../utilities';
 import { Main, PageWrapper } from './Page';
 import { NavPanel } from './navigation';
-import { ROUTES } from '../routes';
 
-export const AppPageLayout = ({ user }) => {
+export const AppPageLayout = ({ user, routes }) => {
   return (
     <PageWrapper>
       <NavPanel
-        links={ROUTES.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
+        links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
         user={user}
         userLinks={[
           { label: 'Profile', to: '/profile' },
@@ -35,4 +34,10 @@ AppPageLayout.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
 };

@@ -182,4 +182,5 @@ export const projects = {
     }
     return editedFields;
   },
+  needsBESAdminAccess: ['create'],
 };

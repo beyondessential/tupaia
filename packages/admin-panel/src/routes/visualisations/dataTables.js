@@ -108,4 +108,5 @@ export const dataTables = {
   importConfig: IMPORT_CONFIG,
   editorConfig: EDITOR_CONFIG,
   onProcessDataForSave,
+  isBESAdminOnly: true,
 };

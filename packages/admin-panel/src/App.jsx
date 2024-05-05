@@ -59,11 +59,11 @@ export const App = ({ user, hasBESAdminAccess }) => {
     return ROUTES.map(route => {
       return {
         ...route,
-        tabs: route.tabs.filter(tab => userHasAccessToTab(tab)),
+        childViews: route.childViews.filter(childView => userHasAccessToTab(childView)),
       };
     }).filter(route => {
       if (route.isBESAdminOnly) return !!hasBESAdminAccess;
-      return route.tabs.length > 0;
+      return route.childViews.length > 0;
     });
   };
 
@@ -73,7 +73,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
       <Route path="/login" exact element={<LoginPage />} />
       <Route path="/logout" exact element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout user={user} />}>
+        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (

@@ -13,4 +13,5 @@ export const externalDataTabRoutes = {
   path: '/external-database-connections',
   icon: <Language />,
   childViews: [externalDatabaseConnections, dhisInstances, supersetInstances],
+  isBESAdminOnly: true,
 };
