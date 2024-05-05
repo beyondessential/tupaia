@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AppPageLayout } from './layout';
+import { AppPageLayout, Footer } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getHasBESAdminPanelAccess, getUser, PrivateRoute } from './authentication';
@@ -81,7 +81,13 @@ export const App = ({ user, hasBESAdminAccess }) => {
             <Route
               key={route.path}
               path={route.path}
-              element={<TabPageLayout routes={route.childViews} basePath={route.path} />}
+              element={
+                <TabPageLayout
+                  routes={route.childViews}
+                  basePath={route.path}
+                  Footer={<Footer />}
+                />
+              }
             >
               {/* <Route index element={<Navigate to={route.childViews[0].path} replace />} /> */}
               {getFlattenedChildViews(route).map(childRoute => (

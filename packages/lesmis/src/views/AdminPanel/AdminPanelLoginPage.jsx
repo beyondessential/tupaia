@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useLocation } from 'react-router';
 import styled from 'styled-components';
 import { useAdminPanelUrl } from '../../utils';
 import { LoginPage } from './pages/LoginPage';
@@ -18,5 +19,7 @@ const LoginPageLogo = () => <StyledImg src="/lesmis-logo.svg" alt="lesmis-logo" 
 
 export const AdminPanelLoginPage = () => {
   const adminUrl = useAdminPanelUrl();
-  return <LoginPage redirectTo={`${adminUrl}/survey-responses`} LogoComponent={LoginPageLogo} />;
+  const location = useLocation();
+  const redirectTo = location.state?.referrer || `${adminUrl}/survey-responses`;
+  return <LoginPage redirectTo={redirectTo} LogoComponent={LoginPageLogo} />;
 };

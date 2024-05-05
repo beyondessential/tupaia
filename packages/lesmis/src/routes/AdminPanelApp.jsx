@@ -4,8 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import {
   LogoutPage,
   PrivateRoute,
@@ -14,17 +15,30 @@ import {
   getFlattenedChildViews,
   AppPageLayout,
   VizBuilderApp,
+  PageContentWrapper,
 } from '@tupaia/admin-panel';
 
-import { LesmisAdminRoute } from './LesmisAdminRoute';
+import { LesmisAdminRedirect } from './LesmisAdminRedirect';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
 import { Footer } from '../components';
 import { getRoutes } from '../views/AdminPanel/routes';
 import { getIsBESAdmin } from '../views/AdminPanel/authentication';
+import { NotAuthorisedView } from '../views/NotAuthorisedView';
+
+const PageContentContainerComponent = styled(PageContentWrapper)`
+  padding-inline: 0;
+  > div {
+    margin-inline: 1.5rem;
+  }
+  footer {
+    margin-block-start: 1.5rem;
+  }
+`;
 
 const AdminPanelApp = ({ user, isBESAdmin }) => {
   const { translate } = useI18n();
+  const location = useLocation();
   const adminUrl = useAdminPanelUrl();
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
@@ -37,89 +51,82 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
 
       <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
         <Route
-          path="/viz-builder/*"
-          hasAdminPanelAccess={userHasAdminPanelAccess}
-          element={
-            <VizBuilderApp
-              logo={{
-                url: '/lesmis-logo-white.svg',
-                alt: 'LESMIS Admin Panel Logo',
-              }}
-              homeLink={adminUrl}
-              Footer={Footer}
-            />
-          }
-        />
-        <Route
-          element={
-            <AppPageLayout
-              user={user}
-              routes={routes}
-              logo={{
-                url: '/lesmis-logo-white.svg',
-                alt: 'LESMIS Admin Panel Logo',
-              }}
-              homeLink={adminUrl}
-              userLinks={[{ label: 'Logout', to: '/logout' }]}
-              basePath={adminUrl}
-            />
-          }
+          path="/"
+          element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
         >
-          {routes.map(route => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={
-                <TabPageLayout routes={route.childViews} basePath={`${adminUrl}${route.path}`} />
-              }
-            >
-              {getFlattenedChildViews(route, adminUrl).map(childRoute => (
-                <Route
-                  key={childRoute.path}
-                  path={childRoute.path}
-                  element={
-                    childRoute.Component ? (
-                      <childRoute.Component />
-                    ) : (
-                      <ResourcePage {...childRoute} />
-                    )
-                  }
-                />
-              ))}
-            </Route>
-            // <LesmisAdminRoute
-            //   key={route.path}
-            //   path={route.path}
-            //   hasAdminPanelAccess={userHasAdminPanelAccess}
-            //   render={({ match }) => {
-            //     return (
-            //       <>
-            //         <SecondaryNavbar links={route.childViews} baseRoute={match.path} />
-            //         <PageContentWrapper>
-            //           <Switch>
-            //             {route.childViews.map(tab => (
-            //               <Route
-            //                 key={`${route.path}-${tab.path}`}
-            //                 path={`${route.path}${tab.path}`}
-            //                 exact
-            //               >
-            //                 <tab.component translate={translate} />
-            //               </Route>
-            //             ))}
-            //             <Redirect to={route.path} />
-            //           </Switch>
-            //           <Footer />
-            //         </PageContentWrapper>
-            //       </>
-            //     );
-            //   }}
-            // />
-          ))}
-          {/* <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} /> */}
-          <Route element={<div>Hi</div>} path="*" />
+          <Route
+            path="/viz-builder/*"
+            hasAdminPanelAccess={userHasAdminPanelAccess}
+            element={
+              <VizBuilderApp
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={adminUrl}
+                Footer={Footer}
+              />
+            }
+          />
+          <Route
+            element={
+              <AppPageLayout
+                user={user}
+                routes={routes}
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={adminUrl}
+                userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
+                basePath={adminUrl}
+              />
+            }
+          >
+            {routes.map(route => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <TabPageLayout
+                    routes={route.childViews}
+                    basePath={`${adminUrl}${route.path}`}
+                    Footer={<Footer />}
+                    ContainerComponent={PageContentContainerComponent}
+                  />
+                }
+              >
+                {getFlattenedChildViews(route, adminUrl).map(childRoute => (
+                  <Route
+                    key={childRoute.path}
+                    path={childRoute.path}
+                    element={
+                      childRoute.Component ? (
+                        <childRoute.Component />
+                      ) : (
+                        <ResourcePage {...childRoute} />
+                      )
+                    }
+                  />
+                ))}
+              </Route>
+            ))}
+            <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+          </Route>
         </Route>
       </Route>
-      {/* <Route path="*" element={<Navigate to={`${adminUrl}/login`} />} /> */}
+      <Route path="not-authorised" element={<NotAuthorisedView />} />
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={`${adminUrl}/login`}
+            state={{
+              referrer: location.pathname,
+            }}
+          />
+        }
+      />
     </Routes>
   );
 };
