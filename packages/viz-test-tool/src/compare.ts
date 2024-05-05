@@ -67,13 +67,17 @@ export const compare = async (
     const baselineResult = baselineResults[code];
     const compareResult = compareResults[code];
 
-    if (baselineResult.error || compareResult.error) {
-      const errorMessage = baselineResult.error || compareResult.error || '';
-      errors.push(`${code} - ${errorMessage}`);
+    if (baselineResult.error) {
+      errors.push(`${baselineInstance}: ${code} - ${baselineResult.error}`);
       return;
     }
 
-    if (baselineResult.skipped || compareResult.skipped) {
+    if (compareResult.error) {
+      errors.push(`${compareInstance}: ${code} - ${compareResult.error}`);
+      return;
+    }
+
+    if (baselineResult.skipped) {
       skipped.push(code);
       return;
     }

@@ -61,7 +61,7 @@ export class VizTestToolScript extends Script {
     const baselineUrls =
       baselineInstance === LOCAL_INSTANCE
         ? LOCALHOST_BASE_URLS
-        : getBaseUrlsForHost(`${compareInstance}-report-api.tupaia.org`);
+        : getBaseUrlsForHost(`${baselineInstance}-report-api.tupaia.org`);
 
     const compareUrls = getBaseUrlsForHost(`${compareInstance}-report-api.tupaia.org`);
     const baselineClient = new TupaiaApiClient(authHandler, baselineUrls);

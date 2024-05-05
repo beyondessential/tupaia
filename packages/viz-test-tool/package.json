@@ -2,7 +2,7 @@
   "name": "@tupaia/viz-test-tool",
   "version": "1.0.0",
   "private": true,
-  "description": "Tupaia types repository",
+  "description": "Tupaia viz test tool repository",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git",

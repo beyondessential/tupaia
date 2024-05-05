@@ -74,7 +74,10 @@ describe('compare', () => {
     const comparison = await compare('testA', 'testB', baseClient, otherClient);
     expect(comparison).toEqual({
       successes: 1,
-      errors: ['different - data mismatch at: {"animal":"dog"}', 'error - Data source is broken'],
+      errors: [
+        'different - data mismatch at: {"animal":"dog"}',
+        'testA: error - Data source is broken',
+      ],
       skipped: ['skipped'],
       total: 4,
     });
