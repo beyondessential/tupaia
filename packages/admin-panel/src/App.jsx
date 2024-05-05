@@ -1,18 +1,50 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Footer, Main, NavPanel, PageContentWrapper, PageWrapper, SecondaryNavbar } from './layout';
+import { AppPageLayout } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { getHasBESAdminPanelAccess, getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
-import { labelToId } from './utilities';
+import { ResourcePage } from './pages/resources/ResourcePage';
+import { TabPageLayout } from './layout/TabPageLayout';
+
+export const getFlattenedChildViews = route => {
+  return route.childViews.reduce((acc, childView) => {
+    const { detailsView } = childView;
+
+    const childViewWithRoute = {
+      ...childView,
+      path: `${route.path}${childView.path}`,
+      parent: route,
+    };
+
+    if (!detailsView) return [...acc, childViewWithRoute];
+
+    const updatedDetailsView = detailsView
+      ? {
+          ...detailsView,
+          path: `${route.path}${childView.path}${detailsView.path}`,
+          parent: childViewWithRoute,
+        }
+      : null;
+
+    return [
+      ...acc,
+      {
+        ...childViewWithRoute,
+        detailsView: updatedDetailsView,
+      },
+      updatedDetailsView,
+    ];
+  }, []);
+};
 
 export const App = ({ user, hasBESAdminAccess }) => {
   const userHasAccessToTab = tab => {
@@ -27,87 +59,49 @@ export const App = ({ user, hasBESAdminAccess }) => {
     return ROUTES.map(route => {
       return {
         ...route,
-        tabs: route.tabs.filter(tab => userHasAccessToTab(tab)),
+        childViews: route.childViews.filter(childView => userHasAccessToTab(childView)),
       };
     }).filter(route => {
       if (route.isBESAdminOnly) return !!hasBESAdminAccess;
-      return route.tabs.length > 0;
+      return route.childViews.length > 0;
     });
   };
 
   const accessibleRoutes = getAccessibleRoutes();
   return (
-    <Switch>
-      <Route path="/login" exact>
-        <LoginPage />
+    <Routes>
+      <Route path="/login" exact element={<LoginPage />} />
+      <Route path="/logout" exact element={<LogoutPage />} />
+      <Route path="/" element={<PrivateRoute />}>
+        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
+          <Route index element={<Navigate to="/surveys" replace />} />
+          <Route path="*" element={<Navigate to="/surveys" replace />} />
+          {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={<TabPageLayout routes={route.childViews} baseUrl={route.path} />}
+            >
+              {/* <Route index element={<Navigate to={route.childViews[0].path} replace />} /> */}
+              {getFlattenedChildViews(route).map(childRoute => (
+                <Route
+                  key={childRoute.title}
+                  path={childRoute.path}
+                  element={
+                    childRoute.Component ? (
+                      <childRoute.Component />
+                    ) : (
+                      <ResourcePage {...childRoute} />
+                    )
+                  }
+                />
+              ))}
+              <Route path="*" element={<Navigate to={route.childViews[0].path} replace />} />
+            </Route>
+          ))}
+        </Route>
       </Route>
-      <Route path="/logout" exact>
-        <LogoutPage />
-      </Route>
-      <PrivateRoute path="/">
-        <PageWrapper>
-          <NavPanel
-            links={accessibleRoutes.map(route => ({
-              ...route,
-              id: `app-tab-${labelToId(route.label)}`,
-            }))}
-            user={user}
-            userLinks={[
-              { label: 'Profile', to: '/profile' },
-              { label: 'Logout', to: '/logout' },
-            ]}
-          />
-          <Main>
-            <PageContentWrapper>
-              <Switch>
-                {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
-                  <Route
-                    key={route.to}
-                    path={route.to}
-                    render={({ match }) => {
-                      return (
-                        <>
-                          <SecondaryNavbar
-                            links={route.tabs.map(tab => ({
-                              ...tab,
-                              id: `app-subTab-${labelToId(tab.label)}`,
-                            }))}
-                            baseRoute={match.url}
-                          />
-                          <Switch>
-                            {route.tabs.map(tab => (
-                              <Route
-                                key={`${route.to}-${tab.to}`}
-                                path={`${route.to}${tab.to}`}
-                                exact
-                              >
-                                <tab.component
-                                  hasBESAdminAccess={hasBESAdminAccess}
-                                  needsBESAdminAccess={tab.needsBESAdminAccess}
-                                />
-                              </Route>
-                            ))}
-                            <Redirect to={route.to} />
-                          </Switch>
-                        </>
-                      );
-                    }}
-                  />
-                ))}
-                <Redirect to="surveys" />
-              </Switch>
-              <Footer />
-            </PageContentWrapper>
-          </Main>
-        </PageWrapper>
-      </PrivateRoute>
-      <Redirect
-        to={{
-          pathname: '/login',
-          state: { from: window.location.pathname },
-        }}
-      />
-    </Switch>
+    </Routes>
   );
 };
 

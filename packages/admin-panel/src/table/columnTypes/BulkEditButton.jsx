@@ -11,7 +11,7 @@ import { openBulkEditModal } from '../../editor/actions';
 import { ColumnActionButton } from './ColumnActionButton';
 
 export const BulkEditButtonComponent = ({ dispatch, actionConfig, row }) => {
-  const recordId = row.original.id;
+  const recordId = row.id;
   return (
     <ColumnActionButton
       id="page-button-bulk-edit"

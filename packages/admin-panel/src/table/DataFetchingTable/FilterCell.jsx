@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DefaultFilter } from '../columnTypes/columnFilters';
+import { HeaderDisplayCell } from './Cells';
 
 const FilterWrapper = styled.div`
   .MuiFormControl-root {
@@ -39,7 +40,7 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const FilterCell = ({ column, filters, onFilteredChange }) => {
+export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
   const { id, Filter } = column;
   const existingFilter = filters?.find(f => f.id === id);
   const handleUpdate = value => {
@@ -49,18 +50,21 @@ export const FilterCell = ({ column, filters, onFilteredChange }) => {
 
     onFilteredChange(updatedFilters);
   };
+  if (!column.filterable) return <HeaderDisplayCell isButtonColumn />;
   return (
-    <FilterWrapper>
-      {Filter ? (
-        <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
-      ) : (
-        <DefaultFilter
-          value={existingFilter?.value || ''}
-          onChange={e => handleUpdate(e.target.value)}
-          aria-label={`Search ${column.Header}`}
-        />
-      )}
-    </FilterWrapper>
+    <HeaderDisplayCell width={width}>
+      <FilterWrapper>
+        {Filter ? (
+          <Filter column={column} filter={existingFilter} onChange={handleUpdate} />
+        ) : (
+          <DefaultFilter
+            value={existingFilter?.value || ''}
+            onChange={e => handleUpdate(e.target.value)}
+            aria-label={`Search ${column.Header}`}
+          />
+        )}
+      </FilterWrapper>
+    </HeaderDisplayCell>
   );
 };
 
@@ -71,5 +75,11 @@ FilterCell.propTypes = {
     id: PropTypes.string.isRequired,
     Header: PropTypes.string.isRequired,
     Filter: PropTypes.func,
+    filterable: PropTypes.bool,
   }).isRequired,
+  width: PropTypes.number,
+};
+
+FilterCell.defaultProps = {
+  width: null,
 };

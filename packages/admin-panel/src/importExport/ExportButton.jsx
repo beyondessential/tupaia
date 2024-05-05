@@ -29,11 +29,13 @@ export const ExportButton = ({ actionConfig, row }) => {
       onClick={async () => {
         const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
           actionConfig;
-        const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
+        const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row.original);
         const endpoint = `export/${exportEndpoint}${
-          !queryParameters && row.id ? `/${row.id}` : ''
+          !queryParameters && row.original.id ? `/${row.original.id}` : ''
         }`;
-        const processedFileName = fileName ? makeSubstitutionsInString(fileName, row) : null;
+        const processedFileName = fileName
+          ? makeSubstitutionsInString(fileName, row.original.id)
+          : null;
         await api.download(
           endpoint,
           { queryParameters, ...extraQueryParameters },

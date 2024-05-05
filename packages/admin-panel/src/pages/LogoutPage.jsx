@@ -6,7 +6,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { getIsUserAuthenticated, logout } from '../authentication';
 
 const LogoutPageComponent = ({ redirectTo, onLogout, isLoggedIn }) => {
@@ -15,7 +15,7 @@ const LogoutPageComponent = ({ redirectTo, onLogout, isLoggedIn }) => {
   }, [onLogout]);
 
   if (!isLoggedIn) {
-    return <Redirect to={redirectTo} />;
+    return <Navigate to={redirectTo} />;
   }
 
   return <div>Logging out...</div>;

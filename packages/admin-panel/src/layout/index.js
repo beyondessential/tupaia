@@ -6,3 +6,5 @@ export { Footer } from './Footer';
 export { PageBody } from './PageBody';
 export { NavPanel, SecondaryNavbar, HomeLink, UserLink } from './navigation';
 export { PageWrapper, Main, PageContentWrapper } from './Page';
+export { AppPageLayout } from './AppPageLayout';
+export { Breadcrumbs } from './Breadcrumbs';

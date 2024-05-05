@@ -77,7 +77,7 @@ export const NavPanel = ({ links, user, logo, homeLink, userLinks }) => {
             <List>
               {links.map(link => (
                 <ListItem key={link.label} disableGutters>
-                  <NavLink to={link.to}>
+                  <NavLink to={link.path}>
                     {link.icon}
                     {link.label}
                   </NavLink>

@@ -10,11 +10,14 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { Select } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
-  margin-block: 0.9rem;
   font-size: 0.75rem;
   display: flex;
   justify-content: space-between;
   width: 100%;
+  border-top: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  padding-block: 0.5rem;
+  padding-inline: 1rem;
   label,
   p,
   .MuiInputBase-input {

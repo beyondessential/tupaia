@@ -7,9 +7,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { useTable, usePagination, useSortBy } from 'react-table';
 import {
-  TableCell,
   TableHead,
-  TableContainer,
+  TableContainer as MuiTableContainer,
   TableRow,
   TableBody,
   Table,
@@ -19,14 +18,12 @@ import {
 import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { ConfirmDeleteModal } from '@tupaia/ui-components';
+import { Alert, ConfirmDeleteModal } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
 import {
   cancelAction,
-  changeExpansions,
-  changeExpansionsTab,
   changeFilters,
   changePage,
   changePageSize,
@@ -37,32 +34,38 @@ import {
 } from '../actions';
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
+import { DisplayCell, HeaderDisplayCell } from './Cells';
 
-const BUTTON_COLUMN_WIDTH = '4.5rem';
-
-const Cell = styled(TableCell)`
-  vertical-align: middle;
-  font-size: 0.75rem;
-  padding: 0.7rem;
-  overflow: hidden;
-  max-width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : '0')};
-  width: ${({ $isButtonColumn }) => ($isButtonColumn ? BUTTON_COLUMN_WIDTH : 'auto')};
-  white-space: nowrap;
-  text-overflow: ellipsis;
+const ErrorAlert = styled(Alert).attrs({
+  severity: 'error',
+})`
+  margin: 0.5rem;
 `;
 
-const HeaderCell = styled(Cell)`
-  color: ${({ theme }) => theme.palette.text.secondary};
-  font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
-  .MuiTableSortLabel-icon {
-    opacity: 1;
+const TableContainer = styled(MuiTableContainer)`
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  table {
+    min-width: 45rem;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: ${({ theme }) => theme.palette.background.paper};
   }
 `;
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
+  overflow: hidden;
 `;
-const LoadingWrapper = styled.div`
+
+const MessageWrapper = styled.div`
   position: absolute;
   z-index: 1;
   top: 0;
@@ -98,6 +101,10 @@ const DataFetchingTableComponent = ({
   totalRecords,
   isFetchingData,
   onSortedChange,
+  detailUrl,
+  getIsLink,
+  endpoint,
+  getLink,
 }) => {
   const {
     getTableProps,
@@ -152,7 +159,7 @@ const DataFetchingTableComponent = ({
     }
   }, [errorMessage, isChangingDataOnServer]);
 
-  // initial render
+  // initial render/re-render when endpoint changes
   useEffect(() => {
     if (nestingLevel === 0) {
       // Page-level filters only apply to top-level data tables
@@ -162,7 +169,7 @@ const DataFetchingTableComponent = ({
     } else {
       initialiseTable();
     }
-  }, []);
+  }, [endpoint]);
 
   const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -170,13 +177,19 @@ const DataFetchingTableComponent = ({
 
   return (
     <Wrapper>
+      {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
       {isLoading && (
-        <LoadingWrapper>
+        <MessageWrapper>
           <Typography variant="body2">Loading</Typography>
-        </LoadingWrapper>
+        </MessageWrapper>
+      )}
+      {data.length === 0 && !isLoading && (
+        <MessageWrapper>
+          <Typography variant="body2">No data to display</Typography>
+        </MessageWrapper>
       )}
       <TableContainer>
-        <Table {...getTableProps()}>
+        <Table {...getTableProps()} stickyHeader>
           <TableHead>
             {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -195,11 +208,12 @@ const DataFetchingTableComponent = ({
                     i,
                   ) => {
                     return (
-                      <HeaderCell
+                      <HeaderDisplayCell
                         {...getHeaderProps(getSortByToggleProps())}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`header-${i}`}
-                        $isButtonColumn={isButtonColumn}
+                        isButtonColumn={isButtonColumn}
+                        width={visibleColumns[i].colWidth}
                       >
                         {render('Header')}
                         {canSort && (
@@ -209,47 +223,48 @@ const DataFetchingTableComponent = ({
                             IconComponent={KeyboardArrowDown}
                           />
                         )}
-                      </HeaderCell>
+                      </HeaderDisplayCell>
                     );
                   },
                 )}
               </TableRow>
             ))}
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
             <TableRow>
               {displayFilterRow &&
                 visibleColumns.map(column => {
                   return (
-                    <Cell
+                    <FilterCell
                       key={column.id}
-                    >
-                      {column.filterable ? (
-                        <FilterCell
-                          column={column}
-                          onFilteredChange={onFilteredChange}
-                          filters={filters}
-                        />
-                      ) : null}
-                    </Cell>
+                      column={column}
+                      onFilteredChange={onFilteredChange}
+                      filters={filters}
+                      width={column.colWidth}
+                    />
                   );
                 })}
             </TableRow>
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
             {rows.map((row, index) => {
               prepareRow(row);
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <TableRow {...row.getRowProps()} key={`table-row-${index}`}>
-                  {row.cells.map(({ getCellProps, value, render }, i) => {
+                  {row.cells.map(({ getCellProps, render }, i) => {
                     return (
-                      <Cell
-                        value={value}
+                      <DisplayCell
                         {...getCellProps()}
                         // eslint-disable-next-line react/no-array-index-key
                         key={`table-row-${index}-cell-${i}`}
+                        row={row}
+                        detailUrl={visibleColumns[i].isButtonColumn ? '' : detailUrl}
+                        getIsLink={getIsLink}
+                        width={visibleColumns[i].colWidth}
+                        getLink={getLink}
+                        isButtonColumn={visibleColumns[i].isButtonColumn}
                       >
                         {render('Cell')}
-                      </Cell>
+                      </DisplayCell>
                     );
                   })}
                 </TableRow>
@@ -266,6 +281,7 @@ const DataFetchingTableComponent = ({
         setPageSize={setPageSize}
         totalRecords={totalRecords}
       />
+
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
         message={confirmActionMessage}
@@ -285,15 +301,6 @@ DataFetchingTableComponent.propTypes = {
   confirmActionMessage: PropTypes.string,
   errorMessage: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({})),
-  expansionTabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      endpoint: PropTypes.string,
-      columns: PropTypes.array,
-      expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
-    }),
-  ),
-  expansions: PropTypes.object.isRequired,
   filters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isFetchingData: PropTypes.bool.isRequired,
   isChangingDataOnServer: PropTypes.bool.isRequired,
@@ -301,7 +308,6 @@ DataFetchingTableComponent.propTypes = {
   TableComponent: PropTypes.elementType,
   onCancelAction: PropTypes.func.isRequired,
   onConfirmAction: PropTypes.func.isRequired,
-  onExpandedChange: PropTypes.func.isRequired,
   onFilteredChange: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onPageSizeChange: PropTypes.func.isRequired,
@@ -314,17 +320,18 @@ DataFetchingTableComponent.propTypes = {
   reduxId: PropTypes.string.isRequired,
   resizedColumns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sorting: PropTypes.array.isRequired,
-  expansionTabStates: PropTypes.object.isRequired,
-  onExpandedTabChange: PropTypes.func.isRequired,
   nestingLevel: PropTypes.number,
   deleteConfig: PropTypes.object,
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
+  detailUrl: PropTypes.string,
+  getIsLink: PropTypes.func,
+  endpoint: PropTypes.string.isRequired,
+  getLink: PropTypes.func,
 };
 
 DataFetchingTableComponent.defaultProps = {
   confirmActionMessage: null,
-  expansionTabs: null,
   data: [],
   errorMessage: '',
   numberOfPages: 0,
@@ -333,12 +340,16 @@ DataFetchingTableComponent.defaultProps = {
   TableComponent: undefined,
   actionColumns: [],
   totalRecords: 0,
+  detailUrl: '',
+  getIsLink: null,
+  getLink: null,
 };
 
-const mapStateToProps = (state, { columns, reduxId }) => ({
+const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({
   isFetchingData: getIsFetchingData(state, reduxId),
   columns: columns.map(originalColumn => formatColumnForReactTable(originalColumn, reduxId)),
   isChangingDataOnServer: getIsChangingDataOnServer(state),
+  ...ownProps,
   ...getTableState(state, reduxId),
 });
 
@@ -350,8 +361,6 @@ const mapDispatchToProps = (dispatch, { reduxId }) => ({
   onPageSizeChange: (newPageSize, newPageIndex) =>
     dispatch(changePageSize(reduxId, newPageSize, newPageIndex)),
   onSortedChange: newSorting => dispatch(changeSorting(reduxId, newSorting)),
-  onExpandedChange: newExpansions => dispatch(changeExpansions(reduxId, newExpansions)),
-  onExpandedTabChange: (rowId, tabValue) => dispatch(changeExpansionsTab(reduxId, rowId, tabValue)),
   onFilteredChange: newFilters => dispatch(changeFilters(reduxId, newFilters)),
   onResizedChange: newResized => dispatch(changeResizedColumns(reduxId, newResized)),
 });
@@ -391,10 +400,10 @@ const formatColumnForReactTable = (originalColumn, reduxId) => {
     actionConfig,
     reduxId,
     type,
+    disableSortBy: !source, // disable action columns from being sortable
+    filterable: filterable !== false,
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
-    disableSortBy: !source, // disable action columns from being sortable
-    filterable: filterable !== false && !!source,
   };
 };
 
