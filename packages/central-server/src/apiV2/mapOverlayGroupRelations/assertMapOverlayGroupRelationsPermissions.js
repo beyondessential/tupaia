@@ -6,11 +6,10 @@
 import { hasBESAdminAccess } from '../../permissions';
 import { mergeFilter } from '../utilities';
 import { hasMapOverlayGetPermissions, hasMapOverlayEditPermissions } from '../mapOverlays';
-
 import {
-  createMapOverlayGroupDBFilter,
   hasMapOverlayGroupGetPermissions,
   hasMapOverlayGroupEditPermissions,
+  getPermittedMapOverlayGroupIds,
 } from '../mapOverlayGroups';
 
 export const hasMapOverlayGroupRelationGetPermissions = async (
@@ -124,8 +123,10 @@ export const createMapOverlayGroupRelationDBFilter = async (accessPolicy, models
 
   // Pull the list of map overlays we have access to,
   // then pull the corresponding map overlay groups
-  const mapOverlayGroupsFilter = await createMapOverlayGroupDBFilter(accessPolicy, models);
-  const permittedMapOverlayGroups = await models.mapOverlayGroup.find(mapOverlayGroupsFilter);
+  const permittedMapOverlayGroupIds = await getPermittedMapOverlayGroupIds(accessPolicy, models);
+  const permittedMapOverlayGroups = await models.mapOverlayGroup.find({
+    id: permittedMapOverlayGroupIds,
+  });
 
   // Ensure filter is not a string
   const filterToMerge =

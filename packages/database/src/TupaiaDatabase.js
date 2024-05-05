@@ -19,6 +19,7 @@ import {
 
 const QUERY_METHODS = {
   COUNT: 'count',
+  COUNT_DISTINCT: 'countDistinct',
   INSERT: 'insert',
   UPDATE: 'update',
   SELECT: 'select',
@@ -255,7 +256,7 @@ export class TupaiaDatabase {
    * @param {string} [queryMethod]
    * @returns
    */
-  find(recordType, where = {}, options = {}, queryMethod) {
+  find(recordType, where = {}, options = {}, queryMethod = null, queryMethodParameter = null) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
@@ -265,6 +266,7 @@ export class TupaiaDatabase {
         recordType,
         queryMethod:
           queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
+        queryMethodParameter,
       },
       where,
       options,
@@ -316,7 +318,14 @@ export class TupaiaDatabase {
 
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
+    const result = await this.find(
+      recordType,
+      where,
+      options,
+      // count distinct by record id, so we don't count the same record multiple times if there is a join
+      QUERY_METHODS.COUNT_DISTINCT,
+      `${recordType}.id`,
+    );
     return parseInt(result[0].count, 10);
   }
 
