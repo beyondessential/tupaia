@@ -12,6 +12,7 @@ configureEnv();
 
 export function getTestDatabase() {
   if (!database) {
+    process.env.DB_NAME = 'tupaia_test'; // Ensure that we're connecting to the test database
     database = new TupaiaDatabase();
   }
   return database;

@@ -17,7 +17,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child Id',
+    Header: 'Child ID',
     source: 'child_id',
     type: 'tooltip',
     editConfig: {
