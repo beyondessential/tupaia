@@ -5,13 +5,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { DialogFooter as BaseDialogFooter } from '@tupaia/ui-components';
-import { Button, Dialog } from '@material-ui/core';
+import { DialogFooter as BaseDialogFooter, Button } from '@tupaia/ui-components';
+import { Dialog } from '@material-ui/core';
 import { ModalContentProvider } from './ModalContentProvider';
 import { ModalHeader } from './ModalHeader';
 
 const DialogFooter = styled(BaseDialogFooter)`
   background-color: ${props => props.theme.palette.background.paper};
+  padding-block: 1.3rem;
+  padding-inline: 1.9rem;
 `;
 
 export const Modal = ({
@@ -31,11 +33,13 @@ export const Modal = ({
         {children}
       </ModalContentProvider>
       <DialogFooter>
-        {buttons?.map(({ onClick, color, text, id, disabled, variant }) => (
-          <Button onClick={onClick} color={color} id={id} disabled={disabled} variant={variant}>
-            {text}
-          </Button>
-        ))}
+        {buttons?.map(
+          ({ onClick, color = 'primary', text, id, disabled, variant = 'contained' }) => (
+            <Button onClick={onClick} color={color} id={id} disabled={disabled} variant={variant}>
+              {text}
+            </Button>
+          ),
+        )}
       </DialogFooter>
     </Dialog>
   );
