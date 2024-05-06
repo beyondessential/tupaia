@@ -53,7 +53,7 @@ export const getDashboardsPageConfigs = translate => {
       actionConfig: {
         title: translate('admin.edit'),
         editEndpoint: 'dashboards',
-        fields: [...FIELDS],
+        fields: FIELDS,
       },
     },
     getDeleteColumnConfigs(dashboards.endpoint, translate),
