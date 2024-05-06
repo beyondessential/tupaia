@@ -16,7 +16,7 @@ source ../../scripts/bash/mergeCurrentEnvWithEnvFile.sh
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
 
-# Drop materialized views
+# Drop materialized views and uninstall mv-refresh, as it is added after the base schema is set up
 yarn workspace @tupaia/data-api drop-analytics-table
 yarn workspace @tupaia/data-api uninstall-mv-refresh
 

@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 
 const verifyPDFPageUrl = (pdfPageUrl: string): string => {
   const { VALID_DOMAINS = 'tupaia.org' } = process.env;
-  const validDomains = VALID_DOMAINS?.split(' ');
+  const validDomains = VALID_DOMAINS.split(' ');
   if (!pdfPageUrl || typeof pdfPageUrl !== 'string') {
     throw new Error(`'pdfPageUrl' should be provided in request body, got: ${pdfPageUrl}`);
   }

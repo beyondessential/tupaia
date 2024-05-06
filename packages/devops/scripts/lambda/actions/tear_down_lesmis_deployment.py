@@ -40,4 +40,4 @@ def tear_down_lesmis_deployment(event):
     for instance in instances:
       teardown_instance(instance)
 
-    print('Finished tearing down clone')
+    print('Finished tearing down LESMIS deployment')

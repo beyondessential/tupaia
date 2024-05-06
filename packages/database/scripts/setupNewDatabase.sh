@@ -1,14 +1,13 @@
 #!/bin/bash -e
 
 SCRIPT_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$SCRIPT_DIR"
-cd ..
+cd "$SCRIPT_DIR/.."
 
-if [ "$1" != "OK" ]; then
-  echo "Note: this script reads .env vars"
-  echo "   [1] Update DB_NAME etc... in database db.env"
-  echo ""
-  echo "re-run with OK to continue"
+if [[ $1 != OK ]]; then
+  echo 'Note: this script reads .env vars'
+  echo '  Update DB_NAME etc... in database db.env'
+  echo 
+  echo 're-run with OK to continue'
   exit 1;
 fi
 
@@ -23,12 +22,15 @@ set -x
 IS_RDS=$(PGPASSWORD=$DB_PG_PASSWORD psql -qtAX -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "SELECT 1 FROM pg_roles WHERE rolname='rds_superuser'")
 
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE ROLE $DB_USER LOGIN PASSWORD '$DB_PASSWORD'" || echo "Role $DB_USER already exists?"
+
+# Temporarily grant DB_USER superuser access, to allow installing postgis and importing the schema
 if [ "$IS_RDS" = "1" ]; then
   PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "GRANT rds_superuser TO $DB_USER"
-  PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "grant $DB_USER to postgres"
+  PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "GRANT $DB_USER TO postgres"
 else
   PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "ALTER USER $DB_USER WITH SUPERUSER"
 fi
+
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE ROLE tupaia_read PASSWORD '$DB_PASSWORD'" || echo "Role tupaia_read already exists?"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER"
 PGPASSWORD=$DB_PG_PASSWORD psql -h $DB_URL -p $DB_PORT -U $DB_PG_USER $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS postgis"
