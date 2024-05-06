@@ -7,7 +7,7 @@ import {
   BasicAuthHandler,
   LOCALHOST_BASE_URLS,
   TupaiaApiClient,
-  getBaseUrlsForHost,
+  getDefaultBaseUrls,
 } from '@tupaia/api-client';
 import { Script, requireEnv } from '@tupaia/utils';
 import { compare } from './compare';
@@ -61,9 +61,9 @@ export class VizTestToolScript extends Script {
     const baselineUrls =
       baselineInstance === LOCAL_INSTANCE
         ? LOCALHOST_BASE_URLS
-        : getBaseUrlsForHost(`${baselineInstance}-report-api.tupaia.org`);
+        : getDefaultBaseUrls(`${baselineInstance}-report-api.tupaia.org`);
 
-    const compareUrls = getBaseUrlsForHost(`${compareInstance}-report-api.tupaia.org`);
+    const compareUrls = getDefaultBaseUrls(`${compareInstance}-report-api.tupaia.org`);
     const baselineClient = new TupaiaApiClient(authHandler, baselineUrls);
     const compareClient = new TupaiaApiClient(authHandler, compareUrls);
 
@@ -86,7 +86,7 @@ export class VizTestToolScript extends Script {
 
     const authHandler = this.getAuthHandler();
     const baseUrls = instance
-      ? getBaseUrlsForHost(`${instance}-report-api.tupaia.org`)
+      ? getDefaultBaseUrls(`${instance}-report-api.tupaia.org`)
       : LOCALHOST_BASE_URLS;
 
     const apiClient = new TupaiaApiClient(authHandler, baseUrls);
