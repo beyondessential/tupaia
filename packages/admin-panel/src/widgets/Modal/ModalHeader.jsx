@@ -12,7 +12,7 @@ import { Close } from '@material-ui/icons';
 
 const Header = styled(FlexStart)`
   position: relative;
-  padding: 1.1rem 1.3rem;
+  padding: 1.1rem 1.3rem 0.9rem;
 `;
 
 const Title = styled(Typography)`
@@ -24,7 +24,7 @@ const CloseButton = styled(IconButton)`
   position: absolute;
   top: 0;
   right: 0;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 export const ModalHeader = ({ title, onClose, children }) => (

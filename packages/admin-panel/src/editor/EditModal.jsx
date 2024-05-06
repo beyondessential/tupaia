@@ -90,7 +90,7 @@ export const EditModalComponent = ({
       errorMessage={errorMessage}
       isLoading={isLoading}
       onClose={onDismiss}
-      open={isOpen}
+      isOpen={isOpen}
       disableBackdropClick
       title={title}
       buttons={buttons}

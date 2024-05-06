@@ -16,6 +16,8 @@ const Content = styled(DialogContent)`
   border-color: ${props => props.theme.palette.grey['400']};
   border-style: solid;
   border-width: 1px 0;
+  padding-block: 1.25rem;
+  padding-inline: 1.9rem;
 `;
 
 const Heading = styled(Typography)`

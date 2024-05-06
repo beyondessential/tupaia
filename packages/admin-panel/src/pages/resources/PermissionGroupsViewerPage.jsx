@@ -8,7 +8,6 @@ import { HorizontalTree } from '@tupaia/ui-components';
 import { useQuery } from 'react-query';
 import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
-import * as COLORS from '../../theme/colors';
 import { get } from '../../VizBuilderApp/api';
 import { DEFAULT_REACT_QUERY_OPTIONS } from '../../VizBuilderApp/api/constants';
 
@@ -20,7 +19,7 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   margin-top: 40px;
   margin-bottom: 40px;
   max-height: 870px;
-  color: ${COLORS.TEXT_MIDGREY};
+  color: ${({ theme }) => theme.palette.text.primary};
 
   .MuiTypography-body1 {
     font-size: 15px;

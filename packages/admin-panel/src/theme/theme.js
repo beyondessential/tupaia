@@ -104,7 +104,7 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1.125rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -132,6 +132,16 @@ const overrides = {
   MuiDivider: {
     root: {
       backgroundColor: COLORS.GREY_DE,
+    },
+  },
+  MuiFormLabel: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiInputBase: {
+    input: {
+      fontSize: '0.875rem',
     },
   },
 };

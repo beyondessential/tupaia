@@ -143,7 +143,7 @@ export const StyledReactTable = styled(ReactTable)`
         .MuiSelect-root {
           font-size: 14px;
           line-height: 16px;
-          color: ${COLORS.TEXT_MIDGREY};
+          color: ${({ theme }) => theme.palette.text.secondary};
           padding: 12px 44px 12px 15px;
         }
 

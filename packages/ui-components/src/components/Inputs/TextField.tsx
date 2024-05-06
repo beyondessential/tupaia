@@ -23,7 +23,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    font-size: 1rem;
     line-height: 1.2rem;
     padding: 1rem;
     border-radius: 3px;
@@ -83,8 +82,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   .MuiFormLabel-root {
     position: relative;
     margin-bottom: 3px;
-    color: ${props => props.theme.palette.text.secondary};
-    font-size: 0.9375rem;
     line-height: 1.125rem;
     transform: none;
     display: flex;

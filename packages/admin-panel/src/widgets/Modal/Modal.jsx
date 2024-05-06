@@ -27,7 +27,7 @@ export const Modal = ({
   ...muiDialogProps
 }) => {
   return (
-    <Dialog onClose={onClose} open={isOpen} disableBackdropClick {...muiDialogProps}>
+    <Dialog onClose={onClose} open={isOpen} fullWidth {...muiDialogProps}>
       <ModalHeader onClose={onClose} title={title} />
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         {children}

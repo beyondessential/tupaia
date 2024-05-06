@@ -14,7 +14,7 @@ export const GREEN = '#02B851';
 export const DARKGREY = '#283238'; // dark background
 export const LIGHTGREY = '#F9F9F9'; // page background
 export const TEXT_DARKGREY = '#414D55';
-export const TEXT_MIDGREY = '#898989';
+export const TEXT_MIDGREY = '#666666';
 export const TEXT_LIGHTGREY = '#DEDEDE';
 
 export const DARK_BLUE = '#328DE5';
