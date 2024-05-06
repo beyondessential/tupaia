@@ -4,7 +4,7 @@
  */
 import { surveysTabRoutes } from '@tupaia/admin-panel';
 import { getSurveysPageConfigs } from './getSurveysPageConfigs';
-import { getQuestionPageConfigs } from './getQuestionPageConfigs';
+import { getQuestionPageConfig } from './getQuestionPageConfig';
 import { getDataElementsPageConfigs } from './getDataElementsPageConfigs';
 import { getSyncGroupsPageConfigs } from './getSyncGroupsPageConfigs';
 
@@ -14,7 +14,7 @@ export const getSurveysTabRoutes = (translate, adminUrl) => {
     label: translate('admin.surveys'),
     childViews: [
       getSurveysPageConfigs(translate, adminUrl),
-      getQuestionPageConfigs(translate),
+      getQuestionPageConfig(translate),
       getDataElementsPageConfigs(translate),
       getSyncGroupsPageConfigs(translate),
     ],

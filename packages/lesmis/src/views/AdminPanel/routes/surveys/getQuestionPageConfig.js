@@ -7,7 +7,7 @@ import { questions } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getEditorConfigs } from '../helpers/getEditorConfigs';
 
-export const getQuestionPageConfigs = translate => {
+export const getQuestionPageConfig = translate => {
   const QUESTION_FIELDS = [
     {
       Header: translate('admin.code'),
