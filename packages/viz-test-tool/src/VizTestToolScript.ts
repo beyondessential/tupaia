@@ -71,7 +71,11 @@ export class VizTestToolScript extends Script {
     const logFilePath = writeLogFile(result);
 
     if (notify) {
-      await messageSlack(result, logFilePath);
+      await messageSlack(
+        `Compare (${baselineInstance} | ${compareInstance}) result:`,
+        result,
+        logFilePath,
+      );
     }
 
     this.logCompleteMessage(logFilePath);
@@ -91,7 +95,7 @@ export class VizTestToolScript extends Script {
     const logFilePath = writeLogFile(result);
 
     if (notify) {
-      await messageSlack(result, logFilePath);
+      await messageSlack(`Health check result:`, result, logFilePath);
     }
 
     this.logCompleteMessage(logFilePath);

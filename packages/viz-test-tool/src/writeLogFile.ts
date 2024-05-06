@@ -31,6 +31,11 @@ export const writeLogFile = (result: TestResult) => {
 
   const fileName = `results_${new Date().getTime()}.log`;
   const filePath = `${LOGS_DIR}/${fileName}`;
+
+  if (!fs.existsSync(LOGS_DIR)) {
+    fs.mkdirSync(LOGS_DIR);
+  }
+
   fs.writeFileSync(filePath, fileContents);
   return filePath;
 };

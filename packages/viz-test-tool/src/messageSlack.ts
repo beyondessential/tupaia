@@ -16,12 +16,12 @@ const initialiseClient = () => {
   client = new WebClient(requireEnv('SLACK_BOT_OAUTH_TOKEN'));
 };
 
-const buildMessageBlocks = ({ successes, errors, skipped }: TestResult) => [
+const buildMessageBlocks = (heading: string, { successes, errors, skipped }: TestResult) => [
   {
     type: 'header',
     text: {
       type: 'plain_text',
-      text: 'Health check result',
+      text: heading,
       emoji: true,
     },
   },
@@ -84,13 +84,13 @@ const buildMessageBlocks = ({ successes, errors, skipped }: TestResult) => [
   },
 ];
 
-export const messageSlack = async (result: TestResult, logFilePath: string) => {
+export const messageSlack = async (heading: string, result: TestResult, logFilePath: string) => {
   if (!client) {
     initialiseClient();
   }
 
-  const blocks = buildMessageBlocks(result);
-  const text = `Health check result:\n${JSON.stringify(result)}`;
+  const blocks = buildMessageBlocks(heading, result);
+  const text = `${heading}:\n${JSON.stringify(result)}`;
 
   await client.chat.postMessage({
     channel: VIZ_TEST_TOOL_CHANNEL_NAME,

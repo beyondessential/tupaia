@@ -45,13 +45,13 @@ describe('messageSlack', () => {
     };
     const logFilePath = 'logs/results_12354.log';
 
-    await messageSlack(results, logFilePath);
+    await messageSlack('Test results', results, logFilePath);
 
     const expectedBlocks = [
       {
         text: {
           emoji: true,
-          text: 'Health check result',
+          text: 'Test results',
           type: 'plain_text',
         },
         type: 'header',
@@ -115,7 +115,7 @@ describe('messageSlack', () => {
       },
     ];
 
-    const expectedText = `Health check result:\n{"successes":7,"errors":["bad_report - Oh no! Where's my tooth brush!?"],"skipped":["skipped_report"],"total":9}`;
+    const expectedText = `Test results:\n{"successes":7,"errors":["bad_report - Oh no! Where's my tooth brush!?"],"skipped":["skipped_report"],"total":9}`;
 
     expect(messages.length).toEqual(1);
     expect(messages[0]).toEqual({

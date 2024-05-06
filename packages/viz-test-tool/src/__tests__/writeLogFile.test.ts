@@ -10,6 +10,7 @@ const mockFileSystem: Record<string, string> = {};
 jest.mock('fs', () => ({
   writeFileSync: (filePath: string, fileContents: string) =>
     (mockFileSystem[filePath] = fileContents),
+  existsSync: () => true,
 }));
 
 const date = new Date('2020-01-01');
