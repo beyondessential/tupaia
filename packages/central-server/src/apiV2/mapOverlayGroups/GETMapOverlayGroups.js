@@ -2,14 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { JOIN_TYPES, RECORDS } from '@tupaia/database';
 import { GETHandler } from '../GETHandler';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 import {
   assertMapOverlayGroupsGetPermissions,
   createMapOverlayGroupDBFilter,
 } from './assertMapOverlayGroupsPermissions';
-import { mergeMultiJoin } from '../utilities';
 
 /**
  * Handles endpoints:
