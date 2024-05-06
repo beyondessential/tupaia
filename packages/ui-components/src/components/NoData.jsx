@@ -10,7 +10,7 @@ import { SmallAlert } from './Alert';
 
 const getNoDataString = (config, report) => {
   const startDate = report?.startDate || config?.startDate;
-  const endDate = report?.startDate || config?.endDate;
+  const endDate = report?.endDate || config?.endDate;
 
   if (config?.noDataMessage) {
     return config?.noDataMessage;
