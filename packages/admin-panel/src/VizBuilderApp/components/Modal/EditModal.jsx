@@ -12,7 +12,6 @@ import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../../constants';
 
 export const Body = styled.div`
   padding: 30px 20px;
-  background-color: #f9f9f9;
 `;
 
 export const EditModal = () => {

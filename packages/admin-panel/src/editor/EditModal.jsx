@@ -1,19 +1,19 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useEffect, useState } from 'react';
 import keyBy from 'lodash.keyby';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
+
 import { closeEditModal, editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
-import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
 import { getExplodedFields } from '../utilities';
+import { Modal } from '../widgets';
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
@@ -69,35 +69,45 @@ export const EditModalComponent = ({
 
   const FieldsComponentResolved = FieldsComponent ?? Editor;
 
+  const buttons = [
+    {
+      onClick: onDismiss,
+      text: errorMessage ? dismissButtonText : cancelButtonText,
+      disabled: isLoading,
+      variant: 'outlined',
+      id: 'form-button-cancel',
+    },
+    {
+      onClick: () => onSave(files),
+      id: 'form-button-save',
+      text: saveButtonText,
+      disabled: !!errorMessage || isLoading || isUnchanged,
+    },
+  ];
+
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
-      <DialogHeader onClose={onDismiss} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-        <FieldsComponentResolved
-          fields={fields}
-          isLoading={isLoading}
-          recordData={recordData}
-          onEditField={(fieldSource, newValue) => {
-            const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-            return onEditField(fieldSourceToEdit, newValue);
-          }}
-          onSetFormFile={handleSetFormFile}
-        />
-        {displayUsedBy && <UsedBy {...usedByConfig} />}
-      </ModalContentProvider>
-      <DialogFooter>
-        <Button id="form-button-cancel" variant="outlined" onClick={onDismiss} disabled={isLoading}>
-          {errorMessage ? dismissButtonText : cancelButtonText}
-        </Button>
-        <Button
-          id="form-button-save"
-          onClick={() => onSave(files)}
-          disabled={!!errorMessage || isLoading || isUnchanged}
-        >
-          {saveButtonText}
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <Modal
+      errorMessage={errorMessage}
+      isLoading={isLoading}
+      onClose={onDismiss}
+      open={isOpen}
+      disableBackdropClick
+      title={title}
+      buttons={buttons}
+      {...extraDialogProps}
+    >
+      <FieldsComponentResolved
+        fields={fields}
+        isLoading={isLoading}
+        recordData={recordData}
+        onEditField={(fieldSource, newValue) => {
+          const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+          return onEditField(fieldSourceToEdit, newValue);
+        }}
+        onSetFormFile={handleSetFormFile}
+      />
+      {displayUsedBy && <UsedBy {...usedByConfig} />}
+    </Modal>
   );
 };
 
