@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.7
--- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped from database version 13.13
+-- Dumped by pg_dump version 14.11 (Ubuntu 14.11-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -64,31 +64,8 @@ CREATE TYPE public.data_table_type AS ENUM (
     'sql',
     'data_group_metadata',
     'data_element_metadata',
-    'entity_attributes'
-);
-
-
---
--- Name: disaster_event_type; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.disaster_event_type AS ENUM (
-    'start',
-    'end',
-    'resolve'
-);
-
-
---
--- Name: disaster_type; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.disaster_type AS ENUM (
-    'cyclone',
-    'eruption',
-    'earthquake',
-    'tsunami',
-    'flood'
+    'entity_attributes',
+    'survey_responses'
 );
 
 
@@ -130,7 +107,21 @@ CREATE TYPE public.entity_type AS ENUM (
     'institute',
     'msupply_store',
     'complaint',
-    'water_sample'
+    'water_sample',
+    'facility_building',
+    'facility_division',
+    'facility_section',
+    'hospital_ward',
+    'farm',
+    'repair_request',
+    'district_operational',
+    'commune',
+    'business',
+    'health_clinic_boundary',
+    'enumeration_area',
+    'maintenance',
+    'larval_sample',
+    'transfer'
 );
 
 
@@ -153,7 +144,35 @@ CREATE TYPE public.period_granularity AS ENUM (
 
 CREATE TYPE public.primary_platform AS ENUM (
     'tupaia',
-    'lesmis'
+    'lesmis',
+    'datatrak'
+);
+
+
+--
+-- Name: question_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.question_type AS ENUM (
+    'Arithmetic',
+    'Autocomplete',
+    'Binary',
+    'Checkbox',
+    'CodeGenerator',
+    'Condition',
+    'Date',
+    'DateOfData',
+    'DateTime',
+    'Entity',
+    'FreeText',
+    'Geolocate',
+    'Instruction',
+    'Number',
+    'Photo',
+    'PrimaryEntity',
+    'Radio',
+    'SubmissionDate',
+    'File'
 );
 
 
@@ -438,39 +457,38 @@ CREATE FUNCTION public.drop_analytics_log_tables() RETURNS void
     LANGUAGE plpgsql
     AS $_X$
 declare
-      tStartTime TIMESTAMP;
-      source_table TEXT;
-      source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
-    
-    begin
+  tStartTime TIMESTAMP;
+  source_table TEXT;
+  source_tables_array TEXT[] := array['answer', 'survey_response', 'entity', 'survey', 'question', 'data_element'];
+
+begin
+  IF (SELECT EXISTS (
+    SELECT FROM pg_tables
+    WHERE schemaname = 'public'
+    AND tablename   = 'analytics'
+  ))
+  THEN
+    RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+  ELSE
+    RAISE NOTICE 'Dropping Materialized View Logs...';
+    FOREACH source_table IN ARRAY source_tables_array LOOP
       IF (SELECT EXISTS (
         SELECT FROM pg_tables
         WHERE schemaname = 'public'
-        AND tablename   = 'analytics'
+        AND tablename   = 'log$_' || source_table
       ))
       THEN
-        RAISE NOTICE 'Must drop analytics table before dropping log tables. Run drop_analytics_table()';
+        EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
+        tStartTime := clock_timestamp();
+        PERFORM mv$removeMaterializedViewLog(source_table, 'public');
+        RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
+        EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
       ELSE
-        RAISE NOTICE 'Dropping Materialized View Logs...';
-        FOREACH source_table IN ARRAY source_tables_array LOOP
-          IF (SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE schemaname = 'public'
-            AND tablename   = 'log$_' || source_table
-          ))
-          THEN
-            EXECUTE 'ALTER TABLE ' || source_table || ' DISABLE TRIGGER ' || source_table || '_trigger';
-            tStartTime := clock_timestamp();
-            PERFORM mv$removeMaterializedViewLog(source_table, 'public');
-            RAISE NOTICE 'Dropped Materialized View Log for % table, took %', source_table, clock_timestamp() - tStartTime;
-            EXECUTE 'ALTER TABLE ' || source_table || ' ENABLE TRIGGER ' || source_table || '_trigger';
-          ELSE
-            RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
-          END IF;
-        END LOOP;
+        RAISE NOTICE 'Materialized View Log for % table does not exist, skipping', source_table;
       END IF;
-    end
-$_X$;
+    END LOOP;
+  END IF;
+end $_X$;
 
 
 --
@@ -723,20 +741,6 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 
 
 --
--- Name: update_change_time(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.update_change_time() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-      NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/1000);
-      RETURN NEW;
-    END;
-    $$;
-
-
---
 -- Name: array_concat_agg(anyarray); Type: AGGREGATE; Schema: public; Owner: -
 --
 
@@ -927,7 +931,34 @@ CREATE TABLE public.dashboard_item (
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     report_code text,
     legacy boolean DEFAULT false NOT NULL,
-    permission_group_ids text[]
+    permission_group_ids text[],
+    CONSTRAINT check_code_equals_report_code CHECK (((legacy = true) OR (code = report_code)))
+);
+
+
+--
+-- Name: dashboard_mailing_list; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dashboard_mailing_list (
+    id text NOT NULL,
+    project_id text NOT NULL,
+    entity_id text NOT NULL,
+    dashboard_id text NOT NULL,
+    admin_permission_groups text[] DEFAULT '{}'::text[] NOT NULL
+);
+
+
+--
+-- Name: dashboard_mailing_list_entry; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.dashboard_mailing_list_entry (
+    id text NOT NULL,
+    dashboard_mailing_list_id text NOT NULL,
+    email text NOT NULL,
+    subscribed boolean DEFAULT true NOT NULL,
+    unsubscribed_time timestamp without time zone
 );
 
 
@@ -943,6 +974,7 @@ CREATE TABLE public.dashboard_relation (
     project_codes text[] NOT NULL,
     permission_groups text[] NOT NULL,
     sort_order integer,
+    attributes_filter jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT entity_types_not_empty CHECK ((entity_types <> '{}'::public.entity_type[])),
     CONSTRAINT permission_groups_not_empty CHECK ((permission_groups <> '{}'::text[])),
     CONSTRAINT project_codes_not_empty CHECK ((project_codes <> '{}'::text[]))
@@ -1042,6 +1074,20 @@ CREATE TABLE public.data_table (
 
 
 --
+-- Name: datatrak_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.datatrak_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
+);
+
+
+--
 -- Name: dhis_instance; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1090,32 +1136,6 @@ CREATE TABLE public.dhis_sync_queue (
 
 
 --
--- Name: disaster; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.disaster (
-    id text NOT NULL,
-    type public.disaster_type NOT NULL,
-    description text,
-    name text NOT NULL,
-    "countryCode" text NOT NULL
-);
-
-
---
--- Name: disasterEvent; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public."disasterEvent" (
-    id text NOT NULL,
-    date timestamp with time zone NOT NULL,
-    type public.disaster_event_type NOT NULL,
-    "organisationUnitCode" text NOT NULL,
-    "disasterId" text NOT NULL
-);
-
-
---
 -- Name: entity; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1124,14 +1144,14 @@ CREATE TABLE public.entity (
     code character varying(64) NOT NULL,
     parent_id character varying(64),
     name character varying(128) NOT NULL,
-    type public.entity_type,
+    type public.entity_type NOT NULL,
     point public.geography(Point,4326),
     region public.geography(MultiPolygon,4326),
     image_url text,
     country_code character varying(6),
     bounds public.geography(Polygon,4326),
-    metadata jsonb,
-    attributes jsonb DEFAULT '{}'::jsonb
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    attributes jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1229,6 +1249,29 @@ CREATE TABLE public.indicator (
 
 
 --
+-- Name: landing_page; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.landing_page (
+    id text NOT NULL,
+    name character varying(40) NOT NULL,
+    url_segment text NOT NULL,
+    image_url text,
+    logo_url text,
+    primary_hexcode text,
+    secondary_hexcode text,
+    extended_title text,
+    long_bio text,
+    contact_us text,
+    external_link text,
+    phone_number text,
+    website_url text,
+    include_name_in_header boolean,
+    project_codes text[]
+);
+
+
+--
 -- Name: legacy_report; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1270,7 +1313,8 @@ CREATE TABLE public.map_overlay (
     report_code text,
     legacy boolean DEFAULT false NOT NULL,
     data_services jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb,
-    id text DEFAULT public.generate_object_id() NOT NULL
+    id text DEFAULT public.generate_object_id() NOT NULL,
+    entity_attributes_filter jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1467,11 +1511,11 @@ CREATE TABLE public.project (
     image_url text,
     default_measure text DEFAULT '126,171'::text,
     dashboard_group_name text DEFAULT 'General'::text,
-    permission_groups text[],
+    permission_groups text[] DEFAULT '{}'::text[] NOT NULL,
     logo_url text,
     entity_id text,
     entity_hierarchy_id text,
-    config jsonb DEFAULT '{"permanentRegionLabels": true}'::jsonb
+    config jsonb DEFAULT '{"permanentRegionLabels": true}'::jsonb NOT NULL
 );
 
 
@@ -1497,14 +1541,13 @@ CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
     name text,
-    type text NOT NULL,
     options text[],
     code text,
     detail text,
     option_set_id character varying,
     hook text,
     data_element_id text,
-    CONSTRAINT data_source_id_not_null_on_conditions CHECK (((type = ANY (ARRAY['DateOfData'::text, 'Instruction'::text, 'PrimaryEntity'::text, 'SubmissionDate'::text])) OR (data_element_id IS NOT NULL)))
+    type public.question_type NOT NULL
 );
 
 
@@ -1530,7 +1573,8 @@ CREATE TABLE public.report (
     id text NOT NULL,
     code text NOT NULL,
     config jsonb NOT NULL,
-    permission_group_id text NOT NULL
+    permission_group_id text NOT NULL,
+    latest_data_parameters jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1571,7 +1615,8 @@ CREATE TABLE public.survey (
     integration_metadata jsonb DEFAULT '{}'::jsonb,
     period_granularity public.period_granularity,
     requires_approval boolean DEFAULT false,
-    data_group_id text
+    data_group_id text,
+    project_id text NOT NULL
 );
 
 
@@ -1660,6 +1705,20 @@ CREATE TABLE public.sync_group_log (
 
 
 --
+-- Name: tupaia_web_session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tupaia_web_session (
+    id text NOT NULL,
+    email text NOT NULL,
+    access_policy jsonb NOT NULL,
+    access_token text NOT NULL,
+    access_token_expiry bigint NOT NULL,
+    refresh_token text NOT NULL
+);
+
+
+--
 -- Name: userSession; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1691,7 +1750,8 @@ CREATE TABLE public.user_account (
     password_salt text NOT NULL,
     verified_email public.verified_email DEFAULT 'new_user'::public.verified_email,
     profile_image text,
-    primary_platform public.primary_platform DEFAULT 'tupaia'::public.primary_platform
+    primary_platform public.primary_platform DEFAULT 'tupaia'::public.primary_platform,
+    preferences jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1701,9 +1761,9 @@ CREATE TABLE public.user_account (
 
 CREATE TABLE public.user_entity_permission (
     id text NOT NULL,
-    user_id text,
-    entity_id text,
-    permission_group_id text
+    user_id text NOT NULL,
+    entity_id text NOT NULL,
+    permission_group_id text NOT NULL
 );
 
 
@@ -1908,6 +1968,14 @@ ALTER TABLE ONLY public.dashboard
 
 
 --
+-- Name: dashboard_mailing_list dashboard_id_project_id_entity_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list
+    ADD CONSTRAINT dashboard_id_project_id_entity_id_unique UNIQUE (dashboard_id, project_id, entity_id);
+
+
+--
 -- Name: dashboard_item dashboard_item_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1921,6 +1989,30 @@ ALTER TABLE ONLY public.dashboard_item
 
 ALTER TABLE ONLY public.dashboard_item
     ADD CONSTRAINT dashboard_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard_mailing_list_entry dashboard_mailing_list_entry_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list_entry
+    ADD CONSTRAINT dashboard_mailing_list_entry_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard_mailing_list_entry dashboard_mailing_list_id_email_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list_entry
+    ADD CONSTRAINT dashboard_mailing_list_id_email_unique UNIQUE (dashboard_mailing_list_id, email);
+
+
+--
+-- Name: dashboard_mailing_list dashboard_mailing_list_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list
+    ADD CONSTRAINT dashboard_mailing_list_pkey PRIMARY KEY (id);
 
 
 --
@@ -2028,6 +2120,14 @@ ALTER TABLE ONLY public.data_table
 
 
 --
+-- Name: datatrak_session datatrak_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.datatrak_session
+    ADD CONSTRAINT datatrak_session_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: dhis_instance dhis_instance_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2081,22 +2181,6 @@ ALTER TABLE ONLY public.dhis_sync_queue
 
 ALTER TABLE ONLY public.dhis_sync_queue
     ADD CONSTRAINT dhis_sync_queue_record_id_unique UNIQUE (record_id);
-
-
---
--- Name: disasterEvent disasterEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."disasterEvent"
-    ADD CONSTRAINT "disasterEvent_pkey" PRIMARY KEY (id);
-
-
---
--- Name: disaster disaster_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.disaster
-    ADD CONSTRAINT disaster_pkey PRIMARY KEY (id);
 
 
 --
@@ -2201,6 +2285,14 @@ ALTER TABLE ONLY public.indicator
 
 ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: landing_page landing_page_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.landing_page
+    ADD CONSTRAINT landing_page_pkey PRIMARY KEY (id);
 
 
 --
@@ -2564,6 +2656,14 @@ ALTER TABLE ONLY public.sync_group_log
 
 
 --
+-- Name: tupaia_web_session tupaia_web_session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tupaia_web_session
+    ADD CONSTRAINT tupaia_web_session_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: userSession userSession_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2781,13 +2881,6 @@ CREATE INDEX question_code_idx ON public.question USING btree (code);
 
 
 --
--- Name: question_type_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX question_type_idx ON public.question USING btree (type);
-
-
---
 -- Name: refresh_token_token_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2834,6 +2927,13 @@ CREATE INDEX survey_name_idx ON public.survey USING btree (name);
 --
 
 CREATE INDEX survey_permission_group_id_idx ON public.survey USING btree (permission_group_id);
+
+
+--
+-- Name: survey_project_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX survey_project_id_idx ON public.survey USING btree (project_id);
 
 
 --
@@ -2998,6 +3098,13 @@ CREATE TRIGGER ancestor_descendant_relation_immutable_trigger AFTER UPDATE ON pu
 
 
 --
+-- Name: ancestor_descendant_relation ancestor_descendant_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER ancestor_descendant_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ancestor_descendant_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3089,13 +3196,6 @@ CREATE TRIGGER data_service_entity_trigger AFTER INSERT OR DELETE OR UPDATE ON p
 
 
 --
--- Name: data_table data_table_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER data_table_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_table FOR EACH ROW EXECUTE FUNCTION public.notification();
-
-
---
 -- Name: dhis_instance dhis_instance_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3106,21 +3206,7 @@ CREATE TRIGGER dhis_instance_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 -- Name: dhis_sync_queue dhis_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
-
-
---
--- Name: disaster disaster_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE FUNCTION public.notification();
-
-
---
--- Name: disasterEvent disasterevent_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE FUNCTION public.notification();
+CREATE TRIGGER dhis_sync_queue_trigger AFTER INSERT OR DELETE OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3173,6 +3259,13 @@ CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.med
 
 
 --
+-- Name: landing_page landing_page_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER landing_page_trigger AFTER INSERT OR DELETE OR UPDATE ON public.landing_page FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
 -- Name: map_overlay_group_relation map_overlay_group_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3211,7 +3304,7 @@ CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON publi
 -- Name: meditrak_sync_queue meditrak_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
+CREATE TRIGGER meditrak_sync_queue_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3225,7 +3318,7 @@ CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.m
 -- Name: ms1_sync_queue ms1_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
+CREATE TRIGGER ms1_sync_queue_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -3489,6 +3582,38 @@ ALTER TABLE ONLY public.comment
 
 
 --
+-- Name: dashboard_mailing_list dashboard_mailing_list_dashboard_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list
+    ADD CONSTRAINT dashboard_mailing_list_dashboard_id_fk FOREIGN KEY (dashboard_id) REFERENCES public.dashboard(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: dashboard_mailing_list dashboard_mailing_list_entity_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list
+    ADD CONSTRAINT dashboard_mailing_list_entity_id_fk FOREIGN KEY (entity_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: dashboard_mailing_list_entry dashboard_mailing_list_entry_dashboard_mailing_list_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list_entry
+    ADD CONSTRAINT dashboard_mailing_list_entry_dashboard_mailing_list_id_fk FOREIGN KEY (dashboard_mailing_list_id) REFERENCES public.dashboard_mailing_list(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: dashboard_mailing_list dashboard_mailing_list_project_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dashboard_mailing_list
+    ADD CONSTRAINT dashboard_mailing_list_project_id_fk FOREIGN KEY (project_id) REFERENCES public.project(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: dashboard_relation dashboard_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3526,14 +3651,6 @@ ALTER TABLE ONLY public.data_element_data_group
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_data_group_id_fkey FOREIGN KEY (data_group_id) REFERENCES public.data_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: disasterEvent disaster_event_disaster_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."disasterEvent"
-    ADD CONSTRAINT disaster_event_disaster_id_fk FOREIGN KEY ("disasterId") REFERENCES public.disaster(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -3729,6 +3846,14 @@ ALTER TABLE ONLY public.survey
 
 
 --
+-- Name: survey survey_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
 -- Name: survey_response_comment survey_response_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3844,9 +3969,13 @@ ALTER TABLE ONLY public.user_favourite_dashboard_item
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
 --
 
+REVOKE ALL ON SCHEMA public FROM rdsadmin;
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO tupaia;
+GRANT USAGE ON SCHEMA public TO tupaia_read;
+GRANT ALL ON SCHEMA public TO mvrefresh;
+GRANT USAGE ON SCHEMA public TO analytics_readonly;
 
 
 --
@@ -3927,6 +4056,20 @@ GRANT SELECT ON TABLE public.dashboard_item TO tupaia_read;
 
 
 --
+-- Name: TABLE dashboard_mailing_list; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_mailing_list TO tupaia_read;
+
+
+--
+-- Name: TABLE dashboard_mailing_list_entry; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.dashboard_mailing_list_entry TO tupaia_read;
+
+
+--
 -- Name: TABLE dashboard_relation; Type: ACL; Schema: public; Owner: -
 --
 
@@ -3983,6 +4126,13 @@ GRANT SELECT ON TABLE public.data_table TO tupaia_read;
 
 
 --
+-- Name: TABLE datatrak_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.datatrak_session TO tupaia_read;
+
+
+--
 -- Name: TABLE dhis_instance; Type: ACL; Schema: public; Owner: -
 --
 
@@ -4001,20 +4151,6 @@ GRANT SELECT ON TABLE public.dhis_sync_log TO tupaia_read;
 --
 
 GRANT SELECT ON TABLE public.dhis_sync_queue TO tupaia_read;
-
-
---
--- Name: TABLE disaster; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public.disaster TO tupaia_read;
-
-
---
--- Name: TABLE "disasterEvent"; Type: ACL; Schema: public; Owner: -
---
-
-GRANT SELECT ON TABLE public."disasterEvent" TO tupaia_read;
 
 
 --
@@ -4046,6 +4182,13 @@ GRANT SELECT ON TABLE public.error_log TO tupaia_read;
 
 
 --
+-- Name: TABLE external_database_connection; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.external_database_connection TO tupaia_read;
+
+
+--
 -- Name: TABLE feed_item; Type: ACL; Schema: public; Owner: -
 --
 
@@ -4064,6 +4207,13 @@ GRANT SELECT ON TABLE public.geographical_area TO tupaia_read;
 --
 
 GRANT SELECT ON TABLE public.indicator TO tupaia_read;
+
+
+--
+-- Name: TABLE landing_page; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.landing_page TO tupaia_read;
 
 
 --
@@ -4263,6 +4413,13 @@ GRANT SELECT ON TABLE public.sync_group_log TO tupaia_read;
 
 
 --
+-- Name: TABLE tupaia_web_session; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT SELECT ON TABLE public.tupaia_web_session TO tupaia_read;
+
+
+--
 -- Name: TABLE "userSession"; Type: ACL; Schema: public; Owner: -
 --
 
@@ -4301,7 +4458,6 @@ GRANT SELECT ON TABLE public.permissions_based_meditrak_sync_queue TO tupaia_rea
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public REVOKE ALL ON TABLES  FROM tupaia;
 ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES  TO tupaia_read;
 
 
@@ -4313,8 +4469,8 @@ ALTER DEFAULT PRIVILEGES FOR ROLE tupaia IN SCHEMA public GRANT SELECT ON TABLES
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.7
--- Dumped by pg_dump version 13.5 (Ubuntu 13.5-1.pgdg18.04+1)
+-- Dumped from database version 13.13
+-- Dumped by pg_dump version 14.11 (Ubuntu 14.11-0ubuntu0.22.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -5889,21 +6045,70 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 1555	/20230116004255-AddPermissionGroupColumnToDashboardItems-modifies-data	2023-02-14 00:20:56.161
 1556	/20230119053753-ConvertInternalDataTablesToTheirOwnTypes-modifies-schema	2023-02-14 00:20:58.597
 1557	/20221002042508-AddSqlDataTableType-modifies-schema	2023-02-16 13:58:55.864336
-1558	/20230214033100-ChangeConstraintOnTypeAndPermissionGroupsInDataTable-modifies-schema	2023-04-13 14:08:46.011
-1559	/20230216140701-MoveFetchIntoTransformInReports-modifies-data	2023-04-13 14:09:18.031
-1560	/20230216141720-ConvertReportsToPullFromDataTables-modifies-schema	2023-04-13 14:09:49.522
-1561	/20230217031100-AddNewDataTableTypes-modifies-schema	2023-04-13 14:10:00.428
-1562	/20230219232553-AddMetadataInDataTable-modifies-data	2023-04-13 14:10:00.645
-1563	/20230222233428-RewriteVizsUsedDataElementCodeToName-modifies-schema	2023-04-13 14:10:02.728
-1564	/20230314005038-RewriteWishFijiBaselineVizesWithOrgUnitContext-modifies-data	2023-04-13 14:10:03.256
-1565	/20230314042110-MigrateInsertNumberOfFacilitiesColumn-modifies-data	2023-04-13 14:10:04.073
-1566	/20230316041331-RewriteWishFijiMatrixReports-modifies-data	2023-04-13 14:10:04.457
-1567	/20230316061147-RewriteWishFijiMatrixReportsWithMultiDataElements-modifies-data	2023-04-13 14:10:04.717
-1568	/20230320011713-ConvertOrgUnitCodeToNameMatrixReports-modifies-data	2023-04-13 14:10:06.267
-1569	/20230321045049-AddEntityAttributesDataTableType-modifies-schema	2023-04-13 14:10:06.56
-1570	/20230328002338-FixDateOffsetVizes-modifies-data	2023-04-13 14:10:07.118
-1571	/20230402232608-AddEntityAttributesDataTable-modifies-data	2023-04-13 14:10:07.319
-1572	/20230413041856-FixupDropAnalyticsLogTablesFunction-modifies-schema	2023-04-13 14:20:27.99
+1558	/20230214033100-ChangeConstraintOnTypeAndPermissionGroupsInDataTable-modifies-schema	2023-04-13 02:01:13.311
+1559	/20230216140701-MoveFetchIntoTransformInReports-modifies-data	2023-04-13 02:01:26.049
+1560	/20230216141720-ConvertReportsToPullFromDataTables-modifies-schema	2023-04-13 02:01:28.794
+1561	/20230217031100-AddNewDataTableTypes-modifies-schema	2023-04-13 02:01:28.848
+1562	/20230219232553-AddMetadataInDataTable-modifies-data	2023-04-13 02:01:30.542
+1563	/20230222233428-RewriteVizsUsedDataElementCodeToName-modifies-schema	2023-04-13 02:01:36.167
+1564	/20230314005038-RewriteWishFijiBaselineVizesWithOrgUnitContext-modifies-data	2023-04-13 02:01:37.835
+1565	/20230314042110-MigrateInsertNumberOfFacilitiesColumn-modifies-data	2023-04-13 02:01:38.669
+1566	/20230316041331-RewriteWishFijiMatrixReports-modifies-data	2023-04-13 02:01:38.882
+1567	/20230316061147-RewriteWishFijiMatrixReportsWithMultiDataElements-modifies-data	2023-04-13 02:01:38.997
+1568	/20230320011713-ConvertOrgUnitCodeToNameMatrixReports-modifies-data	2023-04-13 02:01:39.722
+1569	/20230321045049-AddEntityAttributesDataTableType-modifies-schema	2023-04-13 02:01:40.867
+1570	/20230328002338-FixDateOffsetVizes-modifies-data	2023-04-13 02:01:41.753
+1571	/20230402232608-AddEntityAttributesDataTable-modifies-data	2023-04-13 02:01:41.852
+1572	/20230413041856-FixupDropAnalyticsLogTablesFunction-modifies-schema	2023-04-27 05:53:55.465
+1573	/20230430221850-AddTablesForLandingPages-modifies-schema	2023-06-13 01:04:10.31
+1574	/20230522070125-AddQuestionTypeEnum-modifies-schema	2023-06-13 01:04:22.852
+1575	/20230529002449-AddFileQuestionType-modifies-schema	2023-06-13 01:04:23.09
+1576	/20230517233806-addTupaiaWebSessionTable-modifies-schema	2023-08-01 06:34:59.237
+1577	/20230822035858-AddDataTrakSessionTable-modifies-schema	2023-09-26 06:23:52.645
+1578	/20230831023940-AddFarmEntityType-modifies-schema	2023-09-26 06:23:53.734
+1579	/20230831024740-UpdatePalauAgricultureHierarchy-modifies-data	2023-09-26 06:23:57.445
+1580	/20230915002216-DropMeditrakSyncQueueChangeTimeTrigger-modifies-schema	2023-09-26 06:24:00.874
+1581	/20230919051240-AddRepairRequestEntityType-modifies-schema	2023-09-26 06:24:01.234
+1582	/20230827220641-ConvertEntityScreenComponentConfig-modifies-data	2023-10-12 06:39:00.724
+1583	/20230904033341-AddProjectToUserAccount-modifies-schema	2023-10-24 01:27:57.447
+1584	/20230925004700-AddPreferencesToUserAccount-modifies-schema	2023-10-24 01:27:58.837
+1585	/20231012204228-DetachTimorLesteFromEntityHierarchies-modifies-data	2023-10-24 01:27:59.625
+1586	/20231012222503-DeleteLaosEOCAndCOVIDAuProjects-modifies-data	2023-10-24 01:28:03.858
+1587	/20231026042714-AddSurveyResponsesDataTableType-modifies-schema	2023-11-07 00:58:41.091
+1588	/20231026043557-AddSurveyResponsesDataTable-modifies-data	2023-11-07 00:58:41.984
+1589	/20231027053345-AddDashboardMailingListTable-modifies-schema	2023-11-21 04:37:13.775
+1590	/20231112212117-AddProjectIdToSurveys-modifies-schema	2023-11-23 20:56:13.69
+1591	/20231119225952-AddNewSurveyProjects-modifies-data	2023-12-07 01:35:55.988
+1592	/20231119234449-AddProjectIdToSurveys-modifies-data	2023-12-07 01:35:56.814
+1593	/20231120003955-CreateDuplicateSurveys-modifies-data	2023-12-07 01:36:00.222
+1594	/20231123022242-AddEmailAdminPermissionGroupsToDashboardMailingList-modifies-schema	2023-12-20 03:58:46.262
+1595	/20231204032614-MakeEntityTypeNotNull-modifies-schema	2023-12-20 03:58:47.81
+1596	/20231214020916-ResetIncorrectDefaultMeasureCodes-modifies-data	2023-12-20 03:58:49.574
+1597	/20240108015220-UpdateSurveyProjectIdToBeNonNullable-modifies-schema	2024-01-16 00:39:45.84
+1598	/20231211002514-MakeRelatedEntityCreateQuestionsMandatory-modifies-data	2024-01-29 23:54:20.835
+1599	/20240110031515-AddDatatrakToPrimaryPlatformEnum-modifies-schema	2024-02-13 03:58:27.39
+1600	/20240122235629-EnforceNotNullOnUserEntityPermissionFKEYs-modifies-schema	2024-02-13 03:58:33.288
+1601	/20240131203140-AddBusinessEntityTypeNauru-modifies-schema	2024-02-13 03:58:33.806
+1602	/20240213004001-GrantLESMISAdminUsersTupaiaAdminPanelAccess-modifies-data	2024-02-13 03:58:36.72
+1603	/20240111020232-AddForeignKeyConstraintToReportCode-modifies-schema	2024-02-26 22:08:57.74
+1604	/20240211183452-AddDashboardAttributesFilter-modifies-schema	2024-03-12 01:01:43.493
+1605	/20240226202900-MigrateDisplayOnEntityConditionsToEntityAttributeFilters-modifies-data	2024-03-12 01:01:53.266
+1606	/20240303205520-AddEntityAttributesFilterToMapOverlaysTable-modifies-schema	2024-03-12 01:01:53.409
+1607	/20240305204428-ChangeNestedDelimiterReportConfigs-modifies-data	2024-03-12 01:01:58.767
+1608	/20240213024728-AddReportLatestDataParametersColumn-modifies-schema	2024-03-26 03:33:41.277
+1609	/20240312004705-SplitPieChartPresentationOptionsIntoDynamicAndStaticObjects-modifies-data	2024-03-26 03:33:52.523
+1610	/20240314004136-SetEntityAttributesNonNullable-modifies-schema	2024-03-26 03:33:54.241
+1611	/20240319010222-RemoveDisasterTables-modifies-schema	2024-03-26 03:33:56.338
+1612	/20240319010415-RemoveDisasterDashboards-modifies-data	2024-03-26 03:34:06.142
+1613	/20240319014555-RemoveDisasterEntities-modifies-data	2024-03-26 03:34:27.231
+1614	/20240320201246-AddEntityTypesHealthClinicBoundaryAndEnumerationArea-modifies-schema	2024-03-26 03:34:27.597
+1615	/20240320230959-RemoveDisasterPermissions-modifies-data	2024-03-26 03:34:27.885
+1616	/20240321045103-SetEntityMetadataNonNullable-modifies-schema	2024-03-26 03:39:00.945
+1617	/20240321062219-SetProjectPermissionGroupsNotNullable-modifies-schema	2024-03-26 03:39:03.392
+1618	/20240401222409-AddMaintenanceEntityType-modifies-schema	2024-04-14 21:40:26.11
+1619	/20240404003956-AddLarvalSampleEntityType-modifies-schema	2024-04-14 21:40:26.922
+1620	/20240404034101-SetProjectConfigNotNull-modifies-schema	2024-04-23 01:18:02.391
+1621	/20240418030017-AddTransferEntityType-modifies-schema	2024-04-23 01:18:03.214
 \.
 
 
@@ -5911,7 +6116,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 1572, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 1621, true);
 
 
 --
@@ -5920,8 +6125,6 @@ SELECT pg_catalog.setval('public.migrations_id_seq', 1572, true);
 
 ALTER TABLE ONLY public.migrations
     ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
-
-
 
 
 --
