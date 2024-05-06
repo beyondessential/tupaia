@@ -89,7 +89,6 @@ export const App = ({ user, hasBESAdminAccess }) => {
                 />
               }
             >
-              {/* <Route index element={<Navigate to={route.childViews[0].path} replace />} /> */}
               {getFlattenedChildViews(route).map(childRoute => (
                 <Route
                   key={childRoute.title}
