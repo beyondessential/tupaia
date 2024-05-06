@@ -1,16 +1,18 @@
-/**
- * Tupaia Admin
- * Copyright (c) 2022 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { surveys } from '@tupaia/admin-panel';
-import { getBooleanSelectFilter } from '../../../../views/AdminPanel/table/columnTypes/getBooleanSelectFilter';
-import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
-import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
-import { getDeleteConfigs } from '../helpers/getDeleteConfigs';
-import { getBaseEditorConfigs } from '../helpers/getEditorConfigs';
-import { getImportConfigs } from '../helpers/getImportConfigs';
 
-export const getSurveysPageConfigs = (translate, adminUrl) => {
+import { surveys } from '@tupaia/admin-panel';
+import { getBooleanSelectFilter, getColumnFilter } from '../../table/columnTypes';
+import {
+  getDeleteColumnConfigs,
+  getDeleteConfigs,
+  getBaseEditorConfigs,
+  getImportConfigs,
+} from '../helpers';
+
+export const getSurveysPageConfigs = translate => {
   const PERIOD_GRANULARITIES = [
     { label: translate('admin.daily'), value: 'daily' },
     { label: translate('admin.weekly'), value: 'weekly' },

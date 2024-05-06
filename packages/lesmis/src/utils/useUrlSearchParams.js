@@ -20,16 +20,12 @@ export const useUrlSearchParams = () => {
     });
 
     if (location.search !== urlParams.toString()) {
-      if (pushToHistory) {
-        navigate({ ...location, search: urlParams.toString() });
-      } else {
-        navigate(
-          { ...location, search: urlParams.toString() },
-          {
-            replace: true,
-          },
-        );
-      }
+      navigate(
+        { ...location, search: urlParams.toString() },
+        {
+          replace: !pushToHistory,
+        },
+      );
     }
   };
 

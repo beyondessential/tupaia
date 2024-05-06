@@ -6,11 +6,9 @@
 import moment from 'moment';
 import { surveyResponses } from '@tupaia/admin-panel';
 import { getBrowserTimeZone } from '@tupaia/utils';
-import { getImportConfigs } from '../helpers/getImportConfigs';
-import { getSurveyResponsesExportModal } from '../../../../views/AdminPanel/components';
-import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
-import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
-import { getBaseEditorConfigs } from '../helpers/getEditorConfigs';
+import { getImportConfigs, getDeleteColumnConfigs, getBaseEditorConfigs } from '../helpers';
+import { getSurveyResponsesExportModal } from '../../components';
+import { getColumnFilter } from '../../table/columnTypes';
 
 const APPROVAL_STATUS_TYPES = [
   { label: 'Pending', value: 'pending' },

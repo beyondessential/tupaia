@@ -3,10 +3,8 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { syncGroups } from '@tupaia/admin-panel';
-import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
-import { getCreateConfigs } from '../helpers/getCreateConfigs';
-import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
-import { getBaseEditorConfigs } from '../helpers/getEditorConfigs';
+import { getColumnFilter } from '../../table/columnTypes';
+import { getCreateConfigs, getDeleteColumnConfigs, getBaseEditorConfigs } from '../helpers';
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 

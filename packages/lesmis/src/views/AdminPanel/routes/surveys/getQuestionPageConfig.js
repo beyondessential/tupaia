@@ -4,7 +4,7 @@
  */
 
 import { questions } from '@tupaia/admin-panel';
-import { getColumnFilter } from '../../../../views/AdminPanel/table/columnTypes/getColumnFilter';
+import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
 import { getEditorConfigs } from '../helpers/getEditorConfigs';
 
 export const getQuestionPageConfigs = translate => {

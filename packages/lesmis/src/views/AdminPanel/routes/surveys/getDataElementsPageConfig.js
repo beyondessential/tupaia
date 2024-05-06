@@ -9,7 +9,7 @@ import {
   SERVICE_TYPE_OPTIONS,
   getDataElementFieldEditConfig,
 } from '../../common';
-import { getColumnFilter } from '../../table/columnTypes/getColumnFilter';
+import { getColumnFilter } from '../../table/columnTypes';
 import {
   getCreateConfigs,
   getDeleteColumnConfigs,
