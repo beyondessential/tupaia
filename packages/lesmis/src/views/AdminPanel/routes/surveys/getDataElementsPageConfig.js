@@ -68,7 +68,7 @@ const getDataElementFields = translate => {
   ];
 };
 
-export const getDataElementsPageConfigs = translate => {
+export const getDataElementsPageConfig = translate => {
   const DATA_ELEMENT_FIELDS = getDataElementFields(translate);
   const importConfig = getImportConfigs(translate, {
     actionConfig: {

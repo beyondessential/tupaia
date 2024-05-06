@@ -12,7 +12,7 @@ import {
   getImportConfigs,
 } from '../helpers';
 
-export const getSurveysPageConfigs = translate => {
+export const getSurveysPageConfig = translate => {
   const PERIOD_GRANULARITIES = [
     { label: translate('admin.daily'), value: 'daily' },
     { label: translate('admin.weekly'), value: 'weekly' },

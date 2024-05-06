@@ -4,7 +4,7 @@
  */
 import { visualisationsTabRoutes, dataTables } from '@tupaia/admin-panel';
 import { getDashboardItemsPageConfig } from './getDashboardItemsPageConfig';
-import { getDashboardsPageConfigs } from './getDashboardsPageConfig';
+import { getDashboardsPageConfig } from './getDashboardsPageConfig';
 import { getDashboardRelationsPageConfig } from './getDashboardRelationsPageConfig';
 import { getMapOverlaysPageConfig } from './getMapOverlaysPageConfig';
 import { getMapOverlayGroupsPageConfig } from './getMapOverlayGroupsPageConfig';
@@ -15,7 +15,7 @@ export const getVisualisationsTabsRoutes = (translate, adminUrl, isBESAdmin) => 
   label: translate('admin.visualisations'),
   childViews: [
     getDashboardItemsPageConfig(translate, adminUrl, isBESAdmin),
-    getDashboardsPageConfigs(translate),
+    getDashboardsPageConfig(translate),
     getDashboardRelationsPageConfig(translate),
     getMapOverlaysPageConfig(translate, adminUrl, isBESAdmin),
     getMapOverlayGroupsPageConfig(translate),

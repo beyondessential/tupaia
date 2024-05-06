@@ -12,7 +12,7 @@ import {
 } from '../helpers';
 import { getColumnFilter } from '../../table/columnTypes';
 
-export const getDashboardsPageConfigs = translate => {
+export const getDashboardsPageConfig = translate => {
   const FIELDS = [
     {
       Header: translate('admin.code'),

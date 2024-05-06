@@ -8,7 +8,7 @@ import { getCreateConfigs, getDeleteColumnConfigs, getBaseEditorConfigs } from '
 
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
-export const getSyncGroupsPageConfigs = translate => {
+export const getSyncGroupsPageConfig = translate => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
