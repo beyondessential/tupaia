@@ -1,6 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -59,6 +59,12 @@ const dateOfData = {
   },
 };
 
+const outdated = {
+  Header: 'Outdated',
+  source: 'outdated',
+  type: 'boolean',
+};
+
 const approvalStatus = {
   Header: 'Approval Status',
   source: 'approval_status',
@@ -84,6 +90,7 @@ export const SURVEY_RESPONSE_COLUMNS = [
   assessorName,
   date,
   dateOfData,
+  outdated,
   approvalStatus,
   {
     Header: 'Export',
