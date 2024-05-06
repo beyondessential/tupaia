@@ -4,12 +4,12 @@
  */
 import { entities, QRCodeColumn } from '@tupaia/admin-panel';
 import { getColumnFilter } from '../../table/columnTypes';
-import { getSurveyResponsePageConfigs } from '../surveyResponses/getSurveyResponsePageConfigs';
+import { getSurveyResponsePageConfig } from '../surveyResponses/getSurveyResponsePageConfig';
 import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 import { getImportConfigs } from '../helpers/getImportConfigs';
 
 export const getEntitiesPageConfig = translate => {
-  const { baseColumns: SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfigs(translate);
+  const { baseColumns: SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfig(translate);
 
   const ENTITIES_COLUMNS = [
     {

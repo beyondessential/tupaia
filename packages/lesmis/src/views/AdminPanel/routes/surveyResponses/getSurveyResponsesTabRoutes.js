@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import { surveysTabRoutes } from '@tupaia/admin-panel';
-import { getSurveyResponsePageConfigs } from './getSurveyResponsePageConfigs';
+import { getSurveyResponsePageConfig } from './getSurveyResponsePageConfig';
 import { ApproveButton, getRejectButton } from '../../components';
 
 const approvedSurveyResponses = (translate, adminUrl) => {
   const path = '/approved';
-  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfigs(translate, path, adminUrl);
+  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfig(translate, path, adminUrl);
 
   return {
     ...configs,
@@ -22,7 +22,7 @@ const approvedSurveyResponses = (translate, adminUrl) => {
 
 const rejectedSurveyResponses = (translate, adminUrl) => {
   const path = '/rejected';
-  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfigs(translate, path, adminUrl);
+  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfig(translate, path, adminUrl);
 
   return {
     ...configs,
@@ -36,7 +36,7 @@ const rejectedSurveyResponses = (translate, adminUrl) => {
 
 const draftSurveyResponses = (translate, adminUrl) => {
   const path = '';
-  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfigs(translate, path, adminUrl);
+  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfig(translate, path, adminUrl);
 
   const DRAFT_COLUMNS = [
     ...COLUMNS.filter(column => column.type !== 'delete'),
@@ -70,7 +70,7 @@ const draftSurveyResponses = (translate, adminUrl) => {
 
 const nonApprovalSurveyResponses = (translate, adminUrl) => {
   const path = '/non-approval';
-  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfigs(translate, path, adminUrl);
+  const { columns: COLUMNS, ...configs } = getSurveyResponsePageConfig(translate, path, adminUrl);
   // Don't include the approval column for the non-approval survey responses
   const EDIT_CONFIG = COLUMNS.find(column => column.type === 'edit');
   const EDIT_COLUMN = {

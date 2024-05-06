@@ -16,7 +16,7 @@ const APPROVAL_STATUS_TYPES = [
   { label: 'Approved', value: 'approved' },
 ];
 
-export const getSurveyResponsePageConfigs = (translate, path, adminUrl) => {
+export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
   const surveyName = {
     Header: translate('admin.survey'),
     source: 'survey.name',
