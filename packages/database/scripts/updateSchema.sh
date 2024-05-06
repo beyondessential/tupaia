@@ -11,7 +11,7 @@ fi
 
 set -x
 
-source ../../scripts/bash/mergeCurrentEnvWithEnvFile.sh
+source "$SCRIPT_DIR/../../../scripts/bash/mergeEnvForDB.sh"
 
 # Set default port in case it wasn't in .env
 : "${DB_PORT:=5432}"
@@ -21,8 +21,8 @@ yarn workspace @tupaia/data-api drop-analytics-table
 yarn workspace @tupaia/data-api uninstall-mv-refresh
 
 # Dump
-PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_URL -p $DB_PORT -U $DB_USER -O --schema public $EXCLUDETABLE -s $DB_NAME > "schema/schema.sql"
-PGPASSWORD=$DB_PASSWORD pg_dump -h $DB_URL -p $DB_PORT -U $DB_USER -O --schema public $EXCLUDETABLE -c -t migrations $DB_NAME >> "schema/schema.sql"
+PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_URL" -p "$DB_PORT" -U "$DB_USER" -O --schema public --exclude-table "$EXCLUDETABLE" -s "$DB_NAME" > "schema/schema.sql"
+PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_URL" -p "$DB_PORT" -U "$DB_USER" -O --schema public --exclude-table "$EXCLUDETABLE" -c -t migrations "$DB_NAME" >> "schema/schema.sql"
 
 # Reinstall materialized views
 yarn workspace @tupaia/data-api install-mv-refresh
