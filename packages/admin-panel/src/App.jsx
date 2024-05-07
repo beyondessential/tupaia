@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { AppPageLayout, Footer } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getHasBESAdminPanelAccess, getUser, PrivateRoute } from './authentication';
+import { getHasBESAdminAccess, getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
@@ -128,7 +128,7 @@ App.propTypes = {
 export default connect(
   state => ({
     user: getUser(state),
-    hasBESAdminAccess: getHasBESAdminPanelAccess(state),
+    hasBESAdminAccess: getHasBESAdminAccess(state),
   }),
   null,
 )(App);

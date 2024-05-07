@@ -192,7 +192,7 @@ const DataFetchingTableComponent = ({
         </MessageWrapper>
       )}
       <TableContainer>
-        <Table {...getTableProps()} stickyHeader>
+        <Table {...getTableProps()} stickyHeader className="data-fetching-table">
           <TableHead>
             {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
               // eslint-disable-next-line react/no-array-index-key

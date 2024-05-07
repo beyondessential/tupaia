@@ -27,13 +27,13 @@ export {
   externalDataTabRoutes,
 } from './routes';
 export { LoginPage, LogoutPage } from './pages';
-export { PrivateRoute, getHasBESAdminPanelAccess } from './authentication';
+export { PrivateRoute, getHasBESAdminAccess } from './authentication';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export { IconButton } from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
 export { useApiContext } from './utilities/ApiProvider';
-export { DataChangeAction } from './editor';
+export { DataChangeAction, ActionButton } from './editor';
 export { App as VizBuilderApp } from './VizBuilderApp/App';
 export {
   NavPanel,
@@ -46,4 +46,4 @@ export {
 } from './layout';
 export { getFlattenedChildViews } from './App';
 export { ExportModal } from './importExport';
-export { ActionButton } from './editor';
+export { ColumnActionButton } from './table/columnTypes/ColumnActionButton';

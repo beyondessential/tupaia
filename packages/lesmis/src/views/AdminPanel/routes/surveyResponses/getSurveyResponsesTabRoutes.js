@@ -45,12 +45,13 @@ const draftSurveyResponses = (translate, adminUrl) => {
       Cell: ApproveButton,
       filterable: false,
       disableSortBy: true,
-      width: 75,
+      isButtonColumn: true,
     },
     {
       Header: translate('admin.reject'),
       Cell: getRejectButton(translate),
       type: 'delete',
+      isButtonColumn: true,
       actionConfig: {
         endpoint: 'surveyResponses',
       },
