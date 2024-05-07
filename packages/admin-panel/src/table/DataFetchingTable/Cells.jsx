@@ -118,7 +118,6 @@ const CellLink = styled(Link)`
 `;
 
 const formatDetailUrl = (detailUrl, row) => {
-  console.log('formatDetailUrl', detailUrl, row);
   if (!detailUrl) {
     return null;
   }
