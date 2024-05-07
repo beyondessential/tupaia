@@ -40,7 +40,7 @@ const FilterWrapper = styled.div`
   }
 `;
 
-export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
+export const FilterCell = ({ column, filters, onFilteredChange, width, isButtonColumn }) => {
   const { id, Filter } = column;
   const existingFilter = filters?.find(f => f.id === id);
   const handleUpdate = value => {
@@ -50,7 +50,7 @@ export const FilterCell = ({ column, filters, onFilteredChange, width }) => {
 
     onFilteredChange(updatedFilters);
   };
-  if (!column.filterable) return <HeaderDisplayCell isButtonColumn />;
+  if (!column.filterable) return <HeaderDisplayCell isButtonColumn={isButtonColumn} />;
   return (
     <HeaderDisplayCell width={width}>
       <FilterWrapper>
@@ -78,8 +78,10 @@ FilterCell.propTypes = {
     filterable: PropTypes.bool,
   }).isRequired,
   width: PropTypes.number,
+  isButtonColumn: PropTypes.bool,
 };
 
 FilterCell.defaultProps = {
   width: null,
+  isButtonColumn: false,
 };

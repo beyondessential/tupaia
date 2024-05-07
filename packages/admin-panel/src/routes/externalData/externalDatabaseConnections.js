@@ -52,7 +52,7 @@ const COLUMNS = [
   {
     Header: 'Test',
     type: 'testDatabaseConnection',
-    colWidth: 100,
+    colWidth: '6.5rem',
   },
   {
     Header: 'Delete',

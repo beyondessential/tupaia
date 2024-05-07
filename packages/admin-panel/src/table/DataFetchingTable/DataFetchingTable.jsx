@@ -242,6 +242,7 @@ const DataFetchingTableComponent = ({
                       onFilteredChange={onFilteredChange}
                       filters={filters}
                       width={column.colWidth}
+                      isButtonColumn={column.isButtonColumn}
                     />
                   );
                 })}

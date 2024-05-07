@@ -43,7 +43,7 @@ const CellContentWrapper = styled.div`
 
   line-height: 1.5;
 
-  ${({ $width }) => $width && `width: ${$width}px`};
+  ${({ $width }) => $width && `width: ${$width}`};
 `;
 
 // Flex does not support ellipsis so we need to have another container to handle the ellipsis
