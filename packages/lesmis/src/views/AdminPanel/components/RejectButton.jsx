@@ -6,17 +6,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
-import { ColumnActionButton, DataChangeAction, useApiContext, Modal } from '@tupaia/admin-panel';
+import {
+  ColumnActionButton,
+  DataChangeAction,
+  useApiContext,
+  Modal,
+  ModalCenteredContent,
+} from '@tupaia/admin-panel';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRejectSurveyResponseStatus } from '../api';
-
-const ConfirmModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: center;
-`;
 
 const ConfirmModalHeading = styled(Typography).attrs({
   variant: 'h3',
@@ -47,7 +46,7 @@ const RejectConfirmModal = ({ isOpen, onClose, onConfirm, errorMessage, translat
     ]}
     title={translate('admin.rejectSurveyResponse')}
   >
-    <ConfirmModalBody>
+    <ModalCenteredContent>
       <ConfirmModalHeading>
         {translate('admin.areYouSureYouWantToRejectThisSurveyResponse')}
       </ConfirmModalHeading>
@@ -56,7 +55,7 @@ const RejectConfirmModal = ({ isOpen, onClose, onConfirm, errorMessage, translat
           'admin.rejectingASurveyResponseWillRemoveTheRecordFromThisTabAndPreventTheDataDisplayingInAnyVisualisations',
         )}
       </Typography>
-    </ConfirmModalBody>
+    </ModalCenteredContent>
   </Modal>
 );
 

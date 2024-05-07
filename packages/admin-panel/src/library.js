@@ -30,7 +30,14 @@ export { LoginPage, LogoutPage } from './pages';
 export { PrivateRoute, getHasBESAdminAccess } from './authentication';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
-export { IconButton, Modal } from './widgets';
+export {
+  IconButton,
+  ModalContentProvider,
+  Modal,
+  ModalFooter,
+  ModalHeader,
+  ModalCenteredContent,
+} from './widgets';
 export { AdminPanelDataProviders } from './utilities/AdminPanelProviders';
 export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction, ActionButton } from './editor';

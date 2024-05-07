@@ -12,14 +12,7 @@ import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM, MODAL_STATUS } from '../../constan
 import { useVisualisationContext, useVizConfigContext } from '../../context';
 import { useSaveDashboardVisualisation, useSaveMapOverlayVisualisation } from '../../api';
 import { useVizBuilderBasePath } from '../../utils';
-import { Modal } from '../../../widgets';
-
-const ContentWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
+import { Modal, ModalCenteredContent } from '../../../widgets';
 
 const Heading = styled(Typography).attrs({
   variant: 'h3',
@@ -88,10 +81,10 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
     ];
     return (
       <Modal onClose={handleClose} isOpen={isOpen} title="Save visualisation" buttons={buttons}>
-        <ContentWrapper>
+        <ModalCenteredContent>
           <Heading>Visualisation saved successfully</Heading>
           <Typography>Visualisation has been saved</Typography>
-        </ContentWrapper>
+        </ModalCenteredContent>
       </Modal>
     );
   }

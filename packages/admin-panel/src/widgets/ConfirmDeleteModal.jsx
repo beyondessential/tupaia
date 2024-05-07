@@ -7,14 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Modal } from './Modal';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-`;
+import { Modal, ModalCenteredContent } from './Modal';
 
 const Heading = styled(Typography).attrs({
   variant: 'h3',
@@ -48,10 +41,10 @@ export const ConfirmDeleteModal = ({
   ];
   return (
     <Modal onClose={onCancel} isOpen={isOpen} title={title} buttons={buttons}>
-      <Container>
+      <ModalCenteredContent>
         {heading && <Heading>{heading}</Heading>}
         <Typography>{description}</Typography>
-      </Container>
+      </ModalCenteredContent>
     </Modal>
   );
 };
