@@ -424,8 +424,8 @@ export const getSurveysPageConfig = translate => {
     importConfig: IMPORT_CONFIG,
     deleteConfig: getDeleteConfigs(translate),
     editorConfig: getBaseEditorConfigs(translate),
-    detailsView: {
-      ...surveys.detailsView,
+    nestedView: {
+      ...surveys.nestedView,
       title: translate('admin.questions'),
       columns: QUESTION_COLUMNS,
     },

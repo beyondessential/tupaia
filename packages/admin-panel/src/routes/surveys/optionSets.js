@@ -83,7 +83,7 @@ export const optionSets = {
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,
   path: '/option-sets',
-  detailsView: {
+  nestedView: {
     title: 'Options',
     endpoint: 'optionSets/{id}/options',
     columns: OPTION_COLUMNS,

@@ -17,7 +17,7 @@ import { TabPageLayout } from './layout/TabPageLayout';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
-    const { detailsView } = childView;
+    const { nestedView } = childView;
 
     const childViewWithRoute = {
       ...childView,
@@ -26,12 +26,12 @@ export const getFlattenedChildViews = (route, basePath = '') => {
       to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
-    if (!detailsView) return [...acc, childViewWithRoute];
+    if (!nestedView) return [...acc, childViewWithRoute];
 
-    const updatedDetailsView = detailsView
+    const updatedNestedView = nestedView
       ? {
-          ...detailsView,
-          path: `${route.path}${childView.path}${detailsView.path}`,
+          ...nestedView,
+          path: `${route.path}${childView.path}${nestedView.path}`,
           parent: childViewWithRoute,
         }
       : null;
@@ -40,9 +40,9 @@ export const getFlattenedChildViews = (route, basePath = '') => {
       ...acc,
       {
         ...childViewWithRoute,
-        detailsView: updatedDetailsView,
+        nestedView: updatedNestedView,
       },
-      updatedDetailsView,
+      updatedNestedView,
     ];
   }, []);
 };
@@ -71,8 +71,8 @@ export const App = ({ user, hasBESAdminAccess }) => {
   const accessibleRoutes = getAccessibleRoutes();
   return (
     <Routes>
-      <Route path="/login" exact element={<LoginPage />} />
-      <Route path="/logout" exact element={<LogoutPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/logout" element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
           <Route index element={<Navigate to="/surveys" replace />} />

@@ -209,11 +209,11 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
 
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);
-    const detailsViewMatch = link.detailsView
-      ? matchPath(`${link.target}${link.detailsView.path}`, location.pathname)
+    const nestedViewMatch = link.nestedView
+      ? matchPath(`${link.target}${link.nestedView.path}`, location.pathname)
       : false;
 
-    return !!matchResult || !!detailsViewMatch;
+    return !!matchResult || !!nestedViewMatch;
   };
 
   const links = linkInput?.map(({ exact, path, title, ...rest }) => {

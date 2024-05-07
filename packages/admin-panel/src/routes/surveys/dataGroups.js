@@ -50,7 +50,7 @@ export const dataGroups = {
   },
   editorConfig: EDITOR_CONFIG,
   isBESAdminOnly: true,
-  detailsView: {
+  nestedView: {
     title: 'Data elements',
     endpoint: 'dataGroups/{id}/dataElements',
     columns: [

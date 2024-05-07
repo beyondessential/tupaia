@@ -81,12 +81,12 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
-  detailsView,
+  nestedView,
   parent,
   displayProperty,
-  getIsLink,
+  getHasNestedView,
   getDisplayValue,
-  getLink,
+  getNestedViewLink,
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
@@ -94,7 +94,7 @@ export const ResourcePage = ({
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
-  const { path } = detailsView || {};
+  const { path } = nestedView || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
@@ -143,8 +143,8 @@ export const ResourcePage = ({
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
           detailUrl={path}
-          getIsLink={getIsLink}
-          getLink={getLink}
+          getHasNestedView={getHasNestedView}
+          getNestedViewLink={getNestedViewLink}
           basePath={basePath}
         />
       </Container>
@@ -173,12 +173,12 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
-  detailsView: PropTypes.object,
+  nestedView: PropTypes.object,
   parent: PropTypes.object,
   displayProperty: PropTypes.string,
-  getIsLink: PropTypes.func,
+  getHasNestedView: PropTypes.func,
   getDisplayValue: PropTypes.func,
-  getLink: PropTypes.func,
+  getNestedViewLink: PropTypes.func,
   basePath: PropTypes.string,
   hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
@@ -198,12 +198,12 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
-  detailsView: null,
+  nestedView: null,
   parent: null,
   displayProperty: null,
-  getIsLink: null,
+  getHasNestedView: null,
   getDisplayValue: null,
-  getLink: null,
+  getNestedViewLink: null,
   basePath: '',
   needsBESAdminAccess: [],
 };

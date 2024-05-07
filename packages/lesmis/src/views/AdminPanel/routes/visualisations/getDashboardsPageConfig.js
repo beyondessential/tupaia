@@ -134,8 +134,8 @@ export const getDashboardsPageConfig = translate => {
     editorConfig,
     deleteConfig,
     needsBESAdminAccess: [],
-    detailsView: {
-      ...dashboards.detailsView,
+    nestedView: {
+      ...dashboards.nestedView,
       title: translate('admin.dashboardRelations'),
       columns: RELATION_COLUMNS,
     },

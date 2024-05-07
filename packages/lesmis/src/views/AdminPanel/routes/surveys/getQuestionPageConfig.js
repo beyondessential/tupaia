@@ -101,8 +101,8 @@ export const getQuestionPageConfig = translate => {
     title: translate('admin.questions'),
     columns: QUESTION_COLUMNS,
     editorConfig: EDITOR_CONFIG,
-    detailsView: {
-      ...questions.detailsView,
+    nestedView: {
+      ...questions.nestedView,
       title: translate('admin.options'),
       columns: OPTION_COLUMNS,
     },

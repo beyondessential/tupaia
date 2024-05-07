@@ -28,9 +28,9 @@ const Cell = styled(MuiTableCell)`
 `;
 
 const CellContentWrapper = styled.div`
-  padding: 0.7rem;
+  padding-inline: 0.7rem;
+  padding-block: 0.2rem;
   height: 100%;
-
   display: flex;
   align-items: center;
   justify-content: ${({ $shouldCenterContent }) =>
@@ -40,8 +40,10 @@ const CellContentWrapper = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
   }
   td:first-child & {
-    padding-inline-start: 0;
+    padding-inline-start: 0.2rem;
   }
+
+  line-height: 1.5;
 
   ${({ $width }) => $width && `width: ${$width}px`};
 `;
@@ -90,11 +92,13 @@ HeaderDisplayCell.defaultProps = {
   children: null,
 };
 
-export const TableCell = ({ children, width, isButtonColumn }) => {
+export const TableCell = ({ children, width, isButtonColumn, url }) => {
   return (
     <Cell $isButtonColumn={isButtonColumn}>
       <CellContentWrapper $width={width} $shouldCenterContent={isButtonColumn}>
-        <CellContentContainer>{children}</CellContentContainer>
+        <CellContentContainer to={url} as={url ? CellLink : 'div'}>
+          {children}
+        </CellContentContainer>
       </CellContentWrapper>
     </Cell>
   );
@@ -104,17 +108,24 @@ TableCell.propTypes = {
   children: PropTypes.node.isRequired,
   width: PropTypes.number,
   isButtonColumn: PropTypes.bool,
+  url: PropTypes.string,
 };
 
 TableCell.defaultProps = {
   width: null,
   isButtonColumn: false,
+  url: null,
 };
 
 const CellLink = styled(Link)`
   color: inherit;
   text-decoration: none;
-  max-width: 100%; // need this to make the ellipsis work
+  &:hover,
+  &:focus {
+    tr:has(&) td > * {
+      background-color: ${({ theme }) => `${theme.palette.primary.main}33`};
+    }
+  }
 `;
 
 const formatDetailUrl = (detailUrl, row) => {
@@ -130,71 +141,30 @@ const formatDetailUrl = (detailUrl, row) => {
   return matches.reduce((url, match) => url.replace(`:${match}`, row[match]), detailUrl);
 };
 
-export const CellValue = ({
+export const DisplayCell = ({
   row,
-  detailUrl,
   children,
-  getIsLink,
-  getLink,
+  detailUrl,
+  getHasNestedView,
+  getNestedViewLink,
   basePath,
   isButtonColumn,
+  ...props
 }) => {
-  if (isButtonColumn || (!detailUrl && !getLink)) return children;
-  if (getIsLink && !getIsLink(row.original)) return children;
   const generateLink = () => {
-    if (getLink) {
-      return getLink(row.original);
+    if (isButtonColumn || (!detailUrl && !getNestedViewLink)) return null;
+    if (getHasNestedView && !getHasNestedView(row.original)) return null;
+    if (getNestedViewLink) {
+      return getNestedViewLink(row.original);
     }
     const formattedUrl = formatDetailUrl(detailUrl, row.original);
     if (!formattedUrl) return null;
     return basePath ? `${basePath}${formattedUrl}` : formattedUrl;
   };
   const url = generateLink();
-  if (!url) return children;
-
-  return <CellLink to={url}>{children}</CellLink>;
-};
-
-CellValue.propTypes = {
-  row: PropTypes.object.isRequired,
-  children: PropTypes.node.isRequired,
-  detailUrl: PropTypes.string,
-  getIsLink: PropTypes.func,
-  getLink: PropTypes.func,
-  basePath: PropTypes.string,
-  isButtonColumn: PropTypes.bool,
-};
-
-CellValue.defaultProps = {
-  detailUrl: null,
-  getIsLink: null,
-  getLink: null,
-  basePath: null,
-  isButtonColumn: false,
-};
-
-export const DisplayCell = ({
-  row,
-  children,
-  detailUrl,
-  getIsLink,
-  getLink,
-  basePath,
-  isButtonColumn,
-  ...props
-}) => {
   return (
-    <TableCell {...props} isButtonColumn={isButtonColumn}>
-      <CellValue
-        row={row}
-        detailUrl={detailUrl}
-        getIsLink={getIsLink}
-        getLink={getLink}
-        basePath={basePath}
-        isButtonColumn={isButtonColumn}
-      >
-        {children}
-      </CellValue>
+    <TableCell {...props} isButtonColumn={isButtonColumn} url={url}>
+      {children}
     </TableCell>
   );
 };
@@ -203,16 +173,16 @@ DisplayCell.propTypes = {
   row: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
   detailUrl: PropTypes.string,
-  getIsLink: PropTypes.func,
-  getLink: PropTypes.func,
+  getHasNestedView: PropTypes.func,
+  getNestedViewLink: PropTypes.func,
   isButtonColumn: PropTypes.bool,
   basePath: PropTypes.string,
 };
 
 DisplayCell.defaultProps = {
   detailUrl: null,
-  getIsLink: null,
-  getLink: null,
+  getHasNestedView: null,
+  getNestedViewLink: null,
   isButtonColumn: false,
   basePath: '',
 };

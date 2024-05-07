@@ -529,7 +529,7 @@ export const surveys = {
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,
-  detailsView: {
+  nestedView: {
     path: '/:id/questions',
     endpoint: 'surveys/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,

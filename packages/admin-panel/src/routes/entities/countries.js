@@ -33,7 +33,7 @@ export const countries = {
   columns: FIELDS,
   createConfig: CREATE_CONFIG,
   needsBESAdminAccess: ['create'],
-  detailsView: {
+  nestedView: {
     title: 'Entities',
     endpoint: 'countries/{id}/entities',
     columns: ENTITIES_COLUMNS,

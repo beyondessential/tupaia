@@ -62,8 +62,8 @@ export const getEntitiesPageConfig = translate => {
     title: translate('admin.entities'),
     columns: FIELDS,
     importConfig: IMPORT_CONFIG,
-    detailsView: {
-      ...entities.detailsView,
+    nestedView: {
+      ...entities.nestedView,
       columns: [
         ...SURVEY_RESPONSE_COLUMNS,
         {
@@ -77,7 +77,7 @@ export const getEntitiesPageConfig = translate => {
           show: false,
         },
       ],
-      getLink: ({ id, approval_status: approvalStatus }) => {
+      getNestedViewLink: ({ id, approval_status: approvalStatus }) => {
         if (approvalStatus === 'pending') {
           return `../../survey-responses/${id}/answers`;
         }

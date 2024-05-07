@@ -103,8 +103,8 @@ export const questions = {
   columns: QUESTION_COLUMNS,
   isBESAdminOnly: true,
   editorConfig: EDITOR_CONFIG,
-  getIsLink: ({ option_set_id: optionSetId }) => !!optionSetId,
-  detailsView: {
+  getHasNestedView: ({ option_set_id: optionSetId }) => !!optionSetId,
+  nestedView: {
     title: 'Options',
     endpoint: 'optionSets/{option_set_id}/options',
     columns: OPTION_COLUMNS,

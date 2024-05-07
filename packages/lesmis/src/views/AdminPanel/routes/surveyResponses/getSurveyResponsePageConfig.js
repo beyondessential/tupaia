@@ -147,6 +147,6 @@ export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
     editorConfig: getBaseEditorConfigs(translate),
     ExportModalComponent: getSurveyResponsesExportModal(translate),
     baseColumns,
-    getLink: record => `${adminUrl}/survey-responses${path}/${record.id}/answers`, // custom because the link needs to include the adminUrl
+    getNestedViewLink: record => `${adminUrl}/survey-responses${path}/${record.id}/answers`, // custom because the link needs to include the adminUrl
   };
 };

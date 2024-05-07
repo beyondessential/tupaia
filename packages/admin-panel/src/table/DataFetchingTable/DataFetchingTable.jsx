@@ -103,9 +103,9 @@ const DataFetchingTableComponent = ({
   isFetchingData,
   onSortedChange,
   detailUrl,
-  getIsLink,
+  getHasNestedView,
   endpoint,
-  getLink,
+  getNestedViewLink,
   baseFilter,
   basePath,
 }) => {
@@ -261,9 +261,9 @@ const DataFetchingTableComponent = ({
                         key={`table-row-${index}-cell-${i}`}
                         row={row}
                         detailUrl={visibleColumns[i].isButtonColumn ? '' : detailUrl}
-                        getIsLink={getIsLink}
+                        getHasNestedView={getHasNestedView}
                         width={visibleColumns[i].colWidth}
-                        getLink={getLink}
+                        getNestedViewLink={getNestedViewLink}
                         isButtonColumn={visibleColumns[i].isButtonColumn}
                         basePath={basePath}
                       >
@@ -329,9 +329,9 @@ DataFetchingTableComponent.propTypes = {
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
-  getIsLink: PropTypes.func,
+  getHasNestedView: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
-  getLink: PropTypes.func,
+  getNestedViewLink: PropTypes.func,
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
 };
@@ -347,8 +347,8 @@ DataFetchingTableComponent.defaultProps = {
   actionColumns: [],
   totalRecords: 0,
   detailUrl: '',
-  getIsLink: null,
-  getLink: null,
+  getHasNestedView: null,
+  getNestedViewLink: null,
   baseFilter: null,
   basePath: '',
 };
