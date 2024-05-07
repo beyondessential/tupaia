@@ -12,7 +12,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
-export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
+export const MapOverlayGroupRelationsPage = ({ translate }) => {
   const FIELDS = [
     {
       Header: translate('admin.code'),
@@ -98,12 +98,10 @@ export const MapOverlayGroupRelationsPage = ({ getHeaderEl, translate }) => {
       createConfig={createConfig}
       editorConfig={editorConfig}
       deleteConfig={deleteConfig}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 MapOverlayGroupRelationsPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

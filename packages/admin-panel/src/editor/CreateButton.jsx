@@ -6,18 +6,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { LightOutlinedButton } from '@tupaia/ui-components';
 import { openEditModal } from './actions';
+import { CreateActionButton } from './ActionButton';
 
 export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
-  <LightOutlinedButton
-    id="page-new-button"
-    startIcon={<AddCircleIcon />}
-    onClick={() => dispatch(openEditModal(actionConfig))}
-  >
+  <CreateActionButton onClick={() => dispatch(openEditModal(actionConfig))}>
     {label}
-  </LightOutlinedButton>
+  </CreateActionButton>
 );
 
 CreateButtonComponent.propTypes = {

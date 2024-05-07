@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import { TableHead, TableRow, darken } from '@material-ui/core';
+import { darken, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
 import { MatrixColumnType } from '../../types';
 import { MatrixContext } from './MatrixContext';
 import { Cell } from './Cell';
 
 const HeaderCell = styled(Cell)`
+  line-height: 1.4;
   z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
   &:first-child {
     z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll

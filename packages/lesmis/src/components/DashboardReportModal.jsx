@@ -149,6 +149,10 @@ export const DashboardReportModal = () => {
     });
   });
 
+  const currentDashboardItem = exportableSubDashboards
+    .find(({ items }) => items.find(item => item.reportCode === reportCode))
+    ?.items?.find(item => item.reportCode === reportCode);
+
   const { startDate, endDate } = useStartAndEndDates(periodGranularity);
 
   const { data, isLoading } = useDashboardReportDataWithConfig({
@@ -156,6 +160,7 @@ export const DashboardReportModal = () => {
     reportCode,
     startDate,
     endDate,
+    itemCode: currentDashboardItem?.code,
   });
 
   const { dashboardItemConfig: config, reportData } = data;
@@ -174,14 +179,18 @@ export const DashboardReportModal = () => {
 
   // Set up PNG export
   const pngExportFilename = `export-${config?.name}-${new Date().toDateString()}`;
-  const { isExporting, isExportLoading, exportRef, exportToImg } = useExportToImage(
-    pngExportFilename,
-  );
+  const { isExporting, isExportLoading, exportRef, exportToImg } =
+    useExportToImage(pngExportFilename);
 
   // Set up Excel export
-  const viewContent = { ...config, data: reportData, startDate, endDate };
-  const excelExportTitle = `${viewContent?.name}, ${entityData?.name}`;
-  const { doExport } = useChartDataExport(viewContent, excelExportTitle);
+  const report = {
+    ...reportData,
+    startDate,
+    endDate,
+  };
+
+  const excelExportTitle = `${config?.name}, ${entityData?.name}`;
+  const { doExport } = useChartDataExport(config, report, excelExportTitle);
 
   // Export click handler
   const handleClickExport = async exportId => {
@@ -276,6 +285,7 @@ export const DashboardReportModal = () => {
             </Toolbar>
           </Header>
           <DashboardReport
+            itemCode={config?.code}
             name={config?.name}
             reportCode={reportCode}
             isExporting={isExporting}
@@ -286,9 +296,7 @@ export const DashboardReportModal = () => {
             isEnlarged
             modalDates={{ startDate, endDate }}
           />
-          {isExporting && (
-            <ExportDate startDate={viewContent.startDate} endDate={viewContent.endDate} />
-          )}
+          {isExporting && <ExportDate startDate={config.startDate} endDate={config.endDate} />}
         </VisualContainer>
       </Wrapper>
     </MuiDialog>

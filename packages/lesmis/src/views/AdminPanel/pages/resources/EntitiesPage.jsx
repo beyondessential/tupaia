@@ -13,7 +13,7 @@ import { getDeleteColumnConfigs } from '../helpers/getDeleteColumnConfigs';
 
 const ENTITIES_ENDPOINT = 'entities';
 
-export const EntitiesPage = ({ getHeaderEl, translate }) => {
+export const EntitiesPage = ({ translate }) => {
   const { SURVEY_RESPONSE_COLUMNS } = getSurveyResponsePageConfigs({ translate });
   const ANSWER_FIELDS = [
     {
@@ -140,12 +140,10 @@ export const EntitiesPage = ({ getHeaderEl, translate }) => {
       importConfig={IMPORT_CONFIG}
       deleteConfig={getDeleteConfigs(translate)}
       editorConfig={getBaseEditorConfigs(translate)}
-      getHeaderEl={getHeaderEl}
     />
   );
 };
 
 EntitiesPage.propTypes = {
-  getHeaderEl: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };
