@@ -1,6 +1,6 @@
-/*
- * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
@@ -202,6 +202,12 @@ const SURVEY_COLUMNS = [
   {
     Header: 'Survey Group',
     source: 'survey_group.name',
+  },
+  SURVEY_FIELDS.can_repeat,
+  SURVEY_FIELDS.period_granularity,
+  {
+    Header: 'Service Type',
+    source: 'data_group.service_type',
   },
   {
     Header: 'Export',

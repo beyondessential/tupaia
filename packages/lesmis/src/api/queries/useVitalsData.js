@@ -87,7 +87,7 @@ const useEntityVitals = entity => {
   const { data: results, isLoading } = useEntityReport(entity);
 
   return {
-    data: results?.[0],
+    data: results?.data?.[0],
     isLoading,
   };
 };
@@ -102,6 +102,7 @@ const getPartnersLogos = vitalsData => {
 
 export const useVitalsData = entityCode => {
   const { data: entities = [], ...entitiesQuery } = useProjectEntitiesData();
+
   const { data: entityData } = useEntityData(entityCode);
   const parentEntityData = getParentEntity(entities, entityData);
 

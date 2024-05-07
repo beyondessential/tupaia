@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
@@ -17,7 +17,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child ID',
+    Header: 'Child Id',
     source: 'child_id',
     type: 'tooltip',
     editConfig: {

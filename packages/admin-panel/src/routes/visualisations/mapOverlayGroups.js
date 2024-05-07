@@ -1,10 +1,10 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
-const FIELDS = [
+const EDIT_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
@@ -13,8 +13,18 @@ const FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    width: 140,
     type: 'tooltip',
   },
+];
+
+const FIELDS = [
+  {
+    Header: 'ID',
+    source: 'id',
+    type: 'tooltip',
+  },
+  ...EDIT_FIELDS,
 ];
 
 const COLUMNS = [
@@ -25,7 +35,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Map Overlay Group',
       editEndpoint: 'mapOverlayGroups',
-      fields: FIELDS,
+      fields: EDIT_FIELDS,
     },
   },
 ];
@@ -83,7 +93,7 @@ const CREATE_CONFIG = {
   title: 'Create a new Map overlay group',
   actionConfig: {
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
-    fields: FIELDS,
+    fields: EDIT_FIELDS,
   },
 };
 
