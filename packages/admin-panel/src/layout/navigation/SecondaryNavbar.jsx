@@ -43,7 +43,8 @@ const RouteLink = styled(Link)`
   }
 
   &:hover,
-  &:focus {
+  &:focus,
+  &:focus-visible {
     color: ${({ theme }) => theme.palette.text.primary};
     font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     outline: none;
@@ -201,22 +202,23 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
   };
 };
 
-export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
+export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
   const location = useLocation();
   const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
 
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);
-    const detailsViewMatch = link.detailsView
-      ? matchPath(`${link.target}${link.detailsView.path}`, location.pathname)
+    const nestedViewMatch = link.nestedView
+      ? matchPath(`${link.target}${link.nestedView.path}`, location.pathname)
       : false;
 
-    return !!matchResult || !!detailsViewMatch;
+    return !!matchResult || !!nestedViewMatch;
   };
 
   const links = linkInput?.map(({ exact, path, title, ...rest }) => {
-    const target = exact ? path : `${baseRoute}${path}`;
+    const target = exact ? path : `${basePath}${path}`;
+
     return {
       ...rest,
       title,
@@ -243,9 +245,9 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ path, title, target, active }, i) => (
+          {links.map(({ title, target, active }, i) => (
             <RouteLink
-              key={path}
+              key={title}
               to={target}
               data-text={title}
               ref={navLinkRefs.current[i]}
@@ -273,5 +275,5 @@ SecondaryNavbar.propTypes = {
       exact: PropTypes.bool,
     }),
   ).isRequired,
-  baseRoute: PropTypes.string.isRequired,
+  basePath: PropTypes.string.isRequired,
 };

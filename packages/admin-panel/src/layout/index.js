@@ -8,3 +8,4 @@ export { NavPanel, SecondaryNavbar, HomeLink, UserLink } from './navigation';
 export { PageWrapper, Main, PageContentWrapper } from './Page';
 export { AppPageLayout } from './AppPageLayout';
 export { Breadcrumbs } from './Breadcrumbs';
+export { TabPageLayout } from './TabPageLayout';

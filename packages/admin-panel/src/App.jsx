@@ -6,31 +6,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AppPageLayout } from './layout';
+import { AppPageLayout, Footer } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getHasBESAdminPanelAccess, getUser, PrivateRoute } from './authentication';
+import { getHasBESAdminAccess, getUser, PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
 import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 
-export const getFlattenedChildViews = route => {
+export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
-    const { detailsView } = childView;
+    const { nestedView } = childView;
 
     const childViewWithRoute = {
       ...childView,
+      basePath,
       path: `${route.path}${childView.path}`,
-      parent: route,
+      to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
-    if (!detailsView) return [...acc, childViewWithRoute];
+    if (!nestedView) return [...acc, childViewWithRoute];
 
-    const updatedDetailsView = detailsView
+    const updatedNestedView = nestedView
       ? {
-          ...detailsView,
-          path: `${route.path}${childView.path}${detailsView.path}`,
+          ...nestedView,
+          path: `${route.path}${childView.path}${nestedView.path}`,
           parent: childViewWithRoute,
         }
       : null;
@@ -39,9 +40,9 @@ export const getFlattenedChildViews = route => {
       ...acc,
       {
         ...childViewWithRoute,
-        detailsView: updatedDetailsView,
+        nestedView: updatedNestedView,
       },
-      updatedDetailsView,
+      updatedNestedView,
     ];
   }, []);
 };
@@ -70,8 +71,8 @@ export const App = ({ user, hasBESAdminAccess }) => {
   const accessibleRoutes = getAccessibleRoutes();
   return (
     <Routes>
-      <Route path="/login" exact element={<LoginPage />} />
-      <Route path="/logout" exact element={<LogoutPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/logout" element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
           <Route index element={<Navigate to="/surveys" replace />} />
@@ -80,9 +81,14 @@ export const App = ({ user, hasBESAdminAccess }) => {
             <Route
               key={route.path}
               path={route.path}
-              element={<TabPageLayout routes={route.childViews} baseUrl={route.path} />}
+              element={
+                <TabPageLayout
+                  routes={route.childViews}
+                  basePath={route.path}
+                  Footer={<Footer />}
+                />
+              }
             >
-              {/* <Route index element={<Navigate to={route.childViews[0].path} replace />} /> */}
               {getFlattenedChildViews(route).map(childRoute => (
                 <Route
                   key={childRoute.title}
@@ -91,7 +97,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
                     childRoute.Component ? (
                       <childRoute.Component />
                     ) : (
-                      <ResourcePage {...childRoute} />
+                      <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
                     )
                   }
                 />
@@ -122,7 +128,7 @@ App.propTypes = {
 export default connect(
   state => ({
     user: getUser(state),
-    hasBESAdminAccess: getHasBESAdminPanelAccess(state),
+    hasBESAdminAccess: getHasBESAdminAccess(state),
   }),
   null,
 )(App);

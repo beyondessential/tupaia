@@ -125,7 +125,7 @@ export const dashboards = {
   endpoint: DASHBOARDS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
-  detailsView: {
+  nestedView: {
     title: 'Dashboard Relations',
     columns: RELATION_COLUMNS,
     endpoint: 'dashboards/{id}/dashboardRelations',

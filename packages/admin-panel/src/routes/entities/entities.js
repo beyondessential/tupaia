@@ -32,6 +32,16 @@ export const FIELDS = {
   },
 };
 
+export const QRCodeColumn = {
+  Header: 'QR',
+  type: 'qrCode',
+  actionConfig: {
+    qrCodeContentsKey: 'id',
+    humanReadableIdKey: 'name',
+    qrCodePrefix: 'entity-', // TODO: Consolidate id prefixing into a common util (RN-968)
+  },
+};
+
 export const COLUMNS = [
   ...Object.values(FIELDS),
   {
@@ -54,15 +64,7 @@ export const COLUMNS = [
       endpoint: ENTITIES_ENDPOINT,
     },
   },
-  {
-    Header: 'QR',
-    type: 'qrCode',
-    actionConfig: {
-      qrCodeContentsKey: 'id',
-      humanReadableIdKey: 'name',
-      qrCodePrefix: 'entity-', // TODO: Consolidate id prefixing into a common util (RN-968)
-    },
-  },
+  QRCodeColumn,
 ];
 
 const IMPORT_CONFIG = {
@@ -70,7 +72,7 @@ const IMPORT_CONFIG = {
   subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
-    importEndpoint: 'entities',
+    importEndpoint: ENTITIES_ENDPOINT,
   },
   queryParameters: [
     {
@@ -99,13 +101,12 @@ export const entities = {
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
-  needsBESAdminAccess: ['delete'],
-  detailsView: {
+  nestedView: {
     title: 'Survey Responses',
-    endpoint: 'entities/{id}/surveyResponses',
+    endpoint: `${ENTITIES_ENDPOINT}/{id}/surveyResponses`,
     columns: SURVEY_RESPONSE_COLUMNS,
     path: '/:id/surveyResponses',
     displayProperty: 'name',
-    getLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
+    getNestedViewLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
   },
 };

@@ -49,6 +49,7 @@ const TableContainer = styled(MuiTableContainer)`
   table {
     min-width: 45rem;
   }
+  // Because we want two header rows to be sticky, we need to set the position of the thead to sticky
   thead {
     position: sticky;
     top: 0;
@@ -102,9 +103,11 @@ const DataFetchingTableComponent = ({
   isFetchingData,
   onSortedChange,
   detailUrl,
-  getIsLink,
+  getHasNestedView,
   endpoint,
-  getLink,
+  getNestedViewLink,
+  baseFilter,
+  basePath,
 }) => {
   const {
     getTableProps,
@@ -169,7 +172,7 @@ const DataFetchingTableComponent = ({
     } else {
       initialiseTable();
     }
-  }, [endpoint]);
+  }, [endpoint, baseFilter]);
 
   const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -189,7 +192,7 @@ const DataFetchingTableComponent = ({
         </MessageWrapper>
       )}
       <TableContainer>
-        <Table {...getTableProps()} stickyHeader>
+        <Table {...getTableProps()} stickyHeader className="data-fetching-table">
           <TableHead>
             {headerGroups.map(({ getHeaderGroupProps, headers }, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -258,10 +261,11 @@ const DataFetchingTableComponent = ({
                         key={`table-row-${index}-cell-${i}`}
                         row={row}
                         detailUrl={visibleColumns[i].isButtonColumn ? '' : detailUrl}
-                        getIsLink={getIsLink}
+                        getHasNestedView={getHasNestedView}
                         width={visibleColumns[i].colWidth}
-                        getLink={getLink}
+                        getNestedViewLink={getNestedViewLink}
                         isButtonColumn={visibleColumns[i].isButtonColumn}
+                        basePath={basePath}
                       >
                         {render('Cell')}
                       </DisplayCell>
@@ -325,9 +329,11 @@ DataFetchingTableComponent.propTypes = {
   actionColumns: PropTypes.arrayOf(PropTypes.shape({})),
   totalRecords: PropTypes.number,
   detailUrl: PropTypes.string,
-  getIsLink: PropTypes.func,
+  getHasNestedView: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
-  getLink: PropTypes.func,
+  getNestedViewLink: PropTypes.func,
+  baseFilter: PropTypes.object,
+  basePath: PropTypes.string,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -341,8 +347,10 @@ DataFetchingTableComponent.defaultProps = {
   actionColumns: [],
   totalRecords: 0,
   detailUrl: '',
-  getIsLink: null,
-  getLink: null,
+  getHasNestedView: null,
+  getNestedViewLink: null,
+  baseFilter: null,
+  basePath: '',
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({

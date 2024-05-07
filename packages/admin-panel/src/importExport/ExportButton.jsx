@@ -34,7 +34,7 @@ export const ExportButton = ({ actionConfig, row }) => {
           !queryParameters && row.original.id ? `/${row.original.id}` : ''
         }`;
         const processedFileName = fileName
-          ? makeSubstitutionsInString(fileName, row.original.id)
+          ? makeSubstitutionsInString(fileName, row.original)
           : null;
         await api.download(
           endpoint,

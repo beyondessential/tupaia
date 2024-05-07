@@ -107,7 +107,6 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     source: 'id',
-    width: 150,
     actionConfig: {
       title: 'Edit User',
       editEndpoint: 'users',
@@ -170,7 +169,7 @@ export const users = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   createConfig: CREATE_CONFIG,
-  detailsView: {
+  nestedView: {
     title: 'Permissions',
     endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,

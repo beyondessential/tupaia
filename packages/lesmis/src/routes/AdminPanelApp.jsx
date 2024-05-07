@@ -4,255 +4,130 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Assignment, InsertChart, Language, PeopleAlt, Storage } from '@material-ui/icons';
+import styled from 'styled-components';
 import {
   LogoutPage,
   PrivateRoute,
+  ResourcePage,
+  TabPageLayout,
+  getFlattenedChildViews,
+  AppPageLayout,
   VizBuilderApp,
-  DashboardsPage,
-  QuestionsPage,
-  SurveysPage,
-  SyncGroupsPage,
-  DataElementsPage,
-  DashboardItemsPage,
-  DashboardRelationsPage,
-  MapOverlaysPage,
-  MapOverlayGroupsPage,
-  MapOverlayGroupRelationsPage,
-  UsersPage,
-  PermissionsPage,
-  EntitiesPage,
-  ExternalDatabaseConnectionsPage,
-  DataTablesPage,
-  PageWrapper,
-  Main,
-  SecondaryNavbar,
   PageContentWrapper,
 } from '@tupaia/admin-panel';
 
-import { LesmisAdminRoute } from './LesmisAdminRoute';
-import {
-  ApprovedSurveyResponsesView,
-  DraftSurveyResponsesView,
-  RejectedSurveyResponsesView,
-  NonApprovalSurveyResponsesView,
-} from '../views/AdminPanel/SurveyResponsesView';
-import { AdminPanelNavbar } from '../views/AdminPanel/AdminPanelNavBar';
+import { LesmisAdminRedirect } from './LesmisAdminRedirect';
 import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n, hasAdminPanelAccess } from '../utils';
 import { Footer } from '../components';
+import { getRoutes } from '../views/AdminPanel/routes';
+import { getIsBESAdmin } from '../views/AdminPanel/authentication';
+import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
-const getRoutes = (adminUrl, translate) => {
-  return [
-    {
-      label: translate('admin.surveyData'),
-      to: `${adminUrl}/survey-responses`,
-      icon: <Assignment />,
-      tabs: [
-        {
-          label: translate('admin.review'),
-          to: '',
-          component: DraftSurveyResponsesView,
-        },
-        {
-          label: translate('admin.approved'),
-          to: '/approved',
-          component: ApprovedSurveyResponsesView,
-        },
-        {
-          label: translate('admin.rejected'),
-          to: '/rejected',
-          component: RejectedSurveyResponsesView,
-        },
-        {
-          label: translate('admin.approvalNotRequired'),
-          to: '/non-approval',
-          component: NonApprovalSurveyResponsesView,
-        },
-      ],
-    },
-    {
-      label: translate('admin.surveys'),
-      to: `${adminUrl}/surveys`,
-      icon: <Assignment />,
-      tabs: [
-        {
-          label: translate('admin.surveys'),
-          to: '',
-          component: SurveysPage,
-        },
-        {
-          label: translate('admin.questions'),
-          to: '/questions',
-          component: QuestionsPage,
-        },
-        {
-          label: translate('admin.dataElements'),
-          to: '/data-elements',
-          component: DataElementsPage,
-        },
-        {
-          label: translate('admin.syncGroups'),
-          to: '/sync-groups',
-          component: SyncGroupsPage,
-        },
-      ],
-    },
-    {
-      label: translate('admin.visualisations'),
-      to: `${adminUrl}/visualisations`,
-      icon: <InsertChart />,
-      tabs: [
-        {
-          label: translate('admin.dashboardItems'),
-          to: '',
-          component: props => <DashboardItemsPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        },
-        {
-          label: translate('admin.dashboards'),
-          to: '/dashboards',
-          component: DashboardsPage,
-        },
-        {
-          label: translate('admin.dashboardRelations'),
-          to: '/dashboard-relations',
-          component: DashboardRelationsPage,
-        },
-        {
-          label: translate('admin.mapOverlays'),
-          to: '/map-overlays',
-          component: props => <MapOverlaysPage {...props} vizBuilderBaseUrl={adminUrl} />,
-        },
-        {
-          label: translate('admin.mapOverlayGroups'),
-          to: '/map-overlay-groups',
-          component: MapOverlayGroupsPage,
-        },
-        {
-          label: translate('admin.mapOverlayGroupRelations'),
-          to: '/map-overlay-group-relations',
-          component: MapOverlayGroupRelationsPage,
-        },
-        {
-          label: translate('admin.dataTables'),
-          to: '/dataTables',
-          component: DataTablesPage,
-        },
-      ],
-    },
-    {
-      label: `${translate('admin.users')} & ${translate('admin.permissions')}`,
-      to: `${adminUrl}/users`,
-      icon: <PeopleAlt />,
-      tabs: [
-        {
-          label: translate('admin.users'),
-          to: '',
-          component: UsersPage,
-        },
-        {
-          label: translate('admin.permissions'),
-          to: '/permissions',
-          component: PermissionsPage,
-        },
-      ],
-    },
-    {
-      label: translate('admin.entities'),
-      to: `${adminUrl}/entities`,
-      icon: <Storage />,
-      tabs: [
-        {
-          label: translate('admin.entities'),
-          to: '',
-          component: EntitiesPage,
-        },
-      ],
-    },
-    {
-      label: translate('admin.externalData'),
-      to: `${adminUrl}/external-database-connections`,
-      icon: <Language />,
-      tabs: [
-        {
-          label: translate('admin.externalDatabaseConnections'),
-          to: '',
-          component: ExternalDatabaseConnectionsPage,
-        },
-      ],
-    },
-  ];
-};
+const PageContentContainerComponent = styled(PageContentWrapper)`
+  padding-inline: 0;
+  > div {
+    margin-inline: 1.5rem;
+  }
+  footer {
+    margin-block-start: 1.5rem;
+  }
+`;
 
-const AdminPanelApp = ({ user }) => {
+const AdminPanelApp = ({ user, isBESAdmin }) => {
   const { translate } = useI18n();
-  const { path } = useRouteMatch();
+  const location = useLocation();
   const adminUrl = useAdminPanelUrl();
   const userHasAdminPanelAccess = hasAdminPanelAccess(user);
 
-  const routes = getRoutes(adminUrl, translate);
+  const routes = getRoutes(adminUrl, translate, isBESAdmin);
 
   return (
-    <Switch>
-      <Route path={`${path}/login`} exact>
-        <AdminPanelLoginPage />
+    <Routes>
+      <Route path="/login" element={<AdminPanelLoginPage />} />
+      <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
+
+      <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+        <Route
+          path="/"
+          element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
+        >
+          <Route
+            path="/viz-builder/*"
+            hasAdminPanelAccess={userHasAdminPanelAccess}
+            element={
+              <VizBuilderApp
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={`${adminUrl}/survey-responses`}
+                Footer={Footer}
+              />
+            }
+          />
+          <Route
+            element={
+              <AppPageLayout
+                user={user}
+                routes={routes}
+                logo={{
+                  url: '/lesmis-logo-white.svg',
+                  alt: 'LESMIS Admin Panel Logo',
+                }}
+                homeLink={`${adminUrl}/survey-responses`}
+                userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
+                basePath={adminUrl}
+              />
+            }
+          >
+            {routes.map(route => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <TabPageLayout
+                    routes={route.childViews}
+                    basePath={`${adminUrl}${route.path}`}
+                    Footer={<Footer />}
+                    ContainerComponent={PageContentContainerComponent}
+                  />
+                }
+              >
+                {getFlattenedChildViews(route, adminUrl).map(childRoute => (
+                  <Route
+                    key={childRoute.path}
+                    path={childRoute.path}
+                    element={
+                      childRoute.Component ? (
+                        <childRoute.Component />
+                      ) : (
+                        <ResourcePage {...childRoute} />
+                      )
+                    }
+                  />
+                ))}
+              </Route>
+            ))}
+            <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
+          </Route>
+        </Route>
       </Route>
-      <Route path={`${path}/logout`} exact>
-        <LogoutPage redirectTo={`${adminUrl}/login`} />
-      </Route>
-      <LesmisAdminRoute path={`${path}/viz-builder`} hasAdminPanelAccess={userHasAdminPanelAccess}>
-        <VizBuilderApp
-          logo={{
-            url: '/lesmis-logo-white.svg',
-            alt: 'LESMIS Admin Panel Logo',
-          }}
-          homeLink={adminUrl}
-          Footer={Footer}
-        />
-      </LesmisAdminRoute>
-      <PrivateRoute path={`${path}`} loginPath={`${adminUrl}/login`}>
-        <PageWrapper>
-          <AdminPanelNavbar user={user} links={routes} />
-          <Main>
-            <Switch>
-              {routes.map(route => (
-                <LesmisAdminRoute
-                  key={route.to}
-                  path={route.to}
-                  hasAdminPanelAccess={userHasAdminPanelAccess}
-                  render={({ match }) => {
-                    return (
-                      <>
-                        <SecondaryNavbar links={route.tabs} baseRoute={match.url} />
-                        <PageContentWrapper>
-                          <Switch>
-                            {route.tabs.map(tab => (
-                              <Route
-                                key={`${route.to}-${tab.to}`}
-                                path={`${route.to}${tab.to}`}
-                                exact
-                              >
-                                <tab.component translate={translate} />
-                              </Route>
-                            ))}
-                            <Redirect to={route.to} />
-                          </Switch>
-                          <Footer />
-                        </PageContentWrapper>
-                      </>
-                    );
-                  }}
-                />
-              ))}
-              <Redirect to={`${path}/survey-responses`} />
-            </Switch>
-          </Main>
-        </PageWrapper>
-      </PrivateRoute>
-      <Redirect to={`${path}/login`} />
-    </Switch>
+      <Route path="not-authorised" element={<NotAuthorisedView />} />
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={`${adminUrl}/login`}
+            state={{
+              referrer: location.pathname,
+            }}
+          />
+        }
+      />
+    </Routes>
   );
 };
 
@@ -263,11 +138,17 @@ AdminPanelApp.propTypes = {
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
   }).isRequired,
+  isBESAdmin: PropTypes.bool,
+};
+
+AdminPanelApp.defaultProps = {
+  isBESAdmin: false,
 };
 
 export default connect(
   state => ({
     user: state?.authentication?.user || {},
+    isBESAdmin: getIsBESAdmin(state),
   }),
   null,
 )(AdminPanelApp);

@@ -170,7 +170,7 @@ export const accessRequests = {
     // Return an array of records for bulk editing on the server
     return recordData.map(record => ({ ...record, ...editedFields }));
   },
-  detailsView: {
+  nestedView: {
     title: 'Access Requests',
     endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
     columns: DETAILS_COLUMNS,
