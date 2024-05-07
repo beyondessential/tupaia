@@ -41,7 +41,6 @@ const Container = styled.div`
 
 const CardLabel = styled.label`
   color: rgb(111, 123, 130);
-  font-size: 15px;
   font-weight: 400;
   line-height: 18px;
   display: block;

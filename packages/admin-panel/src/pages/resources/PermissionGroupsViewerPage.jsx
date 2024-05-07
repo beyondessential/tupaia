@@ -20,10 +20,6 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   margin-bottom: 40px;
   max-height: 870px;
   color: ${({ theme }) => theme.palette.text.primary};
-
-  .MuiTypography-body1 {
-    font-size: 15px;
-  }
 `;
 
 const getRootLevelNodes = data =>
