@@ -23,25 +23,32 @@ const Heading = styled(Typography)`
   color: ${props => props.theme.palette.error.main};
 `;
 
-export const ConfirmDeleteModal = ({ isOpen, recordType, onConfirm, onCancel }) => {
+export const ConfirmDeleteModal = ({
+  isOpen,
+  title,
+  onConfirm,
+  onCancel,
+  description,
+  heading,
+  confirmButtonText,
+  cancelButtonText,
+}) => {
   const buttons = [
     {
-      text: 'Cancel',
+      text: cancelButtonText,
       onClick: onCancel,
       variant: 'outlined',
     },
     {
-      text: `Delete ${recordType}`,
+      text: confirmButtonText,
       onClick: onConfirm,
     },
   ];
   return (
-    <Modal onClose={onCancel} isOpen={isOpen} title={`Delete ${recordType}`} buttons={buttons}>
+    <Modal onClose={onCancel} isOpen={isOpen} title={title} buttons={buttons}>
       <Container>
-        <Heading variant="h3">You are about to delete this {recordType}</Heading>
-        <Typography>
-          Are you sure you would like to delete this {recordType}? This cannot be undone.
-        </Typography>
+        {heading && <Heading variant="h3">{heading}</Heading>}
+        <Typography>{description}</Typography>
       </Container>
     </Modal>
   );
@@ -49,13 +56,18 @@ export const ConfirmDeleteModal = ({ isOpen, recordType, onConfirm, onCancel }) 
 
 ConfirmDeleteModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  recordType: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
+  confirmButtonText: PropTypes.string.isRequired,
+  cancelButtonText: PropTypes.string,
+  heading: PropTypes.string,
 };
 
 ConfirmDeleteModal.defaultProps = {
   onConfirm: () => {},
   onCancel: () => {},
-  recordType: 'record',
+  cancelButtonText: 'Cancel',
+  heading: '',
 };

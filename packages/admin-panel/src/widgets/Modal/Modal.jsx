@@ -32,30 +32,36 @@ export const Modal = ({
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         {children}
       </ModalContentProvider>
-      <ModalFooter>
-        {buttons?.map(
-          ({
-            onClick,
-            color = 'primary',
-            text,
-            id,
-            disabled,
-            variant = 'contained',
-            type = 'button',
-          }) => (
-            <Button
-              onClick={onClick}
-              color={color}
-              id={id}
-              disabled={disabled}
-              variant={variant}
-              type={type}
-            >
-              {text}
-            </Button>
-          ),
-        )}
-      </ModalFooter>
+      {buttons?.length > 0 && (
+        <ModalFooter>
+          {buttons?.map(
+            ({
+              onClick,
+              color = 'primary',
+              text,
+              id,
+              disabled,
+              variant = 'contained',
+              type = 'button',
+              component,
+              to,
+            }) => (
+              <Button
+                onClick={onClick}
+                color={color}
+                id={id}
+                disabled={disabled}
+                variant={variant}
+                type={type}
+                component={component}
+                to={to}
+              >
+                {text}
+              </Button>
+            ),
+          )}
+        </ModalFooter>
+      )}
     </Dialog>
   );
 };
@@ -75,6 +81,9 @@ Modal.propTypes = {
       id: PropTypes.string,
       disabled: PropTypes.bool,
       variant: PropTypes.string,
+      type: PropTypes.string,
+      component: PropTypes.elementType,
+      to: PropTypes.string,
     }),
   ),
 };

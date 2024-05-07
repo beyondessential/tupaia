@@ -4,17 +4,80 @@
  */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { ConfirmModal } from '@tupaia/ui-components';
-import { ColumnActionButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
+import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
+import { ColumnActionButton, DataChangeAction, useApiContext, Modal } from '@tupaia/admin-panel';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRejectSurveyResponseStatus } from '../api';
+
+const ConfirmModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+`;
+
+const ConfirmModalHeading = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
+  font-size: ${props => props.theme.typography.body1.fontSize};
+  margin-bottom: 0.5rem;
+`;
+
+const RejectConfirmModal = ({ isOpen, onClose, onConfirm, errorMessage, translate, isLoading }) => (
+  <Modal
+    onClose={onClose}
+    isOpen={isOpen}
+    isLoading={isLoading}
+    errorMessage={errorMessage}
+    buttons={[
+      {
+        text: translate('admin.cancel'),
+        onClick: onClose,
+        disabled: isLoading,
+        variant: 'outlined',
+      },
+      {
+        text: translate('admin.yesReject'),
+        onClick: onConfirm,
+        disabled: isLoading,
+      },
+    ]}
+    title={translate('admin.rejectSurveyResponse')}
+  >
+    <ConfirmModalBody>
+      <ConfirmModalHeading>
+        {translate('admin.areYouSureYouWantToRejectThisSurveyResponse')}
+      </ConfirmModalHeading>
+      <Typography>
+        {translate(
+          'admin.rejectingASurveyResponseWillRemoveTheRecordFromThisTabAndPreventTheDataDisplayingInAnyVisualisations',
+        )}
+      </Typography>
+    </ConfirmModalBody>
+  </Modal>
+);
+
+RejectConfirmModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  errorMessage: PropTypes.string,
+  translate: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
+
+RejectConfirmModal.defaultProps = {
+  errorMessage: null,
+};
 
 export const getRejectButton = translate => {
   const RejectButton = ({ row }) => {
     const api = useApiContext();
     const [isOpen, setIsOpen] = useState(false);
-    const { mutate, isLoading, isError, error } = useRejectSurveyResponseStatus(api);
+    const { mutate, isLoading, error } = useRejectSurveyResponseStatus(api);
 
     const handleClickReject = ({ onEditBegin, onEditSuccess, onEditError }) => {
       onEditBegin();
@@ -38,20 +101,14 @@ export const getRejectButton = translate => {
         </ColumnActionButton>
         <DataChangeAction
           render={props => (
-            <ConfirmModal
-              onClose={() => setIsOpen(false)}
+            <RejectConfirmModal
+              {...props}
               isOpen={isOpen}
-              handleAction={() => handleClickReject(props)}
+              onClose={() => setIsOpen(false)}
+              onConfirm={() => handleClickReject(props)}
+              errorMessage={error?.message}
+              translate={translate}
               isLoading={isLoading}
-              error={isError ? error : null}
-              title={translate('admin.rejectSurveyResponse')}
-              mainText={translate('admin.areYouSureYouWantToRejectThisSurveyResponse')}
-              description={translate(
-                'admin.rejectingASurveyResponseWillRemoveTheRecordFromThisTabAndPreventTheDataDisplayingInAnyVisualisations',
-              )}
-              actionText={translate('admin.yesReject')}
-              loadingText="Saving"
-              cancelText={translate('admin.cancel')}
             />
           )}
         />
