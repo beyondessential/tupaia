@@ -16,15 +16,13 @@ import { TestDatabaseConnectionButton } from './TestDatabaseConnectionButton';
 import { QrCodeButton } from './QrCodeButton';
 import { ResubmitSurveyResponseButton } from './ResubmitSurveyResponseButton';
 
-const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
-  <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
-);
-
-const BUTTON_WIDTH = 60;
+const generateCustomCell = (CustomCell, actionConfig, reduxId) => props =>
+  <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />;
 
 const BUTTON_COLUMN_OPTIONS = {
   filterable: false,
-  sortable: false,
+  disableSortBy: true,
+  isButtonColumn: true,
 };
 
 const CUSTOM_CELL_COMPONENTS = {
@@ -49,6 +47,8 @@ const BUTTON_COLUMN_TYPES = [
   'logs',
   'resubmitSurveyResponse',
   'qrCode',
+  'testDatabaseConnection',
+  'bulkEdit',
 ];
 
 export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
@@ -63,7 +63,6 @@ export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
     config = {
       ...config,
       ...BUTTON_COLUMN_OPTIONS,
-      width: BUTTON_WIDTH,
     };
   }
   if (type === 'boolean') {

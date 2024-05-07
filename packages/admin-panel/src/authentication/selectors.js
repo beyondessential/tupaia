@@ -19,7 +19,7 @@ export const getIsUserAuthenticated = state => !!getAuthenticationState(state).u
 export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
 
 // Assume that if a user has any BES Admin access, they are an internal user, to avoid having to check permissions for every country
-export const getHasBESAdminPanelAccess = state => {
+export const getHasBESAdminAccess = state => {
   const user = getUser(state);
   if (!user || !user.accessPolicy) return false;
   return Object.keys(user.accessPolicy).some(countryCode =>

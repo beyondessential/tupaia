@@ -6,22 +6,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CheckIcon from '@material-ui/icons/Check';
-import { IconButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
+import { ColumnActionButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MuiSnackbar from '@material-ui/core/Snackbar';
 import { SmallAlert } from '@tupaia/ui-components';
 import { useApproveSurveyResponseStatus } from '../api';
-import { GREEN } from '../../../constants';
 
-const Button = styled(IconButton)`
-  width: 56px;
-
-  &:hover {
-    background: ${GREEN};
-  }
-`;
-
-export const ApproveButton = ({ value: id }) => {
+export const ApproveButton = ({ row }) => {
   const api = useApiContext();
   const [showAlert, setShowAlert] = useState(false);
   const { mutate, isLoading, isError } = useApproveSurveyResponseStatus(api);
@@ -32,7 +23,7 @@ export const ApproveButton = ({ value: id }) => {
 
   const handleClickApprove = ({ onEditBegin, onEditSuccess, onEditError }) => {
     onEditBegin();
-    mutate(id, {
+    mutate(row.original.id, {
       onSuccess: () => {
         onEditSuccess();
       },
@@ -47,9 +38,9 @@ export const ApproveButton = ({ value: id }) => {
     <>
       <DataChangeAction
         render={props => (
-          <Button onClick={() => handleClickApprove(props)}>
+          <ColumnActionButton onClick={() => handleClickApprove(props)}>
             {isLoading ? <CircularProgress size={16} color="inherit" /> : <CheckIcon />}
-          </Button>
+          </ColumnActionButton>
         )}
       />
       <MuiSnackbar
@@ -71,5 +62,9 @@ export const ApproveButton = ({ value: id }) => {
 };
 
 ApproveButton.propTypes = {
-  value: PropTypes.string.isRequired,
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
