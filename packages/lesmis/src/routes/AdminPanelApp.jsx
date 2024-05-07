@@ -63,7 +63,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                   url: '/lesmis-logo-white.svg',
                   alt: 'LESMIS Admin Panel Logo',
                 }}
-                homeLink={adminUrl}
+                homeLink={`${adminUrl}/survey-responses`}
                 Footer={Footer}
               />
             }
@@ -77,7 +77,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                   url: '/lesmis-logo-white.svg',
                   alt: 'LESMIS Admin Panel Logo',
                 }}
-                homeLink={adminUrl}
+                homeLink={`${adminUrl}/survey-responses`}
                 userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
                 basePath={adminUrl}
               />
