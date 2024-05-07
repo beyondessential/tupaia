@@ -43,20 +43,22 @@ const StyledLocaleLink = styled(LocaleLink)`
   text-decoration: none;
 `;
 
-export const LoginView = () => (
-  <Container>
-    <FormBackButton />
-    <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
-    <StyledCard>
-      <LoginForm />
-    </StyledCard>
-    <FlexCenter mb={4}>
-      <Text color="textSecondary">
-        <I18n t="login.dontHaveAccess" />
-      </Text>
-      <StyledLocaleLink to="/register" color="primary">
-        <I18n t="login.registerHere" />
-      </StyledLocaleLink>
-    </FlexCenter>
-  </Container>
-);
+export const LoginView = () => {
+  return (
+    <Container>
+      <FormBackButton />
+      <StyledImg src="/lesmis-login-logo.svg" alt="lesmis-logo" />
+      <StyledCard>
+        <LoginForm />
+      </StyledCard>
+      <FlexCenter mb={4}>
+        <Text color="textSecondary">
+          <I18n t="login.dontHaveAccess" />
+        </Text>
+        <StyledLocaleLink to="/register" color="primary">
+          <I18n t="login.registerHere" />
+        </StyledLocaleLink>
+      </FlexCenter>
+    </Container>
+  );
+};

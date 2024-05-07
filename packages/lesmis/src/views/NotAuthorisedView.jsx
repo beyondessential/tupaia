@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Button } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import { NotAuthorised as NotAuthorisedIcon } from '../components/Icons/NotAuthorised';
@@ -33,7 +33,7 @@ const Text = styled(Typography)`
 `;
 
 export const NotAuthorisedView = () => {
-  const history = useHistory();
+  const location = useLocation();
   const { locale } = useUrlParams();
   const { isLoading, isLoggedIn } = useUser();
 
@@ -56,10 +56,8 @@ export const NotAuthorisedView = () => {
         {!isLoggedIn && !isLoading && (
           <Button
             component={RouterLink}
-            to={{
-              pathname: `/${locale}/login`,
-              state: { referer: history.location },
-            }}
+            to={`/${locale}/login`}
+            state={{ referer: `${location.pathname}${location.search}` }}
           >
             Login
           </Button>

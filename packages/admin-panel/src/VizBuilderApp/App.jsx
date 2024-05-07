@@ -5,7 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Switch, Route } from 'react-router-dom';
+import { renderMatches, useLocation } from 'react-router';
+import { matchRoutes } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { Main } from './views/Main';
 import { CreateNew } from './views/CreateNew';
@@ -33,6 +34,27 @@ export const App = ({ Footer, homeLink, logo }) => {
   const { isLoading: isUserLoading } = useUser();
 
   const basePath = useVizBuilderBasePath();
+  const location = useLocation();
+
+  const matches = matchRoutes(
+    [
+      {
+        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`,
+        exact: true,
+        element: <CreateNew />,
+      },
+      {
+        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId`,
+        element: <Main />,
+      },
+      // react router v6 does not support optional params, so we need to define two routes
+      {
+        path: `${basePath}/viz-builder/:dashboardItemOrMapOverlay`,
+        element: <Main />,
+      },
+    ],
+    location.pathname,
+  );
 
   if (isUserLoading) {
     return <FullPageLoader />;
@@ -44,14 +66,8 @@ export const App = ({ Footer, homeLink, logo }) => {
         <NavPanel logo={logo} homeLink={homeLink} />
 
         <Container>
-          <Switch>
-            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/new`} exact>
-              <CreateNew />
-            </Route>
-            <Route path={`${basePath}/viz-builder/:dashboardItemOrMapOverlay/:visualisationId?`}>
-              <Main />
-            </Route>
-          </Switch>
+          {/** Workaround for handling issues with this nested app */}
+          {renderMatches(matches)}
           {Footer && <Footer />}
         </Container>
       </Wrapper>
@@ -60,7 +76,7 @@ export const App = ({ Footer, homeLink, logo }) => {
 };
 
 App.propTypes = {
-  Footer: PropTypes.node,
+  Footer: PropTypes.elementType,
   homeLink: PropTypes.string,
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,

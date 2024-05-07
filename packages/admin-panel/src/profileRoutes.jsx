@@ -11,19 +11,19 @@ import { ChangePasswordPage } from './pages/ChangePasswordPage';
 
 export const PROFILE_ROUTES = [
   {
-    to: '/profile',
-    tabs: [
+    path: '/profile',
+    childViews: [
       {
-        label: 'Profile',
-        to: '',
+        title: 'Profile',
+        path: '',
         icon: <AccountCircleIcon />,
-        component: ProfilePage,
+        Component: ProfilePage,
       },
       {
-        label: 'Change Password',
-        to: '/change-password',
+        title: 'Change Password',
+        path: '/change-password',
         icon: <LockIcon />,
-        component: ChangePasswordPage,
+        Component: ChangePasswordPage,
       },
     ],
   },

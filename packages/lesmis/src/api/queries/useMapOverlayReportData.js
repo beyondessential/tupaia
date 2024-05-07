@@ -136,9 +136,11 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   const [hiddenValues, setHiddenValues] = useState({});
   const [selectedOverlay, setSelectedOverlay] = useUrlSearchParam('overlay', null);
 
-  const { data: entitiesData, entitiesByCode, isLoading: entitiesLoading } = useEntitiesData(
-    entityCode,
-  );
+  const {
+    data: entitiesData,
+    entitiesByCode,
+    isLoading: entitiesLoading,
+  } = useEntitiesData(entityCode);
   const { data: overlaysData, isLoading: overlaysLoading } = useMapOverlaysData({ entityCode });
 
   const entityData = entitiesByCode[entityCode];
@@ -168,7 +170,7 @@ export const useMapOverlayReportData = ({ entityCode, year }) => {
   );
 
   const measureData = measureDataResponse
-    ? getMeasureDataFromResponse(overlay, measureDataResponse)
+    ? getMeasureDataFromResponse(overlay, measureDataResponse?.data)
     : null;
 
   // reset hidden values when changing overlay or entity

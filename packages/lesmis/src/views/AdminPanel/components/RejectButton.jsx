@@ -5,13 +5,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ConfirmModal } from '@tupaia/ui-components';
-import { IconButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
+import { ColumnActionButton, DataChangeAction, useApiContext } from '@tupaia/admin-panel';
 import { Delete } from '@material-ui/icons';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useRejectSurveyResponseStatus } from '../api';
 
 export const getRejectButton = translate => {
-  const RejectButton = ({ value: id }) => {
+  const RejectButton = ({ row }) => {
     const api = useApiContext();
     const [isOpen, setIsOpen] = useState(false);
     const { mutate, isLoading, isError, error } = useRejectSurveyResponseStatus(api);
@@ -19,7 +19,7 @@ export const getRejectButton = translate => {
     const handleClickReject = ({ onEditBegin, onEditSuccess, onEditError }) => {
       onEditBegin();
 
-      mutate(id, {
+      mutate(row.original.id, {
         onSuccess: () => {
           onEditSuccess();
           setIsOpen(false);
@@ -33,9 +33,9 @@ export const getRejectButton = translate => {
 
     return (
       <>
-        <IconButton onClick={() => setIsOpen(true)}>
+        <ColumnActionButton onClick={() => setIsOpen(true)}>
           {isLoading ? <CircularProgress size={16} color="inherit" /> : <Delete />}
-        </IconButton>
+        </ColumnActionButton>
         <DataChangeAction
           render={props => (
             <ConfirmModal
@@ -60,7 +60,7 @@ export const getRejectButton = translate => {
   };
 
   RejectButton.propTypes = {
-    value: PropTypes.string.isRequired,
+    row: PropTypes.object.isRequired,
   };
 
   return RejectButton;
