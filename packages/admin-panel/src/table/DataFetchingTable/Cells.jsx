@@ -73,7 +73,7 @@ const HeaderCell = styled(Cell)`
 export const HeaderDisplayCell = ({ children, isButtonColumn, width, ...props }) => {
   return (
     <HeaderCell $isButtonColumn={isButtonColumn} $width={width} {...props}>
-      {children}
+      <CellContentContainer> {children}</CellContentContainer>
     </HeaderCell>
   );
 };
