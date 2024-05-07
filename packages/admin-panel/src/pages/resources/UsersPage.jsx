@@ -1,12 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { ResourcePage } from './ResourcePage';
-import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
+import { PERMISSIONS_COLUMNS, PERMISSIONS_ENDPOINT } from './PermissionsPage';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
 
 // eslint-disable-next-line react/prop-types
@@ -24,7 +24,15 @@ const VerifiedCell = ({ value }) => {
   );
 };
 
-const FIELDS = [
+const EDIT_FIELDS = [
+  {
+    Header: 'First Name',
+    source: 'first_name',
+  },
+  {
+    Header: 'Last Name',
+    source: 'last_name',
+  },
   {
     Header: 'Email Address',
     source: 'email',
@@ -43,18 +51,6 @@ const FIELDS = [
     source: 'employer',
     type: 'tooltip',
   },
-];
-
-const EDIT_FIELDS = [
-  {
-    Header: 'First Name',
-    source: 'first_name',
-  },
-  {
-    Header: 'Last Name',
-    source: 'last_name',
-  },
-  ...FIELDS,
   {
     Header: 'Verified',
     source: 'verified_email',
@@ -93,7 +89,16 @@ const COLUMNS = [
     source: 'last_name',
     width: 150,
   },
-  ...FIELDS,
+  {
+    Header: 'Email Address',
+    source: 'email',
+    type: 'tooltip',
+  },
+  {
+    Header: 'Employer',
+    source: 'employer',
+    type: 'tooltip',
+  },
   {
     Header: 'Verified',
     source: 'verified_email',
