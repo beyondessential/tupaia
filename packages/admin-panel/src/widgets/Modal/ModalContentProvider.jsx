@@ -18,6 +18,8 @@ const Content = styled(DialogContent)`
   border-width: 1px 0;
   padding-block: 1.25rem;
   padding-inline: 1.9rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Heading = styled(Typography)`
@@ -36,7 +38,8 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
           </SmallAlert>
         </>
       )}
-      <span style={isLoading || !!errorMessage ? { display: 'none' } : {}}>{children}</span>
+      {/* If loading or error message, don't show children */}
+      {!isLoading && !errorMessage && children}
     </Content>
   );
 };

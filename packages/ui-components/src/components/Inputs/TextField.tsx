@@ -103,7 +103,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   &&&& {
     .MuiInputBase-input::placeholder {
       opacity: 1 !important;
-      color: ${props => props.theme.palette.text.secondary};
     }
   }
 

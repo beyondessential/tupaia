@@ -56,10 +56,6 @@ const FIELDS = [
           fieldName: 'image',
           type: 'image',
           avatarVariant: 'square',
-          deleteModal: {
-            title: 'Remove Feed Item Image',
-            message: 'Are you sure you want to delete your image?',
-          },
         },
         {
           label: 'Body (accepts basic markdown)',

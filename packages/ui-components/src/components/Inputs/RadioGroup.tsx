@@ -32,25 +32,23 @@ const Legend = styled.legend`
 const StyledRadioGroup = styled(MuiRadioGroup)`
   display: inline-flex;
   flex-direction: row;
-  border: 1px solid ${props => props.theme.palette.grey['400']};
-  border-radius: 3px;
   overflow: hidden;
+  justify-content: space-between;
 `;
 
 const FormControlLabel = styled(MuiFormControlLabel)`
-  padding: 0.6rem 1.2rem 0.6rem 0.6rem;
+  padding: 0.5rem 1.2rem 0.5rem 0.6rem;
   margin: 0;
-  border-right: 1px solid ${props => props.theme.palette.grey['400']};
-  font-size: 1rem;
-  line-height: 1.2rem;
-  background: white;
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 3px;
+  min-width: 0;
 
   .MuiButtonBase-root {
     padding: 0.3rem;
   }
 
-  &:last-child {
-    border-right: none;
+  & + & {
+    margin-left: 0.625rem;
   }
 `;
 
@@ -66,7 +64,7 @@ const Radio = styled(MuiRadio)<
   }
 
   .MuiSvgIcon-root {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 `;
 

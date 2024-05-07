@@ -144,6 +144,9 @@ const overrides = {
   MuiInputBase: {
     input: {
       fontSize: '0.875rem',
+      '&::placeholder': {
+        color: COLORS.GREY_B8,
+      },
     },
   },
   MuiFormControl: {
