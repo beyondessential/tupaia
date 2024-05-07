@@ -87,7 +87,7 @@ const LoginPageComponent = ({ isLoggedIn, redirectTo, LogoComponent }) => {
 LoginPageComponent.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   redirectTo: PropTypes.string,
-  LogoComponent: PropTypes.element,
+  LogoComponent: PropTypes.elementType,
 };
 
 LoginPageComponent.defaultProps = {

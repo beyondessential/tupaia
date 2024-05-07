@@ -29,11 +29,11 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, userLinks, basePat
 
 AppPageLayout.propTypes = {
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    email: PropTypes.string,
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
-  }).isRequired,
+  }),
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -65,4 +65,5 @@ AppPageLayout.defaultProps = {
     { label: 'Logout', to: '/logout' },
   ],
   basePath: '',
+  user: {},
 };

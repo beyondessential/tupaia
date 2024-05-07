@@ -76,7 +76,7 @@ export const App = ({ Footer, homeLink, logo }) => {
 };
 
 App.propTypes = {
-  Footer: PropTypes.node,
+  Footer: PropTypes.elementType,
   homeLink: PropTypes.string,
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,

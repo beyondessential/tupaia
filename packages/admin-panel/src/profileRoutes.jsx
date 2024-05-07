@@ -14,13 +14,13 @@ export const PROFILE_ROUTES = [
     path: '/profile',
     childViews: [
       {
-        label: 'Profile',
+        title: 'Profile',
         path: '',
         icon: <AccountCircleIcon />,
         Component: ProfilePage,
       },
       {
-        label: 'Change Password',
+        title: 'Change Password',
         path: '/change-password',
         icon: <LockIcon />,
         Component: ChangePasswordPage,

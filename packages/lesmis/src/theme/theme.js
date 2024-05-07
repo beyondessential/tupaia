@@ -128,7 +128,7 @@ export const overrides = {
   },
   MuiTableRow: {
     root: {
-      '&:not(.data-fetching-table) & tbody &:nth-of-type(odd)': {
+      'table:not(.data-fetching-table) tbody &:nth-of-type(odd)': {
         backgroundColor: COLORS.GREY_F1,
       },
     },

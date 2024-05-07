@@ -104,7 +104,7 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                       childRoute.Component ? (
                         <childRoute.Component />
                       ) : (
-                        <ResourcePage {...childRoute} />
+                        <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
                       )
                     }
                   />
@@ -133,16 +133,17 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
 
 AdminPanelApp.propTypes = {
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    email: PropTypes.string,
     firstName: PropTypes.string,
     profileImage: PropTypes.string,
-  }).isRequired,
+  }),
   isBESAdmin: PropTypes.bool,
 };
 
 AdminPanelApp.defaultProps = {
   isBESAdmin: false,
+  user: {},
 };
 
 export default connect(
