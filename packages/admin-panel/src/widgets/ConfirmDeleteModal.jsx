@@ -16,10 +16,12 @@ const Container = styled.div`
   flex: 1;
 `;
 
-const Heading = styled(Typography)`
+const Heading = styled(Typography).attrs({
+  variant: 'h3',
+})`
   margin-bottom: 0.8rem;
   font-size: ${props => props.theme.typography.body2.fontSize};
-  font-weight: normal;
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
   color: ${props => props.theme.palette.error.main};
 `;
 
@@ -47,7 +49,7 @@ export const ConfirmDeleteModal = ({
   return (
     <Modal onClose={onCancel} isOpen={isOpen} title={title} buttons={buttons}>
       <Container>
-        {heading && <Heading variant="h3">{heading}</Heading>}
+        {heading && <Heading>{heading}</Heading>}
         <Typography>{description}</Typography>
       </Container>
     </Modal>
