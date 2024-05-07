@@ -149,6 +149,11 @@ const DataFetchingTableComponent = ({
   }, [tablePageSize]);
 
   useEffect(() => {
+    // If the redux pageIndex changes, update the table pageIndex
+    gotoPage(pageIndex);
+  }, [pageIndex]);
+
+  useEffect(() => {
     onSortedChange(tableSorting);
   }, [tableSorting]);
 

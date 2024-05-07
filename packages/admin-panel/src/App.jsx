@@ -79,7 +79,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
             <Route
-              key={route.path}
+              key={route.path || route.label}
               path={route.path}
               element={
                 <TabPageLayout
@@ -91,7 +91,7 @@ export const App = ({ user, hasBESAdminAccess }) => {
             >
               {getFlattenedChildViews(route).map(childRoute => (
                 <Route
-                  key={childRoute.title}
+                  key={childRoute.path || childRoute.title}
                   path={childRoute.path}
                   element={
                     childRoute.Component ? (

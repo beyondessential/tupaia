@@ -270,7 +270,7 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
 SecondaryNavbar.propTypes = {
   links: PropTypes.arrayOf(
     PropTypes.shape({
-      url: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       exact: PropTypes.bool,
     }),

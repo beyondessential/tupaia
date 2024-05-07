@@ -32,14 +32,15 @@ TabPageLayout.propTypes = {
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       path: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
+      label: PropTypes.string,
     }),
   ).isRequired,
   basePath: PropTypes.string,
   Footer: PropTypes.node.isRequired,
-  ContainerComponent: PropTypes.elementType.isRequired,
+  ContainerComponent: PropTypes.elementType,
 };
 
 TabPageLayout.defaultProps = {
   basePath: '',
+  ContainerComponent: undefined,
 };
