@@ -155,6 +155,12 @@ const overrides = {
       },
     },
   },
+  MuiOutlinedInput: {
+    input: {
+      paddingInline: '1.1rem',
+      paddingBlock: '0.875rem',
+    },
+  },
 };
 
 export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });

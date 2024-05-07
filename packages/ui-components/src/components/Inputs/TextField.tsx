@@ -24,12 +24,7 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
     line-height: 1.2rem;
-    padding: 1rem;
     border-radius: 3px;
-  }
-
-  .MuiSelect-root {
-    color: ${props => props.theme.palette.text.tertiary};
   }
 
   // Error state

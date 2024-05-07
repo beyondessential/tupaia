@@ -43,7 +43,6 @@ const FormControlLabel = styled(MuiFormControlLabel)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   font-size: 1rem;
   line-height: 1.2rem;
-  color: ${props => props.theme.palette.text.tertiary};
   background: white;
 
   .MuiButtonBase-root {

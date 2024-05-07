@@ -22,6 +22,7 @@ const Icon = styled(DeleteIcon)`
 
 const Heading = styled(Typography)`
   margin-bottom: 0.8rem;
+  font-size: ${props => props.theme.typography.h6.fontSize};
 `;
 
 export interface ConfirmDeleteModalProps {
@@ -53,7 +54,7 @@ export const ConfirmDeleteModal = React.memo(
       <DialogContent>
         <Container>
           <Icon />
-          <Heading variant="h6">{message}</Heading>
+          <Heading variant="h3">{message}</Heading>
           <Typography>{description}</Typography>
         </Container>
       </DialogContent>

@@ -10,7 +10,7 @@ import { Dialog } from '@material-ui/core';
 import { ModalContentProvider } from './ModalContentProvider';
 import { ModalHeader } from './ModalHeader';
 
-const DialogFooter = styled(BaseDialogFooter)`
+export const ModalFooter = styled(BaseDialogFooter)`
   background-color: ${props => props.theme.palette.background.paper};
   padding-block: 1.3rem;
   padding-inline: 1.9rem;
@@ -32,15 +32,30 @@ export const Modal = ({
       <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
         {children}
       </ModalContentProvider>
-      <DialogFooter>
+      <ModalFooter>
         {buttons?.map(
-          ({ onClick, color = 'primary', text, id, disabled, variant = 'contained' }) => (
-            <Button onClick={onClick} color={color} id={id} disabled={disabled} variant={variant}>
+          ({
+            onClick,
+            color = 'primary',
+            text,
+            id,
+            disabled,
+            variant = 'contained',
+            type = 'button',
+          }) => (
+            <Button
+              onClick={onClick}
+              color={color}
+              id={id}
+              disabled={disabled}
+              variant={variant}
+              type={type}
+            >
               {text}
             </Button>
           ),
         )}
-      </DialogFooter>
+      </ModalFooter>
     </Dialog>
   );
 };

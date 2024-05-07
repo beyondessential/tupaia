@@ -9,6 +9,6 @@ export { NavPanel } from '../layout/navigation/NavPanel';
 export { Tabs } from './Tabs';
 export { PageHeader } from './PageHeader';
 export { PageBody, Footer } from '../layout';
-export { ModalContentProvider, Modal } from './Modal';
+export { ModalContentProvider, Modal, ModalFooter, ModalHeader } from './Modal';
 export { JsonEditor, JsonTreeEditor } from './JsonEditor';
 export { SecondaryNavbar } from '../layout/navigation/SecondaryNavbar';

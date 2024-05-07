@@ -13,7 +13,6 @@ import styled from 'styled-components';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${props => props.theme.palette.text.tertiary};
   font-size: 1.5rem;
 `;
 
