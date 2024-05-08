@@ -81,10 +81,9 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
-  nestedView,
+  nestedViews,
   parent,
   displayProperty,
-  getHasNestedView,
   getDisplayValue,
   getNestedViewLink,
   basePath,
@@ -94,7 +93,8 @@ export const ResourcePage = ({
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
 
-  const { path } = nestedView || {};
+  // assume the first nested view is the one we want to link to and any others would be direct linked to
+  const { path, getHasNestedView } = nestedViews?.[0] || {};
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
@@ -173,7 +173,7 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
-  nestedView: PropTypes.object,
+  nestedViews: PropTypes.object,
   parent: PropTypes.object,
   displayProperty: PropTypes.string,
   getHasNestedView: PropTypes.func,
@@ -198,7 +198,7 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
-  nestedView: null,
+  nestedViews: null,
   parent: null,
   displayProperty: null,
   getHasNestedView: null,

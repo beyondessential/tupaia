@@ -1,9 +1,13 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+import React from 'react';
+import { Edit } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
+import { ColumnActionButton } from '../../table/columnTypes/ColumnActionButton';
+import { EditSurveyPage } from '../../pages/resources';
 
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
@@ -219,13 +223,22 @@ const SURVEY_COLUMNS = [
   },
   {
     Header: 'Edit',
-    type: 'edit',
     source: 'id',
-    actionConfig: {
-      title: 'Edit Survey',
-      editEndpoint: 'surveys',
-      fields: [...Object.values(SURVEY_FIELDS)],
-    },
+    // eslint-disable-next-line react/prop-types
+    Cell: ({ value }) => (
+      <ColumnActionButton component={Link} to={`/surveys/${value}/edit`}>
+        <Edit />
+      </ColumnActionButton>
+    ),
+    colWidth: '4.5rem',
+    filterable: false,
+    disableSortBy: true,
+    isButtonColumn: true,
+    // actionConfig: {
+    //   title: 'Edit Survey',
+    //   editEndpoint: 'surveys',
+    //   fields: [...Object.values(SURVEY_FIELDS)],
+    // },
   },
   {
     Header: 'Delete',
@@ -535,11 +548,18 @@ export const surveys = {
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    path: '/:id/questions',
-    endpoint: 'surveys/{id}/surveyScreenComponents',
-    columns: QUESTION_COLUMNS,
-    title: 'Questions',
-    displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
-  },
+  nestedViews: [
+    {
+      path: '/:id/questions',
+      endpoint: 'surveys/{id}/surveyScreenComponents',
+      columns: QUESTION_COLUMNS,
+      title: 'Questions',
+      displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
+    },
+    {
+      path: '/:id/edit',
+      Component: EditSurveyPage,
+      getDisplayValue: () => 'Edit',
+    },
+  ],
 };

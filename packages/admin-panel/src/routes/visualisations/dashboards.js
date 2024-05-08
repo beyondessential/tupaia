@@ -125,12 +125,14 @@ export const dashboards = {
   endpoint: DASHBOARDS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    title: 'Dashboard Relations',
-    columns: RELATION_COLUMNS,
-    endpoint: 'dashboards/{id}/dashboardRelations',
-    path: '/:id/dashboard-relations',
-    displayProperty: 'name',
-  },
+  nestedViews: [
+    {
+      title: 'Dashboard Relations',
+      columns: RELATION_COLUMNS,
+      endpoint: 'dashboards/{id}/dashboardRelations',
+      path: '/:id/dashboard-relations',
+      displayProperty: 'name',
+    },
+  ],
   needsBESAdminAccess: ['delete'],
 };

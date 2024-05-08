@@ -209,8 +209,10 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
 
   const getIsActive = link => {
     const matchResult = matchPath(link.target, location.pathname);
-    const nestedViewMatch = link.nestedView
-      ? matchPath(`${link.target}${link.nestedView.path}`, location.pathname)
+    const nestedViewMatch = link.nestedViews
+      ? link.nestedViews.find(nestedView =>
+          matchPath(`${link.target}${nestedView.path}`, location.pathname),
+        )
       : false;
 
     return !!matchResult || !!nestedViewMatch;
