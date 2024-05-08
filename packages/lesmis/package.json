@@ -51,7 +51,8 @@
     "react-password-strength-bar": "^0.3.3",
     "react-query": "^3.19.0",
     "react-redux": "^5.0.6",
-    "react-router-dom": "^5.2.0",
+    "react-router": "6.3.0",
+    "react-router-dom": "6.3.0",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {

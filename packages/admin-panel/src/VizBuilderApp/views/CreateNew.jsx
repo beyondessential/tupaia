@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -21,7 +21,6 @@ const Container = styled(MuiContainer)`
   justify-content: center;
   padding-top: 5%;
   padding-bottom: 10%;
-  overflow-y: auto;
 `;
 
 const Card = styled.div`
@@ -61,11 +60,11 @@ const getMetadataFormComponent = dashboardItemOrMapOverlay => {
 export const CreateNew = () => {
   const { dashboardItemOrMapOverlay } = useParams();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const basePath = useVizBuilderBasePath();
 
   const handleCreate = () => {
-    history.push(`${basePath}/viz-builder/${dashboardItemOrMapOverlay}/`);
+    navigate(`${basePath}/viz-builder/${dashboardItemOrMapOverlay}`);
   };
 
   const MetadataFormComponent = getMetadataFormComponent(dashboardItemOrMapOverlay);

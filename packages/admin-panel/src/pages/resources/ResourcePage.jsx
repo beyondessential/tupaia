@@ -1,11 +1,12 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
 import { PageHeader, PageBody } from '../../widgets';
@@ -13,6 +14,8 @@ import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
+import { Breadcrumbs } from '../../layout';
+import { useItemDetails } from '../../api/queries/useResourceDetails';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -26,6 +29,14 @@ const Container = styled(PageBody)`
       transform: rotateX(180deg);
     }
   }
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  padding-inline: 0;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 const TableComponent = ({ children }) => (
@@ -38,12 +49,27 @@ TableComponent.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
+const useEndpoint = (endpoint, details, params) => {
+  if (!details && !params) return endpoint;
+
+  const mergedDetails = { ...details, ...params };
+
+  const replaceParams = () => {
+    let updatedEndpoint = endpoint;
+    Object.keys(mergedDetails).forEach(key => {
+      updatedEndpoint = updatedEndpoint.replace(`{${key}}`, mergedDetails[key]);
+    });
+    return updatedEndpoint;
+  };
+  const updatedEndpoint = replaceParams();
+  return updatedEndpoint;
+};
+
 export const ResourcePage = ({
   columns,
   createConfig,
   endpoint,
   reduxId,
-  expansionTabs,
   importConfig,
   ExportModalComponent,
   exportConfig,
@@ -55,28 +81,71 @@ export const ResourcePage = ({
   defaultSorting,
   deleteConfig,
   editorConfig,
+  nestedView,
+  parent,
+  displayProperty,
+  getHasNestedView,
+  getDisplayValue,
+  getNestedViewLink,
+  basePath,
+  hasBESAdminAccess,
+  needsBESAdminAccess,
 }) => {
+  const { '*': unusedParam, locale, ...params } = useParams();
+  const { data: details } = useItemDetails(params, parent);
+
+  const { path } = nestedView || {};
+  const updatedEndpoint = useEndpoint(endpoint, details, params);
+
+  const isDetailsPage = !!parent;
+
+  const getHasPermission = actionType => {
+    if (!needsBESAdminAccess) return true;
+    if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
+    return true;
+  };
+
+  const canImport = getHasPermission('import');
+  const canExport = getHasPermission('export');
+  const canCreate = getHasPermission('create');
+
+  // Explode columns to support nested fields, since the table doesn't want to nest these, and then filter out columns that the user doesn't have permission to see
+  const accessibleColumns = getExplodedFields(columns).filter(
+    column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
+  );
   return (
     <>
       <Container>
+        {isDetailsPage && (
+          <Breadcrumbs
+            parent={parent}
+            title={title}
+            displayProperty={displayProperty}
+            details={details}
+            getDisplayValue={getDisplayValue}
+          />
+        )}
         <PageHeader
           title={title}
-          importConfig={importConfig}
-          exportConfig={exportConfig}
-          createConfig={createConfig}
-          ExportModalComponent={ExportModalComponent}
+          importConfig={canImport && importConfig}
+          exportConfig={canExport && exportConfig}
+          createConfig={canCreate && createConfig}
+          ExportModalComponent={canExport && ExportModalComponent}
           LinksComponent={LinksComponent}
         />
         <DataFetchingTable
-          columns={getExplodedFields(columns)} // Explode columns to support nested fields, since the table doesn't want to nest these
-          endpoint={endpoint}
-          expansionTabs={expansionTabs}
-          reduxId={reduxId || endpoint}
+          endpoint={updatedEndpoint}
+          reduxId={reduxId || updatedEndpoint}
+          columns={accessibleColumns}
           baseFilter={baseFilter}
           defaultFilters={defaultFilters}
           TableComponent={TableComponent}
           defaultSorting={defaultSorting}
           deleteConfig={deleteConfig}
+          detailUrl={path}
+          getHasNestedView={getHasNestedView}
+          getNestedViewLink={getNestedViewLink}
+          basePath={basePath}
         />
       </Container>
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
@@ -93,14 +162,6 @@ ResourcePage.propTypes = {
   onProcessDataForSave: PropTypes.func,
   endpoint: PropTypes.string.isRequired,
   reduxId: PropTypes.string,
-  expansionTabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      endpoint: PropTypes.string,
-      columns: PropTypes.array,
-      expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
-    }),
-  ),
   importConfig: PropTypes.object,
   exportConfig: PropTypes.object,
   deleteConfig: PropTypes.object,
@@ -112,11 +173,19 @@ ResourcePage.propTypes = {
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
   editorConfig: PropTypes.object,
+  nestedView: PropTypes.object,
+  parent: PropTypes.object,
+  displayProperty: PropTypes.string,
+  getHasNestedView: PropTypes.func,
+  getDisplayValue: PropTypes.func,
+  getNestedViewLink: PropTypes.func,
+  basePath: PropTypes.string,
+  hasBESAdminAccess: PropTypes.bool.isRequired,
+  needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
 };
 
 ResourcePage.defaultProps = {
   createConfig: null,
-  expansionTabs: null,
   importConfig: null,
   exportConfig: {},
   deleteConfig: {},
@@ -129,4 +198,12 @@ ResourcePage.defaultProps = {
   defaultFilters: [],
   reduxId: null,
   editorConfig: {},
+  nestedView: null,
+  parent: null,
+  displayProperty: null,
+  getHasNestedView: null,
+  getDisplayValue: null,
+  getNestedViewLink: null,
+  basePath: '',
+  needsBESAdminAccess: [],
 };

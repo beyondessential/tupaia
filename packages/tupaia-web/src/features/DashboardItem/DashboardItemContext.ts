@@ -5,8 +5,8 @@
 
 import { createContext } from 'react';
 import { UseQueryResult } from 'react-query';
-import { DashboardItemConfig } from '@tupaia/types';
-import { DashboardItem, DashboardItemReport } from '../../types';
+import { DashboardItemConfig, DashboardItemReport } from '@tupaia/types';
+import { DashboardItem } from '../../types';
 
 type DashboardItemState = {
   config?: DashboardItemConfig | null;

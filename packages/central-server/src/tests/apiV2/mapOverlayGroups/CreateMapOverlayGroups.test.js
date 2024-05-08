@@ -10,7 +10,7 @@ import {
 } from '../../../permissions';
 import { TestableApp } from '../../testUtilities';
 
-describe('Permissions checker for CreateDashboards', async () => {
+describe('Permissions checker for creating Map Overlay Groups', async () => {
   const SUFFICIENT_TUPAIA_ADMIN_PANEL_PERMISSION_GROUP_POLICY = {
     DL: ['Public'],
     KI: [TUPAIA_ADMIN_PANEL_PERMISSION_GROUP],

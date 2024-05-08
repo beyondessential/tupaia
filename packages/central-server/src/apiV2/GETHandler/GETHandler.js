@@ -142,7 +142,8 @@ export class GETHandler extends CRUDHandler {
     return {
       headers: {
         Link: linkHeader,
-        'Access-Control-Expose-Headers': 'Link', // To get around CORS
+        'Access-Control-Expose-Headers': 'Link, X-Total-Count', // to get around CORS
+        'X-Total-Count': totalNumberOfRecords,
       },
       body: pageOfRecords,
     };
