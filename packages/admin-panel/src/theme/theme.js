@@ -62,8 +62,8 @@ const typography = {
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
-    fontWeight: 600,
+    fontSize: '0.875rem',
+    fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
