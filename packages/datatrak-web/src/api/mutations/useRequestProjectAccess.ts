@@ -44,10 +44,8 @@ export const useRequestProjectAccess = (options?: RequestProjectAccessOptions) =
         options?.onSettled?.();
       },
       async onSuccess(response: ResponseBody) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['me/countries'] }),
-          queryClient.invalidateQueries({ queryKey: ['projects'] }),
-        ]);
+        await queryClient.invalidateQueries({ queryKey: ['me/countries'] });
+        await queryClient.invalidateQueries({ queryKey: ['projects'] });
         options?.onSuccess?.(response);
       },
     },
