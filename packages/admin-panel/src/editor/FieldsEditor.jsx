@@ -1,6 +1,6 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -19,7 +19,7 @@ const EditorWrapper = styled.div`
   }
 `;
 
-export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
+export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   if (!fields || fields.length === 0) {
     return false;
   }
@@ -116,7 +116,7 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   );
 };
 
-Editor.propTypes = {
+FieldsEditor.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
