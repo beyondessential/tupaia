@@ -146,6 +146,13 @@ const overrides = {
       },
     },
   },
+  MuiCssBaseline: {
+    '@global': {
+      label: {
+        fontWeight: 500,
+      },
+    },
+  },
 };
 
 export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });

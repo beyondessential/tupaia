@@ -6,9 +6,9 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
-import { GreyButton } from '../Button';
+import { Button } from '../Button';
 import { FlexStart } from '../Layout';
-import { SaveAlt } from '../Icons';
+import { FilePicker } from '../Icons';
 import { InputLabel } from './InputLabel';
 
 const HiddenFileInput = styled.input`
@@ -16,14 +16,25 @@ const HiddenFileInput = styled.input`
 `;
 
 const FileNameAndFileSize = styled.span`
-  font-size: 1rem;
-  color: ${props => props.theme.palette.text.secondary};
-  margin-left: 0.8rem;
+  font-size: ${props => props.theme.typography.body2.fontSize};
 `;
 
 const FileUploadWrapper = styled.div``;
 const FileUploadContainer = styled(FlexStart)`
-  margin-top: 15px;
+  margin-top: 1rem;
+`;
+
+const RemoveButton = styled(Button).attrs({
+  variant: 'text',
+  color: 'default',
+})`
+  font-weight: 400;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 0.8rem;
+  .MuiButton-label {
+    font-size: 0.7rem;
+  }
 `;
 
 const humanFileSize = (sizeInBytes: number) => {
@@ -33,7 +44,7 @@ const humanFileSize = (sizeInBytes: number) => {
 
 interface FileUploadFieldProps {
   onChange: (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement> | null,
     fileName?: string,
     files?: FileList | null | undefined,
   ) => void;
@@ -48,12 +59,14 @@ interface FileUploadFieldProps {
   maxSizeInBytes?: number;
   FormHelperTextComponent?: React.ElementType;
   required?: boolean;
+  buttonVariant?: 'text' | 'outlined' | 'contained';
+  accept?: string;
 }
 
 export const FileUploadField = ({
   onChange = () => {},
   name,
-  fileName = 'No File chosen',
+  fileName,
   multiple = false,
   textOnButton,
   label,
@@ -63,6 +76,8 @@ export const FileUploadField = ({
   maxSizeInBytes,
   FormHelperTextComponent = 'p',
   required,
+  buttonVariant = 'contained',
+  accept = '*',
 }: FileUploadFieldProps) => {
   const inputEl = useRef<HTMLInputElement | null>(null);
   const text = textOnButton || `Choose file${multiple ? 's' : ''}`;
@@ -109,33 +124,50 @@ export const FileUploadField = ({
     setError(null);
   };
 
+  const removeFile = () => {
+    const input = inputEl.current;
+    if (input) {
+      input.value = '';
+      onChange(null);
+      setSizeInBytes(null);
+    }
+  };
+
   return (
-    <FileUploadWrapper as="label" htmlFor={name}>
-      <InputLabel label={label} tooltip={tooltip} as="span" />
-      <FileUploadContainer>
-        <HiddenFileInput
-          ref={inputEl}
-          id={name}
-          name={name}
-          type="file"
-          onChange={handleChange}
-          value=""
-          multiple={multiple}
-          required={required}
-        />
-        <GreyButton component="span" startIcon={<SaveAlt />}>
-          {text}
-        </GreyButton>
-        {fileName && (
-          <FileNameAndFileSize>
-            {fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}
-          </FileNameAndFileSize>
+    <>
+      <FileUploadWrapper as="label" htmlFor={name}>
+        <InputLabel label={label} tooltip={tooltip} as="span" />
+        <FileUploadContainer>
+          <HiddenFileInput
+            ref={inputEl}
+            id={name}
+            name={name}
+            type="file"
+            onChange={handleChange}
+            value=""
+            multiple={multiple}
+            required={required}
+            accept={accept}
+          />
+
+          {!fileName && (
+            <Button component="span" startIcon={<FilePicker />} variant={buttonVariant}>
+              {text}
+            </Button>
+          )}
+        </FileUploadContainer>
+
+        {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
+        {helperText && (
+          <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
         )}
-      </FileUploadContainer>
-      {error && <MuiFormHelperText error>{error}</MuiFormHelperText>}
-      {helperText && (
-        <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
+      </FileUploadWrapper>
+      {fileName && (
+        <FileNameAndFileSize>
+          {fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}
+          <RemoveButton onClick={removeFile}>Remove</RemoveButton>
+        </FileNameAndFileSize>
       )}
-    </FileUploadWrapper>
+    </>
   );
 };
