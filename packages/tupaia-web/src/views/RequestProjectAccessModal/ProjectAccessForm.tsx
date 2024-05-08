@@ -3,19 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Alert } from '@tupaia/ui-components';
 import { CountryAccessListItem, SingleProject } from '../../types';
 import {
+  AuthModalButton,
   CheckboxList,
   Form as BaseForm,
   LoadingScreen,
   TextField,
-  AuthModalButton,
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
+import { useQueryClient } from 'react-query';
 
 const Note = styled.p`
   text-align: left;
@@ -70,6 +71,8 @@ export const ProjectAccessForm = ({
     isSuccess,
   } = useRequestCountryAccess();
 
+  const queryClient = useQueryClient();
+
   if (isSuccess)
     return (
       <div>
@@ -84,7 +87,14 @@ export const ProjectAccessForm = ({
           granted.
         </Note>
         {!isLandingPage && (
-          <AuthModalButton onClick={onCloseModal}>{closeButtonText}</AuthModalButton>
+          <AuthModalButton
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['me/countries'] });
+              onCloseModal?.();
+            }}
+          >
+            {closeButtonText}
+          </AuthModalButton>
         )}
       </div>
     );
