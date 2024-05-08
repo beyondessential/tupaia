@@ -20,7 +20,8 @@ const Link = styled(BaseLink)`
     height: 100%;
     max-height: 100%;
   }
-  &:focus {
+  &:focus,
+  &:focus-visible {
     border-color: ${WHITE};
   }
 `;
