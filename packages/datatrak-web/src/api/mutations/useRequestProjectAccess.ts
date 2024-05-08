@@ -38,10 +38,10 @@ export const useRequestProjectAccess = (options?: RequestProjectAccessOptions) =
     },
     {
       onError(error: Error) {
-        if (options?.onError) options.onError(error);
+        options?.onError?.(error);
       },
       onSettled() {
-        if (options?.onSettled) options.onSettled();
+        options?.onSettled?.();
       },
       async onSuccess(response: ResponseBody) {
         await Promise.all([
