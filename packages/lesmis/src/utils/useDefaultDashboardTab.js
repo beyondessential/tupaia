@@ -1,11 +1,12 @@
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../api';
 import { useI18n } from './I18n';
 import { useHomeUrl } from './useHomeUrl';
 
 // Gets the best default dashboard possible, and check if the selected dashboard is valid
 export const useDefaultDashboardTab = (selectedDashboard = null, options) => {
-  const history = useHistory();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { translate } = useI18n();
   const { homeUrl } = useHomeUrl();
   const { isLoggedIn, isFetching: isFetchingUser } = useUser();
@@ -23,7 +24,11 @@ export const useDefaultDashboardTab = (selectedDashboard = null, options) => {
       return selectedDashboard;
     }
     if (!isFetchingUser && !isLoggedIn) {
-      return history.push(`${homeUrl}/login`, { referer: history.location });
+      return navigate(`${homeUrl}/login`, {
+        state: {
+          referer: location.pathname,
+        },
+      });
     }
   }
 

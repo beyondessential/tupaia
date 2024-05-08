@@ -104,3 +104,54 @@ export const DataSourceConfigView = row => {
 
   return <dl>{entries}</dl>;
 };
+
+export const DATA_SOURCE_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+  },
+  {
+    Header: 'Data Service',
+    source: 'service_type',
+    editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
+  },
+];
+
+export const getDataSourceButtonsConfig = (fields, recordType) => [
+  {
+    Header: 'Edit',
+    type: 'edit',
+    actionConfig: {
+      editEndpoint: `${recordType}s`,
+      fields,
+      displayUsedBy: true,
+      recordType,
+    },
+    source: 'id',
+  },
+  {
+    Header: 'Delete',
+    type: 'delete',
+    actionConfig: {
+      endpoint: `${recordType}s`,
+    },
+  },
+];
+
+export const DATA_ELEMENT_FIELDS = [
+  ...DATA_SOURCE_FIELDS,
+  {
+    Header: 'Data Service Configuration',
+    source: 'config',
+    Cell: DataSourceConfigView,
+    editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,
+  },
+  {
+    Header: 'Permission Groups',
+    source: 'permission_groups',
+    type: 'tooltip',
+    editConfig: {
+      type: 'jsonArray',
+    },
+  },
+];

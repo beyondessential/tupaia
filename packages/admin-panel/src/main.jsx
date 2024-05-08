@@ -4,12 +4,11 @@
  */
 import React, { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { render as renderReactApp } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import 'react-table-v6/react-table.css';
 import { EnvBanner } from '@tupaia/ui-components';
 import AdminPanel from './App';
 import { AdminPanelProviders } from './utilities/AdminPanelProviders';
@@ -17,6 +16,14 @@ import { StoreProvider } from './utilities/StoreProvider';
 import { Footer, NavPanel } from './widgets';
 import { TupaiaApi } from './api';
 import { theme } from './theme';
+
+const AdminPanelRoute = () => {
+  return (
+    <AdminPanelProviders>
+      <AdminPanel />
+    </AdminPanelProviders>
+  );
+};
 
 const VizBuilder = lazy(() => import('./VizBuilderApp'));
 
@@ -56,17 +63,13 @@ renderReactApp(
             <MuiThemeProvider theme={theme}>
               <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <Switch>
-                  <Route path="/viz-builder">
-                    <VizBuilder NavPanel={NavPanel} Footer={Footer} />
-                  </Route>
-                  <Route path="/">
-                    <AdminPanelProviders>
-                      <AdminPanel />
-                    </AdminPanelProviders>
-                  </Route>
-                  <Redirect to="/login" />
-                </Switch>
+                <Routes>
+                  <Route
+                    path="/viz-builder/*"
+                    element={<VizBuilder NavPanel={NavPanel} Footer={Footer} />}
+                  />
+                  <Route path="*" default element={<AdminPanelRoute />} />
+                </Routes>
               </ThemeProvider>
             </MuiThemeProvider>
           </StylesProvider>

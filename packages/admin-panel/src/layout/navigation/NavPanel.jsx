@@ -67,7 +67,7 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-export const NavPanel = ({ links, user, logo, homeLink, userLinks }) => {
+export const NavPanel = ({ links, user, logo, homeLink, userLinks, basePath }) => {
   return (
     <Wrapper>
       <HomeLink logo={logo} homeLink={homeLink} />
@@ -77,7 +77,7 @@ export const NavPanel = ({ links, user, logo, homeLink, userLinks }) => {
             <List>
               {links.map(link => (
                 <ListItem key={link.label} disableGutters>
-                  <NavLink to={link.to}>
+                  <NavLink to={`${basePath}${link.path}`}>
                     {link.icon}
                     {link.label}
                   </NavLink>
@@ -111,6 +111,7 @@ NavPanel.propTypes = {
       to: PropTypes.string.isRequired,
     }).isRequired,
   ),
+  basePath: PropTypes.string,
 };
 
 NavPanel.defaultProps = {
@@ -121,4 +122,5 @@ NavPanel.defaultProps = {
   },
   homeLink: '/',
   userLinks: [],
+  basePath: '',
 };
