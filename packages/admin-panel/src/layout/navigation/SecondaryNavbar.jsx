@@ -217,7 +217,7 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
     return !!matchResult || !!nestedViewMatch;
   };
 
-  const links = linkInput?.map(({ exact, path, title, resourceName, ...rest }) => {
+  const links = linkInput?.map(({ exact, path, resourceName, title, ...rest }) => {
     const linkTitle = title ?? generateTitle(resourceName);
     const target = exact ? path : `${basePath}${path}`;
 
