@@ -52,10 +52,6 @@ const FIELDS = {
     editConfig: {
       type: 'image',
       avatarVariant: 'square',
-      deleteModal: {
-        title: 'Remove landing page image',
-        message: 'Are you sure you want to delete your image?',
-      },
       minWidth: 1500,
       minHeight: 900,
       maxHeight: 2000,
@@ -68,10 +64,6 @@ const FIELDS = {
     editConfig: {
       type: 'image',
       avatarVariant: 'square',
-      deleteModal: {
-        title: 'Remove logo image',
-        message: 'Are you sure you want to delete your image?',
-      },
       maxHeight: 300,
       maxWidth: 300,
     },

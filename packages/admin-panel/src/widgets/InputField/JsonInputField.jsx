@@ -11,6 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
+import { FormLabel } from '@material-ui/core';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -39,11 +40,7 @@ const Container = styled.div`
   margin-bottom: 20px;
 `;
 
-const CardLabel = styled.label`
-  color: rgb(111, 123, 130);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 18px;
+const CardLabel = styled(FormLabel)`
   display: block;
   margin-bottom: 3px;
 `;

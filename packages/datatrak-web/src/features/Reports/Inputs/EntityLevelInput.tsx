@@ -13,7 +13,6 @@ const RadioGroup = styled(BaseRadioGroup)`
   margin: 0;
   .MuiFormGroup-root {
     width: 100%;
-    justify-content: space-between;
     border: none;
   }
   .MuiFormControlLabel-label {

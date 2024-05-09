@@ -20,9 +20,6 @@ const StyledTextField = styled(TextField)`
   & .MuiInputBase-root {
     height: 40px;
   }
-  & .MuiInputBase-input {
-    font-size: 14px;
-  }
 `;
 
 export const InputField = ({ getRootProps, getInputProps, isLoading }) => (
