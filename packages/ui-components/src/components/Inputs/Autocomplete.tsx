@@ -13,7 +13,6 @@ import styled from 'styled-components';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${props => props.theme.palette.text.tertiary};
   font-size: 1.5rem;
 `;
 
@@ -31,7 +30,7 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   }
 
   .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
-    padding: 0.9rem 0.3rem 1rem 0.9rem;
+    padding: 0.85rem 0.3rem 0.85rem 1.1rem;
   }
 
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {

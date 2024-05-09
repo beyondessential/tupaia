@@ -18,7 +18,7 @@ import {
 import { KeyboardArrowDown } from '@material-ui/icons';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
-import { Alert, ConfirmDeleteModal } from '@tupaia/ui-components';
+import { Alert } from '@tupaia/ui-components';
 import { generateConfigForColumnType } from '../columnTypes';
 import { getIsFetchingData, getTableState } from '../selectors';
 import { getIsChangingDataOnServer } from '../../dataChangeListener';
@@ -35,6 +35,7 @@ import {
 import { FilterCell } from './FilterCell';
 import { Pagination } from './Pagination';
 import { DisplayCell, HeaderDisplayCell } from './Cells';
+import { ConfirmDeleteModal } from '../../widgets';
 
 const ErrorAlert = styled(Alert).attrs({
   severity: 'error',
@@ -111,6 +112,7 @@ const DataFetchingTableComponent = ({
   getNestedViewLink,
   baseFilter,
   basePath,
+  resourceName,
 }) => {
   const {
     getTableProps,
@@ -185,7 +187,7 @@ const DataFetchingTableComponent = ({
   const isLoading = isFetchingData || isChangingDataOnServer;
 
   const displayFilterRow = visibleColumns.some(column => column.filterable !== false);
-
+  const { singular = 'record' } = resourceName;
   return (
     <Wrapper>
       {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
@@ -297,13 +299,16 @@ const DataFetchingTableComponent = ({
 
       <ConfirmDeleteModal
         isOpen={!!confirmActionMessage}
-        message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
-        title={deleteConfig.title}
-        description={deleteConfig.description}
-        cancelButtonText={deleteConfig.cancelButtonText}
-        confirmButtonText={deleteConfig.confirmButtonText}
+        title={deleteConfig?.title || `Delete ${singular}`}
+        heading={deleteConfig?.heading || `You are about to delete this ${singular}`}
+        description={
+          deleteConfig?.description ||
+          `Are you sure you would like to delete this ${singular}? This cannot be undone.`
+        }
+        confirmButtonText={deleteConfig?.confirmButtonText || `Delete ${singular}`}
+        cancelButtonText={deleteConfig?.cancelButtonText || 'Cancel'}
       />
     </Wrapper>
   );
@@ -343,6 +348,7 @@ DataFetchingTableComponent.propTypes = {
   getNestedViewLink: PropTypes.func,
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
+  resourceName: PropTypes.object,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -360,6 +366,7 @@ DataFetchingTableComponent.defaultProps = {
   getNestedViewLink: null,
   baseFilter: null,
   basePath: '',
+  resourceName: {},
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({

@@ -6,13 +6,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { closeEditModal } from './actions';
-import { FieldsEditor } from './FieldsEditor';
-import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
-import { withConnectedEditor } from './withConnectedEditor';
+import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
+import { FieldsEditor } from './FieldsEditor';
+import { withConnectedEditor } from './withConnectedEditor';
 
 export const EditModalComponent = withConnectedEditor(
   ({
@@ -46,37 +45,42 @@ export const EditModalComponent = withConnectedEditor(
       }
     }, [isOpen]);
 
+    const buttons = [
+      {
+        onClick: onDismiss,
+        text: errorMessage ? dismissButtonText : cancelButtonText,
+        disabled: isLoading,
+        variant: 'outlined',
+        id: 'form-button-cancel',
+      },
+      {
+        onClick: () => onSave(files),
+        id: 'form-button-save',
+        text: saveButtonText,
+        disabled: !!errorMessage || isLoading || isUnchanged,
+      },
+    ];
+
     return (
-      <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
-        <DialogHeader onClose={onDismiss} title={title} />
-        <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-          <FieldsComponentResolved
-            fields={fields}
-            isLoading={isLoading}
-            recordData={recordData}
-            onEditField={onEditField}
-            onSetFormFile={handleSetFormFile}
-          />
-          {displayUsedBy && <UsedBy {...usedByConfig} />}
-        </ModalContentProvider>
-        <DialogFooter>
-          <Button
-            id="form-button-cancel"
-            variant="outlined"
-            onClick={onDismiss}
-            disabled={isLoading}
-          >
-            {errorMessage ? dismissButtonText : cancelButtonText}
-          </Button>
-          <Button
-            id="form-button-save"
-            onClick={() => onSave(files)}
-            disabled={!!errorMessage || isLoading || isUnchanged}
-          >
-            {saveButtonText}
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <Modal
+        errorMessage={errorMessage}
+        isLoading={isLoading}
+        onClose={onDismiss}
+        isOpen={isOpen}
+        disableBackdropClick
+        title={title}
+        buttons={buttons}
+        {...extraDialogProps}
+      >
+        <FieldsComponentResolved
+          fields={fields}
+          isLoading={isLoading}
+          recordData={recordData}
+          onEditField={onEditField}
+          onSetFormFile={handleSetFormFile}
+        />
+        {displayUsedBy && <UsedBy {...usedByConfig} />}
+      </Modal>
     );
   },
 );

@@ -9,7 +9,6 @@ import styled from 'styled-components';
 import { HorizontalTree } from '@tupaia/ui-components';
 import { PageHeader, PageBody } from '../../widgets';
 import { LogsModal } from '../../logsTable';
-import * as COLORS from '../../theme/colors';
 
 const Container = styled(PageBody)`
   overflow: auto;
@@ -20,11 +19,7 @@ const StyledHorizontalTree = styled(HorizontalTree)`
   margin-top: 40px;
   margin-bottom: 40px;
   max-height: 870px;
-  color: ${COLORS.TEXT_MIDGREY};
-
-  .MuiTypography-body1 {
-    font-size: 15px;
-  }
+  color: ${({ theme }) => theme.palette.text.primary};
 `;
 
 export const TreeResourcePage = ({ title, fetchRoot, fetchBranch, ExportModalComponent }) => {

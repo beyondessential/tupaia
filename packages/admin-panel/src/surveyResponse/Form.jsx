@@ -1,16 +1,14 @@
 /*
  * Tupaia
- * Copyright (c) 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
-/* eslint-disable camelcase */
 
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button, DialogFooter } from '@tupaia/ui-components';
+import { Button } from '@tupaia/ui-components';
 import { Divider } from '@material-ui/core';
 import { useGetExistingData } from './useGetExistingData';
-import { ModalContentProvider } from '../widgets';
+import { ModalContentProvider, ModalFooter } from '../widgets';
 import { useResubmitSurveyResponse } from '../api/mutations/useResubmitSurveyResponse';
 import { MODAL_STATUS } from './constants';
 import { SurveyScreens } from './SurveyScreens';
@@ -145,7 +143,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
         )}
         {isResubmitSuccess && 'The survey response has been successfully submitted.'}
       </ModalContentProvider>
-      <DialogFooter>{renderButtons()}</DialogFooter>
+      <ModalFooter>{renderButtons()}</ModalFooter>
     </>
   );
 };

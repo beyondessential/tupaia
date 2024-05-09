@@ -4,6 +4,7 @@
  */
 
 import React, { useRef, useState } from 'react';
+import { FormLabel } from '@material-ui/core';
 import styled from 'styled-components';
 import MuiFormHelperText from '@material-ui/core/FormHelperText';
 import { Button } from '../Button';
@@ -19,7 +20,6 @@ const FileNameAndFileSize = styled.span`
   font-size: ${props => props.theme.typography.body2.fontSize};
 `;
 
-const FileUploadWrapper = styled.div``;
 const FileUploadContainer = styled(FlexStart)`
   margin-top: 1rem;
 `;
@@ -135,7 +135,7 @@ export const FileUploadField = ({
 
   return (
     <>
-      <FileUploadWrapper as="label" htmlFor={name}>
+      <FormLabel htmlFor={name}>
         <InputLabel label={label} tooltip={tooltip} as="span" />
         <FileUploadContainer>
           <HiddenFileInput
@@ -161,7 +161,7 @@ export const FileUploadField = ({
         {helperText && (
           <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
         )}
-      </FileUploadWrapper>
+      </FormLabel>
       {fileName && (
         <FileNameAndFileSize>
           {fileName} {showFileSize && sizeInBytes && `(${humanFileSize(sizeInBytes)})`}
