@@ -14,7 +14,7 @@ const OPTION_SET_COLUMNS = [
   ...OPTION_SET_FIELDS,
   {
     Header: 'Export',
-    source: 'id',
+    // source: 'id',
     type: 'export',
     actionConfig: {
       exportEndpoint: 'optionSet',
