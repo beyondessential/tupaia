@@ -22,7 +22,10 @@ export async function exportOptionSet(req, res) {
 
   const worksheet = xlsx.utils.json_to_sheet(options);
   const sheetName = optionSetRecord.name.substring(0, 31); // Sheet name max. length is hard-coded in Excel
-  const workbook = xlsx.utils.book_new(worksheet, sheetName);
+
+  // Upgrade xlsx to v0.20 or newer to do next two lines in one go
+  const workbook = xlsx.utils.book_new();
+  xlsx.utils.book_append_sheet(workbook, worksheet, sheetName);
 
   const dirname = getExportPathForUser(userId);
   const basename = toFilename(`Option Set - ${optionSetRecord.name}.xlsx`);
