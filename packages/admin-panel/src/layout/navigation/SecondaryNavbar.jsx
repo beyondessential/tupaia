@@ -5,10 +5,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { matchPath, Link, useLocation } from 'react-router-dom';
+import { Link, matchPath, useLocation } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { labelToId } from '../../utilities';
+import { generateTitle } from '../../pages/resources/resourceName';
 
 const Wrapper = styled.div`
   max-width: 100%;
@@ -216,14 +217,15 @@ export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
     return !!matchResult || !!nestedViewMatch;
   };
 
-  const links = linkInput?.map(({ exact, path, title, ...rest }) => {
+  const links = linkInput?.map(({ exact, path, title, resourceName, ...rest }) => {
+    const linkTitle = title ?? generateTitle(resourceName);
     const target = exact ? path : `${basePath}${path}`;
 
     return {
       ...rest,
-      title,
+      title: linkTitle,
       target,
-      id: `app-sub-view-${labelToId(title)}`,
+      id: `app-sub-view-${labelToId(linkTitle)}`,
       active: getIsActive({
         ...rest,
         target,
