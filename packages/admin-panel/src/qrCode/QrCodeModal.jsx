@@ -12,7 +12,7 @@ import { Modal } from '../widgets';
 
 export const QrCodeModalComponent = ({ isOpen, onDismiss, qrCodeContents, humanReadableId }) => {
   return (
-    <Modal onClose={onDismiss} isOpen={isOpen} disableBackdropClick title="Share QR Code">
+    <Modal onClose={onDismiss} isOpen={isOpen} disableBackdropClick title="Share QR code">
       {qrCodeContents && humanReadableId && (
         <QrCodeContainer qrCodeContents={qrCodeContents} humanReadableId={humanReadableId} />
       )}
