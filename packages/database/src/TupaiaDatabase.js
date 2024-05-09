@@ -318,14 +318,7 @@ export class TupaiaDatabase {
 
   async count(recordType, where, options) {
     // If just a simple query without options, use the more efficient knex count method
-    const result = await this.find(
-      recordType,
-      where,
-      options,
-      // count distinct by record id, so we don't count the same record multiple times if there is a join
-      QUERY_METHODS.COUNT_DISTINCT,
-      `${recordType}.id`,
-    );
+    const result = await this.find(recordType, where, options, QUERY_METHODS.COUNT);
     return parseInt(result[0].count, 10);
   }
 

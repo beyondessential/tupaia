@@ -12,7 +12,7 @@ export const useUserCountries = () => {
   const { data: countries, isLoading: isLoadingCountries } = useProjectEntities(
     user.project?.code,
     {
-      type: 'country',
+      filter: { type: 'country' },
     },
   );
 

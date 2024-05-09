@@ -22,7 +22,7 @@
     "start-dev": "yarn package:start:backend-start-dev 9999",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
-    "test": "yarn workspace @tupaia/database check-test-database-exists && DB_NAME=tupaia_test NODE_ENV=test mocha",
+    "test": "yarn workspace @tupaia/database check-test-database-exists && NODE_ENV=test mocha",
     "test:coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {

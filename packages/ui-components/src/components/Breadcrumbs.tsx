@@ -50,7 +50,7 @@ This is a workaround for a typescript error that appears because of the 'compone
 
  */
 const LinkRef = React.forwardRef<HTMLAnchorElement, ReactRouterLinkProps>((props, ref) => (
-  <RouterLink innerRef={ref} {...props} />
+  <RouterLink ref={ref} {...props} />
 ));
 
 const Link = (props: MuiLinkProps & ReactRouterLinkProps) => (

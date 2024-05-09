@@ -12,6 +12,7 @@ import { ADMIN_ONLY_ROUTES, ROUTES } from '../constants';
 export const PrivateRoute = ({ children }: { children?: ReactElement }): ReactElement => {
   const { isLoggedIn, hasAdminPanelAccess, ...user } = useCurrentUserContext();
   const location = useLocation();
+
   if (!isLoggedIn)
     return (
       <Navigate
