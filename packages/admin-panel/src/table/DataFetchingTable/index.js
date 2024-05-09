@@ -1,0 +1,1 @@
+export { DataFetchingTable } from './DataFetchingTable';

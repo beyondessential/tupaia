@@ -20,10 +20,8 @@ const Link = styled(BaseLink)`
     height: 100%;
     max-height: 100%;
   }
-  &:hover {
-    background-color: ${WHITE}33; // 33 is 20% opacity
-  }
-  &:focus {
+  &:focus,
+  &:focus-visible {
     border-color: ${WHITE};
   }
 `;

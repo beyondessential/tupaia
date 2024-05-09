@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import styled from 'styled-components';
 
-const Cell = styled.div`
+const Content = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -16,7 +16,7 @@ const Cell = styled.div`
 
 export const Tooltip = ({ value }) => (
   <TooltipComponent title={value || ''} placement="top-start">
-    <Cell>{value}</Cell>
+    <Content>{value}</Content>
   </TooltipComponent>
 );
 
@@ -30,7 +30,7 @@ Tooltip.defaultProps = {
 
 export const JSONTooltip = ({ value }) => (
   <TooltipComponent title={<pre>{JSON.stringify(value, null, 1)}</pre>}>
-    <Cell>{JSON.stringify(value)}</Cell>
+    <Content>{JSON.stringify(value)}</Content>
   </TooltipComponent>
 );
 
