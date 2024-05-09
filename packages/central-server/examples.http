@@ -59,6 +59,7 @@ Authorization: {{user-authorization}}
 ### Export option set
 
 GET {{baseUrl}}/export/optionSet/602360f561f76a47b0076328 HTTP/1.1
+Authorization: {{user-authorization}}
 
 ### Export survey response
 
