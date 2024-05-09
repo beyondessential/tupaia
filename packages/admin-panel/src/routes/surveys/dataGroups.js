@@ -5,6 +5,8 @@ import {
   getDataSourceButtonsConfig,
 } from '../../common';
 
+const RESOURCE_NAME = { singular: 'data group' };
+
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
@@ -36,14 +38,13 @@ const EDITOR_CONFIG = {
 };
 
 export const dataGroups = {
-  title: 'Data groups',
+  resourceName: RESOURCE_NAME,
   endpoint: 'dataGroups',
   columns: [...DATA_GROUP_FIELDS, ...getDataSourceButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')],
   path: '/data-groups',
   createConfig: {
-    title: 'New Data Group',
     actionConfig: {
-      title: 'Edit Data Group',
+      title: `New ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dataGroups',
       fields: DATA_GROUP_FIELDS,
     },
@@ -51,7 +52,7 @@ export const dataGroups = {
   editorConfig: EDITOR_CONFIG,
   isBESAdminOnly: true,
   nestedView: {
-    title: 'Data elements',
+    resourceName: RESOURCE_NAME,
     endpoint: 'dataGroups/{id}/dataElements',
     columns: [
       ...DATA_ELEMENT_FIELDS,

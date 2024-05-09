@@ -2,8 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { prettyArray } from '../../utilities';
+
+const RESOURCE_NAME = { singular: 'permission group' };
 
 const COLUMNS = [
   {
@@ -22,9 +25,8 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create Permission Group',
   actionConfig: {
-    title: 'Edit Permission Group',
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'permissionGroups',
     fields: [
       {

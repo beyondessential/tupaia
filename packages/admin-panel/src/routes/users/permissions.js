@@ -1,3 +1,10 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+const RESOURCE_NAME = { singular: 'permission' };
+
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
   {
@@ -131,7 +138,7 @@ const onProcessDataForSave = (fieldsToSave, recordData) => {
 };
 
 export const permissions = {
-  title: 'Permissions',
+  resourceName: RESOURCE_NAME,
   path: '/permissions',
   endpoint: PERMISSIONS_ENDPOINT,
   columns: FIELDS,

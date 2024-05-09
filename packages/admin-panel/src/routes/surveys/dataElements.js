@@ -5,6 +5,8 @@
 
 import { DATA_ELEMENT_FIELDS, getDataSourceButtonsConfig } from '../../common';
 
+const RESOURCE_NAME = { singular: 'data element' };
+
 const IMPORT_CONFIG = {
   title: 'Import Data Elements',
   actionConfig: {
@@ -17,7 +19,7 @@ const EDITOR_CONFIG = {
 };
 
 export const dataElements = {
-  title: 'Data elements',
+  resourceName: RESOURCE_NAME,
   endpoint: 'dataElements',
   columns: [
     ...DATA_ELEMENT_FIELDS,
@@ -26,9 +28,8 @@ export const dataElements = {
   importConfig: IMPORT_CONFIG,
   path: '/data-elements',
   createConfig: {
-    title: 'New Data Element',
     actionConfig: {
-      title: 'Edit Data Element',
+      title: `New ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dataElements',
       fields: [...DATA_ELEMENT_FIELDS],
     },

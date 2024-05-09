@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'question' };
+
 const QUESTION_FIELDS = [
   {
     Header: 'Code',
@@ -97,7 +99,7 @@ const EDITOR_CONFIG = {
 };
 
 export const questions = {
-  title: 'Questions',
+  resourceName: RESOURCE_NAME,
   path: '/questions',
   endpoint: 'questions',
   columns: QUESTION_COLUMNS,

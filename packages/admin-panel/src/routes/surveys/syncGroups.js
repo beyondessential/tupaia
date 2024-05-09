@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'sync group' };
+
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
 const FIELDS = [
@@ -80,15 +82,15 @@ const EDITOR_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'Add Sync Group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },
 };
 
 export const syncGroups = {
-  title: 'Sync groups',
+  resourceName: RESOURCE_NAME,
   path: '/sync-groups',
   endpoint: 'dataServiceSyncGroups',
   columns: COLUMNS,

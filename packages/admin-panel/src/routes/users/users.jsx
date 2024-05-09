@@ -7,6 +7,8 @@ import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
 import { PERMISSIONS_COLUMNS, PERMISSIONS_ENDPOINT } from './permissions';
 
+const RESOURCE_NAME = { singular: 'user' };
+
 // eslint-disable-next-line react/prop-types
 const VerifiedCell = ({ value }) => {
   if (value === 'verified') {
@@ -158,7 +160,7 @@ const CREATE_CONFIG = {
 };
 
 export const users = {
-  title: 'Users',
+  resourceName: RESOURCE_NAME,
   path: '',
   endpoint: 'users',
   columns: COLUMNS,

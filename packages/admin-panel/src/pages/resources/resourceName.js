@@ -5,4 +5,6 @@
 
 const capitalizeFirst = str => str[0].toUpperCase() + str.slice(1);
 
-export const generateTitle = ({ singular, plural }) => capitalizeFirst(plural ?? `${singular}s`);
+export const getPluralForm = ({ singular, plural }) => plural ?? `${singular}s`;
+
+export const generateTitle = resourceName => capitalizeFirst(getPluralForm(resourceName));

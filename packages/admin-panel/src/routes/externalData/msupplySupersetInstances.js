@@ -40,15 +40,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Superset Instance',
   actionConfig: {
+    title: 'New superset instance',
     editEndpoint: 'supersetInstances',
     fields: FIELDS,
   },
 };
 
 export const supersetInstances = {
-  title: 'mSupply superset Instances',
+  title: 'mSupply superset instances',
   endpoint: 'supersetInstances',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

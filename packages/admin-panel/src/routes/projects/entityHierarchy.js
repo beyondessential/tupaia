@@ -6,6 +6,9 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+/* Exported for use in EntityHierarchiesPage */
+export const RESOURCE_NAME = { singular: 'entity hierarchy', plural: 'entity hierarchies' };
+
 const ENTITY_HIERARCHY_ENDPOINT = 'entityHierarchy';
 
 const FIELDS = [
@@ -44,7 +47,7 @@ const COLUMNS = [
 ];
 
 export const entityHierarchy = {
-  title: 'Entity hierarchy',
+  resourceName: RESOURCE_NAME,
   endpoint: ENTITY_HIERARCHY_ENDPOINT,
   columns: COLUMNS,
   path: '/hierarchy',

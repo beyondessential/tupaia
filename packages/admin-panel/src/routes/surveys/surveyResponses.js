@@ -8,6 +8,8 @@ import moment from 'moment';
 import { ApprovalStatus } from '@tupaia/types';
 import { SurveyResponsesExportModal } from '../../importExport';
 
+const RESOURCE_NAME = { singular: 'survey response' };
+
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
 export const APPROVAL_STATUS_TYPES = Object.values(ApprovalStatus).map(type => ({
@@ -157,7 +159,7 @@ const IMPORT_CONFIG = {
 };
 
 export const surveyResponses = {
-  title: 'Survey responses',
+  resourceName: RESOURCE_NAME,
   path: '/survey-responses',
   endpoint: 'surveyResponses',
   columns: SURVEY_RESPONSE_PAGE_COLUMNS,

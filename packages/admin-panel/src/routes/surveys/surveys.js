@@ -5,6 +5,8 @@
 
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 
+const RESOURCE_NAME = { singular: 'survey' };
+
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
   { label: 'Weekly', value: 'weekly' },
@@ -529,7 +531,7 @@ const QUESTION_COLUMNS = [
 ];
 
 export const surveys = {
-  title: 'Surveys',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: 'surveys',

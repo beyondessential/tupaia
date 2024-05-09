@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'option set' };
+
 const OPTION_SET_FIELDS = [
   {
     Header: 'Name',
@@ -78,7 +80,7 @@ const IMPORT_CONFIG = {
 };
 
 export const optionSets = {
-  title: 'Option sets',
+  resourceName: RESOURCE_NAME,
   endpoint: 'optionSets',
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,

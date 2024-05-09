@@ -6,6 +6,8 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'project' };
+
 const PROJECTS_ENDPOINT = 'projects';
 
 const DEFAULT_FIELDS = [
@@ -162,15 +164,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new project',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: PROJECTS_ENDPOINT,
     fields: NEW_PROJECT_COLUMNS,
   },
 };
 
 export const projects = {
-  title: 'Projects',
+  resourceName: RESOURCE_NAME,
   path: '',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

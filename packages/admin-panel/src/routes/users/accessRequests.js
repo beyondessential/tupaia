@@ -5,6 +5,8 @@
 
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
 
+const RESOURCE_NAME = { singular: 'access request' };
+
 const USER_FIELDS = [
   {
     Header: 'Email Address',
@@ -157,7 +159,7 @@ const DETAILS_COLUMNS = [
 ];
 
 export const accessRequests = {
-  title: 'Access requests',
+  resourceName: RESOURCE_NAME,
   path: '/access-requests',
   endpoint: ACCESS_REQUESTS_ENDPOINT,
   columns: USER_COLUMNS,
@@ -171,7 +173,7 @@ export const accessRequests = {
     return recordData.map(record => ({ ...record, ...editedFields }));
   },
   nestedView: {
-    title: 'Access Requests',
+    resourceName: RESOURCE_NAME,
     endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
     columns: DETAILS_COLUMNS,
     baseFilter: { approved: null },

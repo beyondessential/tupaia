@@ -5,9 +5,11 @@
 
 import {
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
-  SERVICE_TYPE_OPTIONS,
   DataSourceConfigView,
+  SERVICE_TYPE_OPTIONS,
 } from '../../common';
+
+const RESOURCE_NAME = { singular: 'mapping' };
 
 const FIELDS = [
   {
@@ -61,8 +63,8 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: 'New Mapping',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dataElementDataServices',
     fields: FIELDS,
   },
@@ -70,6 +72,7 @@ const CREATE_CONFIG = {
 
 export const dataMapping = {
   title: 'Data mapping',
+  resourceName: RESOURCE_NAME,
   path: '/data-mapping',
   endpoint: 'dataElementDataServices',
   columns: COLUMNS,

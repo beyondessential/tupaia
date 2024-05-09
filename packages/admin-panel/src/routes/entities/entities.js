@@ -5,6 +5,8 @@
 
 import { SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
 
+const RESOURCE_NAME = { singular: 'entity', plural: 'entities' };
+
 const ENTITIES_ENDPOINT = 'entities';
 
 export const FIELDS = {
@@ -95,7 +97,7 @@ const IMPORT_CONFIG = {
 };
 
 export const entities = {
-  title: 'Entities',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: ENTITIES_ENDPOINT,
