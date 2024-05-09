@@ -17,6 +17,13 @@ const EditorWrapper = styled.div`
     text-transform: initial;
     color: ${props => props.theme.palette.text.secondary};
   }
+  .MuiFormHelperText-root {
+    text-align: right;
+    margin-right: 0;
+  }
+  .MuiFormControl-root:has(.MuiFormHelperText-root) {
+    margin-bottom: 0; // the helper text will be considered the gap between the input and the next field
+  }
 `;
 
 export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {

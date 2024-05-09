@@ -28,25 +28,29 @@ const Form = styled.form`
 
 const Section = styled.section`
   padding-block-end: 1.8rem;
+  container-type: normal;
   & + & {
     border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
     padding-block-start: 1.8rem;
   }
-  .fields {
-    flex-direction: row;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    > div,
-    > fieldset {
-      width: 48%;
+
+  @media screen and (min-width: 1200px) {
+    .fields {
+      flex-direction: row;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      > div,
+      > fieldset {
+        width: 48%;
+      }
     }
   }
 `;
 
 const SectionBlock = styled.div`
   > div {
-    margin-left: 0;
+    margin: 0;
   }
 `;
 
