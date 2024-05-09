@@ -11,7 +11,8 @@ export class OptionSetRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.OPTION_SET;
 
   async options() {
-    return this.otherModels.option.find({ option_set_id: this.id });
+    const options = await this.otherModels.option.find({ option_set_id: this.id });
+    return options.sort((a, b) => a.sort_order - b.sort_order);
   }
 
   async getSurveyIds() {
