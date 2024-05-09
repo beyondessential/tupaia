@@ -10,7 +10,7 @@ export const EDITOR_DATA_EDIT_SUCCESS = 'EDITOR_DATA_EDIT_SUCCESS';
 export const EDITOR_DISMISS = 'EDITOR_DISMISS';
 export const EDITOR_ERROR = 'EDITOR_ERROR';
 export const EDITOR_FIELD_EDIT = 'EDITOR_FIELD_EDIT';
-export const EDITOR_OPEN = 'EDITOR_OPEN';
+export const LOAD_EDITOR = 'LOAD_EDITOR';
 
 export const DATA_CHANGE_ACTIONS = {
   start: EDITOR_DATA_EDIT_BEGIN,
@@ -19,3 +19,5 @@ export const DATA_CHANGE_ACTIONS = {
 };
 
 export const SECTION_FIELD_TYPE = 'section';
+export const SET_EDITOR_CONFIG = 'SET_EDITOR_CONFIG';
+export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';

@@ -5,4 +5,4 @@
 export { ResourcePage } from './ResourcePage';
 export { EntityHierarchiesPage } from './EntityHierarchiesPage';
 export { PermissionGroupsViewerPage } from './PermissionGroupsViewerPage';
-export { EditSurveyPage } from './EditSurveyPage';
+export { EditSurveyPage } from './editSurvey';

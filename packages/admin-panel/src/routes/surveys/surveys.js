@@ -2,11 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
-import { Edit } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
-import { ColumnActionButton } from '../../table/columnTypes/ColumnActionButton';
 import { EditSurveyPage } from '../../pages/resources';
 
 const PERIOD_GRANULARITIES = [
@@ -224,21 +220,17 @@ const SURVEY_COLUMNS = [
   {
     Header: 'Edit',
     source: 'id',
-    // eslint-disable-next-line react/prop-types
-    Cell: ({ value }) => (
-      <ColumnActionButton component={Link} to={`/surveys/${value}/edit`}>
-        <Edit />
-      </ColumnActionButton>
-    ),
+    type: 'edit',
     colWidth: '4.5rem',
     filterable: false,
     disableSortBy: true,
     isButtonColumn: true,
-    // actionConfig: {
-    //   title: 'Edit Survey',
-    //   editEndpoint: 'surveys',
-    //   fields: [...Object.values(SURVEY_FIELDS)],
-    // },
+    actionConfig: {
+      title: 'Edit Survey',
+      editEndpoint: 'surveys',
+      link: `/surveys/:id/edit`,
+      fields: [...Object.values(SURVEY_FIELDS)],
+    },
   },
   {
     Header: 'Delete',

@@ -19,6 +19,7 @@ export const FileUploadField = ({
   const [fileName, setFileName] = useState(null);
 
   const handleChange = async (event, newFileName, files) => {
+    console.log('handleChange', event, newFileName, files);
     setFileName(newFileName);
 
     const [file] = files || [];

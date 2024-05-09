@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
-import keyBy from 'lodash.keyby';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
@@ -12,23 +11,8 @@ import { closeEditModal } from './actions';
 import { FieldsEditor } from './FieldsEditor';
 import { ModalContentProvider } from '../widgets';
 import { UsedBy } from '../usedBy/UsedBy';
-import { getExplodedFields } from '../utilities';
 import { withConnectedEditor } from './withConnectedEditor';
-
-const getFieldSourceToEdit = field => {
-  const { source, editConfig = {} } = field;
-  if (editConfig.optionsEndpoint) {
-    if (editConfig.sourceKey) {
-      return editConfig.sourceKey;
-    }
-    const sourceComponents = source.split('.');
-    if (sourceComponents.length > 1) {
-      const [resource] = sourceComponents;
-      return `${resource}_id`;
-    }
-  }
-  return source;
-};
+import { useEditFiles } from './useEditFiles';
 
 export const EditModalComponent = withConnectedEditor(
   ({
@@ -49,26 +33,18 @@ export const EditModalComponent = withConnectedEditor(
     cancelButtonText,
     saveButtonText,
     extraDialogProps,
+    loadEditor,
+    actionConfig,
+    recordId,
   }) => {
-    // key the fields by their source so we can easily find the field to edit. Use the exploded fields so that any subfields are placed into the top level of the array
-    const fieldsBySource = keyBy(getExplodedFields(fields), 'source');
-
-    // Files cannot be stored in redux (https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions)
-    // So instead we keep a map of fieldKey -> File, and store only the filename in redux.
-    const [files, setFiles] = useState({});
-    const handleSetFormFile = (inputKey, { fileName, file }) => {
-      setFiles({
-        ...files,
-        [inputKey]: file,
-      });
-      onEditField(inputKey, fileName);
-    };
-    useEffect(() => {
-      // Rely on the fact that opening/closing the modal clears `fields` to make sure that `files` gets wiped between forms.
-      setFiles({});
-    }, [fields]);
+    const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
+    useEffect(() => {
+      if (isOpen) {
+        loadEditor(actionConfig, recordId);
+      }
+    }, [isOpen]);
 
     return (
       <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick {...extraDialogProps}>
@@ -78,10 +54,7 @@ export const EditModalComponent = withConnectedEditor(
             fields={fields}
             isLoading={isLoading}
             recordData={recordData}
-            onEditField={(fieldSource, newValue) => {
-              const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-              return onEditField(fieldSourceToEdit, newValue);
-            }}
+            onEditField={onEditField}
             onSetFormFile={handleSetFormFile}
           />
           {displayUsedBy && <UsedBy {...usedByConfig} />}

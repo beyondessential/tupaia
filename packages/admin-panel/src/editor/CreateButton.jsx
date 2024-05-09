@@ -6,11 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { openEditModal } from './actions';
+import { loadEditor } from './actions';
 import { CreateActionButton } from './ActionButton';
 
 export const CreateButtonComponent = ({ dispatch, label, actionConfig }) => (
-  <CreateActionButton onClick={() => dispatch(openEditModal(actionConfig))}>
+  <CreateActionButton onClick={() => dispatch(loadEditor(actionConfig))}>
     {label}
   </CreateActionButton>
 );

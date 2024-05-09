@@ -12,7 +12,8 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
-  EDITOR_OPEN,
+  LOAD_EDITOR,
+  OPEN_EDIT_MODAL,
 } from './constants';
 
 const defaultState = {
@@ -56,7 +57,8 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [EDITOR_OPEN]: payload => ({ ...payload, isOpen: true }),
+  [LOAD_EDITOR]: payload => ({ ...payload }),
+  [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
     editedFields: {
       ...editedFields,

@@ -91,6 +91,9 @@ export const ResourcePage = ({
   const accessibleColumns = getExplodedFields(columns).filter(
     column => (column.type ? getHasPermission(column.type) : true), // If column has no type, it's always accessible
   );
+
+  const editorColumn = accessibleColumns.find(column => column.type === 'edit');
+
   return (
     <>
       {isDetailsPage && (
@@ -124,7 +127,11 @@ export const ResourcePage = ({
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
       />
-      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
+      <EditModal
+        onProcessDataForSave={onProcessDataForSave}
+        {...editorConfig}
+        actionConfig={editorColumn?.actionConfig}
+      />
       <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />

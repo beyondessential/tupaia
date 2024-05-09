@@ -4,21 +4,25 @@
  */
 
 import { connect } from 'react-redux';
-import { editField, saveEdits } from './actions';
+import { editField, loadEditor, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
+import { LOAD_EDITOR } from './constants';
 
-const mapStateToProps = state => ({
-  ...getEditorState(state),
-  isUnchanged: getIsUnchanged(state),
-  usedByConfig: {
-    usedBy: state.usedBy.byRecordId[state.editor.recordId] ?? [],
-    usedByIsLoading: state.usedBy.isLoading,
-    usedByErrorMessage: state.usedBy.errorMessage,
-  },
-});
+const mapStateToProps = state => {
+  return {
+    ...getEditorState(state),
+    isUnchanged: getIsUnchanged(state),
+    usedByConfig: {
+      usedBy: state.usedBy.byRecordId[state.editor.recordId] ?? [],
+      usedByIsLoading: state.usedBy.isLoading,
+      usedByErrorMessage: state.usedBy.errorMessage,
+    },
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
+  loadEditor: (config, recordId) => dispatch(loadEditor(config, recordId)),
   dispatch,
 });
 
@@ -47,7 +51,6 @@ const mergeProps = (
   { onProcessDataForSave, usedByConfig: usedByConfigInOwnProps, ...ownProps },
 ) => {
   const usedByConfig = { ...usedByConfigInOwnProps, ...usedByConfigInMapStateProps };
-
   return {
     ...ownProps,
     ...stateProps,
