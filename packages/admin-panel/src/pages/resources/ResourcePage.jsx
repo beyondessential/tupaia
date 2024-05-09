@@ -16,6 +16,7 @@ import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
+import { generateTitle } from './resourceName';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -64,10 +65,6 @@ const useEndpoint = (endpoint, details, params) => {
   const updatedEndpoint = replaceParams();
   return updatedEndpoint;
 };
-
-const capitalizeFirst = str => str[0].toUpperCase() + str.slice(1);
-const generateTitle = ({ singular, irregularPlural }) =>
-  capitalizeFirst(irregularPlural ?? `${singular}s`);
 
 export const ResourcePage = ({
   resourceName,
@@ -205,7 +202,7 @@ ResourcePage.defaultProps = {
   TableComponent: null,
   LinksComponent: null,
   onProcessDataForSave: null,
-  title: '',
+  title: null,
   baseFilter: {},
   defaultSorting: [],
   defaultFilters: [],
