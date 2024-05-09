@@ -28,7 +28,7 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'code',
       optionValueKey: 'code',
       allowMultipleValues: false,
-      secondaryLabel: 'Select the project this survey should be available in',
+      labelTooltip: 'Select the project this survey should be available in',
     },
   },
   name: {
@@ -37,14 +37,14 @@ const SURVEY_FIELDS = {
     type: 'tooltip',
     editConfig: {
       maxLength: 50,
-      secondaryLabel: 'Max length: 50 characters',
+      secondaryLabel: 'Max 50 characters',
     },
   },
   code: {
     Header: 'Code',
     source: 'code',
     editConfig: {
-      secondaryLabel: 'A short unique code. Suggestions appear when you enter a name.',
+      labelTooltip: 'A short unique code. Suggestions appear when you enter a name.',
     },
   },
   country_ids: {
@@ -56,7 +56,7 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'name',
       allowMultipleValues: true,
-      secondaryLabel: 'Select the countries this survey should be available in',
+      labelTooltip: 'Select the countries this survey should be available in',
     },
   },
   permission_group_id: {
@@ -67,7 +67,7 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel: 'Select the permission group this survey should be available for',
+      labelTooltip: 'Select the permission group this survey should be available for',
     },
   },
   survey_group_id: {
@@ -78,7 +78,7 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'surveyGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel:
+      labelTooltip:
         'Select the survey group this survey should be a part of, or leave blank for none',
       canCreateNewOptions: true,
     },
@@ -96,7 +96,7 @@ const SURVEY_FIELDS = {
     source: 'period_granularity',
     editConfig: {
       options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
-      secondaryLabel:
+      labelTooltip:
         'Select a reporting period if new responses should overwrite previous ones within the same period',
     },
   },
@@ -106,7 +106,7 @@ const SURVEY_FIELDS = {
     type: 'boolean',
     editConfig: {
       type: 'boolean',
-      secondaryLabel:
+      labelTooltip:
         'Select whether survey responses require approval before their data appear in visualisations',
     },
   },
@@ -114,7 +114,7 @@ const SURVEY_FIELDS = {
     Header: 'Data Service',
     source: 'data_group.service_type',
     editConfig: {
-      secondaryLabel: 'Select the data service this survey should use',
+      labelTooltip: 'Select the data service this survey should use',
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
@@ -185,7 +185,7 @@ const SURVEY_FIELDS = {
     editConfig: {
       type: 'file',
       name: 'surveyQuestions',
-      secondaryLabel:
+      labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
     },
   },

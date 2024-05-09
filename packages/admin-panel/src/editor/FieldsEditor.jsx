@@ -65,7 +65,25 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
 
   // Get the input for the field
   const getFieldInput = field => {
-    const { editable = true, editConfig = {}, source, Header, accessor } = field;
+    const {
+      editable = true,
+      editConfig = {},
+      source,
+      Header,
+      accessor,
+      type,
+      WrapperComponent,
+    } = field;
+    if (type === SECTION_FIELD_TYPE) {
+      return (
+        <InputGroup
+          key={Header}
+          title={Header}
+          fields={field.fields.map(subfield => getFieldInput(subfield))}
+          WrapperComponent={WrapperComponent}
+        />
+      );
+    }
     return (
       <InputField
         key={source}
@@ -99,19 +117,8 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
   }, []);
 
   return (
-    <EditorWrapper>
-      {visibleFormItems.map(item =>
-        item.type === SECTION_FIELD_TYPE ? (
-          <InputGroup
-            key={item.title}
-            title={item.title}
-            description={item.description}
-            fields={item.fields.map(subfield => getFieldInput(subfield))}
-          />
-        ) : (
-          getFieldInput(item)
-        ),
-      )}
+    <EditorWrapper className="fields">
+      {visibleFormItems.map(item => getFieldInput(item))}
     </EditorWrapper>
   );
 };

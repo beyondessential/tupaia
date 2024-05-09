@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { HelpOutline } from '@material-ui/icons';
 
 const InputFieldComponents = {};
 

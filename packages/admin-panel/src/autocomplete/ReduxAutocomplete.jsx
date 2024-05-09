@@ -38,6 +38,7 @@ const ReduxAutocompleteComponent = React.memo(
     searchTerm,
     placeholder,
     helperText,
+    tooltip,
   }) => {
     const [hasSetInitialSelection, setHasSetInitialSelection] = useState(false);
 
@@ -85,6 +86,7 @@ const ReduxAutocompleteComponent = React.memo(
         canCreateNewOptions={canCreateNewOptions}
         allowMultipleValues={allowMultipleValues}
         optionLabelKey={optionLabelKey}
+        tooltip={tooltip}
       />
     );
   },
@@ -106,6 +108,7 @@ ReduxAutocompleteComponent.propTypes = {
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  tooltip: PropTypes.string,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -118,6 +121,7 @@ ReduxAutocompleteComponent.defaultProps = {
   placeholder: null,
   label: null,
   helperText: null,
+  tooltip: null,
 };
 
 const mapStateToProps = (state, { reduxId }) => {

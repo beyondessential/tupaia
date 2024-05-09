@@ -4,25 +4,58 @@
  */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import keyBy from 'lodash.keyby';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { ReduxAutocomplete } from '../../../autocomplete';
 import { withConnectedEditor } from '../../../editor';
 import { useEditSurveyField } from '../../../surveys/useEditSurveyField';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
-import keyBy from 'lodash.keyby';
+
+import { FieldsEditor } from '../../../editor/FieldsEditor';
+
+const Wrapper = styled.div`
+  overflow: hidden;
+`;
 
 const Form = styled.form`
   padding: 1.5rem;
+  max-height: 100%;
+  overflow-y: auto;
 `;
 
 const Section = styled.section`
   padding-block-end: 1.8rem;
   & + & {
     border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
+    padding-block-start: 1.8rem;
+  }
+  .fields {
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    > div,
+    > fieldset {
+      width: 48%;
+    }
+  }
+`;
+
+const SectionBlock = styled.div`
+  > div {
+    margin-left: 0;
+  }
+`;
+
+const RowSection = styled(SectionBlock)`
+  > div {
+    display: flex;
+    > fieldset:last-child {
+      margin-left: 1.2rem;
+    }
   }
 `;
 
@@ -52,8 +85,47 @@ export const EditSurveyPage = withConnectedEditor(
 
     const fieldsBySource = keyBy(fields, 'source');
 
+    const {
+      'project.code': projectCode,
+      name,
+      code,
+      'permission_group.name': permissionGroupName,
+      'survey_group.name': surveyGroupName,
+      countryNames,
+      period_granularity: periodGranularity,
+      can_repeat: canRepeat,
+      requires_approval: requiresApproval,
+      'data_group.service_type': dataServiceType,
+      'data_group.config': dataServiceConfig,
+    } = fieldsBySource;
+
+    const orderedFields = fields.length
+      ? [
+          projectCode,
+          name,
+          code,
+          permissionGroupName,
+          {
+            type: 'section',
+            WrapperComponent: SectionBlock,
+            fields: [
+              surveyGroupName,
+              periodGranularity,
+              {
+                type: 'section',
+                WrapperComponent: RowSection,
+                fields: [canRepeat, requiresApproval],
+              },
+            ],
+          },
+          countryNames,
+          dataServiceType,
+          dataServiceConfig,
+        ]
+      : [];
+
     return (
-      <div>
+      <Wrapper>
         <Breadcrumbs
           parent={parent}
           title={details?.name}
@@ -74,9 +146,16 @@ export const EditSurveyPage = withConnectedEditor(
               label="Survey questions"
             />
           </Section>
-          <Section></Section>
+          <Section>
+            <FieldsEditor
+              fields={orderedFields}
+              recordData={recordData}
+              onEditField={handleEditField}
+              onSetFormFile={handleSetFormFile}
+            />
+          </Section>
         </Form>
-      </div>
+      </Wrapper>
     );
   },
 );

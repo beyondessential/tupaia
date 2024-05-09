@@ -4,7 +4,7 @@
  */
 
 import React, { ComponentType } from 'react';
-import { InfoOutlined } from '@material-ui/icons';
+import { HelpOutline } from '@material-ui/icons';
 import styled from 'styled-components';
 import { Tooltip as BaseTooltip } from '../Tooltip';
 
@@ -53,6 +53,7 @@ interface InputLabelProps {
   as?: string | ComponentType<any>;
   className?: string;
   htmlFor?: string;
+  TooltipIcon?: ComponentType<any>;
 }
 
 export const InputLabel = ({
@@ -61,6 +62,7 @@ export const InputLabel = ({
   as = 'label',
   className,
   htmlFor,
+  TooltipIcon = HelpOutline,
 }: InputLabelProps) => {
   // If no label, don't render anything, so there isn't an empty label tag in the DOM
   if (!label) return null;
@@ -71,7 +73,7 @@ export const InputLabel = ({
       {tooltip && (
         <Tooltip title={tooltip} placement="top">
           <TooltipWrapper tabIndex={0}>
-            <InfoOutlined />
+            <TooltipIcon />
           </TooltipWrapper>
         </Tooltip>
       )}
