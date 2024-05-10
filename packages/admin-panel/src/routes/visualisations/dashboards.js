@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'dashboard' };
+
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
 const FIELDS = [
@@ -16,7 +18,7 @@ const FIELDS = [
     source: 'name',
   },
   {
-    Header: 'Organisation Unit Code',
+    Header: 'Organisation unit code',
     source: 'root_entity_code',
     editConfig: {
       optionsEndpoint: 'entities',
@@ -54,12 +56,12 @@ const COLUMNS = [
 
 const RELATION_FIELDS = [
   {
-    Header: 'Dashboard Item Code',
+    Header: 'Dashboard item code',
     source: 'dashboard_item.code',
     editable: false,
   },
   {
-    Header: 'Permission Groups',
+    Header: 'Permission groups',
     source: 'permission_groups',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
@@ -70,7 +72,7 @@ const RELATION_FIELDS = [
     },
   },
   {
-    Header: 'Entity Types',
+    Header: 'Entity types',
     source: 'entity_types',
     editConfig: {
       type: 'autocomplete',
@@ -82,7 +84,7 @@ const RELATION_FIELDS = [
     },
   },
   {
-    Header: 'Project Codes',
+    Header: 'Project codes',
     source: 'project_codes',
     editConfig: {
       optionsEndpoint: 'projects',
@@ -93,7 +95,7 @@ const RELATION_FIELDS = [
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
@@ -112,21 +114,21 @@ const RELATION_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Dashboard',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DASHBOARDS_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const dashboards = {
-  title: 'Dashboards',
+  resourceName: RESOURCE_NAME,
   path: '/dashboards',
   endpoint: DASHBOARDS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
   nestedView: {
-    title: 'Dashboard Relations',
+    resourceName: RESOURCE_NAME,
     columns: RELATION_COLUMNS,
     endpoint: 'dashboards/{id}/dashboardRelations',
     path: '/:id/dashboard-relations',

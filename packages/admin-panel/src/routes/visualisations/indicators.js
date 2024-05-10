@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'indicator' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -40,7 +42,7 @@ const COLUMNS = [
     source: 'id',
     width: 70,
     actionConfig: {
-      title: 'Edit Indicator',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'indicators',
       fields: [...FIELDS],
     },
@@ -48,15 +50,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Add Indicator',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'indicators',
     fields: FIELDS,
   },
 };
 
 export const indicators = {
-  title: 'Indicators',
+  resourceName: RESOURCE_NAME,
   path: '/indicators',
   endpoint: 'indicators',
   columns: COLUMNS,

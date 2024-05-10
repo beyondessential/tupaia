@@ -7,6 +7,8 @@ import moment from 'moment';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 
+const RESOURCE_NAME = { singular: 'social feed post' };
+
 const Image = styled.div`
   height: 200px;
   width: 200px;
@@ -56,7 +58,7 @@ const FIELDS = [
           avatarVariant: 'square',
         },
         {
-          label: 'Body (accepts basic markdown)',
+          label: 'Body (accepts basic Markdown)',
           fieldName: 'body',
           type: 'textarea',
         },
@@ -77,7 +79,7 @@ export const SOCIAL_FEED_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Social Feed item',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'feedItems',
       fields: FIELDS,
     },
@@ -92,12 +94,13 @@ export const SOCIAL_FEED_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Add Social Feed item',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'feedItems',
     fields: FIELDS,
   },
 };
+
 export const socialFeed = {
   title: 'Social feed',
   path: '/social-feed',

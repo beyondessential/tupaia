@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'map overlay' };
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
@@ -23,7 +26,7 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     width: 160,
     source: 'permission_group',
     editConfig: {
@@ -34,7 +37,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Linked Measures',
+    Header: 'Linked measures',
     source: 'linked_measures',
     width: 160,
     Cell: ({ value }) => prettyArray(value),
@@ -61,11 +64,11 @@ const FIELDS = [
     editConfig: {
       type: 'jsonEditor',
       secondaryLabel:
-        'This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. E.g. {"facility_type": "Hospital"}',
+        'This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. e.g. {"facility_type": "Hospital"}',
     },
   },
   {
-    Header: 'Country Codes',
+    Header: 'Country codes',
     source: 'country_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
@@ -79,7 +82,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Project Codes',
+    Header: 'Project codes',
     source: 'project_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
@@ -93,7 +96,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Report Code',
+    Header: 'Report code',
     source: 'report_code',
     width: 140,
     type: 'tooltip',
@@ -145,7 +148,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Map Overlay',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: MAP_OVERLAYS_ENDPOINT,
       fields: [...FIELDS, ...extraEditFields],
     },
@@ -160,8 +163,8 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Map Overlay Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
+  subtitle: 'Please upload one or more JSON files with visualisations to be imported',
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
     multiple: true,
@@ -186,7 +189,7 @@ const LinksComponent = () => (
 );
 
 export const mapOverlays = {
-  title: 'Map overlays',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlays',
   endpoint: 'mapOverlays',
   columns: COLUMNS,
