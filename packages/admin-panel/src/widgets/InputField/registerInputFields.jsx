@@ -284,7 +284,6 @@ export const registerInputFields = () => {
         label={props.label}
         buttonLabel={props.buttonLabel}
         avatarVariant={props.avatarVariant}
-        deleteModal={props.deleteModal}
         maxWidth={props.maxWidth}
         maxHeight={props.maxHeight}
         minWidth={props.minWidth}

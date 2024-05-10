@@ -10,6 +10,7 @@ import { GreyButton } from '../Button';
 import { FlexStart } from '../Layout';
 import { SaveAlt } from '../Icons';
 import { InputLabel } from './InputLabel';
+import { FormLabel } from '@material-ui/core';
 
 const HiddenFileInput = styled.input`
   display: none; // Hide the input element without applying other styles - setting it to be small and position absolute causes the form to crash when the input is clicked
@@ -21,9 +22,8 @@ const FileNameAndFileSize = styled.span`
   margin-left: 0.8rem;
 `;
 
-const FileUploadWrapper = styled.div``;
 const FileUploadContainer = styled(FlexStart)`
-  margin-top: 15px;
+  margin-top: 0.5rem;
 `;
 
 const humanFileSize = (sizeInBytes: number) => {
@@ -110,7 +110,7 @@ export const FileUploadField = ({
   };
 
   return (
-    <FileUploadWrapper as="label" htmlFor={name}>
+    <FormLabel htmlFor={name}>
       <InputLabel label={label} tooltip={tooltip} as="span" />
       <FileUploadContainer>
         <HiddenFileInput
@@ -136,6 +136,6 @@ export const FileUploadField = ({
       {helperText && (
         <MuiFormHelperText component={FormHelperTextComponent}>{helperText}</MuiFormHelperText>
       )}
-    </FileUploadWrapper>
+    </FormLabel>
   );
 };

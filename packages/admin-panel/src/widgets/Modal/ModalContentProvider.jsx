@@ -1,17 +1,25 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
 import styled from 'styled-components';
-import { DialogContent, SmallAlert } from '@tupaia/ui-components';
+import { SmallAlert } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import { DialogContent } from '@material-ui/core';
 
 const Content = styled(DialogContent)`
   text-align: left;
   min-height: 220px;
+  border-color: ${props => props.theme.palette.grey['400']};
+  border-style: solid;
+  border-width: 1px 0;
+  padding-block: 1.25rem;
+  padding-inline: 1.9rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Heading = styled(Typography)`
@@ -30,7 +38,8 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
           </SmallAlert>
         </>
       )}
-      <span style={isLoading || !!errorMessage ? { display: 'none' } : {}}>{children}</span>
+      {/* If loading or error message, don't show children */}
+      {!isLoading && !errorMessage && children}
     </Content>
   );
 };
