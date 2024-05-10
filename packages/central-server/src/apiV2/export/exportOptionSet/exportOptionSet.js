@@ -42,6 +42,5 @@ export async function exportOptionSet(req, res) {
   const filepath = `${dirname}/${basename}`;
   xlsx.writeFile(workbook, filepath);
 
-  // res.status(418).type('json').send(options);
   respondWithDownload(res, filepath);
 }
