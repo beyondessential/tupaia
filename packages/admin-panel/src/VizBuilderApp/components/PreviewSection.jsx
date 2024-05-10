@@ -37,7 +37,6 @@ const PreviewTabs = styled(MuiTabs)`
 `;
 
 const PreviewTab = styled(MuiTab)`
-  font-size: 15px;
   line-height: 140%;
   font-weight: 400;
   min-width: 100px;
