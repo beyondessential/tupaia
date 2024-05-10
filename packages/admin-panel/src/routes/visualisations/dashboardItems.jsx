@@ -6,6 +6,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
 
+const RESOURCE_NAME = { singular: 'dashboard item' };
+
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
 const FIELDS = [
@@ -86,8 +88,8 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+  title: `Import ${RESOURCE_NAME.singular}s`,
+  subtitle: 'Please upload one or more JSON files with visualisations to be imported',
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
     multiple: true,
@@ -112,7 +114,7 @@ const LinksComponent = () => (
 );
 
 export const dashboardItems = {
-  title: 'Dashboard items',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: DASHBOARD_ITEMS_ENDPOINT,
