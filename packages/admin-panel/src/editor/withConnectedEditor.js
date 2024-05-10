@@ -6,7 +6,6 @@
 import { connect } from 'react-redux';
 import { editField, loadEditor, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
-import { LOAD_EDITOR } from './constants';
 
 const mapStateToProps = state => {
   return {

@@ -15,23 +15,36 @@ import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 
 import { FieldsEditor } from '../../../editor/FieldsEditor';
+import { Button } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Form = styled.form`
-  padding: 1.5rem;
-  max-height: 100%;
+  padding-inline: 1.5rem;
+  padding-block-start: 1.9rem;
+  flex: 1;
   overflow-y: auto;
 `;
 
 const Section = styled.section`
-  padding-block-end: 1.8rem;
   container-type: normal;
-  & + & {
+
+  &:first-child {
+    padding-block-end: 1.8rem;
+  }
+  &:last-child {
     border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
     padding-block-start: 1.8rem;
+  }
+  .MuiCardContent-root {
+    padding: 0;
+  }
+  .MuiCard-root {
+    border: none;
   }
 
   @media screen and (min-width: 1200px) {
@@ -63,6 +76,11 @@ const RowSection = styled(SectionBlock)`
   }
 `;
 
+const StickyFooter = styled.div`
+  border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
+  padding: 1.5rem;
+`;
+
 export const EditSurveyPage = withConnectedEditor(
   ({
     parent,
@@ -73,6 +91,7 @@ export const EditSurveyPage = withConnectedEditor(
     recordData,
     onEditField,
     loadEditor,
+    isUnchanged,
   }) => {
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
@@ -82,8 +101,6 @@ export const EditSurveyPage = withConnectedEditor(
       if (!editorColumn) return;
       loadEditor(editorColumn?.actionConfig, params.id);
     }, [params.id, JSON.stringify(parent)]);
-
-    const handleEditField = useEditSurveyField(recordData, onEditField);
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
@@ -109,22 +126,22 @@ export const EditSurveyPage = withConnectedEditor(
           name,
           code,
           permissionGroupName,
+          surveyGroupName,
+          periodGranularity,
+          countryNames,
           {
             type: 'section',
             WrapperComponent: SectionBlock,
             fields: [
-              surveyGroupName,
-              periodGranularity,
               {
                 type: 'section',
                 WrapperComponent: RowSection,
                 fields: [canRepeat, requiresApproval],
               },
+              dataServiceType,
+              dataServiceConfig,
             ],
           },
-          countryNames,
-          dataServiceType,
-          dataServiceConfig,
         ]
       : [];
 
@@ -154,11 +171,19 @@ export const EditSurveyPage = withConnectedEditor(
             <FieldsEditor
               fields={orderedFields}
               recordData={recordData}
-              onEditField={handleEditField}
+              onEditField={onEditField}
               onSetFormFile={handleSetFormFile}
             />
           </Section>
         </Form>
+        <StickyFooter>
+          <Button type="submit" variant="contained" color="primary" disabled={isUnchanged}>
+            Save changes
+          </Button>
+          <Button variant="text" color="primary" disabled={isUnchanged}>
+            Clear edits
+          </Button>
+        </StickyFooter>
       </Wrapper>
     );
   },
