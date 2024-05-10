@@ -57,8 +57,9 @@ Authorization: {{user-authorization}}
 
 ### Export option set
 
-GET {{baseUrl}}/export/optionSet/602360f561f76a47b0076328 HTTP/1.1
+GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
 Authorization: {{user-authorization}}
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
 ### Export survey response
 
