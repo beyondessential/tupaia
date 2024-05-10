@@ -13,22 +13,22 @@ const RESOURCE_NAME = { singular: 'mapping' };
 
 const FIELDS = [
   {
-    Header: 'Data Element',
+    Header: 'Data element',
     source: 'data_element_code',
   },
   {
-    Header: 'Country Code',
+    Header: 'Country code',
     source: 'country_code',
   },
   {
-    Header: 'Service Type',
+    Header: 'Service type',
     source: 'service_type',
     editConfig: {
       options: SERVICE_TYPE_OPTIONS,
     },
   },
   {
-    Header: 'Data Service Configuration',
+    Header: 'Data service sonfiguration',
     source: 'service_config',
     Cell: DataSourceConfigView,
     editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,
@@ -56,7 +56,7 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Mapping',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataElementDataServices',
   },
