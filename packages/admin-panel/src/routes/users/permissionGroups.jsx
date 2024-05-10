@@ -45,7 +45,7 @@ const CREATE_CONFIG = {
 };
 
 export const permissionGroups = {
-  title: 'Permission groups',
+  resourceName: RESOURCE_NAME,
   path: '/permission-groups',
   endpoint: 'permissionGroups',
   columns: COLUMNS,
