@@ -18,7 +18,7 @@ const FIELDS = [
     editable: false,
   },
   {
-    Header: 'Canonical Types',
+    Header: 'Canonical types',
     source: 'canonical_types',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -39,7 +39,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Entity Hierarchy',
+      title: 'Edit entity hierarchy',
       editEndpoint: ENTITY_HIERARCHY_ENDPOINT,
       fields: FIELDS,
     },
