@@ -55,10 +55,6 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'dashboards/:projectCode/:entityCode/:dashboardCode/email',
       handleWith(routes.EmailDashboardRoute),
     )
-    .get<routes.ProjectCountryAccessListRequest>(
-      'countryAccessList/:projectCode',
-      handleWith(routes.ProjectCountryAccessListRoute),
-    )
     .post<routes.RequestCountryAccessRequest>(
       'requestCountryAccess',
       handleWith(routes.RequestCountryAccessRoute),
@@ -94,6 +90,7 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       handleWith(routes.UnsubscribeDashboardMailingListRoute),
     )
     .use('downloadFiles', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
+    .use('me/countries', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('dashboards', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('export/surveyDataDownload', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

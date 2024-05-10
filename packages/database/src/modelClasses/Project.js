@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { DatabaseModel } from '../DatabaseModel';
@@ -12,6 +12,23 @@ const TUPAIA_ADMIN_PANEL_PERMISSION_GROUP = 'Tupaia Admin Panel';
 const BES_ADMIN_PERMISSION_GROUP = 'BES Admin';
 export class ProjectRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.PROJECT;
+
+  /**
+   * The countries which apply to this project.
+   */
+  async countries() {
+    const entityRelations = await this.otherModels.entityRelation.find({
+      parent_id: this.entity_id,
+    });
+    return Promise.all(
+      entityRelations.map(async entityRelation =>
+        this.otherModels.entity.findOne({
+          id: entityRelation.child_id,
+          type: 'country',
+        }),
+      ),
+    );
+  }
 
   async permissionGroups() {
     return this.otherModels.permissionGroup.find({ name: this.permission_groups });
