@@ -43,6 +43,12 @@ GET {{baseUrl}}/optionSets/5c625e11f013d60db4249466
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
+### Export option set by ID
+
+GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
+Authorization: {{user-authorization}}
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
 ### Get survey responses
 
 GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
@@ -54,12 +60,6 @@ Authorization: {{user-authorization}}
 GET {{baseUrl}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
-
-### Export option set
-
-GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
-Authorization: {{user-authorization}}
-Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
 ### Export survey response
 
