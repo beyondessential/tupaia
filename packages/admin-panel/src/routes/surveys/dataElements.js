@@ -8,7 +8,7 @@ import { DATA_ELEMENT_FIELDS, getDataSourceButtonsConfig } from '../../common';
 const RESOURCE_NAME = { singular: 'data element' };
 
 const IMPORT_CONFIG = {
-  title: 'Import Data Elements',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataElements',
   },
