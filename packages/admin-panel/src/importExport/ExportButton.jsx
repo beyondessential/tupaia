@@ -8,11 +8,12 @@ import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
-import { useApi } from '../utilities/ApiProvider';
+import { useApiContext } from '../utilities/ApiProvider';
+import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
 
 const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryParameters) => {
   if (!rowIdQueryParameter && !filterQueryParameters) return null;
-  const queryParameters = rowIdQueryParameter ? { [rowIdQueryParameter]: rowData.id } : {};
+  const queryParameters = rowIdQueryParameter ? { [rowIdQueryParameter]: rowData.original.id } : {};
   if (filterQueryParameters) {
     return { ...queryParameters, ...filterQueryParameters };
   }
@@ -20,23 +21,21 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
 };
 
 export const ExportButton = ({ actionConfig, row }) => {
-  const api = useApi();
+  const api = useApiContext();
 
   return (
-    <IconButton
+    <ColumnActionButton
       className="export-button"
       onClick={async () => {
-        const {
-          exportEndpoint,
-          rowIdQueryParameter,
-          extraQueryParameters,
-          fileName,
-        } = actionConfig;
-        const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row);
+        const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
+          actionConfig;
+        const queryParameters = buildExportQueryParameters(rowIdQueryParameter, row.original);
         const endpoint = `export/${exportEndpoint}${
-          !queryParameters && row.id ? `/${row.id}` : ''
+          !queryParameters && row.original.id ? `/${row.original.id}` : ''
         }`;
-        const processedFileName = fileName ? makeSubstitutionsInString(fileName, row) : null;
+        const processedFileName = fileName
+          ? makeSubstitutionsInString(fileName, row.original)
+          : null;
         await api.download(
           endpoint,
           { queryParameters, ...extraQueryParameters },
@@ -45,7 +44,7 @@ export const ExportButton = ({ actionConfig, row }) => {
       }}
     >
       <ExportIcon />
-    </IconButton>
+    </ColumnActionButton>
   );
 };
 

@@ -42,7 +42,7 @@ export class CreateHandler extends CRUDHandler {
   }
 
   async insertRecord() {
-    await this.models.getModelForDatabaseType(this.recordType).create(this.newRecordData);
+    await this.models.getModelForDatabaseRecord(this.recordType).create(this.newRecordData);
   }
 
   async validateNewRecord() {

@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 
-const permissionGroupId = generateTestId();
+const permissionGroupId = generateId();
 
 const DASHBOARD_ITEMS = [
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Modern_Report',
     config: { name: 'Modern Dashboard Item', type: 'view', viewType: 'singleValue' },
     report_code: 'Modern_Report',
@@ -17,7 +17,7 @@ const DASHBOARD_ITEMS = [
     permissionGroupIds: [],
   },
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Legacy_Report',
     config: { name: 'Legacy Dashboard Item', type: 'chart', chartType: 'bar' },
     report_code: 'Legacy_Report',
@@ -25,13 +25,13 @@ const DASHBOARD_ITEMS = [
     permissionGroupIds: [],
   },
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Dashboard_Item_No_Report',
     legacy: true,
     config: {},
   },
   {
-    id: generateTestId(),
+    id: generateId(),
     code: 'Dashboard_Item_Invalid_Report',
     config: {},
     legacy: true,

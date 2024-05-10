@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -23,7 +23,7 @@
     "start-dev": "LOG_LEVEL=debug yarn package:start:backend-start-dev 9998 -ts",
     "start-verbose": "LOG_LEVEL=debug yarn start-dev",
     "setup-test": "yarn workspace @tupaia/database setup-test-database",
-    "test": "yarn package:test"
+    "test": "yarn package:test:withdb"
   },
   "dependencies": {
     "@tupaia/access-policy": "workspace:*",
@@ -35,16 +35,12 @@
     "@tupaia/tsutils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.2",
+    "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@tupaia/auth": "workspace:*",
-    "@tupaia/types": "workspace:*",
-    "@tupaia/utils": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.0"
   }

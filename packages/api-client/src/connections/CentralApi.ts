@@ -1,9 +1,10 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import type { MeditrakSurveyResponseRequest } from '@tupaia/types';
+import { ProjectCountryAccessListRequest } from '@tupaia/types';
 import { QueryParameters } from '../types';
 import { RequestBody } from './ApiConnection';
 import { BaseApi } from './BaseApi';
@@ -29,6 +30,10 @@ const stringifyParams = (queryParameters: Record<string, unknown> = {}) => {
 export class CentralApi extends BaseApi {
   public async getUser() {
     return this.connection.get('me');
+  }
+
+  public async getCountryAccessList(): Promise<ProjectCountryAccessListRequest.ResBody> {
+    return this.connection.get('me/countries');
   }
 
   public async registerUserAccount(

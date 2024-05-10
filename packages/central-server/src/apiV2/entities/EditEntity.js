@@ -3,9 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { BESAdminEditHandler } from '../EditHandler';
+import {
+  assertAdminPanelAccessToCountry,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+} from '../../permissions';
+import { TupaiaAdminEditHandler } from '../EditHandler';
 
-export class EditEntity extends BESAdminEditHandler {
+export class EditEntity extends TupaiaAdminEditHandler {
+  async assertUserHasAccess() {
+    const permissionChecker = accessPolicy =>
+      assertAdminPanelAccessToCountry(accessPolicy, this.models, this.recordId);
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, permissionChecker]));
+  }
+
   async updateRecord() {
     // ensure only name field can be updated
     const updatedFieldKeys = Object.keys(this.updatedFields);

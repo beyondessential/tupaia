@@ -6,11 +6,11 @@ import React, { useEffect } from 'react';
 import { useParams, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useCurrentUser, useEditUser, useEntityByCode, useSurvey } from '../api';
+import { useCurrentUserContext, useEditUser, useEntityByCode, useSurvey } from '../api';
 import { CancelConfirmModal } from '../components';
 import { SurveyToolbar, useSurveyForm, useValidationResolver, SurveyContext } from '../features';
 import { SurveyParams } from '../types';
-import { HEADER_HEIGHT, SURVEY_TOOLBAR_HEIGHT } from '../constants';
+import { HEADER_HEIGHT, TITLE_BAR_HEIGHT } from '../constants';
 import { successToast } from '../utils';
 // wrap the entire page so that other content can be centered etc
 const PageWrapper = styled.div`
@@ -36,7 +36,7 @@ const SurveyScreenContainer = styled.div<{
   align-items: flex-start;
   height: ${({ $hasToolbar }) =>
     $hasToolbar
-      ? `calc(100vh - ${HEADER_HEIGHT} - ${SURVEY_TOOLBAR_HEIGHT})`
+      ? `calc(100vh - ${HEADER_HEIGHT} - ${TITLE_BAR_HEIGHT})`
       : `calc(100vh - ${HEADER_HEIGHT})`};
   width: 100%;
   ${({ theme }) => theme.breakpoints.up('md')} {
@@ -72,7 +72,7 @@ const SurveyPageInner = () => {
 export const SurveyPage = () => {
   const { countryCode, surveyCode } = useParams<SurveyParams>();
   const { mutateAsync: editUser } = useEditUser();
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const { data: survey } = useSurvey(surveyCode);
   const { data: surveyCountry } = useEntityByCode(countryCode!);
 

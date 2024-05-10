@@ -5,8 +5,8 @@
 
 import winston from 'winston';
 import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
+import { DatabaseRecord } from '../DatabaseRecord';
+import { RECORDS } from '../records';
 import { generateId } from '../utilities';
 
 const SERVICE_TYPES = {
@@ -19,8 +19,8 @@ const syncStatuses = {
   error: 'ERROR',
 };
 
-export class DataServiceSyncGroupType extends DatabaseType {
-  static databaseType = TYPES.DATA_SERVICE_SYNC_GROUP;
+export class DataServiceSyncGroupRecord extends DatabaseRecord {
+  static databaseRecord = RECORDS.DATA_SERVICE_SYNC_GROUP;
 
   async setSyncIdle() {
     return this.model.update({ id: this.id }, { sync_status: syncStatuses.idle });
@@ -85,7 +85,7 @@ export class DataServiceSyncGroupType extends DatabaseType {
 export class DataServiceSyncGroupModel extends DatabaseModel {
   SERVICE_TYPES = SERVICE_TYPES;
 
-  get DatabaseTypeClass() {
-    return DataServiceSyncGroupType;
+  get DatabaseRecordClass() {
+    return DataServiceSyncGroupRecord;
   }
 }

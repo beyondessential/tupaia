@@ -93,21 +93,15 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
       return this.getNoDataDashboard(rootEntity.code, NO_DATA_AT_LEVEL_DASHBOARD_ITEM_CODE);
     }
 
-    // Fetch all dashboard relations
-    const dashboardRelations = await this.req.models.dashboardRelation.find({
-      // Attached to the given dashboards
-      dashboard_id: dashboards.map(d => d.id),
-      // For the root entity type
-      entity_types: {
-        comparator: '@>',
-        comparisonValue: [ensure(rootEntity.type)],
-      },
-      // Within the selected project
-      project_codes: {
-        comparator: '@>',
-        comparisonValue: [projectCode],
-      },
-    });
+    // Fetch all dashboard relations for the given dashboards, project code and root entity type. This is so we can then filter the dashboard items by the permissions of the root entity and the entity attributes, which means we can determine whether to show a 'no access' dashboard item or not
+
+    const dashboardIds = dashboards.map(d => d.id);
+    const dashboardRelations =
+      await this.req.models.dashboardRelation.findDashboardRelationsForEntityAndProject(
+        dashboardIds,
+        rootEntity.code,
+        projectCode,
+      );
 
     // The dashboards themselves are fetched from central to ensure permission checking
     const dashboardItems: DashboardItem[] = await ctx.services.central.fetchResources(
@@ -128,8 +122,6 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
     const mergedItemRelations = orderBy(
       dashboardRelations
         .filter(relation =>
-          // We run a permissions filter here instead of in the central fetch so we
-          // know whether the "no data" or "no permission" dashboard is more appropriate
           relation.permission_groups.some(permissionGroup =>
             rootEntityPermissions.includes(permissionGroup),
           ),
@@ -221,7 +213,11 @@ export class DashboardsRoute extends Route<DashboardsRequest> {
 
     return camelcaseKeys(response, {
       deep: true,
-      stopPaths: ['items.config.presentationOptions', 'items.config.chartConfig'], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
+      stopPaths: [
+        'items.config.presentationOptions',
+        'items.config.chartConfig',
+        'items.config.segmentConfig',
+      ], // these need to not be converted to camelcase because they directly relate to the name of values in the data that is returned
     });
   }
 }

@@ -3,15 +3,18 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import { useState } from 'react';
-import { useEntities, useCurrentUser } from '../../api';
+import { useProjectEntities, useCurrentUserContext } from '../../api';
 import { Entity } from '../../types';
 
 export const useUserCountries = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const [newSelectedCountry, setSelectedCountry] = useState<Entity | null>(null);
-  const { data: countries, isLoading: isLoadingCountries } = useEntities(user.project?.code, {
-    type: 'country',
-  });
+  const { data: countries, isLoading: isLoadingCountries } = useProjectEntities(
+    user.project?.code,
+    {
+      filter: { type: 'country' },
+    },
+  );
 
   // sort the countries alphabetically so they are in a consistent order for the user
   const alphabetisedCountries = countries?.sort((a, b) => a.name.localeCompare(b.name)) ?? [];

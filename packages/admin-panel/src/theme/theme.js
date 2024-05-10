@@ -15,7 +15,7 @@ const palette = {
     dark: COLORS.DARK_BLUE,
   },
   secondary: {
-    main: COLORS.DARK_BLUE,
+    main: COLORS.LIGHT_BLACK,
     light: COLORS.LIGHT_BLUE,
   },
   error: {
@@ -31,7 +31,7 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.LIGHT_BLACK,
     secondary: COLORS.TEXT_MIDGREY,
     tertiary: COLORS.TEXT_LIGHTGREY,
   },
@@ -104,13 +104,13 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1.125rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
-    lineHeight: 1.18,
+    lineHeight: 1.2,
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -132,6 +132,48 @@ const overrides = {
   MuiDivider: {
     root: {
       backgroundColor: COLORS.GREY_DE,
+    },
+  },
+  MuiFormLabel: {
+    root: {
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: palette.text.primary,
+    },
+  },
+  MuiInputBase: {
+    input: {
+      fontSize: '0.875rem',
+      '&::placeholder': {
+        color: COLORS.GREY_B8,
+      },
+    },
+  },
+  MuiFormControl: {
+    root: {
+      '& legend': {
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: palette.text.primary,
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    input: {
+      paddingInline: '1.1rem',
+      paddingBlock: '0.875rem',
+    },
+  },
+  MuiMenuItem: {
+    root: {
+      fontSize: '0.875rem',
+    },
+  },
+  MuiButton: {
+    root: {
+      '&.MuiButtonBase-root': {
+        fontSize: '0.875rem',
+      },
     },
   },
 };

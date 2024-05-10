@@ -4,7 +4,6 @@
  */
 
 import http from 'http';
-import * as dotenv from 'dotenv';
 
 import winston from 'winston';
 import { ModelRegistry, TupaiaDatabase } from '@tupaia/database';
@@ -13,13 +12,14 @@ import { isFeatureEnabled } from '@tupaia/utils';
 import { createApp } from './app';
 import { MeditrakAppServerModelRegistry } from './types';
 import { SyncableChangeEnqueuer } from './sync';
+import { configureEnv } from './configureEnv';
 
 configureWinston();
-dotenv.config(); // Load the environment variables into process.env
+configureEnv();
 
 (async () => {
   const database = new TupaiaDatabase();
-  const models = new ModelRegistry(database) as MeditrakAppServerModelRegistry;
+  const models = new ModelRegistry(database) as unknown as MeditrakAppServerModelRegistry;
 
   /**
    * Set up app with routes etc.

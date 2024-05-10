@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -29,18 +29,17 @@
     "@tupaia/api-client": "workspace:*",
     "@tupaia/database": "workspace:*",
     "@tupaia/server-boilerplate": "workspace:*",
+    "@tupaia/server-utils": "workspace:*",
     "@tupaia/types": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "camelcase-keys": "^6.2.2",
-    "dotenv": "^8.2.0",
-    "express": "^4.16.2",
+    "express": "^4.19.2",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.6.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@tupaia/types": "workspace:*",
     "@types/lodash.groupby": "^4.6.0",
     "@types/lodash.keyby": "^4.6.0",
     "@types/lodash.sortby": "^4.6.0"

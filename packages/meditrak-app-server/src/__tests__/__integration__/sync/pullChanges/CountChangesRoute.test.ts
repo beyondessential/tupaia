@@ -11,7 +11,6 @@ import { SyncableChangeEnqueuer, createPermissionsBasedMeditrakSyncQueue } from 
 import { MeditrakAppServerModelRegistry } from '../../../../types';
 import { TestModelRegistry } from '../../../types';
 import { grantUserAccess, revokeAccess, setupTestApp, setupTestUser } from '../../../utilities';
-import { CAT_USER_SESSION } from '../../fixtures';
 import { upsertDummyQuestion } from '../upsertDummyQuestion';
 
 describe('changes/count', () => {
@@ -19,7 +18,7 @@ describe('changes/count', () => {
   let authHeader: string;
   const models = getTestModels() as TestModelRegistry;
   const syncableChangeEnqueuer = new SyncableChangeEnqueuer(
-    getTestModels() as MeditrakAppServerModelRegistry,
+    getTestModels() as unknown as MeditrakAppServerModelRegistry,
   );
   syncableChangeEnqueuer.setDebounceTime(50);
 
@@ -32,7 +31,6 @@ describe('changes/count', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId: user.id,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

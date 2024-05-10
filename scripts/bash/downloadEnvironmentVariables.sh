@@ -3,7 +3,8 @@ set +x # do not output commands in this script, as some would show credentials i
 
 DEPLOYMENT_NAME=$1
 DIR=$(dirname "$0")
-FOLDER="Shared-Tupaia Environment Variables" # Folder in LastPass when .env vars are kept
+COLLECTION_PATH="Engineering/Tupaia General/Environment Variables" # Collection in BitWarden where .env vars are kept
+
 
 # can provide one or more packages as command line arguments, or will default to all
 if [ -z $2 ]; then
@@ -14,23 +15,42 @@ else
     echo "Fetching environment variables for ${PACKAGES}"
 fi
 
-echo ${LASTPASS_PASSWORD} | LPASS_DISABLE_PINENTRY=1 lpass login ${LASTPASS_EMAIL}
+# Login to bitwarden
+bw login --check || bw login $BITWARDEN_EMAIL $BITWARDEN_PASSWORD
+eval "$(bw unlock $BITWARDEN_PASSWORD | grep -o -m 1 'export BW_SESSION=.*$')"
 
-for PACKAGE in $PACKAGES; do
-    ENV_FILE_PATH=${DIR}/../../packages/${PACKAGE}/.env
+COLLECTION_ID=$(bw get collection "$COLLECTION_PATH" | jq .id)
 
-    # checkout deployment specific env vars, or dev as fallback, temporarily redirecting stderr
-    lpass show --notes "${FOLDER}/${PACKAGE}.${DEPLOYMENT_NAME}.env" 2> /dev/null > ${ENV_FILE_PATH} \
-        || lpass show --notes "${FOLDER}/${PACKAGE}.dev.env" > ${ENV_FILE_PATH}
+load_env_file_from_bw () {
+    FILE_NAME=$1
+    BASE_FILE_PATH=$2
+    NEW_FILE_NAME=$3
+    ENV_FILE_PATH=${BASE_FILE_PATH}/${NEW_FILE_NAME}.env
+
+    echo "Fetching environment variables for $FILE_NAME: $ENV_FILE_PATH"
+
+    echo "Fetching environment variables for $FILE_NAME"
+
+    # checkout deployment specific env vars, or dev as fallback
+    DEPLOYMENT_ENV_VARS=$(bw list items --search ${FILE_NAME}.${DEPLOYMENT_NAME}.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+
+
+    if [ -n "$DEPLOYMENT_ENV_VARS" ]; then
+        echo "$DEPLOYMENT_ENV_VARS" > ${ENV_FILE_PATH}
+    else
+        DEV_ENV_VARS=$(bw list items --search ${FILE_NAME}.dev.env | jq --raw-output "map(select(.collectionIds[] | contains ($COLLECTION_ID))) | .[] .notes")
+        echo "$DEV_ENV_VARS" > ${ENV_FILE_PATH}
+    fi
 
     # Replace any instances of the placeholder [deployment-name] in the .env file with the actual deployment
     # name (e.g. [deployment-name]-api.tupaia.org -> specific-deployment-api.tupaia.org)
-    sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" ${ENV_FILE_PATH}
+    sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
+
 
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
-        if [[ ${PACKAGE} == "central-server" || ${PACKAGE} == "web-config-server" ]]; then
-            sed -i -E 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
+        if [[ ${FILE_NAME} == "aggregation" ]]; then
+            sed -i -e 's/^AGGREGATION_URL_PREFIX="?dev-"?$/AGGREGATION_URL_PREFIX=e2e-/g' ${ENV_FILE_PATH}
         fi
     fi
 
@@ -38,6 +58,40 @@ for PACKAGE in $PACKAGES; do
         # Update dev specific environment variables
         # (removes ###DEV_ONLY### prefixes, leaving the key=value pair uncommented)
         # (after removing prefix, if there are duplicate keys, dotenv uses the last one in the file)
-        sed -i -E 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+        sed -i -e 's/^###DEV_ONLY###//g' ${ENV_FILE_PATH}
+    fi
+
+
+     echo "downloaded .env vars for $FILE_NAME"
+}
+
+for PACKAGE in $PACKAGES; do
+    # only download the env file if there is an example file in the package. If there isn't, this means it is a package that doesn't need env vars
+    has_example_env_in_package=$(find $DIR/../../packages/$PACKAGE -type f -name '*.env.example' | wc -l)
+    if [ $has_example_env_in_package -eq 1 ]; then
+        load_env_file_from_bw $PACKAGE $DIR/../../packages/$PACKAGE ""
     fi
 done
+
+
+# get all .env.*.example files in the env directory
+file_names=$(find $DIR/../../env -type f -name '*.env.example' -exec basename {} \;)
+
+
+# for each file, get the extract the filename without the .example extension
+for file_name in $file_names; do
+    env_name=$(echo $file_name | sed 's/\.env.example//')
+    load_env_file_from_bw $env_name $DIR/../../env $env_name
+done
+
+
+
+
+bw logout
+
+
+# Clean up detritus on macOS
+# macOS and Ubuntu’s interfaces for sed are slightly different. In this script, we use it in a way
+# that’s compatible to both (by not supplying a suffix for the -i flag), but this causes macOS to
+# generate backup files which we don’t need.
+rm -f "$DIR"/../../env/*.env-e "$DIR"/../../packages/*/.env-e

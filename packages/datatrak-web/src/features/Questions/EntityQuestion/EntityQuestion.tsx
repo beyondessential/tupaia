@@ -9,12 +9,12 @@ import { useFormContext } from 'react-hook-form';
 import { FormHelperText, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../../types';
-import { useEntities, useEntityById } from '../../../api';
+import { useProjectEntities, useEntityById } from '../../../api';
 import { useDebounce } from '../../../utils';
 import { useSurveyForm } from '../..';
 import { ResultsList } from './ResultsList';
 import { SearchField } from './SearchField';
-import { useEntityBaseFilters, useAttributeFilter } from './utils';
+import { useEntityBaseFilters } from './utils';
 
 const Container = styled.div`
   width: 100%;
@@ -33,17 +33,15 @@ const Label = styled(Typography).attrs({
 `;
 
 const useSearchResults = (searchValue, config) => {
-  const filters = useEntityBaseFilters(config);
+  const filter = useEntityBaseFilters(config);
   const { surveyProjectCode } = useSurveyForm();
-  const attributeFilter = useAttributeFilter(config);
 
   const debouncedSearch = useDebounce(searchValue!, 200);
-  const query = useEntities(surveyProjectCode, { searchString: debouncedSearch, ...filters });
-  let entities = query?.data;
-  if (attributeFilter) {
-    entities = entities?.filter(attributeFilter);
-  }
-  return { ...query, data: entities };
+  return useProjectEntities(surveyProjectCode, {
+    fields: ['id', 'parent_name', 'code', 'name', 'type'],
+    filter,
+    searchString: debouncedSearch,
+  });
 };
 
 export const EntityQuestion = ({

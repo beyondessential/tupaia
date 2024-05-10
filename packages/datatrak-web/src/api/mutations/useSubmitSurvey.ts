@@ -7,26 +7,19 @@ import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
-import { post, useCurrentUser, useEntityByCode } from '../../api';
+import { post, useCurrentUserContext, useEntityByCode } from '../../api';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
 
-type AutocompleteAnswer = {
-  isNew?: boolean;
-  optionSetId: string;
-  value: string;
-  label: string;
-};
-
-type Answer = string | number | boolean | null | undefined | AutocompleteAnswer;
+type Answer = string | number | boolean | null | undefined;
 
 export type AnswersT = Record<string, Answer>;
 
 // utility hook for getting survey response data
 export const useSurveyResponseData = () => {
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const { surveyCode, countryCode } = useParams();
   const { surveyStartTime, surveyScreens } = useSurveyForm();
   const { data: survey } = useSurvey(surveyCode);
@@ -47,7 +40,7 @@ export const useSubmitSurvey = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { resetForm } = useSurveyForm();
-  const user = useCurrentUser();
+  const user = useCurrentUserContext();
   const { data: survey } = useSurvey(params.surveyCode);
 
   const surveyResponseData = useSurveyResponseData();
@@ -76,6 +69,18 @@ export const useSubmitSurvey = () => {
         queryClient.invalidateQueries('rewards');
         queryClient.invalidateQueries('leaderboard');
         queryClient.invalidateQueries('entityDescendants'); // Refresh recent entities
+
+        const createNewAutocompleteQuestions = surveyResponseData?.questions?.filter(
+          question => question?.config?.autocomplete?.createNew,
+        );
+
+        // invalidate optionSet queries for questions that have createNew enabled so that the new options are fetched
+        if (createNewAutocompleteQuestions?.length > 0) {
+          createNewAutocompleteQuestions.forEach(question => {
+            const { optionSetId } = question;
+            queryClient.invalidateQueries(['autocompleteOptions', optionSetId]);
+          });
+        }
         resetForm();
         successToast("Congratulations! You've earned a coconut", Coconut);
         // include the survey response data in the location state, so that we can use it to generate QR codes

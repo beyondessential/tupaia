@@ -3,14 +3,16 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { encryptPassword } from '@tupaia/auth';
-import { generateTestId } from '@tupaia/database';
+import { generateId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
+import { configureEnv } from '../../../configureEnv';
 import { getModels } from './getModels';
 import { TEST_USER_EMAIL } from '../constants';
 
 const models = getModels();
+
+configureEnv();
 
 export async function addBaselineTestData() {
   // if there's a pre-existing Demo Land in the DB, use that, otherwise create
@@ -20,7 +22,7 @@ export async function addBaselineTestData() {
       code: 'DL',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       name: 'Demo Land',
       type: 'country',
       country_code: 'DL',
@@ -32,7 +34,7 @@ export async function addBaselineTestData() {
       name: 'Admin',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
     },
   );
 
@@ -41,7 +43,7 @@ export async function addBaselineTestData() {
       name: 'Donor',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       parent_id: adminGroup.id,
     },
   );
@@ -51,7 +53,7 @@ export async function addBaselineTestData() {
       name: 'Public',
     },
     {
-      id: generateTestId(),
+      id: generateId(),
       parent_id: donorGroup.id,
     },
   );

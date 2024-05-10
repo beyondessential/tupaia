@@ -4,14 +4,15 @@
  *
  */
 import { useMutation, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../api';
 import { useUser } from '../queries';
 import { useHomeUrl } from '../../utils/useHomeUrl';
 
 export const useLogin = () => {
   const { navigateToHomeUrl } = useHomeUrl();
-  const { push, location } = useHistory();
+  const location = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const loginQuery = useMutation(
@@ -29,7 +30,7 @@ export const useLogin = () => {
 
         // Send the user back to the previous page if there is one saved in referer
         if (location?.state?.referer) {
-          push(location.state.referer);
+          navigate(location.state.referer);
         } else {
           // Otherwise send them to the homepage
           navigateToHomeUrl();

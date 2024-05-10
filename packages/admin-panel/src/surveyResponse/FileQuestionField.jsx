@@ -1,20 +1,20 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import generateId from 'uuid/v1';
-import { Button, Dialog, DialogFooter, DialogHeader, TextField } from '@tupaia/ui-components';
+import { TextField } from '@tupaia/ui-components';
 import { getUniqueFileNameParts } from '@tupaia/utils';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExportIcon from '@material-ui/icons/GetApp';
 import { FileUploadField } from '../widgets/InputField/FileUploadField';
-import { IconButton, ModalContentProvider } from '../widgets';
-import { useApi } from '../utilities/ApiProvider';
+import { IconButton, Modal } from '../widgets';
+import { useApiContext } from '../utilities/ApiProvider';
 
 const Container = styled.div`
   padding-bottom: 1.2rem;
@@ -58,25 +58,31 @@ const AttachModal = ({ isOpen, onClose, maxSizeInBytes, onAttachFile, title }) =
   };
 
   return (
-    <Dialog onClose={handleClose} open={isOpen} disableBackdropClick>
-      <DialogHeader onClose={handleClose} title={title} />
-      <ModalContentProvider isLoading={false}>
-        <FileUploadField
-          label="Select a file"
-          showFileSize
-          maxSizeInBytes={maxSizeInBytes}
-          onChange={handleSelectFile}
-        />
-      </ModalContentProvider>
-      <DialogFooter>
-        <Button variant="outlined" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button disabled={selectedFileSpec.file === null} onClick={handleAttachSelectedFile}>
-          Attach
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <Modal
+      onClose={handleClose}
+      isOpen={isOpen}
+      disableBackdropClick
+      title={title}
+      buttons={[
+        {
+          onClick: handleClose,
+          text: 'Cancel',
+          variant: 'outlined',
+        },
+        {
+          onClick: handleAttachSelectedFile,
+          text: 'Attach',
+          disabled: selectedFileSpec.file === null,
+        },
+      ]}
+    >
+      <FileUploadField
+        label="Select a file"
+        showFileSize
+        maxSizeInBytes={maxSizeInBytes}
+        onChange={handleSelectFile}
+      />
+    </Modal>
   );
 };
 AttachModal.propTypes = {
@@ -113,7 +119,7 @@ export const FileQuestionField = ({ value: uniqueFileName, onChange, label, maxS
     });
   };
 
-  const api = useApi();
+  const api = useApiContext();
   const downloadFile = async () => {
     await api.download(`downloadFiles`, { uniqueFileNames: uniqueFileName }, fileName);
   };

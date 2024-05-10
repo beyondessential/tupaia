@@ -31,6 +31,7 @@ const ExportContentContainer = styled.div`
   flex-grow: 1;
   text-align: left;
   margin-bottom: 1rem;
+  min-width: 40rem; // so that when the loader shows things don't shrink too much
   ${({ theme }) => theme.breakpoints.up('sm')} {
     display: grid;
     grid-template-columns: 3fr 7fr;
@@ -63,7 +64,6 @@ export const ExportDashboardItem = ({ entityName }: { entityName?: Entity['name'
   const { isExportMode, isExporting, exportError } = useContext(ExportDashboardItemContext);
   const { handleExport, cancelExport } = useExportDashboardItem(entityName, exportRef);
   if (!isExportMode) return null;
-
   const exportOptions = [
     {
       label: 'PNG',

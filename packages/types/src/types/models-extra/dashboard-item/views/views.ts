@@ -9,7 +9,7 @@ import { MultiValueRowPresentationOptions, MultiValueRowViewConfig } from './mul
 
 export type SingleValueViewConfig = BaseViewConfig & {
   viewType: 'singleValue';
-  dataColor: CssColor;
+  dataColor?: CssColor;
 };
 
 export type MultiPhotographViewConfig = BaseViewConfig & {
@@ -26,6 +26,12 @@ export type SingleDownloadLinkViewConfig = BaseViewConfig & {
 
 export type DataDownloadViewConfig = BaseViewConfig & {
   viewType: 'dataDownload';
+};
+
+export type DataDownloadViewVizBuilderConfig = DataDownloadViewConfig & {
+  output: {
+    type: 'rawDataExport';
+  };
 };
 export type SingleDateViewConfig = BaseViewConfig & {
   viewType: 'singleDate';

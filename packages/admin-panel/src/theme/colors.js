@@ -14,10 +14,10 @@ export const GREEN = '#02B851';
 export const DARKGREY = '#283238'; // dark background
 export const LIGHTGREY = '#F9F9F9'; // page background
 export const TEXT_DARKGREY = '#414D55';
-export const TEXT_MIDGREY = '#6F7B82';
-export const TEXT_LIGHTGREY = '#9AA8B0';
+export const TEXT_MIDGREY = '#666666';
+export const TEXT_LIGHTGREY = '#DEDEDE';
 
-export const DARK_BLUE = '#135D8F';
+export const DARK_BLUE = '#328DE5';
 export const DARK_GREEN = '#00972E';
 
 export const LIGHT_BLUE = '#99D6FF';
@@ -31,8 +31,11 @@ export const GREY_DE = '#DEDEE0'; // use for border colors of cards
 export const GREY_E2 = '#E2E2E2';
 export const GREY_F1 = '#F1F1F1';
 export const GREY_FB = '#FBF9F9';
+export const GREY_B8 = '#B8B8B8';
 
 // Blues
 export const BLUE_BF = '#BFD5E4';
 export const BLUE_E8 = '#E8F6FF';
 export const BLUE_F6 = '#F6FBFF';
+
+export const LIGHT_BLACK = '#2E2F33';

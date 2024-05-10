@@ -12,7 +12,7 @@ import {
 } from '@tupaia/ui-map-components';
 import { Entity } from '@tupaia/types';
 
-interface processMeasureDataProps {
+interface ProcessMeasureDataProps {
   measureData: MeasureData[];
   entitiesData: Entity[];
   serieses: Series[];
@@ -24,7 +24,7 @@ export const processMeasureData = ({
   entitiesData,
   serieses = [],
   hiddenValues,
-}: processMeasureDataProps) => {
+}: ProcessMeasureDataProps) => {
   const radiusScaleFactor = calculateRadiusScaleFactor(measureData);
 
   const entityMeasureData = entitiesData?.map((entity: Entity) => {

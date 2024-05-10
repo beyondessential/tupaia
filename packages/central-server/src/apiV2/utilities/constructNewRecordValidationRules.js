@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { RECORDS } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
   constructRecordExistsWithField,
@@ -30,7 +30,7 @@ import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataElement';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
-  const { SURVEY_RESPONSE, COMMENT } = TYPES;
+  const { SURVEY_RESPONSE, COMMENT } = RECORDS;
 
   switch (combinedRecordType) {
     case `${SURVEY_RESPONSE}/${COMMENT}`:
@@ -48,7 +48,7 @@ export const constructForParent = (models, recordType, parentRecordType) => {
 
 export const constructForSingle = (models, recordType) => {
   switch (recordType) {
-    case TYPES.USER_ENTITY_PERMISSION:
+    case RECORDS.USER_ENTITY_PERMISSION:
       return {
         user_id: [constructRecordExistsWithId(models.user)],
         entity_id: [
@@ -62,12 +62,12 @@ export const constructForSingle = (models, recordType) => {
         ],
         permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
-    case TYPES.COUNTRY:
+    case RECORDS.COUNTRY:
       return {
         name: [hasContent],
         code: [hasContent],
       };
-    case TYPES.USER_ACCOUNT:
+    case RECORDS.USER_ACCOUNT:
       return {
         first_name: [hasContent],
         last_name: [hasContent],
@@ -76,7 +76,7 @@ export const constructForSingle = (models, recordType) => {
         countryName: [hasContent],
         permissionGroupName: [hasContent],
       };
-    case TYPES.FEED_ITEM:
+    case RECORDS.FEED_ITEM:
       return {
         country_id: [constructIsEmptyOr(constructRecordExistsWithId(models.country))],
         geographical_area_id: [
@@ -90,48 +90,65 @@ export const constructForSingle = (models, recordType) => {
         type: [isAString],
         template_variables: [constructIsEmptyOr(isPlainObject)],
       };
-    case TYPES.PERMISSION_GROUP:
+    case RECORDS.PERMISSION_GROUP:
       return {
         name: [hasContent],
-        parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
+        parent_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
-    case TYPES.DATA_ELEMENT:
-    case TYPES.DATA_GROUP:
+    case RECORDS.DATA_ELEMENT:
+      return {
+        code: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
+        config: [hasContent],
+        permission_groups: [
+          hasContent,
+          async permissionGroupNames => {
+            const permissionGroups = await models.permissionGroup.find({
+              name: permissionGroupNames,
+            });
+            if (permissionGroupNames.length !== permissionGroups.length) {
+              throw new Error('Some provided permission groups do not exist');
+            }
+            return true;
+          },
+        ],
+      };
+    case RECORDS.DATA_GROUP:
       return {
         code: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
-    case TYPES.EXTERNAL_DATABASE_CONNECTION:
+    case RECORDS.EXTERNAL_DATABASE_CONNECTION:
       return {
         code: [hasContent],
         name: [hasContent],
       };
-    case TYPES.INDICATOR:
+    case RECORDS.INDICATOR:
       return {
         code: [hasContent],
         builder: [hasContent],
       };
-    case TYPES.REPORT:
+    case RECORDS.REPORT:
       return {
         code: [constructRecordNotExistsWithField(models.report, 'code')],
         config: [hasContent],
         permission_group: [hasContent],
       };
-    case TYPES.LEGACY_REPORT:
+    case RECORDS.LEGACY_REPORT:
       return {
         code: [constructRecordNotExistsWithField(models.legacyReport, 'code')],
         data_builder: [hasContent],
         data_builder_config: [hasContent],
       };
-    case TYPES.DASHBOARD:
+    case RECORDS.DASHBOARD:
       return {
         code: [hasContent],
         name: [hasContent],
         root_entity_code: [hasContent],
         sort_order: [constructIsEmptyOr(isNumber)],
       };
-    case TYPES.DASHBOARD_RELATION:
+    case RECORDS.DASHBOARD_RELATION:
       return {
         dashboard_id: [constructRecordExistsWithId(models.dashboard)],
         child_id: [constructRecordExistsWithId(models.dashboardItem)],
@@ -165,25 +182,25 @@ export const constructForSingle = (models, recordType) => {
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
       };
-    case TYPES.DASHBOARD_ITEM:
+    case RECORDS.DASHBOARD_ITEM:
       return {
         code: [constructRecordNotExistsWithField(models.dashboardItem, 'code')],
         config: [hasContent],
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
       };
-    case TYPES.DASHBOARD_MAILING_LIST:
+    case RECORDS.DASHBOARD_MAILING_LIST:
       return {
         dashboard_id: [hasContent],
         project_id: [hasContent],
         entity_id: [hasContent],
       };
-    case TYPES.DASHBOARD_MAILING_LIST_ENTRY:
+    case RECORDS.DASHBOARD_MAILING_LIST_ENTRY:
       return {
         dashboard_mailing_list_id: [hasContent],
         email: [hasContent, isEmail],
       };
-    case TYPES.MAP_OVERLAY_GROUP_RELATION:
+    case RECORDS.MAP_OVERLAY_GROUP_RELATION:
       return {
         map_overlay_group_id: [constructRecordExistsWithId(models.mapOverlayGroup)],
         child_id: [
@@ -201,7 +218,7 @@ export const constructForSingle = (models, recordType) => {
         ],
         sort_order: [constructIsEmptyOr(isNumber)],
       };
-    case TYPES.MAP_OVERLAY:
+    case RECORDS.MAP_OVERLAY:
       return {
         code: [constructRecordNotExistsWithField(models.mapOverlay, 'code')],
         name: [hasContent],
@@ -210,18 +227,18 @@ export const constructForSingle = (models, recordType) => {
         report_code: [hasContent],
         legacy: [hasContent, isBoolean],
       };
-    case TYPES.MAP_OVERLAY_GROUP:
+    case RECORDS.MAP_OVERLAY_GROUP:
       return {
         code: [hasContent],
         name: [hasContent],
       };
-    case TYPES.DATA_SERVICE_SYNC_GROUP:
+    case RECORDS.DATA_SERVICE_SYNC_GROUP:
       return {
         data_group_code: [constructRecordExistsWithField(models.survey, 'code')],
         service_type: [constructIsOneOf(Object.values(models.dataServiceSyncGroup.SERVICE_TYPES))],
         config: [hasContent],
       };
-    case TYPES.PROJECT:
+    case RECORDS.PROJECT:
       return {
         code: [
           constructRecordNotExistsWithField(models.project, 'code'),
@@ -294,14 +311,14 @@ export const constructForSingle = (models, recordType) => {
         dashboard_group_name: [isAString],
         default_measure: [constructRecordExistsWithField(models.mapOverlay, 'code')],
       };
-    case TYPES.DATA_ELEMENT_DATA_SERVICE:
+    case RECORDS.DATA_ELEMENT_DATA_SERVICE:
       return {
         data_element_code: [constructRecordExistsWithCode(models.dataElement)],
         country_code: [hasContent],
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         service_config: [hasContent],
       };
-    case TYPES.DATA_TABLE:
+    case RECORDS.DATA_TABLE:
       return {
         code: [isAString],
         description: [isAString],
@@ -320,7 +337,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
       };
-    case TYPES.LANDING_PAGE:
+    case RECORDS.LANDING_PAGE:
       return {
         name: [hasContent, constructIsShorterThan(40)],
         website_url: [constructIsEmptyOr(isURL)],
@@ -361,7 +378,7 @@ export const constructForSingle = (models, recordType) => {
           },
         ],
       };
-    case TYPES.SURVEY:
+    case RECORDS.SURVEY:
       return {
         'project.code': [hasContent, constructRecordExistsWithField(models.project, 'code')],
         code: [constructRecordNotExistsWithField(models.survey, 'code')],
@@ -393,13 +410,13 @@ export const constructForSingle = (models, recordType) => {
         'data_group.config': [hasContent],
         // also survey questions comes in as a file
       };
-    case TYPES.DHIS_INSTANCE:
+    case RECORDS.DHIS_INSTANCE:
       return {
         code: [isAString],
         readonly: [hasContent, isBoolean],
         config: [hasContent],
       };
-    case TYPES.SUPERSET_INSTANCE:
+    case RECORDS.SUPERSET_INSTANCE:
       return {
         code: [isAString],
         config: [hasContent],

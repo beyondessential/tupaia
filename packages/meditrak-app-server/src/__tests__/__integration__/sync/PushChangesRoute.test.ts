@@ -10,7 +10,6 @@ import {
   getTestDatabase,
   getTestModels,
   generateId,
-  generateTestId,
   generateValueOfType,
   buildAndInsertSurveys,
   findOrCreateDummyCountryEntity,
@@ -26,7 +25,6 @@ import {
   grantUserAccess,
   revokeAccess,
 } from '../../utilities';
-import { CAT_USER_SESSION } from '../fixtures';
 import { TEST_IMAGE_DATA } from './testImageData';
 import {
   upsertQuestion,
@@ -38,9 +36,9 @@ import {
 import { upsertSurveyResponsesMock } from '../../utilities/CentralApiMock';
 import { RawSurveyResponseObject } from '../../../routes/sync/PushChangesRoute';
 
-const clinicId = generateTestId();
-const entityId = generateTestId();
-const surveyId = generateTestId();
+const clinicId = generateId();
+const entityId = generateId();
+const surveyId = generateId();
 const getQuestionId = (questionNumber = 0) => {
   const id = `4705c02a7_question_${questionNumber}_test`;
   return id.substring(id.length - 24); // Cut off excess for questions > 9
@@ -49,7 +47,7 @@ const defaultTimezone = 'Pacific/Auckland';
 let userId = ''; // will be determined in 'before' phase
 
 const generateDummyAnswer = (questionNumber?: number) => ({
-  id: generateTestId(),
+  id: generateId(),
   type: generateValueOfType('text') as string,
   body: generateValueOfType('text') as string,
   question_id: getQuestionId(questionNumber),
@@ -91,7 +89,7 @@ const generateDummySurveyResponse = (extraFields = {}): RawSurveyResponseObject 
   const answers = generateDummyAnswer();
 
   return {
-    id: generateTestId(),
+    id: generateId(),
     start_time: new Date().toISOString(),
     end_time: new Date().toISOString(),
     timestamp: new Date().toISOString(),
@@ -128,7 +126,6 @@ describe('changes (POST)', () => {
     authHeader = createBearerHeader(
       constructAccessToken({
         userId,
-        refreshToken: CAT_USER_SESSION.refresh_token,
         apiClientUserId: undefined,
       }),
     );

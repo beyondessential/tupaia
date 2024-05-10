@@ -1,6 +1,6 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017-2024 Beyond Essential Systems Pty Ltd
  */
 
 import autobind from 'react-autobind';
@@ -9,17 +9,17 @@ import knex from 'knex';
 import winston from 'winston';
 import { Multilock } from '@tupaia/utils';
 import { hashStringToInt } from '@tupaia/tsutils';
-
 import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
-import { generateId } from './utilities/generateId';
+import { generateId } from './utilities';
 import {
-  runDatabaseFunctionInBatches,
   MAX_BINDINGS_PER_QUERY,
+  runDatabaseFunctionInBatches,
 } from './utilities/runDatabaseFunctionInBatches';
 
 const QUERY_METHODS = {
   COUNT: 'count',
+  COUNT_DISTINCT: 'countDistinct',
   INSERT: 'insert',
   UPDATE: 'update',
   SELECT: 'select',
@@ -77,16 +77,19 @@ export class TupaiaDatabase {
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
 
-    const connectToDatabase = async () => {
-      this.connection =
-        transactingConnection ||
-        knex({
+    if (transactingConnection) {
+      this.connection = transactingConnection;
+      this.connectionPromise = Promise.resolve(true);
+    } else {
+      const connectToDatabase = async () => {
+        this.connection = knex({
           client: 'pg',
           connection: getConnectionConfig(),
         });
-      return true;
-    };
-    this.connectionPromise = connectToDatabase();
+        return true;
+      };
+      this.connectionPromise = connectToDatabase();
+    }
 
     this.handlerLock = new Multilock();
 
@@ -106,7 +109,6 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  // can be replaced with 'generateTestId' by tests
   generateId = generateId;
 
   async closeConnections() {
@@ -196,9 +198,9 @@ export class TupaiaDatabase {
     );
   }
 
-  async fetchSchemaForTable(databaseType) {
+  async fetchSchemaForTable(databaseRecord) {
     await this.waitUntilConnected();
-    return this.connection(databaseType).columnInfo();
+    return this.connection(databaseRecord).columnInfo();
   }
 
   /**
@@ -254,7 +256,7 @@ export class TupaiaDatabase {
    * @param {string} [queryMethod]
    * @returns
    */
-  find(recordType, where = {}, options = {}, queryMethod) {
+  find(recordType, where = {}, options = {}, queryMethod = null, queryMethodParameter = null) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
@@ -264,6 +266,7 @@ export class TupaiaDatabase {
         recordType,
         queryMethod:
           queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
+        queryMethodParameter,
       },
       where,
       options,
@@ -681,23 +684,16 @@ function addJoin(baseQuery, recordType, joinOptions) {
 }
 
 function getColSelector(connection, inputColStr) {
-  if (inputColStr.includes('->>')) {
-    // Shorthand way of querying json property
-    // TODO: Replace with knex json where functions, eg. whereJsonPath
-    const [first, ...rest] = inputColStr.split(/->>?/);
-    if (rest.length === 1) {
-      // e.g. 'config->>colour' is converted to config->>'colour'
-      return connection.raw(`??->>?`, [first, ...rest]);
-    }
-    // e.g. 'config->item->>colour' is converted to config->'item'->>'colour'
-    const last = rest.slice(-1);
-    const middle = rest.slice(0, rest.length - 1);
-    return connection.raw(`??->${middle.map(i => '?').join('->')}->>?`, [
-      first,
-      ...middle,
-      ...last,
-    ]);
-  }
+  const jsonOperatorPattern = /->>?/g;
+  if (!jsonOperatorPattern.test(inputColStr)) return inputColStr;
 
-  return inputColStr;
+  const params = inputColStr.split(jsonOperatorPattern);
+  const allButFirst = params.slice(1);
+  const lastIndexOfLookupAsText = inputColStr.lastIndexOf('->>');
+  const lastIndexOfLookupAsJson = inputColStr.lastIndexOf('->');
+  const selector = lastIndexOfLookupAsText >= lastIndexOfLookupAsJson ? '#>>' : '#>';
+
+  // Turn `config->item->>colour` into `config #>> '{item,colour}'`
+  // For some reason, Knex fails when we try to convert it to `config->'item'->>'colour'`
+  return connection.raw(`?? ${selector} '{${allButFirst.map(() => '??').join(',')}}'`, params);
 }

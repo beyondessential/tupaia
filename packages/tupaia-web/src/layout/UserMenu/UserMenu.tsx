@@ -99,7 +99,7 @@ export const UserMenu = () => {
   );
 
   const RequestCountryAccess = (
-    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_COUNTRY_ACCESS}>
+    <BaseMenuItem key="request-country-access" modal={MODAL_ROUTES.REQUEST_PROJECT_ACCESS}>
       Request country access
     </BaseMenuItem>
   );

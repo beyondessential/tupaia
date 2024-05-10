@@ -59,7 +59,7 @@ export const MapTableModal = ({ onClose }: any) => {
 
   const { serieses, measureData, startDate, endDate, isLoading } = useMapOverlayTableData({
     rootEntityCode: rootEntity?.code,
-  }); 
+  });
 
   // use the project projectDashboardHeader if the entity is a project and this is set, otherwise the root entity name
   const entityName =
@@ -67,7 +67,7 @@ export const MapTableModal = ({ onClose }: any) => {
       ? project?.config?.projectDashboardHeader
       : rootEntity?.name;
 
-  const titleText = `${selectedOverlay.name}, ${entityName}`;
+  const titleText = `${selectedOverlay?.name}, ${entityName}`;
 
   const { doExport } = useMapDataExport(serieses, measureData, titleText, startDate, endDate);
 
@@ -85,13 +85,15 @@ export const MapTableModal = ({ onClose }: any) => {
         {isLoading && <SpinningLoader />}
         {hasNoData && (
           <NoData
-            viewContent={{
+            config={{
               startDate,
               endDate,
             }}
           />
         )}
-        {!isLoading && !hasNoData && <MapTable serieses={serieses} measureData={measureData} />}
+        {!isLoading && !hasNoData && (
+          <MapTable serieses={serieses} measureData={measureData} stickyHeader />
+        )}
       </Wrapper>
     </Modal>
   );

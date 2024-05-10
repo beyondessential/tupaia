@@ -8,10 +8,10 @@ import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { Tooltip } from '@tupaia/ui-components';
 import { QuestionType } from '@tupaia/types';
-import { useSurveyForm } from '..';
-import { SurveyQuestionInputProps } from '../../types';
 import { getArithmeticDisplayAnswer } from '../Survey';
-import { QuestionHelperText } from './QuestionHelperText';
+import { InputHelperText } from '../../components';
+import { SurveyQuestionInputProps } from '../../types';
+import { useSurveyForm } from '..';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -26,11 +26,10 @@ const Wrapper = styled.div`
 `;
 
 const Label = styled(Typography).attrs({
-  variant: 'h3',
+  variant: 'h4',
 })`
   font-size: 1rem;
   cursor: pointer;
-  font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
 `;
 
 const ValueWrapper = styled.div`
@@ -57,7 +56,7 @@ export const ReadOnlyQuestion = ({
       <Tooltip title="Complete questions above to calculate" enterDelay={1000}>
         <Label>{label}</Label>
       </Tooltip>
-      {detailLabel && <QuestionHelperText>{detailLabel}</QuestionHelperText>}
+      {detailLabel && <InputHelperText>{detailLabel}</InputHelperText>}
       <ValueWrapper>
         <Value>{displayValue}</Value>
       </ValueWrapper>

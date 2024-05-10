@@ -18,8 +18,9 @@ import {
   ForgotPasswordPage,
   ResetPasswordPage,
   AccountSettingsPage,
+  ReportsPage,
 } from '../views';
-import { useCurrentUser } from '../api';
+import { useCurrentUserContext } from '../api';
 import { ROUTES } from '../constants';
 import { useFromLocation } from '../utils';
 import { CentredLayout, BackgroundPageLayout, MainPageLayout } from '../layout';
@@ -30,7 +31,7 @@ import { SurveyRoutes } from './SurveyRoutes';
  * If the user is logged in and tries to access the auth pages, redirect to the home page or project select pages
  */
 const AuthViewLoggedInRedirect = ({ children }) => {
-  const { isLoggedIn, ...user } = useCurrentUser();
+  const { isLoggedIn, ...user } = useCurrentUserContext();
   const from = useFromLocation();
 
   if (!isLoggedIn) {
@@ -78,7 +79,9 @@ export const Routes = () => {
               <Route path={ROUTES.REQUEST_ACCESS} element={<RequestProjectAccessPage />} />
             </Route>
           </Route>
+          <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
         </Route>
+        {/** Reports route is admin only so needs to be inside it's own PrivateRoute instance */}
 
         {/* PUBLIC ROUTES*/}
         <Route path="/" element={<BackgroundPageLayout backgroundImage="/survey-background.svg" />}>

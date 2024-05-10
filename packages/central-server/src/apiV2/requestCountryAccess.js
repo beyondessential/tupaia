@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
+import { requireEnv, respond, UnauthenticatedError, ValidationError } from '@tupaia/utils';
 import { sendEmail } from '@tupaia/server-utils';
 import { getTokenClaimsFromBearerAuth } from '@tupaia/auth';
 import { getUserInfoInString } from './utilities';
@@ -18,7 +18,7 @@ const checkUserPermission = (req, userId) => {
 };
 
 const sendRequest = (userInfo, countryNames, message, project) => {
-  const { TUPAIA_ADMIN_EMAIL_ADDRESS } = process.env;
+  const TUPAIA_ADMIN_EMAIL_ADDRESS = requireEnv('TUPAIA_ADMIN_EMAIL_ADDRESS');
 
   const emailText = `
 ${userInfo} has requested access to countries:
@@ -66,14 +66,13 @@ const fetchEntities = async (models, entityIds, countryIds) => {
 };
 
 export const requestCountryAccess = async (req, res) => {
-  const { body: requestBody = {}, userId: requestUserId, params, models } = req;
+  const { body: requestBody = {}, userId, models } = req;
   const { countryIds, entityIds, message = '', projectCode } = requestBody;
 
   if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
     throw new ValidationError('Please select at least one country');
   }
   const entities = await fetchEntities(models, entityIds, countryIds);
-  const userId = requestUserId || params.userId;
 
   try {
     checkUserPermission(req, userId);

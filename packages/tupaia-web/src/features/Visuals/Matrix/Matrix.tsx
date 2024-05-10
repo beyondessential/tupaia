@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -16,28 +16,42 @@ import {
   NoData,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReport, MatrixReportColumn, MatrixReportRow } from '@tupaia/types';
+import { MatrixConfig, MatrixReportColumn, MatrixReportRow, isMatrixReport } from '@tupaia/types';
 import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
 
-const SearchInput = styled(TextField)`
-  margin-bottom: 0;
-  min-width: 10rem;
-  .MuiInputBase-root {
-    background-color: transparent;
+const Wrapper = styled.div`
+  // override the base table styles to handle expanded rows, which need to be done with classes and JS because nth-child will not handle skipped rows
+  tbody .MuiTableRow-root {
+    &.odd {
+      background-color: ${({ theme }) => theme.palette.table.odd};
+    }
+    &.even {
+      background-color: ${({ theme }) => theme.palette.table.even};
+    }
+    &.highlighted {
+      background-color: ${({ theme }) => theme.palette.table.highlighted};
+    }
   }
 `;
 
-const Wrapper = styled.div`
-  overflow: hidden;
-  max-height: clamp(
-    20rem,
-    70vh,
-    60rem
-  ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
-  display: flex;
-  flex-direction: column;
+const SearchInput = styled(TextField)`
+  margin: 0;
+  min-width: 10rem;
+
+  .MuiInputBase-root {
+    background-color: transparent;
+    font-size: inherit; // override this to inherit the font size from the cell
+  }
+  .MuiInputBase-input {
+    font-size: inherit; // override this to inherit the font size from the cell
+    padding: 0.875rem;
+  }
+  .MuiTableCell-root:has(&) {
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+  }
 `;
 
 const NoResultsMessage = styled(Typography)`
@@ -56,12 +70,10 @@ const parseRows = (
 ): MatrixRowType[] => {
   const onDrillDown = row => {
     if (!drillDown) return;
-    const { itemCode } = drillDown;
-    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode as string);
-    urlSearchParams?.set(
-      URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID,
-      row[drillDown?.parameterLink!] as string,
-    );
+    const { itemCode, parameterLink } = drillDown;
+    if (!parameterLink || !itemCode) return;
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT, itemCode);
+    urlSearchParams?.set(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID, row[parameterLink]);
     setUrlSearchParams(urlSearchParams);
   };
 
@@ -162,16 +174,23 @@ const parseColumns = (columns: MatrixReportColumn[]): MatrixColumnType[] => {
 const MatrixVisual = () => {
   const context = useContext(DashboardItemContext);
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+  const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
   const { report, isEnlarged } = context;
 
   // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
   const config = context.config as MatrixConfig;
-  // casting here because we know that the report is a MatrixReport and it has a different shape than reports of other types
-  const { columns = [], rows = [] } = report as MatrixReport;
+  // type guard to ensure that the report is a matrix report, even though we know it is
+  if (!isMatrixReport(report)) return null;
+  const { columns = [], rows = [] } = report;
   const [searchFilter, setSearchFilter] = useState('');
 
   const { periodGranularity, drillDown, valueType } = config;
+
+  // in the dashboard, show a placeholder image
+  if (!isEnlarged) {
+    return <MatrixPreview config={config} />;
+  }
 
   const parsedRows = parseRows(
     rows,
@@ -192,20 +211,13 @@ const MatrixVisual = () => {
     setSearchFilter('');
   };
 
-  if (!parsedRows.length && !searchFilter) {
-    return (
-      <NoData
-        viewContent={{
-          ...config,
-          ...report,
-        }}
-      />
-    );
-  }
+  useEffect(() => {
+    // if the drillDownId changes, then we need to clear the search filter so that it doesn't persist across different drillDowns
+    clearSearchFilter();
+  }, [activeDrillDownId]);
 
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
+  if (!parsedRows.length && !searchFilter) {
+    return <NoData config={config} report={report} />;
   }
 
   return (

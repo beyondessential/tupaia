@@ -2,14 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { ReactNode, Ref, forwardRef } from 'react';
+import React, { forwardRef, ReactNode, Ref } from 'react';
 import styled from 'styled-components';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@material-ui/core/Button';
 import MuiLink, { LinkProps as MuiLinkProps } from '@material-ui/core/Link';
 import { OverrideableComponentProps } from '../types';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 0.9375rem;
   line-height: 1.75;
   letter-spacing: 0;
   padding: 0.5em 1.75em;
@@ -21,7 +20,7 @@ const StyledButton = styled(MuiButton)`
   }
 
   &.Mui-disabled.MuiButton-containedPrimary {
-    opacity: 0.8;
+    opacity: 0.3;
     background-color: ${props => props.theme.palette.primary.main};
     color: white;
   }

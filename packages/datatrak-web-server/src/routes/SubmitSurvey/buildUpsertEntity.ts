@@ -4,46 +4,79 @@
  */
 
 import { generateId } from '@tupaia/database';
-import { DatatrakWebSubmitSurveyRequest, Entity, SurveyScreenComponentConfig } from '@tupaia/types';
+import { ajvValidate, objectEntries } from '@tupaia/tsutils';
+import {
+  DatatrakWebSubmitSurveyRequest,
+  Entity,
+  SurveyScreenComponentConfig,
+  EntityUpdate,
+  EntityUpdateSchema,
+  EntityQuestionConfigFieldValue,
+} from '@tupaia/types';
+import { DatatrakWebServerModelRegistry } from '../../types';
 
 type Answers = DatatrakWebSubmitSurveyRequest.ReqBody['answers'];
 
+const isQuestionValue = (
+  configValue?: EntityQuestionConfigFieldValue,
+): configValue is { questionId: string } => {
+  return !!(configValue && typeof configValue === 'object' && 'questionId' in configValue);
+};
+
 export const buildUpsertEntity = async (
+  models: DatatrakWebServerModelRegistry,
   config: SurveyScreenComponentConfig,
   questionId: string,
   answers: Answers,
   countryId: Entity['id'],
-  findEntityById: (id: string) => Promise<Entity>,
 ) => {
-  const entityId = (answers[questionId] || generateId()) as Entity['id'];
-  const entity = { id: entityId } as Entity;
-  const fields = config?.entity?.fields || {};
+  const entityId = answers[questionId] || generateId();
 
-  for (const [fieldName, value] of Object.entries(fields)) {
-    // Value is not defined, skip
-    if (value === undefined) {
-      return;
-    }
+  // throw an error if the entity id is configured to use a non-string value
+  if (typeof entityId !== 'string')
+    throw new Error(`Entity id must be a string, but received ${entityId}`);
 
-    const fieldValue = typeof value === 'string' ? value : answers[value.questionId];
+  const entity: Record<string, unknown> = { id: entityId };
+  const fields = config?.entity?.fields;
 
-    if (fieldName === 'parentId') {
-      // If the parentId field is not answered, use the country id
-      const parentValue = (fieldValue as string) || countryId;
-      const entityRecord = await findEntityById(parentValue);
-      entity.parent_id = entityRecord.id;
-    } else {
-      entity[fieldName as keyof Entity] = fieldValue;
+  if (fields) {
+    for (const [fieldName, value] of objectEntries(fields)) {
+      // Value is not defined, skip
+      if (value === undefined) {
+        return;
+      }
+
+      const getFieldValue = () => {
+        if (isQuestionValue(value)) {
+          const { questionId } = value;
+          return answers[questionId];
+        }
+        return value;
+      };
+
+      const fieldValue = getFieldValue();
+
+      if (fieldName === 'parentId') {
+        // If the parentId field is not answered, use the country id
+        const parentValue = fieldValue || countryId;
+        // throw an error if the question is configured to use a non-string value
+        if (typeof parentValue !== 'string')
+          throw new Error(`Parent id must be a string, but received ${parentValue}`);
+        const entityRecord = await models.entity.findById(parentValue);
+        entity.parent_id = entityRecord.id;
+      } else {
+        entity[fieldName] = fieldValue;
+      }
     }
   }
 
-  const isUpdate = await findEntityById(entityId);
+  const isUpdate = await models.entity.findById(entityId);
 
   if (isUpdate) {
     return entity;
   }
 
-  const selectedCountry = await findEntityById(countryId);
+  const selectedCountry = await models.entity.findById(countryId);
   if (!entity.country_code) {
     entity.country_code = selectedCountry.code;
   }
@@ -54,5 +87,7 @@ export const buildUpsertEntity = async (
     entity.code = entityId;
   }
 
-  return entity;
+  const validatedEntity = ajvValidate<EntityUpdate>(EntityUpdateSchema, entity);
+
+  return validatedEntity;
 };

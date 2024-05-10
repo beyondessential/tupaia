@@ -8,7 +8,7 @@
     "url": "git+https://github.com/beyondessential/tupaia",
     "directory": "packages/ui-map-components"
   },
-  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://bes.au)",
   "source": "src/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,6 +25,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
+    "@tupaia/types": "workspace:*",
     "@tupaia/ui-components": "workspace:*",
     "@tupaia/utils": "workspace:*",
     "leaflet": "^1.7.1",
@@ -40,7 +41,6 @@
     "@material-ui/styles": "^4.9.10",
     "@mui/types": "^7.2.4",
     "@storybook/react": "^6.3.9",
-    "@tupaia/types": "workspace:*",
     "@types/jest": "^29.5.1",
     "@types/leaflet": "^1.7.1",
     "@types/react-dom": "^16.9.18",

@@ -3,12 +3,12 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { Button, FlexEnd } from '@tupaia/ui-components';
-import { DashboardMetadataForm } from '../components';
+import { DashboardItemMetadataForm } from '../components';
 import { DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM } from '../constants';
 import { MapOverlayMetadataForm } from '../components/MapOverlay';
 import { useVizBuilderBasePath } from '../utils';
@@ -51,7 +51,7 @@ const Footer = styled(FlexEnd)`
 
 const getMetadataFormComponent = dashboardItemOrMapOverlay => {
   if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.DASHBOARD_ITEM)
-    return DashboardMetadataForm;
+    return DashboardItemMetadataForm;
   if (dashboardItemOrMapOverlay === DASHBOARD_ITEM_OR_MAP_OVERLAY_PARAM.MAP_OVERLAY)
     return MapOverlayMetadataForm;
   throw new Error(`Unknown viz type ${dashboardItemOrMapOverlay}`);
@@ -60,11 +60,11 @@ const getMetadataFormComponent = dashboardItemOrMapOverlay => {
 export const CreateNew = () => {
   const { dashboardItemOrMapOverlay } = useParams();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const basePath = useVizBuilderBasePath();
 
   const handleCreate = () => {
-    history.push(`${basePath}/viz-builder/${dashboardItemOrMapOverlay}/`);
+    navigate(`${basePath}/viz-builder/${dashboardItemOrMapOverlay}`);
   };
 
   const MetadataFormComponent = getMetadataFormComponent(dashboardItemOrMapOverlay);

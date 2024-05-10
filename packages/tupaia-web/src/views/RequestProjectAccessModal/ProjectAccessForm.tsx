@@ -3,21 +3,20 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Typography } from '@material-ui/core';
 import styled from 'styled-components';
 import { Alert } from '@tupaia/ui-components';
 import { CountryAccessListItem, SingleProject } from '../../types';
 import {
+  AuthModalButton,
   CheckboxList,
   Form as BaseForm,
   LoadingScreen,
   TextField,
-  AuthModalButton,
-  RouterButton,
 } from '../../components';
 import { useRequestCountryAccess } from '../../api/mutations';
-import { MODAL_ROUTES, URL_SEARCH_PARAMS } from '../../constants';
+import { useQueryClient } from 'react-query';
 
 const Note = styled.p`
   text-align: left;
@@ -47,12 +46,16 @@ interface ProjectCountryFormProps {
   availableCountries: CountryAccessListItem[];
   projectName?: SingleProject['name'];
   isLandingPage?: boolean;
+  onCloseModal?: () => void;
+  closeButtonText?: string;
 }
 
 export const ProjectAccessForm = ({
   availableCountries,
   projectName,
   isLandingPage,
+  closeButtonText,
+  onCloseModal,
 }: ProjectCountryFormProps) => {
   const formContext = useForm({
     mode: 'onChange',
@@ -67,6 +70,8 @@ export const ProjectAccessForm = ({
     error,
     isSuccess,
   } = useRequestCountryAccess();
+
+  const queryClient = useQueryClient();
 
   if (isSuccess)
     return (
@@ -83,11 +88,12 @@ export const ProjectAccessForm = ({
         </Note>
         {!isLandingPage && (
           <AuthModalButton
-            component={RouterButton}
-            modal={MODAL_ROUTES.PROJECTS}
-            searchParamsToRemove={[URL_SEARCH_PARAMS.PROJECT]}
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['me/countries'] });
+              onCloseModal?.();
+            }}
           >
-            Back to Projects
+            {closeButtonText}
           </AuthModalButton>
         )}
       </div>
