@@ -1,7 +1,8 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiMenuIcon from '@material-ui/icons/Menu';
@@ -39,24 +40,15 @@ const MenuIcon = styled(MuiMenuIcon)`
 export const UserMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const openProjectModal = () => {
-    setProjectModalOpen(true);
-  };
+  const openProjectModal = () => setProjectModalOpen(true);
+  const closeProjectModal = () => setProjectModalOpen(false);
 
-  const closeProjectModal = () => {
-    setProjectModalOpen(false);
-  };
+  const onCloseMenu = () => setMenuOpen(false);
+  const toggleUserMenu = () => setMenuOpen(!menuOpen);
 
-  const onCloseMenu = () => {
-    setMenuOpen(false);
-  };
-
-  const toggleUserMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
   return (
     <Wrapper>
-      <UserInfo openProjectModal={openProjectModal} />
+      <UserInfo />
       <MenuButton onClick={toggleUserMenu} id="user-menu-button" title="Toggle menu">
         <MenuIcon />
       </MenuButton>
