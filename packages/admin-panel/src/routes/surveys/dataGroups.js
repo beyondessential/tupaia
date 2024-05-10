@@ -10,7 +10,7 @@ const RESOURCE_NAME = { singular: 'data group' };
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Data Service Configuration',
+    Header: 'Data service configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
@@ -21,7 +21,7 @@ const DATA_GROUP_FIELDS = [
       },
       getJsonFieldSchema: () => [
         {
-          label: 'DHIS Server',
+          label: 'DHIS server',
           fieldName: 'dhisInstanceCode',
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
