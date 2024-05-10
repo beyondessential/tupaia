@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'superset instance' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -41,7 +43,7 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New superset instance',
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'supersetInstances',
     fields: FIELDS,
   },
