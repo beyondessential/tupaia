@@ -26,7 +26,7 @@ const QUESTION_FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Legacy Options',
+    Header: 'Legacy options',
     source: 'options',
     type: 'tooltip',
     editConfig: {
@@ -44,7 +44,7 @@ const QUESTION_FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Option Set Id',
+    Header: 'Option set ID',
     source: 'option_set_id',
     show: false,
   },
@@ -57,7 +57,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Question',
+      title: 'Edit question',
       editEndpoint: 'questions',
       fields: QUESTION_FIELDS,
       displayUsedBy: true,
@@ -76,7 +76,7 @@ const OPTION_FIELDS = [
     source: 'label',
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
