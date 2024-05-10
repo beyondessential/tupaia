@@ -104,7 +104,7 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '1rem',
+    fontSize: '0.875rem',
     fontWeight: 400,
     lineHeight: 1.2,
     letterSpacing: 0,
@@ -132,6 +132,36 @@ const overrides = {
   MuiDivider: {
     root: {
       backgroundColor: COLORS.GREY_DE,
+    },
+  },
+  MuiFormLabel: {
+    root: {
+      fontSize: '0.875rem',
+      fontWeight: 500,
+      color: palette.text.primary,
+    },
+  },
+  MuiInputBase: {
+    input: {
+      fontSize: '0.875rem',
+      '&::placeholder': {
+        color: COLORS.GREY_B8,
+      },
+    },
+  },
+  MuiFormControl: {
+    root: {
+      '& legend': {
+        fontSize: '0.875rem',
+        fontWeight: 500,
+        color: palette.text.primary,
+      },
+    },
+  },
+  MuiOutlinedInput: {
+    input: {
+      paddingInline: '1.1rem',
+      paddingBlock: '0.875rem',
     },
   },
   MuiMenuItem: {

@@ -6,9 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { changeLogsTablePage, closeLogsModal } from './actions';
-import { ModalContentProvider } from '../widgets';
+import { Modal } from '../widgets';
 import { LogsTable } from './LogsTable';
 
 export const LogsModalComponent = ({
@@ -24,23 +23,31 @@ export const LogsModalComponent = ({
   title,
 }) => {
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="xl">
-      <DialogHeader onClose={onDismiss} title={title} />
-      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
-        <LogsTable
-          logs={logs}
-          logsCount={logsCount}
-          page={page}
-          logsPerPage={logsPerPage}
-          onChangePage={onChangeLogsTablePage}
-        />
-      </ModalContentProvider>
-      <DialogFooter>
-        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
-          {errorMessage ? 'Dismiss' : 'Cancel'}
-        </Button>
-      </DialogFooter>
-    </Dialog>
+    <Modal
+      onClose={onDismiss}
+      isOpen={isOpen}
+      disableBackdropClick
+      maxWidth="xl"
+      title={title}
+      errorMessage={errorMessage}
+      isLoading={isLoading}
+      buttons={[
+        {
+          disabled: isLoading,
+          variant: 'outlined',
+          onClick: onDismiss,
+          text: errorMessage ? 'Dismiss' : 'Cancel',
+        },
+      ]}
+    >
+      <LogsTable
+        logs={logs}
+        logsCount={logsCount}
+        page={page}
+        logsPerPage={logsPerPage}
+        onChangePage={onChangeLogsTablePage}
+      />
+    </Modal>
   );
 };
 

@@ -57,10 +57,6 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'image_url',
       avatarVariant: 'square',
-      deleteModal: {
-        title: 'Remove Project Image',
-        message: 'Are you sure you want to delete your image?',
-      },
       secondaryLabel: 'Recommended size: 480x240px',
       maxHeight: 240,
       maxWidth: 480,
@@ -73,10 +69,6 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'logo_url',
       avatarVariant: 'square',
-      deleteModal: {
-        title: 'Remove Project Logo',
-        message: 'Are you sure you want to delete your image?',
-      },
       secondaryLabel: 'Recommended size: 480x240px',
       maxHeight: 240,
       maxWidth: 480,

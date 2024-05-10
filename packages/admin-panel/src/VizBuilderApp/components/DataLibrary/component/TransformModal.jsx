@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog } from '@material-ui/core';
 import styled from 'styled-components';
-import { DialogHeader } from '@tupaia/ui-components';
+import { ModalHeader } from '../../../../widgets';
 
 const Wrapper = styled.div`
   height: 80vh;
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 export const TransformModal = ({ onClose, children }) => {
   return (
     <Dialog open onClose={onClose} maxWidth={false}>
-      <DialogHeader onClose={onClose} />
+      <ModalHeader onClose={onClose} />
       <Wrapper>{children}</Wrapper>
     </Dialog>
   );
