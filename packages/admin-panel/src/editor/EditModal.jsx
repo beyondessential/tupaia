@@ -54,7 +54,7 @@ export const EditModalComponent = withConnectedEditor(
         id: 'form-button-cancel',
       },
       {
-        onClick: () => onSave(files),
+        onClick: () => onSave(files, onDismiss),
         id: 'form-button-save',
         text: saveButtonText,
         disabled: !!errorMessage || isLoading || isUnchanged,

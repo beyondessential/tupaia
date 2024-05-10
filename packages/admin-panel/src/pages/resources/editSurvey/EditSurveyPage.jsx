@@ -5,17 +5,15 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
+import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
 import { withConnectedEditor } from '../../../editor';
-import { useEditSurveyField } from '../../../surveys/useEditSurveyField';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
-
 import { FieldsEditor } from '../../../editor/FieldsEditor';
-import { Button } from '@tupaia/ui-components';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -25,13 +23,13 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   padding-inline: 1.5rem;
-  padding-block-start: 1.9rem;
+  padding-block-start: 0.9rem;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: ${({ $isLoading }) => ($isLoading ? 'hidden' : 'auto')};
 `;
 
 const Section = styled.section`
-  container-type: normal;
+  padding-block-start: 1rem;
 
   &:first-child {
     padding-block-end: 1.8rem;
@@ -84,7 +82,7 @@ const StickyFooter = styled.div`
 export const EditSurveyPage = withConnectedEditor(
   ({
     parent,
-    title,
+    errorMessage,
     displayProperty,
     getDisplayValue,
     fields,
@@ -92,7 +90,11 @@ export const EditSurveyPage = withConnectedEditor(
     onEditField,
     loadEditor,
     isUnchanged,
+    onSave,
+    resetEdits,
+    isLoading,
   }) => {
+    const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
 
@@ -145,6 +147,11 @@ export const EditSurveyPage = withConnectedEditor(
         ]
       : [];
 
+    const navigateBack = () => navigate('../../');
+    const handleSave = () => {
+      onSave(files, navigateBack);
+    };
+
     return (
       <Wrapper>
         <Breadcrumbs
@@ -154,7 +161,10 @@ export const EditSurveyPage = withConnectedEditor(
           details={details}
           getDisplayValue={getDisplayValue}
         />
-        <Form>
+
+        <Form $isLoading={isLoading}>
+          {isLoading && <SpinningLoader />}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
           <Section>
             <FileUploadField
               id="survey-questions"
@@ -176,11 +186,23 @@ export const EditSurveyPage = withConnectedEditor(
             />
           </Section>
         </Form>
+
         <StickyFooter>
-          <Button type="submit" variant="contained" color="primary" disabled={isUnchanged}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isUnchanged || isLoading}
+            onClick={handleSave}
+          >
             Save changes
           </Button>
-          <Button variant="text" color="primary" disabled={isUnchanged}>
+          <Button
+            variant="text"
+            color="primary"
+            disabled={isUnchanged || isLoading}
+            onClick={resetEdits}
+          >
             Clear edits
           </Button>
         </StickyFooter>

@@ -12,6 +12,7 @@ import {
   EDITOR_FIELD_EDIT,
   LOAD_EDITOR,
   OPEN_EDIT_MODAL,
+  RESET_EDITS,
 } from './constants';
 import {
   convertSearchTermToFilter,
@@ -204,7 +205,7 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
 };
 
 export const saveEdits =
-  (endpoint, editedFields, isNew, filesByFieldKey = {}) =>
+  (endpoint, editedFields, isNew, filesByFieldKey = {}, onSuccess) =>
   async (dispatch, getState, { api }) => {
     dispatch({
       type: EDITOR_DATA_EDIT_BEGIN,
@@ -236,7 +237,7 @@ export const saveEdits =
       dispatch({
         type: EDITOR_DATA_EDIT_SUCCESS,
       });
-      dispatch(closeEditModal());
+      onSuccess();
     } catch (error) {
       dispatch({
         type: EDITOR_ERROR,
@@ -247,4 +248,8 @@ export const saveEdits =
 
 export const closeEditModal = () => ({
   type: EDITOR_DISMISS,
+});
+
+export const resetEdits = () => ({
+  type: RESET_EDITS,
 });

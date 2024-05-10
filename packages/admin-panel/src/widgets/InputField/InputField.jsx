@@ -5,7 +5,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HelpOutline } from '@material-ui/icons';
 
 const InputFieldComponents = {};
 
@@ -27,6 +26,7 @@ export const InputField = ({ type, ...inputProps }) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
   const InputComponent = InputFieldComponents[inputType];
+
   return <InputComponent {...inputProps} />;
 };
 

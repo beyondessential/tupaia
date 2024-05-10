@@ -4,7 +4,7 @@
  */
 
 import { connect } from 'react-redux';
-import { editField, loadEditor, saveEdits } from './actions';
+import { editField, loadEditor, resetEdits, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 
 const mapStateToProps = state => {
@@ -22,6 +22,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
   loadEditor: (config, recordId) => dispatch(loadEditor(config, recordId)),
+  resetEdits: () => dispatch(resetEdits()),
   dispatch,
 });
 
@@ -60,14 +61,14 @@ const mergeProps = (
       ...initialValues,
       ...editedFields,
     }, // Include edits in visible record data
-    onSave: files => {
+    onSave: (files, onSuccess) => {
       // If there is no record data, this is a new record
       const isNew = Object.keys(recordData).length === 0;
       let fieldValuesToSave = isNew ? { ...initialValues, ...editedFields } : { ...editedFields };
       if (onProcessDataForSave) {
         fieldValuesToSave = onProcessDataForSave(fieldValuesToSave, recordData);
       }
-      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files));
+      dispatch(saveEdits(endpoint, fieldValuesToSave, isNew, files, onSuccess));
     },
     usedByConfig,
   };
