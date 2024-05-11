@@ -12718,17 +12718,18 @@ __metadata:
     "@aws-sdk/client-s3": ^3.341.0
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
+    "@types/lodash": ^4.0.0
     bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
     fast-memoize: ^2.5.2
     jsonwebtoken: ^8.5.1
     lodash.get: ^4.4.2
+    lodash.isplainobject: ^4.0.6
     lodash.pickby: ^4.6.0
     moment: ^2.24.0
     moment-timezone: ^0.5.45
     node-fetch: ^1.7.3
-    npm-run-all: ^4.1.5
     numeral: ^2.0.6
     prop-types: ^15.6.2
     sanitize-filename: ^1.6.3
@@ -13538,6 +13539,13 @@ __metadata:
   version: 4.14.159
   resolution: "@types/lodash@npm:4.14.159"
   checksum: ed467c79c192a057405725f8091322bd16a0a76278134165bb713140cfb9257730ed805427ad3bbb60f2846132c04577f685c411ebcf7140de2fb4bc97245a11
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.0.0":
+  version: 4.17.1
+  resolution: "@types/lodash@npm:4.17.1"
+  checksum: 01984d5b44c09ef45258f8ac6d0cf926900624064722d51a020ba179e5d4a293da0068fb278d87dc695586afe7ebd3362ec57f5c0e7c4f6c1fab9d04a80e77f5
   languageName: node
   linkType: hard
 

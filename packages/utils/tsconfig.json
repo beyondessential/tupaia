@@ -1,8 +1,14 @@
 {
-  "extends": "../../tsconfig-js.json",
+  "extends": "../../tsconfig-ts.json",
+  "compileOnSave": true,
   "compilerOptions": {
-    "outDir": "dist"
+    "jsx": "react",
+    "allowJs": true,
+    "outDir": "dist",
+    "lib": ["es6", "dom", "es2019"],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true
   },
-  "include": ["src/**/*.js"],
-  "exclude": ["src/__tests__", "src/migrations"]
+  "include": ["src/**/*", "jest.config.ts", "helpers/**/*"]
 }

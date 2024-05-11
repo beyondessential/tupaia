@@ -1,4 +1,4 @@
-const baseConfig = require('../../jest.config-js.json');
+const baseConfig = require('../../jest.config-ts.json');
 
 module.exports = async () => ({
   ...baseConfig,
