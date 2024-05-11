@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 
-const OPERATOR_TO_VALUE_CHECK = {
+const OPERATOR_TO_VALUE_CHECK: { [key: string]: (value: any, target: any) => boolean } = {
   '=': (value, target) => value === target,
   '>=': (value, target) => value >= target,
   '<=': (value, target) => value <= target,
@@ -17,15 +17,19 @@ const NUMERIC_OPERATORS = ['>=', '<=', '>', '<', 'range', 'rangeExclusive'];
 
 const ANY_VALUE_CONDITION = '*';
 
-/**
- * @typedef {object} ConditionObject
- * @property {string} operator - The operator to use
- * @property {any} value - The target value, type depends on the operator
- *
- * @param {string | number} value The value to be checked
- * @param {ConditionObject | string | number} condition The condition to check against
- */
-export const checkValueSatisfiesCondition = (value, condition) => {
+// TODO: swap to ActualConditionObject and rm runtime error checks when all callers migrate to ts
+export type ConditionObject = {
+  operator?: string;
+  value?: any;
+};
+type ActualConditionObject = {
+  operator: string;
+  value: any;
+};
+export const checkValueSatisfiesCondition = (
+  value: any,
+  condition: ConditionObject | string | number,
+) => {
   if (value === undefined) return false;
 
   if (!isPlainObject(condition)) {
@@ -35,7 +39,9 @@ export const checkValueSatisfiesCondition = (value, condition) => {
   // Handle empty condition Object {}
   if (Object.keys(condition).length < 1) return true;
 
-  const { operator, value: targetValue } = condition;
+  const conditionObject = condition as ActualConditionObject;
+
+  const { operator, value: targetValue } = conditionObject;
 
   const checkValue = OPERATOR_TO_VALUE_CHECK[operator];
   if (!checkValue) {

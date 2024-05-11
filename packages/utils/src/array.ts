@@ -5,20 +5,18 @@
 
 import { compareAsc } from './compare';
 
-/**
- * @param {any[]} array
- * @param {(Function|string)} [mapperInput]
- * @returns {number}
- */
-export const countDistinct = (array, mapperInput) => {
+export const countDistinct = (array: any[], mapperInput?: ((x: any) => any) | string) => {
   const getMapper = () => {
     switch (typeof mapperInput) {
       case 'function':
-        return value => mapperInput(value);
+        return (value: any) => mapperInput(value);
       case 'string':
-        return value => value[mapperInput];
+        return (value: string) => {
+          if (typeof value != 'object') throw new Error('Array item must be an object');
+          return value[mapperInput];
+        };
       default:
-        return value => value;
+        return (value: any) => value;
     }
   };
 
@@ -26,7 +24,7 @@ export const countDistinct = (array, mapperInput) => {
   return new Set(array.map(mapItem)).size;
 };
 
-export const hasIntersection = (input1, input2) => {
+export const hasIntersection = (input1: any[], input2: any[]) => {
   const set1 = new Set(input1);
   const set2 = new Set(input2);
 
@@ -38,35 +36,26 @@ export const hasIntersection = (input1, input2) => {
   return false;
 };
 
-export const min = array =>
+export const min = <T>(array: T[]): T | undefined =>
   Array.isArray(array) && array.length > 0
     ? array.reduce((result, value) => (compareAsc(value, result) <= 0 ? value : result), array[0])
     : undefined;
 
-export const max = array =>
+export const max = <T>(array: T[]): T | undefined =>
   Array.isArray(array) && array.length > 0
     ? array.reduce((result, value) => (compareAsc(value, result) >= 0 ? value : result), array[0])
     : undefined;
 
-export const toArray = input => (Array.isArray(input) ? input : [input]);
+// left without generics because the caller migrating to ts will remove the need for this helper fn
+export const toArray = (input: any[] | any) => (Array.isArray(input) ? input : [input]);
 
-export const asyncFilter = async (array, predicate) =>
+export const asyncFilter = async <T>(array: T[], predicate: (x: any) => any) =>
   Promise.all(array.map(predicate)).then(results => array.filter((_v, index) => results[index]));
 
 // https://advancedweb.hu/how-to-use-async-functions-with-array-some-and-every-in-javascript/
-export const asyncEvery = async (array, predicate) =>
+export const asyncEvery = async (array: any[], predicate: (x: any) => any) =>
   (await asyncFilter(array, predicate)).length === array.length;
 
-/**
- *
- * @template T
- * @param {T} array
- * @param {number} index
- * @returns {T}
- */
-export const removeAt = (array, index) => {
-  if (typeof index !== 'number' || index < 0 || !Number.isFinite(index)) {
-    throw new Error(`Index '${index}' is not a positive integer`);
-  }
+export const removeAt = <T>(array: T[], index: number): T[] => {
   return [...array.slice(0, index), ...array.slice(index + 1)];
 };

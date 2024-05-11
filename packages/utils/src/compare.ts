@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-export const compareAsc = (a, b) => {
+export type CompareResult = -1 | 0 | 1;
+
+export const compareAsc = (a: any, b: any): CompareResult => {
   const types = [typeof a, typeof b];
 
   if (types.every(t => t === 'string')) {
@@ -26,4 +28,5 @@ export const compareAsc = (a, b) => {
   return a > b ? 1 : 0;
 };
 
-export const compareDesc = (a, b) => compareAsc(a, b) * -1;
+export const compareDesc = (a: any, b: any): CompareResult =>
+  (compareAsc(a, b) * -1) as CompareResult;

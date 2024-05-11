@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { compareAsc, compareDesc } from '../compare';
+import { compareAsc, compareDesc, CompareResult } from '../compare';
 
-const compareAscTestData = [
+const compareAscTestData: [string, [any, any], CompareResult][] = [
   ['string < string', ['a', 'b'], -1],
   ['string = string', ['a', 'a'], 0],
   ['substring < string', ['a', 'aa'], -1],
@@ -30,17 +30,17 @@ describe('compareAsc()', () => {
 });
 
 describe('compareDesc()', () => {
-  const compareDescTestData = compareAscTestData.map(testCase => {
-    const descTestCase = [...testCase];
-    // Reverse asc results for desc comparison
-    descTestCase[2] = testCase[2] * -1;
-    return descTestCase;
-  });
+  const compareDescTestData: [string, [any, any], CompareResult][] = compareAscTestData.map(
+    testCase => {
+      // Reverse asc results for desc comparison
+      return [testCase[0], testCase[1], (testCase[2] * -1) as CompareResult];
+    },
+  );
 
   it.each(compareDescTestData)('%s', (_, [a, b], expected) => {
     expect(compareDesc(a, b)).toBe(expected);
     if (expected !== 0) {
-      expect(compareDesc(b, a)).toBe(expected * -1);
+      expect(compareDesc(b, a)).toBe((expected * -1) as CompareResult);
     }
   });
 });

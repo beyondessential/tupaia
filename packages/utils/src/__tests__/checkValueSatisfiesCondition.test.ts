@@ -1,4 +1,4 @@
-import { checkValueSatisfiesCondition } from '../checkValueSatisfiesCondition';
+import { checkValueSatisfiesCondition, ConditionObject } from '../checkValueSatisfiesCondition';
 
 describe('checkAgainstConditions', () => {
   describe('checkValueSatisfiesCondition()', () => {
@@ -9,7 +9,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('should correctly check if a value satisfies a plain condition', () => {
-      const testData = [
+      const testData: [any, any, boolean][] = [
         ['hello', 'hello', true],
         [0, 0, true],
         [true, true, true],
@@ -28,7 +28,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('should return true if the condition is "*" unless the value is undefined or ""', () => {
-      const testData = [
+      const testData: [any, '*', boolean][] = [
         ['hello', '*', true],
         [0, '*', true],
         [false, '*', true],
@@ -43,7 +43,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('should work with basic mathematical conditions', () => {
-      const testData = [
+      const testData: [any, ConditionObject, boolean][] = [
         [1, { operator: '=', value: 1 }, true],
         [2, { operator: '=', value: 1 }, false],
         [1, { operator: '<', value: 2 }, true],
@@ -64,7 +64,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('should work with range mathematical conditions', () => {
-      const testData = [
+      const testData: [any, ConditionObject, boolean][] = [
         [-1, { operator: 'range', value: [1, 2] }, false],
         [1, { operator: 'range', value: [1, 2] }, true],
         [1.5, { operator: 'range', value: [1, 2] }, true],
@@ -83,7 +83,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('should return false with mathematical conditions if the value is ""', () => {
-      const testData = [
+      const testData: [any, ConditionObject, boolean][] = [
         ['', { operator: '=', value: 1 }, false],
         ['', { operator: '<', value: 2 }, false],
         ['', { operator: '>', value: 1 }, false],
@@ -102,7 +102,7 @@ describe('checkAgainstConditions', () => {
     it('should check "in" correctly', () => {
       const commonConfig = { operator: 'in', value: ['', undefined, null, 'hi', 1, 2] };
 
-      const testData = [
+      const testData: [any, any, boolean][] = [
         ['', commonConfig, true],
         [null, commonConfig, true],
         ['hi', commonConfig, true],
@@ -120,7 +120,7 @@ describe('checkAgainstConditions', () => {
     it('operator "in" works with strings correctly', () => {
       const commonConfig = { operator: 'in', value: 'This is my string' };
 
-      const testData = [
+      const testData: [any, ConditionObject, boolean][] = [
         ['', commonConfig, true],
         ['string', commonConfig, true],
         [0, commonConfig, false],
@@ -134,7 +134,7 @@ describe('checkAgainstConditions', () => {
     });
 
     it('operator "regex" works correctly', () => {
-      const testData = [
+      const testData: [any, ConditionObject, boolean][] = [
         ['hi five!', { operator: 'regex', value: 'hi' }, true],
         ['hi five!', { operator: 'regex', value: /hi/ }, true],
         ['hi five!', { operator: 'regex', value: '[hgf]i' }, true],
