@@ -16,10 +16,8 @@ const LabelWrapper = styled.span`
 
 const TooltipWrapper = styled.span`
   pointer-events: auto;
-  position: absolute;
-  right: 0;
   cursor: pointer;
-  margin-left: 0.4em;
+  margin-left: auto; // push to the right
   border: 1px solid transparent;
   display: flex;
   align-items: center;
@@ -74,14 +72,14 @@ export const InputLabel = ({
     <>
       <LabelWrapper as={as} className={className} htmlFor={htmlFor}>
         {label}
-        {tooltip && (
-          <Tooltip title={tooltip} placement="top">
-            <TooltipWrapper tabIndex={0}>
-              <TooltipIcon />
-            </TooltipWrapper>
-          </Tooltip>
-        )}
       </LabelWrapper>
+      {tooltip && (
+        <Tooltip title={tooltip} placement="top">
+          <TooltipWrapper tabIndex={0}>
+            <TooltipIcon />
+          </TooltipWrapper>
+        </Tooltip>
+      )}
     </>
   );
 };
