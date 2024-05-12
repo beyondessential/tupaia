@@ -18,7 +18,7 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Report Code',
+    Header: 'Report code',
     source: 'report_code',
     type: 'tooltip',
   },
@@ -74,7 +74,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard Item',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_ITEMS_ENDPOINT,
       fields: [...FIELDS, ...extraEditFields],
     },
