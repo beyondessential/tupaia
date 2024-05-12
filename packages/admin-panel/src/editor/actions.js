@@ -246,7 +246,7 @@ export const saveEdits =
     }
   };
 
-export const closeEditModal = () => ({
+export const dismissEditor = () => ({
   type: EDITOR_DISMISS,
 });
 

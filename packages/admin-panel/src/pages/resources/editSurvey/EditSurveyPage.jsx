@@ -15,7 +15,7 @@ import { withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
-import { loadEditor } from '../../../editor/actions';
+import { dismissEditor, loadEditor } from '../../../editor/actions';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -96,6 +96,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     onSave,
     resetEdits,
     isLoading,
+    resetEditorToDefaultState,
   }) => {
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
@@ -150,7 +151,10 @@ const EditSurveyPageComponent = withConnectedEditor(
         ]
       : [];
 
-    const navigateBack = () => navigate('../../');
+    const navigateBack = () => {
+      navigate('../../');
+      resetEditorToDefaultState();
+    };
     const handleSave = () => {
       onSave(files, navigateBack);
     };
@@ -231,6 +235,7 @@ EditSurveyPageComponent.defaultProps = {
 
 const mapDispatchToProps = dispatch => ({
   loadEditorData: (actionConfig, recordId) => dispatch(loadEditor(actionConfig, recordId)),
+  resetEditorToDefaultState: () => dispatch(dismissEditor()),
 });
 
 export const EditSurveyPage = connect(null, mapDispatchToProps)(EditSurveyPageComponent);

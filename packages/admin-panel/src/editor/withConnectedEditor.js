@@ -4,7 +4,7 @@
  */
 
 import { connect } from 'react-redux';
-import { editField, loadEditor, resetEdits, saveEdits } from './actions';
+import { editField, resetEdits, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 
 const mapStateToProps = state => {

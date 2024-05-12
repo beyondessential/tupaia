@@ -6,7 +6,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { closeEditModal } from './actions';
+import { dismissEditor } from './actions';
 import { UsedBy } from '../usedBy/UsedBy';
 import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
@@ -112,7 +112,7 @@ EditModalComponent.defaultProps = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(closeEditModal()),
+  onDismiss: () => dispatch(dismissEditor()),
 });
 
 export const EditModal = connect(null, mapDispatchToProps)(EditModalComponent);
