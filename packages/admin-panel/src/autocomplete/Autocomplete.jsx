@@ -34,6 +34,7 @@ export const Autocomplete = props => {
     optionLabelKey,
     muiProps,
     tooltip,
+    required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearchUpdate = React.useCallback(
@@ -111,6 +112,7 @@ export const Autocomplete = props => {
       helperText={helperText}
       muiProps={extraMuiProps}
       tooltip={tooltip}
+      required={required}
     />
   );
 };
@@ -133,6 +135,7 @@ Autocomplete.propTypes = {
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
   tooltip: PropTypes.string,
+  required: PropTypes.bool,
 };
 
 Autocomplete.defaultProps = {
@@ -148,4 +151,5 @@ Autocomplete.defaultProps = {
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
   tooltip: null,
+  required: false,
 };

@@ -16,6 +16,8 @@ const LabelWrapper = styled.span`
 
 const TooltipWrapper = styled.span`
   pointer-events: auto;
+  position: absolute;
+  right: 0;
   cursor: pointer;
   margin-left: 0.4em;
   border: 1px solid transparent;
@@ -23,6 +25,7 @@ const TooltipWrapper = styled.span`
   align-items: center;
   height: 100%;
   width: 1rem;
+  order: 3;
   svg {
     height: 100%;
     width: 100%;
@@ -68,15 +71,17 @@ export const InputLabel = ({
   if (!label) return null;
   return (
     // allows us to pass in a custom element to render as, e.g. a span if it is going to be contained in a label element, for example when using MUI's TextField component. Otherwise defaults to a label element so that it can be a standalone label
-    <LabelWrapper as={as} className={className} htmlFor={htmlFor}>
-      {label}
-      {tooltip && (
-        <Tooltip title={tooltip} placement="top">
-          <TooltipWrapper tabIndex={0}>
-            <TooltipIcon />
-          </TooltipWrapper>
-        </Tooltip>
-      )}
-    </LabelWrapper>
+    <>
+      <LabelWrapper as={as} className={className} htmlFor={htmlFor}>
+        {label}
+        {tooltip && (
+          <Tooltip title={tooltip} placement="top">
+            <TooltipWrapper tabIndex={0}>
+              <TooltipIcon />
+            </TooltipWrapper>
+          </Tooltip>
+        )}
+      </LabelWrapper>
+    </>
   );
 };

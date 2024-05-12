@@ -37,6 +37,7 @@ const ReduxAutocompleteComponent = ({
   searchTerm,
   placeholder,
   helperText,
+  required,
 }) => {
   React.useEffect(() => {
     return () => {
@@ -77,6 +78,7 @@ const ReduxAutocompleteComponent = ({
       canCreateNewOptions={canCreateNewOptions}
       allowMultipleValues={allowMultipleValues}
       optionLabelKey={optionLabelKey}
+      required={required}
     />
   );
 };
@@ -97,6 +99,7 @@ ReduxAutocompleteComponent.propTypes = {
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  required: PropTypes.bool,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -109,6 +112,7 @@ ReduxAutocompleteComponent.defaultProps = {
   placeholder: null,
   label: null,
   helperText: null,
+  required: false,
 };
 
 const mapStateToProps = (state, { reduxId }) => {

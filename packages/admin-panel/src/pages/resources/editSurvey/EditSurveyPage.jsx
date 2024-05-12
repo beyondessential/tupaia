@@ -19,6 +19,7 @@ const Wrapper = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1;
 `;
 
 const Form = styled.form`

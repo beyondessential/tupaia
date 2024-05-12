@@ -82,6 +82,7 @@ export const registerInputFields = () => {
       pageSize={props.pageSize}
       tooltip={props.labelTooltip}
       distinct={props.distinct}
+      required={props.required}
     />
   ));
   registerInputField('json', props => (
@@ -95,6 +96,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       getJsonFieldSchema={props.getJsonFieldSchema}
       variant={props.variant}
+      required={props.required}
     />
   ));
   registerInputField('enum', props => (
@@ -108,6 +110,7 @@ export const registerInputFields = () => {
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('jsonEditor', props => (
@@ -117,6 +120,7 @@ export const registerInputFields = () => {
       value={props.value}
       onChange={props.onChange}
       helperText={props.secondaryLabel}
+      required={props.required}
     />
   ));
   registerInputField('jsonArray', props => (
@@ -127,6 +131,7 @@ export const registerInputFields = () => {
       onChange={props.onChange}
       helperText={props.secondaryLabel}
       stringify={false}
+      required={props.required}
     />
   ));
   registerInputField('boolean', props => (
@@ -150,6 +155,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('date', props => (
@@ -161,6 +167,7 @@ export const registerInputFields = () => {
       onChange={date => props.onChange(props.inputKey, date.toISOString())}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('datetime-local', props => (
@@ -181,6 +188,7 @@ export const registerInputFields = () => {
       }}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('datetime-utc', props => (
@@ -200,6 +208,7 @@ export const registerInputFields = () => {
         }
       }}
       disabled={props.disabled}
+      required={props.required}
     />
   ));
   registerInputField('link', props => {
@@ -232,9 +241,11 @@ export const registerInputFields = () => {
       rows="4"
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
+      required={props.required}
       inputProps={{
         minLength: props.minLength,
         maxLength: props.maxLength,
+        required: props.required,
       }}
     />
   ));
@@ -260,6 +271,7 @@ export const registerInputFields = () => {
         minLength: props.minLength,
         maxLength: props.maxLength,
       }}
+      required={props.required}
     />
   ));
   registerInputField('password', props => (
@@ -272,6 +284,7 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       type="password"
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('image', props => (
@@ -316,6 +329,7 @@ export const registerInputFields = () => {
         disabled={props.disabled}
         helperText={props.secondaryLabel}
         tooltip={props.labelTooltip}
+        required={props.required}
         color="secondary"
       />
     </StyledCheckboxWrapper>
@@ -331,6 +345,7 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       name={props.name}
+      required={props.required}
     />
   ));
   registerInputField('file', props => (
@@ -338,6 +353,7 @@ export const registerInputFields = () => {
       name={props.name}
       label={props.label}
       helperText={props.secondaryLabel}
+      required={props.required}
       onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
     />
   ));

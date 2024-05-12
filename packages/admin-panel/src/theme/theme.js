@@ -140,6 +140,9 @@ const overrides = {
       fontWeight: 500,
       color: palette.text.primary,
     },
+    asterisk: {
+      color: palette.error.main,
+    },
   },
   MuiInputBase: {
     input: {

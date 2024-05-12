@@ -29,6 +29,7 @@ const SURVEY_FIELDS = {
       optionValueKey: 'code',
       allowMultipleValues: false,
       labelTooltip: 'Select the project this survey should be available in',
+      required: true,
     },
   },
   name: {
@@ -38,6 +39,7 @@ const SURVEY_FIELDS = {
     editConfig: {
       maxLength: 50,
       secondaryLabel: 'Max 50 characters',
+      required: true,
     },
   },
   code: {
@@ -45,6 +47,7 @@ const SURVEY_FIELDS = {
     source: 'code',
     editConfig: {
       labelTooltip: 'A short unique code. Suggestions appear when you enter a name.',
+      required: true,
     },
   },
   country_ids: {
@@ -57,6 +60,7 @@ const SURVEY_FIELDS = {
       optionValueKey: 'name',
       allowMultipleValues: true,
       labelTooltip: 'Select the countries this survey should be available in',
+      required: true,
     },
   },
   permission_group_id: {
@@ -68,6 +72,7 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'name',
       labelTooltip: 'Select the permission group this survey should be available for',
+      required: true,
     },
   },
   survey_group_id: {
@@ -145,38 +150,6 @@ const SURVEY_FIELDS = {
               },
             ]
           : [],
-    },
-  },
-  integration_metadata: {
-    Header: 'Integration Details',
-    source: 'integration_metadata',
-    editConfig: {
-      type: 'json',
-      getJsonFieldSchema: () => [
-        {
-          label: 'MS1',
-          fieldName: 'ms1',
-          type: 'json',
-          variant: 'grey',
-          getJsonFieldSchema: () => [
-            {
-              label: 'Endpoint',
-              fieldName: 'endpoint',
-              type: 'json',
-              getJsonFieldSchema: () => [
-                {
-                  label: 'Route',
-                  fieldName: 'route',
-                },
-                {
-                  label: 'Method (POST or PUT)',
-                  fieldName: 'method',
-                },
-              ],
-            },
-          ],
-        },
-      ],
     },
   },
   surveyQuestions: {

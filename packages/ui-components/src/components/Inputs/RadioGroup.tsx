@@ -18,7 +18,6 @@ const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormContro
 `;
 
 const Legend = styled.legend`
-  position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
   margin-bottom: 0.25rem;
