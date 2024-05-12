@@ -43,6 +43,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/lodash": "^4.0.0"
+    "@types/lodash": "^4.0.0",
+    "@types/numeral": "^2.0.5"
   }
 }

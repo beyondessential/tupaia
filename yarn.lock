@@ -12719,6 +12719,7 @@ __metadata:
     "@aws-sdk/credential-providers": ^3.341.0
     "@aws-sdk/lib-storage": ^3.348.0
     "@types/lodash": ^4.0.0
+    "@types/numeral": ^2.0.5
     bson-objectid: ^1.2.2
     case: ^1.5.5
     countrynames: ^0.1.1
@@ -13767,6 +13768,13 @@ __metadata:
   version: 4.1.2
   resolution: "@types/npmlog@npm:4.1.2"
   checksum: 8ea4c0578839a8a4436bb8fb303efec3b3a81e99c87bada5afdde5f3604696a09077c9b7ff0e48c9c30365f7c716ad4f65329f5259072dc86a03bc58faf5afa9
+  languageName: node
+  linkType: hard
+
+"@types/numeral@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "@types/numeral@npm:2.0.5"
+  checksum: 0ec9d195248da1865bae5f1939bf93d2464fd2ddc5171444266c66092efb7335031852005842ec4449e1ae5742cd9717cc3af117d6f8cd6e51f083bc08f35239
   languageName: node
   linkType: hard
 
