@@ -68,9 +68,15 @@ export const DATA_VALUES = {
 };
 
 export const DHIS_RESPONSE_DATA_ELEMENTS = {
-  POP01: { code: 'POP01', uid: 'id000POP01', name: 'Population 1' },
-  POP02: { code: 'POP02', uid: 'id000POP02', name: 'Population 2' },
-  DIF01_DHIS: { code: 'DIF01_DHIS', uid: 'id000DIF01_DHIS', name: 'Different 1' },
+  POP01: { id: '100', uid: 'id000POP01', code: 'POP01', name: 'Population 1', valueType: 'NUMBER' },
+  POP02: { id: '200', uid: 'id000POP02', code: 'POP02', name: 'Population 2', valueType: 'NUMBER' },
+  DIF01_DHIS: {
+    id: '101',
+    uid: 'id000DIF01_DHIS',
+    code: 'DIF01_DHIS',
+    name: 'Different 1',
+    valueType: 'NUMBER',
+  },
 };
 
 export const DATA_ELEMENTS_BY_GROUP = {

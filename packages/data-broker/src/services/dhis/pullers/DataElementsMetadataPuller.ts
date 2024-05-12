@@ -8,62 +8,62 @@ import groupBy from 'lodash.groupby';
 import type { DhisApi } from '@tupaia/dhis-api';
 import { isNotNullish } from '@tupaia/tsutils';
 import { DataElementModel } from '../../../types';
+import { DataServiceMapping } from '../../DataServiceMapping';
 import { DataElement } from '../types';
 import { DhisTranslator } from '../translators';
-import type { PullMetadataOptions as BasePullMetadataOptions } from '../../Service';
 
-export type PullDataElementsOptions = BasePullMetadataOptions &
-  Partial<{
-    additionalFields: string[];
-    includeOptions: boolean;
-  }>;
+export type PullDataElementsMetadataOptions = {
+  dataServiceMapping: DataServiceMapping;
+  additionalFields?: string[];
+  includeOptions?: boolean;
+};
 
 export class DataElementsMetadataPuller {
-  private readonly dataSourceModel: DataElementModel;
+  private readonly dataElementModel: DataElementModel;
   private readonly translator: DhisTranslator;
 
-  public constructor(dataSourceModel: DataElementModel, translator: DhisTranslator) {
-    this.dataSourceModel = dataSourceModel;
+  public constructor(dataElementModel: DataElementModel, translator: DhisTranslator) {
+    this.dataElementModel = dataElementModel;
     this.translator = translator;
   }
 
-  private groupDataSourcesByDhisDataType = (dataSources: DataElement[]) =>
+  private groupDataElementsByDhisDataType = (dataElements: DataElement[]) =>
     groupBy(
-      dataSources,
-      d => d.config?.dhisDataType || this.dataSourceModel.getDhisDataTypes().DATA_ELEMENT,
+      dataElements,
+      d => d.config?.dhisDataType || this.dataElementModel.getDhisDataTypes().DATA_ELEMENT,
     );
 
   public pull = async (
     api: DhisApi,
-    dataSources: DataElement[],
-    options: PullDataElementsOptions,
+    dataElements: DataElement[],
+    options: PullDataElementsMetadataOptions,
   ) => {
-    const dataSourcesByDhisType = this.groupDataSourcesByDhisDataType(dataSources);
+    const dataElementsByDhisType = this.groupDataElementsByDhisDataType(dataElements);
     const metadata = [];
 
-    for (const entry of Object.entries(dataSourcesByDhisType)) {
-      const [dhisDataType, groupedDataSources] = entry;
-      const dataElementCodes = groupedDataSources.map(({ dataElementCode }) => dataElementCode);
-      if (dhisDataType === this.dataSourceModel.getDhisDataTypes().INDICATOR) {
+    for (const entry of Object.entries(dataElementsByDhisType)) {
+      const [dhisDataType, groupedDataElements] = entry;
+      const dataElementCodes = groupedDataElements.map(({ dataElementCode }) => dataElementCode);
+      if (dhisDataType === this.dataElementModel.getDhisDataTypes().INDICATOR) {
         const indicators = await api.fetchIndicators({ dataElementCodes });
         metadata.push(
-          ...this.translator.translateInboundIndicators(indicators, groupedDataSources),
+          ...this.translator.translateInboundIndicators(indicators, groupedDataElements),
         );
       } else {
-        const categoryOptionComboCodes = groupedDataSources
+        const categoryOptionComboCodes = groupedDataElements
           .map(ds => ds.config?.categoryOptionCombo)
           .filter(isNotNullish);
         const { additionalFields, includeOptions } = options;
-        const dataElements = await api.fetchDataElements(dataElementCodes, {
+        const fetchedDataElements = await api.fetchDataElements(dataElementCodes, {
           additionalFields,
           includeOptions,
         });
         const categoryOptionCombos = await api.fetchCategoryOptionCombos(categoryOptionComboCodes);
         metadata.push(
           ...this.translator.translateInboundDataElements(
-            dataElements,
+            fetchedDataElements,
             categoryOptionCombos,
-            groupedDataSources,
+            groupedDataElements,
           ),
         );
       }
