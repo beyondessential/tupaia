@@ -5,8 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText } from '../../components';
@@ -25,11 +23,6 @@ const Wrapper = styled.div`
       font-size: 0.875rem;
     }
   }
-`;
-
-const ClearButton = styled(IconButton)`
-  padding: 0.5rem;
-  margin-left: 0.5rem;
 `;
 
 type Base64 = string | null | ArrayBuffer;
