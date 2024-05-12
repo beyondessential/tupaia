@@ -3,17 +3,28 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const FILTER_TYPE_TO_METHOD = {
+const FILTER_TYPE_TO_METHOD: {
+  [key: string]: (entity: Record<string, any>, field: string, filterValue: any) => boolean;
+} = {
   '=': (entity, field, filterValue) => entity[field] === filterValue,
   in: (entity, field, filterValue) => filterValue.includes(entity[field]),
 };
 
-const applyFilter = (entities, field, operator, value) => {
+const applyFilter = (
+  entities: Record<string, any>[],
+  field: string,
+  operator: string,
+  value: any,
+) => {
   const filterMethod = FILTER_TYPE_TO_METHOD[operator];
   return filterMethod ? entities.filter(entity => filterMethod(entity, field, value)) : entities;
 };
 
-const filterByObjectField = (entities, field, filterValue) => {
+const filterByObjectField = (
+  entities: Record<string, any>[],
+  field: string,
+  filterValue: Record<string, any>,
+) => {
   if (typeof filterValue !== 'object') {
     throw new Error(`Filtering by ${field} expects an object`);
   }
@@ -25,7 +36,12 @@ const filterByObjectField = (entities, field, filterValue) => {
   return filteredEntities;
 };
 
-const filterByPlainField = (entities, field, filterValue, operator = '=') => {
+const filterByPlainField = (
+  entities: Record<string, any>[],
+  field: string,
+  filterValue: any,
+  operator = '=',
+) => {
   if (typeof filterValue === 'object') {
     let filteredEntities = entities;
 
@@ -53,7 +69,10 @@ const filterByPlainField = (entities, field, filterValue, operator = '=') => {
  * }
  * ```
  */
-export const filterEntities = (entities, entityFilter) => {
+export const filterEntities = (
+  entities: Record<string, any>[],
+  entityFilter: Record<string, any>,
+) => {
   let filteredEntities = entities;
 
   Object.entries(entityFilter).forEach(([field, filterValue]) => {

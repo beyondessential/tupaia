@@ -30,7 +30,7 @@ describe('filterEntities', () => {
   };
   const entityList = Object.values(ENTITIES);
 
-  const testData = [
+  const testData: [string, Record<string, any>, Record<string, any>[]][] = [
     ['non object field - single result', { code: 'TO' }, [ENTITIES.TO]],
     ['non object field - multiple results', { type: 'country' }, [ENTITIES.TO, ENTITIES.LA]],
     [

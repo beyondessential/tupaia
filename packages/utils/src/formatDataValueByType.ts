@@ -18,34 +18,40 @@ export const VALUE_TYPES = {
 };
 
 // Note: will display 0 if passed undefined
-const currency = value => numeral(value).format('$0.00a');
+const currency = (value: any): string => numeral(value).format('$0.00a');
 
-const fraction = (value, { total }) => {
+const fraction = (value: any, { total }: { total: any }) => {
   if (isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
 
-const fractionAndPercentage = (value, { numerator, denominator }) => {
+const fractionAndPercentage = (
+  value: any,
+  { numerator, denominator }: { numerator: any; denominator: any },
+) => {
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
 
-const numberAndPercentage = (value, { numerator, denominator }) => {
+const numberAndPercentage = (
+  value: any,
+  { numerator, denominator }: { numerator: any; denominator: any },
+) => {
   if (isNaN(value)) return value;
   const percentage = (numerator / denominator) * 100;
   return `${value} (${percentage === 0 ? 0 : percentage.toFixed(1)}%)`;
 };
 
-const text = value => String(value);
+const text = (value: any) => String(value);
 
 /**
  * Note: boolean types are no return a react component
  * The MultiValueWrapper component needs to be updated to handle this when tupaia is moved to use ui-components
  * @see: https://github.com/beyondessential/tupaia-backlog/issues/2156
  */
-const boolean = value => value > 0;
+const boolean = (value: any) => value > 0;
 
-const percentage = value => {
+const percentage = (value: any) => {
   if (isNaN(value)) {
     return value;
   }
@@ -71,15 +77,18 @@ const percentage = value => {
   return `${Math.round(percentageValue * floatNormalizer) / floatNormalizer}%`;
 };
 
-const number = (value, { presentationOptions }) => {
+const number = (
+  value: any,
+  { presentationOptions }: { presentationOptions: { valueFormat?: string } },
+) => {
   const valueFormat = presentationOptions?.valueFormat ? presentationOptions.valueFormat : '0,0';
   return Number.isNaN(Number(value)) ? value : numeral(value).format(valueFormat);
 };
 
-const defaultFormatter = input =>
+const defaultFormatter = (input: any) =>
   Number.isNaN(Number(input)) ? input : numeral(input).format('0.[00]');
 
-const oneDecimalPlace = input =>
+const oneDecimalPlace = (input: any) =>
   Number.isNaN(Number(input)) ? input : numeral(input).format('0.[0]');
 
 const VALUE_TYPE_TO_FORMATTER = {
@@ -94,7 +103,10 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.ONE_DECIMAL_PLACE]: oneDecimalPlace,
 };
 
-export const formatDataValueByType = ({ value, metadata = {} }, valueType) => {
+export const formatDataValueByType = (
+  { value, metadata = {} }: { value: any; metadata?: any },
+  valueType: any,
+) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
   return formatter(value, metadata);
 };

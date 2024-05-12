@@ -2,23 +2,23 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import * as path from 'path';
+import * as Stream from 'stream';
+import sanitize from 'sanitize-filename';
 
-/**
- *  @template T the type of expected file contents
- *  @returns {T}
- */
-export const readJsonFile = filePath =>
+export const readJsonFile = (filePath: string) =>
   JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
 
-export const writeJsonFile = (filePath, json) =>
+export const writeJsonFile = (filePath: string, json: any) =>
   fs.writeFileSync(filePath, `${JSON.stringify(json, null, 2)}\n`);
 
-export const getNestedFiles = (dirPath, options = {}) => {
-  const files = [];
-  const findNestedFilesRecursively = currentDirPath => {
+export const getNestedFiles = (
+  dirPath: string,
+  options: { extensions: string[] } = { extensions: [] },
+) => {
+  const files: string[] = [];
+  const findNestedFilesRecursively = (currentDirPath: string) => {
     fs.readdirSync(currentDirPath, { withFileTypes: true }).forEach(dirent => {
       const fullPath = `${currentDirPath}/${dirent.name}`;
       if (dirent.isFile()) {
@@ -31,12 +31,10 @@ export const getNestedFiles = (dirPath, options = {}) => {
 
   findNestedFilesRecursively(path.resolve(dirPath));
 
-  return options.extensions
-    ? files.filter(filePath => options.extensions.some(ext => path.extname(filePath) === ext))
-    : options;
+  return files.filter(filePath => options.extensions.some(ext => path.extname(filePath) === ext));
 };
 
-export const toFilename = (string, stripSpecialAndLowercase = false) => {
+export const toFilename = (string: string, stripSpecialAndLowercase = false) => {
   const maxLength = 255;
   let sanitized = sanitize(string);
 
@@ -52,7 +50,7 @@ export const toFilename = (string, stripSpecialAndLowercase = false) => {
   return sanitized.length <= maxLength ? sanitized : sanitized.slice(0, maxLength);
 };
 
-export const writeStreamToFile = async (filePath, stream) =>
+export const writeStreamToFile = async (filePath: string, stream: Stream) =>
   new Promise((resolve, reject) => {
     const fileStream = fs.createWriteStream(filePath);
     stream.pipe(fileStream);
@@ -63,11 +61,8 @@ export const writeStreamToFile = async (filePath, stream) =>
 /**
  * "Unique Filenames" e.g. "5da02ed278d10e8695530688_Report.pdf" are used to be able to work with uploaded files without
  * worrying about name clashes. The actual fileName is prefixed with a unique string. The delimiter is '_'.
- *
- * @param uniqueFileName
- * @return {{fileName: string, uniqueId: string}}
  */
-export const getUniqueFileNameParts = uniqueFileName => {
+export const getUniqueFileNameParts = (uniqueFileName: string) => {
   const indexOfFirstUnderscore = uniqueFileName.indexOf('_');
   if (indexOfFirstUnderscore === -1) throw new Error('Incorrect uniqueFileName format');
   return {
@@ -78,12 +73,12 @@ export const getUniqueFileNameParts = uniqueFileName => {
 
 /**
  * Returns Certificate.pdf, Certificate(1).pdf, Certificate(2).pdf etc.
- * @param {string} inputFileName
- * @param {string[]} allFileNames
- * @param {number} [attempt]
- * @return {string}
  */
-export const getDeDuplicatedFileName = (inputFileName, allFileNames, attempt = 0) => {
+export const getDeDuplicatedFileName = (
+  inputFileName: string,
+  allFileNames: string[],
+  attempt = 0,
+): string => {
   if (allFileNames.length === 0) return inputFileName;
 
   if (attempt === 0) {

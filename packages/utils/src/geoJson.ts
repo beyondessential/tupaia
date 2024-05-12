@@ -1,13 +1,14 @@
-/**
- * @typedef {[number, number]} Point
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
+type Point = [number, number];
+
 /**
- * swap from lng lat to lat lng and keep longitude within [0, 360)
- * @param {Point} coords
- * @returns {Point}
+ * swap from lng lat to lat lng and keep longitude within [0, 360]
  */
-function flipLatLng(coords) {
+function flipLatLng(coords: Point): Point {
   const [lng, lat] = coords;
   return [lat, (360 + lng) % 360];
 }
@@ -27,10 +28,8 @@ function flipLatLngRecursive(coords) {
 
 /**
  * Convert point geojson string into [lat, lng]
- * @param {string | null} pointGeoJsonString
- * @returns {Point | null} [lat, lng]
  */
-export function translatePoint(pointGeoJsonString) {
+export function translatePoint(pointGeoJsonString?: string) {
   if (!pointGeoJsonString) return null;
   const pointGeoJson = JSON.parse(pointGeoJsonString);
   return flipLatLng(pointGeoJson.coordinates);
@@ -38,10 +37,8 @@ export function translatePoint(pointGeoJsonString) {
 
 /**
  * Convert bounds geojson string into [topLeft, bottomRight]
- * @param {string | null} boundsGeoJsonString
- * @returns {[Point, Point] | null} [topLeft, bottomRight]
  */
-export function translateBounds(boundsGeoJsonString) {
+export function translateBounds(boundsGeoJsonString?: string) {
   if (!boundsGeoJsonString) return null;
   const boundsGeoJson = JSON.parse(boundsGeoJsonString);
   const box = boundsGeoJson.coordinates[0];
@@ -53,10 +50,8 @@ export function translateBounds(boundsGeoJsonString) {
 
 /**
  * Convert region geojson string into [[[pointA, pointB, pointC, ...]]]
- * @param {string | null} regionGeoJsonString
- * @returns {Point[][][] | null} [[[pointA, pointB, pointC, ...]]]
  */
-export function translateRegion(regionGeoJsonString) {
+export function translateRegion(regionGeoJsonString?: string) {
   if (!regionGeoJsonString) return null;
 
   const regionGeoJson = JSON.parse(regionGeoJsonString);
@@ -69,9 +64,10 @@ export function translateRegion(regionGeoJsonString) {
 /**
  * Calculates the largest bounding box from a list of bounds.
  * @param {(string | null)[]} listOfBounds
- * @returns {[Point, Point] | null} [topLeft, bottomRight]
+ * Returns {[Point, Point] | null} [topLeft, bottomRight]
  */
-export const calculateOuterBounds = listOfBounds => {
+// FIXME: what is null doing here
+export const calculateOuterBounds = (listOfBounds: (string | null)[]): null | [Point, Point] => {
   const bounds = listOfBounds.map(translateBounds).filter(x => x !== null);
   if (bounds.length === 0) {
     return null;
