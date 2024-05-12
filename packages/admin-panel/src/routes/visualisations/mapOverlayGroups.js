@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
 const FIELDS = [
@@ -24,7 +25,7 @@ const COLUMNS = [
     type: 'edit',
     actionConfig: {
       title: 'Edit Map Overlay Group',
-      editEndpoint: 'mapOverlayGroups',
+      editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
       fields: FIELDS,
     },
   },
