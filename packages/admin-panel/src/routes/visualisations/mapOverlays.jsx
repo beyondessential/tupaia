@@ -87,8 +87,6 @@ const extraEditFields = [
   {
     Header: 'Linked measures',
     source: 'linked_measures',
-    width: 160,
-    Cell: ({ value }) => prettyArray(value),
     Filter: ArrayFilter,
     editConfig: {
       optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
@@ -100,8 +98,6 @@ const extraEditFields = [
   {
     Header: 'Entity attributes filters',
     source: 'entity_attributes_filter',
-    type: 'jsonTooltip',
-    width: 200,
     editConfig: {
       type: 'jsonEditor',
       secondaryLabel: (
