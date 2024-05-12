@@ -27,8 +27,8 @@ const OPTION_SET_COLUMNS = [
     source: 'id',
     actionConfig: {
       title: 'Edit Option Set',
-      editEndpoint: 'optionSet',
       fields: [...OPTION_SET_FIELDS],
+      editEndpoint: 'optionSets',
     },
   },
 ];
