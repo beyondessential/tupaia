@@ -17,7 +17,7 @@ const OPTION_SET_COLUMNS = [
     // source: 'id',
     type: 'export',
     actionConfig: {
-      exportEndpoint: 'optionSet',
+      exportEndpoint: 'optionSets',
       fileName: '{name}',
     },
   },

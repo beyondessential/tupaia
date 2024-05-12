@@ -18,7 +18,7 @@ exportRoutes.get('/download/:fileName', useRouteHandler(DownloadHandler));
 
 exportRoutes.use(emailAfterTimeout(constructExportEmail));
 
-exportRoutes.get('/optionSet/:optionSetId', catchAsyncErrors(exportOptionSet));
+exportRoutes.get('/optionSets/:optionSetId', catchAsyncErrors(exportOptionSet));
 exportRoutes.get('/surveyResponses', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveyResponses/:surveyResponseId', catchAsyncErrors(exportSurveyResponses));
 exportRoutes.get('/surveys', catchAsyncErrors(exportSurveys));
