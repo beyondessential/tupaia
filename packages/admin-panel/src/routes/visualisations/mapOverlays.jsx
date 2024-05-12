@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
@@ -35,11 +34,35 @@ const FIELDS = [
     },
   },
   {
+    Header: 'Linked Measures',
+    source: 'linked_measures',
+    width: 160,
+    Cell: ({ value }) => prettyArray(value),
+    Filter: ArrayFilter,
+    editConfig: {
+      optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
+      optionLabelKey: 'id',
+      sourceKey: 'linked_measures',
+      allowMultipleValues: true,
+    },
+  },
+  {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
     width: 200,
     editConfig: { type: 'jsonEditor' },
+  },
+  {
+    Header: 'Entity attributes filters',
+    source: 'entity_attributes_filter',
+    type: 'jsonTooltip',
+    width: 200,
+    editConfig: {
+      type: 'jsonEditor',
+      secondaryLabel:
+        'This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. E.g. {"facility_type": "Hospital"}',
+    },
   },
   {
     Header: 'Country Codes',
@@ -68,6 +91,12 @@ const FIELDS = [
       sourceKey: 'project_codes',
       allowMultipleValues: true,
     },
+  },
+  {
+    Header: 'Report Code',
+    source: 'report_code',
+    width: 140,
+    type: 'tooltip',
   },
   {
     Header: 'Legacy',
