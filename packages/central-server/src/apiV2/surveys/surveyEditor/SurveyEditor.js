@@ -111,6 +111,7 @@ export class SurveyEditor {
 
     if (countryIds || projectId) {
       const surveyProjectId = projectId ?? existingSurvey?.project_id;
+
       const countryIdsToValidate = countryIds ?? existingSurvey?.country_ids;
       await validateSurveyCountries(
         transactingModels,

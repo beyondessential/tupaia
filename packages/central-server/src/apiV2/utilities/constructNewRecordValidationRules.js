@@ -406,7 +406,7 @@ export const constructForSingle = (models, recordType) => {
             );
             if (invalidCountries.length > 0) {
               throw new Error(
-                `The following countries are not part of project '${projectCode}': ${invalidCountries.join(
+                `The following countries are not part of the project: ${invalidCountries.join(
                   ', ',
                 )}`,
               );
