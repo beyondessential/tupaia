@@ -59,7 +59,9 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [LOAD_EDITOR]: payload => ({ ...payload, errorMessage: '' }),
+  [LOAD_EDITOR]: payload => {
+    return { ...payload, errorMessage: '' };
+  },
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
     editedFields: {

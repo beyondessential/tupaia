@@ -385,7 +385,7 @@ export const constructForSingle = (models, recordType) => {
         name: [isAString, constructIsShorterThan(50)],
         'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
         countryNames: [
-          async countryNames => {
+          async (countryNames, { 'project.code': projectCode }) => {
             if (countryNames.length < 1) {
               throw new Error('Must specify at least one country');
             }
@@ -394,6 +394,22 @@ export const constructForSingle = (models, recordType) => {
             });
             if (countryEntities.length !== countryNames.length) {
               throw new Error('One or more provided countries do not exist');
+            }
+            const project = await models.project.findOne({
+              code: projectCode,
+            });
+
+            const projectCountries = await project.countries();
+            const projectCountryNames = projectCountries.map(country => country.name);
+            const invalidCountries = countryNames.filter(
+              countryName => !projectCountryNames.includes(countryName),
+            );
+            if (invalidCountries.length > 0) {
+              throw new Error(
+                `The following countries are not part of project '${projectCode}': ${invalidCountries.join(
+                  ', ',
+                )}`,
+              );
             }
             return true;
           },

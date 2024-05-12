@@ -10,6 +10,7 @@ import { useEditSurveyField } from './useEditSurveyField';
 
 export const SurveyEditFields = ({ fields, recordData, onEditField, ...restOfProps }) => {
   const handleEditField = useEditSurveyField(recordData, onEditField);
+  console.log('recordData', recordData);
 
   return (
     <FieldsEditor

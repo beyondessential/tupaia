@@ -24,8 +24,8 @@ CreateButtonComponent.defaultProps = {
 
 const mapDispatchToProps = (dispatch, { actionConfig }) => ({
   openCreateModal: () => {
-    dispatch(openEditModal());
     dispatch(loadEditor(actionConfig));
+    dispatch(openEditModal());
   },
 });
 

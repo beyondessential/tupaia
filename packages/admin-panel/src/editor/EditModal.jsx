@@ -32,18 +32,10 @@ export const EditModalComponent = withConnectedEditor(
     cancelButtonText,
     saveButtonText,
     extraDialogProps,
-    loadEditor,
-    actionConfig,
-    recordId,
   }) => {
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
-    useEffect(() => {
-      if (isOpen) {
-        loadEditor(actionConfig, recordId);
-      }
-    }, [isOpen]);
 
     const buttons = [
       {

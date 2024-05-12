@@ -5,6 +5,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
+import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
@@ -14,6 +15,7 @@ import { withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
+import { loadEditor } from '../../../editor/actions';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -80,7 +82,7 @@ const StickyFooter = styled.div`
   padding: 1.5rem;
 `;
 
-export const EditSurveyPage = withConnectedEditor(
+const EditSurveyPageComponent = withConnectedEditor(
   ({
     parent,
     errorMessage,
@@ -89,7 +91,7 @@ export const EditSurveyPage = withConnectedEditor(
     fields,
     recordData,
     onEditField,
-    loadEditor,
+    loadEditorData,
     isUnchanged,
     onSave,
     resetEdits,
@@ -102,7 +104,7 @@ export const EditSurveyPage = withConnectedEditor(
     useEffect(() => {
       const editorColumn = parent?.columns?.find(column => column.type === 'edit');
       if (!editorColumn) return;
-      loadEditor(editorColumn?.actionConfig, params.id);
+      loadEditorData(editorColumn?.actionConfig, params.id);
     }, [params.id, JSON.stringify(parent)]);
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
@@ -211,17 +213,24 @@ export const EditSurveyPage = withConnectedEditor(
   },
 );
 
-EditSurveyPage.propTypes = {
+EditSurveyPageComponent.propTypes = {
   parent: PropTypes.object,
   displayProperty: PropTypes.string,
   title: PropTypes.string,
   getDisplayValue: PropTypes.func,
   fields: PropTypes.object.isRequired,
+  loadEditorData: PropTypes.func.isRequired,
 };
 
-EditSurveyPage.defaultProps = {
+EditSurveyPageComponent.defaultProps = {
   parent: null,
   displayProperty: 'id',
   title: '',
   getDisplayValue: null,
 };
+
+const mapDispatchToProps = dispatch => ({
+  loadEditorData: (actionConfig, recordId) => dispatch(loadEditor(actionConfig, recordId)),
+});
+
+export const EditSurveyPage = connect(null, mapDispatchToProps)(EditSurveyPageComponent);

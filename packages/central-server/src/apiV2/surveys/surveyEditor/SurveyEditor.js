@@ -12,6 +12,7 @@ import { assertCanImportSurvey } from '../assertCanImportSurvey';
 import { updateOrCreateDataGroup } from './updateOrCreateDataGroup';
 import { validateSurveyServiceType } from './validateSurveyServiceType';
 import { updateDataElementsConfig } from './updateDataElementsConfig';
+import { validateSurveyCountries } from './validateSurveyCountries';
 
 export class SurveyEditor {
   constructor(models, assertPermissions) {
@@ -106,6 +107,17 @@ export class SurveyEditor {
 
     if (serviceType) {
       await validateSurveyServiceType(transactingModels, surveyId, serviceType);
+    }
+
+    if (countryIds || projectId) {
+      const surveyProjectId = projectId ?? existingSurvey?.project_id;
+      const countryIdsToValidate = countryIds ?? existingSurvey?.country_ids;
+      await validateSurveyCountries(
+        transactingModels,
+        surveyId,
+        countryIdsToValidate,
+        surveyProjectId,
+      );
     }
 
     try {
