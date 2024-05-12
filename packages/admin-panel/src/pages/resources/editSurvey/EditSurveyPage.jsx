@@ -183,7 +183,6 @@ export const EditSurveyPage = withConnectedEditor(
               fields={orderedFields}
               recordData={recordData}
               onEditField={onEditField}
-              onSetFormFile={handleSetFormFile}
             />
           </Section>
         </Form>
