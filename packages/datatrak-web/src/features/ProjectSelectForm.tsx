@@ -26,12 +26,19 @@ const LoadingContainer = styled.div`
 const ListWrapper = styled.div<{
   $variant?: 'modal' | 'page';
 }>`
-  max-height: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   display: flex;
   flex-direction: column;
   overflow: auto;
+
+  // Keep body text styling, even if component is child of a paragraph/heading
+  font-size: ${({ theme }) => theme.typography.body1.fontSize};
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: 0.01071em;
+
+  max-block-size: ${({ $variant }) => ($variant === 'modal' ? 'none' : '35rem')};
   ${({ theme }) => theme.breakpoints.up('sm')} {
-    max-height: 35rem;
+    max-block-size: 35rem;
   }
 `;
 

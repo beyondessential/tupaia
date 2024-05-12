@@ -112,6 +112,9 @@ jobs:
       DATA_LAKE_DB_URL: localhost
       DATA_LAKE_DB_USER: tupaia
 
+      # viz-test-tool
+      SLACK_BOT_OAUTH_TOKEN: cat1234
+
     strategy:
       fail-fast: false
       matrix:
@@ -150,6 +153,7 @@ jobs:
           - ui-components
           - ui-map-components
           - utils
+          - viz-test-tool
           - weather-api
           - web-config-server
 

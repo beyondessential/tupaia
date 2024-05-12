@@ -110,10 +110,6 @@ const ProfileTabViewComponent = React.memo(({ user, onUpdateProfile }) => {
             onDelete={handleFileDelete}
             avatarInitial={userInitial}
             label="Your avatar"
-            deleteModal={{
-              title: 'Remove Photo',
-              message: 'Are you sure you want to delete your photo?',
-            }}
           />
           <Divider />
           <TextField

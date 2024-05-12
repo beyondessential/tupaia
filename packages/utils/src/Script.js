@@ -26,13 +26,18 @@ import { getLoggerInstance } from './getLoggerInstance';
  * @param {ScriptConfig} scriptConfig
  */
 export const getArgs = scriptConfig => {
-  const allowedYargsKeys = ['command', 'options', 'usage', 'version'];
+  const allowedYargsKeys = ['scriptName', 'command', 'options', 'usage', 'version'];
 
   const yargs = require('yargs');
   yargs.strict();
   Object.entries(scriptConfig).forEach(([key, value]) => {
     if (allowedYargsKeys.includes(key)) {
-      yargs[key](value);
+      // Allows for multiple calls to the same yargs function (eg. { command: ['format', 'lint'] })
+      if (Array.isArray(value)) {
+        value.forEach(individualValue => yargs[key](individualValue));
+      } else {
+        yargs[key](value);
+      }
     }
   });
   return yargs.argv;

@@ -13,7 +13,6 @@ export * from './Card';
 export * from './CardTabs';
 export * from './CheckboxList';
 export * from './CircleMeter';
-export * from './ConfirmDeleteModal';
 export * from './DataGrid';
 export * from './DataTable';
 export * from './DateRangePicker';

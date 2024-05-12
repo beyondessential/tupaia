@@ -7,17 +7,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '../../widgets';
 import { openBulkEditModal } from '../../editor/actions';
+import { ColumnActionButton } from './ColumnActionButton';
 
-export const BulkEditButtonComponent = ({ dispatch, value: recordId, actionConfig, row }) => {
+export const BulkEditButtonComponent = ({ dispatch, actionConfig, row }) => {
+  const recordId = row.id;
   return (
-    <IconButton
+    <ColumnActionButton
       id="page-button-bulk-edit"
-      onClick={() => dispatch(openBulkEditModal(actionConfig, recordId, row))}
+      title="Bulk edit"
+      onClick={() => dispatch(openBulkEditModal(actionConfig, recordId, row.original))}
     >
       <EditIcon />
-    </IconButton>
+    </ColumnActionButton>
   );
 };
 
@@ -29,7 +31,6 @@ BulkEditButtonComponent.propTypes = {
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   row: PropTypes.object.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export const BulkEditButton = connect()(BulkEditButtonComponent);
