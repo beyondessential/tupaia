@@ -14,8 +14,6 @@ import { InputHelperText } from '../../components';
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
   label {
     display: flex;
     flex-direction: column;
@@ -57,18 +55,19 @@ export const FileQuestion = ({
   controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
   const handleChange = async (_e, _name, files) => {
+    if (!files) {
+      onChange(null);
+      return;
+    }
     const file = files[0];
     const encodedFile = await createEncodedFile(file);
     // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
     onChange({
-      name: file.name,
+      name: file?.name,
       value: encodedFile,
     });
   };
 
-  const handleClearFile = () => {
-    onChange(null);
-  };
   return (
     <Wrapper>
       <FileUploadField
@@ -82,11 +81,6 @@ export const FileQuestion = ({
         FormHelperTextComponent={InputHelperText}
         required={required}
       />
-      {selectedFile?.value && (
-        <ClearButton title="Clear file" onClick={handleClearFile}>
-          <Close />
-        </ClearButton>
-      )}
     </Wrapper>
   );
 };
