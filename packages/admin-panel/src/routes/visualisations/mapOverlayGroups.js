@@ -7,6 +7,11 @@ const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
 const FIELDS = [
   {
+    Header: 'ID',
+    source: 'id',
+    show: false,
+  },
+  {
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
