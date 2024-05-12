@@ -37,9 +37,8 @@ export const useRequestCountryAccess = () => {
             queryKey: ['landingPage', landingPageUrlSegment],
           });
         }
-        queryClient.invalidateQueries({
-          queryKey: ['projects'],
-        });
+
+        queryClient.invalidateQueries({ queryKey: ['projects'] });
       },
     },
   );

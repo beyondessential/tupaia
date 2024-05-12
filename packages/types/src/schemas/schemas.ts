@@ -83932,6 +83932,98 @@ export const ApprovalStatusSchema = {
 	"type": "string"
 } 
 
+export const ParamsSchema = {
+	"type": "object",
+	"properties": {
+		"projectCode": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectCode"
+	]
+} 
+
+export const CountryAccessObjectSchema = {
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"code": {
+			"type": "string"
+		},
+		"hasAccess": {
+			"type": "boolean"
+		},
+		"hasPendingAccess": {
+			"type": "boolean"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"code",
+		"hasAccess",
+		"hasPendingAccess",
+		"id",
+		"name"
+	]
+} 
+
+export const ResBodySchema = {
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"id": {
+				"type": "string"
+			},
+			"name": {
+				"type": "string"
+			},
+			"code": {
+				"type": "string"
+			},
+			"hasAccess": {
+				"type": "boolean"
+			},
+			"hasPendingAccess": {
+				"type": "boolean"
+			}
+		},
+		"additionalProperties": false,
+		"required": [
+			"code",
+			"hasAccess",
+			"hasPendingAccess",
+			"id",
+			"name"
+		]
+	}
+} 
+
+export const ReqBodySchema = {
+	"type": "object",
+	"additionalProperties": false
+} 
+
+export const ReqQuerySchema = {
+	"type": "object",
+	"properties": {
+		"projectId": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false,
+	"required": [
+		"projectId"
+	]
+} 
+
 export const IdSchema = {
 	"type": "string"
 } 
@@ -84188,39 +84280,6 @@ export const MeditrakSurveyResponseRequestSchema = {
 	]
 } 
 
-export const CountryAccessResponseSchema = {
-	"description": "Tupaia\nCopyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd",
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
-		"code": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"code",
-		"hasAccess",
-		"id",
-		"name"
-	]
-} 
-
 export const DataTablePreviewRequestSchema = {
 	"type": "object",
 	"properties": {
@@ -84265,19 +84324,6 @@ export const DataTablePreviewRequestSchema = {
 		"config",
 		"permission_groups",
 		"type"
-	]
-} 
-
-export const ParamsSchema = {
-	"type": "object",
-	"properties": {
-		"projectCode": {
-			"type": "string"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"projectCode"
 	]
 } 
 
@@ -84372,9 +84418,6 @@ export const ProjectResponseSchema = {
 		"sortOrder": {
 			"type": "number"
 		},
-		"name": {
-			"type": "string"
-		},
 		"hasAccess": {
 			"type": "boolean"
 		},
@@ -84383,122 +84426,15 @@ export const ProjectResponseSchema = {
 		},
 		"homeEntityCode": {
 			"type": "string"
-		}
-	},
-	"required": [
-		"code",
-		"config",
-		"hasAccess",
-		"hasPendingAccess",
-		"homeEntityCode",
-		"id",
-		"name",
-		"permissionGroups"
-	]
-} 
-
-export const ResBodySchema = {
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"code": {
+		},
+		"name": {
 			"type": "string"
 		},
-		"config": {
-			"type": "object",
-			"properties": {
-				"frontendExcluded": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"types": {
-								"type": "array",
-								"items": {
-									"type": "string"
-								}
-							},
-							"exceptions": {
-								"type": "object",
-								"properties": {
-									"permissionGroups": {
-										"type": "array",
-										"items": {
-											"type": "string"
-										}
-									}
-								},
-								"additionalProperties": false,
-								"required": [
-									"permissionGroups"
-								]
-							}
-						},
-						"additionalProperties": false,
-						"required": [
-							"types"
-						]
-					}
-				},
-				"permanentRegionLabels": {
-					"type": "boolean"
-				},
-				"tileSets": {
-					"type": "string"
-				},
-				"includeDefaultTileSets": {
-					"type": "boolean"
-				},
-				"projectDashboardHeader": {
-					"type": "string"
-				}
-			},
-			"additionalProperties": false
-		},
-		"dashboardGroupName": {
-			"type": "string"
-		},
-		"defaultMeasure": {
-			"type": "string"
-		},
-		"description": {
-			"type": "string"
-		},
-		"entityHierarchyId": {
-			"type": "string"
-		},
-		"entityId": {
-			"type": "string"
-		},
-		"id": {
-			"type": "string"
-		},
-		"imageUrl": {
-			"type": "string"
-		},
-		"logoUrl": {
-			"type": "string"
-		},
-		"permissionGroups": {
+		"names": {
 			"type": "array",
 			"items": {
 				"type": "string"
 			}
-		},
-		"sortOrder": {
-			"type": "number"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		},
-		"homeEntityCode": {
-			"type": "string"
 		}
 	},
 	"required": [
@@ -84511,16 +84447,6 @@ export const ResBodySchema = {
 		"name",
 		"permissionGroups"
 	]
-} 
-
-export const ReqBodySchema = {
-	"type": "object",
-	"additionalProperties": false
-} 
-
-export const ReqQuerySchema = {
-	"type": "object",
-	"additionalProperties": false
 } 
 
 export const VisibilityCriteriaSchema = {
@@ -85004,34 +84930,6 @@ export const CamelCaseFeedItemSchema = {
 	"additionalProperties": false,
 	"required": [
 		"id"
-	]
-} 
-
-export const CountryAccessSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"accessRequests": {
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"accessRequests",
-		"hasAccess",
-		"id",
-		"name"
 	]
 } 
 
@@ -97394,31 +97292,6 @@ export const TranslatedMapOverlayGroupSchema = {
 
 export const OverlayChildSchema = {
 	"$ref": "#/definitions/OverlayChild"
-} 
-
-export const CountryAccessObjectSchema = {
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "string"
-		},
-		"name": {
-			"type": "string"
-		},
-		"hasAccess": {
-			"type": "boolean"
-		},
-		"hasPendingAccess": {
-			"type": "boolean"
-		}
-	},
-	"additionalProperties": false,
-	"required": [
-		"hasAccess",
-		"hasPendingAccess",
-		"id",
-		"name"
-	]
 } 
 
 export const SubscribeDashboardResponseSchema = {
