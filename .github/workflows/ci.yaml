@@ -83,6 +83,7 @@ jobs:
 
   run_tests:
     name: Run tests
+    timeout-minutes: 15 # Sometimes Jest does not exit properly for meditrak-app-server tests
     runs-on: ubuntu-latest
     env:
       # common
