@@ -28,7 +28,12 @@ export const CurrentUserContextProvider = ({ children }: { children: React.React
   }
 
   if (currentUserQuery.isError) {
-    return <ErrorDisplay title="Error loading user" error={currentUserQuery.error as Error} />;
+    return (
+      <ErrorDisplay
+        title="Error loading user"
+        errorMessage={(currentUserQuery.error as Error)?.message}
+      />
+    );
   }
 
   const data = currentUserQuery.data;

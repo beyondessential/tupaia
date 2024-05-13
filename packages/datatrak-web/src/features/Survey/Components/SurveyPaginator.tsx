@@ -11,9 +11,11 @@ import { useSurveyForm } from '../SurveyContext';
 import { Button } from '../../../components';
 import { useIsMobile } from '../../../utils';
 
-const FormActions = styled.div`
+const FormActions = styled.div<{
+  $hasBackButton: boolean;
+}>`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ $hasBackButton }) => ($hasBackButton ? 'space-between' : 'flex-end')};
   align-items: center;
   padding: 1rem 0.5rem;
   border-top: 1px solid ${props => props.theme.palette.divider};
@@ -27,6 +29,7 @@ const FormActions = styled.div`
 
 const ButtonGroup = styled.div`
   display: flex;
+  float: right;
   button,
   a {
     &:last-child {
@@ -48,15 +51,21 @@ const BackButton = styled(Button).attrs({
   }
 `;
 
-type SurveyLayoutContextT = { isLoading: boolean; onStepPrevious: () => void };
+type SurveyLayoutContextT = {
+  isLoading: boolean;
+  onStepPrevious: () => void;
+  hasBackButton: boolean;
+};
 
 export const SurveyPaginator = () => {
-  const { isLast, isReviewScreen, openCancelConfirmation } = useSurveyForm();
+  const { isLast, isReviewScreen, openCancelConfirmation, isResubmitReviewScreen } =
+    useSurveyForm();
   const isMobile = useIsMobile();
-  const { isLoading, onStepPrevious } = useOutletContext<SurveyLayoutContextT>();
+  const { isLoading, onStepPrevious, hasBackButton } = useOutletContext<SurveyLayoutContextT>();
 
   const getNextButtonText = () => {
     if (isReviewScreen) return 'Submit';
+    if (isResubmitReviewScreen) return 'Resubmit';
     if (isLast) {
       return isMobile ? 'Review' : 'Review and submit';
     }
@@ -66,10 +75,12 @@ export const SurveyPaginator = () => {
   const nextButtonText = getNextButtonText();
 
   return (
-    <FormActions>
-      <BackButton onClick={onStepPrevious} disabled={isLoading}>
-        Back
-      </BackButton>
+    <FormActions $hasBackButton={hasBackButton}>
+      {hasBackButton && (
+        <BackButton onClick={onStepPrevious} disabled={isLoading}>
+          Back
+        </BackButton>
+      )}
       <ButtonGroup>
         <Button onClick={openCancelConfirmation} variant="outlined" disabled={isLoading}>
           Cancel

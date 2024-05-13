@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -13,8 +13,9 @@ import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
 import { ROUTES } from '../../constants';
-import { useSubmitSurvey } from '../../api/mutations';
+import { useResubmitSurveyResponse, useSubmitSurvey } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
+import { useSurveyRouting } from './useSurveyRouting';
 
 const ScrollableLayout = styled.div<{
   $sideMenuClosed?: boolean;
@@ -82,9 +83,12 @@ export const SurveyLayout = () => {
     isReviewScreen,
     isResponseScreen,
     visibleScreens,
+    isResubmitReviewScreen,
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
+  const { mutate: resubmitSurveyResponse } = useResubmitSurveyResponse();
+  const { back, next } = useSurveyRouting(numberOfScreens);
 
   const handleStep = (path, data) => {
     updateFormData({ ...formData, ...data });
@@ -93,26 +97,11 @@ export const SurveyLayout = () => {
 
   const onStepPrevious = () => {
     const data = getValues();
-    let path = ROUTES.SURVEY_SELECT;
-    const prevScreenNumber = isReviewScreen ? numberOfScreens : screenNumber! - 1;
-    if (prevScreenNumber) {
-      path = generatePath(ROUTES.SURVEY_SCREEN, {
-        ...params,
-        screenNumber: String(prevScreenNumber),
-      });
-    }
-
-    handleStep(path, data);
+    handleStep(back, data);
   };
 
   const navigateNext = data => {
-    const path = isLast
-      ? generatePath(ROUTES.SURVEY_REVIEW, params)
-      : generatePath(ROUTES.SURVEY_SCREEN, {
-          ...params,
-          screenNumber: String(screenNumber! + 1),
-        });
-    handleStep(path, data);
+    handleStep(next, data);
   };
 
   const onError = errors => {
@@ -142,7 +131,8 @@ export const SurveyLayout = () => {
   };
 
   const onSubmit = data => {
-    if (isReviewScreen) return submitSurvey(data);
+    const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurvey;
+    if (isReviewScreen || isResubmitReviewScreen) return submitAction(data);
     return navigateNext(data);
   };
 
@@ -154,7 +144,7 @@ export const SurveyLayout = () => {
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
-            <Outlet context={{ onStepPrevious, isSubmittingSurvey }} />
+            <Outlet context={{ onStepPrevious, isSubmittingSurvey, hasBackButton: !!back }} />
             {isSubmittingSurvey && (
               <LoadingContainer>
                 <SpinningLoader />
