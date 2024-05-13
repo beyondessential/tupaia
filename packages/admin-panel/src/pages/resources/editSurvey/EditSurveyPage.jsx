@@ -79,7 +79,7 @@ const RowSection = styled(SectionBlock)`
 
 const StickyFooter = styled.div`
   border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
-  padding: 1.5rem;
+  padding: 1.25rem;
 `;
 
 const EditSurveyPageComponent = withConnectedEditor(
