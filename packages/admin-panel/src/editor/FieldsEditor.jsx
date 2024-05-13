@@ -125,7 +125,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
 
   return (
     <EditorWrapper className="fields">
-      {visibleFormItems.map(item => getFieldInput(item))}
+      {visibleFormItems.map(getFieldInput)}
     </EditorWrapper>
   );
 };
