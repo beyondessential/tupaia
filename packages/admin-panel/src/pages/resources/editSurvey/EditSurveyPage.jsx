@@ -160,6 +160,10 @@ const EditSurveyPageComponent = withConnectedEditor(
       onSave(files, navigateBack);
     };
 
+    const initialFileName = Array.isArray(recordData?.surveyQuestions)
+      ? null
+      : recordData?.surveyQuestions;
+
     return (
       <Wrapper>
         <Breadcrumbs
@@ -181,7 +185,7 @@ const EditSurveyPageComponent = withConnectedEditor(
                 handleSetFormFile('surveyQuestions', { fileName, file })
               }
               accept=".json"
-              fileName={recordData?.surveyQuestions?.fileName}
+              initialFileName={initialFileName}
               label="Survey questions"
             />
           </Section>
