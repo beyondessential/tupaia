@@ -16,6 +16,7 @@ import {
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { useCurrentUserContext, useSurvey } from '../api';
+import { ResubmitResponseRoute } from './ResubmitResponseRoute';
 
 // Redirect to the start of the survey if no screen number is provided
 const SurveyStartRedirect = () => {
@@ -46,7 +47,7 @@ const SurveyRoute = ({ children }) => {
   // Redirect to login page if the user is not logged in, otherwise show an error page
   if (isError) {
     return isLoggedIn ? (
-      <ErrorPage error={error as Error} title="Unable to fetch survey" />
+      <ErrorPage errorMessage={(error as Error)?.message} title="Unable to fetch survey" />
     ) : (
       <Navigate
         to="/login"
@@ -83,6 +84,10 @@ export const SurveyRoutes = (
           </SurveyPageRedirect>
         }
       />
+      <Route path={ROUTES.SURVEY_RESUBMIT} element={<ResubmitResponseRoute />}>
+        <Route path="screen/:screenNumber" element={<SurveyScreen />} />
+        <Route path="review" element={<SurveyReviewScreen />} />
+      </Route>
     </Route>
   </Route>
 );
