@@ -162,7 +162,7 @@ export const ImportModalComponent = React.memo(
     const onChangeFile = (event, newName) => {
       setFileName(newName);
       if (event?.target?.files?.length > 0) {
-        setFiles(Array.from(event?.target?.files));
+        setFiles(Array.from(event.target.files));
       } else {
         setFiles([]);
       }
