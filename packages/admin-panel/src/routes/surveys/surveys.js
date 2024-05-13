@@ -202,7 +202,7 @@ const SURVEY_COLUMNS = [
       title: 'Edit Survey',
       editEndpoint: 'surveys',
       link: `/surveys/:id/edit`,
-      fields: [...Object.values(SURVEY_FIELDS)],
+      fields: Object.values(SURVEY_FIELDS),
     },
   },
   {

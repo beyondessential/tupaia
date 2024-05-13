@@ -48,7 +48,7 @@ const Section = styled.section`
     border: none;
   }
 
-  @media screen and (min-width: 1200px) {
+  ${({ theme }) => theme.breakpoints.up('lg')} {
     .fields {
       flex-direction: row;
       display: flex;
@@ -126,30 +126,31 @@ const EditSurveyPageComponent = withConnectedEditor(
       'data_group.config': dataServiceConfig,
     } = fieldsBySource;
 
-    const orderedFields = fields.length
-      ? [
-          projectCode,
-          name,
-          code,
-          permissionGroupName,
-          surveyGroupName,
-          periodGranularity,
-          countryNames,
-          {
-            type: 'section',
-            WrapperComponent: SectionBlock,
-            fields: [
-              {
-                type: 'section',
-                WrapperComponent: RowSection,
-                fields: [canRepeat, requiresApproval],
-              },
-              dataServiceType,
-              dataServiceConfig,
-            ],
-          },
-        ]
-      : [];
+    const orderedFields =
+      fields.length > 0
+        ? [
+            projectCode,
+            name,
+            code,
+            permissionGroupName,
+            surveyGroupName,
+            periodGranularity,
+            countryNames,
+            {
+              type: 'section',
+              WrapperComponent: SectionBlock,
+              fields: [
+                {
+                  type: 'section',
+                  WrapperComponent: RowSection,
+                  fields: [canRepeat, requiresApproval],
+                },
+                dataServiceType,
+                dataServiceConfig,
+              ],
+            },
+          ]
+        : [];
 
     const navigateBack = () => {
       navigate('../../');

@@ -7,12 +7,12 @@ import BaseIcon from './BaseIcon';
 
 export const FilePicker = (props: SVGAttributes<HTMLOrSVGElement>) => (
   <BaseIcon
-    {...props}
     width="20"
     height="20"
     viewBox="0 0 20 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <path
       d="M17.7 3.39668C17.7 3.00005 17.3966 2.69668 17 2.69668L2.99995 2.69668C2.60332 2.69668 2.29995 3.00005 2.29995 3.39668C2.29995 3.79331 2.60332 4.09668 2.99995 4.09668L17 4.09668C17.3966 4.09668 17.7 3.77007 17.7 3.39668Z"
