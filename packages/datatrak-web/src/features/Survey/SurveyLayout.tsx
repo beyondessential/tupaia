@@ -147,9 +147,7 @@ export const SurveyLayout = () => {
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
-            <Outlet
-              context={{ onStepPrevious, isSubmittingSurvey: showLoader, hasBackButton: !!back }}
-            />
+            <Outlet context={{ onStepPrevious, isLoading: showLoader, hasBackButton: !!back }} />
             {showLoader && (
               <LoadingContainer>
                 <SpinningLoader />
