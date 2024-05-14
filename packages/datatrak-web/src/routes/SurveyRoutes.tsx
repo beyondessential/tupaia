@@ -13,6 +13,7 @@ import {
   SurveyReviewScreen,
   SurveyScreen,
   SurveySuccessScreen,
+  SurveyResubmitSuccessScreen,
 } from '../views';
 import { SurveyLayout, useSurveyForm } from '../features';
 import { useCurrentUserContext, useSurvey } from '../api';
@@ -73,6 +74,7 @@ export const SurveyRoutes = (
   >
     <Route index element={<SurveyStartRedirect />} />
     <Route path={ROUTES.SURVEY_SUCCESS} element={<SurveySuccessScreen />} />
+    <Route path={ROUTES.SURVEY_RESUBMIT_SUCCESS} element={<SurveyResubmitSuccessScreen />} />
     <Route element={<SurveyLayout />}>
       <Route path={ROUTES.SURVEY_REVIEW} element={<SurveyReviewScreen />} />
       <Route
