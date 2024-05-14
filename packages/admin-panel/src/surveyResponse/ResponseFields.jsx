@@ -65,7 +65,7 @@ export const ResponseFields = ({
   const limitedLocations = entities.slice(0, 20);
 
   return (
-    <Paper square={false} variant="outlined" style={{ padding: 20, marginBottom: 25 }}>
+    <>
       <SectionWrapper>
         <ResponseField title="Survey" value={surveyName} />
         <ResponseField title="Assessor" value={fields.assessor_name} />
@@ -73,6 +73,8 @@ export const ResponseFields = ({
           title="Date of Survey"
           value={format(new Date(fields.end_time), 'yyyy/MM/dd hh:mm a')}
         />
+      </SectionWrapper>
+      <SectionWrapper>
         <Autocomplete
           value={selectedEntity}
           label="Entity"
@@ -117,7 +119,7 @@ export const ResponseFields = ({
           value={fields.approval_status}
         />
       </SectionWrapper>
-    </Paper>
+    </>
   );
 };
 
