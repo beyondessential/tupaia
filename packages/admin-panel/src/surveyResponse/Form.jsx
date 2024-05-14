@@ -29,6 +29,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
     isLoading,
     isError,
     error: resubmitError,
+    reset,
     isSuccess,
   } = useResubmitSurveyResponse(surveyResponseId, surveyResubmission, onAfterMutate);
 
@@ -44,13 +45,13 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   }, [data]);
 
   const renderButtons = useCallback(() => {
-    if (isLoading) return <></>;
-    // if (isError)
-    //   return (
-    //     <Button variant="outlined" onClick={() => handleDismissError()}>
-    //       Dismiss
-    //     </Button>
-    //   );
+    if (isLoading) return null;
+    if (isError)
+      return (
+        <Button variant="outlined" onClick={reset}>
+          Dismiss
+        </Button>
+      );
     if (isSuccess) return <Button onClick={onDismiss}>Close</Button>;
     return (
       <ButtonGroup>
@@ -79,7 +80,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
         </div>
       </ButtonGroup>
     );
-  }, [isFetching, isUnchanged]);
+  }, [isFetching, isUnchanged, isLoading, isError, isSuccess]);
 
   const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
 
