@@ -36,24 +36,3 @@ export const ROUTES = {
 export const PASSWORD_RESET_TOKEN_PARAM = 'passwordResetToken';
 
 export const ADMIN_ONLY_ROUTES = [ROUTES.REPORTS, ROUTES.SURVEY_RESUBMIT_SCREEN];
-
-export const SURVEY_ROUTE_OBJECTS = [
-  {
-    path: ROUTES.SURVEY_SCREEN,
-  },
-  {
-    path: ROUTES.SURVEY_SUCCESS,
-  },
-  {
-    path: ROUTES.SURVEY_REVIEW,
-  },
-  {
-    path: ROUTES.SURVEY_RESPONSE,
-  },
-  {
-    path: ROUTES.SURVEY_RESUBMIT_SCREEN,
-  },
-  {
-    path: ROUTES.SURVEY_RESUBMIT_REVIEW,
-  },
-];
