@@ -3,23 +3,76 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { useParams } from 'react-router';
+import { QuestionType } from '@tupaia/types';
+import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
+import { post } from '../api';
+import { getAllSurveyComponents, useSurveyForm } from '../../features';
+import { SurveyScreenComponent } from '../../types';
+import { AnswersT, isFileUploadAnswer } from './useSubmitSurvey';
 
-type Answer = string | number | boolean | null | undefined;
+const processAnswers = (
+  answers: AnswersT,
+  questionsById: Record<string, SurveyScreenComponent>,
+) => {
+  const files: File[] = [];
+  const formattedAnswers = Object.entries(answers).reduce((acc, [questionId, answer]) => {
+    const { code, type } = questionsById[questionId];
+    if (!code) return acc;
 
-export type AnswersT = Record<string, Answer>;
+    if (type === QuestionType.File && isFileUploadAnswer(answer) && answer.value instanceof File) {
+      // Create a new file with a unique name, and add it to the files array, so we can add to the FormData, as this is what the central server expects
+      const uniqueFileName = getUniqueSurveyQuestionFileName(answer.name);
+      files.push(
+        new File([answer.value as Blob], uniqueFileName, {
+          type: answer.value.type,
+        }),
+      );
+      return {
+        ...acc,
+        [code]: uniqueFileName,
+      };
+    }
+    return {
+      ...acc,
+      [code]: answer,
+    };
+  }, {});
+
+  return {
+    answers: formattedAnswers,
+    files,
+  };
+};
 
 export const useResubmitSurveyResponse = () => {
   const { surveyResponseId } = useParams();
-  return useMutation<any, Error, AnswersT, unknown>(async (answers: AnswersT) => {
-    if (!answers) {
+  const { surveyScreens } = useSurveyForm();
+  const allScreenComponents = getAllSurveyComponents(surveyScreens);
+  const questionsById = allScreenComponents.reduce((acc, component) => {
+    return {
+      ...acc,
+      [component.questionId]: component,
+    };
+  }, {});
+  return useMutation<any, Error, AnswersT, unknown>(async (surveyAnswers: AnswersT) => {
+    if (!surveyAnswers) {
       return;
     }
-    console.log('surveyResponseId', answers);
+    const { answers, files } = processAnswers(surveyAnswers, questionsById);
 
-    //   return post('submitSurvey', {
-    //     data: { ...surveyResponseData, answers },
-    //   });
+    const formData = new FormData();
+    formData.append('payload', JSON.stringify({ answers }));
+    files.forEach(file => {
+      formData.append(file.name, file);
+    });
+
+    return post(`surveyResponse/${surveyResponseId}/resubmit`, {
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   });
 };
