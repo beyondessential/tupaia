@@ -30,10 +30,25 @@ fi
 # install psql for use when installing mv refresh in the db
 sudo apt-get install -yqq postgresql-client
 
+# install base dependencies
+sudo apt-get --no-install-recommends -yqq install \
+  bash-completion \
+  build-essential \
+  cmake \
+  libcurl4  \
+  libcurl4-openssl-dev  \
+  libssl-dev  \
+  libxml2 \
+  libxml2-dev  \
+  libssl3 \
+  pkg-config \
+  ca-certificates \
+  xclip \
+  jq
+
 # Install base dependencies
 # Note: Many of these are for puppeteer: https://pptr.dev/15.3.0/troubleshooting#chrome-headless-doesnt-launch-on-unix
 sudo apt-get -yqq install \
-  ca-certificates \
   fonts-liberation \
   libappindicator3-1 \
   libasound2 \
@@ -69,19 +84,7 @@ sudo apt-get -yqq install \
   libxtst6 \
   lsb-release \
   wget \
-  xdg-utils \
-  bash-completion \
-  build-essential \
-  cmake \
-  libcurl4  \
-  libcurl4-openssl-dev  \
-  libssl-dev  \
-  libxml2 \
-  libxml2-dev  \
-  libssl3 \
-  pkg-config \
-  ca-certificates \
-  xclip 
+  xdg-utils
 
 
 # install node and yarn

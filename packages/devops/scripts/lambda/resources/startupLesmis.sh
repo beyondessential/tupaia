@@ -27,7 +27,7 @@ AWS_DEPLOYMENT_SCRIPTS=${DEPLOYMENT_SCRIPTS}/deployment-aws
 
 DEPLOYMENT_NAME=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DeploymentName)
 BRANCH=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh Branch)
-DB_SNAPSHOT=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DbSnapshot)
+DB_DUMP_FILE=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh DbDumpFile)
 SUBDOMAINS=$(${AWS_DEPLOYMENT_SCRIPTS}/../utility/getEC2TagValue.sh SubdomainsViaDns)
 echo "Starting up ${DEPLOYMENT_NAME} (${BRANCH})"
 
@@ -72,7 +72,7 @@ export BITWARDEN_EMAIL=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BIT
 export BITWARDEN_PASSWORD=$($AWS_DEPLOYMENT_SCRIPTS/fetchParameterStoreValue.sh BITWARDEN_PASSWORD)
 DB_DUMP=$HOME_DIR/dump.sql
 
-sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_SNAPSHOT $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log
+sudo -E -Hu ubuntu $AWS_DEPLOYMENT_SCRIPTS/downloadFromS3.sh $DB_DUMP_FILE $DB_DUMP.gz && sudo -E -Hu ubuntu gunzip $DB_DUMP.gz &> /home/ubuntu/logs/download_db.log
 sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-aws/setupSslCertificate.sh $DEPLOYMENT_NAME $DOMAIN $SUBDOMAINS &> /home/ubuntu/logs/setup_ssl_cert.log
 sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-app/setup.sh &> /home/ubuntu/logs/setup_app.log
 sudo -E -Hu ubuntu $DEPLOYMENT_SCRIPTS/deployment-vm-db/setup.sh &> /home/ubuntu/logs/setup_db.log
