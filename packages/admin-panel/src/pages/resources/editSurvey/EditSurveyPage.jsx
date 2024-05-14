@@ -15,7 +15,7 @@ import { withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
-import { dismissEditor, loadEditor } from '../../../editor/actions';
+import { dismissEditor, loadEditor, resetEdits } from '../../../editor/actions';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -94,7 +94,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     loadEditorData,
     isUnchanged,
     onSave,
-    resetEdits,
+    clearEdits,
     isLoading,
     resetEditorToDefaultState,
   }) => {
@@ -172,6 +172,7 @@ const EditSurveyPageComponent = withConnectedEditor(
           displayProperty={displayProperty}
           details={details}
           getDisplayValue={getDisplayValue}
+          onClickLinks={resetEditorToDefaultState}
         />
 
         <Form $isLoading={isLoading}>
@@ -212,7 +213,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             variant="text"
             color="primary"
             disabled={isUnchanged || isLoading}
-            onClick={resetEdits}
+            onClick={clearEdits}
           >
             Clear edits
           </Button>
@@ -240,7 +241,10 @@ EditSurveyPageComponent.defaultProps = {
 
 const mapDispatchToProps = dispatch => ({
   loadEditorData: (actionConfig, recordId) => dispatch(loadEditor(actionConfig, recordId)),
-  resetEditorToDefaultState: () => dispatch(dismissEditor()),
+  resetEditorToDefaultState: () => {
+    dispatch(dismissEditor());
+    dispatch(resetEdits());
+  },
 });
 
 export const EditSurveyPage = connect(null, mapDispatchToProps)(EditSurveyPageComponent);

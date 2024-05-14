@@ -21,7 +21,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
-  resetEdits: () => dispatch(resetEdits()),
+  clearEdits: () => dispatch(resetEdits()),
   dispatch,
 });
 
