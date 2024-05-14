@@ -3,17 +3,17 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Outlet, generatePath, useNavigate, useParams } from 'react-router';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
+import { ROUTES } from '../../constants';
+import { useResubmitSurveyResponse, useSubmitSurvey } from '../../api/mutations';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
-import { ROUTES } from '../../constants';
-import { useResubmitSurveyResponse, useSubmitSurvey } from '../../api/mutations';
 import { getErrorsByScreen } from './utils';
 import { useSurveyRouting } from './useSurveyRouting';
 
