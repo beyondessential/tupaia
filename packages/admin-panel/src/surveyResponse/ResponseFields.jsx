@@ -16,36 +16,46 @@ import { useEntities } from '../VizBuilderApp/api';
 
 const InputSection = styled.div`
   margin-block-start: 1.25rem;
+  margin-block-end: 1.2rem;
 `;
 
 const BorderedSection = styled.div`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 4px;
-  padding: 1rem;
+  padding: 1.1rem;
 `;
 
 const Row = styled.div`
   display: flex;
   justify-content: space-between;
+  > div {
+    width: 49%;
+  }
+  .MuiFormControl-root {
+    margin-block-end: 0;
+  }
 `;
 
 const ResponseFieldHeading = styled(Typography)`
-  font-weight: 500;
-  padding-bottom: 0.5rem;
+  padding-block-end: 0.5rem;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const ResponseFieldText = styled(Typography)`
+  font-weight: ${props => props.theme.typography.fontWeightMedium};
 `;
 
 const ResponseFieldWrapper = styled.div`
-  padding: 1rem 0;
-  ${Row} & {
-    width: 49%;
+  + ${Row} {
+    margin-block-start: 1.25rem;
   }
 `;
 
 const ResponseField = ({ title, value }) => {
   return (
     <ResponseFieldWrapper>
-      <ResponseFieldHeading variant="body2">{title}</ResponseFieldHeading>
-      <Typography variant="body2">{value}</Typography>
+      <ResponseFieldHeading>{title}</ResponseFieldHeading>
+      <ResponseFieldText>{value}</ResponseFieldText>
     </ResponseFieldWrapper>
   );
 };
@@ -108,27 +118,28 @@ export const ResponseFields = ({
           optionLabelKey="entity-name"
         />
 
-        <DateTimePicker
-          label="Date Of Data"
-          name="dataTime"
-          value={fields.data_time}
-          required
-          onChange={AESTDate => {
-            onChange('data_time', format(AESTDate, 'yyyy-MM-dd HH:mm:ss'));
-          }}
-        />
-
-        <Select
-          id="approval-status"
-          label="Approval Status"
-          name="approvalStatus"
-          required
-          options={approvalStatusOptions}
-          onChange={event => {
-            onChange('approval_status', event.target.value);
-          }}
-          value={fields.approval_status}
-        />
+        <Row>
+          <DateTimePicker
+            label="Date Of Data"
+            name="dataTime"
+            value={fields.data_time}
+            required
+            onChange={AESTDate => {
+              onChange('data_time', format(AESTDate, 'yyyy-MM-dd HH:mm:ss'));
+            }}
+          />
+          <Select
+            id="approval-status"
+            label="Approval Status"
+            name="approvalStatus"
+            required
+            options={approvalStatusOptions}
+            onChange={event => {
+              onChange('approval_status', event.target.value);
+            }}
+            value={fields.approval_status}
+          />
+        </Row>
       </InputSection>
     </>
   );
