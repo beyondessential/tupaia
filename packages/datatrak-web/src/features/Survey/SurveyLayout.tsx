@@ -87,7 +87,8 @@ export const SurveyLayout = () => {
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
   const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
-  const { mutate: resubmitSurveyResponse } = useResubmitSurveyResponse();
+  const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurvey } =
+    useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
 
   const handleStep = (path, data) => {
@@ -138,14 +139,18 @@ export const SurveyLayout = () => {
 
   const handleClickSubmit = handleSubmit(onSubmit, onError);
 
+  const showLoader = isSubmittingSurvey || isResubmittingSurvey;
+
   return (
     <>
       <SurveySideMenu />
       <ScrollableLayout $sideMenuClosed={!sideMenuOpen && !isReviewScreen && !isResponseScreen}>
         <Paper>
           <Form onSubmit={handleClickSubmit} noValidate>
-            <Outlet context={{ onStepPrevious, isSubmittingSurvey, hasBackButton: !!back }} />
-            {isSubmittingSurvey && (
+            <Outlet
+              context={{ onStepPrevious, isSubmittingSurvey: showLoader, hasBackButton: !!back }}
+            />
+            {showLoader && (
               <LoadingContainer>
                 <SpinningLoader />
               </LoadingContainer>

@@ -4,12 +4,13 @@
  */
 
 import { useMutation } from 'react-query';
-import { useParams } from 'react-router';
+import { generatePath, useNavigate, useParams } from 'react-router';
 import { QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { post } from '../api';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { SurveyScreenComponent } from '../../types';
+import { ROUTES } from '../../constants';
 import { AnswersT, isFileUploadAnswer } from './useSubmitSurvey';
 
 const processAnswers = (
@@ -47,8 +48,10 @@ const processAnswers = (
 };
 
 export const useResubmitSurveyResponse = () => {
-  const { surveyResponseId } = useParams();
-  const { surveyScreens } = useSurveyForm();
+  const navigate = useNavigate();
+  const params = useParams();
+  const { surveyResponseId } = params;
+  const { surveyScreens, resetForm } = useSurveyForm();
   const allScreenComponents = getAllSurveyComponents(surveyScreens);
   const questionsById = allScreenComponents.reduce((acc, component) => {
     return {
@@ -56,23 +59,31 @@ export const useResubmitSurveyResponse = () => {
       [component.questionId]: component,
     };
   }, {});
-  return useMutation<any, Error, AnswersT, unknown>(async (surveyAnswers: AnswersT) => {
-    if (!surveyAnswers) {
-      return;
-    }
-    const { answers, files } = processAnswers(surveyAnswers, questionsById);
+  return useMutation<any, Error, AnswersT, unknown>(
+    async (surveyAnswers: AnswersT) => {
+      if (!surveyAnswers) {
+        return;
+      }
+      const { answers, files } = processAnswers(surveyAnswers, questionsById);
 
-    const formData = new FormData();
-    formData.append('payload', JSON.stringify({ answers }));
-    files.forEach(file => {
-      formData.append(file.name, file);
-    });
+      const formData = new FormData();
+      formData.append('payload', JSON.stringify({ answers }));
+      files.forEach(file => {
+        formData.append(file.name, file);
+      });
 
-    return post(`surveyResponse/${surveyResponseId}/resubmit`, {
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
+      return post(`surveyResponse/${surveyResponseId}/resubmit`, {
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+    {
+      onSuccess: () => {
+        resetForm();
+        navigate(generatePath(ROUTES.SURVEY_RESUBMIT_SUCCESS, params));
       },
-    });
-  });
+    },
+  );
 };

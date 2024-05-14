@@ -21,7 +21,7 @@ type FileAnswerT = {
   value?: Base64 | File;
 };
 
-export type Answer = string | number | boolean | null | undefined | FileAnswerT;
+type Answer = string | number | boolean | null | undefined | FileAnswerT;
 
 export type AnswersT = Record<string, Answer>;
 
