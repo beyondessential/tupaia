@@ -36,12 +36,16 @@ const Row = styled.div`
   }
 `;
 
-const ResponseFieldHeading = styled(Typography)`
-  padding-block-end: 0.5rem;
+const ResponseFieldHeading = styled(Typography).attrs({
+  variant: 'h3',
+})`
+  padding-block-end: 0.2rem;
+  font-size: ${props => props.theme.typography.body2.fontSize};
+  font-weight: ${props => props.theme.typography.fontWeightRegular};
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const ResponseFieldText = styled(Typography)`
+const ResponseFieldValue = styled(Typography)`
   font-weight: ${props => props.theme.typography.fontWeightMedium};
 `;
 
@@ -55,7 +59,7 @@ const ResponseField = ({ title, value }) => {
   return (
     <ResponseFieldWrapper>
       <ResponseFieldHeading>{title}</ResponseFieldHeading>
-      <ResponseFieldText>{value}</ResponseFieldText>
+      <ResponseFieldValue>{value}</ResponseFieldValue>
     </ResponseFieldWrapper>
   );
 };
