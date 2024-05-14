@@ -4,7 +4,10 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
+import { QuestionType } from '@tupaia/types';
 import { findQuestionsInSurvey } from '../../../dataAccessors';
+import { S3, S3Client } from '@tupaia/server-utils';
+import { UploadError } from '@tupaia/utils';
 
 export const handleSurveyResponse = async (models, updatedFields, recordType, surveyResponse) => {
   const surveyResponseUpdateFields = { ...updatedFields };
@@ -32,12 +35,25 @@ export const handleAnswers = async (models, updatedFields, surveyResponse) => {
 
   await Promise.all(
     questionCodes.map(async questionCode => {
+      const answer = updatedAnswers[questionCode];
       const isAnswerDeletion = updatedAnswers[questionCode] === null;
       const { id, type } = codesToIds[questionCode];
       const existingAnswer = await models.answer.findOne({
         survey_response_id: surveyResponseId,
         question_id: id,
       });
+
+      // If the answer is a photo and the answer is updated and the value is a base64 encoded image, upload the image to S3 and update the answer to be the url
+      const validFileIdRegex = RegExp('^[a-f\\d]{24}$');
+      if (type === QuestionType.Photo && answer && !validFileIdRegex.test(answer)) {
+        try {
+          const base64 = updatedAnswers[questionCode];
+          const s3Client = new S3Client(new S3());
+          updatedAnswers[questionCode] = await s3Client.uploadImage(base64);
+        } catch (error) {
+          throw new UploadError(error);
+        }
+      }
 
       if (!existingAnswer) {
         if (isAnswerDeletion) {
