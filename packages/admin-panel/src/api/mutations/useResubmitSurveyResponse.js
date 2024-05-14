@@ -11,12 +11,7 @@ export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyRespons
   return useMutation(
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
     () => {
-      return api.multipartPost({
-        endpoint: `surveyResponse/${surveyResponseId}/resubmit`,
-        payload: {
-          ...updatedSurveyResponse,
-        },
-      });
+      return api.post(`surveyResponse/${surveyResponseId}/resubmit`, null, updatedSurveyResponse);
     },
     {
       throwOnError: true,

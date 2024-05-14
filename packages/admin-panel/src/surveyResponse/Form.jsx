@@ -5,11 +5,18 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Button } from '@tupaia/ui-components';
 import { useGetExistingData } from './useGetExistingData';
 import { ModalContentProvider, ModalFooter } from '../widgets';
 import { useResubmitSurveyResponse } from '../api/mutations/useResubmitSurveyResponse';
 import { ResponseFields } from './ResponseFields';
+
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
 
 export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
   const [surveyResubmission, setSurveyResubmission] = useState({});
@@ -46,19 +53,31 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
     //   );
     if (isSuccess) return <Button onClick={onDismiss}>Close</Button>;
     return (
-      <>
-        <Button variant="outlined" onClick={onDismiss}>
-          Cancel
-        </Button>
+      <ButtonGroup>
         <Button
           id="form-button-resubmit"
           type="submit"
           onClick={resubmitResponse}
+          variant="outlined"
           disabled={isFetching || isUnchanged}
+          color="primary"
         >
-          Resubmit
+          Save and close
         </Button>
-      </>
+        <div>
+          <Button variant="outlined" onClick={onDismiss}>
+            Cancel
+          </Button>
+          <Button
+            id="form-button-resubmit"
+            type="submit"
+            onClick={resubmitResponse}
+            disabled={isFetching || isUnchanged}
+          >
+            Resubmit
+          </Button>
+        </div>
+      </ButtonGroup>
     );
   }, [isFetching, isUnchanged]);
 
