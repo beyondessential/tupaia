@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
+import { QuestionType } from '@tupaia/types';
 import { Coconut } from '../../components';
 import { post, useCurrentUserContext, useEntityByCode } from '../../api';
 import { ROUTES } from '../../constants';
@@ -13,7 +14,14 @@ import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
 import { gaEvent, successToast } from '../../utils';
 
-type Answer = string | number | boolean | null | undefined;
+type Base64 = string | null | ArrayBuffer;
+
+type FileAnswerT = {
+  name: string;
+  value?: Base64 | File;
+};
+
+export type Answer = string | number | boolean | null | undefined | FileAnswerT;
 
 export type AnswersT = Record<string, Answer>;
 
@@ -35,6 +43,44 @@ export const useSurveyResponseData = () => {
   };
 };
 
+export const isFileUploadAnswer = (answer: Answer): answer is FileAnswerT => {
+  if (!answer || typeof answer !== 'object') return false;
+  return 'value' in answer;
+};
+
+const createEncodedFile = (fileObject?: File): Promise<Base64> => {
+  if (!fileObject) {
+    return Promise.resolve(null);
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+};
+
+const processAnswers = async (answers: AnswersT, questionsById) => {
+  const formattedAnswers = { ...answers };
+  for (const [questionId, answer] of Object.entries(answers)) {
+    const { type } = questionsById[questionId];
+    if (type === QuestionType.File && isFileUploadAnswer(answer)) {
+      // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
+      const encodedFile = await createEncodedFile(answer.value as File);
+      formattedAnswers[questionId] = {
+        name: answer.name,
+        value: encodedFile,
+      };
+    }
+  }
+  return formattedAnswers;
+};
+
 export const useSubmitSurvey = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -50,9 +96,10 @@ export const useSubmitSurvey = () => {
       if (!answers) {
         return;
       }
+      const formattedAnswers = await processAnswers(answers, surveyResponseData.questions);
 
       return post('submitSurvey', {
-        data: { ...surveyResponseData, answers },
+        data: { ...surveyResponseData, answers: formattedAnswers },
       });
     },
     {
