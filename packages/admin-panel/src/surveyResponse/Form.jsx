@@ -71,17 +71,15 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
         errorMessage={fetchErrorMessage || resubmitError?.message}
       >
         {!isFetching && !isSuccess && (
-          <>
-            <ResponseFields
-              selectedEntity={selectedEntity}
-              surveyName={data?.survey.name}
-              fields={existingAndNewFields}
-              onChange={(field, updatedField) =>
-                setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
-              }
-              setSelectedEntity={setSelectedEntity}
-            />
-          </>
+          <ResponseFields
+            selectedEntity={selectedEntity}
+            surveyName={data?.survey.name}
+            fields={existingAndNewFields}
+            onChange={(field, updatedField) =>
+              setSurveyResubmission({ ...surveyResubmission, [field]: updatedField })
+            }
+            setSelectedEntity={setSelectedEntity}
+          />
         )}
         {isSuccess && 'The survey response has been successfully submitted.'}
       </ModalContentProvider>

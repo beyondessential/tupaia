@@ -3,12 +3,9 @@
  * Copyright (c) 2023 Beyond Essential Systems Pty Ltd
  */
 
-/* eslint-disable camelcase */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 import { Select, DateTimePicker } from '@tupaia/ui-components';
 import { ApprovalStatus } from '@tupaia/types';
@@ -17,10 +14,19 @@ import { Autocomplete } from '../autocomplete';
 import { useDebounce } from '../utilities';
 import { useEntities } from '../VizBuilderApp/api';
 
-const SectionWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 10px;
+const InputSection = styled.div`
+  margin-block-start: 1.25rem;
+`;
+
+const BorderedSection = styled.div`
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  border-radius: 4px;
+  padding: 1rem;
+`;
+
+const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const ResponseFieldHeading = styled(Typography)`
@@ -30,6 +36,9 @@ const ResponseFieldHeading = styled(Typography)`
 
 const ResponseFieldWrapper = styled.div`
   padding: 1rem 0;
+  ${Row} & {
+    width: 49%;
+  }
 `;
 
 const ResponseField = ({ title, value }) => {
@@ -66,15 +75,17 @@ export const ResponseFields = ({
 
   return (
     <>
-      <SectionWrapper>
+      <BorderedSection>
         <ResponseField title="Survey" value={surveyName} />
-        <ResponseField title="Assessor" value={fields.assessor_name} />
-        <ResponseField
-          title="Date of Survey"
-          value={format(new Date(fields.end_time), 'yyyy/MM/dd hh:mm a')}
-        />
-      </SectionWrapper>
-      <SectionWrapper>
+        <Row>
+          <ResponseField title="Assessor" value={fields.assessor_name} />
+          <ResponseField
+            title="Date of Survey"
+            value={format(new Date(fields.end_time), 'yyyy/MM/dd hh:mm a')}
+          />
+        </Row>
+      </BorderedSection>
+      <InputSection>
         <Autocomplete
           value={selectedEntity}
           label="Entity"
@@ -118,7 +129,7 @@ export const ResponseFields = ({
           }}
           value={fields.approval_status}
         />
-      </SectionWrapper>
+      </InputSection>
     </>
   );
 };
