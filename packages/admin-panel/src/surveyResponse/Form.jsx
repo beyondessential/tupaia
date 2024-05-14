@@ -63,11 +63,13 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
     // If the response has been changed, resubmit it before redirecting
     if (!isUnchanged) {
       await resubmitResponse();
+      onAfterMutate();
     }
+    const { country_code: updatedCountryCode } = selectedEntity;
     const { survey, primaryEntity } = data;
+    const countryCodeToUse = updatedCountryCode || primaryEntity.country_code;
     const datatrakBaseUrl = getDatatrakBaseUrl();
-    const url = `${datatrakBaseUrl}/survey/${primaryEntity.country_code}/${survey.code}/resubmit/${surveyResponseId}`;
-
+    const url = `${datatrakBaseUrl}/survey/${countryCodeToUse}/${survey.code}/resubmit/${surveyResponseId}`;
     // Open the URL in a new tab, so the user can resubmit the response in Datatrak
     window.open(url, '_blank');
   };
