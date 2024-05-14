@@ -29,12 +29,14 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
     isLoading,
     isError,
     error: resubmitError,
-    reset,
+    reset, // reset the mutation state so we can dismiss the error
     isSuccess,
-  } = useResubmitSurveyResponse(surveyResponseId, surveyResubmission, onAfterMutate);
+  } = useResubmitSurveyResponse(surveyResponseId, surveyResubmission);
 
   const { data, isLoading: isFetching, error: fetchError } = useGetExistingData(surveyResponseId);
   const fetchErrorMessage = fetchError?.message;
+
+  const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
 
   useEffect(() => {
     if (!data) {
@@ -43,6 +45,32 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
       setSelectedEntity(data?.primaryEntity);
     }
   }, [data]);
+
+  const resubmitSurveyResponse = async () => {
+    await resubmitResponse();
+    onAfterMutate();
+  };
+
+  const getDatatrakBaseUrl = () => {
+    if (import.meta.env.REACT_APP_DATATRAK_WEB_URL)
+      return import.meta.env.REACT_APP_DATATRAK_WEB_URL;
+    const { origin } = window.location;
+    if (origin.includes('localhost')) return 'https://dev-datatrak.tupaia.org';
+    return origin.replace('admin', 'datatrak');
+  };
+
+  const resubmitResponseAndRedirect = async () => {
+    // If the response has been changed, resubmit it before redirecting
+    if (!isUnchanged) {
+      await resubmitResponse();
+    }
+    const { survey, primaryEntity } = data;
+    const datatrakBaseUrl = getDatatrakBaseUrl();
+    const url = `${datatrakBaseUrl}/survey/${primaryEntity.country_code}/${survey.code}/resubmit/${surveyResponseId}`;
+
+    // Open the URL in a new tab, so the user can resubmit the response in Datatrak
+    window.open(url, '_blank');
+  };
 
   const renderButtons = useCallback(() => {
     if (isLoading) return null;
@@ -57,8 +85,7 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
       <ButtonGroup>
         <Button
           id="form-button-resubmit"
-          type="submit"
-          onClick={resubmitResponse}
+          onClick={resubmitSurveyResponse}
           variant="outlined"
           disabled={isFetching || isUnchanged}
           color="primary"
@@ -69,20 +96,13 @@ export const Form = ({ surveyResponseId, onDismiss, onAfterMutate }) => {
           <Button variant="outlined" onClick={onDismiss}>
             Cancel
           </Button>
-          <Button
-            id="form-button-resubmit"
-            type="submit"
-            onClick={resubmitResponse}
-            disabled={isFetching || isUnchanged}
-          >
-            Resubmit
+          <Button id="form-button-next" onClick={resubmitResponseAndRedirect} disabled={isFetching}>
+            Next
           </Button>
         </div>
       </ButtonGroup>
     );
   }, [isFetching, isUnchanged, isLoading, isError, isSuccess]);
-
-  const existingAndNewFields = { ...data?.surveyResponse, ...surveyResubmission };
 
   return (
     <>

@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { generatePath, Navigate, Route, useParams } from 'react-router-dom';
+import { generatePath, Navigate, Outlet, Route, useParams } from 'react-router-dom';
 import { FullPageLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../constants';
 import {
@@ -20,19 +20,19 @@ import { useCurrentUserContext, useSurvey } from '../api';
 import { SurveyResponseRoute } from './SurveyResponseRoute';
 
 // Redirect to the start of the survey if no screen number is provided
-const SurveyStartRedirect = () => {
+const SurveyStartRedirect = ({ baseRoute = ROUTES.SURVEY_SCREEN }) => {
   const params = useParams();
-  const path = generatePath(ROUTES.SURVEY_SCREEN, { ...params, screenNumber: '1' });
+  const path = generatePath(baseRoute, { ...params, screenNumber: '1' });
   return <Navigate to={path} replace={true} />;
 };
 
 // Redirect to the start of the survey if they try to access a screen that is not visible on the survey
-const SurveyPageRedirect = ({ children }) => {
+const SurveyPageRedirect = ({ children, baseRoute = ROUTES.SURVEY_SCREEN }) => {
   const { screenNumber } = useParams();
   const { visibleScreens } = useSurveyForm();
 
   if (visibleScreens && visibleScreens.length && visibleScreens.length < Number(screenNumber)) {
-    return <SurveyStartRedirect />;
+    return <SurveyStartRedirect baseRoute={baseRoute} />;
   }
   return children;
 };
@@ -63,6 +63,19 @@ const SurveyRoute = ({ children }) => {
   return children;
 };
 
+const SurveyResubmitRedirect = () => {
+  const params = useParams();
+  return (
+    <Navigate
+      to={generatePath(ROUTES.SURVEY_RESUBMIT_SCREEN, {
+        ...params,
+        screenNumber: '1',
+      })}
+      replace={true}
+    />
+  );
+};
+
 export const SurveyRoutes = (
   <Route
     path={ROUTES.SURVEY}
@@ -87,7 +100,15 @@ export const SurveyRoutes = (
       />
       <Route element={<SurveyResponseRoute />}>
         <Route path={ROUTES.SURVEY_RESPONSE} element={<SurveyResponsePage />} />
-        <Route path={ROUTES.SURVEY_RESUBMIT_SCREEN} element={<SurveyScreen />} />
+        <Route path={ROUTES.SURVEY_RESUBMIT} element={<SurveyResubmitRedirect />} />
+        <Route
+          path={ROUTES.SURVEY_RESUBMIT_SCREEN}
+          element={
+            <SurveyPageRedirect baseRoute={ROUTES.SURVEY_RESUBMIT_SCREEN}>
+              <SurveyScreen />
+            </SurveyPageRedirect>
+          }
+        />
         <Route path={ROUTES.SURVEY_RESUBMIT_REVIEW} element={<SurveyReviewScreen />} />
       </Route>
     </Route>

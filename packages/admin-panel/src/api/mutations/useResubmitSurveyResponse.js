@@ -3,10 +3,11 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useApiContext } from '../../utilities/ApiProvider';
 
-export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse, onSuccess) => {
+export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyResponse) => {
+  const queryClient = useQueryClient();
   const api = useApiContext();
   return useMutation(
     [`surveyResubmit`, surveyResponseId, updatedSurveyResponse],
@@ -15,7 +16,11 @@ export const useResubmitSurveyResponse = (surveyResponseId, updatedSurveyRespons
     },
     {
       throwOnError: true,
-      onSuccess,
+      onSuccess: async () => {
+        // invalidate the survey response data
+        await queryClient.invalidateQueries(['surveyResubmitData', surveyResponseId]);
+        return 'completed';
+      },
     },
   );
 };
