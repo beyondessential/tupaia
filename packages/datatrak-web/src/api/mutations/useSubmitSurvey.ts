@@ -68,8 +68,9 @@ const createEncodedFile = (fileObject?: File): Promise<Base64> => {
 const processAnswers = async (answers: AnswersT, questionsById) => {
   const formattedAnswers = { ...answers };
   for (const [questionId, answer] of Object.entries(answers)) {
-    const { type } = questionsById[questionId];
-    if (type === QuestionType.File && isFileUploadAnswer(answer)) {
+    const question = questionsById[questionId];
+    if (!question) continue;
+    if (question.type === QuestionType.File && isFileUploadAnswer(answer)) {
       // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
       const encodedFile = await createEncodedFile(answer.value as File);
       formattedAnswers[questionId] = {
