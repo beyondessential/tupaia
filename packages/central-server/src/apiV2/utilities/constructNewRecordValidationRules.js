@@ -381,9 +381,12 @@ export const constructForSingle = (models, recordType) => {
     case RECORDS.SURVEY:
       return {
         'project.code': [hasContent, constructRecordExistsWithField(models.project, 'code')],
-        code: [constructRecordNotExistsWithField(models.survey, 'code')],
-        name: [isAString, constructIsShorterThan(50)],
-        'permission_group.name': [constructRecordExistsWithField(models.permissionGroup, 'name')],
+        code: [hasContent, constructRecordNotExistsWithField(models.survey, 'code')],
+        name: [hasContent, isAString, constructIsShorterThan(50)],
+        'permission_group.name': [
+          hasContent,
+          constructRecordExistsWithField(models.permissionGroup, 'name'),
+        ],
         countryNames: [
           async (countryNames, { 'project.code': projectCode }) => {
             if (countryNames.length < 1) {
