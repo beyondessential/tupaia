@@ -72,6 +72,7 @@ import {
   DeleteSurveyResponses,
   GETSurveyResponses,
   ResubmitSurveyResponse,
+  surveyResponse,
 } from './surveyResponses';
 import {
   DeleteSurveyScreenComponents,
@@ -100,7 +101,6 @@ import { deleteAccount } from './deleteAccount';
 import { requestCountryAccess } from './requestCountryAccess';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
-import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { GETReports } from './reports';
 import { GETDataElementDataGroups } from './dataElementDataGroups';
