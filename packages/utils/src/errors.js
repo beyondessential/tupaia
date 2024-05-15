@@ -126,7 +126,8 @@ export class UploadError extends RespondingError {
 
 export class ValidationError extends RespondingError {
   constructor(message, details = null) {
-    super(message, 400, { details });
+    const extraFields = details ? { details } : null;
+    super(message, 400, extraFields);
   }
 }
 
