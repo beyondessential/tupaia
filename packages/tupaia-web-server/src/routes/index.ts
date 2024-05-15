@@ -31,10 +31,6 @@ export {
   ExportSurveyResponsesRequest,
   ExportSurveyResponsesRoute,
 } from './ExportSurveyResponsesRoute';
-export {
-  ProjectCountryAccessListRequest,
-  ProjectCountryAccessListRoute,
-} from './ProjectCountryAccessListRoute';
 export { SubscribeDashboardRoute, SubscribeDashboardRequest } from './SubscribeDashboardRoute';
 export {
   UnsubscribeDashboardRoute,

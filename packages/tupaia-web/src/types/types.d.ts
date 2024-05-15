@@ -1,11 +1,12 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import {
   LandingPage,
   Project,
-  TupaiaWebProjectCountryAccessListRequest,
+  ProjectCountryAccessListRequest,
   TupaiaWebProjectRequest,
 } from '@tupaia/types';
 import { KeysToCamelCase } from './helpers';
@@ -27,4 +28,4 @@ export type SingleLandingPage = KeysToCamelCase<Omit<LandingPage, 'project_codes
   projects: SingleProject[];
 };
 
-export type CountryAccessListItem = TupaiaWebProjectCountryAccessListRequest.ResBody[number];
+export type CountryAccessListItem = ProjectCountryAccessListRequest.ResBody[number];

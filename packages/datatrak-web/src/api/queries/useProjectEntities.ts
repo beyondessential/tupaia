@@ -12,8 +12,11 @@ export const useProjectEntities = (
 ) => {
   return useQuery(
     ['entityDescendants', projectCode, params],
-    (): Promise<DatatrakWebEntityDescendantsRequest.ResBody> =>
-      get('entityDescendants', { params: { filter: { ...params, projectCode } } }),
+    (): Promise<DatatrakWebEntityDescendantsRequest.ResBody> => {
+      return get('entityDescendants', {
+        params: { ...params, filter: { ...params?.filter, projectCode } },
+      });
+    },
     { enabled: !!projectCode },
   );
 };

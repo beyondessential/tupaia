@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 
-import { getEnvVarOrDefault } from "@tupaia/utils";
+import { getEnvVarOrDefault } from '@tupaia/utils';
 
 export const DATA_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
@@ -128,7 +128,7 @@ const isLocalhost = (hostname: string) =>
   hostname.startsWith('127.0.0.1') ||
   hostname.startsWith('10.0.2.2'); // Android Emulator out to host
 
-const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
+export const getDefaultBaseUrls = (hostname: string): ServiceBaseUrlSet => {
   const DOMAIN = getEnvVarOrDefault('DOMAIN', 'tupaia.org');
   if (isLocalhost(hostname)) {
     return LOCALHOST_BASE_URLS;

@@ -27,5 +27,8 @@ export const PageContentWrapper = styled(Container).attrs({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0;
+  padding-block: 0;
+  padding-inline: 1.5rem;
+  max-height: 100%;
+  overflow: hidden;
 `;

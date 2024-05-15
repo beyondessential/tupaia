@@ -2,10 +2,32 @@
  * Tupaia
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
-import { BESAdminEditHandler } from '../EditHandler';
+import {
+  assertAdminPanelAccess,
+  assertAnyPermissions,
+  assertBESAdminAccess,
+} from '../../permissions';
+import { EditHandler } from '../EditHandler';
 import { uploadImage } from '../utilities';
 
-export class EditProject extends BESAdminEditHandler {
+const assertCanEditProject = async (accessPolicy, models, recordId) => {
+  assertAdminPanelAccess(accessPolicy);
+  const project = await models.project.findById(recordId);
+  if (!project) {
+    throw new Error(`No project found with id ${recordId}`);
+  }
+  const hasAdminAccess = await project.hasAdminAccess(accessPolicy);
+  if (!hasAdminAccess) throw new Error('Need Tupaia Admin Panel access to this project to edit');
+  return true;
+};
+
+export class EditProject extends EditHandler {
+  async assertUserHasAccess() {
+    const permissionChecker = accessPolicy =>
+      assertCanEditProject(accessPolicy, this.models, this.recordId);
+    await this.assertPermissions(assertAnyPermissions([assertBESAdminAccess, permissionChecker]));
+  }
+
   // Fetch the code of the project, as this is needed as a unique identifier to upload the images to S3.
   // Also fetch the existing image_url and logo_url, so we can delete the old images from S3.
   async getFields() {
@@ -13,6 +35,10 @@ export class EditProject extends BESAdminEditHandler {
       columns: ['code', 'image_url', 'logo_url'],
     });
     return project;
+  }
+
+  async editRecord() {
+    await this.updateRecord();
   }
 
   // Before updating the project, if the image_url and logo_url have changed, we need to upload the new images to S3 and update the image_url and logo_url fields with the new urls. This also will handle deleting of the image_url and logo_url fields, as the uploadImage function will return the original value if the encoded image is null or not a base64 encoded image.
