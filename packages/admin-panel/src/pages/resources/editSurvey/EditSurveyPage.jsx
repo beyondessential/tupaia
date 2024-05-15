@@ -188,7 +188,12 @@ const EditSurveyPageComponent = withConnectedEditor(
 
         <Form $isLoading={isLoading}>
           {isLoading && <SpinningLoader />}
-          <ErrorAlert severity="error" ref={errorAlertRef} $show={!!errorMessage}>
+          <ErrorAlert
+            severity="error"
+            ref={errorAlertRef}
+            $show={!!errorMessage}
+            aria-hidden={!!errorMessage}
+          >
             {errorMessage}
           </ErrorAlert>
           <Section>
