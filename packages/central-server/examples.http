@@ -31,6 +31,24 @@ GET {{baseUrl}}/downloadFiles?uniqueFileNames=cat_pic.pdf HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
 
+### Get all option sets
+
+GET {{baseUrl}}/optionSets
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get option sets by ID
+
+GET {{baseUrl}}/optionSets/5c625e11f013d60db4249466
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Export option set by ID
+
+GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
+Authorization: {{user-authorization}}
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
 ### Get survey responses
 
 GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
@@ -42,6 +60,22 @@ Authorization: {{user-authorization}}
 GET {{baseUrl}}/socialFeed?appVersion=1.14.140&page=0&earliestCreationDate=2024-02-19T21:45:16.391Z HTTP/2.0
 content-type: {{contentType}}
 Authorization: {{user-authorization}}
+
+### Export survey response
+
+GET {{baseUrl}}/export/surveyResponses/6631d8b281240914d69f5432?timeZone=Pacific%2FAuckland HTTP/1.1
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### GET entity hierarchies
+
+GET {{baseUrl}}/entityHierarchy HTTP/2.0
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get entity hierarchy
+
+GET {{baseUrl}}/entityHierarchy/5e9d06e261f76a30c4000002 HTTP/2.0
 
 ### Get country access list for a project
 
