@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
-import { post, useCurrentUserContext, useEntityByCode } from '../../api';
+import { post, useCurrentUserContext, useEntityByCode } from '..';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -35,7 +35,7 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurvey = () => {
+export const useSubmitSurveyResponse = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
@@ -51,17 +51,17 @@ export const useSubmitSurvey = () => {
         return;
       }
 
-      return post('submitSurvey', {
+      return post('submitSurveyResponse', {
         data: { ...surveyResponseData, answers },
       });
     },
     {
       onMutate: () => {
         // Send off survey submissions by survey, project, country, and userId
-        gaEvent('submit_survey', params.surveyCode!, survey?.name);
-        gaEvent('submit_survey_by_project', user.project?.code!);
-        gaEvent('submit_survey_by_country', params.countryCode!);
-        gaEvent('submit_survey_by_user', user.id!);
+        gaEvent('submit_survey_response', params.surveyCode!, survey?.name);
+        gaEvent('submit_survey_response_by_project', user.project?.code!);
+        gaEvent('submit_survey_response_by_country', params.countryCode!);
+        gaEvent('submit_survey_response_by_user', user.id!);
       },
       onSuccess: data => {
         queryClient.invalidateQueries('surveyResponses');
