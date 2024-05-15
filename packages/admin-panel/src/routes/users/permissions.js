@@ -65,7 +65,7 @@ const FIELDS = [
 const CREATE_CONFIG = {
   bulkCreate: true,
   actionConfig: {
-    title: 'Give user permission',
+    title: `Give user ${RESOURCE_NAME.singular}`,
     bulkUpdateEndpoint: PERMISSIONS_ENDPOINT,
     fields: [
       {
