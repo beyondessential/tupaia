@@ -4,18 +4,18 @@
  */
 import { Request } from 'express';
 import { Route } from '@tupaia/server-boilerplate';
-import { DatatrakWebSubmitSurveyRequest as RequestT } from '@tupaia/types';
+import { DatatrakWebSubmitSurveyResponseRequest as RequestT } from '@tupaia/types';
 import { processSurveyResponse } from './processSurveyResponse';
 import { addRecentEntities } from '../../utils';
 
-export type SubmitSurveyRequest = Request<
+export type SubmitSurveyResponseRequest = Request<
   RequestT.Params,
   RequestT.ResBody,
   RequestT.ReqBody,
   RequestT.ReqQuery
 >;
 
-export class SubmitSurveyRoute extends Route<SubmitSurveyRequest> {
+export class SubmitSurveyResponseRoute extends Route<SubmitSurveyResponseRequest> {
   public async buildResponse() {
     const surveyResponseData = this.req.body;
     const { central: centralApi } = this.req.ctx.services;

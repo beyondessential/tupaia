@@ -5,7 +5,7 @@
 import { EntityType, QuestionType } from '@tupaia/types';
 import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { generateId } from '@tupaia/database';
-import { processSurveyResponse } from '../routes/SubmitSurvey/processSurveyResponse';
+import { processSurveyResponse } from '../routes/SubmitSurveyReponse/processSurveyResponse';
 import { DatatrakWebServerModelRegistry } from '../types';
 
 const mockFindEntityById = async (id: string) => ({

@@ -11,7 +11,7 @@ import { post } from '../api';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { SurveyScreenComponent } from '../../types';
 import { ROUTES } from '../../constants';
-import { AnswersT, isFileUploadAnswer } from './useSubmitSurvey';
+import { AnswersT, isFileUploadAnswer } from './useSubmitSurveyResponse';
 
 const processAnswers = (
   answers: AnswersT,

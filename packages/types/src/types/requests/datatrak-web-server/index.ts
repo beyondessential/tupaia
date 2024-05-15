@@ -8,7 +8,7 @@ export * as DatatrakWebEntitiesRequest from './EntitiesRequest';
 export * as DatatrakWebSurveysRequest from './SurveysRequest';
 export * as DatatrakWebProjectsRequest from './ProjectsRequest';
 export * as DatatrakWebSurveyRequest from './SurveyRequest';
-export * as DatatrakWebSubmitSurveyRequest from './SubmitSurveyRequest';
+export * as DatatrakWebSubmitSurveyResponseRequest from './SubmitSurveyResponseRequest';
 export * as DatatrakWebSurveyResponsesRequest from './SurveyResponsesRequest';
 export * as DatatrakWebRecentSurveysRequest from './RecentSurveysRequest';
 export * as DatatrakWebSingleSurveyResponseRequest from './SingleSurveyResponseRequest';

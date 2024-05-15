@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { Paper as MuiPaper } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
 import { ROUTES } from '../../constants';
-import { useResubmitSurveyResponse, useSubmitSurvey } from '../../api/mutations';
+import { useResubmitSurveyResponse, useSubmitSurveyResponse } from '../../api/mutations';
 import { SurveyParams } from '../../types';
 import { useSurveyForm } from './SurveyContext';
 import { SIDE_MENU_WIDTH, SurveySideMenu } from './Components';
@@ -86,7 +86,7 @@ export const SurveyLayout = () => {
     isResubmitReviewScreen,
   } = useSurveyForm();
   const { handleSubmit, getValues } = useFormContext();
-  const { mutate: submitSurvey, isLoading: isSubmittingSurvey } = useSubmitSurvey();
+  const { mutate: submitSurveyResponse, isLoading: isSubmittingSurvey } = useSubmitSurveyResponse();
   const { mutate: resubmitSurveyResponse, isLoading: isResubmittingSurvey } =
     useResubmitSurveyResponse();
   const { back, next } = useSurveyRouting(numberOfScreens);
@@ -132,7 +132,7 @@ export const SurveyLayout = () => {
   };
 
   const onSubmit = data => {
-    const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurvey;
+    const submitAction = isResubmitReviewScreen ? resubmitSurveyResponse : submitSurveyResponse;
     if (isReviewScreen || isResubmitReviewScreen) return submitAction(data);
     return navigateNext(data);
   };

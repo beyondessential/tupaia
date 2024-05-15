@@ -9,7 +9,7 @@ export { useRegister } from './useRegister';
 export { useEditUser } from './useEditUser';
 export { useResendVerificationEmail } from './useResendVerificationEmail';
 export { useRequestProjectAccess } from './useRequestProjectAccess';
-export { useSubmitSurvey } from './useSubmitSurvey';
+export { useSubmitSurveyResponse } from './useSubmitSurveyResponse';
 export { useRequestResetPassword } from './useRequestResetPassword';
 export * from './useResetPassword';
 export { useRequestDeleteAccount } from './useRequestDeleteAccount';
