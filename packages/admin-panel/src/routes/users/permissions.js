@@ -33,10 +33,6 @@ const FIELDS = [
     source: 'user.email',
     editable: false,
   },
-  {
-    source: 'user.last_name',
-    show: false,
-  },
   ...PERMISSIONS_COLUMNS,
   {
     Header: 'Edit',
