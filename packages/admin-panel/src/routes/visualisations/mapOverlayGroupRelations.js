@@ -65,7 +65,7 @@ const COLUMNS = [
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'mapOverlayGroupRelations',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {
@@ -79,7 +79,7 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New relation between map overlay group and map overlay',
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: RELATION_ENDPOINT,
     fields: FIELDS,
   },
