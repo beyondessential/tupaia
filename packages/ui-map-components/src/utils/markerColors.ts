@@ -35,7 +35,7 @@ export type ColorScheme = keyof typeof COLOR_SCHEME_TO_FUNCTION;
  */
 export function resolveSpectrumColour(
   scaleType: `${ScaleType}`,
-  scaleColorScheme: ColorScheme,
+  scaleColorScheme: ColorScheme | undefined,
   value: number | null, // a number in range [0..1] representing percentage or a string of a date within a range specified by [min, max]
   min: number | string, // the lowest number or a string representing earliest date in a range
   max: number | string, // the highest number or a string representing latest date in a range
@@ -44,12 +44,14 @@ export function resolveSpectrumColour(
   if (value === null || (isNaN(value) && scaleType !== ScaleType.TIME))
     return noDataColour || HEATMAP_UNKNOWN_COLOR;
 
-  const valueToColor = (COLOR_SCHEME_TO_FUNCTION[scaleColorScheme] ||
-    COLOR_SCHEME_TO_FUNCTION[SCALE_TYPE_TO_COLOR_SCHEME[scaleType] as ColorScheme] ||
-    COLOR_SCHEME_TO_FUNCTION[MeasureColorScheme.DEFAULT]) as (
-    value: number | null,
-    ...args: any[]
-  ) => string;
+  let valueToColor: (value: number | null, ...args: any[]) => string;
+  if (scaleColorScheme) {
+    valueToColor = COLOR_SCHEME_TO_FUNCTION[scaleColorScheme];
+  } else if (SCALE_TYPE_TO_COLOR_SCHEME[scaleType]) {
+    valueToColor = COLOR_SCHEME_TO_FUNCTION[SCALE_TYPE_TO_COLOR_SCHEME[scaleType]];
+  } else {
+    valueToColor = COLOR_SCHEME_TO_FUNCTION[MeasureColorScheme.DEFAULT];
+  }
 
   switch (scaleType) {
     case ScaleType.PERFORMANCE_DESC: {
@@ -89,12 +91,16 @@ const normaliseToPercentage = (value: number, min = 0, max = 1) => {
  * Takes a value and return a hsl color string for use as a style
  */
 export function getPerformanceHeatmapColor(
-  value: number, // Number in range [0..1] representing percentage
+  value: number | null, // Number in range [0..1] representing percentage
 ): string {
+  if (value === null) {
+    return HEATMAP_UNKNOWN_COLOR;
+  }
+
   return `hsl(${Math.floor(value * 100)}, 100%, 50%)`;
 }
 
-const getTimeProportion = (value: number, min: string, max: string) => {
+const getTimeProportion = (value: number | null, min: string, max: string) => {
   if (!value || !isNaN(value)) return null;
   const range = moment(max).diff(min, 'days');
   const valueAsMoment = moment(value);
@@ -106,7 +112,7 @@ const getTimeProportion = (value: number, min: string, max: string) => {
  * Takes a value and return a hsl color string for use as a style
  */
 export function getTimeHeatmapColor(
-  value: number, // Number in range [0..1] representing percentage
+  value: number | null, // Number in range [0..1] representing percentage
   noDataColour?: string,
 ): string {
   if (value === null || isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
@@ -135,21 +141,25 @@ function getHeatmapColorByOrder({
   swapColor = false,
   colorSet = HEATMAP_DEFAULT_RGB_SET,
 }: {
-  value: number;
+  value: number | null;
   swapColor?: boolean;
   colorSet?: string[];
 }): string {
+  if (value === null) {
+    return HEATMAP_UNKNOWN_COLOR;
+  }
+
   const difference = value - 0.15;
   const index = difference < 0 ? 0 : Math.floor(difference / 0.1) + 1;
   const indexInRange = index > colorSet.length - 1 ? colorSet.length - 1 : index;
   return !swapColor ? colorSet[indexInRange] : colorSet[colorSet.length - indexInRange - 1];
 }
 
-export function getHeatmapColor(value: number) {
+export function getHeatmapColor(value: number | null) {
   return getHeatmapColorByOrder({ value, swapColor: false });
 }
 
-export function getReverseHeatmapColor(value: number) {
+export function getReverseHeatmapColor(value: number | null) {
   return getHeatmapColorByOrder({ value, swapColor: true });
 }
 
@@ -197,7 +207,11 @@ const GPI_PARITY_LOWER_LIMIT = 0.97;
  *
  * @returns {string}
  */
-export function getGPIColor(value: number, min?: number, max?: number): string {
+export function getGPIColor(value: number | null, min?: number, max?: number): string {
+  if (value === null) {
+    return HEATMAP_UNKNOWN_COLOR;
+  }
+
   if (value > GPI_PARITY_UPPER_LIMIT) {
     const normalisedValue = normaliseToPercentage(Math.min(value, 2), GPI_PARITY_UPPER_LIMIT, max);
     return getHeatmapColorByOrder({ value: normalisedValue, colorSet: RED_COLOR_SET });
