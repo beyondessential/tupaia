@@ -7,8 +7,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { SmallAlert, TooltipIconButton } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
+import HelpOutline from '@material-ui/icons/HelpOutline';
 import PropTypes from 'prop-types';
 import { DialogContent } from '@material-ui/core';
+import * as COLORS from '../../theme/colors';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -31,17 +33,40 @@ const Alert = styled(SmallAlert).attrs({
   severity: 'error',
   variant: 'standard',
 })`
-  &:not(:last-child) {
-    margin-block-end: 1.5årem;
+  width: 100%;
+`;
+
+const AlertWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  & + & {
+    margin-block-start: 0.5rem;
   }
+
+  .MuiSvgIcon-root {
+    color: ${COLORS.LIGHT_RED};
+    margin-block-end: 0.3rem;
+  }
+  .tooltip-icon:hover {
+    svg {
+      fill: ${COLORS.RED};
+    }
+  }
+`;
+
+const ErrorsWrapper = styled.div`
+  max-width: 25rem;
+  margin: 0 auto;
 `;
 
 const Error = ({ message, details }) => {
   return (
-    <div>
+    <AlertWrapper>
+      {details && <TooltipIconButton tooltip={details} Icon={HelpOutline} />}
       <Alert>{message}</Alert>
-      {details && <TooltipIconButton tooltip={details} />}
-    </div>
+    </AlertWrapper>
   );
 };
 
@@ -80,12 +105,12 @@ export const ModalContentProvider = ({ isLoading, error, children }) => {
     <Content>
       {isLoading && 'Please be patient, this can take some time...'}
       {error?.message && (
-        <>
+        <ErrorsWrapper>
           <Heading>{heading}</Heading>
           {errors.map(({ message, details }) => (
             <Error key={message} message={message} details={details} />
           ))}
-        </>
+        </ErrorsWrapper>
       )}
       {/* If loading or error message, don't show children */}
       {!isLoading && !error && children}

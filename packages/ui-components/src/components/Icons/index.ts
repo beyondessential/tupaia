@@ -12,3 +12,4 @@ export * from './WarningCloud';
 export * from './Virus';
 export * from './TupaiaIcon';
 export * from './ExportIcon';
+export * from './Error';

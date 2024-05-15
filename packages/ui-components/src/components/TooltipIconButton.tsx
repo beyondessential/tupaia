@@ -49,7 +49,7 @@ interface TooltipIconButtonProps {
 export const TooltipIconButton = ({ tooltip, Icon = InfoOutlined }: TooltipIconButtonProps) => {
   return (
     <Tooltip title={tooltip} placement="top">
-      <TooltipWrapper tabIndex={0}>
+      <TooltipWrapper tabIndex={0} className="tooltip-icon">
         <Icon />
       </TooltipWrapper>
     </Tooltip>

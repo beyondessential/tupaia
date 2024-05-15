@@ -7,6 +7,7 @@ import React from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
+import { Error } from './Icons';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
@@ -22,7 +23,6 @@ const StyledAlert = styled(MuiAlert)`
 
   &.MuiAlert-standardError {
     background: ${props => props.theme.palette.error.light};
-    color: ${props => props.theme.palette.error.main};
   }
 `;
 
@@ -31,7 +31,7 @@ export const Alert = ({
   severity = 'success',
   iconMapping = {
     success: <CheckCircle />,
-    error: <Warning />,
+    error: <Error />,
     warning: <Warning />,
   },
   ...props
@@ -42,7 +42,8 @@ export const Alert = ({
 const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.875rem;
   border-radius: 3px;
-  padding: 0.5rem 1.25rem 0.5rem 1rem;
+  padding-block: 0;
+  padding-inline: 1rem;
   box-shadow: none;
 
   .MuiAlert-icon {
@@ -58,7 +59,7 @@ export const SmallAlert = ({
 
   iconMapping = {
     success: <CheckCircle fontSize="inherit" />,
-    error: <Warning fontSize="inherit" />,
+    error: <Error fontSize="inherit" />,
     warning: <Warning fontSize="inherit" />,
   },
 
