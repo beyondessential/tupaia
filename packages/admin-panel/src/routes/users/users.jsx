@@ -121,8 +121,8 @@ const IMPORT_CONFIG = {
 };
 
 const CREATE_CONFIG = {
-  title: `New ${RESOURCE_NAME.singular}`,
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
