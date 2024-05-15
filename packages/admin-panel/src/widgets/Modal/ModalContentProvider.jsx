@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { SmallAlert } from '@tupaia/ui-components';
+import { SmallAlert, TooltipIconButton } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { DialogContent } from '@material-ui/core';
@@ -23,34 +23,83 @@ const Content = styled(DialogContent)`
 `;
 
 const Heading = styled(Typography)`
-  margin-bottom: 18px;
+  margin-bottom: 1.1rem;
+  font-size: ${props => props.theme.typography.body1.fontSize};
 `;
 
-export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
+const Alert = styled(SmallAlert).attrs({
+  severity: 'error',
+  variant: 'standard',
+})`
+  &:not(:last-child) {
+    margin-block-end: 1.5årem;
+  }
+`;
+
+const Error = ({ message, details }) => {
+  return (
+    <div>
+      <Alert>{message}</Alert>
+      {details && <TooltipIconButton tooltip={details} />}
+    </div>
+  );
+};
+
+Error.propTypes = {
+  message: PropTypes.string.isRequired,
+  details: PropTypes.string,
+};
+
+Error.defaultProps = {
+  details: null,
+};
+
+export const ModalContentProvider = ({ isLoading, error, children }) => {
+  const getHeading = () => {
+    if (!error) return null;
+    const { extraFields } = error;
+    if (
+      !extraFields?.errorDetails?.errors?.length ||
+      extraFields?.errorDetails?.errors?.length === 1
+    )
+      return 'The below error has occurred:';
+    return 'The below errors have occurred:';
+  };
+
+  const heading = getHeading();
+
+  const getErrorsToDisplay = () => {
+    if (!error) return [];
+    const { message, extraFields } = error;
+    if (!extraFields?.errorDetails?.errors?.length) return [{ message }];
+    return extraFields.errorDetails.errors;
+  };
+
+  const errors = getErrorsToDisplay();
   return (
     <Content>
       {isLoading && 'Please be patient, this can take some time...'}
-      {!!errorMessage && (
+      {error?.message && (
         <>
-          <Heading variant="h6">An error has occurred.</Heading>
-          <SmallAlert severity="error" variant="standard">
-            {errorMessage}
-          </SmallAlert>
+          <Heading>{heading}</Heading>
+          {errors.map(({ message, details }) => (
+            <Error key={message} message={message} details={details} />
+          ))}
         </>
       )}
       {/* If loading or error message, don't show children */}
-      {!isLoading && !errorMessage && children}
+      {!isLoading && !error && children}
     </Content>
   );
 };
 
 ModalContentProvider.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   children: PropTypes.node,
 };
 
 ModalContentProvider.defaultProps = {
-  errorMessage: null,
+  error: null,
   children: null,
 };

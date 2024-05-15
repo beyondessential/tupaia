@@ -45,3 +45,4 @@ export * from './Toast';
 export * from './Toolbar';
 export * from './Tooltip';
 export * from './UserMessage';
+export * from './TooltipIconButton';

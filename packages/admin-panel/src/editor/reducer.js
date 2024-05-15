@@ -16,7 +16,7 @@ import {
 } from './constants';
 
 const defaultState = {
-  errorMessage: '',
+  error: null,
   isOpen: false,
   isLoading: false,
   endpoint: null,
@@ -50,9 +50,9 @@ const stateChanges = {
     isLoading: false,
     ...payload,
   }),
-  [EDITOR_DISMISS]: (payload, { errorMessage }) => {
-    if (errorMessage) {
-      return { errorMessage: defaultState.errorMessage }; // If there is an error, dismiss it
+  [EDITOR_DISMISS]: (payload, { error }) => {
+    if (error) {
+      return { error: defaultState.error }; // If there is an error, dismiss it
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },

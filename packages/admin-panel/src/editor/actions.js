@@ -208,7 +208,7 @@ export const saveEdits =
     } catch (error) {
       dispatch({
         type: EDITOR_ERROR,
-        errorMessage: error.message,
+        error,
       });
     }
   };

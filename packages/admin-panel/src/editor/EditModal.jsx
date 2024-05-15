@@ -31,7 +31,7 @@ const getFieldSourceToEdit = field => {
 };
 
 export const EditModalComponent = ({
-  errorMessage,
+  error,
   isOpen,
   isLoading,
   onDismiss,
@@ -72,7 +72,7 @@ export const EditModalComponent = ({
   const buttons = [
     {
       onClick: onDismiss,
-      text: errorMessage ? dismissButtonText : cancelButtonText,
+      text: error ? dismissButtonText : cancelButtonText,
       disabled: isLoading,
       variant: 'outlined',
       id: 'form-button-cancel',
@@ -81,13 +81,13 @@ export const EditModalComponent = ({
       onClick: () => onSave(files),
       id: 'form-button-save',
       text: saveButtonText,
-      disabled: !!errorMessage || isLoading || isUnchanged,
+      disabled: !!error || isLoading || isUnchanged,
     },
   ];
 
   return (
     <Modal
-      errorMessage={errorMessage}
+      error={error}
       isLoading={isLoading}
       onClose={onDismiss}
       isOpen={isOpen}
@@ -112,7 +112,7 @@ export const EditModalComponent = ({
 };
 
 EditModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
+  error: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
@@ -132,7 +132,7 @@ EditModalComponent.propTypes = {
 };
 
 EditModalComponent.defaultProps = {
-  errorMessage: null,
+  error: null,
   title: 'Edit',
   recordData: null,
   FieldsComponent: null,

@@ -5,7 +5,13 @@
 
 import xlsx from 'xlsx';
 
-import { DatabaseError, UploadError, ImportValidationError, ObjectValidator } from '@tupaia/utils';
+import {
+  DatabaseError,
+  UploadError,
+  ImportValidationError,
+  ObjectValidator,
+  MultiValidationError,
+} from '@tupaia/utils';
 import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../../dataAccessors';
 import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../../database/models/Answer';
 import { splitStringOnComma, splitOnNewLinesOrCommas } from '../../utilities';
@@ -103,14 +109,19 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   let currentScreen;
   let currentSurveyScreenComponent;
   let hasSeenDateOfDataQuestion = false;
+  const errors = []; // An array to hold all errors, allowing multiple errors to be thrown at once
   const questionCodes = []; // An array to hold all question codes, allowing duplicate checking
   const configImporter = new ConfigImporter(models, rows);
   const objectValidator = new ObjectValidator(constructQuestionValidators(models));
   let hasPrimaryEntityQuestion = false;
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     const row = rows[rowIndex];
-    const constructImportValidationError = (message, field) =>
-      new ImportValidationError(message, excelRowNumber, field);
+    const constructImportValidationError = (message, field, { details }) => {
+      return {
+        message: new ImportValidationError(message, excelRowNumber, field).message,
+        details,
+      };
+    };
 
     if (row.type === SURVEY_METADATA) {
       await validateSurveyMetadataRow(rows, rowIndex, constructImportValidationError);
@@ -122,37 +133,43 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
     const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
 
     // Validate rows
-    await objectValidator.validate(questionObject, constructImportValidationError);
-    // Validate no duplicate codes
-    if (
-      questionObject.code &&
-      questionObject.code.length > 0 &&
-      questionCodes.includes(questionObject.code)
-    ) {
-      throw new ImportValidationError('Question code is not unique', excelRowNumber);
-    }
-    // Validate no second primary entity question
-    if (questionObject.type === ANSWER_TYPES.PRIMARY_ENTITY) {
-      if (hasPrimaryEntityQuestion) {
-        throw new ImportValidationError(
-          `Only one ${ANSWER_TYPES.PRIMARY_ENTITY} question allowed`,
-          excelRowNumber,
-        );
-      }
-      hasPrimaryEntityQuestion = true;
-    }
-    questionCodes.push(questionObject.code);
+    try {
+      await objectValidator.validate(questionObject, constructImportValidationError);
 
-    // Validate max one date of data/submission date question
-    if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
-      if (hasSeenDateOfDataQuestion) {
-        // Previously had another submission date question
-        throw new ImportValidationError(
-          'Only one DateOfData/SubmissionDate question allowed',
-          excelRowNumber,
-        );
+      // Validate no duplicate codes
+      if (
+        questionObject.code &&
+        questionObject.code.length > 0 &&
+        questionCodes.includes(questionObject.code)
+      ) {
+        throw new ImportValidationError('Question code is not unique', excelRowNumber);
       }
-      hasSeenDateOfDataQuestion = true;
+      // Validate no second primary entity question
+      if (questionObject.type === ANSWER_TYPES.PRIMARY_ENTITY) {
+        if (hasPrimaryEntityQuestion) {
+          throw new ImportValidationError(
+            `Only one ${ANSWER_TYPES.PRIMARY_ENTITY} question allowed`,
+            excelRowNumber,
+          );
+        }
+        hasPrimaryEntityQuestion = true;
+      }
+      questionCodes.push(questionObject.code);
+
+      // Validate max one date of data/submission date question
+      if (questionObject.type === 'DateOfData' || questionObject.type === 'SubmissionDate') {
+        if (hasSeenDateOfDataQuestion) {
+          // Previously had another submission date question
+          throw new ImportValidationError(
+            'Only one DateOfData/SubmissionDate question allowed',
+            excelRowNumber,
+          );
+        }
+        hasSeenDateOfDataQuestion = true;
+      }
+    } catch (e) {
+      errors.push(e);
+      continue;
     }
 
     // Extract question details from spreadsheet row
@@ -262,8 +279,13 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
       await configImporter.add(rowIndex, componentId);
     } catch (error) {
       const validationError = constructImportValidationError(error.message, 'config');
-      throw validationError;
+      errors.push(validationError);
+      continue;
     }
+  }
+
+  if (errors.length > 0) {
+    throw new MultiValidationError('Errors occurred while importing questions', errors);
   }
 
   await configImporter.import();
