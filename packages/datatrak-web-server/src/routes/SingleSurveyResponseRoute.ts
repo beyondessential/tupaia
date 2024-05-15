@@ -45,7 +45,7 @@ const assertCanViewSurveyResponse = (accessPolicy: AccessPolicy, countryCode: st
 
 export class SingleSurveyResponseRoute extends Route<SingleSurveyResponseRequest> {
   public async buildResponse() {
-    const { ctx, params, query, models, accessPolicy } = this.req;
+    const { ctx, params, query, accessPolicy } = this.req;
     const { id: responseId } = params;
 
     const { fields = DEFAULT_FIELDS } = query;
