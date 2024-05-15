@@ -64,7 +64,7 @@ const SURVEY_FIELDS = {
     },
   },
   permission_group_id: {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_group.name', // TODO: cleanup as part of RN-910
     editConfig: {
       sourceKey: 'permission_group.name',
@@ -76,7 +76,7 @@ const SURVEY_FIELDS = {
     },
   },
   survey_group_id: {
-    Header: 'Survey Group',
+    Header: 'Survey group',
     source: 'survey_group.name', // TODO: cleanup as part of RN-910
     editConfig: {
       sourceKey: 'survey_group.name',
@@ -97,7 +97,7 @@ const SURVEY_FIELDS = {
     },
   },
   period_granularity: {
-    Header: 'Reporting Period',
+    Header: 'Reporting period',
     source: 'period_granularity',
     editConfig: {
       options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
@@ -106,7 +106,7 @@ const SURVEY_FIELDS = {
     },
   },
   requires_approval: {
-    Header: 'Requires Approval',
+    Header: 'Requires approval',
     source: 'requires_approval',
     type: 'boolean',
     editConfig: {
@@ -116,7 +116,7 @@ const SURVEY_FIELDS = {
     },
   },
   'data_group.service_type': {
-    Header: 'Data Service',
+    Header: 'Data service',
     source: 'data_group.service_type',
     editConfig: {
       labelTooltip: 'Select the data service this survey should use',
@@ -131,7 +131,7 @@ const SURVEY_FIELDS = {
     },
   },
   'data_group.config': {
-    Header: 'Data Service Configuration',
+    Header: 'Data service configuration',
     source: 'data_group.config',
     editConfig: {
       type: 'json',
@@ -153,7 +153,7 @@ const SURVEY_FIELDS = {
     },
   },
   surveyQuestions: {
-    Header: 'Survey Questions',
+    Header: 'Survey questions',
     source: 'surveyQuestions',
     editConfig: {
       type: 'file',
@@ -199,7 +199,7 @@ const SURVEY_COLUMNS = [
     disableSortBy: true,
     isButtonColumn: true,
     actionConfig: {
-      title: 'Edit Survey',
+      title: 'Edit survey',
       editEndpoint: 'surveys',
       link: `/surveys/:id/edit`,
       fields: Object.values(SURVEY_FIELDS),
@@ -241,7 +241,7 @@ const CREATE_CONFIG = {
       'data_group.service_type': 'tupaia',
       'data_group.config': {},
     },
-    title: 'New Survey',
+    title: 'New survey',
   },
 };
 
