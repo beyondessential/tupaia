@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import keyBy from 'lodash.keyby';
 import { connect } from 'react-redux';
@@ -33,13 +33,12 @@ const Form = styled.form`
 
 const Section = styled.section`
   padding-block-start: 1rem;
+  padding-block-end: 1.8rem;
 
-  &:first-child {
-    padding-block-end: 1.8rem;
-  }
   &:last-child {
     border-top: 1px solid ${({ theme }) => theme.palette.grey[400]};
     padding-block-start: 1.8rem;
+    padding-block-end: 0;
   }
   .MuiCardContent-root {
     padding: 0;
@@ -82,6 +81,10 @@ const StickyFooter = styled.div`
   padding: 1.25rem;
 `;
 
+const ErrorAlert = styled(Alert)`
+  display: ${({ $show }) => ($show ? 'flex' : 'none')};
+`;
+
 const EditSurveyPageComponent = withConnectedEditor(
   ({
     parent,
@@ -98,6 +101,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     isLoading,
     resetEditorToDefaultState,
   }) => {
+    const errorAlertRef = useRef(null);
     const navigate = useNavigate();
     const { '*': unusedParam, locale, ...params } = useParams();
     const { data: details } = useItemDetails(params, parent);
@@ -164,6 +168,13 @@ const EditSurveyPageComponent = withConnectedEditor(
       ? null
       : recordData?.surveyQuestions;
 
+    // on error, scroll to the error alert
+    useEffect(() => {
+      if (errorMessage && errorAlertRef.current) {
+        errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, [errorMessage]);
+
     return (
       <Wrapper>
         <Breadcrumbs
@@ -177,7 +188,9 @@ const EditSurveyPageComponent = withConnectedEditor(
 
         <Form $isLoading={isLoading}>
           {isLoading && <SpinningLoader />}
-          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          <ErrorAlert severity="error" ref={errorAlertRef} $show={!!errorMessage}>
+            {errorMessage}
+          </ErrorAlert>
           <Section>
             <FileUploadField
               id="survey-questions"
