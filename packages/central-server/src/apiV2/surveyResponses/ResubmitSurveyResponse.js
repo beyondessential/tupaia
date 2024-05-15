@@ -28,7 +28,7 @@ import { saveResponsesToDatabase } from './saveResponsesToDatabase';
 export class ResubmitSurveyResponse extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.originalSurveyResponseId = this.params.surveyResponseId;
+    this.originalSurveyResponseId = this.params.recordId;
     this.newSurveyResponse = req.body;
   }
 
