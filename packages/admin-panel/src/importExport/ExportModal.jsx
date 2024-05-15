@@ -133,8 +133,8 @@ export const ExportModal = React.memo(
           id="page-export-button"
           startIcon={<ExportIcon />}
           onClick={handleOpen}
-          isLoading={STATUS === STATUS.LOADING}
-          disabled={STATUS === STATUS.ERROR}
+          isLoading={status === STATUS.LOADING}
+          disabled={status === STATUS.ERROR}
         >
           {exportButtonText}
         </ActionButton>
@@ -159,6 +159,7 @@ ExportModal.defaultProps = {
   title: 'Export',
   exportButtonText: 'Export',
   cancelButtonText: 'Cancel',
-  isExportingMessage: `Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.`,
+  isExportingMessage:
+    'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',
   values: {},
 };
