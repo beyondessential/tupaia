@@ -286,7 +286,7 @@ apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
 apiV2.post('/surveyResponse', useRouteHandler(SubmitSurveyResponses)); // used by mSupply to directly submit data
 apiV2.post('/surveyResponses', useRouteHandler(SubmitSurveyResponses));
 apiV2.post(
-  '/surveyResponse/:recordId/resubmit',
+  '/surveyResponses/:recordId/resubmit',
   multipartJson(false),
   useRouteHandler(ResubmitSurveyResponse),
 );
