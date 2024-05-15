@@ -31,7 +31,7 @@ export const dataElements = {
     actionConfig: {
       title: `New ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dataElements',
-      fields: [...DATA_ELEMENT_FIELDS],
+      fields: DATA_ELEMENT_FIELDS,
     },
   },
   editorConfig: EDITOR_CONFIG,
