@@ -47,8 +47,8 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-      title: 'Edit External Database Connection',
-      fields: [...FIELDS],
+      title: `Edit ${RESOURCE_NAME.singular}`,
+      fields: FIELDS,
     },
   },
   {
@@ -69,7 +69,7 @@ const CREATE_CONFIG = {
   actionConfig: {
     title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-    fields: [...FIELDS],
+    fields: FIELDS,
   },
 };
 

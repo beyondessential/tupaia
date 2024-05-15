@@ -56,7 +56,7 @@ export const COLUMNS = [
     type: 'edit',
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
-      title: 'Edit Entity',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       fields: [FIELDS.name, FIELDS.attributes],
     },
   },

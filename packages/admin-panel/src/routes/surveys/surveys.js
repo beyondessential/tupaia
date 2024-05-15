@@ -240,6 +240,7 @@ const SURVEY_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'surveys',
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
@@ -265,7 +266,6 @@ const CREATE_CONFIG = {
       'data_group.service_type': 'tupaia',
       'data_group.config': {},
     },
-    title: 'New Survey',
   },
 };
 

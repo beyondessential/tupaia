@@ -28,7 +28,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
@@ -40,9 +40,9 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard',
-      editEndpoint: 'dashboards',
-      fields: [...FIELDS],
+      title: `Edit ${RESOURCE_NAME.singular}`,
+      editEndpoint: DASHBOARDS_ENDPOINT,
+      fields: FIELDS,
     },
   },
   {
@@ -80,7 +80,7 @@ const RELATION_FIELDS = [
       canCreateNewOptions: true,
       optionLabelKey: 'entityTypes',
       optionValueKey: 'entityTypes',
-      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+      secondaryLabel: 'Input the entity types you want. e.g. ‘country’, ‘sub_district’',
     },
   },
   {

@@ -106,7 +106,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit User',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'users',
       fields: EDIT_FIELDS,
     },
