@@ -18,8 +18,8 @@ export const ResubmitSurveyResponseModalComponent = ({
   onAfterMutate,
 }) => {
   return (
-    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="md">
-      <ModalHeader onClose={onDismiss} title="Resubmit Survey Response" />
+    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="sm">
+      <ModalHeader onClose={onDismiss} title="Resubmit survey response" />
       <Form
         surveyResponseId={surveyResponseId}
         onDismiss={() => onDismiss()}

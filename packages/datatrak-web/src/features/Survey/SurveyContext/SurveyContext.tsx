@@ -123,10 +123,12 @@ export const useSurveyForm = () => {
   const isLast = screenNumber === numberOfScreens;
   const isSuccessScreen = !!useMatch(ROUTES.SURVEY_SUCCESS);
   const isReviewScreen = !!useMatch(ROUTES.SURVEY_REVIEW);
-  const isResubmit = !!useMatch(ROUTES.SURVEY_RESUBMIT);
+
   const isResponseScreen = !!useMatch(ROUTES.SURVEY_RESPONSE);
   const isResubmitScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_SCREEN);
   const isResubmitReviewScreen = !!useMatch(ROUTES.SURVEY_RESUBMIT_REVIEW);
+  const isResubmit =
+    !!useMatch(ROUTES.SURVEY_RESUBMIT) || isResubmitScreen || isResubmitReviewScreen;
 
   const toggleSideMenu = () => {
     dispatch({ type: ACTION_TYPES.TOGGLE_SIDE_MENU });
