@@ -25,18 +25,36 @@ const Wrapper = styled.div`
   }
 `;
 
+type Base64 = string | null | ArrayBuffer;
+
+const createEncodedFile = (fileObject: File): Promise<Base64> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(fileObject);
+  });
+};
+
 export const FileQuestion = ({
   label,
   required,
   detailLabel,
   controllerProps: { onChange, value: selectedFile, name },
 }: SurveyQuestionInputProps) => {
-  const handleChange = (_e, _name, files) => {
+  const handleChange = async (_e, _name, files) => {
     if (!files || files.length === 0) return onChange(null);
     const file = files[0];
+    const encodedFile = await createEncodedFile(file);
+    // convert to an object with an encoded file so that it can be handled in the backend and uploaded to s3
     onChange({
       name: file.name,
-      value: file,
+      value: encodedFile,
     });
   };
 

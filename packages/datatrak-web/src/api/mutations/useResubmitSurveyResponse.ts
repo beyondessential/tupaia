@@ -5,112 +5,28 @@
 
 import { useMutation } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
-import { QuestionType } from '@tupaia/types';
-import { getUniqueSurveyQuestionFileName } from '@tupaia/utils';
 import { post } from '../api';
-import { getAllSurveyComponents, useSurveyForm } from '../../features';
-import { SurveyScreenComponent } from '../../types';
+import { useSurveyForm } from '../../features';
 import { ROUTES } from '../../constants';
-import { AnswersT, isFileUploadAnswer } from './useSubmitSurveyResponse';
-
-const processAnswers = (
-  answers: AnswersT,
-  questionsById: Record<string, SurveyScreenComponent>,
-) => {
-  const files: File[] = [];
-  let entityId = null as string | null;
-  let dataTime = null as string | null;
-  const formattedAnswers = Object.entries(answers).reduce((acc, [questionId, answer]) => {
-    const { code, type } = questionsById[questionId];
-    if (!code) return acc;
-
-    if (type === QuestionType.PrimaryEntity && answer) {
-      entityId = answer as string;
-      return acc;
-    }
-
-    if (type === QuestionType.File) {
-      if (isFileUploadAnswer(answer) && answer.value instanceof File) {
-        // Create a new file with a unique name, and add it to the files array, so we can add to the FormData, as this is what the central server expects
-        const uniqueFileName = getUniqueSurveyQuestionFileName(answer.name);
-        files.push(
-          new File([answer.value as Blob], uniqueFileName, {
-            type: answer.value.type,
-          }),
-        );
-        return {
-          ...acc,
-          [code]: uniqueFileName,
-        };
-      }
-      if (answer && typeof answer === 'object' && 'name' in answer) {
-        return {
-          ...acc,
-          [code]: answer.name,
-        };
-      }
-    }
-
-    if (type === QuestionType.DateOfData || type === QuestionType.SubmissionDate) {
-      const date = new Date(answer as string);
-      dataTime = date.toISOString();
-      return acc;
-    }
-    return {
-      ...acc,
-      [code]: answer,
-    };
-  }, {});
-
-  return {
-    answers: formattedAnswers,
-    files,
-    entityId,
-    dataTime,
-  };
-};
+import { AnswersT, useSurveyResponseData } from './useSubmitSurveyResponse';
 
 export const useResubmitSurveyResponse = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { surveyResponseId } = params;
-  const { surveyScreens, resetForm } = useSurveyForm();
-  const allScreenComponents = getAllSurveyComponents(surveyScreens);
-  const questionsById = allScreenComponents.reduce((acc, component) => {
-    return {
-      ...acc,
-      [component.questionId]: component,
-    };
-  }, {});
+
+  const { resetForm } = useSurveyForm();
+
+  const surveyResponseData = useSurveyResponseData();
+
   return useMutation<any, Error, AnswersT, unknown>(
-    async (surveyAnswers: AnswersT) => {
-      if (!surveyAnswers) {
+    async (answers: AnswersT) => {
+      if (!answers) {
         return;
       }
-      const { answers, files, entityId, dataTime } = processAnswers(surveyAnswers, questionsById);
-
-      const formData = new FormData();
-      const formDataToSubmit = { answers } as {
-        answers: Record<string, string | number | boolean>;
-        entity_id?: string;
-        data_time?: string;
-      };
-      if (entityId) {
-        formDataToSubmit.entity_id = entityId;
-      }
-      if (dataTime) {
-        formDataToSubmit.data_time = dataTime;
-      }
-      formData.append('payload', JSON.stringify(formDataToSubmit));
-      files.forEach(file => {
-        formData.append(file.name, file);
-      });
 
       return post(`surveyResponse/${surveyResponseId}/resubmit`, {
-        data: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        data: { ...surveyResponseData, answers },
       });
     },
     {
