@@ -7,7 +7,7 @@
 #   "Action": "spin_up_lesmis_deployment",
 #   "User": "edwin",
 #   "Branch": "wai-965",
-#   "DbSnapshot": "lesmis-on-premise/lesmis-dump-tupaia-202404091048.sql",
+#   "DbDumpFile": "lesmis-on-premise/lesmis-dump-tupaia-202404091048.sql",
 #   "HoursOfLife": 8
 # }
 
@@ -35,9 +35,9 @@ def spin_up_lesmis_deployment(event):
     if len(existing_instances) != 0:
       raise Exception('A deployment already exists, perhaps you want to redeploy and swap out the existing one? The easiest way is to push a new commit.')
     
-    if 'DbSnapshot' not in event:
-        raise Exception('You must include the file location of a snapshot of the lesmis database in S3')
-    db_snapshot = event.get('DbSnapshot')
+    if 'DbDumpFile' not in event:
+        raise Exception('You must include the file location of a dump of the lesmis database in S3')
+    db_dump_file = event.get('DbDumpFile')
 
 
     # get manual input parameters, or default for any not provided
@@ -52,7 +52,7 @@ def spin_up_lesmis_deployment(event):
         { 'StopAtUTC': '09:00', 'StartAtUTC': '19:00' }
     )
 
-    server_extra_tags.append({ 'Key': 'DbSnapshot', 'Value': db_snapshot})
+    server_extra_tags.append({ 'Key': 'DbDumpFile', 'Value': db_dump_file})
 
     create_server_instance_from_image(
         deployment_name,

@@ -10,7 +10,7 @@ service nginx stop
 export DEFAULT_FRONTEND=tupaia-web
 export DOMAIN=tupaia.org
 export USE_SSL=false
-${TUPAIA_DIR}/packages/devops/scripts/deployment-common/configureNginx.sh
+"$TUPAIA_DIR/packages/devops/scripts/deployment-common/configureNginx.sh"
 
 cp ${TUPAIA_DIR}/packages/devops/misc/error_page.html ${TUPAIA_DIR}/error_page.html
 

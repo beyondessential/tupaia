@@ -90,6 +90,7 @@ sudo apt-get -yqq install \
 # install node and yarn
 if ! command -v node &> /dev/null
 then
+  echo "Installing nvm"
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -102,6 +103,7 @@ fi
 # install pm2
 if ! command -v pm2 &> /dev/null
 then
+  echo "Installing pm2"
   npm install --global pm2
   pm2 install pm2-logrotate
 else
@@ -111,10 +113,7 @@ fi
 # install bitwarden
 if ! command -v bw &> /dev/null
 then
-  sudo apt-get --no-install-recommends -yqq install \
-    jq
-
-  # install bitwarden cli
+  echo "Installing bitwarden-cli"
   npm install --global @bitwarden/cli
 else
   echo "bitwarden-cli already installed, skipping"
