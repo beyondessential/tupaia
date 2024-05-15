@@ -2,10 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-import { SvgIcon } from '@material-ui/core';
-import React, { SVGAttributes } from 'react';
+import React from 'react';
+import { SvgIcon, SvgIconProps } from '@material-ui/core';
 
-export const Error = (props: SVGAttributes<HTMLOrSVGElement>) => (
+export const Error = (props: SvgIconProps) => (
   <SvgIcon
     {...props}
     xmlns="http://www.w3.org/2000/svg"
