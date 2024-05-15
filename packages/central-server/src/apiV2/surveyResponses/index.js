@@ -10,4 +10,4 @@ export { saveResponsesToDatabase } from './saveResponsesToDatabase';
 export { upsertEntitiesAndOptions } from './upsertEntitiesAndOptions';
 export { validateSurveyResponses } from './validateSurveyResponses';
 export { ResubmitSurveyResponse } from './ResubmitSurveyResponse';
-export { surveyResponse } from './surveyResponse';
+export { SubmitSurveyResponses } from './SubmitSurveyResponses';
