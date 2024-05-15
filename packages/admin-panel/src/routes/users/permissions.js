@@ -69,7 +69,7 @@ const CREATE_CONFIG = {
     bulkUpdateEndpoint: PERMISSIONS_ENDPOINT,
     fields: [
       {
-        Header: 'User Email',
+        Header: 'User email',
         source: 'user.email',
         editConfig: {
           optionsEndpoint: 'users',
