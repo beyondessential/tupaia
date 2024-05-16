@@ -81,6 +81,10 @@ export class SurveyEditor {
         throw new Error('Survey code is required');
       }
 
+      if (permissionGroupId === null || permissionGroupId === '') {
+        throw new Error('Permission group is required');
+      }
+
       if (name === null || name === '') {
         throw new Error('Survey name is required');
       }

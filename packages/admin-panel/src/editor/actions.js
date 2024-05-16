@@ -43,6 +43,7 @@ export const openBulkEditModal =
   async (dispatch, getState, { api }) => {
     // explode the fields from any subsections
     const explodedFields = getExplodedFields(fields);
+    dispatch(openEditModal(recordId));
     if (recordId) {
       dispatch({
         type: EDITOR_DATA_FETCH_BEGIN,

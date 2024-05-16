@@ -29,22 +29,18 @@ export const EditButtonComponent = ({ onEdit, actionConfig, row }) => {
 };
 
 EditButtonComponent.propTypes = {
-  onEdit: PropTypes.func,
+  onEdit: PropTypes.func.isRequired,
   actionConfig: PropTypes.object.isRequired,
   row: PropTypes.object.isRequired,
-};
-
-EditButtonComponent.defaultProps = {
-  onEdit: () => {},
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
     const recordId = ownProps.row.original.id;
-    dispatch(openEditModal(recordId));
     if (!ownProps.actionConfig?.link) {
       dispatch(loadEditor(ownProps.actionConfig, recordId));
     }
+    dispatch(openEditModal(recordId));
   },
 });
 

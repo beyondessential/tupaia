@@ -534,6 +534,19 @@ describe('Create and Edit Surveys', () => {
       expect(response.body.error).to.equal('Internal server error: Survey name is required');
     });
 
+    it('Throws an error if a permission_group_id is removed from a survey', async () => {
+      await app.grantAccess(DEFAULT_POLICY);
+
+      const response = await app.multipartPut({
+        endpoint: `surveys/${survey1_id}`,
+        payload: {
+          permission_group_id: '',
+        },
+      });
+      expect(response.statusCode).to.equal(500);
+      expect(response.body.error).to.equal('Internal server error: Permission group is required');
+    });
+
     it('Throws an error if a code is removed from a survey', async () => {
       await app.grantAccess(DEFAULT_POLICY);
 

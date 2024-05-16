@@ -142,7 +142,7 @@ const SURVEY_FIELDS = {
         recordData['data_group.service_type'] === 'dhis'
           ? [
               {
-                label: 'DHIS Server',
+                label: 'DHIS server',
                 fieldName: 'dhisInstanceCode',
                 optionsEndpoint: 'dhisInstances',
                 optionLabelKey: 'code',
