@@ -13,13 +13,21 @@ const OPTION_SET_FIELDS = [
 const OPTION_SET_COLUMNS = [
   ...OPTION_SET_FIELDS,
   {
+    Header: 'Export',
+    type: 'export',
+    actionConfig: {
+      exportEndpoint: 'optionSets',
+      fileName: '{name}',
+    },
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
       title: 'Edit Option Set',
       editEndpoint: 'optionSets',
-      fields: [...OPTION_SET_FIELDS],
+      fields: OPTION_SET_FIELDS,
     },
   },
 ];
