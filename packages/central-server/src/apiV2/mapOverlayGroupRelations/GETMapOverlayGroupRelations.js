@@ -54,6 +54,20 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     return mapOverlayGroupRelation;
   }
 
+  async findRecords(criteria, options) {
+    const queryResults = await this.models.mapOverlayGroupRelation.find(criteria, options);
+    return queryResults.map(
+      ({ id, child_id, map_overlay_group_id, child_type, sort_order, child_code }) => ({
+        id,
+        child_id,
+        map_overlay_group_id,
+        child_type,
+        sort_order,
+        child_code,
+      }),
+    );
+  }
+
   async getPermissionsFilter(criteria, options) {
     const dbConditions = await createMapOverlayGroupRelationDBFilter(
       this.accessPolicy,

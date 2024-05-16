@@ -1,11 +1,12 @@
-/**
+/*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseRecord } from '../DatabaseRecord';
 import { RECORDS } from '../records';
+import { JOIN_TYPES } from '../TupaiaDatabase';
 
 const MAP_OVERLAY = 'mapOverlay';
 const MAP_OVERLAY_GROUP = 'mapOverlayGroup';
@@ -57,4 +58,60 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
       'map_overlay_group_id',
     );
   }
+
+  async find(criteria, dbOptions = {}) {
+    const options = dbOptions;
+
+    // Left join with map_overlay and map_overlay_group
+    options.multiJoin = [
+      {
+        joinType: JOIN_TYPES.LEFT,
+        joinWith: RECORDS.MAP_OVERLAY,
+        joinCondition: [
+          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+          `${RECORDS.MAP_OVERLAY}.id`,
+        ],
+      },
+      {
+        joinType: JOIN_TYPES.LEFT,
+        joinWith: RECORDS.MAP_OVERLAY_GROUP,
+        joinCondition: [
+          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+          `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+        ],
+      },
+    ];
+
+    // Add child code for both child type options
+    options.columns = [];
+    for (const { joinWith } of options.multiJoin) {
+      const column = `${joinWith}.code as ${
+        joinWith === RECORDS.MAP_OVERLAY ? 'mapOverlayChildCode' : 'mapOverlayGroupChildCode'
+      }`;
+      options.columns.push(column);
+    }
+
+    // Add original field names
+    const fieldNames = await this.fetchFieldNames();
+    for (const field of fieldNames) {
+      const column = `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.${field} as ${field}`;
+      options.columns.push(column);
+    }
+
+    const records = await this.database.find(this.databaseRecord, criteria, options);
+
+    const recordsWithChildCode = records.map(record => {
+      const { mapOverlayChildCode, mapOverlayGroupChildCode, ...rest } = record;
+
+      // Coalesce these transient properties into ‘child_code’ (assuming EXACTLY one of them is null)
+      rest.child_code = mapOverlayChildCode ?? mapOverlayGroupChildCode;
+
+      // Keep only the desired properties
+      return rest;
+    });
+    console.log('\x1b[1;34mrv\x1b[m', JSON.stringify(recordsWithChildCode, null, 2));
+
+    return recordsWithChildCode;
+  }
+
 }
