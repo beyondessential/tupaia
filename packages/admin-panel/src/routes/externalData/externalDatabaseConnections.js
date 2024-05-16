@@ -13,10 +13,12 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Description',

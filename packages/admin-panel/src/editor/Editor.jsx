@@ -11,7 +11,7 @@ import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
 
-const EditorWrapper = styled.div`
+const EditorWrapper = styled.form`
   .file_upload_label {
     font-size: 0.9375rem;
     text-transform: initial;
@@ -65,7 +65,8 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
 
   // Get the input for the field
   const getFieldInput = field => {
-    const { editable = true, editConfig = {}, source, Header, accessor } = field;
+    const { editable = true, editConfig = {}, source, Header, accessor, required } = field;
+
     return (
       <InputField
         key={source}
@@ -77,6 +78,7 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
         disabled={!editable}
         recordData={recordData}
         id={`inputField-${labelToId(source)}`}
+        required={required}
         {...editConfig}
       />
     );

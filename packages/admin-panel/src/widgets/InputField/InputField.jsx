@@ -4,7 +4,10 @@
  */
 
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { InputWrapper } from './InputWrapper';
+import { getEditorState } from '../../editor/selectors';
 
 const InputFieldComponents = {};
 
@@ -22,12 +25,26 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
   return type;
 };
 
-export const InputField = ({ type, ...inputProps }) => {
+export const InputFieldComponent = ({ type, secondaryLabel, error, ...inputProps }) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
   const InputComponent = InputFieldComponents[inputType];
-  return <InputComponent {...inputProps} />;
+  return (
+    <InputWrapper errorText={error} helperText={secondaryLabel}>
+      {InputComponent && <InputComponent {...inputProps} invalid={!!error} />}
+    </InputWrapper>
+  );
 };
+
+const mapStateToProps = (state, ownProps) => {
+  const { inputKey } = ownProps;
+  const editorState = getEditorState(state);
+  return {
+    error: editorState.validationErrors[inputKey],
+  };
+};
+
+export const InputField = connect(mapStateToProps)(InputFieldComponent);
 
 export const inputFieldPropTypes = {
   allowMultipleValues: PropTypes.bool,
@@ -54,6 +71,8 @@ export const inputFieldPropTypes = {
   parentRecord: PropTypes.object,
   secondaryLabel: PropTypes.string,
   variant: PropTypes.string,
+  required: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 export const inputFieldDefaultProps = {
@@ -72,7 +91,9 @@ export const inputFieldDefaultProps = {
   parentRecord: {},
   secondaryLabel: null,
   variant: null,
+  required: false,
+  error: null,
 };
 
-InputField.propTypes = inputFieldPropTypes;
-InputField.defaultProps = inputFieldDefaultProps;
+InputFieldComponent.propTypes = inputFieldPropTypes;
+InputFieldComponent.defaultProps = inputFieldDefaultProps;

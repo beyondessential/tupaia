@@ -12,15 +12,18 @@ export const FIELDS = {
   code: {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   name: {
     Header: 'Name',
     source: 'name',
     type: 'tooltip',
+    required: true,
   },
   type: {
     Header: 'Type',
     source: 'type',
+    required: true,
   },
   attributes: {
     Header: 'Attributes',

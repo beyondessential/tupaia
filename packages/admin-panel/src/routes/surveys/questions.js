@@ -12,6 +12,7 @@ const QUESTION_FIELDS = [
   {
     Header: 'Type',
     source: 'type',
+    required: true,
   },
   {
     Header: 'Name',
@@ -22,6 +23,7 @@ const QUESTION_FIELDS = [
     Header: 'Question',
     source: 'text',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Legacy Options',
@@ -68,6 +70,7 @@ const OPTION_FIELDS = [
   {
     Header: 'Value',
     source: 'value',
+    required: true,
   },
   {
     Header: 'Label',

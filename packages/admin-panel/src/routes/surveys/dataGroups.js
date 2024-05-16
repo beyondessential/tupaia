@@ -24,6 +24,7 @@ const DATA_GROUP_FIELDS = [
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
           optionValueKey: 'dhisInstances.code',
+          required: true,
           visibilityCriteria: { service_type: 'dhis' },
         },
       ],

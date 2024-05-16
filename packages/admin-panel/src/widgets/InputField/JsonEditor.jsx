@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
+import { FormLabel } from '@material-ui/core';
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
@@ -22,23 +22,18 @@ const Container = styled.div`
 
   .jsoneditor {
     height: auto;
+    border-color: ${({ theme, $invalid }) => {
+      return $invalid ? theme.palette.error.main : theme.palette.text.primary;
+    }};
   }
 `;
 
-const Label = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
+const Label = styled(FormLabel)`
   font-size: 0.9rem;
   line-height: 1.1rem;
 `;
 
-const HelperText = styled(Typography)`
-  color: ${props => props.theme.palette.text.secondary};
-  font-size: 0.75rem;
-  margin-top: 3px;
-  line-height: 1.66;
-`;
-
-export const JsonEditor = ({ inputKey, label, helperText, value, onChange, stringify }) => {
+export const JsonEditor = ({ inputKey, label, value, onChange, stringify, invalid, required }) => {
   if (!value) {
     return null;
   }
@@ -50,8 +45,10 @@ export const JsonEditor = ({ inputKey, label, helperText, value, onChange, strin
   }
 
   return (
-    <Container>
-      <Label gutterBottom>{label}</Label>
+    <Container $invalid={invalid}>
+      <Label gutterBottom required={required} error={invalid}>
+        {label}
+      </Label>
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         mainMenuBar={false}
@@ -60,7 +57,6 @@ export const JsonEditor = ({ inputKey, label, helperText, value, onChange, strin
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
         value={editorValue}
       />
-      {helperText && <HelperText>{helperText}</HelperText>}
     </Container>
   );
 };
@@ -70,12 +66,14 @@ JsonEditor.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
-  helperText: PropTypes.string,
   stringify: PropTypes.bool,
+  invalid: PropTypes.bool,
+  required: PropTypes.bool,
 };
 
 JsonEditor.defaultProps = {
-  helperText: null,
   value: null,
   stringify: true,
+  invalid: false,
+  required: false,
 };

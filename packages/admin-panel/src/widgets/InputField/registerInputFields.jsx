@@ -43,10 +43,6 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const StyledFileInputWrapper = styled.div`
-  margin-bottom: 1.2rem;
-`;
-
 // Handle styling of the checkbox for just the admin-panel so as not to overwrite styles of the checkbox used elsewhere
 export const StyledCheckboxWrapper = styled.div`
   .MuiFormControlLabel-label {
@@ -68,7 +64,6 @@ export const registerInputFields = () => {
       placeholder={props.value}
       initialValue={props.value}
       label={props.label}
-      helperText={props.secondaryLabel}
       endpoint={props.optionsEndpoint}
       optionLabelKey={props.optionLabelKey}
       optionValueKey={props.optionValueKey}
@@ -82,6 +77,8 @@ export const registerInputFields = () => {
       pageSize={props.pageSize}
       tooltip={props.labelTooltip}
       distinct={props.distinct}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('json', props => (
@@ -95,6 +92,8 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       getJsonFieldSchema={props.getJsonFieldSchema}
       variant={props.variant}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('enum', props => (
@@ -108,6 +107,7 @@ export const registerInputFields = () => {
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('jsonEditor', props => (
@@ -117,6 +117,8 @@ export const registerInputFields = () => {
       value={props.value}
       onChange={props.onChange}
       helperText={props.secondaryLabel}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('jsonArray', props => (
@@ -127,6 +129,7 @@ export const registerInputFields = () => {
       onChange={props.onChange}
       helperText={props.secondaryLabel}
       stringify={false}
+      required={props.required}
     />
   ));
   registerInputField('boolean', props => (
@@ -150,6 +153,8 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('date', props => (
@@ -161,6 +166,7 @@ export const registerInputFields = () => {
       onChange={date => props.onChange(props.inputKey, date.toISOString())}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('datetime-local', props => (
@@ -181,6 +187,7 @@ export const registerInputFields = () => {
       }}
       disabled={props.disabled}
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('datetime-utc', props => (
@@ -200,6 +207,7 @@ export const registerInputFields = () => {
         }
       }}
       disabled={props.disabled}
+      required={props.required}
     />
   ));
   registerInputField('link', props => {
@@ -236,6 +244,8 @@ export const registerInputFields = () => {
         minLength: props.minLength,
         maxLength: props.maxLength,
       }}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('text', props => (
@@ -260,6 +270,8 @@ export const registerInputFields = () => {
         minLength: props.minLength,
         maxLength: props.maxLength,
       }}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('password', props => (
@@ -272,26 +284,27 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       type="password"
       tooltip={props.labelTooltip}
+      required={props.required}
     />
   ));
   registerInputField('image', props => (
-    <StyledFileInputWrapper>
-      <ImageUploadField
-        name={props.name}
-        imageSrc={props.value}
-        onDelete={() => props.onChange(props.inputKey, null)}
-        onChange={image => props.onChange(props.inputKey, image)}
-        label={props.label}
-        buttonLabel={props.buttonLabel}
-        avatarVariant={props.avatarVariant}
-        maxWidth={props.maxWidth}
-        maxHeight={props.maxHeight}
-        minWidth={props.minWidth}
-        minHeight={props.minHeight}
-        secondaryLabel={props.secondaryLabel}
-        tooltip={props.labelTooltip}
-      />
-    </StyledFileInputWrapper>
+    <ImageUploadField
+      name={props.name}
+      imageSrc={props.value}
+      onDelete={() => props.onChange(props.inputKey, null)}
+      onChange={image => props.onChange(props.inputKey, image)}
+      label={props.label}
+      buttonLabel={props.buttonLabel}
+      avatarVariant={props.avatarVariant}
+      maxWidth={props.maxWidth}
+      maxHeight={props.maxHeight}
+      minWidth={props.minWidth}
+      minHeight={props.minHeight}
+      secondaryLabel={props.secondaryLabel}
+      tooltip={props.labelTooltip}
+      required={props.required}
+      invalid={props.invalid}
+    />
   ));
   registerInputField('hexcode', props => (
     <HexcodeField
@@ -303,6 +316,7 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
+      required={props.required}
     />
   ));
   registerInputField('checkbox', props => (
@@ -331,6 +345,8 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       name={props.name}
+      required={props.required}
+      invalid={props.invalid}
     />
   ));
   registerInputField('file', props => (
@@ -339,6 +355,7 @@ export const registerInputFields = () => {
       label={props.label}
       helperText={props.secondaryLabel}
       onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
+      required={props.required}
     />
   ));
 };

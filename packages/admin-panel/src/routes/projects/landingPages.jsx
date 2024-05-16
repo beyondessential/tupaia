@@ -21,6 +21,7 @@ const FIELDS = {
   NAME: {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   NAME_HEADER: {
     Header: 'Add name to header title (optional)',
@@ -36,6 +37,7 @@ const FIELDS = {
   URL_SEGMENT: {
     Header: 'Custom link',
     source: 'url_segment',
+    required: true,
     // format the value to include the URL prefix in the table, and display as a clickable link
     // eslint-disable-next-line react/prop-types
     Cell: ({ value }) => (
@@ -137,6 +139,7 @@ const FIELDS = {
   PROJECTS: {
     Header: 'Project code/s',
     source: 'project_codes',
+    required: true,
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {

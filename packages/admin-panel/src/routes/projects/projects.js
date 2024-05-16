@@ -29,6 +29,7 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Map Overlay Code',
     source: 'default_measure',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'code',
@@ -40,6 +41,7 @@ const DEFAULT_FIELDS = [
     Header: 'Permission Group',
     source: 'permission_groups',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
@@ -92,6 +94,7 @@ const CREATE_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -101,6 +104,7 @@ const EDIT_FIELDS = [
     Header: 'Code',
     source: 'code',
     editable: false,
+    required: true,
   },
   ...DEFAULT_FIELDS,
 ];
@@ -109,6 +113,7 @@ const NEW_PROJECT_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   ...CREATE_FIELDS,
   {

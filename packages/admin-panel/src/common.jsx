@@ -49,6 +49,7 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
       optionsEndpoint: 'dhisInstances',
       optionLabelKey: 'dhisInstances.code',
       optionValueKey: 'dhisInstances.code',
+      required: true,
       visibilityCriteria: { service_type: 'dhis' },
     },
     {
@@ -109,10 +110,12 @@ export const DATA_SOURCE_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Data Service',
     source: 'service_type',
+    required: true,
     editConfig: { default: 'dhis', options: SERVICE_TYPE_OPTIONS },
   },
 ];

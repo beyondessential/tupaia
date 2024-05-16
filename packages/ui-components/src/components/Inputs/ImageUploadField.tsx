@@ -5,7 +5,7 @@
 
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AvatarProps, Box, Fab, FormHelperText } from '@material-ui/core';
+import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
@@ -22,7 +22,6 @@ const HiddenFileInput = styled.input`
 `;
 
 const Wrapper = styled(FlexStart)`
-  margin-bottom: 1.6rem;
   align-items: flex-start;
 `;
 
@@ -54,7 +53,9 @@ const DeleteButton = styled(Fab)`
   }
 `;
 
-const TextLabel = styled.span`
+const TextLabel = styled(FormLabel).attrs({
+  component: 'span',
+})`
   font-size: 0.68rem;
   line-height: 0.8rem;
   text-transform: uppercase;
@@ -201,6 +202,10 @@ export const ImageUploadField = React.memo(
             label={label}
             tooltip={tooltip}
             as={TextLabel}
+            labelProps={{
+              required,
+              error: invalid || !!errorMessage,
+            }}
           />
           {secondaryLabel && (
             <FormHelperText component={FormHelperTextComponent || 'p'} id={`${name}-description`}>

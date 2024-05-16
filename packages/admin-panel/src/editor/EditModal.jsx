@@ -129,6 +129,7 @@ EditModalComponent.propTypes = {
   cancelButtonText: PropTypes.string,
   saveButtonText: PropTypes.string,
   extraDialogProps: PropTypes.object,
+  validationErrors: PropTypes.object,
 };
 
 EditModalComponent.defaultProps = {
@@ -143,6 +144,7 @@ EditModalComponent.defaultProps = {
   cancelButtonText: 'Cancel',
   saveButtonText: 'Save',
   extraDialogProps: null,
+  validationErrors: {},
 };
 
 const mapStateToProps = state => ({

@@ -38,6 +38,8 @@ const ReduxAutocompleteComponent = React.memo(
     searchTerm,
     placeholder,
     helperText,
+    required,
+    invalid,
   }) => {
     const [hasSetInitialSelection, setHasSetInitialSelection] = useState(false);
 
@@ -72,6 +74,8 @@ const ReduxAutocompleteComponent = React.memo(
         value={value}
         label={label}
         options={results}
+        required={required}
+        invalid={invalid}
         getOptionSelected={(option, selected) =>
           option[optionLabelKey] === selected[optionLabelKey]
         }

@@ -19,3 +19,4 @@ export const DATA_CHANGE_ACTIONS = {
 };
 
 export const SECTION_FIELD_TYPE = 'section';
+export const SET_VALIDATION_ERRORS = 'SET_VALIDATION_ERRORS';

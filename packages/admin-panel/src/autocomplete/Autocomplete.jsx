@@ -33,6 +33,8 @@ export const Autocomplete = props => {
     allowMultipleValues,
     optionLabelKey,
     muiProps,
+    invalid,
+    required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
   const debouncedSearchUpdate = React.useCallback(
@@ -109,6 +111,8 @@ export const Autocomplete = props => {
       placeholder={placeholder}
       helperText={helperText}
       muiProps={extraMuiProps}
+      error={invalid}
+      required={required}
     />
   );
 };
@@ -130,6 +134,8 @@ Autocomplete.propTypes = {
   allowMultipleValues: PropTypes.bool,
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
+  invalid: PropTypes.bool,
+  required: PropTypes.bool,
 };
 
 Autocomplete.defaultProps = {
@@ -144,4 +150,6 @@ Autocomplete.defaultProps = {
   muiProps: {},
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
+  invalid: false,
+  required: false,
 };

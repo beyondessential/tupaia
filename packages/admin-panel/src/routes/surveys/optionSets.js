@@ -7,6 +7,7 @@ const OPTION_SET_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
 ];
 

@@ -7,11 +7,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
+import { FormLabel } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
-import { FormLabel } from '@material-ui/core';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -32,12 +32,10 @@ const DEFAULT_FIELD_TYPE = 'text';
 
 const GreyCard = styled(Card)`
   background: #f9f9f9;
-  margin-bottom: 20px;
 `;
 
 const Container = styled.div`
   position: relative;
-  margin-bottom: 20px;
 `;
 
 const CardLabel = styled(FormLabel)`
@@ -55,6 +53,8 @@ export const JsonInputField = props => {
     secondaryLabel,
     variant,
     recordData,
+    required,
+    invalid,
   } = props;
   const jsonFieldValues = getJsonFieldValues(value);
   const jsonFieldSchema = getJsonFieldSchema(value, props);
@@ -67,7 +67,9 @@ export const JsonInputField = props => {
 
   return (
     <Container>
-      <CardLabel gutterBottom>{label}</CardLabel>
+      <CardLabel gutterBottom required={required} invalid={invalid}>
+        {label}
+      </CardLabel>
       {secondaryLabel && <Typography gutterBottom>{secondaryLabel}</Typography>}
       <CardVariant variant="outlined">
         <CardContent>
@@ -116,6 +118,8 @@ JsonInputField.propTypes = {
   secondaryLabel: PropTypes.string,
   variant: PropTypes.string,
   recordData: PropTypes.object,
+  required: PropTypes.bool,
+  invalid: PropTypes.bool,
 };
 
 JsonInputField.defaultProps = {
@@ -124,4 +128,6 @@ JsonInputField.defaultProps = {
   secondaryLabel: null,
   variant: null,
   recordData: {},
+  required: false,
+  invalid: false,
 };

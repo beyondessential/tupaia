@@ -12,6 +12,7 @@ import {
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN,
+  SET_VALIDATION_ERRORS,
 } from './constants';
 import {
   convertSearchTermToFilter,
@@ -171,13 +172,82 @@ export const editField = (fieldKey, newValue) => ({
   newValue,
 });
 
+const getIsFieldVisible = (field, recordData) => {
+  const { visibilityCriteria } = field;
+  if (!visibilityCriteria) {
+    return true;
+  }
+  return Object.entries(visibilityCriteria).every(
+    ([source, value]) => recordData[source] === value,
+  );
+};
+
+const validateFields = (fields, recordData) => {
+  return fields.reduce((errors, field) => {
+    const { type, source, required, editConfig } = field;
+
+    // If the field is not visible, don't validate it
+    if (!getIsFieldVisible(field, recordData)) {
+      return errors;
+    }
+
+    // if the field is a section, validate its subfields
+    if (field.type === 'section') {
+      const { fields: sectionFields } = field;
+      return {
+        ...errors,
+        ...validateFields(sectionFields, recordData),
+      };
+    }
+    if (type === 'json' || editConfig?.type === 'json') {
+      const { getJsonFieldSchema } = field.editConfig;
+      const jsonFieldSchema = getJsonFieldSchema();
+      const jsonFields = jsonFieldSchema.map(jsonField => {
+        const { fieldName } = jsonField;
+        return { ...jsonField, source: fieldName };
+      });
+
+      const parsedValue =
+        typeof recordData[source] === 'string'
+          ? JSON.parse(recordData[source])
+          : recordData[source];
+      return {
+        ...errors,
+        ...validateFields(jsonFields, {
+          ...recordData,
+          ...parsedValue,
+        }),
+      };
+    }
+
+    const value = recordData[source];
+
+    if (required && !value && value !== 0) {
+      return {
+        ...errors,
+        [source]: '* Required',
+      };
+    }
+
+    return errors;
+  }, {});
+};
+
 export const saveEdits =
   (endpoint, editedFields, isNew, filesByFieldKey = {}) =>
   async (dispatch, getState, { api }) => {
-    dispatch({
-      type: EDITOR_DATA_EDIT_BEGIN,
-    });
     try {
+      const validationErrors = validateFields(getState().editor.fields, editedFields);
+      if (Object.keys(validationErrors).length > 0) {
+        dispatch({
+          type: SET_VALIDATION_ERRORS,
+          payload: validationErrors,
+        });
+        return;
+      }
+      dispatch({
+        type: EDITOR_DATA_EDIT_BEGIN,
+      });
       if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
         if (isNew) {
           await api.multipartPost({

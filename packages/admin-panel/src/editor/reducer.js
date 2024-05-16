@@ -13,6 +13,7 @@ import {
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
   EDITOR_OPEN,
+  SET_VALIDATION_ERRORS,
 } from './constants';
 
 const defaultState = {
@@ -27,6 +28,7 @@ const defaultState = {
   title: 'Edit',
   editedFields: {},
   extraDialogProps: {},
+  validationErrors: {},
 };
 
 const stateChanges = {
@@ -62,6 +64,9 @@ const stateChanges = {
       ...editedFields,
       [fieldKey]: newValue,
     },
+  }),
+  [SET_VALIDATION_ERRORS]: payload => ({
+    validationErrors: payload,
   }),
 };
 
