@@ -4,11 +4,12 @@
  */
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
-const FIELDS = [
-  {
+export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
+  MAP_OVERLAY_GROUP_CODE: {
     Header: 'Map Overlay Group Code',
     source: 'map_overlay_group.code',
     type: 'tooltip',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',
       optionLabelKey: 'map_overlay_group.code',
@@ -16,10 +17,11 @@ const FIELDS = [
       sourceKey: 'map_overlay_group_id',
     },
   },
-  {
+  CHILD_ID: {
     Header: 'Child Id',
     source: 'child_id',
     type: 'tooltip',
+    required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.id',
@@ -28,11 +30,12 @@ const FIELDS = [
       sourceKey: 'child_id',
     },
   },
-  {
+  CHILD_TYPE: {
     Header: 'Child Type',
     width: 160,
     source: 'child_type',
     type: 'tooltip',
+    required: true,
     editConfig: {
       options: [
         {
@@ -46,12 +49,14 @@ const FIELDS = [
       ],
     },
   },
-  {
+  SORT_ORDER: {
     Header: 'Sort Order',
     source: 'sort_order',
     type: 'tooltip',
   },
-];
+};
+
+const FIELDS = Object.values(MAP_OVERLAY_GROUP_RELATION_FIELDS);
 
 const COLUMNS = [
   ...FIELDS,
@@ -62,7 +67,7 @@ const COLUMNS = [
     actionConfig: {
       title: 'Edit Map Overlay Group Relation',
       editEndpoint: 'mapOverlayGroupRelations',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {

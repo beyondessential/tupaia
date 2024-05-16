@@ -36,7 +36,7 @@ interface HexcodeFieldProps {
   tooltip?: string;
   placeholder?: string;
   required?: boolean;
-  invalid?: boolean;
+  error?: boolean;
 }
 
 export const HexcodeField = ({
@@ -49,7 +49,7 @@ export const HexcodeField = ({
   tooltip,
   placeholder,
   required,
-  invalid,
+  error,
 }: HexcodeFieldProps) => {
   const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
@@ -72,7 +72,7 @@ export const HexcodeField = ({
           }}
           placeholder={placeholder}
           required={required}
-          invalid={invalid}
+          error={error}
         />
         {isValidHexCode && (
           <HexcodePreview backgroundColor={value} aria-label={`Colour preview for ${label}`} />

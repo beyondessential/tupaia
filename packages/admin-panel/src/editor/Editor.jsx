@@ -20,21 +20,27 @@ const EditorWrapper = styled.form`
   }
 `;
 
+export const onInputChange = async (
+  inputKey,
+  inputValue,
+  editConfig = {},
+  recordData,
+  onEditField,
+) => {
+  const { setFieldsOnChange } = editConfig;
+  if (setFieldsOnChange) {
+    const newFields = setFieldsOnChange(inputValue, recordData);
+    Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
+      onEditField(fieldKey, fieldValue);
+    });
+  }
+  onEditField(inputKey, inputValue);
+};
+
 export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   if (!fields || fields.length === 0) {
     return false;
   }
-
-  const onInputChange = async (inputKey, inputValue, editConfig = {}) => {
-    const { setFieldsOnChange } = editConfig;
-    if (setFieldsOnChange) {
-      const newFields = setFieldsOnChange(inputValue, recordData);
-      Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
-        onEditField(fieldKey, fieldValue);
-      });
-    }
-    onEditField(inputKey, inputValue);
-  };
 
   const selectValue = (editConfig, accessor, source) => {
     if (editConfig.accessor) {
@@ -74,7 +80,9 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
         key={source}
         inputKey={source}
         label={Header}
-        onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
+        onChange={(inputKey, inputValue) =>
+          onInputChange(inputKey, inputValue, editConfig, recordData, onEditField)
+        }
         onSetFormFile={onSetFormFile}
         value={selectValue(editConfig, accessor, source)}
         disabled={!editable}

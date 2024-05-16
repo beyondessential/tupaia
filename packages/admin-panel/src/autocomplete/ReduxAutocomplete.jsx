@@ -39,7 +39,7 @@ const ReduxAutocompleteComponent = React.memo(
     placeholder,
     helperText,
     required,
-    invalid,
+    error,
   }) => {
     const [hasSetInitialSelection, setHasSetInitialSelection] = useState(false);
 
@@ -75,7 +75,7 @@ const ReduxAutocompleteComponent = React.memo(
         label={label}
         options={results}
         required={required}
-        invalid={invalid}
+        error={error}
         getOptionSelected={(option, selected) =>
           option[optionLabelKey] === selected[optionLabelKey]
         }
@@ -111,7 +111,7 @@ ReduxAutocompleteComponent.propTypes = {
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   required: PropTypes.bool,
-  invalid: PropTypes.bool,
+  error: PropTypes.bool,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -125,7 +125,7 @@ ReduxAutocompleteComponent.defaultProps = {
   label: null,
   helperText: null,
   required: false,
-  invalid: false,
+  error: false,
 };
 
 const mapStateToProps = (state, { reduxId }) => {

@@ -33,7 +33,7 @@ export const Autocomplete = props => {
     allowMultipleValues,
     optionLabelKey,
     muiProps,
-    invalid,
+    error,
     required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -111,7 +111,7 @@ export const Autocomplete = props => {
       placeholder={placeholder}
       helperText={helperText}
       muiProps={extraMuiProps}
-      error={invalid}
+      error={error}
       required={required}
     />
   );

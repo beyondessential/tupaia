@@ -31,7 +31,7 @@ export const InputFieldComponent = ({ type, secondaryLabel, error, ...inputProps
   const InputComponent = InputFieldComponents[inputType];
   return (
     <InputWrapper errorText={error} helperText={secondaryLabel}>
-      {InputComponent && <InputComponent {...inputProps} invalid={!!error} />}
+      {InputComponent && <InputComponent {...inputProps} error={!!error} />}
     </InputWrapper>
   );
 };
@@ -39,8 +39,10 @@ export const InputFieldComponent = ({ type, secondaryLabel, error, ...inputProps
 const mapStateToProps = (state, ownProps) => {
   const { fieldSource } = ownProps;
   const editorState = getEditorState(state);
+  const { validationErrors } = editorState;
+  const error = validationErrors[fieldSource];
   return {
-    error: editorState.validationErrors[fieldSource],
+    error,
   };
 };
 

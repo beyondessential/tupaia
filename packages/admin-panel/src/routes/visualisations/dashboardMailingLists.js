@@ -10,6 +10,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
     Header: 'Project',
     source: 'project.code',
+    required: true,
     editConfig: {
       sourceKey: 'project_id',
       optionsEndpoint: 'projects',
@@ -22,6 +23,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
   dashboard_code: {
     Header: 'Dashboard code',
     source: 'dashboard.code',
+    required: true,
     editConfig: {
       sourceKey: 'dashboard_id',
       optionsEndpoint: 'dashboards',
@@ -41,6 +43,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
   entity_name: {
     Header: 'Entity name',
     source: 'entity.name',
+    required: true,
     editConfig: {
       sourceKey: 'entity_id',
       optionsEndpoint: 'entities',
@@ -109,12 +112,14 @@ const ENTRY_FIELDS = [
   {
     Header: 'Email',
     source: 'dashboard_mailing_list_entry.email',
+    required: true,
     type: 'tooltip',
   },
   {
     Header: 'Subscribed',
     source: 'dashboard_mailing_list_entry.subscribed',
     type: 'boolean',
+    required: true,
     editConfig: { type: 'boolean' },
   },
 ];

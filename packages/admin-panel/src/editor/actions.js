@@ -239,15 +239,26 @@ const validateFields = (fields, recordData) => {
   }, {});
 };
 
+// When editing a record, we only want to validate the fields that have been edited. If it's a new record, we want to validate all fields
+const getFieldsToValidate = (fields, editedFields, isNew) => {
+  if (isNew) return fields;
+  return Object.keys(editedFields).reduce((fieldsToValidate, fieldKey) => {
+    const fullField = fields.find(field => getFieldSourceToEdit(field) === fieldKey);
+    if (!fullField) return fieldsToValidate;
+    return [...fieldsToValidate, fullField];
+  }, []);
+};
+
 const getValidationErrors = (fields, recordData, editedFields, isNew) => {
   const dataToValidate = getDataToValidate(editedFields, recordData, isNew);
+
+  const fieldsToValidate = getFieldsToValidate(fields, editedFields, isNew);
 
   // if is bulk editing, recordData is an array of records. In this case, there is still only 1 fof each field displayed, so we just want to know if there are errors in any of the records
   if (Array.isArray(dataToValidate)) {
     const errors = {};
     dataToValidate.forEach(record => {
-      const validationErrors = validateFields(fields, record);
-      console.log(record, validationErrors);
+      const validationErrors = validateFields(fieldsToValidate, record);
 
       Object.entries(validationErrors).forEach(([key, error]) => {
         if (validationErrors[key]) {
@@ -257,7 +268,7 @@ const getValidationErrors = (fields, recordData, editedFields, isNew) => {
     });
     return errors;
   }
-  return validateFields(fields, dataToValidate);
+  return validateFields(fieldsToValidate, dataToValidate);
 };
 
 const getDataToValidate = (editedFields, recordData, isNew) => {

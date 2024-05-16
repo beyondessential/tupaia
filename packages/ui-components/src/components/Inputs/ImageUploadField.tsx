@@ -95,7 +95,7 @@ interface ImageUploadFieldProps {
   tooltip?: string;
   required?: boolean;
   FormHelperTextComponent?: React.ElementType;
-  invalid?: boolean;
+  error?: boolean;
 }
 
 const createBase64Image = (fileObject: File): Promise<Base64> => {
@@ -130,7 +130,7 @@ export const ImageUploadField = React.memo(
     tooltip,
     required,
     FormHelperTextComponent,
-    invalid,
+    error,
   }: ImageUploadFieldProps) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const inputEl = useRef<HTMLInputElement | null>(null);
@@ -204,7 +204,7 @@ export const ImageUploadField = React.memo(
             as={TextLabel}
             labelProps={{
               required,
-              error: invalid || !!errorMessage,
+              error: error || !!errorMessage,
             }}
           />
           {secondaryLabel && (
@@ -219,7 +219,7 @@ export const ImageUploadField = React.memo(
             type="file"
             onChange={handleFileUpload}
             aria-describedby={secondaryLabel ? `${name}-description` : ''}
-            aria-invalid={!!errorMessage || invalid}
+            aria-invalid={!!errorMessage || error}
             required={required}
           />
           <GreyOutlinedButton component="span">{buttonLabel}</GreyOutlinedButton>

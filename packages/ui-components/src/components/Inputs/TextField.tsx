@@ -121,7 +121,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
 export const TextField = ({
   label = '',
   tooltip,
-  invalid,
   ...props
 }: TextFieldProps & {
   tooltip?: string;
@@ -131,7 +130,6 @@ export const TextField = ({
     fullWidth
     {...props}
     variant="outlined"
-    error={invalid}
     label={label ? <InputLabel label={label} tooltip={tooltip} as="span" /> : null}
   />
 );

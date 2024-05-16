@@ -78,7 +78,7 @@ export const registerInputFields = () => {
       tooltip={props.labelTooltip}
       distinct={props.distinct}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('json', props => (
@@ -93,7 +93,7 @@ export const registerInputFields = () => {
       getJsonFieldSchema={props.getJsonFieldSchema}
       variant={props.variant}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('enum', props => (
@@ -108,6 +108,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       tooltip={props.labelTooltip}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('jsonEditor', props => (
@@ -118,7 +119,7 @@ export const registerInputFields = () => {
       onChange={props.onChange}
       helperText={props.secondaryLabel}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('jsonArray', props => (
@@ -154,7 +155,7 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('date', props => (
@@ -245,7 +246,7 @@ export const registerInputFields = () => {
         maxLength: props.maxLength,
       }}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('text', props => (
@@ -271,7 +272,7 @@ export const registerInputFields = () => {
         maxLength: props.maxLength,
       }}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('password', props => (
@@ -303,7 +304,7 @@ export const registerInputFields = () => {
       secondaryLabel={props.secondaryLabel}
       tooltip={props.labelTooltip}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('hexcode', props => (
@@ -346,7 +347,7 @@ export const registerInputFields = () => {
       tooltip={props.labelTooltip}
       name={props.name}
       required={props.required}
-      invalid={props.invalid}
+      error={props.error}
     />
   ));
   registerInputField('file', props => (

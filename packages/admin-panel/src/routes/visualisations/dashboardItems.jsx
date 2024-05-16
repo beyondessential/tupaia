@@ -13,11 +13,13 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Report Code',
     source: 'report_code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Config',

@@ -65,11 +65,13 @@ export const DATA_ELEMENT_FIELD_EDIT_CONFIG = {
     {
       label: 'Superset Instance',
       fieldName: 'supersetInstanceCode',
+      required: true,
       visibilityCriteria: { service_type: 'superset' },
     },
     {
       label: 'Superset Chart ID',
       fieldName: 'supersetChartId',
+      required: true,
       visibilityCriteria: { service_type: 'superset' },
     },
     {

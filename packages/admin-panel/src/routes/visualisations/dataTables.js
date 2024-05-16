@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { DataTableType } from '@tupaia/types';
 import { DataTableEditFields } from '../../dataTables/DataTableEditFields';
 import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
@@ -10,34 +11,51 @@ import { prettyArray } from '../../utilities';
 
 const DATA_TABLES_ENDPOINT = 'dataTables';
 
+const dataTableTypeOptions = Object.values(DataTableType).map(type => ({
+  label: type,
+  value: type,
+}));
+
 const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
     type: 'tooltip',
   },
   {
     Header: 'Description',
     source: 'description',
+    required: true,
   },
   {
     Header: 'Type',
     source: 'type',
+    required: true,
+    editConfig: {
+      options: dataTableTypeOptions,
+    },
   },
   {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
+    required: true,
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Permission groups',
     source: 'permission_groups',
     type: 'tooltip',
+    required: true,
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {
-      type: 'jsonArray',
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'permission_groups',
+      allowMultipleValues: true,
     },
   },
 ];

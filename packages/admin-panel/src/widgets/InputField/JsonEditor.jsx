@@ -33,7 +33,7 @@ const Label = styled(FormLabel)`
   line-height: 1.1rem;
 `;
 
-export const JsonEditor = ({ inputKey, label, value, onChange, stringify, invalid, required }) => {
+export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error, required }) => {
   if (!value) {
     return null;
   }
@@ -45,8 +45,8 @@ export const JsonEditor = ({ inputKey, label, value, onChange, stringify, invali
   }
 
   return (
-    <Container $invalid={invalid}>
-      <Label gutterBottom required={required} error={invalid}>
+    <Container $invalid={error}>
+      <Label gutterBottom required={required} error={error}>
         {label}
       </Label>
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
@@ -67,13 +67,13 @@ JsonEditor.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
   stringify: PropTypes.bool,
-  invalid: PropTypes.bool,
+  error: PropTypes.bool,
   required: PropTypes.bool,
 };
 
 JsonEditor.defaultProps = {
   value: null,
   stringify: true,
-  invalid: false,
+  error: false,
   required: false,
 };

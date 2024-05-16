@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { DASHBOARD_RELATION_COLUMNS } from './dashboardRelations';
+
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
 const FIELDS = [
@@ -10,14 +12,17 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
+    required: true,
   },
   {
     Header: 'Organisation Unit Code',
     source: 'root_entity_code',
+    required: true,
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
@@ -58,44 +63,10 @@ const RELATION_FIELDS = [
     source: 'dashboard_item.code',
     editable: false,
   },
-  {
-    Header: 'Permission Groups',
-    source: 'permission_groups',
-    editConfig: {
-      optionsEndpoint: 'permissionGroups',
-      optionLabelKey: 'name',
-      optionValueKey: 'name',
-      sourceKey: 'permission_groups',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Entity Types',
-    source: 'entity_types',
-    editConfig: {
-      type: 'autocomplete',
-      allowMultipleValues: true,
-      canCreateNewOptions: true,
-      optionLabelKey: 'entityTypes',
-      optionValueKey: 'entityTypes',
-      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
-    },
-  },
-  {
-    Header: 'Project Codes',
-    source: 'project_codes',
-    editConfig: {
-      optionsEndpoint: 'projects',
-      optionLabelKey: 'code',
-      optionValueKey: 'code',
-      sourceKey: 'project_codes',
-      allowMultipleValues: true,
-    },
-  },
-  {
-    Header: 'Sort Order',
-    source: 'sort_order',
-  },
+  DASHBOARD_RELATION_COLUMNS.PERMISSION_GROUPS,
+  DASHBOARD_RELATION_COLUMNS.ENTITY_TYPES,
+  DASHBOARD_RELATION_COLUMNS.PROJECT_CODES,
+  DASHBOARD_RELATION_COLUMNS.SORT_ORDER,
 ];
 
 const RELATION_COLUMNS = [

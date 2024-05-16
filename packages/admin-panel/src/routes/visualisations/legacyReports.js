@@ -8,17 +8,20 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Data Builder',
     source: 'data_builder',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Data Builder Config',
     source: 'data_builder_config',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
+    required: true,
   },
   {
     Header: 'Data Services',

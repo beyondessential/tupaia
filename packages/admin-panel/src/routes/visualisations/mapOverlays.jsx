@@ -15,12 +15,14 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Name',
     source: 'name',
     width: 140,
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Permission Group',
@@ -95,6 +97,7 @@ const FIELDS = [
   {
     Header: 'Report Code',
     source: 'report_code',
+    required: true,
     width: 140,
     type: 'tooltip',
   },

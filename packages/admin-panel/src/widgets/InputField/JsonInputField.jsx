@@ -54,7 +54,7 @@ export const JsonInputField = props => {
     variant,
     recordData,
     required,
-    invalid,
+    error,
   } = props;
   const jsonFieldValues = getJsonFieldValues(value);
   const jsonFieldSchema = getJsonFieldSchema(value, props);
@@ -67,7 +67,7 @@ export const JsonInputField = props => {
 
   return (
     <Container>
-      <CardLabel gutterBottom required={required} invalid={invalid}>
+      <CardLabel gutterBottom required={required} error={error}>
         {label}
       </CardLabel>
       {secondaryLabel && <Typography gutterBottom>{secondaryLabel}</Typography>}
@@ -93,6 +93,7 @@ export const JsonInputField = props => {
                   id={`inputField-${labelToId(fieldName)}`}
                   key={fieldName}
                   label={fieldLabel}
+                  fieldSource={fieldName}
                   secondaryLabel={fieldSecondaryLabel}
                   value={jsonFieldValues[fieldName]}
                   inputKey={fieldName}
@@ -119,7 +120,7 @@ JsonInputField.propTypes = {
   variant: PropTypes.string,
   recordData: PropTypes.object,
   required: PropTypes.bool,
-  invalid: PropTypes.bool,
+  error: PropTypes.bool,
 };
 
 JsonInputField.defaultProps = {
@@ -129,5 +130,5 @@ JsonInputField.defaultProps = {
   variant: null,
   recordData: {},
   required: false,
-  invalid: false,
+  error: false,
 };
