@@ -183,6 +183,9 @@ const overrides = {
     '@global': {
       label: {
         fontWeight: 500,
+        '& .MuiSvgIcon-root': {
+          color: palette.text.secondary, // tooltip icon color
+        },
       },
     },
   },

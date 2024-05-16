@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Close from '@material-ui/icons/Close';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
@@ -14,6 +15,11 @@ import debounce from 'lodash.debounce';
 const Chip = styled(MuiChip)`
   &:first-child {
     margin-left: 6px;
+  }
+  color: ${props => props.theme.palette.text.primary};
+  .MuiChip-deleteIcon {
+    color: ${props => props.theme.palette.text.secondary};
+    height: 1rem;
   }
 `;
 
@@ -77,6 +83,8 @@ export const Autocomplete = props => {
           values.map((option, index) => (
             <Chip
               color="primary"
+              deleteIcon={<Close />}
+              variant="outlined"
               label={optionLabelKey ? option[optionLabelKey] : option}
               {...getTagProps({ index })}
             />
