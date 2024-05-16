@@ -4,7 +4,7 @@
  */
 
 import { connect } from 'react-redux';
-import { editField, resetEdits, saveEdits } from './actions';
+import { editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 
 const mapStateToProps = state => {
@@ -21,7 +21,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
-  clearEdits: () => dispatch(resetEdits()),
   dispatch,
 });
 

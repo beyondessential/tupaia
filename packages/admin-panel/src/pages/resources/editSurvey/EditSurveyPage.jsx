@@ -97,7 +97,6 @@ const EditSurveyPageComponent = withConnectedEditor(
     loadEditorData,
     isUnchanged,
     onSave,
-    clearEdits,
     isLoading,
     resetEditorToDefaultState,
   }) => {
@@ -226,14 +225,6 @@ const EditSurveyPageComponent = withConnectedEditor(
             onClick={handleSave}
           >
             Save changes
-          </Button>
-          <Button
-            variant="text"
-            color="primary"
-            disabled={isUnchanged || isLoading}
-            onClick={clearEdits}
-          >
-            Clear edits
           </Button>
         </StickyFooter>
       </Wrapper>

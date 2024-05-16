@@ -39,20 +39,23 @@ const ReduxAutocompleteComponent = ({
   helperText,
   required,
 }) => {
+  const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
     return () => {
       onClearState();
     };
   }, []);
 
-  // if the value is programmatically changed or the value is controlled, update the selection
+  // on initial load, set the selection to the initialValue
   useEffect(() => {
+    if (hasUpdated || !initialValue) return;
     const needToUpdate = allowMultipleValues
       ? JSON.stringify(initialValue) !== JSON.stringify(selection?.map(s => s[optionLabelKey]))
       : initialValue !== selection?.[optionLabelKey];
     if (needToUpdate) {
       programaticallyChangeSelection(initialValue);
     }
+    setHasUpdated(true);
   }, [JSON.stringify(initialValue), JSON.stringify(selection)]);
 
   let selectedValue = selection;
