@@ -86,7 +86,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     options.columns = [];
     for (const { joinWith } of options.multiJoin) {
       const column = `${joinWith}.code as ${
-        joinWith === RECORDS.MAP_OVERLAY ? 'mapOverlayChildCode' : 'mapOverlayGroupChildCode'
+        joinWith === RECORDS.MAP_OVERLAY ? 'childMapOverlayCode' : 'childMapOverlayGroupCode'
       }`;
       options.columns.push(column);
     }
@@ -100,18 +100,30 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
 
     const records = await this.database.find(this.databaseRecord, criteria, options);
 
-    const recordsWithChildCode = records.map(record => {
-      const { mapOverlayChildCode, mapOverlayGroupChildCode, ...rest } = record;
+    const recordsWithChildCode = await Promise.all(
+      records.map(record => this.generateInstance(record)),
+    );
 
-      // Coalesce these transient properties into ‘child_code’ (assuming EXACTLY one of them is null)
-      rest.child_code = mapOverlayChildCode ?? mapOverlayGroupChildCode;
-
-      // Keep only the desired properties
-      return rest;
-    });
-    console.log('\x1b[1;34mrv\x1b[m', JSON.stringify(recordsWithChildCode, null, 2));
+    console.log('\x1b[1;34mrv\x1b[m', recordsWithChildCode);
 
     return recordsWithChildCode;
   }
 
+  async generateInstance(fields = {}) {
+    const data = {};
+
+    // Add values for standard fields
+    const fieldNames = await this.fetchFieldNames();
+    fieldNames.forEach(fieldName => {
+      data[fieldName] = fields[fieldName];
+    });
+
+    // ↑↑↑ Same as overridden method ↑↑↑
+    // ↓↓↓        Custom bits        ↓↓↓
+
+    // Use child type to add definitive childCode (assumes EXACTLY one of these is null)
+    data.child_code = fields.childMapOverlayCode ?? fields.childMapOverlayGroupCode;
+
+    return this.createTypeInstance(data);
+  }
 }
