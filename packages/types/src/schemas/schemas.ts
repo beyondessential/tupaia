@@ -672,21 +672,37 @@ export const BaseConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -1092,21 +1108,37 @@ export const MatrixConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -1773,21 +1805,37 @@ export const MatrixVizBuilderConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -2949,21 +2997,37 @@ export const ComponentConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -3455,21 +3519,37 @@ export const BaseChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -4304,21 +4384,37 @@ export const CartesianChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -5098,21 +5194,37 @@ export const PieChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -5632,21 +5744,37 @@ export const BarChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -6562,21 +6690,37 @@ export const LineChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"weekDisplayFormat": {
@@ -7484,21 +7628,37 @@ export const ComposedChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"weekDisplayFormat": {
@@ -8222,21 +8382,37 @@ export const GaugeChartConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -8663,21 +8839,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -9137,21 +9329,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -9891,21 +10099,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -10639,21 +10863,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -11376,21 +11616,37 @@ export const ChartConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -11947,21 +12203,37 @@ export const BaseViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -12383,21 +12655,37 @@ export const MultiValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -12927,21 +13215,37 @@ export const MultiValueRowViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -13422,21 +13726,37 @@ export const SingleValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -13831,21 +14151,37 @@ export const MultiPhotographViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -14236,21 +14572,37 @@ export const MultiSingleValueViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -14641,21 +14993,37 @@ export const SingleDownloadLinkViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15046,21 +15414,37 @@ export const DataDownloadViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15451,21 +15835,37 @@ export const DataDownloadViewVizBuilderConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -15872,21 +16272,37 @@ export const SingleDateViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -16277,21 +16693,37 @@ export const DownloadFilesViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -16682,21 +17114,37 @@ export const QRCodeViewConfigSchema = {
 		},
 		"reference": {
 			"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-			"type": "object",
-			"properties": {
-				"link": {
-					"description": "url",
-					"type": "string"
+			"anyOf": [
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"text": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"text"
+					]
 				},
-				"name": {
-					"description": "label",
-					"type": "string"
+				{
+					"description": "One of the two shapes which {@link ReferenceProps} can take.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string"
+						},
+						"link": {
+							"type": "string"
+						}
+					},
+					"additionalProperties": false,
+					"required": [
+						"link",
+						"name"
+					]
 				}
-			},
-			"additionalProperties": false,
-			"required": [
-				"link",
-				"name"
 			]
 		},
 		"source": {
@@ -17089,21 +17537,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -17506,21 +17970,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -18000,21 +18480,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -18408,21 +18904,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -18812,21 +19324,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -19216,21 +19744,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -19620,21 +20164,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -20024,21 +20584,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -20428,21 +21004,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -20832,21 +21424,37 @@ export const ViewConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -21351,21 +21959,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -22032,21 +22656,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -22420,21 +23060,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -22894,21 +23550,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -23648,21 +24320,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -24396,21 +25084,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"weekDisplayFormat": {
@@ -25133,21 +25837,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -25570,21 +26290,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -25987,21 +26723,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -26481,21 +27233,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -26889,21 +27657,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -27293,21 +28077,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -27697,21 +28497,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28101,21 +28917,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28505,21 +29337,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -28909,21 +29757,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -29313,21 +30177,37 @@ export const DashboardItemConfigSchema = {
 				},
 				"reference": {
 					"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-					"type": "object",
-					"properties": {
-						"link": {
-							"description": "url",
-							"type": "string"
+					"anyOf": [
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"text": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"text"
+							]
 						},
-						"name": {
-							"description": "label",
-							"type": "string"
+						{
+							"description": "One of the two shapes which {@link ReferenceProps} can take.",
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								},
+								"link": {
+									"type": "string"
+								}
+							},
+							"additionalProperties": false,
+							"required": [
+								"link",
+								"name"
+							]
 						}
-					},
-					"additionalProperties": false,
-					"required": [
-						"link",
-						"name"
 					]
 				},
 				"source": {
@@ -32336,7 +33216,6 @@ export const SpectrumMapOverlayConfigSchema = {
 	},
 	"required": [
 		"displayType",
-		"scaleColorScheme",
 		"scaleType"
 	]
 } 
@@ -35992,7 +36871,6 @@ export const MapOverlayConfigSchema = {
 			},
 			"required": [
 				"displayType",
-				"scaleColorScheme",
 				"scaleType"
 			]
 		},
@@ -41861,21 +42739,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -42542,21 +43436,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -42930,21 +43840,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -43404,21 +44330,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -44158,21 +45100,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -44906,21 +45864,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -45643,21 +46617,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -46080,21 +47070,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -46497,21 +47503,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -46991,21 +48013,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -47399,21 +48437,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -47803,21 +48857,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -48207,21 +49277,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -48611,21 +49697,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49015,21 +50117,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49419,21 +50537,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -49823,21 +50957,37 @@ export const DashboardItemSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -50264,21 +51414,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -50945,21 +52111,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -51333,21 +52515,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -51807,21 +53005,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -52561,21 +53775,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -53309,21 +54539,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -54046,21 +55292,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -54483,21 +55745,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -54900,21 +56178,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -55394,21 +56688,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -55802,21 +57112,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -56206,21 +57532,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -56610,21 +57952,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57014,21 +58372,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57418,21 +58792,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -57822,21 +59212,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -58226,21 +59632,37 @@ export const DashboardItemCreateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -58661,21 +60083,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -59342,21 +60780,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -59730,21 +61184,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -60204,21 +61674,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -60958,21 +62444,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -61706,21 +63208,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"weekDisplayFormat": {
@@ -62443,21 +63961,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -62880,21 +64414,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -63297,21 +64847,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -63791,21 +65357,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -64199,21 +65781,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -64603,21 +66201,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65007,21 +66621,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65411,21 +67041,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -65815,21 +67461,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -66219,21 +67881,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -66623,21 +68301,37 @@ export const DashboardItemUpdateSchema = {
 						},
 						"reference": {
 							"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-							"type": "object",
-							"properties": {
-								"link": {
-									"description": "url",
-									"type": "string"
+							"anyOf": [
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"text": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"text"
+									]
 								},
-								"name": {
-									"description": "label",
-									"type": "string"
+								{
+									"description": "One of the two shapes which {@link ReferenceProps} can take.",
+									"type": "object",
+									"properties": {
+										"name": {
+											"type": "string"
+										},
+										"link": {
+											"type": "string"
+										}
+									},
+									"additionalProperties": false,
+									"required": [
+										"link",
+										"name"
+									]
 								}
-							},
-							"additionalProperties": false,
-							"required": [
-								"link",
-								"name"
 							]
 						},
 						"source": {
@@ -70235,7 +71929,6 @@ export const MapOverlaySchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -73948,7 +75641,6 @@ export const MapOverlayCreateSchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -77654,7 +79346,6 @@ export const MapOverlayUpdateSchema = {
 					},
 					"required": [
 						"displayType",
-						"scaleColorScheme",
 						"scaleType"
 					]
 				},
@@ -85407,21 +87098,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -86088,21 +87795,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -86476,21 +88199,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -86950,21 +88689,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -87704,21 +89459,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"weekDisplayFormat": {
@@ -88452,21 +90223,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"weekDisplayFormat": {
@@ -89189,21 +90976,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -89626,21 +91429,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90043,21 +91862,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90537,21 +92372,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -90945,21 +92796,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -91349,21 +93216,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -91753,21 +93636,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92157,21 +94056,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92561,21 +94476,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -92965,21 +94896,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -93369,21 +95316,37 @@ export const DashboardWithMetadataSchema = {
 									},
 									"reference": {
 										"description": "If provided shows an (i) icon next to the viz title, which allows linking to the source data",
-										"type": "object",
-										"properties": {
-											"link": {
-												"description": "url",
-												"type": "string"
+										"anyOf": [
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"text": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"text"
+												]
 											},
-											"name": {
-												"description": "label",
-												"type": "string"
+											{
+												"description": "One of the two shapes which {@link ReferenceProps} can take.",
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													},
+													"link": {
+														"type": "string"
+													}
+												},
+												"additionalProperties": false,
+												"required": [
+													"link",
+													"name"
+												]
 											}
-										},
-										"additionalProperties": false,
-										"required": [
-											"link",
-											"name"
 										]
 									},
 									"source": {
@@ -94342,7 +96305,6 @@ export const TranslatedMapOverlaySchema = {
 				"entityAttributesFilter",
 				"legacy",
 				"name",
-				"scaleColorScheme",
 				"scaleType"
 			]
 		},
