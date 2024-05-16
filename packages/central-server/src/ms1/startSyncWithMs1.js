@@ -21,7 +21,7 @@ const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 export async function startSyncWithMs1(models) {
   if (process.env.MS1_SYNC_DISABLE === 'true') {
     // eslint-disable-next-line no-console
-    console.log('Ms1 sync is disabled');
+    console.log('MS1 sync is disabled');
     return;
   }
 
