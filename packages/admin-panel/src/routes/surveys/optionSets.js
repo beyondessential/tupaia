@@ -33,10 +33,11 @@ const OPTION_SET_COLUMNS = [
   },
 ];
 
-const OPTION_FIELDS = [
+export const BASE_OPTION_FIELDS = [
   {
     Header: 'Value',
     source: 'value',
+    required: true,
   },
   {
     Header: 'Label',
@@ -46,6 +47,10 @@ const OPTION_FIELDS = [
     Header: 'Sort Order',
     source: 'sort_order',
   },
+];
+
+const OPTION_FIELDS = [
+  ...BASE_OPTION_FIELDS,
   {
     Header: 'Attributes',
     source: 'attributes',

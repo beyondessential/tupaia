@@ -59,6 +59,7 @@ const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Permission Group',
     source: 'permission_group.name',
+    required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       secondaryLabel:
@@ -107,6 +108,7 @@ const USER_COLUMNS = [
         {
           Header: 'Permission Group',
           source: 'permission_group.name',
+          required: true,
           editConfig: {
             optionsEndpoint: 'permissionGroups',
             secondaryLabel:
@@ -117,6 +119,7 @@ const USER_COLUMNS = [
           Header: 'Approved',
           source: 'approved',
           type: 'boolean',
+          required: true,
           editConfig: {
             type: 'boolean',
           },

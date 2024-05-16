@@ -3,7 +3,9 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-const QUESTION_FIELDS = [
+import { BASE_OPTION_FIELDS } from './optionSets';
+
+export const QUESTION_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
@@ -66,31 +68,15 @@ const QUESTION_COLUMNS = [
   },
 ];
 
-const OPTION_FIELDS = [
-  {
-    Header: 'Value',
-    source: 'value',
-    required: true,
-  },
-  {
-    Header: 'Label',
-    source: 'label',
-  },
-  {
-    Header: 'Sort Order',
-    source: 'sort_order',
-  },
-];
-
 const OPTION_COLUMNS = [
-  ...OPTION_FIELDS,
+  ...BASE_OPTION_FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
       editEndpoint: 'options',
-      fields: OPTION_FIELDS,
+      fields: BASE_OPTION_FIELDS,
     },
   },
 ];

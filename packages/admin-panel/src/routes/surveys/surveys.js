@@ -4,6 +4,7 @@
  */
 
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
+import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
@@ -22,6 +23,7 @@ const SURVEY_FIELDS = {
   project: {
     Header: 'Project',
     source: 'project.code',
+    required: true,
     editConfig: {
       sourceKey: 'project.code',
       optionsEndpoint: 'projects',
@@ -34,6 +36,7 @@ const SURVEY_FIELDS = {
   name: {
     Header: 'Name',
     source: 'name',
+    required: true,
     type: 'tooltip',
     editConfig: {
       maxLength: 50,
@@ -43,6 +46,7 @@ const SURVEY_FIELDS = {
   code: {
     Header: 'Code',
     source: 'code',
+    required: true,
     editConfig: {
       secondaryLabel: 'A short unique code. Suggestions appear when you enter a name.',
     },
@@ -50,6 +54,7 @@ const SURVEY_FIELDS = {
   country_ids: {
     Header: 'Countries',
     source: 'countryNames', // TODO: cleanup as part of RN-910
+    required: true,
     editConfig: {
       sourceKey: 'countryNames',
       optionsEndpoint: 'countries',
@@ -62,6 +67,7 @@ const SURVEY_FIELDS = {
   permission_group_id: {
     Header: 'Permission Group',
     source: 'permission_group.name', // TODO: cleanup as part of RN-910
+    required: true,
     editConfig: {
       sourceKey: 'permission_group.name',
       optionsEndpoint: 'permissionGroups',
@@ -142,41 +148,10 @@ const SURVEY_FIELDS = {
                 optionsEndpoint: 'dhisInstances',
                 optionLabelKey: 'code',
                 optionValueKey: 'code',
+                required: true,
               },
             ]
           : [],
-    },
-  },
-  integration_metadata: {
-    Header: 'Integration Details',
-    source: 'integration_metadata',
-    editConfig: {
-      type: 'json',
-      getJsonFieldSchema: () => [
-        {
-          label: 'MS1',
-          fieldName: 'ms1',
-          type: 'json',
-          variant: 'grey',
-          getJsonFieldSchema: () => [
-            {
-              label: 'Endpoint',
-              fieldName: 'endpoint',
-              type: 'json',
-              getJsonFieldSchema: () => [
-                {
-                  label: 'Route',
-                  fieldName: 'route',
-                },
-                {
-                  label: 'Method (POST or PUT)',
-                  fieldName: 'method',
-                },
-              ],
-            },
-          ],
-        },
-      ],
     },
   },
   surveyQuestions: {
@@ -267,43 +242,10 @@ const CREATE_CONFIG = {
   },
 };
 
-const QUESTION_FIELDS = [
-  {
-    Header: 'Code',
-    source: 'question.code',
-    type: 'tooltip',
-    editable: false,
-  },
-  {
-    Header: 'Type',
-    source: 'question.type',
-  },
-  {
-    Header: 'Name',
-    source: 'question.name',
-    type: 'tooltip',
-  },
-  {
-    Header: 'Question',
-    source: 'question.text',
-    type: 'tooltip',
-  },
-  {
-    Header: 'Detail',
-    source: 'question.detail',
-    type: 'tooltip',
-  },
-  {
-    Header: 'Question Label',
-    source: 'question_label',
-    type: 'tooltip',
-  },
-  {
-    Header: 'Detail Label',
-    source: 'detail_label',
-    type: 'tooltip',
-  },
-];
+const QUESTION_FIELDS = BASE_QUESTION_FIELDS.map(field => ({
+  ...field,
+  source: `question.${field.source}`,
+}));
 
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,

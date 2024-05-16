@@ -19,6 +19,8 @@ import {
   getExplodedFields,
   makeSubstitutionsInString,
 } from '../utilities';
+import { getEditorState } from './selectors';
+import { getFieldSourceToEdit } from './utils';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -184,13 +186,13 @@ const getIsFieldVisible = (field, recordData) => {
 
 const validateFields = (fields, recordData) => {
   return fields.reduce((errors, field) => {
-    const { type, source, required, editConfig } = field;
+    const sourceKey = getFieldSourceToEdit(field);
+    const { type, required, editConfig } = field;
 
     // If the field is not visible, don't validate it
     if (!getIsFieldVisible(field, recordData)) {
       return errors;
     }
-
     // if the field is a section, validate its subfields
     if (field.type === 'section') {
       const { fields: sectionFields } = field;
@@ -200,17 +202,21 @@ const validateFields = (fields, recordData) => {
       };
     }
     if (type === 'json' || editConfig?.type === 'json') {
-      const { getJsonFieldSchema } = field.editConfig;
-      const jsonFieldSchema = getJsonFieldSchema();
+      // sometimes the field has editConfig, sometimes it doesn't
+      const { getJsonFieldSchema } = editConfig ?? field;
+      const jsonFieldSchema = getJsonFieldSchema(null, { recordData });
       const jsonFields = jsonFieldSchema.map(jsonField => {
         const { fieldName } = jsonField;
         return { ...jsonField, source: fieldName };
       });
-
-      const parsedValue =
-        typeof recordData[source] === 'string'
-          ? JSON.parse(recordData[source])
-          : recordData[source];
+      const parseValue = () => {
+        if (!recordData[sourceKey]) return {};
+        if (typeof recordData[sourceKey] === 'string') {
+          return JSON.parse(recordData[sourceKey]);
+        }
+        return recordData[sourceKey];
+      };
+      const parsedValue = parseValue();
       return {
         ...errors,
         ...validateFields(jsonFields, {
@@ -220,12 +226,12 @@ const validateFields = (fields, recordData) => {
       };
     }
 
-    const value = recordData[source];
+    const value = recordData[sourceKey];
 
     if (required && !value && value !== 0) {
       return {
         ...errors,
-        [source]: '* Required',
+        [sourceKey]: '* Required',
       };
     }
 
@@ -233,11 +239,51 @@ const validateFields = (fields, recordData) => {
   }, {});
 };
 
+const getValidationErrors = (fields, recordData, editedFields, isNew) => {
+  const dataToValidate = getDataToValidate(editedFields, recordData, isNew);
+
+  // if is bulk editing, recordData is an array of records. In this case, there is still only 1 fof each field displayed, so we just want to know if there are errors in any of the records
+  if (Array.isArray(dataToValidate)) {
+    const errors = {};
+    dataToValidate.forEach(record => {
+      const validationErrors = validateFields(fields, record);
+      console.log(record, validationErrors);
+
+      Object.entries(validationErrors).forEach(([key, error]) => {
+        if (validationErrors[key]) {
+          errors[key] = error;
+        }
+      });
+    });
+    return errors;
+  }
+  return validateFields(fields, dataToValidate);
+};
+
+const getDataToValidate = (editedFields, recordData, isNew) => {
+  if (isNew) return editedFields;
+  if (Array.isArray(recordData)) {
+    return recordData.map((record, i) => {
+      return {
+        ...record,
+        ...editedFields[i],
+      };
+    });
+  }
+  return {
+    ...recordData,
+    ...editedFields,
+  };
+};
+
 export const saveEdits =
   (endpoint, editedFields, isNew, filesByFieldKey = {}) =>
   async (dispatch, getState, { api }) => {
     try {
-      const validationErrors = validateFields(getState().editor.fields, editedFields);
+      const { recordData, fields } = getEditorState(getState());
+
+      const validationErrors = getValidationErrors(fields, recordData, editedFields, isNew);
+
       if (Object.keys(validationErrors).length > 0) {
         dispatch({
           type: SET_VALIDATION_ERRORS,
@@ -245,6 +291,7 @@ export const saveEdits =
         });
         return;
       }
+
       dispatch({
         type: EDITOR_DATA_EDIT_BEGIN,
       });

@@ -14,21 +14,7 @@ import { Editor } from './Editor';
 import { UsedBy } from '../usedBy/UsedBy';
 import { getExplodedFields } from '../utilities';
 import { Modal } from '../widgets';
-
-const getFieldSourceToEdit = field => {
-  const { source, editConfig = {} } = field;
-  if (editConfig.optionsEndpoint) {
-    if (editConfig.sourceKey) {
-      return editConfig.sourceKey;
-    }
-    const sourceComponents = source.split('.');
-    if (sourceComponents.length > 1) {
-      const [resource] = sourceComponents;
-      return `${resource}_id`;
-    }
-  }
-  return source;
-};
+import { getFieldSourceToEdit } from './utils';
 
 export const EditModalComponent = ({
   errorMessage,

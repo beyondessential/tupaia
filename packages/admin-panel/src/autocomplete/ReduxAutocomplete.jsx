@@ -110,6 +110,8 @@ ReduxAutocompleteComponent.propTypes = {
   helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   initialValue: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  required: PropTypes.bool,
+  invalid: PropTypes.bool,
 };
 
 ReduxAutocompleteComponent.defaultProps = {
@@ -122,6 +124,8 @@ ReduxAutocompleteComponent.defaultProps = {
   placeholder: null,
   label: null,
   helperText: null,
+  required: false,
+  invalid: false,
 };
 
 const mapStateToProps = (state, { reduxId }) => {

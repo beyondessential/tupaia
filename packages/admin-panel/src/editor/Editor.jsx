@@ -10,6 +10,7 @@ import { InputGroup } from '@tupaia/ui-components';
 import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
+import { getFieldSourceToEdit } from './utils';
 
 const EditorWrapper = styled.form`
   .file_upload_label {
@@ -67,6 +68,7 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   const getFieldInput = field => {
     const { editable = true, editConfig = {}, source, Header, accessor, required } = field;
 
+    const fieldSource = getFieldSourceToEdit(field);
     return (
       <InputField
         key={source}
@@ -79,6 +81,7 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
         recordData={recordData}
         id={`inputField-${labelToId(source)}`}
         required={required}
+        fieldSource={fieldSource}
         {...editConfig}
       />
     );

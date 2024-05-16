@@ -30,10 +30,12 @@ const CREATE_CONFIG = {
       {
         Header: 'Name',
         source: 'name',
+        required: true,
       },
       {
         Header: 'Parent',
         source: 'parent_id',
+        required: true,
         editConfig: {
           optionsEndpoint: 'permissionGroups',
         },

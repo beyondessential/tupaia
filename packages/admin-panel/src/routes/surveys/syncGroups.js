@@ -9,14 +9,17 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    required: true,
   },
   {
     Header: 'Survey Code',
     source: 'data_group_code',
+    required: true,
   },
   {
     Header: 'Service Type',
     source: 'service_type',
+    required: true,
     editConfig: {
       options: SERVICE_TYPES,
     },
@@ -24,6 +27,7 @@ const FIELDS = [
   {
     Header: 'Config',
     source: 'config',
+    required: true,
     type: 'jsonTooltip',
     editConfig: {
       type: 'jsonEditor',

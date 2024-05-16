@@ -37,10 +37,10 @@ export const InputFieldComponent = ({ type, secondaryLabel, error, ...inputProps
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { inputKey } = ownProps;
+  const { fieldSource } = ownProps;
   const editorState = getEditorState(state);
   return {
-    error: editorState.validationErrors[inputKey],
+    error: editorState.validationErrors[fieldSource],
   };
 };
 
