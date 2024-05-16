@@ -21,6 +21,8 @@ const MessageWrapper = styled.div`
   margin-block-start: 0.2rem;
 `;
 
+const MessageTextWrapper = styled.div``;
+
 const Message = styled(Typography)`
   font-size: 0.75rem;
 `;
@@ -30,8 +32,12 @@ export const InputWrapper = ({ errorText, helperText, children }) => (
     {children}
     {(errorText || helperText) && (
       <MessageWrapper>
-        {errorText && <Message color="error">{errorText}</Message>}
-        {helperText && <Message color="textSecondary">{helperText}</Message>}
+        <MessageTextWrapper>
+          {errorText && <Message color="error">{errorText}</Message>}
+        </MessageTextWrapper>
+        <MessageTextWrapper>
+          {helperText && <Message color="textSecondary">{helperText}</Message>}
+        </MessageTextWrapper>
       </MessageWrapper>
     )}
   </Wrapper>
