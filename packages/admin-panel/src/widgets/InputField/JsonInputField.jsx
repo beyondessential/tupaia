@@ -10,8 +10,8 @@ import Card from '@material-ui/core/Card';
 import { FormLabel } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { InputField } from './InputField';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
+import { EditorInputField } from '../../editor';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -84,16 +84,17 @@ export const JsonInputField = props => {
               }
               return true;
             })
-            .map(
-              ({
+            .map(field => {
+              const {
                 label: fieldLabel,
                 fieldName,
                 secondaryLabel: fieldSecondaryLabel,
                 type = DEFAULT_FIELD_TYPE,
                 csv,
                 ...inputFieldProps
-              }) => (
-                <InputField
+              } = field;
+              return (
+                <EditorInputField
                   id={`inputField-${labelToId(fieldName)}`}
                   key={fieldName}
                   label={fieldLabel}
@@ -105,9 +106,10 @@ export const JsonInputField = props => {
                   disabled={disabled}
                   type={type}
                   {...inputFieldProps}
+                  field={field}
                 />
-              ),
-            )}
+              );
+            })}
         </CardContent>
       </CardVariant>
     </Container>

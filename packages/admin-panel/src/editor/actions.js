@@ -117,7 +117,7 @@ export const loadEditor =
   async (dispatch, getState, { api }) => {
     // explode the fields from any subsections
     const explodedFields = getExplodedFields(fields);
-    // Open the modal instantly
+
     dispatch({
       type: LOAD_EDITOR,
       fields,

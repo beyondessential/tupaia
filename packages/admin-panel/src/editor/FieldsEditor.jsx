@@ -7,10 +7,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { InputGroup } from '@tupaia/ui-components';
-import { InputField } from '../widgets';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { SECTION_FIELD_TYPE } from './constants';
-import { getFieldSourceToEdit } from './utils';
+import { EditorInputField } from './EditorInputField';
 
 const EditorWrapper = styled.form`
   .file_upload_label {
@@ -99,14 +98,13 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
         />
       );
     }
-    const fieldSource = getFieldSourceToEdit(field);
     return (
-      <InputField
+      <EditorInputField
         key={source}
         inputKey={source}
         label={Header}
-        onChange={(inputKey, inputValue) =>
-          onInputChange(inputKey, inputValue, editConfig, recordData, onEditField)
+        onChange={(inputKey, value) =>
+          onInputChange(inputKey, value, editConfig, recordData, onEditField)
         }
         onSetFormFile={onSetFormFile}
         value={selectValue(editConfig, accessor, source)}
@@ -114,7 +112,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
         recordData={recordData}
         id={`inputField-${labelToId(source)}`}
         required={required}
-        fieldSource={fieldSource}
+        field={field}
         {...editConfig}
       />
     );

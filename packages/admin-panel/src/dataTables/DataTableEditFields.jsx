@@ -20,9 +20,8 @@ import { useParams } from './useParams';
 import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns, getRows, labelToId } from '../utilities';
 import { PlayButton } from './PlayButton';
-import { InputField } from '../widgets/InputField/InputField';
 import { onInputChange } from '../editor/FieldsEditor';
-import { getFieldSourceToEdit } from '../editor/utils';
+import { EditorInputField } from '../editor';
 
 const StyledGrid = styled(Grid)`
   height: 400px;
@@ -135,21 +134,19 @@ export const DataTableEditFields = React.memo(
               {sources.map(source => {
                 const field = getFieldBySource(source);
                 const { Header, editConfig = {}, required, editable = true } = field;
-                const fieldSource = getFieldSourceToEdit(getFieldBySource(source));
+
                 return (
-                  <InputField
+                  <EditorInputField
                     key={source}
                     inputKey={source}
                     label={Header}
-                    onChange={(inputKey, inputValue) =>
-                      onChangeField(inputKey, inputValue, editConfig)
-                    }
+                    onChange={(key, inputValue) => onChangeField(key, inputValue, editConfig)}
                     value={recordData?.[source]}
                     disabled={!editable}
                     recordData={recordData}
                     id={`inputField-${labelToId(source)}`}
                     required={required}
-                    fieldSource={fieldSource}
+                    field={field}
                     {...editConfig}
                   />
                 );

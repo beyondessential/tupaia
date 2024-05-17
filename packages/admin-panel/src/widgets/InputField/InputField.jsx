@@ -4,15 +4,13 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { InputWrapper } from './InputWrapper';
-import { getEditorState } from '../../editor/selectors';
 
-const InputFieldComponents = {};
+const InputFields = {};
 
 export const registerInputField = (type, Component) => {
-  InputFieldComponents[type] = Component;
+  InputFields[type] = Component;
 };
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
@@ -25,28 +23,16 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
   return type;
 };
 
-export const InputFieldComponent = ({ type, secondaryLabel, error, ...inputProps }) => {
+export const InputField = ({ type, secondaryLabel, error, ...inputProps }) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
-  const InputComponent = InputFieldComponents[inputType];
+  const InputComponent = InputFields[inputType];
   return (
     <InputWrapper errorText={error} helperText={secondaryLabel}>
       {InputComponent && <InputComponent {...inputProps} error={!!error} />}
     </InputWrapper>
   );
 };
-
-const mapStateToProps = (state, ownProps) => {
-  const { fieldSource } = ownProps;
-  const editorState = getEditorState(state);
-  const { validationErrors } = editorState;
-  const error = validationErrors[fieldSource];
-  return {
-    error,
-  };
-};
-
-export const InputField = connect(mapStateToProps)(InputFieldComponent);
 
 export const inputFieldPropTypes = {
   allowMultipleValues: PropTypes.bool,
@@ -97,5 +83,5 @@ export const inputFieldDefaultProps = {
   error: null,
 };
 
-InputFieldComponent.propTypes = inputFieldPropTypes;
-InputFieldComponent.defaultProps = inputFieldDefaultProps;
+InputField.propTypes = inputFieldPropTypes;
+InputField.defaultProps = inputFieldDefaultProps;

@@ -18,7 +18,7 @@ const getIsFieldVisible = (field, recordData) => {
 
 const validateData = (fields, data) => {
   return fields.reduce((errors, field) => {
-    // get the key to check in the data
+    // get the key to check in the data - this is not always the same as what is returned from the endpoint
     const fieldSourceToCheck = getFieldSourceToEdit(field);
 
     // if the field is a json array, explode it and validate each field
