@@ -44,7 +44,7 @@ export const onInputChange = async (
   onEditField(inputKey, inputValue);
 };
 
-export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
+export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile }) => {
   if (!fields || fields.length === 0) {
     return false;
   }

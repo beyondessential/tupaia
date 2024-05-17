@@ -21,7 +21,7 @@ import { useDataTablePreview, useExternalDatabaseConnections } from './query';
 import { getColumns, getRows, labelToId } from '../utilities';
 import { PlayButton } from './PlayButton';
 import { InputField } from '../widgets/InputField/InputField';
-import { onInputChange } from '../editor/Editor';
+import { onInputChange } from '../editor/FieldsEditor';
 import { getFieldSourceToEdit } from '../editor/utils';
 
 const StyledGrid = styled(Grid)`
