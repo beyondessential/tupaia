@@ -34,7 +34,7 @@ const GreyCard = styled(Card)`
   background: #f9f9f9;
 `;
 
-const Container = styled.fieldset`
+const Container = styled.div`
   position: relative;
 `;
 
@@ -98,7 +98,7 @@ export const JsonInputField = props => {
                   id={`inputField-${labelToId(fieldName)}`}
                   key={fieldName}
                   label={fieldLabel}
-                  fieldSource={fieldName}
+                  source={fieldName}
                   secondaryLabel={fieldSecondaryLabel}
                   value={jsonFieldValues[fieldName]}
                   inputKey={fieldName}
@@ -106,7 +106,7 @@ export const JsonInputField = props => {
                   disabled={disabled}
                   type={type}
                   {...inputFieldProps}
-                  field={field}
+                  editKey={fieldName}
                 />
               );
             })}

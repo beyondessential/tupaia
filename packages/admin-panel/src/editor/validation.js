@@ -4,7 +4,7 @@
  */
 
 import { getExplodedFields } from '../utilities';
-import { getFieldSourceToEdit } from './utils';
+import { getFieldEditKey } from './utils';
 
 const getIsFieldVisible = (field, recordData) => {
   const { visibilityCriteria } = field;
@@ -19,48 +19,59 @@ const getIsFieldVisible = (field, recordData) => {
 const validateData = (fields, data) => {
   return fields.reduce((errors, field) => {
     // get the key to check in the data - this is not always the same as what is returned from the endpoint
-    const fieldSourceToCheck = getFieldSourceToEdit(field);
+
+    const { editConfig = {} } = field;
+    const fieldInfo = {
+      ...field,
+      ...editConfig,
+    };
+
+    const editKey = getFieldEditKey(fieldInfo);
 
     // if the field is a json array, explode it and validate each field
-    if (field.type === 'json') {
-      const { getJsonFieldSchema } = field;
+    if (fieldInfo.type === 'json') {
+      const { getJsonFieldSchema } = fieldInfo;
       const jsonFieldSchema = getJsonFieldSchema(null, { recordData: data });
       const jsonFields = jsonFieldSchema.map(jsonField => {
         const { fieldName } = jsonField;
-        return { ...jsonField, source: fieldName };
+        return {
+          ...jsonField,
+          source: fieldName,
+        };
       });
 
       // parse the parent field value, so we can validate the nested fields
       const parseValue = () => {
-        if (!data[fieldSourceToCheck]) return {};
-        if (typeof data[fieldSourceToCheck] === 'string') {
-          return JSON.parse(data[fieldSourceToCheck]);
+        if (!data[editKey]) return {};
+        if (typeof data[editKey] === 'string') {
+          return JSON.parse(data[editKey]);
         }
-        return data[fieldSourceToCheck];
+        return data[editKey];
       };
       const parsedValue = parseValue();
-      return [
+      return {
         ...errors,
         ...validateData(jsonFields, {
           ...data,
           ...parsedValue,
         }),
-      ];
+      };
     }
 
-    const isFieldVisible = getIsFieldVisible(field, data);
+    const isFieldVisible = getIsFieldVisible(fieldInfo, data);
     if (!isFieldVisible) return errors;
-    if (!field.required) return errors;
+    if (!fieldInfo.required) return errors;
 
-    const value = data[fieldSourceToCheck];
-    if (!value && value !== 0)
+    const value = data[editKey];
+    if (!value && value !== 0) {
       return {
         ...errors,
-        [fieldSourceToCheck]: '* Required',
+        [editKey]: '* Required',
       };
+    }
 
     return errors;
-  }, []);
+  }, {});
 };
 
 const extractData = (editedFields, recordData, explodedFields) => {
@@ -75,7 +86,7 @@ const extractData = (editedFields, recordData, explodedFields) => {
 
   // sometimes if we edit a field that has a different key returned from the endpoint to the key we edit, we need to map it
   return explodedFields.reduce((result, field) => {
-    const inputKey = getFieldSourceToEdit(field);
+    const inputKey = getFieldEditKey(field);
     const savedInputKey = field.source;
     if (combinedData.hasOwnProperty(inputKey)) {
       return {

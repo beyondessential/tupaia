@@ -146,7 +146,7 @@ export const DataTableEditFields = React.memo(
                     recordData={recordData}
                     id={`inputField-${labelToId(source)}`}
                     required={required}
-                    field={field}
+                    editKey={source}
                     {...editConfig}
                   />
                 );

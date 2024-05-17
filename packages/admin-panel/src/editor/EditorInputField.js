@@ -6,17 +6,14 @@
 import { connect } from 'react-redux';
 import { getEditorState } from './selectors';
 import { InputField } from '../widgets/InputField/InputField';
-import { getFieldSourceToEdit } from './utils';
 
 /**
  * A wrapper around the InputField component that connects it to the editor state to get errors
  */
-const mapStateToProps = (state, ownProps) => {
-  const { field } = ownProps;
+const mapStateToProps = (state, { editKey, inputKey }) => {
   const editorState = getEditorState(state);
   const { validationErrors } = editorState;
-  const editKey = getFieldSourceToEdit(field);
-  const error = validationErrors[editKey];
+  const error = validationErrors[editKey ?? inputKey];
   return {
     error,
   };

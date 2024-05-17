@@ -23,7 +23,7 @@ import {
 import { getEditorState } from './selectors';
 import { getValidationErrors } from './validation';
 import { fetchUsedBy } from '../usedBy';
-import { getFieldSourceToEdit } from './utils';
+import { getFieldEditKey } from './utils';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -187,10 +187,10 @@ export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   const { fields } = getState().editor;
   const field = fields.find(f => f.source === fieldSource);
   if (!field) return;
-  const fieldSourceToEdit = getFieldSourceToEdit(field);
+  const editKey = getFieldEditKey(field);
   dispatch({
     type: EDITOR_FIELD_EDIT,
-    fieldKey: fieldSourceToEdit,
+    fieldKey: editKey,
     newValue,
   });
 };
