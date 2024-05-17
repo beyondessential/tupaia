@@ -2,7 +2,6 @@
  * Tupaia MediTrak
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-
 import {
   EDITOR_DATA_EDIT_BEGIN,
   EDITOR_DATA_EDIT_SUCCESS,
@@ -11,8 +10,10 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
-  EDITOR_OPEN,
   SET_VALIDATION_ERRORS,
+  LOAD_EDITOR,
+  OPEN_EDIT_MODAL,
+  RESET_EDITS,
 } from './constants';
 import {
   convertSearchTermToFilter,
@@ -21,6 +22,8 @@ import {
 } from '../utilities';
 import { getEditorState } from './selectors';
 import { getValidationErrors } from './validation';
+import { fetchUsedBy } from '../usedBy';
+import { getFieldSourceToEdit } from './utils';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -29,6 +32,7 @@ export const openBulkEditModal =
   async (dispatch, getState, { api }) => {
     // explode the fields from any subsections
     const explodedFields = getExplodedFields(fields);
+    dispatch(openEditModal(recordId));
     if (recordId) {
       dispatch({
         type: EDITOR_DATA_FETCH_BEGIN,
@@ -53,7 +57,7 @@ export const openBulkEditModal =
           recordData: response.body,
         });
         dispatch({
-          type: EDITOR_OPEN,
+          type: LOAD_EDITOR,
           fields,
           recordData: response.body,
           endpoint: bulkUpdateEndpoint,
@@ -82,7 +86,7 @@ export const openBulkEditModal =
       });
 
       dispatch({
-        type: EDITOR_OPEN,
+        type: LOAD_EDITOR,
         fields,
         recordData: {},
         endpoint: bulkUpdateEndpoint,
@@ -90,7 +94,12 @@ export const openBulkEditModal =
     }
   };
 
-export const openEditModal =
+export const openEditModal = recordId => ({
+  type: OPEN_EDIT_MODAL,
+  recordId,
+});
+
+export const loadEditor =
   (
     {
       editEndpoint,
@@ -100,6 +109,8 @@ export const openEditModal =
       extraDialogProps = {},
       isLoading = false,
       initialValues = {},
+      recordType,
+      displayUsedBy = false,
     },
     recordId,
   ) =>
@@ -108,7 +119,7 @@ export const openEditModal =
     const explodedFields = getExplodedFields(fields);
     // Open the modal instantly
     dispatch({
-      type: EDITOR_OPEN,
+      type: LOAD_EDITOR,
       fields,
       FieldsComponent,
       title,
@@ -132,6 +143,9 @@ export const openEditModal =
       });
 
       try {
+        if (displayUsedBy) {
+          dispatch(fetchUsedBy(recordType, recordId));
+        }
         const response = await api.get(endpoint, {
           columns: JSON.stringify(
             explodedFields
@@ -169,14 +183,20 @@ export const openEditModal =
     }
   };
 
-export const editField = (fieldKey, newValue) => ({
-  type: EDITOR_FIELD_EDIT,
-  fieldKey,
-  newValue,
-});
+export const editField = (fieldSource, newValue) => (dispatch, getState) => {
+  const { fields } = getState().editor;
+  const field = fields.find(f => f.source === fieldSource);
+  if (!field) return;
+  const fieldSourceToEdit = getFieldSourceToEdit(field);
+  dispatch({
+    type: EDITOR_FIELD_EDIT,
+    fieldKey: fieldSourceToEdit,
+    newValue,
+  });
+};
 
 export const saveEdits =
-  (endpoint, editedFields, isNew, filesByFieldKey = {}) =>
+  (endpoint, editedFields, isNew, filesByFieldKey = {}, onSuccess) =>
   async (dispatch, getState, { api }) => {
     try {
       const { recordData, fields } = getEditorState(getState());
@@ -220,7 +240,7 @@ export const saveEdits =
       dispatch({
         type: EDITOR_DATA_EDIT_SUCCESS,
       });
-      dispatch(closeEditModal());
+      onSuccess();
     } catch (error) {
       dispatch({
         type: EDITOR_ERROR,
@@ -229,6 +249,10 @@ export const saveEdits =
     }
   };
 
-export const closeEditModal = () => ({
+export const dismissEditor = () => ({
   type: EDITOR_DISMISS,
+});
+
+export const resetEdits = () => ({
+  type: RESET_EDITS,
 });

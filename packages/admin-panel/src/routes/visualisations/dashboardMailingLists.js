@@ -151,12 +151,14 @@ export const dashboardMailingLists = {
   endpoint: 'dashboardMailingLists',
   columns: DASHBOARD_MAILING_LIST_COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    title: 'Entries',
-    endpoint: 'dashboardMailingLists/{id}/dashboardMailingListEntries',
-    columns: ENTRY_COLUMNS,
-    path: '/:id/entries',
-    displayProperty: 'dashboard.name',
-  },
+  nestedViews: [
+    {
+      title: 'Entries',
+      endpoint: 'dashboardMailingLists/{id}/dashboardMailingListEntries',
+      columns: ENTRY_COLUMNS,
+      path: '/:id/entries',
+      displayProperty: 'dashboard.name',
+    },
+  ],
   isBESAdminOnly: true,
 };

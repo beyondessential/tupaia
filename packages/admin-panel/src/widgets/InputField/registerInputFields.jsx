@@ -241,9 +241,11 @@ export const registerInputFields = () => {
       rows="4"
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
+      required={props.required}
       inputProps={{
         minLength: props.minLength,
         maxLength: props.maxLength,
+        required: props.required,
       }}
       required={props.required}
       error={props.error}
@@ -331,6 +333,7 @@ export const registerInputFields = () => {
         disabled={props.disabled}
         helperText={props.secondaryLabel}
         tooltip={props.labelTooltip}
+        required={props.required}
         color="secondary"
       />
     </StyledCheckboxWrapper>
@@ -355,8 +358,8 @@ export const registerInputFields = () => {
       name={props.name}
       label={props.label}
       helperText={props.secondaryLabel}
-      onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
       required={props.required}
+      onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
     />
   ));
 };

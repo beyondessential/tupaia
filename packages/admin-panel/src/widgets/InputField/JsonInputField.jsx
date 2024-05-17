@@ -34,13 +34,17 @@ const GreyCard = styled(Card)`
   background: #f9f9f9;
 `;
 
-const Container = styled.div`
+const Container = styled.fieldset`
   position: relative;
 `;
 
-const CardLabel = styled(FormLabel)`
+const CardLabel = styled(FormLabel).attrs({
+  component: 'legend',
+})`
   display: block;
-  margin-bottom: 3px;
+
+  font-size: 1rem;
+  margin-block-end: 0.6rem;
 `;
 
 export const JsonInputField = props => {

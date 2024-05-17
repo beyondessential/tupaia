@@ -8,7 +8,6 @@ import MuiTextField, { TextFieldProps } from '@material-ui/core/TextField';
 import styled from 'styled-components';
 import { InputLabel } from './InputLabel';
 
-const FOCUS_COLOUR = '#99d6ff';
 const ADORNMENT_COLOUR = '#c4c4c7';
 
 const StyledTextField = styled(MuiTextField)<TextFieldProps>`
@@ -60,8 +59,6 @@ const StyledTextField = styled(MuiTextField)<TextFieldProps>`
   // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-width: 1px;
-    border-color: ${FOCUS_COLOUR};
-    box-shadow: 0 0 5px rgba(0, 135, 216, 0.75);
   }
 
   .MuiFormLabel-root.Mui-focused {

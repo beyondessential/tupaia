@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Close from '@material-ui/icons/Close';
 import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import MuiChip from '@material-ui/core/Chip';
@@ -14,6 +15,11 @@ import debounce from 'lodash.debounce';
 const Chip = styled(MuiChip)`
   &:first-child {
     margin-left: 6px;
+  }
+  color: ${props => props.theme.palette.text.primary};
+  .MuiChip-deleteIcon {
+    color: ${props => props.theme.palette.text.secondary};
+    height: 1rem;
   }
 `;
 
@@ -34,6 +40,7 @@ export const Autocomplete = props => {
     optionLabelKey,
     muiProps,
     error,
+    tooltip,
     required,
   } = props;
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -77,6 +84,8 @@ export const Autocomplete = props => {
           values.map((option, index) => (
             <Chip
               color="primary"
+              deleteIcon={<Close />}
+              variant="outlined"
               label={optionLabelKey ? option[optionLabelKey] : option}
               {...getTagProps({ index })}
             />
@@ -112,6 +121,7 @@ export const Autocomplete = props => {
       helperText={helperText}
       muiProps={extraMuiProps}
       error={error}
+      tooltip={tooltip}
       required={required}
     />
   );
@@ -134,7 +144,8 @@ Autocomplete.propTypes = {
   allowMultipleValues: PropTypes.bool,
   optionLabelKey: PropTypes.string,
   muiProps: PropTypes.object,
-  invalid: PropTypes.bool,
+  error: PropTypes.bool,
+  tooltip: PropTypes.string,
   required: PropTypes.bool,
 };
 
@@ -150,6 +161,7 @@ Autocomplete.defaultProps = {
   muiProps: {},
   optionLabelKey: null,
   onChangeSearchTerm: () => {},
-  invalid: false,
+  error: false,
+  tooltip: null,
   required: false,
 };

@@ -57,6 +57,9 @@ const TableContainer = styled(MuiTableContainer)`
     z-index: 2;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const Wrapper = styled.div`

@@ -13,18 +13,22 @@ import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl'
 import { OverrideableComponentProps } from '../../types';
 import { InputLabel } from './InputLabel';
 
+const LegendWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+`;
 const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormControlProps>>`
   display: block;
   margin-bottom: 1.2rem;
+  max-width: max-content;
 `;
 
 const Legend = styled(FormLabel).attrs({
   component: 'legend',
 })`
-  position: relative;
   font-size: 0.9375rem;
   line-height: 1.125rem;
-  margin-bottom: 0.25rem;
   color: ${props => props.theme.palette.text.secondary};
   padding-inline-start: 0;
   &.Mui-focused {
@@ -125,15 +129,17 @@ export const RadioGroup = ({
       required={required}
       error={invalid}
     >
-      <InputLabel
-        as={Legend}
-        label={label}
-        tooltip={tooltip}
-        labelProps={{
-          error: invalid,
-          required,
-        }}
-      />
+      <LegendWrapper>
+        <InputLabel
+          label={<Legend required={required}>{label}</Legend>}
+          tooltip={tooltip}
+          labelProps={{
+            error: invalid,
+            required,
+          }}
+        />
+      </LegendWrapper>
+
       {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
       <StyledRadioGroup name={name} value={value} onChange={onChange} {...radioGroupProps}>
         {options.map((option, i) => (

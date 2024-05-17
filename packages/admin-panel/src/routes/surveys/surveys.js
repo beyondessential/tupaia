@@ -1,10 +1,10 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
+import { EditSurveyPage } from '../../pages/resources';
 
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
@@ -30,7 +30,8 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'code',
       optionValueKey: 'code',
       allowMultipleValues: false,
-      secondaryLabel: 'Select the project this survey should be available in',
+      labelTooltip: 'Select the project this survey should be available in',
+      required: true,
     },
   },
   name: {
@@ -40,7 +41,8 @@ const SURVEY_FIELDS = {
     type: 'tooltip',
     editConfig: {
       maxLength: 50,
-      secondaryLabel: 'Max length: 50 characters',
+      secondaryLabel: 'Max 50 characters',
+      required: true,
     },
   },
   code: {
@@ -48,7 +50,8 @@ const SURVEY_FIELDS = {
     source: 'code',
     required: true,
     editConfig: {
-      secondaryLabel: 'A short unique code. Suggestions appear when you enter a name.',
+      labelTooltip: 'A short unique code. Suggestions appear when you enter a name.',
+      required: true,
     },
   },
   country_ids: {
@@ -61,11 +64,12 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'name',
       allowMultipleValues: true,
-      secondaryLabel: 'Select the countries this survey should be available in',
+      labelTooltip: 'Select the countries this survey should be available in',
+      required: true,
     },
   },
   permission_group_id: {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_group.name', // TODO: cleanup as part of RN-910
     required: true,
     editConfig: {
@@ -73,18 +77,19 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel: 'Select the permission group this survey should be available for',
+      labelTooltip: 'Select the permission group this survey should be available for',
+      required: true,
     },
   },
   survey_group_id: {
-    Header: 'Survey Group',
+    Header: 'Survey group',
     source: 'survey_group.name', // TODO: cleanup as part of RN-910
     editConfig: {
       sourceKey: 'survey_group.name',
       optionsEndpoint: 'surveyGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel:
+      labelTooltip:
         'Select the survey group this survey should be a part of, or leave blank for none',
       canCreateNewOptions: true,
     },
@@ -98,29 +103,29 @@ const SURVEY_FIELDS = {
     },
   },
   period_granularity: {
-    Header: 'Reporting Period',
+    Header: 'Reporting period',
     source: 'period_granularity',
     editConfig: {
       options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
-      secondaryLabel:
+      labelTooltip:
         'Select a reporting period if new responses should overwrite previous ones within the same period',
     },
   },
   requires_approval: {
-    Header: 'Requires Approval',
+    Header: 'Requires approval',
     source: 'requires_approval',
     type: 'boolean',
     editConfig: {
       type: 'boolean',
-      secondaryLabel:
+      labelTooltip:
         'Select whether survey responses require approval before their data appear in visualisations',
     },
   },
   'data_group.service_type': {
-    Header: 'Data Service',
+    Header: 'Data service',
     source: 'data_group.service_type',
     editConfig: {
-      secondaryLabel: 'Select the data service this survey should use',
+      labelTooltip: 'Select the data service this survey should use',
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
@@ -132,7 +137,7 @@ const SURVEY_FIELDS = {
     },
   },
   'data_group.config': {
-    Header: 'Data Service Configuration',
+    Header: 'Data service configuration',
     source: 'data_group.config',
     editConfig: {
       type: 'json',
@@ -143,7 +148,7 @@ const SURVEY_FIELDS = {
         recordData['data_group.service_type'] === 'dhis'
           ? [
               {
-                label: 'DHIS Server',
+                label: 'DHIS server',
                 fieldName: 'dhisInstanceCode',
                 optionsEndpoint: 'dhisInstances',
                 optionLabelKey: 'code',
@@ -155,12 +160,12 @@ const SURVEY_FIELDS = {
     },
   },
   surveyQuestions: {
-    Header: 'Survey Questions',
+    Header: 'Survey questions',
     source: 'surveyQuestions',
     editConfig: {
       type: 'file',
       name: 'surveyQuestions',
-      secondaryLabel:
+      labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
     },
   },
@@ -194,12 +199,17 @@ const SURVEY_COLUMNS = [
   },
   {
     Header: 'Edit',
-    type: 'edit',
     source: 'id',
+    type: 'edit',
+    colWidth: '4.5rem',
+    filterable: false,
+    disableSortBy: true,
+    isButtonColumn: true,
     actionConfig: {
-      title: 'Edit Survey',
+      title: 'Edit survey',
       editEndpoint: 'surveys',
-      fields: [...Object.values(SURVEY_FIELDS)],
+      link: `/surveys/:id/edit`,
+      fields: Object.values(SURVEY_FIELDS),
     },
   },
   {
@@ -238,7 +248,7 @@ const CREATE_CONFIG = {
       'data_group.service_type': 'tupaia',
       'data_group.config': {},
     },
-    title: 'New Survey',
+    title: 'New survey',
   },
 };
 
@@ -477,11 +487,18 @@ export const surveys = {
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    path: '/:id/questions',
-    endpoint: 'surveys/{id}/surveyScreenComponents',
-    columns: QUESTION_COLUMNS,
-    title: 'Questions',
-    displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
-  },
+  nestedViews: [
+    {
+      path: '/:id/questions',
+      endpoint: 'surveys/{id}/surveyScreenComponents',
+      columns: QUESTION_COLUMNS,
+      title: 'Questions',
+      displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
+    },
+    {
+      path: '/:id/edit',
+      Component: EditSurveyPage,
+      getDisplayValue: () => 'Edit',
+    },
+  ],
 };

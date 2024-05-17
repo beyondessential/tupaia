@@ -62,8 +62,8 @@ const typography = {
     letterSpacing: 0,
   },
   h2: {
-    fontSize: '2rem',
-    fontWeight: 600,
+    fontSize: '0.875rem',
+    fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
@@ -143,6 +143,9 @@ const overrides = {
         color: palette.text.primary,
       },
     },
+    asterisk: {
+      color: palette.error.main,
+    },
   },
   MuiInputBase: {
     input: {
@@ -176,6 +179,16 @@ const overrides = {
     root: {
       '&.MuiButtonBase-root': {
         fontSize: '0.875rem',
+      },
+    },
+  },
+  MuiCssBaseline: {
+    '@global': {
+      label: {
+        fontWeight: 500,
+        '& .MuiSvgIcon-root': {
+          color: palette.text.secondary, // tooltip icon color
+        },
       },
     },
   },

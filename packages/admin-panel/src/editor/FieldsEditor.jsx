@@ -1,6 +1,6 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -17,6 +17,13 @@ const EditorWrapper = styled.form`
     font-size: 0.9375rem;
     text-transform: initial;
     color: ${props => props.theme.palette.text.secondary};
+  }
+  .MuiFormHelperText-root {
+    text-align: right;
+    margin-right: 0;
+  }
+  .MuiFormControl-root:has(.MuiFormHelperText-root) {
+    margin-bottom: 0; // the helper text will be considered the gap between the input and the next field
   }
 `;
 
@@ -72,8 +79,26 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
 
   // Get the input for the field
   const getFieldInput = field => {
-    const { editable = true, editConfig = {}, source, Header, accessor, required } = field;
-
+    const {
+      editable = true,
+      editConfig = {},
+      source,
+      Header,
+      accessor,
+      type,
+      WrapperComponent,
+      required,
+    } = field;
+    if (type === SECTION_FIELD_TYPE) {
+      return (
+        <InputGroup
+          key={Header}
+          title={Header}
+          fields={field.fields.map(subfield => getFieldInput(subfield))}
+          WrapperComponent={WrapperComponent}
+        />
+      );
+    }
     const fieldSource = getFieldSourceToEdit(field);
     return (
       <InputField
@@ -111,25 +136,10 @@ export const Editor = ({ fields, recordData, onEditField, onSetFormFile }) => {
     return [...result, field];
   }, []);
 
-  return (
-    <EditorWrapper>
-      {visibleFormItems.map(item =>
-        item.type === SECTION_FIELD_TYPE ? (
-          <InputGroup
-            key={item.title}
-            title={item.title}
-            description={item.description}
-            fields={item.fields.map(subfield => getFieldInput(subfield))}
-          />
-        ) : (
-          getFieldInput(item)
-        ),
-      )}
-    </EditorWrapper>
-  );
+  return <EditorWrapper className="fields">{visibleFormItems.map(getFieldInput)}</EditorWrapper>;
 };
 
-Editor.propTypes = {
+FieldsEditor.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   recordData: PropTypes.object.isRequired,
   onEditField: PropTypes.func.isRequired,
