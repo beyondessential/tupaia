@@ -110,7 +110,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
       records.map(record => this.generateInstance(record)),
     );
 
-    console.log('\x1b[1;34mrv\x1b[m', recordsWithChildCode);
+    console.log('\x1b[1;34mrecordsWithChildCode\x1b[m', recordsWithChildCode);
 
     return recordsWithChildCode;
   }
