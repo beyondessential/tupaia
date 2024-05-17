@@ -21,7 +21,12 @@ const MessageWrapper = styled.div`
   margin-block-start: 0.2rem;
 `;
 
-const MessageTextWrapper = styled.div``;
+const MessageTextWrapper = styled.div`
+  &:last-child {
+    margin-inline-start: 0.5rem;
+    max-width: 80%;
+  }
+`;
 
 const Message = styled(Typography)`
   font-size: 0.75rem;

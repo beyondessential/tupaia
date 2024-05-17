@@ -27,6 +27,7 @@ const FIELDS = [
     Header: 'Email Address',
     source: 'email',
     type: 'tooltip',
+    required: true,
   },
   {
     Header: 'Phone Number',
@@ -47,16 +48,19 @@ const EDIT_FIELDS = [
   {
     Header: 'First Name',
     source: 'first_name',
+    required: true,
   },
   {
     Header: 'Last Name',
     source: 'last_name',
+    required: true,
   },
   ...FIELDS,
   {
     Header: 'Verified',
     source: 'verified_email',
     type: 'tooltip',
+
     editConfig: {
       options: [
         {
@@ -73,6 +77,7 @@ const EDIT_FIELDS = [
   {
     Header: 'Password',
     source: 'password',
+    required: true,
     hideValue: true,
     editConfig: {
       type: 'password',
@@ -126,6 +131,7 @@ const CREATE_CONFIG = {
       {
         Header: 'Country',
         source: 'countryName',
+        required: true,
         editConfig: {
           sourceKey: 'countryName',
           optionsEndpoint: 'countries',
@@ -137,6 +143,7 @@ const CREATE_CONFIG = {
       {
         Header: 'Permission Group',
         source: 'permissionGroupName',
+        required: true,
         editConfig: {
           sourceKey: 'permissionGroupName',
           optionsEndpoint: 'permissionGroups',

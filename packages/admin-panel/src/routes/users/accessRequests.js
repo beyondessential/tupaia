@@ -119,6 +119,7 @@ const USER_COLUMNS = [
           Header: 'Approved',
           source: 'approved',
           type: 'boolean',
+          alwaysValidate: true,
           required: true,
           editConfig: {
             type: 'boolean',
@@ -149,6 +150,8 @@ const DETAILS_COLUMNS = [
         {
           Header: 'Approved',
           source: 'approved',
+          required: true,
+          alwaysValidate: true,
           type: 'boolean',
           editConfig: {
             type: 'boolean',

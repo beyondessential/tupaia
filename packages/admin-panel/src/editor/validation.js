@@ -1,0 +1,101 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+import { getExplodedFields } from '../utilities';
+import { getFieldSourceToEdit } from './utils';
+
+const getIsFieldVisible = (field, recordData) => {
+  const { visibilityCriteria } = field;
+  if (!visibilityCriteria) {
+    return true;
+  }
+  return Object.entries(visibilityCriteria).every(
+    ([source, value]) => recordData[source] === value,
+  );
+};
+
+const validateData = (fields, data) => {
+  return fields.reduce((errors, field) => {
+    // get the key to check in the data
+    const fieldSourceToCheck = getFieldSourceToEdit(field);
+
+    // if the field is a json array, explode it and validate each field
+    if (field.type === 'json') {
+      const { getJsonFieldSchema } = field;
+      const jsonFieldSchema = getJsonFieldSchema(null, { recordData: data });
+      const jsonFields = jsonFieldSchema.map(jsonField => {
+        const { fieldName } = jsonField;
+        return { ...jsonField, source: fieldName };
+      });
+
+      // parse the parent field value, so we can validate the nested fields
+      const parseValue = () => {
+        if (!data[fieldSourceToCheck]) return {};
+        if (typeof data[fieldSourceToCheck] === 'string') {
+          return JSON.parse(data[fieldSourceToCheck]);
+        }
+        return data[fieldSourceToCheck];
+      };
+      const parsedValue = parseValue();
+      return [
+        ...errors,
+        ...validateData(jsonFields, {
+          ...data,
+          ...parsedValue,
+        }),
+      ];
+    }
+
+    const isFieldVisible = getIsFieldVisible(field, data);
+    if (!isFieldVisible) return errors;
+    if (!field.required) return errors;
+
+    const value = data[fieldSourceToCheck];
+    if (!value && value !== 0)
+      return {
+        ...errors,
+        [fieldSourceToCheck]: '* Required',
+      };
+
+    return errors;
+  }, []);
+};
+
+const extractData = (editedFields, recordData, explodedFields) => {
+  // if is a bulk edit, editedFields is an array of records, but we just need to grab the first one to validate
+  const editedValues = Array.isArray(editedFields) ? editedFields[0] : editedFields;
+  const savedData = Array.isArray(recordData) ? recordData[0] : recordData;
+
+  const combinedData = {
+    ...savedData,
+    ...editedValues,
+  };
+
+  // sometimes if we edit a field that has a different key returned from the endpoint to the key we edit, we need to map it
+  return explodedFields.reduce((result, field) => {
+    const inputKey = getFieldSourceToEdit(field);
+    const savedInputKey = field.source;
+    if (combinedData.hasOwnProperty(inputKey)) {
+      return {
+        ...result,
+        [inputKey]: combinedData[inputKey],
+      };
+    }
+    return {
+      ...result,
+      [inputKey]: combinedData[savedInputKey],
+    };
+  }, {});
+};
+
+export const getValidationErrors = (fields, recordData, editedFields) => {
+  // explode fields that are nested in sections
+  const explodedFields = getExplodedFields(fields);
+  // extract the data to validate - this handles arrays of records
+  const extractedData = extractData(editedFields, recordData, explodedFields);
+
+  // extract the required fields
+  return validateData(explodedFields, extractedData);
+};

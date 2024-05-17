@@ -20,7 +20,7 @@ import {
   makeSubstitutionsInString,
 } from '../utilities';
 import { getEditorState } from './selectors';
-import { getFieldSourceToEdit } from './utils';
+import { getValidationErrors } from './validation';
 
 const STATIC_FIELD_TYPES = ['link'];
 
@@ -139,6 +139,7 @@ export const openEditModal =
               .map(field => field.source),
           ), // Fetch fields based on their source
         });
+
         dispatch({
           type: EDITOR_DATA_FETCH_SUCCESS,
           recordData: response.body,
@@ -173,119 +174,6 @@ export const editField = (fieldKey, newValue) => ({
   fieldKey,
   newValue,
 });
-
-const getIsFieldVisible = (field, recordData) => {
-  const { visibilityCriteria } = field;
-  if (!visibilityCriteria) {
-    return true;
-  }
-  return Object.entries(visibilityCriteria).every(
-    ([source, value]) => recordData[source] === value,
-  );
-};
-
-const validateFields = (fields, recordData) => {
-  return fields.reduce((errors, field) => {
-    const sourceKey = getFieldSourceToEdit(field);
-    const { type, required, editConfig } = field;
-
-    // If the field is not visible, don't validate it
-    if (!getIsFieldVisible(field, recordData)) {
-      return errors;
-    }
-    // if the field is a section, validate its subfields
-    if (field.type === 'section') {
-      const { fields: sectionFields } = field;
-      return {
-        ...errors,
-        ...validateFields(sectionFields, recordData),
-      };
-    }
-    if (type === 'json' || editConfig?.type === 'json') {
-      // sometimes the field has editConfig, sometimes it doesn't
-      const { getJsonFieldSchema } = editConfig ?? field;
-      const jsonFieldSchema = getJsonFieldSchema(null, { recordData });
-      const jsonFields = jsonFieldSchema.map(jsonField => {
-        const { fieldName } = jsonField;
-        return { ...jsonField, source: fieldName };
-      });
-      const parseValue = () => {
-        if (!recordData[sourceKey]) return {};
-        if (typeof recordData[sourceKey] === 'string') {
-          return JSON.parse(recordData[sourceKey]);
-        }
-        return recordData[sourceKey];
-      };
-      const parsedValue = parseValue();
-      return {
-        ...errors,
-        ...validateFields(jsonFields, {
-          ...recordData,
-          ...parsedValue,
-        }),
-      };
-    }
-
-    const value = recordData[sourceKey];
-
-    if (required && !value && value !== 0) {
-      return {
-        ...errors,
-        [sourceKey]: '* Required',
-      };
-    }
-
-    return errors;
-  }, {});
-};
-
-// When editing a record, we only want to validate the fields that have been edited. If it's a new record, we want to validate all fields
-const getFieldsToValidate = (fields, editedFields, isNew) => {
-  if (isNew) return fields;
-  return Object.keys(editedFields).reduce((fieldsToValidate, fieldKey) => {
-    const fullField = fields.find(field => getFieldSourceToEdit(field) === fieldKey);
-    if (!fullField) return fieldsToValidate;
-    return [...fieldsToValidate, fullField];
-  }, []);
-};
-
-const getValidationErrors = (fields, recordData, editedFields, isNew) => {
-  const dataToValidate = getDataToValidate(editedFields, recordData, isNew);
-
-  const fieldsToValidate = getFieldsToValidate(fields, editedFields, isNew);
-
-  // if is bulk editing, recordData is an array of records. In this case, there is still only 1 fof each field displayed, so we just want to know if there are errors in any of the records
-  if (Array.isArray(dataToValidate)) {
-    const errors = {};
-    dataToValidate.forEach(record => {
-      const validationErrors = validateFields(fieldsToValidate, record);
-
-      Object.entries(validationErrors).forEach(([key, error]) => {
-        if (validationErrors[key]) {
-          errors[key] = error;
-        }
-      });
-    });
-    return errors;
-  }
-  return validateFields(fieldsToValidate, dataToValidate);
-};
-
-const getDataToValidate = (editedFields, recordData, isNew) => {
-  if (isNew) return editedFields;
-  if (Array.isArray(recordData)) {
-    return recordData.map((record, i) => {
-      return {
-        ...record,
-        ...editedFields[i],
-      };
-    });
-  }
-  return {
-    ...recordData,
-    ...editedFields,
-  };
-};
 
 export const saveEdits =
   (endpoint, editedFields, isNew, filesByFieldKey = {}) =>
