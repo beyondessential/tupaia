@@ -147,9 +147,6 @@ export const loadEditor =
       const endpoint = `${editEndpoint}/${recordId}`;
       dispatch({
         type: EDITOR_DATA_FETCH_BEGIN,
-        fields,
-        title,
-        endpoint,
         recordId,
       });
 
