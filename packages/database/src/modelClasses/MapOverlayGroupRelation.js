@@ -59,6 +59,12 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     );
   }
 
+  /**
+   * Overrides `DatabaseModel.find` to add `child_code` to the model. Note that this is a departure
+   * from the underlying database schema.
+   *
+   * @see generateInstance
+   */
   async find(criteria, dbOptions = {}) {
     const options = dbOptions;
 
@@ -109,6 +115,12 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     return recordsWithChildCode;
   }
 
+  /**
+   * Coalesces the transient `childMapOverlayCode` and `childMapOverlayGroupCode` fields in the
+   * records returned by {@link find} into a single `child_code` field.
+   *
+   * @see find
+   */
   async generateInstance(fields = {}) {
     const data = {};
 
