@@ -20,7 +20,6 @@ import { SelectedDataList } from './SelectedDataList';
 import { DataTypeTabs } from './DataTypeTabs';
 import { ColHeader } from './styles';
 import { ALICE_BLUE } from './constant';
-import { InputField } from '../../../../widgets/InputField/InputField';
 
 /*
  * A DataLibrary is similar to an Autocomplete but shows the options below for easier browsing,

@@ -22,7 +22,7 @@ export const EditModalComponent = withConnectedEditor(
     onEditField,
     onSave,
     recordData,
-    title,
+    title = 'Edit',
     fields,
     FieldsComponent,
     isUnchanged,
@@ -36,7 +36,6 @@ export const EditModalComponent = withConnectedEditor(
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
-
     const buttons = [
       {
         onClick: onDismiss,
@@ -100,7 +99,6 @@ EditModalComponent.propTypes = {
 
 EditModalComponent.defaultProps = {
   errorMessage: null,
-  title: 'Edit',
   recordData: null,
   FieldsComponent: null,
   isUnchanged: false,
@@ -117,4 +115,4 @@ const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissEditor()),
 });
 
-export const EditModal = connect(null, mapDispatchToProps)(EditModalComponent);
+export const EditModal = withConnectedEditor(connect(null, mapDispatchToProps)(EditModalComponent));

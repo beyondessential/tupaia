@@ -63,7 +63,7 @@ const validateData = (fields, data) => {
     if (!fieldInfo.required) return errors;
 
     const value = data[editKey];
-    if (!value && value !== 0) {
+    if (value === undefined || value === null || value === '') {
       return {
         ...errors,
         [editKey]: '* Required',

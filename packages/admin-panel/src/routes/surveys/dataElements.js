@@ -26,9 +26,8 @@ export const dataElements = {
   importConfig: IMPORT_CONFIG,
   path: '/data-elements',
   createConfig: {
-    title: 'New Data Element',
     actionConfig: {
-      title: 'Edit Data Element',
+      title: 'New data element',
       editEndpoint: 'dataElements',
       fields: [...DATA_ELEMENT_FIELDS],
     },

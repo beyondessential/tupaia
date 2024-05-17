@@ -63,6 +63,8 @@ const stateChanges = {
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
   [LOAD_EDITOR]: payload => {
+    console.log('payload', payload);
+
     return { ...payload, errorMessage: '' };
   },
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
