@@ -35,7 +35,7 @@
 # used, you need to tag the AMI and security groups with the codes you specify
 
 from helpers.creation import create_db_instance_from_snapshot
-from helpers.create_from_image import create_tupaia_instance_from_image
+from helpers.create_from_image import create_server_instance_from_image
 from helpers.utilities import find_instances, build_extra_tags
 from helpers.rds import set_db_instance_master_password
 from helpers.secrets import get_db_master_password
@@ -72,7 +72,7 @@ def spin_up_tupaia_deployment(event):
         # Default to turning off between 7pm AEST and 8am NZDT, i.e. all work hours throughout the year
         { 'StopAtUTC': '09:00', 'StartAtUTC': '19:00' }
     )
-    create_tupaia_instance_from_image(
+    create_server_instance_from_image(
         deployment_name,
         branch,
         instance_type,
