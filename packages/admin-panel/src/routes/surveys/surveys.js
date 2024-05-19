@@ -176,12 +176,6 @@ const SURVEY_COLUMNS = [
     Header: 'Survey Group',
     source: 'survey_group.name',
   },
-  SURVEY_FIELDS.can_repeat,
-  SURVEY_FIELDS.period_granularity,
-  {
-    Header: 'Service Type',
-    source: 'data_group.service_type',
-  },
   {
     Header: 'Export',
     type: 'export',
