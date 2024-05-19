@@ -121,7 +121,7 @@ const DataFetchingTableComponent = ({
     gotoPage,
     setPageSize,
     visibleColumns,
-
+    setSortBy,
     // Get the state from the instance
     state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
   } = useTable(
@@ -178,6 +178,7 @@ const DataFetchingTableComponent = ({
       initialiseTable();
     }
     gotoPage(0);
+    setSortBy([]); // reset sorting when table is re-initialised
   }, [endpoint, baseFilter]);
 
   const onChangeFilters = newFilters => {
