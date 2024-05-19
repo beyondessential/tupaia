@@ -80,6 +80,7 @@ export const openBulkEditModal =
 
       dispatch({
         type: EDITOR_OPEN,
+        title,
         fields,
         recordData: {},
         endpoint: bulkUpdateEndpoint,

@@ -6,11 +6,13 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'dashboard relation' };
+
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 export const DASHBOARD_RELATION_COLUMNS = [
   {
-    Header: 'Dashboard Code',
+    Header: 'Dashboard code',
     source: 'dashboard.code',
     editConfig: {
       optionsEndpoint: 'dashboards',
@@ -20,7 +22,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     },
   },
   {
-    Header: 'Dashboard Item Code',
+    Header: 'Dashboard item code',
     source: 'dashboard_item.code',
     editConfig: {
       optionsEndpoint: 'dashboardItems',
@@ -30,7 +32,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     },
   },
   {
-    Header: 'Permission Groups',
+    Header: 'Permission groups',
     source: 'permission_groups',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -43,7 +45,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     },
   },
   {
-    Header: 'Entity Types',
+    Header: 'Entity types',
     source: 'entity_types',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -53,17 +55,17 @@ export const DASHBOARD_RELATION_COLUMNS = [
       canCreateNewOptions: true,
       optionLabelKey: 'entityTypes',
       optionValueKey: 'entityTypes',
-      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+      secondaryLabel: 'Input the entity types you want. e.g: ‘country’, ‘sub_district’',
     },
   },
   {
-    Header: 'Attributes Filter',
+    Header: 'Attributes filter',
     source: 'attributes_filter',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
-    Header: 'Project Codes',
+    Header: 'Project codes',
     source: 'project_codes',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -76,7 +78,7 @@ export const DASHBOARD_RELATION_COLUMNS = [
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
@@ -88,7 +90,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard Relation',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_RELATION_ENDPOINT,
       fields: DASHBOARD_RELATION_COLUMNS,
     },
@@ -103,15 +105,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new relation between Dashboard and DashboardItem',
   actionConfig: {
+    title: 'New relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
     fields: DASHBOARD_RELATION_COLUMNS,
   },
 };
 
 export const dashboardRelations = {
-  title: 'Dashboard relations',
+  resourceName: RESOURCE_NAME,
   path: '/dashboard-relations',
   endpoint: DASHBOARD_RELATION_ENDPOINT,
   columns: COLUMNS,

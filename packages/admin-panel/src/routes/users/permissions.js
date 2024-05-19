@@ -1,3 +1,12 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
+ */
+
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'permission' };
+
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
   {
@@ -39,7 +48,7 @@ const FIELDS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: "Edit User's Permission",
+      title: 'Edit user’s permission',
       editEndpoint: PERMISSIONS_ENDPOINT,
       fields: PERMISSIONS_COLUMNS,
     },
@@ -54,13 +63,13 @@ const FIELDS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Give User Permission',
   bulkCreate: true,
   actionConfig: {
+    title: `Give user ${RESOURCE_NAME.singular}`,
     bulkUpdateEndpoint: PERMISSIONS_ENDPOINT,
     fields: [
       {
-        Header: 'User Email',
+        Header: 'User email',
         source: 'user.email',
         editConfig: {
           optionsEndpoint: 'users',
@@ -78,7 +87,7 @@ const CREATE_CONFIG = {
         },
       },
       {
-        Header: 'Permission Group',
+        Header: 'Permission group',
         source: 'permission_group.name',
         editConfig: {
           optionsEndpoint: 'permissionGroups',
@@ -90,7 +99,7 @@ const CREATE_CONFIG = {
 };
 
 const IMPORT_CONFIG = {
-  title: 'Import User Permissions',
+  title: `Import user ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'userPermissions',
   },
@@ -131,7 +140,7 @@ const onProcessDataForSave = (fieldsToSave, recordData) => {
 };
 
 export const permissions = {
-  title: 'Permissions',
+  resourceName: RESOURCE_NAME,
   path: '/permissions',
   endpoint: PERMISSIONS_ENDPOINT,
   columns: FIELDS,

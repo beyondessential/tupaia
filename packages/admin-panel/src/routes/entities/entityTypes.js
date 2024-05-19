@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'entity type' };
+
 const ENTITY_TYPES_ENDPOINT = 'entityTypes';
 
 export const ENTITY_TYPES_COLUMNS = [
@@ -16,7 +18,7 @@ export const ENTITY_TYPES_COLUMNS = [
 ];
 
 export const entityTypes = {
-  title: 'Entity types',
+  resourceName: RESOURCE_NAME,
   path: '/entityTypes',
   endpoint: ENTITY_TYPES_ENDPOINT,
   columns: ENTITY_TYPES_COLUMNS,

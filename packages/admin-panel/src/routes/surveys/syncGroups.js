@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'sync group' };
+
 const SERVICE_TYPES = [{ label: 'Kobo', value: 'kobo' }];
 
 const FIELDS = [
@@ -11,11 +13,11 @@ const FIELDS = [
     source: 'code',
   },
   {
-    Header: 'Survey Code',
+    Header: 'Survey code',
     source: 'data_group_code',
   },
   {
-    Header: 'Service Type',
+    Header: 'Service type',
     source: 'service_type',
     editConfig: {
       options: SERVICE_TYPES,
@@ -40,7 +42,7 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: 'dataServiceSyncGroups',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {
@@ -76,19 +78,19 @@ const COLUMNS = [
 ];
 
 const EDITOR_CONFIG = {
-  title: 'Edit Sync Group',
+  title: `Edit ${RESOURCE_NAME.singular}`,
 };
 
 const CREATE_CONFIG = {
-  title: 'Add Sync Group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },
 };
 
 export const syncGroups = {
-  title: 'Sync groups',
+  resourceName: RESOURCE_NAME,
   path: '/sync-groups',
   endpoint: 'dataServiceSyncGroups',
   columns: COLUMNS,
