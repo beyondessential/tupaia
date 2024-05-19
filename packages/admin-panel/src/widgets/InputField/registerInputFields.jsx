@@ -25,6 +25,7 @@ import { ReduxAutocomplete } from '../../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
 import { FileUploadField } from './FileUploadField';
+import { CheckboxListField } from './CheckboxListField';
 
 // "InputField" is treated as a dynamic factory, where different input types can be supported
 // depending on what is injected at runtime. This is the standard set of injections, which is the
@@ -83,6 +84,28 @@ export const registerInputFields = () => {
       tooltip={props.labelTooltip}
       distinct={props.distinct}
       required={props.required}
+    />
+  ));
+  registerInputField('checkboxList', props => (
+    <CheckboxListField
+      id={props.id}
+      placeholder={props.value}
+      initialValue={props.value}
+      label={props.label}
+      helperText={props.secondaryLabel}
+      endpoint={props.optionsEndpoint}
+      optionLabelKey={props.optionLabelKey}
+      optionValueKey={props.optionValueKey}
+      reduxId={props.inputKey}
+      onChange={inputValue => props.onChange(props.inputKey, inputValue)}
+      canCreateNewOptions={props.canCreateNewOptions}
+      disabled={props.disabled}
+      allowMultipleValues={props.allowMultipleValues}
+      parentRecord={props.parentRecord}
+      baseFilter={props.baseFilter}
+      pageSize={props.pageSize}
+      tooltip={props.labelTooltip}
+      distinct={props.distinct}
     />
   ));
   registerInputField('json', props => (

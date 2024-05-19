@@ -54,6 +54,7 @@ const SURVEY_FIELDS = {
     Header: 'Countries',
     source: 'countryNames', // TODO: cleanup as part of RN-910
     editConfig: {
+      type: 'checkboxList',
       sourceKey: 'countryNames',
       optionsEndpoint: 'countries',
       optionLabelKey: 'name',
