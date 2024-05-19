@@ -36,35 +36,11 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Linked Measures',
-    source: 'linked_measures',
-    width: 160,
-    Cell: ({ value }) => prettyArray(value),
-    Filter: ArrayFilter,
-    editConfig: {
-      optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
-      optionLabelKey: 'id',
-      sourceKey: 'linked_measures',
-      allowMultipleValues: true,
-    },
-  },
-  {
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
     width: 200,
     editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'Entity attributes filters',
-    source: 'entity_attributes_filter',
-    type: 'jsonTooltip',
-    width: 200,
-    editConfig: {
-      type: 'jsonEditor',
-      secondaryLabel:
-        'This field will be used to filter the entities that this map overlay will have data for. This field is case sensitive. It is an extension of `config.measureLevel`. E.g. {"facility_type": "Hospital"}',
-    },
   },
   {
     Header: 'Country Codes',
@@ -95,13 +71,6 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Report Code',
-    source: 'report_code',
-    required: true,
-    width: 140,
-    type: 'tooltip',
-  },
-  {
     Header: 'Legacy',
     source: 'legacy',
     width: 140,
@@ -116,6 +85,37 @@ const extraEditFields = [
     Header: 'ID',
     source: 'id',
     show: false,
+  },
+  {
+    Header: 'Linked measures',
+    source: 'linked_measures',
+    Filter: ArrayFilter,
+    editConfig: {
+      optionsEndpoint: MAP_OVERLAYS_ENDPOINT,
+      optionLabelKey: 'id',
+      sourceKey: 'linked_measures',
+      allowMultipleValues: true,
+    },
+  },
+  {
+    Header: 'Entity attributes filters',
+    source: 'entity_attributes_filter',
+    editConfig: {
+      type: 'jsonEditor',
+      secondaryLabel: (
+        <>
+          Case-sensitive. This field will be used to filter the entities that this map overlay will
+          have data for. It is an extension of <code>config.measureLevel</code>. e.g.&nbsp;
+          <code>
+            {'{'} "facility_type": "Hospital" {'}'}
+          </code>
+        </>
+      ),
+    },
+  },
+  {
+    Header: 'Report code',
+    source: 'report_code',
   },
   {
     Header: 'Edit using Visualisation Builder',

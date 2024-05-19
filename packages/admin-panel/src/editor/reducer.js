@@ -34,11 +34,12 @@ const defaultState = {
 };
 
 const stateChanges = {
-  [EDITOR_DATA_FETCH_BEGIN]: payload => ({
-    ...defaultState,
-    isLoading: true,
-    ...payload,
-  }),
+  [EDITOR_DATA_FETCH_BEGIN]: payload => {
+    return {
+      isLoading: true,
+      ...payload,
+    };
+  },
   [EDITOR_DATA_EDIT_BEGIN]: payload => ({
     isLoading: true,
     errorMessage: '',
