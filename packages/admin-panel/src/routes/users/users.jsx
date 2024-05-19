@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
@@ -25,7 +26,15 @@ const VerifiedCell = ({ value }) => {
   );
 };
 
-const FIELDS = [
+const EDIT_FIELDS = [
+  {
+    Header: 'First Name',
+    source: 'first_name',
+  },
+  {
+    Header: 'Last Name',
+    source: 'last_name',
+  },
   {
     Header: 'Email address',
     source: 'email',
@@ -44,18 +53,6 @@ const FIELDS = [
     source: 'employer',
     type: 'tooltip',
   },
-];
-
-const EDIT_FIELDS = [
-  {
-    Header: 'First name',
-    source: 'first_name',
-  },
-  {
-    Header: 'Last name',
-    source: 'last_name',
-  },
-  ...FIELDS,
   {
     Header: 'Verified',
     source: 'verified_email',
@@ -94,7 +91,16 @@ const COLUMNS = [
     source: 'last_name',
     width: 150,
   },
-  ...FIELDS,
+  {
+    Header: 'Email Address',
+    source: 'email',
+    type: 'tooltip',
+  },
+  {
+    Header: 'Employer',
+    source: 'employer',
+    type: 'tooltip',
+  },
   {
     Header: 'Verified',
     source: 'verified_email',
