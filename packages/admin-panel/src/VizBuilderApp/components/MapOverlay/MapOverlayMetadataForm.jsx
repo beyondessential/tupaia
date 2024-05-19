@@ -11,6 +11,7 @@ import { useCountries, useProjects, useSearchPermissionGroups } from '../../api/
 import { useVizConfigContext } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { MAP_OVERLAY_VIZ_TYPES } from '../../constants';
+import { REQUIRED_FIELD_ERROR } from '../../../editor';
 
 export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const vizTypeOptions = Object.entries(MAP_OVERLAY_VIZ_TYPES).map(([vizType, { name }]) => ({
@@ -69,7 +70,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           error={!!errors.code}
           helperText={errors.code && errors.code.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <TextField
@@ -80,7 +81,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <Autocomplete
@@ -95,7 +96,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           error={!!errors.mapOverlayPermissionGroup}
           helperText={errors.mapOverlayPermissionGroup && errors.mapOverlayPermissionGroup.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
           value={searchInput}
           onInputChange={(event, newValue) => {
@@ -159,7 +160,7 @@ export const MapOverlayMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
           error={!!errors.vizType}
           helperText={errors.vizType && errors.vizType.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
       </Body>

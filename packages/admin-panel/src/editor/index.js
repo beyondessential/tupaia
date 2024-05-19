@@ -13,3 +13,4 @@ export { CreateActionButton, ActionButton } from './ActionButton';
 export { withConnectedEditor } from './withConnectedEditor';
 export { EditorInputField } from './EditorInputField';
 export { useValidationScroll } from './useValidationScroll';
+export { REQUIRED_FIELD_ERROR } from './validation';

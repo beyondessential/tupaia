@@ -10,6 +10,7 @@ import { useSearchPermissionGroups } from '../../api/queries';
 import { useVizConfigContext } from '../../context';
 import { useDebounce } from '../../../utilities';
 import { DASHBOARD_ITEM_VIZ_TYPES } from '../../constants';
+import { REQUIRED_FIELD_ERROR } from '../../../editor/validation';
 
 export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) => {
   const vizTypeOptions = Object.entries(DASHBOARD_ITEM_VIZ_TYPES).map(([vizType, { name }]) => ({
@@ -57,7 +58,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           required
           helperText={errors.code && errors.code.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <TextField
@@ -68,7 +69,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           error={!!errors.name}
           helperText={errors.name && errors.name.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
         <Autocomplete
@@ -83,7 +84,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           error={!!errors.permissionGroup}
           helperText={errors.permissionGroup && errors.permissionGroup.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
           value={permissionGroupSearchInput}
           onInputChange={(event, newValue) => {
@@ -103,7 +104,7 @@ export const DashboardItemMetadataForm = ({ Header, Body, Footer, onSubmit }) =>
           error={!!errors.vizType}
           helperText={errors.vizType && errors.vizType.message}
           inputRef={register({
-            required: '* Required',
+            required: REQUIRED_FIELD_ERROR,
           })}
         />
       </Body>

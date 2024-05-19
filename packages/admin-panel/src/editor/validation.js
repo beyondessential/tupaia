@@ -6,6 +6,8 @@
 import { getExplodedFields } from '../utilities';
 import { getFieldEditKey } from './utils';
 
+export const REQUIRED_FIELD_ERROR = '* Required';
+
 const getIsFieldVisible = (field, recordData) => {
   const { visibilityCriteria } = field;
   if (!visibilityCriteria) {
@@ -66,7 +68,7 @@ const validateData = (fields, data) => {
     if (value === undefined || value === null || value === '') {
       return {
         ...errors,
-        [editKey]: '* Required',
+        [editKey]: REQUIRED_FIELD_ERROR,
       };
     }
 
