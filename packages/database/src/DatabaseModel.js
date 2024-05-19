@@ -219,7 +219,7 @@ export class DatabaseModel {
   /**
    * @returns {*} DatabaseRecordClass
    */
-  generateInstance = async (fields = {}) => {
+  async generateInstance(fields = {}) {
     const data = {};
 
     // add values for standard fields
@@ -236,7 +236,7 @@ export class DatabaseModel {
     });
 
     return this.createRecordInstance(data);
-  };
+  }
 
   /**
    * @returns {*} DatabaseRecordClass
