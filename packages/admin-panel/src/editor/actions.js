@@ -192,7 +192,7 @@ export const loadEditor =
 
 export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   const { fields } = getState().editor;
-  const field = fields.find(f => f.source === fieldSource);
+  const field = getExplodedFields(fields).find(f => f.source === fieldSource);
   if (!field) return;
   const fieldSourceToEdit = getFieldSourceToEdit(field);
   dispatch({
