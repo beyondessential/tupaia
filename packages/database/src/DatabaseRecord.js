@@ -33,7 +33,7 @@ export class DatabaseRecord {
    */
   static fieldValidators = new Map();
 
-  /*
+  /**
     Joins are executed on every model query and give developers the ability to
     add extra fields that are necessary for a model to be meaningful.
 
