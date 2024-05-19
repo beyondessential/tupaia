@@ -110,8 +110,6 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
       records.map(record => this.generateInstance(record)),
     );
 
-    console.log('\x1b[1;34mrecordsWithChildCode\x1b[m', recordsWithChildCode);
-
     return recordsWithChildCode;
   }
 
@@ -122,9 +120,6 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
    * @see find
    */
   async generateInstance(fields = {}) {
-    console.log('\x1b[1;34mMapOverlayGroupRelation\x1b[m', `\x1b[33mgenerateInstance()\x1b[m`);
-    console.log('\x1b[1;34mfields\x1b[m', fields);
-
     const data = {};
 
     // Add values for standard fields
@@ -138,7 +133,6 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
 
     // Use child type to add definitive childCode (assumes EXACTLY one of these is null)
     data.child_code = fields.childMapOverlayCode ?? fields.childMapOverlayGroupCode;
-    console.log('\x1b[1;34mchild_code\x1b[m', `\x1b[33m${data.child_code}\x1b[m`);
 
     return this.createRecordInstance(data);
   }

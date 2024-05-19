@@ -55,9 +55,7 @@ export class GETMapOverlayGroupRelations extends GETHandler {
   }
 
   async findRecords(criteria, options) {
-    console.log('\x1b[1;34mBEGIN\x1b[m', `\x1b[33mGETMapOverlayGroupRelations findRecords()\x1b[m`);
     const queryResults = await this.models.mapOverlayGroupRelation.find(criteria, options);
-    console.log('\x1b[1;34mqueryResults\x1b[m', queryResults);
     return queryResults.map(
       ({ id, map_overlay_group_id, child_id, child_code, child_type, sort_order }) => ({
         id,
