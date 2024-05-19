@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { dismissEditor } from './actions';
@@ -12,6 +12,7 @@ import { Modal } from '../widgets';
 import { useEditFiles } from './useEditFiles';
 import { FieldsEditor } from './FieldsEditor';
 import { withConnectedEditor } from './withConnectedEditor';
+import { useValidationScroll } from './useValidationScroll';
 
 export const EditModalComponent = withConnectedEditor(
   ({
@@ -32,6 +33,7 @@ export const EditModalComponent = withConnectedEditor(
     cancelButtonText,
     saveButtonText,
     extraDialogProps,
+    validationErrors,
   }) => {
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
@@ -51,6 +53,8 @@ export const EditModalComponent = withConnectedEditor(
         disabled: !!errorMessage || isLoading || isUnchanged,
       },
     ];
+
+    useValidationScroll(validationErrors);
 
     return (
       <Modal

@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { withConnectedEditor } from '../../../editor';
+import { useValidationScroll, withConnectedEditor } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';
@@ -70,7 +70,7 @@ const SectionBlock = styled.div`
 const RowSection = styled(SectionBlock)`
   > div {
     display: flex;
-    > fieldset:last-child {
+    > div:last-child {
       margin-left: 1.2rem;
     }
   }
@@ -99,6 +99,7 @@ const EditSurveyPageComponent = withConnectedEditor(
     onSave,
     isLoading,
     resetEditorToDefaultState,
+    validationErrors,
   }) => {
     const errorAlertRef = useRef(null);
     const navigate = useNavigate();
@@ -173,6 +174,8 @@ const EditSurveyPageComponent = withConnectedEditor(
         errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }, [errorMessage]);
+
+    useValidationScroll(validationErrors);
 
     return (
       <Wrapper>

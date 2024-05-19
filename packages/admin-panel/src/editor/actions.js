@@ -185,9 +185,12 @@ export const loadEditor =
 
 export const editField = (fieldSource, newValue) => (dispatch, getState) => {
   const { fields } = getState().editor;
-  const field = fields.find(f => f.source === fieldSource);
+  const explodedFields = getExplodedFields(fields);
+  const field = explodedFields.find(f => f.source === fieldSource);
   if (!field) return;
-  const editKey = getFieldEditKey(field);
+  const editKey = getFieldEditKey(field); // this needs to be here, because there are several places that use this action, and they all need to edit the correct field.
+
+  // Edit key will be different in cases where we are editing a saved record, because the value that comes back from the server is not always keyed the same as the field source we have configured
   dispatch({
     type: EDITOR_FIELD_EDIT,
     fieldKey: editKey,
@@ -214,6 +217,7 @@ export const saveEdits =
       dispatch({
         type: EDITOR_DATA_EDIT_BEGIN,
       });
+
       if (filesByFieldKey && Object.keys(filesByFieldKey).length > 0) {
         if (isNew) {
           await api.multipartPost({

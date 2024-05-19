@@ -84,19 +84,19 @@ const extractData = (editedFields, recordData, explodedFields) => {
     ...editedValues,
   };
 
-  // sometimes if we edit a field that has a different key returned from the endpoint to the key we edit, we need to map it
+  // Map the data to the correct field key - this is useful in cases where we might be editing a saved record, and the field key from the endpoint is different to the source key we have configured
   return explodedFields.reduce((result, field) => {
-    const inputKey = getFieldEditKey(field);
-    const savedInputKey = field.source;
-    if (combinedData.hasOwnProperty(inputKey)) {
+    const editKey = getFieldEditKey(field);
+    const { source } = field;
+    if (combinedData.hasOwnProperty(editKey)) {
       return {
         ...result,
-        [inputKey]: combinedData[inputKey],
+        [editKey]: combinedData[editKey],
       };
     }
     return {
       ...result,
-      [inputKey]: combinedData[savedInputKey],
+      [editKey]: combinedData[source],
     };
   }, {});
 };

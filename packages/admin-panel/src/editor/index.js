@@ -12,3 +12,4 @@ export { reducer } from './reducer';
 export { CreateActionButton, ActionButton } from './ActionButton';
 export { withConnectedEditor } from './withConnectedEditor';
 export { EditorInputField } from './EditorInputField';
+export { useValidationScroll } from './useValidationScroll';
