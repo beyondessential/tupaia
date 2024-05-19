@@ -121,7 +121,6 @@ export const TextField = ({
   ...props
 }: TextFieldProps & {
   tooltip?: string;
-  invalid?: boolean;
 }) => (
   <StyledTextField
     fullWidth

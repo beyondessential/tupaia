@@ -168,6 +168,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       tooltip={props.labelTooltip}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('datetime-local', props => (
@@ -189,6 +190,7 @@ export const registerInputFields = () => {
       disabled={props.disabled}
       tooltip={props.labelTooltip}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('datetime-utc', props => (
@@ -209,6 +211,7 @@ export const registerInputFields = () => {
       }}
       disabled={props.disabled}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('link', props => {
@@ -247,7 +250,6 @@ export const registerInputFields = () => {
         maxLength: props.maxLength,
         required: props.required,
       }}
-      required={props.required}
       error={props.error}
     />
   ));
@@ -288,6 +290,7 @@ export const registerInputFields = () => {
       type="password"
       tooltip={props.labelTooltip}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('image', props => (
@@ -320,6 +323,7 @@ export const registerInputFields = () => {
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
       required={props.required}
+      error={props.error}
     />
   ));
   registerInputField('checkbox', props => (
