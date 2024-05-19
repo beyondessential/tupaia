@@ -135,7 +135,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     // ↑↑↑ Same as overridden method ↑↑↑
     // ↓↓↓        Custom bits        ↓↓↓
 
-    // Use child type to add definitive childCode (assumes EXACTLY one of these is null)
+    // Add child code field, discarding transient fields (assumes EXACTLY one of these is null)
     data.child_code = fields.childMapOverlayCode ?? fields.childMapOverlayGroupCode;
 
     return this.createRecordInstance(data);
