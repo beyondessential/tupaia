@@ -121,6 +121,7 @@ const DataFetchingTableComponent = ({
     gotoPage,
     setPageSize,
     visibleColumns,
+    setSortBy,
     // Get the state from the instance
     state: { pageIndex: tablePageIndex, pageSize: tablePageSize, sortBy: tableSorting },
   } = useTable(
@@ -141,22 +142,19 @@ const DataFetchingTableComponent = ({
     usePagination,
   );
 
-  // Listen for changes in pagination and use the state to fetch our new data
+  //  Listen for changes in pagination and use the state to fetch our new data
   useEffect(() => {
     onPageChange(tablePageIndex);
   }, [tablePageIndex]);
 
   useEffect(() => {
     onPageSizeChange(tablePageSize);
+    gotoPage(0);
   }, [tablePageSize]);
 
   useEffect(() => {
-    // If the redux pageIndex changes, update the table pageIndex
-    gotoPage(pageIndex);
-  }, [pageIndex]);
-
-  useEffect(() => {
     onSortedChange(tableSorting);
+    gotoPage(0);
   }, [tableSorting]);
 
   useEffect(() => {
@@ -179,7 +177,14 @@ const DataFetchingTableComponent = ({
     } else {
       initialiseTable();
     }
+    gotoPage(0);
+    setSortBy([]); // reset sorting when table is re-initialised
   }, [endpoint, baseFilter]);
+
+  const onChangeFilters = newFilters => {
+    onFilteredChange(newFilters);
+    gotoPage(0);
+  };
 
   const isLoading = isFetchingData || isChangingDataOnServer;
 
@@ -246,7 +251,7 @@ const DataFetchingTableComponent = ({
                     <FilterCell
                       key={column.id}
                       column={column}
-                      onFilteredChange={onFilteredChange}
+                      onFilteredChange={onChangeFilters}
                       filters={filters}
                       width={column.colWidth}
                       isButtonColumn={column.isButtonColumn}
