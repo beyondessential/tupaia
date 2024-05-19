@@ -117,6 +117,10 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
    * Coalesces the transient `childMapOverlayCode` and `childMapOverlayGroupCode` fields in the
    * records returned by {@link find} into a single `child_code` field.
    *
+   * @privateRemarks
+   * Alternative solution would be to update ORM layer to leverage PostgreSQL’s COALESCE function,
+   * which would obviate the need to override `find()` and `generateInstance()` here.
+   *
    * @see find
    */
   async generateInstance(fields = {}) {
