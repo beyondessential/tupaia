@@ -13,6 +13,7 @@ export const CheckboxUncheckedIcon = props => {
       height="15"
       viewBox="0 0 15 15"
       fill="none"
+      className="checkbox"
       {...props}
     >
       <rect x="0.5" y="0.5" width="14" height="14" rx="2.5" stroke="#DEDEDE" />

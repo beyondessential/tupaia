@@ -183,8 +183,15 @@ const overrides = {
     '@global': {
       label: {
         fontWeight: 500,
-        '& .MuiSvgIcon-root': {
-          color: palette.text.secondary, // tooltip icon color
+      },
+    },
+  },
+  MuiSvgIcon: {
+    root: {
+      'label &': {
+        color: palette.text.secondary,
+        '&.checkbox': {
+          fill: 'transparent',
         },
       },
     },

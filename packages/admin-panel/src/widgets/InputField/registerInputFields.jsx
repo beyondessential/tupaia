@@ -26,6 +26,8 @@ import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
 import { FileUploadField } from './FileUploadField';
 import { CheckboxListField } from './CheckboxListField';
+import { CheckboxUncheckedIcon } from '../Checkbox/CheckboxUncheckedIcon';
+import { CheckboxCheckedIcon } from '../Checkbox/CheckboxCheckedIcon';
 
 // "InputField" is treated as a dynamic factory, where different input types can be supported
 // depending on what is injected at runtime. This is the standard set of injections, which is the
@@ -354,6 +356,8 @@ export const registerInputFields = () => {
         tooltip={props.labelTooltip}
         required={props.required}
         color="secondary"
+        icon={<CheckboxUncheckedIcon />}
+        checkedIcon={<CheckboxCheckedIcon />}
       />
     </StyledCheckboxWrapper>
   ));
