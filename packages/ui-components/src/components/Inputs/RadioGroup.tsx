@@ -131,7 +131,8 @@ export const RadioGroup = ({
     >
       <LegendWrapper>
         <InputLabel
-          label={<Legend required={required}>{label}</Legend>}
+          label={label}
+          as={Legend}
           tooltip={tooltip}
           labelProps={{
             error: invalid,
