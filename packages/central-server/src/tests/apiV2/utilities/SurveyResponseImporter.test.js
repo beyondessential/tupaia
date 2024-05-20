@@ -9,7 +9,9 @@ import sinon from 'sinon';
 
 import { generateId, createModelsStub as baseCreateModelsStub } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../apiV2/utilities';
-import * as SurveyResponse from '../../../apiV2/surveyResponses';
+import * as SaveResponsesToDatabase from '../../../apiV2/surveyResponses/saveResponsesToDatabase';
+import * as UpsertEntitiesAndOptions from '../../../apiV2/surveyResponses/upsertEntitiesAndOptions';
+import * as ValidateSurveyResponses from '../../../apiV2/surveyResponses/validateSurveyResponses';
 
 const ENTITY_IDS = {
   1989: generateId(),
@@ -65,40 +67,42 @@ const createResponseExtractors = () => {
 let clock;
 
 describe('SurveyResponseImporter', () => {
-  before(() => {
-    clock = sinon.useFakeTimers({ now: TIMESTAMP, toFake: ['Date'] });
-    sinon.stub(SurveyResponse, 'upsertEntitiesAndOptions').callsFake(() => {});
-    sinon.stub(SurveyResponse, 'validateSurveyResponses').callsFake(() => {});
-    sinon
-      .stub(SurveyResponse, 'saveResponsesToDatabase')
-      .callsFake((models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id]);
-  });
-
-  after(() => {
-    SurveyResponse.upsertEntitiesAndOptions.restore();
-    SurveyResponse.validateSurveyResponses.restore();
-    SurveyResponse.saveResponsesToDatabase.restore();
-    clock.restore();
-  });
-
   describe('import()', () => {
     let modelsStub;
     let extractors;
     let importer;
 
     before(() => {
+      clock = sinon.useFakeTimers({ now: TIMESTAMP, toFake: ['Date'] });
+      sinon
+        .stub(UpsertEntitiesAndOptions, 'upsertEntitiesAndOptions')
+        .callsFake((models, responses) => {});
+      sinon
+        .stub(ValidateSurveyResponses, 'validateSurveyResponses')
+        .callsFake((models, responses) => {});
+      sinon
+        .stub(SaveResponsesToDatabase, 'saveResponsesToDatabase')
+        .callsFake((models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id]);
+
       modelsStub = createModelsStub();
       extractors = createResponseExtractors();
       importer = new SurveyResponseImporter(modelsStub, extractors);
     });
 
     beforeEach(() => {
-      SurveyResponse.saveResponsesToDatabase.resetHistory();
+      SaveResponsesToDatabase.saveResponsesToDatabase.resetHistory();
+    });
+
+    after(() => {
+      UpsertEntitiesAndOptions.upsertEntitiesAndOptions.restore();
+      ValidateSurveyResponses.validateSurveyResponses.restore();
+      SaveResponsesToDatabase.saveResponsesToDatabase.restore();
+      clock.restore();
     });
 
     it('should use the provided user id for the survey submissions', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
-      expect(SurveyResponse.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         USER_ID,
       );
@@ -107,8 +111,8 @@ describe('SurveyResponseImporter', () => {
     it('should use the provided response data as survey responses', async () => {
       await importer.import(ROWS_BY_SURVEY, USER_ID);
 
-      expect(SurveyResponse.saveResponsesToDatabase).to.have.been.calledTwice;
-      expect(SurveyResponse.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledTwice;
+      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         sinon.match.any,
         [
@@ -126,7 +130,7 @@ describe('SurveyResponseImporter', () => {
           },
         ],
       );
-      expect(SurveyResponse.saveResponsesToDatabase).to.have.been.calledWith(
+      expect(SaveResponsesToDatabase.saveResponsesToDatabase).to.have.been.calledWith(
         sinon.match.any,
         sinon.match.any,
         [
