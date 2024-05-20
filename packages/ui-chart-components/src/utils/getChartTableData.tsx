@@ -78,9 +78,17 @@ const processColumns = (report?: ChartReport, config?: ChartConfig, sortByTimest
   }
 
   if (hasTimeSeriesData) {
+    const periodTickFormat =
+      config &&
+      'presentationOptions' in config &&
+      typeof config.presentationOptions?.periodTickFormat === 'string' // Must check for string as otherwise might be a PieChart presentationOption
+        ? config.presentationOptions?.periodTickFormat
+        : undefined;
+
     firstColumn = makeFirstColumn(
       xName || 'Date',
-      (row: LooseObject) => formatTimestampForChart(row.timestamp, config?.periodGranularity),
+      (row: LooseObject) =>
+        formatTimestampForChart(row.timestamp, config?.periodGranularity, periodTickFormat),
       sortByTimestamp,
     );
   }
