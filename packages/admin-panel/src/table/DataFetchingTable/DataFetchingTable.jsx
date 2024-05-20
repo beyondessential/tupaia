@@ -352,6 +352,7 @@ DataFetchingTableComponent.propTypes = {
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -370,6 +371,7 @@ DataFetchingTableComponent.defaultProps = {
   baseFilter: null,
   basePath: '',
   resourceName: {},
+  defaultSorting: [],
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({

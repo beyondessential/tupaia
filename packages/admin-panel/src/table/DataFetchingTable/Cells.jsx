@@ -64,6 +64,9 @@ const HeaderCell = styled(Cell)`
   position: initial; // override this because we have 2 sticky header rows so we will apply sticky to the thead element
   background-color: ${({ theme }) => theme.palette.background.paper};
   .MuiTableSortLabel-icon {
+    opacity: 0.5;
+  }
+  .MuiTableSortLabel-active .MuiTableSortLabel-icon {
     opacity: 1;
   }
   // apply a min width to the button column to prevent it from shrinking the filter input too much
