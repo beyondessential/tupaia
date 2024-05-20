@@ -90,7 +90,7 @@ const SearchField = styled(TextField).attrs({
   font-size: 0.875rem;
   .MuiSvgIcon-root {
     font-size: 1rem;
-    color: ${({ theme }) => theme.palette.grey['100']};
+    color: ${({ theme }) => theme.palette.grey['600']};
   }
   .MuiInputBase-input {
     padding-block: 0.6rem;
