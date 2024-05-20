@@ -110,6 +110,7 @@ const DataFetchingTableComponent = ({
   baseFilter,
   basePath,
   resourceName,
+  defaultSorting,
 }) => {
   const {
     getTableProps,
@@ -178,7 +179,7 @@ const DataFetchingTableComponent = ({
       initialiseTable();
     }
     gotoPage(0);
-    setSortBy([]); // reset sorting when table is re-initialised
+    setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
   }, [endpoint, baseFilter]);
 
   const onChangeFilters = newFilters => {
