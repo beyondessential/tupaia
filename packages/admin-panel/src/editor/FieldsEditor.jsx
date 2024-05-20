@@ -49,6 +49,9 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
     if (accessor) {
       return accessor(recordData);
     }
+    if (editConfig.sourceKey) {
+      return recordData[editConfig.sourceKey];
+    }
     return recordData[source];
   };
 

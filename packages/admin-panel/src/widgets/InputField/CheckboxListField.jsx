@@ -171,8 +171,6 @@ export const CheckboxListField = ({
     );
   }, [options, selectedValue]);
 
-  console.log(selectedValue);
-
   return (
     <FormControl component="fieldset" required={required} error={error}>
       <LegendWrapper>
