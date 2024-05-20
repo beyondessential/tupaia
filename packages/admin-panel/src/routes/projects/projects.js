@@ -121,7 +121,8 @@ const NEW_PROJECT_COLUMNS = [
       optionLabelKey: 'country.code',
       optionValueKey: 'country.id',
       sourceKey: 'countries',
-      allowMultipleValues: true,
+      pageSize: 'ALL',
+      type: 'checkboxList',
     },
   },
   {

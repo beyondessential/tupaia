@@ -9,18 +9,7 @@ import MuiCheckbox from '@material-ui/core/Checkbox';
 import { CheckboxCheckedIcon } from './CheckboxCheckedIcon';
 import { CheckboxUncheckedIcon } from './CheckboxUncheckedIcon';
 
-const StyledCheckbox = styled(MuiCheckbox)`
-  .MuiSvgIcon-root {
-    color: transparent;
-  }
-`;
-
-export const Checkbox = checkboxProps => {
-  return (
-    <StyledCheckbox
-      checkedIcon={<CheckboxCheckedIcon />}
-      icon={<CheckboxUncheckedIcon />}
-      {...checkboxProps}
-    />
-  );
-};
+export const Checkbox = styled(MuiCheckbox).attrs(props => ({
+  icon: <CheckboxUncheckedIcon fontSize={props.fontSize} />,
+  checkedIcon: <CheckboxCheckedIcon fontSize={props.fontSize} />,
+}))``;

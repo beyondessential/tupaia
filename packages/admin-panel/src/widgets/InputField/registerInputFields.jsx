@@ -92,7 +92,7 @@ export const registerInputFields = () => {
     <CheckboxListField
       id={props.id}
       placeholder={props.value}
-      initialValue={props.value}
+      value={props.value}
       label={props.label}
       helperText={props.secondaryLabel}
       endpoint={props.optionsEndpoint}
@@ -100,10 +100,7 @@ export const registerInputFields = () => {
       optionValueKey={props.optionValueKey}
       reduxId={props.inputKey}
       onChange={inputValue => props.onChange(props.inputKey, inputValue)}
-      canCreateNewOptions={props.canCreateNewOptions}
       disabled={props.disabled}
-      allowMultipleValues={props.allowMultipleValues}
-      parentRecord={props.parentRecord}
       baseFilter={props.baseFilter}
       pageSize={props.pageSize}
       tooltip={props.labelTooltip}
@@ -355,7 +352,6 @@ export const registerInputFields = () => {
         helperText={props.secondaryLabel}
         tooltip={props.labelTooltip}
         required={props.required}
-        color="secondary"
         icon={<CheckboxUncheckedIcon />}
         checkedIcon={<CheckboxCheckedIcon />}
       />

@@ -53,15 +53,15 @@ const SURVEY_FIELDS = {
   country_ids: {
     Header: 'Countries',
     source: 'countryNames', // TODO: cleanup as part of RN-910
+    required: true,
     editConfig: {
       type: 'checkboxList',
       sourceKey: 'countryNames',
       optionsEndpoint: 'countries',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      allowMultipleValues: true,
       labelTooltip: 'Select the countries this survey should be available in',
-      required: true,
+      pageSize: 'ALL',
     },
   },
   permission_group_id: {

@@ -3,19 +3,22 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import {
-  FormControl,
+  FormControl as MuiFormControl,
   FormControlLabel,
   FormGroup as MuiFormGroup,
   FormLabel,
+  TextField,
 } from '@material-ui/core';
+import { Search } from '@material-ui/icons';
+import { InputLabel } from '@tupaia/ui-components';
 import { get } from '../../VizBuilderApp/api/api';
 import { Checkbox } from '../Checkbox';
-import { convertSearchTermToFilter } from '../../utilities';
+import { convertSearchTermToFilter, useDebounce } from '../../utilities';
 
 const useOptions = (
   endpoint,
@@ -24,9 +27,10 @@ const useOptions = (
   labelColumn,
   valueColumn,
   distinct = null,
+  pageSize,
 ) => {
   return useQuery(
-    ['options', endpoint, baseFilter, searchTerm, labelColumn, valueColumn, distinct],
+    ['options', endpoint, baseFilter, searchTerm, labelColumn, valueColumn, distinct, pageSize],
     async () => {
       const filter = convertSearchTermToFilter({ ...baseFilter, [labelColumn]: searchTerm });
       return get(endpoint, {
@@ -34,7 +38,7 @@ const useOptions = (
           filter: JSON.stringify(filter),
           sort: JSON.stringify([`${labelColumn} ASC`]),
           columns: JSON.stringify([labelColumn, valueColumn]),
-          pageSize: 10,
+          pageSize,
           distinct,
         },
       });
@@ -49,7 +53,7 @@ const Container = styled.div`
   overflow-y: auto;
   border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   padding-inline: 1rem;
-  padding-block-start: 0.5rem;
+  padding-block-start: 0.2rem;
   border-radius: 4px;
   margin-block-start: 0.5rem;
 `;
@@ -66,6 +70,56 @@ const Legend = styled(FormLabel).attrs({
   }
 `;
 
+const FormControl = styled(MuiFormControl)`
+  width: 100%;
+  .MuiSvgIcon-fontSizeSmall {
+    font-size: 1rem;
+  }
+`;
+
+const SearchField = styled(TextField).attrs({
+  fullWidth: true,
+  placeholder: 'Search',
+  color: 'primary',
+  ariaLabel: 'Search',
+  InputProps: {
+    startAdornment: <Search />,
+  },
+})`
+  margin-block-end: 0.5rem;
+  font-size: 0.875rem;
+  .MuiSvgIcon-root {
+    font-size: 1rem;
+    color: ${({ theme }) => theme.palette.grey['100']};
+  }
+  .MuiInputBase-input {
+    padding-block: 0.6rem;
+    padding-inline-start: 0.2rem;
+  }
+  .MuiInput-underline {
+    &:before {
+      border-bottom: 1px solid ${({ theme }) => theme.palette.grey['400']};
+    }
+    &:hover {
+      &:before {
+        border-color: ${({ theme }) => theme.palette.text.secondary};
+        border-width: 1px;
+      }
+    }
+    &:focus-visible {
+      outline: none;
+      &:after {
+        border-width: 1px;
+      }
+    }
+  }
+`;
+
+// this wraps the legend and any tooltip
+const LegendWrapper = styled.div`
+  display: flex;
+`;
+
 export const CheckboxListField = ({
   endpoint,
   baseFilter,
@@ -74,40 +128,87 @@ export const CheckboxListField = ({
   label,
   required,
   distinct = null,
+  pageSize = 10,
+  value,
+  onChange,
+  tooltip,
+  error,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const { data: options, isLoading } = useOptions(
     endpoint,
     baseFilter,
-    searchTerm,
+    debouncedSearchTerm,
     optionLabelKey,
     optionValueKey,
     distinct,
+    pageSize,
   );
 
+  const selectedValue = value || [];
+
+  const handleOnChangeValue = checkedValue => {
+    let updatedValue = [...selectedValue];
+    if (selectedValue.includes(checkedValue)) {
+      updatedValue = selectedValue.filter(v => v !== checkedValue);
+    } else {
+      updatedValue = [...selectedValue, checkedValue];
+    }
+    onChange(updatedValue);
+  };
+
+  const optionsList = useMemo(() => {
+    return (
+      options?.map(option => ({
+        ...option,
+        checked: selectedValue?.includes(option[optionValueKey]),
+        value: option[optionValueKey],
+        label: option[optionLabelKey],
+        name: option[optionValueKey],
+      })) ?? []
+    );
+  }, [options, selectedValue]);
+
+  console.log(selectedValue);
+
   return (
-    <FormControl component="fieldset" required={required}>
-      <Legend>{label}</Legend>
+    <FormControl component="fieldset" required={required} error={error}>
+      <LegendWrapper>
+        <InputLabel
+          label={label}
+          as={Legend}
+          tooltip={tooltip}
+          labelProps={{
+            error,
+            required,
+          }}
+        />
+      </LegendWrapper>
+
       <Container>
+        <SearchField value={searchTerm} onChange={event => setSearchTerm(event.target.value)} />
         <FormGroup>
           {isLoading && <div>Loading...</div>}
-          {options &&
-            options.map(option => (
-              <FormControlLabel
-                key={option[optionValueKey]}
-                control={
-                  <Checkbox
-                    name={option[optionValueKey]}
-                    value={option[optionValueKey]}
-                    label={option[optionLabelKey]}
-                    color="primary"
-                    size="small"
-                  />
-                }
-                label={option[optionLabelKey]}
-              />
-            ))}
+
+          {optionsList?.map(option => (
+            <FormControlLabel
+              key={option.value}
+              control={
+                <Checkbox
+                  name={option.value}
+                  value={option.value}
+                  label={option.label}
+                  color="primary"
+                  size="small"
+                  onChange={() => handleOnChangeValue(option.value)}
+                  checked={option.checked === true}
+                />
+              }
+              label={option[optionLabelKey]}
+            />
+          ))}
         </FormGroup>
       </Container>
     </FormControl>
@@ -122,10 +223,15 @@ CheckboxListField.propTypes = {
   distinct: PropTypes.bool,
   label: PropTypes.string.isRequired,
   required: PropTypes.bool,
+  pageSize: PropTypes.number,
+  value: PropTypes.array,
+  onChange: PropTypes.func.isRequired,
 };
 
 CheckboxListField.defaultProps = {
   baseFilter: {},
   distinct: null,
   required: false,
+  pageSize: 10,
+  value: [],
 };

@@ -41,7 +41,7 @@ const palette = {
     300: COLORS.BLUE_BF,
   },
   grey: {
-    100: COLORS.GREY_FB,
+    100: COLORS.GREY_B8,
     200: COLORS.GREY_F1,
     300: COLORS.GREY_E2,
     400: COLORS.GREY_DE,

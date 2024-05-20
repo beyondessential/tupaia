@@ -91,6 +91,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
         />
       );
     }
+
     return (
       <InputField
         key={source}
@@ -123,11 +124,7 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
     return [...result, field];
   }, []);
 
-  return (
-    <EditorWrapper className="fields">
-      {visibleFormItems.map(getFieldInput)}
-    </EditorWrapper>
-  );
+  return <EditorWrapper className="fields">{visibleFormItems.map(getFieldInput)}</EditorWrapper>;
 };
 
 FieldsEditor.propTypes = {
