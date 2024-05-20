@@ -88,7 +88,9 @@ export const processSurveyResponse = async (
           surveyResponse.qr_codes_to_create?.push(entityObj);
         }
       }
-      surveyResponse.recent_entities.push(answer as string);
+      if (answer) {
+        surveyResponse.recent_entities.push(answer as string);
+      }
     }
     if (answer === undefined || answer === null || answer === '') {
       continue;

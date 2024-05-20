@@ -450,6 +450,25 @@ describe('processSurveyResponse', () => {
     });
   });
 
+  it('should not add to recent_entities when type is entity question is not filled in', async () => {
+    const result = await processSurveyResponse(mockModels, {
+      ...responseData,
+      questions: [
+        {
+          questionId: 'question1',
+          type: QuestionType.PrimaryEntity,
+          componentNumber: 1,
+          text: 'question1',
+          screenId: 'screen1',
+          config: {},
+        },
+      ],
+      answers: {},
+    });
+
+    expect(result.recent_entities).toEqual([]);
+  });
+
   it('should use the country id for new entities if parent id is not filled in', async () => {
     const result = await processSurveyResponse(mockModels, {
       ...responseData,
