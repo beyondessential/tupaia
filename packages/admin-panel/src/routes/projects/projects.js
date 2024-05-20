@@ -78,6 +78,7 @@ const DEFAULT_FIELDS = [
     Header: 'Config',
     source: 'config',
     type: 'jsonTooltip',
+    required: true,
     editConfig: {
       type: 'jsonEditor',
       labelTooltip: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',

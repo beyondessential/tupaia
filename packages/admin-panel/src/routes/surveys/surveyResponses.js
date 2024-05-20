@@ -139,7 +139,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Surveys',
-      secondaryLabel:
+      labelTooltip:
         'Please enter the surveys for the responses to be imported against. Each tab in the file should be a matching survey code. Leave blank to import all tabs.',
       parameterKey: 'surveyCodes',
       optionsEndpoint: 'surveys',

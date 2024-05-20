@@ -75,10 +75,6 @@ const Label = styled.label`
   position: relative;
 `;
 
-const LabelWrapper = styled(FlexCenter)`
-  margin-block-end: 0.2rem;
-`;
-
 type Base64 = string | null | ArrayBuffer;
 
 interface ImageUploadFieldProps {
@@ -200,18 +196,17 @@ export const ImageUploadField = React.memo(
           )}
         </Box>
         <Label htmlFor={name}>
-          <LabelWrapper>
-            <InputLabel
-              className="file_upload_label"
-              label={label}
-              tooltip={tooltip}
-              as={TextLabel}
-              labelProps={{
-                required,
-                error: error || !!errorMessage,
-              }}
-            />
-          </LabelWrapper>
+          <InputLabel
+            className="file_upload_label"
+            label={label}
+            tooltip={tooltip}
+            as={TextLabel}
+            labelProps={{
+              required,
+              error: error || !!errorMessage,
+            }}
+            applyWrapper
+          />
           {secondaryLabel && (
             <FormHelperText component={FormHelperTextComponent || 'p'} id={`${name}-description`}>
               {secondaryLabel}

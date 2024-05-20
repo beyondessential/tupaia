@@ -6,9 +6,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FormLabel } from '@material-ui/core';
-import { JsonEditor as Editor } from '../JsonEditor';
 import { InputLabel } from '@tupaia/ui-components';
+import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +15,7 @@ const Container = styled.div`
   min-height: 300px;
   margin-bottom: 20px;
 
-  > div {
+  .jsoneditor-parent {
     display: flex;
     flex: 1;
   }
@@ -27,11 +26,6 @@ const Container = styled.div`
       return $invalid ? theme.palette.error.main : theme.palette.text.primary;
     }};
   }
-`;
-
-const Label = styled(FormLabel)`
-  font-size: 0.9rem;
-  line-height: 1.1rem;
 `;
 
 export const JsonEditor = ({
@@ -63,7 +57,7 @@ export const JsonEditor = ({
           error,
         }}
         tooltip={tooltip}
-        as={Label}
+        applyWrapper
       />
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
@@ -72,6 +66,9 @@ export const JsonEditor = ({
         mode="code"
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
         value={editorValue}
+        htmlElementProps={{
+          className: 'jsoneditor-parent',
+        }}
       />
     </Container>
   );
@@ -85,6 +82,7 @@ JsonEditor.propTypes = {
   stringify: PropTypes.bool,
   error: PropTypes.bool,
   required: PropTypes.bool,
+  tooltip: PropTypes.string,
 };
 
 JsonEditor.defaultProps = {
@@ -92,4 +90,5 @@ JsonEditor.defaultProps = {
   stringify: true,
   error: false,
   required: false,
+  tooltip: null,
 };
