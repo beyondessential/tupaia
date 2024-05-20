@@ -224,6 +224,8 @@ CheckboxListField.propTypes = {
   pageSize: PropTypes.number,
   value: PropTypes.array,
   onChange: PropTypes.func.isRequired,
+  tooltip: PropTypes.string,
+  error: PropTypes.bool,
 };
 
 CheckboxListField.defaultProps = {
@@ -232,4 +234,6 @@ CheckboxListField.defaultProps = {
   required: false,
   pageSize: 10,
   value: [],
+  tooltip: null,
+  error: false,
 };
