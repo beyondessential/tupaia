@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FormLabel } from '@material-ui/core';
 import { JsonEditor as Editor } from '../JsonEditor';
+import { InputLabel } from '@tupaia/ui-components';
 
 const Container = styled.div`
   display: flex;
@@ -33,7 +34,16 @@ const Label = styled(FormLabel)`
   line-height: 1.1rem;
 `;
 
-export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error, required }) => {
+export const JsonEditor = ({
+  inputKey,
+  label,
+  value,
+  onChange,
+  stringify,
+  error,
+  required,
+  tooltip,
+}) => {
   if (!value) {
     return null;
   }
@@ -46,9 +56,15 @@ export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error,
 
   return (
     <Container $invalid={error}>
-      <Label gutterBottom required={required} error={error}>
-        {label}
-      </Label>
+      <InputLabel
+        label={label}
+        labelProps={{
+          required,
+          error,
+        }}
+        tooltip={tooltip}
+        as={Label}
+      />
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         mainMenuBar={false}

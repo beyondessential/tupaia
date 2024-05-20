@@ -7,7 +7,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { AvatarProps, Box, Fab, FormHelperText, FormLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FlexStart } from '../Layout';
+import { FlexCenter, FlexStart } from '../Layout';
 import { GreyOutlinedButton } from '../Button';
 import { Avatar } from '../Avatar';
 import { InputLabel } from './InputLabel';
@@ -60,7 +60,6 @@ const TextLabel = styled(FormLabel).attrs({
   line-height: 0.8rem;
   text-transform: uppercase;
   color: ${props => props.theme.palette.text.tertiary};
-  margin-bottom: 0.6rem;
 `;
 
 const ErrorMessage = styled(FormHelperText)`
@@ -74,6 +73,10 @@ const Label = styled.label`
   display: flex;
   flex-direction: column;
   position: relative;
+`;
+
+const LabelWrapper = styled(FlexCenter)`
+  margin-block-end: 0.2rem;
 `;
 
 type Base64 = string | null | ArrayBuffer;
@@ -197,16 +200,18 @@ export const ImageUploadField = React.memo(
           )}
         </Box>
         <Label htmlFor={name}>
-          <InputLabel
-            className="file_upload_label"
-            label={label}
-            tooltip={tooltip}
-            as={TextLabel}
-            labelProps={{
-              required,
-              error: error || !!errorMessage,
-            }}
-          />
+          <LabelWrapper>
+            <InputLabel
+              className="file_upload_label"
+              label={label}
+              tooltip={tooltip}
+              as={TextLabel}
+              labelProps={{
+                required,
+                error: error || !!errorMessage,
+              }}
+            />
+          </LabelWrapper>
           {secondaryLabel && (
             <FormHelperText component={FormHelperTextComponent || 'p'} id={`${name}-description`}>
               {secondaryLabel}

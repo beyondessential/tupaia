@@ -57,7 +57,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'image_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480x240px',
+      labelTooltip: 'Recommended size: 480x240px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -69,7 +69,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'logo_url',
       avatarVariant: 'square',
-      secondaryLabel: 'Recommended size: 480x240px',
+      labelTooltip: 'Recommended size: 480x240px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -80,8 +80,8 @@ const DEFAULT_FIELDS = [
     type: 'jsonTooltip',
     editConfig: {
       type: 'jsonEditor',
+      labelTooltip: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
     },
-    secondaryLabel: 'eg. { "tileSets": "osm,satellite,terrain", "permanentRegionLabels": true }',
   },
   {
     Header: 'Sort',

@@ -120,6 +120,7 @@ export const registerInputFields = () => {
       helperText={props.secondaryLabel}
       required={props.required}
       error={props.error}
+      tooltip={props.labelTooltip}
     />
   ));
   registerInputField('jsonArray', props => (
