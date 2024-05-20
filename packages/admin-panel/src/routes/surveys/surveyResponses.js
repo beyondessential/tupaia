@@ -127,6 +127,14 @@ export const ANSWER_COLUMNS = [
     Header: 'Answer',
     source: 'text',
     type: 'tooltip',
+    accessor: row => {
+      return row['entity.code'] || row.text;
+    },
+  },
+  {
+    Header: 'EntityName',
+    show: false,
+    source: 'entity.code',
   },
 ];
 
