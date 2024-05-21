@@ -266,7 +266,6 @@ const DataFetchingTableComponent = memo(
                         isSortedDesc,
                         getSortByToggleProps,
                         canSort,
-                        isButtonColumn,
                         getResizerProps,
                         canResize,
                       },
@@ -277,7 +276,6 @@ const DataFetchingTableComponent = memo(
                           {...getHeaderProps(getSortByToggleProps())}
                           // eslint-disable-next-line react/no-array-index-key
                           key={`header-${i}`}
-                          isButtonColumn={isButtonColumn}
                         >
                           {render('Header')}
                           {canSort && (

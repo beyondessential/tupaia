@@ -65,7 +65,7 @@ const HeaderCell = styled(Cell)`
   }
 `;
 
-export const HeaderDisplayCell = ({ children, isButtonColumn, ...props }) => {
+export const HeaderDisplayCell = ({ children, ...props }) => {
   return (
     <HeaderCell {...props}>
       <CellContentContainer> {children}</CellContentContainer>
@@ -75,12 +75,10 @@ export const HeaderDisplayCell = ({ children, isButtonColumn, ...props }) => {
 
 HeaderDisplayCell.propTypes = {
   children: PropTypes.node,
-  isButtonColumn: PropTypes.bool,
   width: PropTypes.string,
 };
 
 HeaderDisplayCell.defaultProps = {
-  isButtonColumn: false,
   width: null,
   children: null,
 };
