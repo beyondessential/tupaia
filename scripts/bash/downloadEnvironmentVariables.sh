@@ -47,6 +47,11 @@ load_env_file_from_bw () {
     sed -i -e "s/\[deployment-name\]/${DEPLOYMENT_NAME}/g" "${ENV_FILE_PATH}"
 
 
+    if [[ -v DOMAIN ]]; then
+        # Replace the placeholder [domain]
+        sed -i -e "s/\[domain\]/${DOMAIN}/g" ${ENV_FILE_PATH}
+    fi
+
     if [[ "${DEPLOYMENT_NAME}" == *-e2e || "${DEPLOYMENT_NAME}" == e2e ]]; then
         # Update e2e environment variables
         if [[ ${FILE_NAME} == "aggregation" ]]; then

@@ -6,17 +6,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { PageHeader, PageBody } from '../widgets';
+import { PageBody, PageHeader } from '../widgets';
 
 const importConfig = {
-  title: 'Import Lab Results or Vector Data',
+  title: 'Import lab results or vector data',
   actionConfig: {
     importEndpoint: 'striveLabResults',
   },
 };
 
 const StyledBody = styled(PageBody)`
-  padding-top: 2rem;
+  padding-block-start: 2rem;
 `;
 
 export const StrivePage = () => {
@@ -26,7 +26,7 @@ export const StrivePage = () => {
       <Typography variant="h4" gutterBottom>
         Import lab results or vector data
       </Typography>
-      <Typography>Use the above Import button to import lab results or vector data.</Typography>
+      <Typography>Use the above Import button to import lab results or vector data</Typography>
     </StyledBody>
   );
 };

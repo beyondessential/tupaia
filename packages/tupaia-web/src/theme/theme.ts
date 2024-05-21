@@ -135,4 +135,13 @@ theme.overrides = {
       backgroundColor: 'inherit', // make the sticky header cells have the row's background color
     },
   },
+  MuiButton: {
+    // set these and not the text buttons to avoid having issues wih text sizes in chart legends
+    outlined: {
+      fontSize: '0.875rem',
+    },
+    contained: {
+      fontSize: '0.875rem',
+    },
+  },
 };

@@ -7,15 +7,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { IconButton } from '../widgets';
 import { openLogsModal } from './actions';
+import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
 
 export const LogsButtonComponent = props => {
   const { openModal } = props;
   return (
-    <IconButton className="logs-button" onClick={openModal}>
+    <ColumnActionButton className="logs-button" onClick={openModal}>
       <DescriptionIcon />
-    </IconButton>
+    </ColumnActionButton>
   );
 };
 
@@ -25,7 +25,7 @@ LogsButtonComponent.propTypes = {
 
 const mapDispatchToProps = (dispatch, { actionConfig, value: recordId, row }) => ({
   openModal: () => {
-    dispatch(openLogsModal(actionConfig, recordId, row));
+    dispatch(openLogsModal(actionConfig, recordId, row.original));
   },
 });
 

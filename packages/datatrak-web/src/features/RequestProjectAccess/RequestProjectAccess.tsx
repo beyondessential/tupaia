@@ -1,12 +1,13 @@
 /*
  * Tupaia
- *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
-import { useProject } from '../../api/queries';
+import { useProject } from '../../api';
 import { ProjectAccessForm } from './ProjectAccessForm';
 
 const Wrapper = styled.div`
@@ -17,8 +18,8 @@ const Wrapper = styled.div`
 const BodyText = styled(Typography).attrs({
   color: 'textSecondary',
 })`
-  margin: 1rem 0 2rem 0;
   font-size: 0.875rem;
+  margin: 1rem 0 2rem;
 `;
 
 const Container = styled.div`
@@ -32,7 +33,7 @@ const Logo = styled.img`
 `;
 
 const ProjectDetails = styled.div`
-  padding: 1rem 0 1.6rem 0;
+  padding: 1rem 0 1.6rem;
 `;
 
 interface RequestProjectAccessProps {
@@ -55,10 +56,10 @@ export const RequestProjectAccess = ({ projectCode, onClose }: RequestProjectAcc
           <SpinningLoader />
         ) : (
           <>
-            {project?.logoUrl && <Logo src={project?.logoUrl!} alt={project?.name} />}
+            {project?.logoUrl && <Logo src={project.logoUrl} alt={project.name} />}
             <ProjectDetails>
               <Typography variant="h2">{project?.name}</Typography>
-              {project?.description && <Typography>{project?.description}</Typography>}
+              {project?.description && <Typography>{project.description}</Typography>}
             </ProjectDetails>
             <ProjectAccessForm project={project} onClose={onClose} />
           </>

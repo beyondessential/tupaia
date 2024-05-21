@@ -7,14 +7,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import EditIcon from '@material-ui/icons/Edit';
-import { IconButton } from '../../widgets';
 import { openEditModal } from '../../editor/actions';
 import { fetchUsedBy } from '../../usedBy';
+import { ColumnActionButton } from './ColumnActionButton';
 
 export const EditButtonComponent = ({ onEdit }) => (
-  <IconButton className="edit-button" onClick={onEdit}>
+  <ColumnActionButton className="edit-button" onClick={onEdit} title="Edit record">
     <EditIcon />
-  </IconButton>
+  </ColumnActionButton>
 );
 
 EditButtonComponent.propTypes = {
@@ -27,7 +27,7 @@ EditButtonComponent.defaultProps = {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onEdit: () => {
-    const recordId = ownProps.value;
+    const recordId = ownProps.row.original.id;
     dispatch(openEditModal({ ...ownProps.actionConfig, isLoading: true }, recordId));
     if (ownProps.actionConfig?.displayUsedBy) {
       dispatch(fetchUsedBy(ownProps.actionConfig.recordType, recordId));

@@ -15,11 +15,12 @@ export const useStartAndEndDates = periodGranularity => {
   const { useYearSelector } = selectedOption;
   const isFavouriteDashboardSelected = useIsFavouriteDashboardSelected();
 
+  const [{ startDate, endDate, year }] = useUrlSearchParams();
+
   if (isFavouriteDashboardSelected) {
     return yearToApiDates(DEFAULT_DATA_YEAR);
   }
 
-  const [{ startDate, endDate, year }] = useUrlSearchParams();
   if (startDate || endDate) {
     return { startDate, endDate };
   }

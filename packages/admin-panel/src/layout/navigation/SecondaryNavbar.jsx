@@ -4,14 +4,15 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { NavLink as BaseNavLink } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+import { Link, matchPath, useLocation } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { labelToId } from '../../utilities';
+import { generateTitle } from '../../pages/resources/resourceName';
 
 const Wrapper = styled.div`
   max-width: 100%;
-  padding-inline: 1.5rem;
   display: flex;
   position: sticky;
   top: 0;
@@ -31,25 +32,22 @@ const NavBar = styled.nav`
   align-items: center;
 `;
 
-const NavLink = styled(BaseNavLink)`
+const RouteLink = styled(Link)`
   line-height: 1.5;
   text-decoration: none;
   padding-block: 0.43rem;
   padding-inline: 1.43rem;
   white-space: nowrap;
-  color: ${props => props.theme.palette.text.secondary};
-  &.active {
-    color: ${props => props.theme.palette.text.primary};
-    border-bottom: 4px solid ${props => props.theme.palette.primary.main};
-  }
+  color: ${({ theme }) => theme.palette.text.secondary};
   &:not(:last-child) {
-    border-right: 1px solid ${props => props.theme.palette.text.tertiary};
+    border-right: 1px solid ${({ theme }) => theme.palette.text.tertiary};
   }
 
   &:hover,
-  &:focus {
-    color: ${props => props.theme.palette.text.primary};
-    font-weight: ${props => props.theme.typography.fontWeightMedium};
+  &:focus,
+  &:focus-visible {
+    color: ${({ theme }) => theme.palette.text.primary};
+    font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
     outline: none;
   }
   /**
@@ -69,15 +67,18 @@ const NavLink = styled(BaseNavLink)`
     font-weight: ${props => props.theme.typography.fontWeightMedium};
     visibility: hidden;
   }
+  ${({ $active, theme }) =>
+    $active &&
+    css`
+      color: ${theme.palette.text.primary};
+      border-bottom: 4px solid ${theme.palette.primary.main};
+    `}
 `;
 
 const ScrollButton = styled(Button)`
   width: 2rem;
   min-width: 0;
   color: ${props => props.theme.palette.text.secondary};
-  &:last-child {
-    margin-inline-start: 1rem;
-  }
 `;
 
 const useScrollableMenu = (containerRef, navLinkRefs) => {
@@ -88,7 +89,7 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
     // observer for when we scroll, to see if we need to show the scroll buttons
     const observer = new IntersectionObserver(detectOverflow, {
       root: containerRef.current,
-      threshold: 0.5,
+      threshold: 0.8,
     });
 
     const firstLink = navLinkRefs.current[0];
@@ -202,13 +203,35 @@ const useScrollableMenu = (containerRef, navLinkRefs) => {
   };
 };
 
-export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
+export const SecondaryNavbar = ({ links: linkInput, basePath }) => {
   const containerRef = useRef(null);
+  const location = useLocation();
   const navLinkRefs = useRef(linkInput.map(() => React.createRef()));
-  const links = linkInput.map(link => ({
-    ...link,
-    target: link.exact ? link.to : `${baseRoute}${link.to}`,
-  }));
+
+  const getIsActive = link => {
+    const matchResult = matchPath(link.target, location.pathname);
+    const nestedViewMatch = link.nestedView
+      ? matchPath(`${link.target}${link.nestedView.path}`, location.pathname)
+      : false;
+
+    return !!matchResult || !!nestedViewMatch;
+  };
+
+  const links = linkInput?.map(({ exact, path, resourceName, title, ...rest }) => {
+    const linkTitle = title ?? generateTitle(resourceName);
+    const target = exact ? path : `${basePath}${path}`;
+
+    return {
+      ...rest,
+      title: linkTitle,
+      target,
+      id: `app-sub-view-${labelToId(linkTitle)}`,
+      active: getIsActive({
+        ...rest,
+        target,
+      }),
+    };
+  });
 
   const { scrollToNextVisibleItem, scrollToPrevVisibleItem, overflows } = useScrollableMenu(
     containerRef,
@@ -224,21 +247,16 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
       )}
       <Container ref={containerRef}>
         <NavBar>
-          {links.map(({ to, label, target }, i) => (
-            <NavLink
-              key={to}
+          {links.map(({ title, target, active }, i) => (
+            <RouteLink
+              key={title}
               to={target}
-              isActive={(match, location) => {
-                if (!match) {
-                  return false;
-                }
-                return match.url === location.pathname;
-              }}
-              data-text={label}
+              data-text={title}
               ref={navLinkRefs.current[i]}
+              $active={active}
             >
-              {label}
-            </NavLink>
+              {title}
+            </RouteLink>
           ))}
         </NavBar>
       </Container>
@@ -254,9 +272,10 @@ export const SecondaryNavbar = ({ links: linkInput, baseRoute }) => {
 SecondaryNavbar.propTypes = {
   links: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      to: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      exact: PropTypes.bool,
     }),
   ).isRequired,
-  baseRoute: PropTypes.string.isRequired,
+  basePath: PropTypes.string.isRequired,
 };
