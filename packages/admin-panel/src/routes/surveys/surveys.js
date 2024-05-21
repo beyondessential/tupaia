@@ -41,7 +41,6 @@ const SURVEY_FIELDS = {
     type: 'tooltip',
     editConfig: {
       maxLength: 50,
-      secondaryLabel: 'Max 50 characters',
       required: true,
     },
   },

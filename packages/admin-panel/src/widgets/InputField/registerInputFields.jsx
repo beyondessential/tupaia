@@ -85,7 +85,6 @@ export const registerInputFields = () => {
     <JsonInputField
       id={props.id}
       label={props.label}
-      helperText={props.secondaryLabel}
       value={props.value}
       recordData={props.recordData}
       onChange={inputValue => props.onChange(props.inputKey, inputValue)}
@@ -101,7 +100,6 @@ export const registerInputFields = () => {
       id={props.id}
       label={props.label}
       placeholder={props.placeholder}
-      helperText={props.secondaryLabel}
       value={props.value || ''}
       options={props.options}
       onChange={event => props.onChange(props.inputKey, event.target.value)}
@@ -117,7 +115,6 @@ export const registerInputFields = () => {
       inputKey={props.inputKey}
       value={props.value}
       onChange={props.onChange}
-      helperText={props.secondaryLabel}
       required={props.required}
       error={props.error}
       tooltip={props.labelTooltip}
@@ -129,7 +126,6 @@ export const registerInputFields = () => {
       inputKey={props.inputKey}
       value={props.value}
       onChange={props.onChange}
-      helperText={props.secondaryLabel}
       stringify={false}
       required={props.required}
     />
@@ -153,7 +149,6 @@ export const registerInputFields = () => {
       ]}
       value={props.value}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       required={props.required}
       error={props.error}
@@ -163,7 +158,6 @@ export const registerInputFields = () => {
     <DatePicker
       id={props.id}
       label={props.label}
-      helperText={props.secondaryLabel}
       value={props.moment(props.value).isValid() ? moment(props.value) : null}
       onChange={date => props.onChange(props.inputKey, date.toISOString())}
       disabled={props.disabled}
@@ -176,7 +170,6 @@ export const registerInputFields = () => {
     <DateTimePicker
       id={props.id}
       label={props.label}
-      helperText={props.secondaryLabel}
       format="yyyy-MM-dd HH:mm"
       value={
         props.value && moment(props.value).isValid
@@ -198,7 +191,6 @@ export const registerInputFields = () => {
     <DateTimePicker
       id={props.id}
       label={props.label}
-      helperText={props.secondaryLabel}
       format="yyyy-MM-dd HH:mm"
       value={
         props.value && moment(props.value).isValid
@@ -239,7 +231,6 @@ export const registerInputFields = () => {
       value={props.value || ''}
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       multiline
       type="textarea"
       rows="4"
@@ -261,7 +252,6 @@ export const registerInputFields = () => {
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       type={props.type}
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
@@ -287,7 +277,6 @@ export const registerInputFields = () => {
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
       onChange={event => props.onChange(props.inputKey, event.target.value)}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       type="password"
       tooltip={props.labelTooltip}
       required={props.required}
@@ -320,7 +309,6 @@ export const registerInputFields = () => {
       value={props.value}
       onChange={value => props.onChange(props.inputKey, value)}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       placeholder={props.placeholder}
       required={props.required}
@@ -336,7 +324,6 @@ export const registerInputFields = () => {
         value={props.optionValue}
         onChange={e => props.onChange(props.inputKey, e.target.checked ? props.optionValue : null)}
         disabled={props.disabled}
-        helperText={props.secondaryLabel}
         tooltip={props.labelTooltip}
         required={props.required}
         color="secondary"
@@ -351,7 +338,6 @@ export const registerInputFields = () => {
       options={props.options}
       value={props.value}
       disabled={props.disabled}
-      helperText={props.secondaryLabel}
       tooltip={props.labelTooltip}
       name={props.name}
       required={props.required}
@@ -362,7 +348,6 @@ export const registerInputFields = () => {
     <FileUploadField
       name={props.name}
       label={props.label}
-      helperText={props.secondaryLabel}
       required={props.required}
       onChange={({ fileName, file }) => props.onSetFormFile(props.inputKey, { fileName, file })}
     />
