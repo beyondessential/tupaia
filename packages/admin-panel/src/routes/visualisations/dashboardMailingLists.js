@@ -17,7 +17,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionLabelKey: 'code',
       optionValueKey: 'id',
       allowMultipleValues: false,
-      secondaryLabel: 'Select the project this dashboard mailing list should be available in',
+      labelTooltip: 'Select the project this dashboard mailing list should be available in',
     },
   },
   dashboard_code: {
@@ -29,7 +29,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionsEndpoint: 'dashboards',
       optionLabelKey: 'code',
       optionValueKey: 'id',
-      secondaryLabel: 'Select the dashboard this mailing list should be for',
+      labelTooltip: 'Select the dashboard this mailing list should be for',
     },
   },
   dashboard_name: {
@@ -49,7 +49,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionsEndpoint: 'entities',
       optionLabelKey: 'name',
       optionValueKey: 'id',
-      secondaryLabel: 'Select the entity this dashboard mailing list should be for',
+      labelTooltip: 'Select the entity this dashboard mailing list should be for',
     },
   },
   admin_permission_groups: {
@@ -63,7 +63,7 @@ const DASHBOARD_MAILING_LIST_FIELDS = {
       optionValueKey: 'name',
       sourceKey: 'admin_permission_groups',
       allowMultipleValues: true,
-      secondaryLabel:
+      labelTooltip:
         'Users with any of these permissions can send out the dashboard to the mailing list',
     },
   },

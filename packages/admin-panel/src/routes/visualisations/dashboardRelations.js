@@ -56,7 +56,7 @@ export const DASHBOARD_RELATION_COLUMNS = {
       canCreateNewOptions: true,
       optionLabelKey: 'entityTypes',
       optionValueKey: 'entityTypes',
-      secondaryLabel: "Input the entity types you want. Eg: 'country', 'sub_district'",
+      labelTooltip: "Input the entity types you want. Eg: 'country', 'sub_district'",
     },
   },
   ATTRIBUTES_FILTER: {

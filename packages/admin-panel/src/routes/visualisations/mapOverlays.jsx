@@ -102,7 +102,7 @@ const extraEditFields = [
     source: 'entity_attributes_filter',
     editConfig: {
       type: 'jsonEditor',
-      secondaryLabel: (
+      labelTooltip: (
         <>
           Case-sensitive. This field will be used to filter the entities that this map overlay will
           have data for. It is an extension of <code>config.measureLevel</code>. e.g.&nbsp;

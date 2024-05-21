@@ -93,7 +93,7 @@ interface RadioGroupProps {
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   required?: boolean;
   radioGroupProps?: MuiRadioGroupProps;
-  invalid?: boolean;
+  error?: boolean;
 }
 
 export const RadioGroup = ({
@@ -112,7 +112,7 @@ export const RadioGroup = ({
   inputRef,
   inputProps,
   required,
-  invalid,
+  error,
   radioGroupProps,
 }: RadioGroupProps) => {
   return (
@@ -129,7 +129,7 @@ export const RadioGroup = ({
         as={Legend}
         tooltip={tooltip}
         labelProps={{
-          error: invalid,
+          error,
           required,
         }}
       />
@@ -151,7 +151,7 @@ export const RadioGroup = ({
             key={option[valueKey].toString()}
             value={option[valueKey]}
             label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
-            className={invalid ? 'error' : undefined}
+            className={error ? 'error' : undefined}
           />
         ))}
       </StyledRadioGroup>

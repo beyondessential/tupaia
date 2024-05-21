@@ -111,7 +111,7 @@ const USER_COLUMNS = [
           required: true,
           editConfig: {
             optionsEndpoint: 'permissionGroups',
-            secondaryLabel:
+            labelTooltip:
               'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
           },
         },
