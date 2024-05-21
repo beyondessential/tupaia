@@ -23,6 +23,8 @@ const BUTTON_COLUMN_OPTIONS = {
   filterable: false,
   disableSortBy: true,
   isButtonColumn: true,
+  disableResizing: true,
+  width: 90,
 };
 
 const CUSTOM_CELL_COMPONENTS = {
