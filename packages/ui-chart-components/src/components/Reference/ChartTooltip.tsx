@@ -127,7 +127,11 @@ const MultiValueTooltip = ({
         {headline ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <List>{valueLabels}</List>
     </TooltipContainer>
@@ -138,6 +142,7 @@ const SingleValueTooltip = ({
   valueType,
   payload,
   periodGranularity,
+  presentationOptions,
   labelType,
 }: ChartTooltipPropsWithData) => {
   const data = payload[0].payload;
@@ -150,7 +155,13 @@ const SingleValueTooltip = ({
     <TooltipContainer>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <>
-          <Heading>{formatTimestampForChart(timestamp, periodGranularity)}</Heading>
+          <Heading>
+            {formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            )}
+          </Heading>
           <Text>{formatDataValueByType({ value, metadata }, valueTypeForLabel)}</Text>
         </>
       ) : (
@@ -163,10 +174,8 @@ const SingleValueTooltip = ({
 const NoDataTooltip = ({
   payload,
   periodGranularity,
-}: {
-  payload: any[];
-  periodGranularity?: `${VizPeriodGranularity}`;
-}) => {
+  presentationOptions,
+}: ChartTooltipPropsWithData) => {
   const data = payload[0]?.payload;
   const { name = undefined, timestamp = undefined } = data || {};
 
@@ -176,7 +185,11 @@ const NoDataTooltip = ({
         {name ||
           (getIsTimeSeries([data]) &&
             periodGranularity &&
-            formatTimestampForChart(timestamp, periodGranularity))}
+            formatTimestampForChart(
+              timestamp,
+              periodGranularity,
+              presentationOptions?.periodTickFormat,
+            ))}
       </Heading>
       <Text>No Data</Text>
     </TooltipContainer>
