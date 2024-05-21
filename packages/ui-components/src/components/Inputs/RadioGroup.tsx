@@ -116,7 +116,14 @@ export const RadioGroup = ({
   radioGroupProps,
 }: RadioGroupProps) => {
   return (
-    <FormControl component="fieldset" className={className} color="primary" id={id}>
+    <FormControl
+      component="fieldset"
+      className={className}
+      color="primary"
+      id={id}
+      required={required}
+      error={error}
+    >
       <InputLabel
         label={label}
         as={Legend}

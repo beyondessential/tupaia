@@ -3,16 +3,35 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export const useValidationScroll = validationErrors => {
+const scrollToValidationError = () => {
+  const firstError = document.querySelector('.Mui-error');
+  if (!firstError) return;
+  firstError.focus();
+};
+
+export const useValidationScroll = (onSave, onEdit, validationErrors) => {
+  const [hasTouched, setHasTouched] = useState(false);
+
+  const onEditWithTouched = (fieldKey, newValue) => {
+    onEdit(fieldKey, newValue);
+    setHasTouched(true);
+  };
+
+  const onSaveWithTouched = () => {
+    onSave();
+    setHasTouched(false);
+  };
+
   useEffect(() => {
-    if (!validationErrors) return;
-    // if there are errors, focus on the first error
-    const firstError = document.querySelector('.Mui-error');
-    if (!firstError) return;
-    firstError.focus();
-  }, [validationErrors]);
+    if (hasTouched) return;
+    scrollToValidationError();
+  }, [validationErrors, hasTouched]);
 
-  return null;
+  return {
+    hasTouched,
+    onEditWithTouched,
+    onSaveWithTouched,
+  };
 };

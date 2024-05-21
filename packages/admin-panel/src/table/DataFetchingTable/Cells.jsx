@@ -118,8 +118,7 @@ TableCell.defaultProps = {
 const CellLink = styled(Link)`
   color: inherit;
   text-decoration: none;
-  &:hover,
-  &:focus {
+  &:hover {
     tr:has(&) td > * {
       background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
     }

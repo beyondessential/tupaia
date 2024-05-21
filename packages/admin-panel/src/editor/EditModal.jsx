@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { dismissEditor } from './actions';
@@ -38,6 +38,16 @@ export const EditModalComponent = withConnectedEditor(
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
     const FieldsComponentResolved = FieldsComponent ?? FieldsEditor;
+
+    const handleSave = () => {
+      onSave(files, onDismiss);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+    );
     const buttons = [
       {
         onClick: onDismiss,
@@ -47,14 +57,12 @@ export const EditModalComponent = withConnectedEditor(
         id: 'form-button-cancel',
       },
       {
-        onClick: () => onSave(files, onDismiss),
+        onClick: onSaveWithTouched,
         id: 'form-button-save',
         text: saveButtonText,
         disabled: !!errorMessage || isLoading || isUnchanged,
       },
     ];
-
-    useValidationScroll(validationErrors);
 
     return (
       <Modal
@@ -71,7 +79,7 @@ export const EditModalComponent = withConnectedEditor(
           fields={fields}
           isLoading={isLoading}
           recordData={recordData}
-          onEditField={onEditField}
+          onEditField={onEditWithTouched}
           onSetFormFile={handleSetFormFile}
         />
         {displayUsedBy && <UsedBy {...usedByConfig} />}
