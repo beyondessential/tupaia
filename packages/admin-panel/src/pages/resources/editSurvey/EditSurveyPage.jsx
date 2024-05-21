@@ -114,6 +114,21 @@ const EditSurveyPageComponent = withConnectedEditor(
 
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
+    const navigateBack = () => {
+      navigate('../../');
+      resetEditorToDefaultState();
+    };
+    const handleSave = () => {
+      onSave(files, navigateBack);
+    };
+
+    const { onEditWithTouched, onSaveWithTouched } = useValidationScroll(
+      handleSave,
+      onEditField,
+      validationErrors,
+      files,
+    );
+
     const fieldsBySource = keyBy(fields, 'source');
 
     const {
@@ -156,14 +171,6 @@ const EditSurveyPageComponent = withConnectedEditor(
           ]
         : [];
 
-    const navigateBack = () => {
-      navigate('../../');
-      resetEditorToDefaultState();
-    };
-    const handleSave = () => {
-      onSave(files, navigateBack);
-    };
-
     const initialFileName = Array.isArray(recordData?.surveyQuestions)
       ? null
       : recordData?.surveyQuestions;
@@ -174,8 +181,6 @@ const EditSurveyPageComponent = withConnectedEditor(
         errorAlertRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }, [errorMessage]);
-
-    useValidationScroll(validationErrors);
 
     return (
       <Wrapper>
@@ -214,7 +219,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             <FieldsEditor
               fields={orderedFields}
               recordData={recordData}
-              onEditField={onEditField}
+              onEditField={onEditWithTouched}
             />
           </Section>
         </Form>
@@ -225,7 +230,7 @@ const EditSurveyPageComponent = withConnectedEditor(
             variant="contained"
             color="primary"
             disabled={isUnchanged || isLoading}
-            onClick={handleSave}
+            onClick={onSaveWithTouched}
           >
             Save changes
           </Button>

@@ -68,10 +68,14 @@ const stateChanges = {
     errorMessage: '',
   }),
   [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
-  [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
+  [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields, validationErrors }) => ({
     editedFields: {
       ...editedFields,
       [fieldKey]: newValue,
+    },
+    validationErrors: {
+      ...validationErrors,
+      [fieldKey]: null, // Clear the validation error for this field as the user has made a change
     },
   }),
   [SET_VALIDATION_ERRORS]: payload => ({
