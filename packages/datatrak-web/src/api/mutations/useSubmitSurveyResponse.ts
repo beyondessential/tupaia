@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { generatePath, useNavigate, useParams } from 'react-router';
 import { getBrowserTimeZone } from '@tupaia/utils';
 import { Coconut } from '../../components';
-import { post, useCurrentUserContext, useEntityByCode } from '../../api';
+import { post, useCurrentUserContext, useEntityByCode } from '..';
 import { ROUTES } from '../../constants';
 import { getAllSurveyComponents, useSurveyForm } from '../../features';
 import { useSurvey } from '../queries';
@@ -35,7 +35,7 @@ export const useSurveyResponseData = () => {
   };
 };
 
-export const useSubmitSurvey = () => {
+export const useSubmitSurveyResponse = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
@@ -51,7 +51,7 @@ export const useSubmitSurvey = () => {
         return;
       }
 
-      return post('submitSurvey', {
+      return post('submitSurveyResponse', {
         data: { ...surveyResponseData, answers },
       });
     },
