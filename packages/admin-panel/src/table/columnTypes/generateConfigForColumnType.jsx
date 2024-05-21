@@ -53,7 +53,7 @@ const BUTTON_COLUMN_TYPES = [
   'bulkEdit',
 ];
 
-export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
+export const generateConfigForColumnType = (type = 'tooltip', actionConfig, reduxId) => {
   const CustomCellComponent = CUSTOM_CELL_COMPONENTS[type];
   if (!CustomCellComponent) {
     return {};
