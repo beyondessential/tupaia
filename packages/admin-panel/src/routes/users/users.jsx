@@ -2,10 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { Tooltip as TooltipComponent } from '@tupaia/ui-components';
 import { VerifiedFilter } from '../../table/columnTypes/columnFilters';
 import { PERMISSIONS_COLUMNS, PERMISSIONS_ENDPOINT } from './permissions';
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'user' };
 
 // eslint-disable-next-line react/prop-types
 const VerifiedCell = ({ value }) => {
@@ -22,14 +26,22 @@ const VerifiedCell = ({ value }) => {
   );
 };
 
-const FIELDS = [
+const EDIT_FIELDS = [
   {
-    Header: 'Email Address',
+    Header: 'First Name',
+    source: 'first_name',
+  },
+  {
+    Header: 'Last Name',
+    source: 'last_name',
+  },
+  {
+    Header: 'Email address',
     source: 'email',
     type: 'tooltip',
   },
   {
-    Header: 'Phone Number',
+    Header: 'Phone number',
     source: 'mobile_number',
   },
   {
@@ -41,18 +53,6 @@ const FIELDS = [
     source: 'employer',
     type: 'tooltip',
   },
-];
-
-const EDIT_FIELDS = [
-  {
-    Header: 'First Name',
-    source: 'first_name',
-  },
-  {
-    Header: 'Last Name',
-    source: 'last_name',
-  },
-  ...FIELDS,
   {
     Header: 'Verified',
     source: 'verified_email',
@@ -82,16 +82,25 @@ const EDIT_FIELDS = [
 
 const COLUMNS = [
   {
-    Header: 'First Name',
+    Header: 'First name',
     source: 'first_name',
     width: 150,
   },
   {
-    Header: 'Last Name',
+    Header: 'Last name',
     source: 'last_name',
     width: 150,
   },
-  ...FIELDS,
+  {
+    Header: 'Email Address',
+    source: 'email',
+    type: 'tooltip',
+  },
+  {
+    Header: 'Employer',
+    source: 'employer',
+    type: 'tooltip',
+  },
   {
     Header: 'Verified',
     source: 'verified_email',
@@ -103,7 +112,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit User',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'users',
       fields: EDIT_FIELDS,
     },
@@ -111,15 +120,15 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Users',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'users',
   },
 };
 
 const CREATE_CONFIG = {
-  title: 'New User',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,
@@ -135,7 +144,7 @@ const CREATE_CONFIG = {
         },
       },
       {
-        Header: 'Permission Group',
+        Header: 'Permission group',
         source: 'permissionGroupName',
         editConfig: {
           sourceKey: 'permissionGroupName',
@@ -146,7 +155,7 @@ const CREATE_CONFIG = {
         },
       },
       {
-        Header: 'Api Client (Not required for most users, see Readme of admin-panel for usage)',
+        Header: 'API Client (not required for most users, see README of admin-panel for usage)',
         source: 'is_api_client',
         type: 'boolean',
         editConfig: {
@@ -158,7 +167,7 @@ const CREATE_CONFIG = {
 };
 
 export const users = {
-  title: 'Users',
+  resourceName: RESOURCE_NAME,
   path: '',
   endpoint: 'users',
   columns: COLUMNS,

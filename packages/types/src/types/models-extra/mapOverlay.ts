@@ -104,7 +104,6 @@ export enum ScaleType {
   PERFORMANCE_DESC = 'performanceDesc',
   NEUTRAL = 'neutral',
   NEUTRAL_REVERSE = 'neutralReverse',
-  TIME = 'time',
   GPI = 'gpi',
 }
 
@@ -143,7 +142,6 @@ export enum MeasureColorScheme {
   DEFAULT = 'default',
   REVERSE_DEFAULT = 'default-reverse',
   PERFORMANCE = 'performance',
-  TIME = 'time',
   GPI = 'gpi',
 }
 
@@ -293,7 +291,7 @@ export type SpectrumMapOverlayConfig = BaseMapOverlayConfig & {
   /**
    * @description What color scheme to use for the scale
    */
-  scaleColorScheme: MeasureColorScheme;
+  scaleColorScheme?: MeasureColorScheme;
 
   /**
    * @description Limits on the min and max values for the scale

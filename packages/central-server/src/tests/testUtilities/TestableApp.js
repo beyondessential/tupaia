@@ -14,7 +14,7 @@ import { createBasicHeader, createBearerHeader } from '@tupaia/utils';
 import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions';
 import { createApp } from '../../createApp';
 import { getModels } from './database';
-import { TEST_USER_EMAIL } from './constants';
+import { TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD, TEST_USER_EMAIL } from './constants';
 import { configureEnv } from '../../configureEnv';
 
 configureEnv();
@@ -24,7 +24,7 @@ const getVersionedEndpoint = (endpoint, apiVersion = DEFAULT_API_VERSION) =>
   `/v${apiVersion}/${endpoint}`;
 
 export const getAuthorizationHeader = () => {
-  return createBasicHeader(process.env.API_CLIENT_NAME, process.env.API_CLIENT_PASSWORD);
+  return createBasicHeader(TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD);
 };
 
 const translateQuery = query =>

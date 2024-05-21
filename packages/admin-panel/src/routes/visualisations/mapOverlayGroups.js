@@ -1,10 +1,18 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
+const RESOURCE_NAME = { singular: 'map overlay group' };
+
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
-const EDIT_FIELDS = [
+const FIELDS = [
+  {
+    Header: 'ID',
+    source: 'id',
+    show: false,
+  },
   {
     Header: 'Code',
     source: 'code',
@@ -13,18 +21,8 @@ const EDIT_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
-    width: 140,
     type: 'tooltip',
   },
-];
-
-const FIELDS = [
-  {
-    Header: 'ID',
-    source: 'id',
-    type: 'tooltip',
-  },
-  ...EDIT_FIELDS,
 ];
 
 const COLUMNS = [
@@ -33,16 +31,16 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     actionConfig: {
-      title: 'Edit Map Overlay Group',
-      editEndpoint: 'mapOverlayGroups',
-      fields: EDIT_FIELDS,
+      title: `Edit ${RESOURCE_NAME.singular}`,
+      editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
+      fields: FIELDS,
     },
   },
 ];
 
 export const RELATION_FIELDS = [
   {
-    Header: 'Child Id',
+    Header: 'Child ID',
     source: 'child_id',
     type: 'tooltip',
     editConfig: {
@@ -53,24 +51,24 @@ export const RELATION_FIELDS = [
     },
   },
   {
-    Header: 'Child Type',
+    Header: 'Child type',
     source: 'child_type',
     type: 'tooltip',
     editConfig: {
       options: [
         {
-          label: 'Map Overlay',
+          label: 'Map overlay',
           value: 'mapOverlay',
         },
         {
-          label: 'Map Overlay Group',
+          label: 'Map overlay group',
           value: 'mapOverlayGroup',
         },
       ],
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
     type: 'tooltip',
   },
@@ -90,15 +88,15 @@ export const RELATION_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Map overlay group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
-    fields: EDIT_FIELDS,
+    fields: FIELDS,
   },
 };
 
 export const mapOverlayGroups = {
-  title: 'Map overlay groups',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlay-groups',
   endpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
   columns: COLUMNS,

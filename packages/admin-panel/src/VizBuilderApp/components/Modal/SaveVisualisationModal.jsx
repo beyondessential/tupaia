@@ -111,14 +111,14 @@ export const SaveVisualisationModal = ({ isOpen, onClose }) => {
         },
       ]}
     >
-      <ContentWrapper>
+      <ModalCenteredContent>
         <Heading>Are you sure you want to save this visualisation?</Heading>
         <Typography>
           {visualisation.id
             ? 'The previous version of this visualisation will be overwritten'
             : `Visualisation will be created`}
         </Typography>
-      </ContentWrapper>
+      </ModalCenteredContent>
     </Modal>
   );
 };

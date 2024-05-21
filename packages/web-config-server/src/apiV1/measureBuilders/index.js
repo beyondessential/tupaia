@@ -1,4 +1,3 @@
-export { checkTimeliness } from './checkTimeliness';
 export { checkConditions } from './checkConditions';
 export { composePercentagePerOrgUnit } from './composePercentagePerOrgUnit';
 export { countEventsPerOrgUnit } from './countEventsPerOrgUnit';

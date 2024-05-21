@@ -6,8 +6,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { ArrowBack } from '@material-ui/icons';
-import { Typography, Breadcrumbs as MuiBreadcrumbs, IconButton } from '@material-ui/core';
+import { Breadcrumbs as MuiBreadcrumbs, IconButton, Typography } from '@material-ui/core';
 import styled from 'styled-components';
+import { generateTitle } from '../pages/resources/resourceName';
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,6 +29,8 @@ const ActiveBreadcrumb = styled(Typography)`
 export const Breadcrumbs = ({ parent, displayProperty, title, details, getDisplayValue }) => {
   const itemDisplayValue = getDisplayValue ? getDisplayValue(details) : details?.[displayProperty];
 
+  const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
+
   return (
     <Wrapper>
       <BackButton component={Link} to={parent?.to || '/'}>
@@ -35,7 +38,7 @@ export const Breadcrumbs = ({ parent, displayProperty, title, details, getDispla
       </BackButton>
       <MuiBreadcrumbs separator="|">
         <ActiveBreadcrumb component={Link} to={parent?.to || '/'}>
-          {parent?.title}
+          {parentTitle}
         </ActiveBreadcrumb>
         <ActiveBreadcrumb>{title}</ActiveBreadcrumb>
         {details && <Typography>{itemDisplayValue}</Typography>}

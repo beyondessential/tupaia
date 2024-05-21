@@ -8,6 +8,8 @@ import { onProcessDataForSave } from '../../dataTables/onProcessDataForSave';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'data table' };
+
 const DATA_TABLES_ENDPOINT = 'dataTables';
 
 const FIELDS = [
@@ -57,7 +59,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Data Table',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DATA_TABLES_ENDPOINT,
       fields: FIELDS,
       FieldsComponent: DataTableEditFields,
@@ -79,8 +81,8 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Data Table',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,
@@ -92,7 +94,7 @@ const CREATE_CONFIG = {
 };
 
 const IMPORT_CONFIG = {
-  title: 'Import Data Table',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataTables',
   },
@@ -100,7 +102,7 @@ const IMPORT_CONFIG = {
 const EDITOR_CONFIG = { displayUsedBy: true };
 
 export const dataTables = {
-  title: 'Data tables',
+  resourceName: RESOURCE_NAME,
   path: '/data-tables',
   endpoint: DATA_TABLES_ENDPOINT,
   columns: COLUMNS,

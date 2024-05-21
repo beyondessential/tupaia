@@ -63,6 +63,7 @@ import {
 import {
   DeleteSurveyResponses,
   GETSurveyResponses,
+  SubmitSurveyResponses,
   ResubmitSurveyResponse,
 } from './surveyResponses';
 import {
@@ -92,7 +93,6 @@ import { deleteAccount } from './deleteAccount';
 import { requestCountryAccess } from './requestCountryAccess';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
-import { surveyResponse } from './surveyResponse';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 import { GETReports } from './reports';
 import { GETDataElementDataGroups } from './dataElementDataGroups';
@@ -268,8 +268,8 @@ apiV2.post('/userEntityPermissions', useRouteHandler(CreateUserEntityPermissions
 apiV2.post('/me/requestCountryAccess', allowAnyone(requestCountryAccess));
 apiV2.post('/me/deleteAccount', allowAnyone(deleteAccount));
 apiV2.post('/me/changePassword', catchAsyncErrors(changePassword));
-apiV2.post('/surveyResponse', catchAsyncErrors(surveyResponse)); // used by mSupply to directly submit data
-apiV2.post('/surveyResponses', catchAsyncErrors(surveyResponse));
+apiV2.post('/surveyResponse', useRouteHandler(SubmitSurveyResponses)); // used by mSupply to directly submit data
+apiV2.post('/surveyResponses', useRouteHandler(SubmitSurveyResponses));
 apiV2.post(
   '/surveyResponse/:recordId/resubmit',
   multipartJson(false),

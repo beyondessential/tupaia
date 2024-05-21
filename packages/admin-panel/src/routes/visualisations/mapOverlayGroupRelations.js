@@ -1,12 +1,15 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
+const RESOURCE_NAME = { singular: 'map overlay group relation' };
+
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
 const FIELDS = [
   {
-    Header: 'Map Overlay Group Code',
+    Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
     type: 'tooltip',
     editConfig: {
@@ -17,7 +20,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child Id',
+    Header: 'Child ID',
     source: 'child_id',
     type: 'tooltip',
     editConfig: {
@@ -29,25 +32,25 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Child Type',
+    Header: 'Child type',
     width: 160,
     source: 'child_type',
     type: 'tooltip',
     editConfig: {
       options: [
         {
-          label: 'Map Overlay',
+          label: 'Map overlay',
           value: 'mapOverlay',
         },
         {
-          label: 'Map Overlay Group',
+          label: 'Map overlay group',
           value: 'mapOverlayGroup',
         },
       ],
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
     type: 'tooltip',
   },
@@ -60,9 +63,9 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Map Overlay Group Relation',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'mapOverlayGroupRelations',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
   {
@@ -75,15 +78,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new relation between Map Overlay and Map Overlay Group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: RELATION_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const mapOverlayGroupRelations = {
-  title: 'Map overlay group relations',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlay-group-relations',
   endpoint: RELATION_ENDPOINT,
   columns: COLUMNS,
