@@ -149,7 +149,6 @@ export const DATA_ELEMENT_FIELDS = [
   {
     Header: 'Permission Groups',
     source: 'permission_groups',
-    type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',

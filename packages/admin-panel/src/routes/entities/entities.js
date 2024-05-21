@@ -19,7 +19,6 @@ export const FIELDS = {
   name: {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
   },
   type: {
     Header: 'Type',

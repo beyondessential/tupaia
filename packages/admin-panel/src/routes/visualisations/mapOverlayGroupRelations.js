@@ -11,7 +11,7 @@ const FIELDS = [
   {
     Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
-    type: 'tooltip',
+
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',
       optionLabelKey: 'map_overlay_group.code',
@@ -22,7 +22,7 @@ const FIELDS = [
   {
     Header: 'Child ID',
     source: 'child_id',
-    type: 'tooltip',
+
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.id',
@@ -35,7 +35,7 @@ const FIELDS = [
     Header: 'Child type',
     width: 160,
     source: 'child_type',
-    type: 'tooltip',
+
     editConfig: {
       options: [
         {
@@ -52,7 +52,6 @@ const FIELDS = [
   {
     Header: 'Sort order',
     source: 'sort_order',
-    type: 'tooltip',
   },
 ];
 

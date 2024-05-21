@@ -14,12 +14,10 @@ const DEFAULT_FIELDS = [
   {
     Header: 'Description',
     source: 'description',
-    type: 'tooltip',
   },
   {
     Header: 'Dashboard',
     source: 'dashboard_group_name',
-    type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'dashboards',
       optionLabelKey: 'name',
