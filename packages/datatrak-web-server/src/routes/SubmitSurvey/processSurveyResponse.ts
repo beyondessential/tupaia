@@ -89,7 +89,12 @@ export const processSurveyResponse = async (
         }
       }
       if (answer) {
-        surveyResponse.recent_entities.push(answer as string);
+        if (typeof answer !== 'string') {
+          throw new Error(
+            `Unexpected data type for EntityQuestion answer, expected string but got: ${typeof answer}`,
+          );
+        }
+        surveyResponse.recent_entities.push(answer);
       }
     }
     if (answer === undefined || answer === null || answer === '') {
