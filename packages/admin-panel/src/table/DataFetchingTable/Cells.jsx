@@ -14,7 +14,6 @@ const Cell = styled(MuiTableCell)`
   padding: 0;
   border: none;
   position: relative;
-  // height: 1px; // need this to make the cell content fill the height of the cell
   &:first-child {
     padding-inline-start: 1.5rem;
   }
@@ -63,12 +62,32 @@ const HeaderCell = styled(Cell)`
   .MuiTableSortLabel-active .MuiTableSortLabel-icon {
     opacity: 1;
   }
+  ${CellContentContainer} {
+    width: ${({ $canResize }) => ($canResize ? 'calc(100% - 2rem)' : '100%')};
+  }
 `;
 
-export const HeaderDisplayCell = ({ children, ...props }) => {
+const ColResize = styled.div.attrs({
+  onClick: e => {
+    // suppress other events when resizing
+    e.preventDefault();
+    e.stopPropagation();
+  },
+})`
+  width: 2rem;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  z-index: 1;
+`;
+
+export const HeaderDisplayCell = ({ children, canResize, getResizerProps, ...props }) => {
   return (
-    <HeaderCell {...props}>
+    <HeaderCell {...props} $canResize={canResize}>
       <CellContentContainer> {children}</CellContentContainer>
+      {canResize && <ColResize {...getResizerProps()} />}
     </HeaderCell>
   );
 };
@@ -76,11 +95,15 @@ export const HeaderDisplayCell = ({ children, ...props }) => {
 HeaderDisplayCell.propTypes = {
   children: PropTypes.node,
   width: PropTypes.string,
+  canResize: PropTypes.bool,
+  getResizerProps: PropTypes.func,
 };
 
 HeaderDisplayCell.defaultProps = {
   width: null,
   children: null,
+  canResize: false,
+  getResizerProps: () => {},
 };
 
 export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {

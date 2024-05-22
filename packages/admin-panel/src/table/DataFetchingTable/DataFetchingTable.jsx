@@ -276,6 +276,8 @@ const DataFetchingTableComponent = memo(
                           {...getHeaderProps(getSortByToggleProps())}
                           // eslint-disable-next-line react/no-array-index-key
                           key={`header-${i}`}
+                          canResize={canResize}
+                          getResizerProps={getResizerProps}
                         >
                           {render('Header')}
                           {canSort && (
@@ -285,10 +287,6 @@ const DataFetchingTableComponent = memo(
                               IconComponent={KeyboardArrowDown}
                             />
                           )}
-                          {/**
-                           * Only apply resizer to header columns, to avoid buggy behaviour on the rows
-                           */}
-                          {canResize && <ColResize {...getResizerProps()} />}
                         </HeaderDisplayCell>
                       );
                     },
