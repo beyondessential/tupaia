@@ -49,6 +49,24 @@ GET {{baseUrl}}/export/optionSet/5c625e01f013d60db42a5763 HTTP/1.1
 Authorization: {{user-authorization}}
 Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
+### Get all map overlay groups
+
+GET {{baseUrl}}/mapOverlayGroups
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get all map overlay group relations
+
+GET {{baseUrl}}/mapOverlayGroupRelations
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
+### Get map overlay group relation by ID
+
+GET {{baseUrl}}/mapOverlayGroupRelations/5f2c7ddb61f76a513a0000bf
+content-type: {{contentType}}
+Authorization: {{user-authorization}}
+
 ### Get survey responses
 
 GET {{baseUrl}}/surveyResponses?pageSize=5&columns=["entity.name", "country.name"] HTTP/2.0
