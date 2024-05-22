@@ -7,7 +7,7 @@ import { BASE_OPTION_FIELDS } from './optionSets';
 
 const RESOURCE_NAME = { singular: 'question' };
 
-const QUESTION_FIELDS = [
+export const QUESTION_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
