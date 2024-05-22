@@ -18,6 +18,27 @@ const RELATION_CHILD_TYPES = {
 export class MapOverlayGroupRelationRecord extends DatabaseRecord {
   static databaseRecord = RECORDS.MAP_OVERLAY_GROUP_RELATION;
 
+  static joins = [
+    {
+      joinType: JOIN_TYPES.LEFT,
+      joinWith: RECORDS.MAP_OVERLAY,
+      joinCondition: [
+        `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+        `${RECORDS.MAP_OVERLAY}.id`,
+      ],
+      fields: { code: 'childMapOverlayCode' },
+    },
+    {
+      joinType: JOIN_TYPES.LEFT,
+      joinWith: RECORDS.MAP_OVERLAY_GROUP,
+      joinCondition: [
+        `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
+        `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+      ],
+      fields: { code: 'childMapOverlayGroupCode' },
+    },
+  ];
+
   async findChildRelations() {
     return this.model.find({ map_overlay_group_id: this.child_id });
   }
@@ -66,27 +87,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
    * @see generateInstance
    */
   async find(criteria, customQueryOptions = {}) {
-    const options = customQueryOptions;
-
-    // Left join with map_overlay and map_overlay_group
-    options.multiJoin = [
-      {
-        joinType: JOIN_TYPES.LEFT,
-        joinWith: RECORDS.MAP_OVERLAY,
-        joinCondition: [
-          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
-          `${RECORDS.MAP_OVERLAY}.id`,
-        ],
-      },
-      {
-        joinType: JOIN_TYPES.LEFT,
-        joinWith: RECORDS.MAP_OVERLAY_GROUP,
-        joinCondition: [
-          `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
-          `${RECORDS.MAP_OVERLAY_GROUP}.id`,
-        ],
-      },
-    ];
+    const options = await this.getQueryOptions(customQueryOptions);
 
     // Add child code for both child type options
     options.columns = [];
