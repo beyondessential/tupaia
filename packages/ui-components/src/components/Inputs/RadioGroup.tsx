@@ -13,11 +13,6 @@ import MuiFormControl, { FormControlProps } from '@material-ui/core/FormControl'
 import { OverrideableComponentProps } from '../../types';
 import { InputLabel } from './InputLabel';
 
-const LegendWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.25rem;
-`;
 const FormControl = styled(MuiFormControl)<OverrideableComponentProps<FormControlProps>>`
   display: block;
   margin-bottom: 1.2rem;
@@ -98,7 +93,7 @@ interface RadioGroupProps {
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   required?: boolean;
   radioGroupProps?: MuiRadioGroupProps;
-  invalid?: boolean;
+  error?: boolean;
 }
 
 export const RadioGroup = ({
@@ -117,7 +112,7 @@ export const RadioGroup = ({
   inputRef,
   inputProps,
   required,
-  invalid,
+  error,
   radioGroupProps,
 }: RadioGroupProps) => {
   return (
@@ -127,19 +122,17 @@ export const RadioGroup = ({
       color="primary"
       id={id}
       required={required}
-      error={invalid}
+      error={error}
     >
-      <LegendWrapper>
-        <InputLabel
-          label={label}
-          as={Legend}
-          tooltip={tooltip}
-          labelProps={{
-            error: invalid,
-            required,
-          }}
-        />
-      </LegendWrapper>
+      <InputLabel
+        label={label}
+        as={Legend}
+        tooltip={tooltip}
+        labelProps={{
+          error,
+          required,
+        }}
+      />
 
       {helperText && <FormHelperText id={`${name}-helperText`}>{helperText}</FormHelperText>}
       <StyledRadioGroup name={name} value={value} onChange={onChange} {...radioGroupProps}>
@@ -158,7 +151,7 @@ export const RadioGroup = ({
             key={option[valueKey].toString()}
             value={option[valueKey]}
             label={<InputLabel label={option[labelKey]} tooltip={option[tooltipKey]} as="span" />}
-            className={invalid ? 'error' : undefined}
+            className={error ? 'error' : undefined}
           />
         ))}
       </StyledRadioGroup>

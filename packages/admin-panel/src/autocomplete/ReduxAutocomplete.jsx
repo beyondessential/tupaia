@@ -39,6 +39,7 @@ const ReduxAutocompleteComponent = ({
   helperText,
   required,
   error,
+  tooltip,
 }) => {
   const [hasUpdated, setHasUpdated] = React.useState(false);
   React.useEffect(() => {
@@ -84,6 +85,7 @@ const ReduxAutocompleteComponent = ({
       optionLabelKey={optionLabelKey}
       required={required}
       error={error}
+      tooltip={tooltip}
     />
   );
 };

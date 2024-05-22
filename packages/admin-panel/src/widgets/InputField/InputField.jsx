@@ -23,13 +23,44 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
   return type;
 };
 
-export const InputField = ({ type, secondaryLabel, error, ...inputProps }) => {
+export const InputField = ({
+  type,
+  maxLength,
+  minLength,
+  secondaryLabel,
+  error,
+  ...inputProps
+}) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
   const InputComponent = InputFields[inputType];
+
+  const generateHelperText = () => {
+    if (secondaryLabel) return secondaryLabel;
+    if (maxLength && minLength !== undefined && minLength !== null) {
+      return `Must be between ${minLength} and ${maxLength} characters`;
+    }
+
+    if (maxLength) {
+      return `Max ${maxLength} characters`;
+    }
+
+    if (minLength !== undefined && minLength !== null) {
+      return `Min ${minLength} characters`;
+    }
+  };
+
+  const helperText = generateHelperText();
   return (
-    <InputWrapper errorText={error} helperText={secondaryLabel}>
-      {InputComponent && <InputComponent {...inputProps} error={!!error} />}
+    <InputWrapper errorText={error} helperText={helperText}>
+      {InputComponent && (
+        <InputComponent
+          {...inputProps}
+          error={!!error}
+          maxLength={maxLength}
+          minLength={minLength}
+        />
+      )}
     </InputWrapper>
   );
 };
@@ -61,6 +92,8 @@ export const inputFieldPropTypes = {
   variant: PropTypes.string,
   required: PropTypes.bool,
   error: PropTypes.string,
+  maxLength: PropTypes.number,
+  minLength: PropTypes.number,
 };
 
 export const inputFieldDefaultProps = {
@@ -81,6 +114,8 @@ export const inputFieldDefaultProps = {
   variant: null,
   required: false,
   error: null,
+  maxLength: null,
+  minLength: null,
 };
 
 InputField.propTypes = inputFieldPropTypes;

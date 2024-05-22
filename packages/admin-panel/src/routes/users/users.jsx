@@ -143,7 +143,7 @@ const CREATE_CONFIG = {
           optionsEndpoint: 'countries',
           optionLabelKey: 'name',
           optionValueKey: 'name',
-          secondaryLabel: 'Select the country to grant this user access to',
+          labelTooltip: 'Select the country to grant this user access to',
         },
       },
       {
@@ -155,7 +155,7 @@ const CREATE_CONFIG = {
           optionsEndpoint: 'permissionGroups',
           optionLabelKey: 'name',
           optionValueKey: 'name',
-          secondaryLabel: 'Select the permission group to grant this user access to',
+          labelTooltip: 'Select the permission group to grant this user access to',
         },
       },
       {

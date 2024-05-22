@@ -62,7 +62,7 @@ const ACCESS_REQUEST_FIELDS = [
     required: true,
     editConfig: {
       optionsEndpoint: 'permissionGroups',
-      secondaryLabel:
+      labelTooltip:
         'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
     },
   },
@@ -111,7 +111,7 @@ const USER_COLUMNS = [
           required: true,
           editConfig: {
             optionsEndpoint: 'permissionGroups',
-            secondaryLabel:
+            labelTooltip:
               'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
           },
         },
@@ -119,7 +119,6 @@ const USER_COLUMNS = [
           Header: 'Approved',
           source: 'approved',
           type: 'boolean',
-          alwaysValidate: true,
           required: true,
           editConfig: {
             type: 'boolean',

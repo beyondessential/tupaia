@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FormLabel } from '@material-ui/core';
+import { InputLabel } from '@tupaia/ui-components';
 import { JsonEditor as Editor } from '../JsonEditor';
 
 const Container = styled.div`
@@ -15,7 +15,7 @@ const Container = styled.div`
   min-height: 300px;
   margin-bottom: 20px;
 
-  > div {
+  .jsoneditor-parent {
     display: flex;
     flex: 1;
   }
@@ -28,12 +28,16 @@ const Container = styled.div`
   }
 `;
 
-const Label = styled(FormLabel)`
-  font-size: 0.9rem;
-  line-height: 1.1rem;
-`;
-
-export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error, required }) => {
+export const JsonEditor = ({
+  inputKey,
+  label,
+  value,
+  onChange,
+  stringify,
+  error,
+  required,
+  tooltip,
+}) => {
   if (!value) {
     return null;
   }
@@ -46,9 +50,15 @@ export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error,
 
   return (
     <Container $invalid={error}>
-      <Label gutterBottom required={required} error={error}>
-        {label}
-      </Label>
+      <InputLabel
+        label={label}
+        labelProps={{
+          required,
+          error,
+        }}
+        tooltip={tooltip}
+        applyWrapper
+      />
       {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         mainMenuBar={false}
@@ -56,6 +66,9 @@ export const JsonEditor = ({ inputKey, label, value, onChange, stringify, error,
         mode="code"
         onChange={json => onChange(inputKey, stringify ? JSON.stringify(json) : json)}
         value={editorValue}
+        htmlElementProps={{
+          className: 'jsoneditor-parent',
+        }}
       />
     </Container>
   );
@@ -69,6 +82,7 @@ JsonEditor.propTypes = {
   stringify: PropTypes.bool,
   error: PropTypes.bool,
   required: PropTypes.bool,
+  tooltip: PropTypes.string,
 };
 
 JsonEditor.defaultProps = {
@@ -76,4 +90,5 @@ JsonEditor.defaultProps = {
   stringify: true,
   error: false,
   required: false,
+  tooltip: null,
 };
