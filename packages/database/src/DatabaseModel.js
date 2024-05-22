@@ -235,13 +235,13 @@ export class DatabaseModel {
       });
     });
 
-    return this.createTypeInstance(data);
+    return this.createRecordInstance(data);
   };
 
   /**
    * @returns {*} DatabaseRecordClass
    */
-  createTypeInstance = (data = {}) => {
+  createRecordInstance = (data = {}) => {
     return new this.DatabaseRecordClass(this, data);
   };
 

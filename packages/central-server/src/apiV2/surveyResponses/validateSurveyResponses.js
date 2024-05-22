@@ -1,27 +1,29 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
-import { AnalyticsRefresher } from '@tupaia/database';
 import {
   ValidationError,
-  MultiValidationError,
   ObjectValidator,
-  hasContent,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructIsEmptyOr,
+  takesDateForm,
+  hasContent,
   takesIdForm,
   constructIsNotPresentOr,
-  takesDateForm,
+  MultiValidationError,
 } from '@tupaia/utils';
-import { constructAnswerValidator } from './utilities/constructAnswerValidator';
-import { findQuestionsInSurvey } from '../dataAccessors';
-import { assertCanSubmitSurveyResponses } from './import/importSurveyResponses/assertCanImportSurveyResponses';
-import { assertAnyPermissions, assertBESAdminAccess } from '../permissions';
-import { saveResponsesToDatabase } from './surveyResponses';
-import { upsertEntitiesAndOptions } from './surveyResponses/upsertEntitiesAndOptions';
+import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
+import { findQuestionsInSurvey } from '../../dataAccessors';
+
+const constructAnswerValidators = models => ({
+  id: [constructIsNotPresentOr(takesIdForm)],
+  type: [hasContent],
+  question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
+  body: [hasContent],
+});
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -32,7 +34,7 @@ const createSurveyResponseValidator = models =>
     end_time: [constructIsEmptyOr(takesDateForm)],
   });
 
-async function validateResponse(models, body) {
+const validateResponse = async (models, body) => {
   if (!body) {
     throw new ValidationError('Survey responses must not be null');
   }
@@ -86,9 +88,9 @@ async function validateResponse(models, body) {
 
     await Promise.all(answerValidations);
   }
-}
+};
 
-const validateAllResponses = async (models, responses) => {
+export const validateSurveyResponses = async (models, responses) => {
   const validations = await Promise.all(
     responses.map(async (r, i) => {
       try {
@@ -108,53 +110,3 @@ const validateAllResponses = async (models, responses) => {
     );
   }
 };
-
-export const submitResponses = async (models, userId, responses) => {
-  // Upsert entities and options that were created in user's local database
-  await upsertEntitiesAndOptions(models, responses);
-  // Allow responses to be submitted in bulk
-  await validateAllResponses(models, responses);
-  return saveResponsesToDatabase(models, userId, responses);
-};
-
-export async function surveyResponse(req, res) {
-  const { userId, body, query, models } = req;
-  const { submitAsPublic } = query;
-
-  let submitterId = userId;
-  if (submitAsPublic) {
-    const user = await models.user.findPublicUser();
-    submitterId = user.id;
-  }
-
-  let results = [];
-  const responses = Array.isArray(body) ? body : [body];
-  // Upsert entities and options that were created in user's local database
-  await upsertEntitiesAndOptions(models, responses);
-
-  await models.wrapInTransaction(async transactingModels => {
-    await validateAllResponses(transactingModels, responses);
-    // Check permissions
-    const surveyResponsePermissionsChecker = async accessPolicy => {
-      await assertCanSubmitSurveyResponses(accessPolicy, transactingModels, responses);
-    };
-    await req.assertPermissions(
-      assertAnyPermissions([assertBESAdminAccess, surveyResponsePermissionsChecker]),
-    );
-
-    results = await saveResponsesToDatabase(transactingModels, submitterId, responses);
-
-    if (req.query.waitForAnalyticsRebuild) {
-      const { database } = transactingModels;
-      await AnalyticsRefresher.refreshAnalytics(database);
-    }
-  });
-  res.send({ count: responses.length, results });
-}
-
-const constructAnswerValidators = models => ({
-  id: [constructIsNotPresentOr(takesIdForm)],
-  type: [hasContent],
-  question_id: [hasContent, takesIdForm, constructRecordExistsWithId(models.question)],
-  body: [hasContent],
-});

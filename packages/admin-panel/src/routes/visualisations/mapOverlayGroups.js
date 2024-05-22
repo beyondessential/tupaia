@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'map overlay group' };
+
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
 const FIELDS = [
@@ -29,7 +31,7 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     actionConfig: {
-      title: 'Edit Map Overlay Group',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
       fields: FIELDS,
     },
@@ -38,7 +40,7 @@ const COLUMNS = [
 
 export const RELATION_FIELDS = [
   {
-    Header: 'Child Id',
+    Header: 'Child ID',
     source: 'child_id',
     type: 'tooltip',
     editConfig: {
@@ -49,24 +51,24 @@ export const RELATION_FIELDS = [
     },
   },
   {
-    Header: 'Child Type',
+    Header: 'Child type',
     source: 'child_type',
     type: 'tooltip',
     editConfig: {
       options: [
         {
-          label: 'Map Overlay',
+          label: 'Map overlay',
           value: 'mapOverlay',
         },
         {
-          label: 'Map Overlay Group',
+          label: 'Map overlay group',
           value: 'mapOverlayGroup',
         },
       ],
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
     type: 'tooltip',
   },
@@ -86,15 +88,15 @@ export const RELATION_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Map overlay group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const mapOverlayGroups = {
-  title: 'Map overlay groups',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlay-groups',
   endpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
   columns: COLUMNS,
