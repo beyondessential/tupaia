@@ -104,7 +104,6 @@ export enum ScaleType {
   PERFORMANCE_DESC = 'performanceDesc',
   NEUTRAL = 'neutral',
   NEUTRAL_REVERSE = 'neutralReverse',
-  TIME = 'time',
   GPI = 'gpi',
 }
 
@@ -143,7 +142,6 @@ export enum MeasureColorScheme {
   DEFAULT = 'default',
   REVERSE_DEFAULT = 'default-reverse',
   PERFORMANCE = 'performance',
-  TIME = 'time',
   GPI = 'gpi',
 }
 

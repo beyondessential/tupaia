@@ -5,7 +5,7 @@
  */
 
 import { formatDataValueByType } from '@tupaia/utils';
-import { IconMapOverlayConfig, ScaleType } from '@tupaia/types';
+import { IconMapOverlayConfig } from '@tupaia/types';
 import { YES_COLOR, NO_COLOR, BREWER_AUTO, UNKNOWN_COLOR, MAP_COLORS } from '../constants';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Markers/markerIcons';
 import {
@@ -111,24 +111,16 @@ function getFormattedValue(
   value: Value,
   type: Series['type'],
   valueInfo: SeriesValue,
-  scaleType: `${ScaleType}` | undefined,
   valueType: Series['valueType'],
-  submissionDate: MeasureData['submissionDate'],
 ) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
-      if (scaleType === ScaleType.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
       return formatDataValueByType({ value }, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
     case MEASURE_TYPE_SHADING:
-      if (scaleType === ScaleType.TIME) {
-        return `last submission on ${submissionDate}`;
-      }
       return valueInfo.name || value;
     default:
       return value;
@@ -136,11 +128,7 @@ function getFormattedValue(
 }
 
 export const getSpectrumScaleValues = (measureData: MeasureData[], series: Series) => {
-  const { key, startDate, endDate } = series;
-
-  if ('scaleType' in series && series.scaleType === ScaleType.TIME) {
-    return { min: startDate, max: endDate };
-  }
+  const { key } = series;
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
@@ -281,7 +269,6 @@ export const getSingleFormattedValue = (markerData: MeasureData, series: Series[
 
 export function getFormattedInfo(markerData: MeasureData, series: Series) {
   const { key, valueMapping, type, displayedValueKey, valueType } = series;
-  const scaleType = 'scaleType' in series ? series.scaleType : undefined;
   const value = markerData[key];
   const valueInfo = getValueInfo(value, valueMapping);
 
@@ -301,14 +288,7 @@ export function getFormattedInfo(markerData: MeasureData, series: Series) {
   }
 
   return {
-    formattedValue: getFormattedValue(
-      value,
-      type,
-      valueInfo,
-      scaleType,
-      valueType,
-      markerData.submissionDate,
-    ),
+    formattedValue: getFormattedValue(value, type, valueInfo, valueType),
     valueInfo,
   };
 }

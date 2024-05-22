@@ -14,7 +14,6 @@ const COLOR_SCHEME_TO_FUNCTION = {
   [MeasureColorScheme.DEFAULT]: getHeatmapColor,
   [MeasureColorScheme.REVERSE_DEFAULT]: getReverseHeatmapColor,
   [MeasureColorScheme.PERFORMANCE]: getPerformanceHeatmapColor,
-  [MeasureColorScheme.TIME]: getTimeHeatmapColor,
   [MeasureColorScheme.GPI]: getGPIColor,
 };
 
@@ -23,7 +22,6 @@ const SCALE_TYPE_TO_COLOR_SCHEME = {
   [ScaleType.PERFORMANCE_DESC]: MeasureColorScheme.PERFORMANCE,
   [ScaleType.NEUTRAL]: MeasureColorScheme.DEFAULT,
   [ScaleType.NEUTRAL_REVERSE]: MeasureColorScheme.REVERSE_DEFAULT,
-  [ScaleType.TIME]: MeasureColorScheme.TIME,
   [ScaleType.GPI]: MeasureColorScheme.GPI,
 };
 
@@ -41,8 +39,7 @@ export function resolveSpectrumColour(
   max: number | string, // the highest number or a string representing latest date in a range
   noDataColour?: string, // css hsl string, e.g. `hsl(value, 100%, 50%)` for null value
 ): string {
-  if (value === null || (isNaN(value) && scaleType !== ScaleType.TIME))
-    return noDataColour || HEATMAP_UNKNOWN_COLOR;
+  if (value === null || isNaN(value)) return noDataColour || HEATMAP_UNKNOWN_COLOR;
 
   let valueToColor: (value: number | null, ...args: any[]) => string;
   if (scaleColorScheme) {
@@ -61,11 +58,6 @@ export function resolveSpectrumColour(
           : null;
       return valueToColor(percentage as number);
     }
-    case ScaleType.TIME:
-      // if the value passed is a date locate it in the [min, max] range
-      if (isNaN(value))
-        return valueToColor(getTimeProportion(value, min as string, max as string), noDataColour);
-      return valueToColor(value, noDataColour);
 
     case ScaleType.GPI:
       return valueToColor(value, min, max);
