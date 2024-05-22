@@ -31623,8 +31623,7 @@ export const ScaleTypeSchema = {
 		"neutral",
 		"neutralReverse",
 		"performance",
-		"performanceDesc",
-		"time"
+		"performanceDesc"
 	],
 	"type": "string"
 } 
@@ -31726,8 +31725,7 @@ export const MeasureColorSchemeSchema = {
 		"default",
 		"default-reverse",
 		"gpi",
-		"performance",
-		"time"
+		"performance"
 	],
 	"type": "string"
 } 
@@ -33159,8 +33157,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"neutral",
 				"neutralReverse",
 				"performance",
-				"performanceDesc",
-				"time"
+				"performanceDesc"
 			],
 			"type": "string"
 		},
@@ -33170,8 +33167,7 @@ export const SpectrumMapOverlayConfigSchema = {
 				"default",
 				"default-reverse",
 				"gpi",
-				"performance",
-				"time"
+				"performance"
 			],
 			"type": "string"
 		},
@@ -35455,8 +35451,7 @@ export const ColorMapOverlayConfigSchema = {
 				"neutral",
 				"neutralReverse",
 				"performance",
-				"performanceDesc",
-				"time"
+				"performanceDesc"
 			],
 			"type": "string"
 		}
@@ -36904,8 +36899,7 @@ export const MapOverlayConfigSchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},
@@ -36915,8 +36909,7 @@ export const MapOverlayConfigSchema = {
 						"default",
 						"default-reverse",
 						"gpi",
-						"performance",
-						"time"
+						"performance"
 					],
 					"type": "string"
 				},
@@ -39197,8 +39190,7 @@ export const MapOverlayConfigSchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				}
@@ -72211,8 +72203,7 @@ export const MapOverlaySchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -72222,8 +72213,7 @@ export const MapOverlaySchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -74504,8 +74494,7 @@ export const MapOverlaySchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -76013,8 +76002,7 @@ export const MapOverlayCreateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -76024,8 +76012,7 @@ export const MapOverlayCreateSchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -78306,8 +78293,7 @@ export const MapOverlayCreateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -79808,8 +79794,7 @@ export const MapOverlayUpdateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						},
@@ -79819,8 +79804,7 @@ export const MapOverlayUpdateSchema = {
 								"default",
 								"default-reverse",
 								"gpi",
-								"performance",
-								"time"
+								"performance"
 							],
 							"type": "string"
 						},
@@ -82101,8 +82085,7 @@ export const MapOverlayUpdateSchema = {
 								"neutral",
 								"neutralReverse",
 								"performance",
-								"performanceDesc",
-								"time"
+								"performanceDesc"
 							],
 							"type": "string"
 						}
@@ -96886,8 +96869,7 @@ export const TranslatedMapOverlaySchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},
@@ -96897,8 +96879,7 @@ export const TranslatedMapOverlaySchema = {
 						"default",
 						"default-reverse",
 						"gpi",
-						"performance",
-						"time"
+						"performance"
 					],
 					"type": "string"
 				},
@@ -99248,8 +99229,7 @@ export const TranslatedMapOverlaySchema = {
 						"neutral",
 						"neutralReverse",
 						"performance",
-						"performanceDesc",
-						"time"
+						"performanceDesc"
 					],
 					"type": "string"
 				},

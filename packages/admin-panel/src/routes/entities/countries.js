@@ -5,6 +5,8 @@
 
 import { COLUMNS as ENTITIES_COLUMNS } from './entities';
 
+const RESOURCE_NAME = { singular: 'country', plural: 'countries' };
+
 const FIELDS = [
   { source: 'id', show: false },
   {
@@ -18,16 +20,15 @@ const FIELDS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Country',
   actionConfig: {
-    title: 'Create New Country',
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'countries',
     fields: FIELDS,
   },
 };
 
 export const countries = {
-  title: 'Countries',
+  resourceName: RESOURCE_NAME,
   endpoint: 'countries',
   path: '/countries',
   columns: FIELDS,

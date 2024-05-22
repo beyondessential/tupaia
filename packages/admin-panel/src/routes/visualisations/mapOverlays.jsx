@@ -2,11 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
 import { prettyArray } from '../../utilities';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'map overlay' };
 
 export const MAP_OVERLAYS_ENDPOINT = 'mapOverlays';
 
@@ -23,7 +27,7 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     width: 160,
     source: 'permission_group',
     editConfig: {
@@ -55,7 +59,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Project Codes',
+    Header: 'Project codes',
     source: 'project_codes',
     width: 140,
     Cell: ({ value }) => prettyArray(value),
@@ -146,7 +150,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Map Overlay',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: MAP_OVERLAYS_ENDPOINT,
       fields: [...FIELDS, ...extraEditFields],
     },
@@ -161,8 +165,8 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Map Overlay Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
+  subtitle: 'Please upload one or more JSON files with visualisations to be imported',
   actionConfig: {
     importEndpoint: 'mapOverlayVisualisations',
     multiple: true,
@@ -187,7 +191,7 @@ const LinksComponent = () => (
 );
 
 export const mapOverlays = {
-  title: 'Map overlays',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlays',
   endpoint: 'mapOverlays',
   columns: COLUMNS,

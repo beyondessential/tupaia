@@ -10,7 +10,7 @@ export {
   DatatrakWebProjectsRequest,
   DatatrakWebUserRequest,
   DatatrakWebSurveysRequest,
-  DatatrakWebSubmitSurveyRequest,
+  DatatrakWebSubmitSurveyResponseRequest,
   DatatrakWebSurveyRequest,
   DatatrakWebSurveyResponsesRequest,
   DatatrakWebRecentSurveysRequest,

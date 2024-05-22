@@ -113,6 +113,7 @@ const DataFetchingTableComponent = ({
   baseFilter,
   basePath,
   resourceName,
+  defaultSorting,
 }) => {
   const {
     getTableProps,
@@ -181,7 +182,7 @@ const DataFetchingTableComponent = ({
       initialiseTable();
     }
     gotoPage(0);
-    setSortBy([]); // reset sorting when table is re-initialised
+    setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
   }, [endpoint, baseFilter]);
 
   const onChangeFilters = newFilters => {
@@ -354,6 +355,7 @@ DataFetchingTableComponent.propTypes = {
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -372,6 +374,7 @@ DataFetchingTableComponent.defaultProps = {
   baseFilter: null,
   basePath: '',
   resourceName: {},
+  defaultSorting: [],
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({

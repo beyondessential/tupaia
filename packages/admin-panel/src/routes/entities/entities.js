@@ -4,6 +4,9 @@
  */
 
 import { SURVEY_RESPONSE_COLUMNS } from '../surveys/surveyResponses';
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'entity', plural: 'entities' };
 
 const ENTITIES_ENDPOINT = 'entities';
 
@@ -53,7 +56,7 @@ export const COLUMNS = [
     type: 'edit',
     actionConfig: {
       editEndpoint: ENTITIES_ENDPOINT,
-      title: 'Edit Entity',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       fields: [FIELDS.name, FIELDS.attributes],
     },
   },
@@ -68,7 +71,7 @@ export const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Entities',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
   subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart central-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/central-server/issues/481
   actionConfig: {
@@ -84,7 +87,7 @@ const IMPORT_CONFIG = {
       },
     },
     {
-      label: 'Automatically fetch GeoJSON (defaults to "Yes")',
+      label: 'Automatically fetch GeoJSON (defaults to ‘Yes’)',
       parameterKey: 'automaticallyFetchGeojson',
       type: 'boolean',
       editConfig: {
@@ -95,7 +98,7 @@ const IMPORT_CONFIG = {
 };
 
 export const entities = {
-  title: 'Entities',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: ENTITIES_ENDPOINT,
@@ -103,7 +106,7 @@ export const entities = {
   importConfig: IMPORT_CONFIG,
   nestedViews: [
     {
-      title: 'Survey Responses',
+      title: 'Survey responses',
       endpoint: `${ENTITIES_ENDPOINT}/{id}/surveyResponses`,
       columns: SURVEY_RESPONSE_COLUMNS,
       path: '/:id/surveyResponses',
