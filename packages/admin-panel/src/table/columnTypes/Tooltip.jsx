@@ -22,7 +22,8 @@ const useTooltip = column => {
   useEffect(() => {
     if (contentRef.current) {
       const { scrollWidth } = contentRef.current;
-      setDisplayTooltip(scrollWidth >= width);
+
+      setDisplayTooltip(scrollWidth >= width - 18); // 18 allows for padding of the cell
     }
   }, [width, contentRef.current]);
 
