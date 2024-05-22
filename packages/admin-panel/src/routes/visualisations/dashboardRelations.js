@@ -6,6 +6,8 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'dashboard relation' };
+
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
 
@@ -93,7 +95,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard Relation',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_RELATION_ENDPOINT,
       fields: FIELDS,
     },
@@ -108,15 +110,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new relation between Dashboard and DashboardItem',
   actionConfig: {
+    title: 'New relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const dashboardRelations = {
-  title: 'Dashboard relations',
+  resourceName: RESOURCE_NAME,
   path: '/dashboard-relations',
   endpoint: DASHBOARD_RELATION_ENDPOINT,
   columns: COLUMNS,

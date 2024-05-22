@@ -8,7 +8,7 @@ import { generateId } from '@tupaia/database';
 import { createUser as createUserAccessor } from '../../../dataAccessors';
 import { configureEnv } from '../../../configureEnv';
 import { getModels } from './getModels';
-import { TEST_USER_EMAIL } from '../constants';
+import { TEST_API_USER_EMAIL, TEST_API_USER_PASSWORD, TEST_USER_EMAIL } from '../constants';
 
 const models = getModels();
 
@@ -72,8 +72,8 @@ export async function addBaselineTestData() {
   });
 
   const apiUser = await createUserAccessor(models, {
-    emailAddress: process.env.API_CLIENT_NAME,
-    password: process.env.API_CLIENT_PASSWORD,
+    emailAddress: TEST_API_USER_EMAIL,
+    password: TEST_API_USER_PASSWORD,
     firstName: 'API',
     lastName: 'Client',
     employer: 'Automation',
@@ -86,14 +86,11 @@ export async function addBaselineTestData() {
 
   await models.apiClient.findOrCreate(
     {
-      username: process.env.API_CLIENT_NAME,
+      username: TEST_API_USER_EMAIL,
     },
     {
       user_account_id: apiUser.userId,
-      secret_key_hash: encryptPassword(
-        process.env.API_CLIENT_PASSWORD,
-        process.env.API_CLIENT_SALT,
-      ),
+      secret_key_hash: encryptPassword(TEST_API_USER_PASSWORD, process.env.API_CLIENT_SALT),
     },
   );
 }

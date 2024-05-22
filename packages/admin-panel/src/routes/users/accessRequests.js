@@ -5,18 +5,20 @@
 
 export const ACCESS_REQUESTS_ENDPOINT = 'accessRequests';
 
+const RESOURCE_NAME = { singular: 'access request' };
+
 const USER_FIELDS = [
   {
-    Header: 'Email Address',
+    Header: 'Email address',
     source: 'user_account.email',
     type: 'tooltip',
   },
   {
-    Header: 'First Name',
+    Header: 'First name',
     source: 'user.first_name',
   },
   {
-    Header: 'Last Name',
+    Header: 'Last name',
     source: 'user.last_name',
   },
   {
@@ -41,7 +43,7 @@ const ACCESS_REQUEST_FIELDS = [
     editConfig: { optionsEndpoint: 'entities', baseFilter: { type: 'country' } },
   },
   {
-    Header: 'Project Code',
+    Header: 'Project code',
     source: 'project.code',
     editable: false,
   },
@@ -57,7 +59,7 @@ const ACCESS_REQUEST_FIELDS = [
     editConfig: { type: 'textarea' },
   },
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_group.name',
     required: true,
     editConfig: {
@@ -76,7 +78,7 @@ const USER_COLUMNS = [
     source: 'user_id',
     width: 150,
     actionConfig: {
-      title: 'Edit & Approve Access Requests',
+      title: 'Edit & approve access requests',
       bulkGetEndpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
       bulkUpdateEndpoint: `${ACCESS_REQUESTS_ENDPOINT}`,
       baseFilter: { approved: null },
@@ -88,7 +90,7 @@ const USER_COLUMNS = [
           editable: false,
         },
         {
-          Header: 'Project Code',
+          Header: 'Project code',
           source: 'project.code',
           bulkAccessor: rows => rows.map(row => row['project.code'] ?? 'blank').join(', '),
           editable: false,
@@ -106,7 +108,7 @@ const USER_COLUMNS = [
           show: false,
         },
         {
-          Header: 'Permission Group',
+          Header: 'Permission group',
           source: 'permission_group.name',
           required: true,
           editConfig: {
@@ -137,12 +139,12 @@ const USER_COLUMNS = [
 const DETAILS_COLUMNS = [
   ...ACCESS_REQUEST_FIELDS,
   {
-    Header: 'Approve/Decline',
+    Header: 'Approve/decline',
     width: 140,
     source: 'id',
     type: 'edit',
     actionConfig: {
-      title: 'Edit & Approve Access Request',
+      title: 'Edit & approve access request',
       editEndpoint: 'accessRequests',
       fields: [
         ...ACCESS_REQUEST_FIELDS,
@@ -162,7 +164,7 @@ const DETAILS_COLUMNS = [
 ];
 
 export const accessRequests = {
-  title: 'Access requests',
+  resourceName: RESOURCE_NAME,
   path: '/access-requests',
   endpoint: ACCESS_REQUESTS_ENDPOINT,
   columns: USER_COLUMNS,
@@ -177,7 +179,7 @@ export const accessRequests = {
   },
   nestedViews: [
     {
-      title: 'Access Requests',
+      resourceName: RESOURCE_NAME,
       endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
       columns: DETAILS_COLUMNS,
       baseFilter: { approved: null },

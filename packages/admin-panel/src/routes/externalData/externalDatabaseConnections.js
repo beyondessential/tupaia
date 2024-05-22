@@ -6,6 +6,8 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'external database connection' };
+
 const EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT = 'externalDatabaseConnections';
 
 const FIELDS = [
@@ -47,8 +49,8 @@ const COLUMNS = [
     source: 'id',
     actionConfig: {
       editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-      title: 'Edit External Database Connection',
-      fields: [...FIELDS],
+      title: `Edit ${RESOURCE_NAME.singular}`,
+      fields: FIELDS,
     },
   },
   {
@@ -66,15 +68,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new External Database Connection',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
-    fields: [...FIELDS],
+    fields: FIELDS,
   },
 };
 
 export const externalDatabaseConnections = {
-  title: 'External database connections',
+  resourceName: RESOURCE_NAME,
   path: '',
   endpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
   columns: COLUMNS,

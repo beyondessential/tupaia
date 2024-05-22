@@ -6,6 +6,8 @@ import { SurveyEditFields } from '../../surveys/SurveyEditFields';
 import { QUESTION_FIELDS as BASE_QUESTION_FIELDS } from './questions';
 import { EditSurveyPage } from '../../pages/resources';
 
+const RESOURCE_NAME = { singular: 'survey' };
+
 const PERIOD_GRANULARITIES = [
   { label: 'Daily', value: 'daily' },
   { label: 'Weekly', value: 'weekly' },
@@ -175,11 +177,11 @@ const SURVEY_COLUMNS = [
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_group.name',
   },
   {
-    Header: 'Survey Group',
+    Header: 'Survey group',
     source: 'survey_group.name',
   },
   {
@@ -199,7 +201,7 @@ const SURVEY_COLUMNS = [
     disableSortBy: true,
     isButtonColumn: true,
     actionConfig: {
-      title: 'Edit survey',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'surveys',
       link: `/surveys/:id/edit`,
       fields: Object.values(SURVEY_FIELDS),
@@ -216,6 +218,7 @@ const SURVEY_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'surveys',
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
@@ -241,7 +244,6 @@ const CREATE_CONFIG = {
       'data_group.service_type': 'tupaia',
       'data_group.config': {},
     },
-    title: 'New survey',
   },
 };
 
@@ -261,7 +263,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Question',
+      title: 'Edit question',
       editEndpoint: 'surveyScreenComponents',
       fields: [
         ...QUESTION_FIELDS,
@@ -277,22 +279,22 @@ const QUESTION_COLUMNS = [
                 type: 'json',
                 getJsonFieldSchema: () => [
                   {
-                    label: 'Create New',
+                    label: 'Create new',
                     fieldName: 'createNew',
                     type: 'boolean',
                   },
                   {
-                    label: 'Allow Scan QR Code',
+                    label: 'Allow scan QR code',
                     fieldName: 'allowScanQrCode',
                     type: 'boolean',
                   },
                   {
-                    label: 'Generate QR Code',
+                    label: 'Generate QR code',
                     fieldName: 'generateQrCode',
                     type: 'boolean',
                   },
                   {
-                    label: 'Hide Parent Entity Name',
+                    label: 'Hide parent entity name',
                     fieldName: 'hideParentName',
                     type: 'boolean',
                   },
@@ -302,12 +304,12 @@ const QUESTION_COLUMNS = [
                     type: 'json',
                     getJsonFieldSchema: () => [
                       {
-                        label: 'Accepted Types (comma separated values)',
+                        label: 'Accepted types (comma-separated values)',
                         fieldName: 'type',
                         csv: true,
                       },
                       {
-                        label: 'Parent Entity',
+                        label: 'Parent entity',
                         fieldName: 'parentId',
                         type: 'json',
                         getJsonFieldSchema: () => [
@@ -315,7 +317,7 @@ const QUESTION_COLUMNS = [
                         ],
                       },
                       {
-                        label: 'Grandparent Entity',
+                        label: 'Grandparent entity',
                         fieldName: 'grandparentId',
                         type: 'json',
                         getJsonFieldSchema: () => [
@@ -349,7 +351,7 @@ const QUESTION_COLUMNS = [
                         fieldName: 'type',
                       },
                       {
-                        label: 'Parent Entity',
+                        label: 'Parent entity',
                         fieldName: 'parentId',
                         type: 'json',
                         getJsonFieldSchema: () => [
@@ -392,7 +394,7 @@ const QUESTION_COLUMNS = [
                 ],
               },
               {
-                label: 'Code Generator',
+                label: 'Code generator',
                 fieldName: 'codeGenerator',
                 type: 'json',
                 getJsonFieldSchema: () => [
@@ -411,17 +413,17 @@ const QUESTION_COLUMNS = [
                     fieldName: 'formula',
                   },
                   {
-                    label: 'Default Values',
+                    label: 'Default values',
                     fieldName: 'defaultValues',
                     type: 'jsonEditor',
                   },
                   {
-                    label: 'Value Translation',
+                    label: 'Value translation',
                     fieldName: 'valueTranslation',
                     type: 'jsonEditor',
                   },
                   {
-                    label: 'Answer Display Text',
+                    label: 'Answer display text',
                     fieldName: 'answerDisplayText',
                   },
                 ],
@@ -454,7 +456,7 @@ const QUESTION_COLUMNS = [
                     type: 'json',
                     getJsonFieldSchema: () => [
                       {
-                        label: 'Parent Project',
+                        label: 'Parent project',
                         fieldName: 'parent_project',
                         type: 'json',
                         getJsonFieldSchema: () => [
@@ -474,7 +476,7 @@ const QUESTION_COLUMNS = [
 ];
 
 export const surveys = {
-  title: 'Surveys',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: 'surveys',

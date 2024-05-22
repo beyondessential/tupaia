@@ -12,7 +12,7 @@ import { permissionGroupsViewer } from './permissionGroupsViewer';
 import { accessRequests } from './accessRequests';
 
 export const usersTabRoutes = {
-  label: 'Users & Permissions',
+  label: 'Users & permissions',
   path: '/users',
   icon: <PeopleAlt />,
   childViews: [users, permissions, permissionGroups, permissionGroupsViewer, accessRequests],

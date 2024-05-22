@@ -5,10 +5,12 @@ import {
   getDataSourceButtonsConfig,
 } from '../../common';
 
+const RESOURCE_NAME = { singular: 'data group' };
+
 const DATA_GROUP_FIELDS = [
   ...DATA_SOURCE_FIELDS,
   {
-    Header: 'Data Service Configuration',
+    Header: 'Data service configuration',
     source: 'config',
     Cell: DataSourceConfigView,
     editConfig: {
@@ -19,7 +21,7 @@ const DATA_GROUP_FIELDS = [
       },
       getJsonFieldSchema: () => [
         {
-          label: 'DHIS Server',
+          label: 'DHIS server',
           fieldName: 'dhisInstanceCode',
           optionsEndpoint: 'dhisInstances',
           optionLabelKey: 'dhisInstances.code',
@@ -37,14 +39,13 @@ const EDITOR_CONFIG = {
 };
 
 export const dataGroups = {
-  title: 'Data groups',
+  resourceName: RESOURCE_NAME,
   endpoint: 'dataGroups',
   columns: [...DATA_GROUP_FIELDS, ...getDataSourceButtonsConfig(DATA_GROUP_FIELDS, 'dataGroup')],
   path: '/data-groups',
   createConfig: {
-    title: 'New Data Group',
     actionConfig: {
-      title: 'Edit Data Group',
+      title: `New ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dataGroups',
       fields: DATA_GROUP_FIELDS,
     },
@@ -53,7 +54,7 @@ export const dataGroups = {
   isBESAdminOnly: true,
   nestedViews: [
     {
-      title: 'Data elements',
+      resourceName: RESOURCE_NAME,
       endpoint: 'dataGroups/{id}/dataElements',
       columns: [
         ...DATA_ELEMENT_FIELDS,

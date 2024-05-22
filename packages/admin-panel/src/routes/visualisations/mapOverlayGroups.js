@@ -4,6 +4,8 @@
  */
 import { MAP_OVERLAY_GROUP_RELATION_FIELDS } from './mapOverlayGroupRelations';
 
+const RESOURCE_NAME = { singular: 'map overlay group' };
+
 const MAP_OVERLAY_GROUPS_ENDPOINT = 'mapOverlayGroups';
 
 const FIELDS = [
@@ -32,7 +34,7 @@ const COLUMNS = [
     Header: 'Edit',
     type: 'edit',
     actionConfig: {
-      title: 'Edit Map Overlay Group',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
       fields: FIELDS,
     },
@@ -59,22 +61,22 @@ export const RELATION_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Map overlay group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const mapOverlayGroups = {
-  title: 'Map overlay groups',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlay-groups',
   endpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      title: 'Map Overlay Group Relations',
+      title: 'Map overlay group relations',
       columns: RELATION_COLUMNS,
       endpoint: 'mapOverlayGroups/{id}/mapOverlayGroupRelations',
       path: '/:id/map-overlay-group-relations',

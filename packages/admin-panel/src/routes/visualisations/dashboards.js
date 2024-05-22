@@ -5,6 +5,8 @@
 
 import { DASHBOARD_RELATION_COLUMNS } from './dashboardRelations';
 
+const RESOURCE_NAME = { singular: 'dashboard' };
+
 const DASHBOARDS_ENDPOINT = 'dashboards';
 
 const FIELDS = [
@@ -20,7 +22,7 @@ const FIELDS = [
     required: true,
   },
   {
-    Header: 'Organisation Unit Code',
+    Header: 'Organisation unit code',
     source: 'root_entity_code',
     required: true,
     editConfig: {
@@ -31,7 +33,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
@@ -43,9 +45,9 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard',
-      editEndpoint: 'dashboards',
-      fields: [...FIELDS],
+      title: `Edit ${RESOURCE_NAME.singular}`,
+      editEndpoint: DASHBOARDS_ENDPOINT,
+      fields: FIELDS,
     },
   },
   {
@@ -59,7 +61,7 @@ const COLUMNS = [
 
 const RELATION_FIELDS = [
   {
-    Header: 'Dashboard Item Code',
+    Header: 'Dashboard item code',
     source: 'dashboard_item.code',
     editable: false,
   },
@@ -83,22 +85,22 @@ const RELATION_COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new Dashboard',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DASHBOARDS_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const dashboards = {
-  title: 'Dashboards',
+  resourceName: RESOURCE_NAME,
   path: '/dashboards',
   endpoint: DASHBOARDS_ENDPOINT,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      title: 'Dashboard Relations',
+      resourceName: RESOURCE_NAME,
       columns: RELATION_COLUMNS,
       endpoint: 'dashboards/{id}/dashboardRelations',
       path: '/:id/dashboard-relations',

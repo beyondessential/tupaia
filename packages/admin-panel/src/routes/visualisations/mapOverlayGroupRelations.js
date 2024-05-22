@@ -2,11 +2,14 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
+const RESOURCE_NAME = { singular: 'map overlay group relation' };
+
 export const RELATION_ENDPOINT = 'mapOverlayGroupRelations';
 
 export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
   MAP_OVERLAY_GROUP_CODE: {
-    Header: 'Map Overlay Group Code',
+    Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
     type: 'tooltip',
     required: true,
@@ -31,7 +34,7 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
     },
   },
   CHILD_TYPE: {
-    Header: 'Child Type',
+    Header: 'Child type',
     width: 160,
     source: 'child_type',
     type: 'tooltip',
@@ -39,18 +42,18 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
     editConfig: {
       options: [
         {
-          label: 'Map Overlay',
+          label: 'Map overlay',
           value: 'mapOverlay',
         },
         {
-          label: 'Map Overlay Group',
+          label: 'Map overlay group',
           value: 'mapOverlayGroup',
         },
       ],
     },
   },
   SORT_ORDER: {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
     type: 'tooltip',
   },
@@ -65,7 +68,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Map Overlay Group Relation',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'mapOverlayGroupRelations',
       fields: FIELDS,
     },
@@ -80,15 +83,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new relation between Map Overlay and Map Overlay Group',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: RELATION_ENDPOINT,
     fields: FIELDS,
   },
 };
 
 export const mapOverlayGroupRelations = {
-  title: 'Map overlay group relations',
+  resourceName: RESOURCE_NAME,
   path: '/map-overlay-group-relations',
   endpoint: RELATION_ENDPOINT,
   columns: COLUMNS,

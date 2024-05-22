@@ -6,6 +6,8 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'project' };
+
 const PROJECTS_ENDPOINT = 'projects';
 
 const DEFAULT_FIELDS = [
@@ -27,7 +29,7 @@ const DEFAULT_FIELDS = [
     },
   },
   {
-    Header: 'Map Overlay Code',
+    Header: 'Map overlay code',
     source: 'default_measure',
     required: true,
     editConfig: {
@@ -38,7 +40,7 @@ const DEFAULT_FIELDS = [
     },
   },
   {
-    Header: 'Permission Group',
+    Header: 'Permission group',
     source: 'permission_groups',
     type: 'jsonTooltip',
     required: true,
@@ -57,7 +59,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'image_url',
       avatarVariant: 'square',
-      labelTooltip: 'Recommended size: 480x240px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -69,7 +71,7 @@ const DEFAULT_FIELDS = [
       type: 'image',
       name: 'logo_url',
       avatarVariant: 'square',
-      labelTooltip: 'Recommended size: 480x240px',
+      labelTooltip: 'Recommended size: 480 × 240 px',
       maxHeight: 240,
       maxWidth: 480,
     },
@@ -118,7 +120,7 @@ const NEW_PROJECT_COLUMNS = [
   },
   ...CREATE_FIELDS,
   {
-    Header: 'Country Code/s',
+    Header: 'Country code(s)',
     source: 'country.code',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -131,7 +133,7 @@ const NEW_PROJECT_COLUMNS = [
     },
   },
   {
-    Header: 'Canonical Types (leave blank for default)',
+    Header: 'Canonical types (leave blank for default)',
     source: 'entityTypes',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -152,7 +154,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Project',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'projects',
       fields: EDIT_FIELDS,
     },
@@ -160,15 +162,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'Create a new project',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: PROJECTS_ENDPOINT,
     fields: NEW_PROJECT_COLUMNS,
   },
 };
 
 export const projects = {
-  title: 'Projects',
+  resourceName: RESOURCE_NAME,
   path: '',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'DHIS instance' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -52,15 +54,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Dhis Instance',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dhisInstances',
     fields: FIELDS,
   },
 };
 
 export const dhisInstances = {
-  title: 'DHIS Instances',
+  resourceName: RESOURCE_NAME,
   endpoint: 'dhisInstances',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

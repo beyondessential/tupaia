@@ -6,6 +6,8 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'dashboard mailing list' };
+
 const DASHBOARD_MAILING_LIST_FIELDS = {
   project: {
     Header: 'Project',
@@ -76,7 +78,7 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard Mailing List',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dashboardMailingLists',
       fields: [
         DASHBOARD_MAILING_LIST_FIELDS.project,
@@ -97,6 +99,7 @@ const DASHBOARD_MAILING_LIST_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dashboardMailingLists',
     fields: [
       DASHBOARD_MAILING_LIST_FIELDS.project,
@@ -104,7 +107,6 @@ const CREATE_CONFIG = {
       DASHBOARD_MAILING_LIST_FIELDS.entity_name,
       DASHBOARD_MAILING_LIST_FIELDS.admin_permission_groups,
     ],
-    title: 'New dashboard mailing list',
   },
 };
 
@@ -131,9 +133,9 @@ const ENTRY_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Entry',
+      title: 'Edit entry',
       editEndpoint: 'dashboardMailingListEntries',
-      fields: [...ENTRY_FIELDS],
+      fields: ENTRY_FIELDS,
     },
   },
   {
@@ -146,7 +148,7 @@ const ENTRY_COLUMNS = [
 ];
 
 export const dashboardMailingLists = {
-  title: 'Dashboard mailing lists',
+  resourceName: RESOURCE_NAME,
   path: '/dashboard-mailing-lists',
   endpoint: 'dashboardMailingLists',
   columns: DASHBOARD_MAILING_LIST_COLUMNS,

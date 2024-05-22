@@ -2,9 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CreateActionButton } from '../../editor';
+
+const RESOURCE_NAME = { singular: 'dashboard item' };
 
 export const DASHBOARD_ITEMS_ENDPOINT = 'dashboardItems';
 
@@ -16,7 +19,7 @@ const FIELDS = [
     required: true,
   },
   {
-    Header: 'Report Code',
+    Header: 'Report code',
     source: 'report_code',
     type: 'tooltip',
     required: true,
@@ -73,7 +76,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Dashboard Item',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: DASHBOARD_ITEMS_ENDPOINT,
       fields: [...FIELDS, ...extraEditFields],
     },
@@ -88,8 +91,8 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Dashboard Visualisation',
-  subtitle: 'Please upload one or more .json files with visualisations to be imported:',
+  title: `Import ${RESOURCE_NAME.singular}s`,
+  subtitle: 'Please upload one or more JSON files with visualisations to be imported',
   actionConfig: {
     importEndpoint: 'dashboardVisualisations',
     multiple: true,
@@ -114,7 +117,7 @@ const LinksComponent = () => (
 );
 
 export const dashboardItems = {
-  title: 'Dashboard items',
+  resourceName: RESOURCE_NAME,
   path: '',
   default: true,
   endpoint: DASHBOARD_ITEMS_ENDPOINT,

@@ -3,6 +3,10 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { capitalizeFirst, getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'option set' };
+
 const OPTION_SET_FIELDS = [
   {
     Header: 'Name',
@@ -26,7 +30,7 @@ const OPTION_SET_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Option Set',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'optionSets',
       fields: OPTION_SET_FIELDS,
     },
@@ -44,7 +48,7 @@ export const BASE_OPTION_FIELDS = [
     source: 'label',
   },
   {
-    Header: 'Sort Order',
+    Header: 'Sort order',
     source: 'sort_order',
   },
 ];
@@ -73,15 +77,16 @@ const OPTION_COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Option Sets',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'optionSets',
   },
   queryParameters: [
     {
-      label: 'Option Set Names',
-      labelTooltip:
-        'Please enter the names of the option sets to be imported. These should match the tab names in the file.',
+      label: `${capitalizeFirst(RESOURCE_NAME.singular)} names`,
+      labelTooltip: `Please enter the names of the ${getPluralForm(
+        RESOURCE_NAME,
+      )} to be imported. These should match the tab names in the file.`,
       parameterKey: 'optionSetNames',
       optionsEndpoint: 'optionSets',
       optionValueKey: 'name',
@@ -92,7 +97,7 @@ const IMPORT_CONFIG = {
 };
 
 export const optionSets = {
-  title: 'Option sets',
+  resourceName: RESOURCE_NAME,
   endpoint: 'optionSets',
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,

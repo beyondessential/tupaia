@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'superset instance' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -42,15 +44,15 @@ const COLUMNS = [
 ];
 
 const CREATE_CONFIG = {
-  title: 'New Superset Instance',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'supersetInstances',
     fields: FIELDS,
   },
 };
 
 export const supersetInstances = {
-  title: 'mSupply superset Instances',
+  title: 'mSupply superset instances',
   endpoint: 'supersetInstances',
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,

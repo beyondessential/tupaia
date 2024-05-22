@@ -5,23 +5,25 @@
 
 import {
   DATA_ELEMENT_FIELD_EDIT_CONFIG,
-  SERVICE_TYPE_OPTIONS,
   DataSourceConfigView,
+  SERVICE_TYPE_OPTIONS,
 } from '../../common';
+
+const RESOURCE_NAME = { singular: 'mapping' };
 
 const FIELDS = [
   {
-    Header: 'Data Element',
+    Header: 'Data element',
     source: 'data_element_code',
     required: true,
   },
   {
-    Header: 'Country Code',
+    Header: 'Country code',
     source: 'country_code',
     required: true,
   },
   {
-    Header: 'Service Type',
+    Header: 'Service type',
     source: 'service_type',
     required: true,
     editConfig: {
@@ -29,7 +31,7 @@ const FIELDS = [
     },
   },
   {
-    Header: 'Data Service Configuration',
+    Header: 'Data service sonfiguration',
     source: 'service_config',
     Cell: DataSourceConfigView,
     editConfig: DATA_ELEMENT_FIELD_EDIT_CONFIG,
@@ -57,15 +59,15 @@ const COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Mapping',
+  title: `Import ${RESOURCE_NAME.singular}`,
   actionConfig: {
     importEndpoint: 'dataElementDataServices',
   },
 };
 
 const CREATE_CONFIG = {
-  title: 'New Mapping',
   actionConfig: {
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dataElementDataServices',
     fields: FIELDS,
   },
@@ -73,6 +75,7 @@ const CREATE_CONFIG = {
 
 export const dataMapping = {
   title: 'Data mapping',
+  resourceName: RESOURCE_NAME,
   path: '/data-mapping',
   endpoint: 'dataElementDataServices',
   columns: COLUMNS,
