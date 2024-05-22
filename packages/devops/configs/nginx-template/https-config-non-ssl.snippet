@@ -1,0 +1,4 @@
+  # Redirect to HTTPs when behind a proxy
+  if ($http_x_forwarded_proto = "http") {
+    return 301 https://$host$request_uri;
+  }

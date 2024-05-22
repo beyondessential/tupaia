@@ -7,7 +7,7 @@ import { generatePath } from 'react-router';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import { QuestionType } from '@tupaia/types';
-import { useSubmitSurvey } from '../../../api/mutations';
+import { useSubmitSurveyResponse } from '../../../api/mutations';
 import { renderMutation } from '../../helpers/render';
 import { successToast } from '../../../utils';
 import { Coconut } from '../../../components';
@@ -80,7 +80,7 @@ jest.mock('../../../utils/toast', () => {
 });
 
 const server = setupServer(
-  rest.post('*/v1/submitSurvey', (_, res, ctx) => {
+  rest.post('*/v1/submitSurveyResponse', (_, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
@@ -95,7 +95,7 @@ afterAll(() => server.close());
 
 describe('useSubmitSurvey', () => {
   it('should call successToast and navigate to the success screen on successful submission of survey', async () => {
-    const { result, waitFor } = renderMutation(useSubmitSurvey);
+    const { result, waitFor } = renderMutation(useSubmitSurveyResponse);
     act(() => {
       result.current.mutate({
         question1: 'answer1',

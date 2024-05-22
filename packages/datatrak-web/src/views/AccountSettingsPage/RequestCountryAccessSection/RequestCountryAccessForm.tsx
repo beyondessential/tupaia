@@ -82,6 +82,9 @@ const StyledFormInput = styled(FormInput).attrs({
   .MuiInputBase-input {
     box-sizing: border-box;
   }
+  .MuiOutlinedInput-inputMultiline {
+    padding: 1rem;
+  }
 `;
 
 interface RequestCountryAccessFormProps {

@@ -72,11 +72,9 @@ const stateChanges = {
   [PAGE_INDEX_CHANGE]: payload => payload,
   [PAGE_SIZE_CHANGE]: payload => ({
     ...payload,
-    pageIndex: 0,
   }),
   [FILTERS_CHANGE]: payload => ({
     ...payload,
-    pageIndex: 0,
   }),
   [EXPANSIONS_CHANGE]: payload => payload,
   [EXPANSIONS_TAB_CHANGE]: ({ rowId, tabValue }, currentState) => ({
@@ -88,7 +86,6 @@ const stateChanges = {
   [COLUMNS_RESIZE]: payload => payload,
   [SORTING_CHANGE]: payload => ({
     ...payload,
-    pageIndex: 0,
   }),
 };
 
