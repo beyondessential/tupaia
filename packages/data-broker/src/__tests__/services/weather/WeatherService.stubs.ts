@@ -61,7 +61,7 @@ export const createWeatherApiStubWithMockResponse = () => {
 export const createMockEntity = async (fieldValues?: Partial<Entity>) => {
   const mockModels = createMockModelsStub();
 
-  return mockModels.entity.createTypeInstance({
+  return mockModels.entity.createRecordInstance({
     code: 'MELB',
     name: 'Melbourne',
     point: JSON.stringify({ type: 'Point', coordinates: [144.986, -37.915] }),

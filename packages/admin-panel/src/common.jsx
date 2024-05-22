@@ -151,7 +151,11 @@ export const DATA_ELEMENT_FIELDS = [
     source: 'permission_groups',
     type: 'tooltip',
     editConfig: {
-      type: 'jsonArray',
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+      sourceKey: 'permission_groups',
+      allowMultipleValues: true,
     },
   },
 ];

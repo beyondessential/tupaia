@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+const RESOURCE_NAME = { singular: 'legacy report' };
+
 const FIELDS = [
   {
     Header: 'Code',
@@ -10,18 +12,18 @@ const FIELDS = [
     type: 'tooltip',
   },
   {
-    Header: 'Data Builder',
+    Header: 'Data builder',
     source: 'data_builder',
     type: 'tooltip',
   },
   {
-    Header: 'Data Builder Config',
+    Header: 'Data builder config',
     source: 'data_builder_config',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
-    Header: 'Data Services',
+    Header: 'Data services',
     source: 'data_services',
     type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
@@ -35,15 +37,15 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Legacy Report',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'legacyReports',
-      fields: [...FIELDS],
+      fields: FIELDS,
     },
   },
 ];
 
 export const legacyReports = {
-  title: 'Legacy reports',
+  resourceName: RESOURCE_NAME,
   path: '/legacy-reports',
   endpoint: 'legacyReports',
   columns: COLUMNS,

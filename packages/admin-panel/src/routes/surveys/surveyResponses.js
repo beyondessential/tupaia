@@ -1,12 +1,15 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
 import { getBrowserTimeZone } from '@tupaia/utils';
 import moment from 'moment';
 import { ApprovalStatus } from '@tupaia/types';
 import { SurveyResponsesExportModal } from '../../importExport';
+import { getPluralForm } from '../../pages/resources/resourceName';
+
+const RESOURCE_NAME = { singular: 'survey response' };
 
 // Don't include not_required as an editable option because it can lead to
 // mis-matches between surveys and survey responses
@@ -23,7 +26,7 @@ const surveyName = {
 };
 
 const surveyId = {
-  Header: 'Survey Id',
+  Header: 'Survey ID',
   source: 'survey.id',
   editable: false,
   type: 'tooltip',
@@ -37,7 +40,7 @@ const assessorName = {
 };
 
 const date = {
-  Header: 'Date of Survey',
+  Header: 'Date of survey',
   source: 'end_time',
   type: 'tooltip',
   accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
@@ -46,7 +49,7 @@ const date = {
 };
 
 const dateOfData = {
-  Header: 'Date of Data',
+  Header: 'Date of data',
   source: 'data_time',
   type: 'tooltip',
   accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
@@ -57,14 +60,8 @@ const dateOfData = {
   },
 };
 
-const outdated = {
-  Header: 'Outdated',
-  source: 'outdated',
-  type: 'boolean',
-};
-
 const approvalStatus = {
-  Header: 'Approval Status',
+  Header: 'Approval status',
   source: 'approval_status',
   type: 'tooltip',
 };
@@ -88,7 +85,6 @@ export const SURVEY_RESPONSE_COLUMNS = [
   assessorName,
   date,
   dateOfData,
-  outdated,
   approvalStatus,
   {
     Header: 'Export',
@@ -135,7 +131,7 @@ export const ANSWER_COLUMNS = [
 ];
 
 const IMPORT_CONFIG = {
-  title: 'Import Survey Responses',
+  title: `Import ${getPluralForm(RESOURCE_NAME)}`,
   actionConfig: {
     importEndpoint: 'surveyResponses',
     extraQueryParameters: {
@@ -157,7 +153,7 @@ const IMPORT_CONFIG = {
 };
 
 export const surveyResponses = {
-  title: 'Survey responses',
+  resourceName: RESOURCE_NAME,
   path: '/survey-responses',
   endpoint: 'surveyResponses',
   columns: SURVEY_RESPONSE_PAGE_COLUMNS,

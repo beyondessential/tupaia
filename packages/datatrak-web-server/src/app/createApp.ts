@@ -31,8 +31,8 @@ import {
   EntityDescendantsRoute,
   ProjectRequest,
   ProjectRoute,
-  SubmitSurveyRoute,
-  SubmitSurveyRequest,
+  SubmitSurveyResponseRoute,
+  SubmitSurveyResponseRequest,
   RecentSurveysRequest,
   RecentSurveysRoute,
   LeaderboardRequest,
@@ -61,7 +61,10 @@ export async function createApp() {
     .useAttachSession(attachSessionIfAvailable)
     .use('*', attachAccessPolicy)
     .attachApiClientToContext(authHandlerProvider)
-    .post<SubmitSurveyRequest>('submitSurvey', handleWith(SubmitSurveyRoute))
+    .post<SubmitSurveyResponseRequest>(
+      'submitSurveyResponse',
+      handleWith(SubmitSurveyResponseRoute),
+    )
     .post<GenerateLoginTokenRequest>('generateLoginToken', handleWith(GenerateLoginTokenRoute))
     .get<UserRequest>('getUser', handleWith(UserRoute))
     .get<SingleEntityRequest>('entity/:entityCode', handleWith(SingleEntityRoute))
