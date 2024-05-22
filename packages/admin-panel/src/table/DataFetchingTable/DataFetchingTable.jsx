@@ -273,7 +273,7 @@ const DataFetchingTableComponent = memo(
                     ) => {
                       return (
                         <HeaderDisplayCell
-                          {...getHeaderProps(getSortByToggleProps())}
+                          {...getHeaderProps()}
                           // eslint-disable-next-line react/no-array-index-key
                           key={`header-${i}`}
                           canResize={canResize}
@@ -285,6 +285,7 @@ const DataFetchingTableComponent = memo(
                               active={isSorted}
                               direction={isSortedDesc ? 'asc' : 'desc'}
                               IconComponent={KeyboardArrowDown}
+                              {...getSortByToggleProps()}
                             />
                           )}
                         </HeaderDisplayCell>
