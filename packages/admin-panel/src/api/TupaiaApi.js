@@ -46,10 +46,6 @@ export class TupaiaApi {
     return authenticationDetails;
   }
 
-  async logout() {
-    await this.post('logout');
-  }
-
   get(endpoint, queryParameters) {
     return this.requestJson(endpoint, queryParameters, this.buildFetchConfig('GET'));
   }

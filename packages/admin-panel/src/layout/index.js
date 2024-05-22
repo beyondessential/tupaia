@@ -9,3 +9,4 @@ export { PageWrapper, Main, PageContentWrapper } from './Page';
 export { AppPageLayout } from './AppPageLayout';
 export { Breadcrumbs } from './Breadcrumbs';
 export { TabPageLayout } from './TabPageLayout';
+export { SimplePageLayout } from './SimplePageLayout';

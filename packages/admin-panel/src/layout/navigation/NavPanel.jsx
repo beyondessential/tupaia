@@ -70,7 +70,7 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-export const NavPanel = ({ links, user, logo, homeLink, userLinks, basePath }) => {
+export const NavPanel = ({ links, logo, homeLink, userLinks, basePath }) => {
   return (
     <Wrapper>
       <HomeLink logo={logo} homeLink={homeLink} />
@@ -89,7 +89,7 @@ export const NavPanel = ({ links, user, logo, homeLink, userLinks, basePath }) =
             </List>
           </Nav>
         )}
-        <UserProfileInfo user={user} userLinks={userLinks} />
+        <UserProfileInfo userLinks={userLinks} />
       </Container>
     </Wrapper>
   );

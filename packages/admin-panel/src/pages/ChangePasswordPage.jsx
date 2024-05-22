@@ -4,15 +4,14 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiDivider from '@material-ui/core/Divider';
-import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Button, TextField, SmallAlert } from '@tupaia/ui-components';
 import { PageHeader } from '../widgets';
-import { updatePassword, getUser } from '../authentication';
 import { PasswordStrengthBar } from '../widgets/PasswordStrengthBar';
+import { useUser } from '../api/queries';
+import { useResetPassword } from '../api/mutations';
 
 const Container = styled.section`
   padding-top: 1rem;
@@ -41,25 +40,15 @@ const Divider = styled(MuiDivider)`
   margin: 0.5rem 0 1.8rem;
 `;
 
-const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+export const ChangePasswordPage = React.memo(() => {
+  const { data: user } = useUser();
+  const { mutate: resetPassword, isLoading, isSuccess, error } = useResetPassword();
   const { handleSubmit, register, errors, watch } = useForm();
 
-  const onSubmit = handleSubmit(async (data, event) => {
-    setIsLoading(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-    try {
-      await onUpdatePassword(data);
-      setIsLoading(false);
-      setSuccessMessage('Password successfully updated.');
-      event.target.reset();
-    } catch (error) {
-      setIsLoading(false);
-      setErrorMessage(error.message);
-    }
+  if (!user) return null;
+
+  const onSubmit = handleSubmit(data => {
+    resetPassword(data);
   });
 
   const password = watch('password');
@@ -68,8 +57,8 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
     <Container>
       <PageHeader title={user.name} />
       <form onSubmit={onSubmit} noValidate>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+        {error && <ErrorMessage>{error.message}</ErrorMessage>}
+        {isSuccess && <SuccessMessage>Password successfully updated.</SuccessMessage>}
         <TextField
           label="Current Password"
           name="oldPassword"
@@ -85,12 +74,12 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
         <Divider />
         <TextField
           label="New Password"
-          name="password"
+          name="newPassword"
           placeholder="Enter your password"
           required
           type="password"
-          error={!!errors.password}
-          helperText={errors.password && errors.password.message}
+          error={!!errors.newPassword}
+          helperText={errors.newPassword && errors.newPassword.message}
           inputRef={register({
             required: 'Required',
             minLength: { value: 9, message: 'Password must be over 8 characters long.' },
@@ -123,28 +112,3 @@ const ChangePasswordPageComponent = React.memo(({ user, onUpdatePassword }) => {
     </Container>
   );
 });
-
-ChangePasswordPageComponent.propTypes = {
-  onUpdatePassword: PropTypes.func.isRequired,
-  user: PropTypes.PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }),
-};
-
-ChangePasswordPageComponent.defaultProps = {
-  user: null,
-};
-
-const mapStateToProps = state => ({
-  user: getUser(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onUpdatePassword: payload => dispatch(updatePassword(payload)),
-});
-
-export const ChangePasswordPage = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ChangePasswordPageComponent);

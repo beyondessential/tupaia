@@ -4,8 +4,6 @@
  */
 
 export * from './actions';
-export { LOGOUT } from './constants';
+export { LOGOUT, PASSWORD_RESET_TOKEN_PARAM } from './constants';
 export * from './selectors';
-export { reducer } from './reducer';
-export { ProfileButton } from './ProfileButton';
 export { PrivateRoute } from './PrivateRoute';

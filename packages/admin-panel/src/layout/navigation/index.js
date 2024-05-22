@@ -7,3 +7,4 @@ export { NavPanel } from './NavPanel';
 export { SecondaryNavbar } from './SecondaryNavbar';
 export { HomeLink } from './HomeLink';
 export { UserLink } from './UserLink';
+export { TopNavbar } from './TopNavbar';

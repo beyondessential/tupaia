@@ -19,12 +19,7 @@ export const AdminPanelNavbar = ({ links, user }) => {
       homeLink={adminUrl}
       links={links}
       user={user}
-      userLinks={[
-        {
-          label: 'Logout',
-          to: `${adminUrl}/logout`,
-        },
-      ]}
+      userLinks={[]}
     />
   );
 };

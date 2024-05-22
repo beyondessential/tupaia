@@ -9,12 +9,11 @@ import { labelToId } from '../utilities';
 import { Main, PageWrapper } from './Page';
 import { NavPanel } from './navigation';
 
-export const AppPageLayout = ({ user, routes, logo, homeLink, userLinks, basePath }) => {
+export const AppPageLayout = ({ routes, logo, homeLink, userLinks, basePath }) => {
   return (
     <PageWrapper>
       <NavPanel
         links={routes.map(route => ({ ...route, id: `app-tab-${labelToId(route.label)}` }))}
-        user={user}
         userLinks={userLinks}
         logo={logo}
         homeLink={homeLink}
@@ -28,12 +27,6 @@ export const AppPageLayout = ({ user, routes, logo, homeLink, userLinks, basePat
 };
 
 AppPageLayout.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }),
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
@@ -60,10 +53,6 @@ AppPageLayout.defaultProps = {
     alt: 'Tupaia Admin Panel Logo',
   },
   homeLink: '/',
-  userLinks: [
-    { label: 'Profile', to: '/profile' },
-    { label: 'Logout', to: '/logout' },
-  ],
+  userLinks: [{ label: 'Profile', to: '/profile' }],
   basePath: '',
-  user: {},
 };

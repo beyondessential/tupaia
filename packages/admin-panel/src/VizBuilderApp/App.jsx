@@ -13,7 +13,7 @@ import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
-import { NavPanel } from './components';
+import { TopNavbar } from '../layout/navigation';
 
 const Wrapper = styled.main`
   display: flex;
@@ -63,7 +63,7 @@ export const App = ({ Footer, homeLink, logo }) => {
   return (
     <StateProvider>
       <Wrapper>
-        <NavPanel logo={logo} homeLink={homeLink} />
+        <TopNavbar logo={logo} homeLink={homeLink} />
 
         <Container>
           {/** Workaround for handling issues with this nested app */}

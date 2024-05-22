@@ -47,6 +47,8 @@ interface LoginFormProps {
   message?: Message | null;
   formContext: ReturnType<typeof useForm>;
   className?: string;
+  registerText?: string;
+  RegisterLinkComponent?: React.ReactNode;
 }
 
 export const LoginForm = ({
@@ -58,7 +60,10 @@ export const LoginForm = ({
   message,
   formContext,
   className,
+  registerText = 'Register here',
+  RegisterLinkComponent,
 }: LoginFormProps) => {
+  const showRegisterLink = registerLink || RegisterLinkComponent;
   return (
     <Wrapper title="Log in" subtitle="Enter your details below to log in" className={className}>
       {error && <Typography color="error">{error.message}</Typography>}
@@ -84,15 +89,20 @@ export const LoginForm = ({
           label="Password"
           disabled={isLoading}
         />
-        <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
-          Forgot password?
-        </ForgotPasswordText>
+        {forgotPasswordLink && (
+          <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
+            Forgot password?
+          </ForgotPasswordText>
+        )}
         <AuthSubmitButton type="submit" isLoading={isLoading}>
           Log in
         </AuthSubmitButton>
-        <AuthLink>
-          Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
-        </AuthLink>
+        {showRegisterLink && (
+          <AuthLink>
+            Don&rsquo;t have an account?{' '}
+            {RegisterLinkComponent || <RouterLink to={registerLink}>{registerText}</RouterLink>}
+          </AuthLink>
+        )}
       </StyledForm>
     </Wrapper>
   );

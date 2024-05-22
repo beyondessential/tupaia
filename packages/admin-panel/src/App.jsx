@@ -3,17 +3,16 @@
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { AppPageLayout, Footer } from './layout';
+import { AppPageLayout, Footer, SimplePageLayout } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
-import { getHasBESAdminAccess, getUser, PrivateRoute } from './authentication';
+import { PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
-import { LogoutPage } from './pages/LogoutPage';
 import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
+import { useUser } from './api/queries';
+import { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -47,7 +46,9 @@ export const getFlattenedChildViews = (route, basePath = '') => {
   }, []);
 };
 
-export const App = ({ user, hasBESAdminAccess }) => {
+const App = () => {
+  const { data: user } = useUser();
+  const hasBESAdminAccess = getHasBESAdminAccess(user);
   const userHasAccessToTab = tab => {
     if (tab.isBESAdminOnly) {
       return !!hasBESAdminAccess;
@@ -71,10 +72,11 @@ export const App = ({ user, hasBESAdminAccess }) => {
   const accessibleRoutes = getAccessibleRoutes();
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/logout" element={<LogoutPage />} />
+      <Route element={<SimplePageLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
+        <Route element={<AppPageLayout routes={accessibleRoutes} />}>
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
@@ -111,24 +113,4 @@ export const App = ({ user, hasBESAdminAccess }) => {
   );
 };
 
-App.defaultProps = {
-  hasBESAdminAccess: false,
-};
-
-App.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
-  hasBESAdminAccess: PropTypes.bool,
-};
-
-export default connect(
-  state => ({
-    user: getUser(state),
-    hasBESAdminAccess: getHasBESAdminAccess(state),
-  }),
-  null,
-)(App);
+export default App;

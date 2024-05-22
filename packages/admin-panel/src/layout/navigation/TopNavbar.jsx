@@ -5,7 +5,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { HomeLink, UserLink } from '../../layout';
+import { UserLink } from './UserLink';
+import { HomeLink } from './HomeLink';
+import { useUser } from '../../api/queries';
+import { useLogout } from '../../api/mutations';
 
 const Wrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
@@ -22,16 +25,18 @@ const Wrapper = styled.div`
   }
 `;
 
-export const NavPanel = ({ logo, homeLink }) => {
+export const TopNavbar = ({ logo, homeLink }) => {
+  const { isLoggedIn } = useUser();
+  const { mutate: logout } = useLogout();
   return (
     <Wrapper>
       <HomeLink logo={logo} homeLink={homeLink} />
-      <UserLink to="/logout">Log out</UserLink>
+      {isLoggedIn && <UserLink onClick={logout}>Logout</UserLink>}
     </Wrapper>
   );
 };
 
-NavPanel.propTypes = {
+TopNavbar.propTypes = {
   logo: PropTypes.shape({
     url: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
@@ -39,7 +44,7 @@ NavPanel.propTypes = {
   homeLink: PropTypes.string,
 };
 
-NavPanel.defaultProps = {
+TopNavbar.defaultProps = {
   logo: {
     url: '/admin-panel-logo-white.svg',
     alt: 'Tupaia Admin Panel Logo',

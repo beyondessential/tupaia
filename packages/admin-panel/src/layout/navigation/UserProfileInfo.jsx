@@ -4,9 +4,12 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Divider, Typography } from '@material-ui/core';
 import { UserLink } from './UserLink';
+import { useUser } from '../../api/queries';
+import { useLogout } from '../../api/mutations';
 
 const Wrapper = styled.div`
   padding-inline: 1.25rem;
@@ -25,8 +28,11 @@ const UserEmail = styled(Typography)`
   margin-block-end: 0.9rem;
 `;
 
-export const UserProfileInfo = ({ user, userLinks }) => {
-  if (!user) return null;
+export const UserProfileInfo = ({ userLinks }) => {
+  const { isLoggedIn, data: user, isLoading } = useUser();
+  const { mutate: logout } = useLogout();
+
+  if (isLoading) return null;
 
   const name = user.firstName || user.lastName ? `${user.firstName} ${user.lastName}` : null;
   return (
@@ -36,21 +42,17 @@ export const UserProfileInfo = ({ user, userLinks }) => {
       <Divider />
       {userLinks &&
         userLinks.map(({ label, to }) => (
-          <UserLink key={to} to={to}>
+          <UserLink key={to} to={to} component={Link}>
             {label}
           </UserLink>
         ))}
+
+      {isLoggedIn && <UserLink onClick={logout}>Log out</UserLink>}
     </Wrapper>
   );
 };
 
 UserProfileInfo.propTypes = {
-  user: PropTypes.shape({
-    email: PropTypes.string.isRequired,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    profileImage: PropTypes.string,
-  }).isRequired,
   userLinks: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

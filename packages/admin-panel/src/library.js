@@ -27,7 +27,8 @@ export {
   externalDataTabRoutes,
 } from './routes';
 export { LoginPage, LogoutPage } from './pages';
-export { PrivateRoute, getHasBESAdminAccess } from './authentication';
+export { PrivateRoute } from './authentication';
+export { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
 export * from './pages/resources';
 export { ReduxAutocomplete } from './autocomplete';
 export {
