@@ -62,6 +62,7 @@ export const ChangePasswordPage = React.memo(() => {
         <TextField
           label="Current Password"
           name="oldPassword"
+          autoComplete="current-password"
           placeholder="Enter your current password"
           required
           type="password"

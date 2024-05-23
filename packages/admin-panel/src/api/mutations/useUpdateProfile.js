@@ -10,7 +10,6 @@ export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    'updateProfile',
     payload => {
       return put('me', {
         data: payload,

@@ -94,6 +94,7 @@ export const ProfilePage = React.memo(() => {
           <TextField
             label="First Name"
             name="first_name"
+            autoComplete="given-name"
             required
             error={!!errors.firstName}
             helperText={errors.firstName && errors.firstName.message}
@@ -105,6 +106,7 @@ export const ProfilePage = React.memo(() => {
           <TextField
             label="Last Name"
             name="last_name"
+            autoComplete="family-name"
             required
             error={!!errors.lastName}
             helperText={errors.lastName && errors.lastName.message}
