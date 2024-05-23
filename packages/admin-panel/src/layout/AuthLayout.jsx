@@ -3,8 +3,10 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Outlet } from 'react-router';
+import { Outlet, Navigate } from 'react-router';
+import { useUser } from '../api/queries';
 import { SimplePageLayout } from './SimplePageLayout';
 
 export const CenteredPageContent = styled.section`
@@ -26,12 +28,27 @@ export const CenteredPageContent = styled.section`
   }
 `;
 
-export const AuthLayout = () => {
+export const AuthLayout = ({ logo }) => {
+  // const { isLoggedIn } = useUser();
+  // if (isLoggedIn) {
+  //   return <Navigate to="/" />;
+  // }
   return (
-    <SimplePageLayout>
+    <SimplePageLayout logo={logo}>
       <CenteredPageContent>
         <Outlet />
       </CenteredPageContent>
     </SimplePageLayout>
   );
+};
+
+AuthLayout.propTypes = {
+  logo: {
+    url: PropTypes.string,
+    alt: PropTypes.string,
+  },
+};
+
+AuthLayout.defaultProps = {
+  logo: null,
 };

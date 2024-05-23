@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { post } from '../../VizBuilderApp/api';
 
-export const useLogin = () => {
+export const useLogin = homeLink => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,13 +25,14 @@ export const useLogin = () => {
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries();
+        console.log(from, homeLink);
         if (from) {
           navigate(from, {
             state: null,
           });
         } else {
-          navigate('/', {
-            state: from,
+          navigate(homeLink, {
+            state: null,
           });
         }
       },

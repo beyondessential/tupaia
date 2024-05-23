@@ -12,20 +12,21 @@ import { AUTH_ROUTES } from '../routes';
  * A wrapper for <Route> that redirects to the login
  * screen if you're not yet authenticated.
  */
-export const PrivateRoute = ({ loginPath }) => {
+export const PrivateRoute = ({ basePath = '' }) => {
   const location = useLocation();
   const { isLoggedIn, isLoading } = useUser();
   if (isLoading) return null;
+
   if (!isLoggedIn) {
-    return <Navigate to={loginPath} state={{ from: location.pathname }} />;
+    return <Navigate to={`${basePath}/${AUTH_ROUTES.LOGIN}`} state={{ from: location.pathname }} />;
   }
   return <Outlet />;
 };
 
 PrivateRoute.propTypes = {
-  loginPath: PropTypes.string,
+  basePath: PropTypes.string,
 };
 
 PrivateRoute.defaultProps = {
-  loginPath: AUTH_ROUTES.LOGIN,
+  basePath: null,
 };

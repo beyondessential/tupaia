@@ -47,8 +47,17 @@ interface LoginFormProps {
   message?: Message | null;
   formContext: ReturnType<typeof useForm>;
   className?: string;
-  registerText?: string;
   RegisterLinkComponent?: React.ReactNode;
+  labels?: {
+    title?: string;
+    subtitle?: string;
+    email?: string;
+    password?: string;
+    forgotPassword?: string;
+    login?: string;
+    dontHaveAnAccount?: string;
+    register?: string;
+  };
 }
 
 export const LoginForm = ({
@@ -60,12 +69,22 @@ export const LoginForm = ({
   message,
   formContext,
   className,
-  registerText = 'Register here',
   RegisterLinkComponent,
+  labels,
 }: LoginFormProps) => {
   const showRegisterLink = registerLink || RegisterLinkComponent;
+  const {
+    title = 'Log in',
+    subtitle = 'Enter your details below to log in',
+    email = 'Email',
+    password = 'Password',
+    forgotPassword = 'Forgot password?',
+    login = 'Log in',
+    dontHaveAnAccount = "Don't have an account?",
+    register = 'Register here',
+  } = labels || {};
   return (
-    <Wrapper title="Log in" subtitle="Enter your details below to log in" className={className}>
+    <Wrapper title={title} subtitle={subtitle} className={className}>
       {error && <Typography color="error">{error.message}</Typography>}
       {message && <EmailVerificationDisplay message={message} />}
       <StyledForm onSubmit={onSubmit} formContext={formContext}>
@@ -77,7 +96,7 @@ export const LoginForm = ({
           options={FORM_FIELD_VALIDATION.EMAIL}
           required
           Input={AuthFormTextField}
-          label="Email"
+          label={email}
           disabled={isLoading}
         />
         <FormInput
@@ -86,21 +105,21 @@ export const LoginForm = ({
           type="password"
           required
           Input={AuthFormTextField}
-          label="Password"
+          label={password}
           disabled={isLoading}
         />
         {forgotPasswordLink && (
           <ForgotPasswordText as={RouterLink} to={forgotPasswordLink}>
-            Forgot password?
+            {forgotPassword}
           </ForgotPasswordText>
         )}
         <AuthSubmitButton type="submit" isLoading={isLoading}>
-          Log in
+          {login}
         </AuthSubmitButton>
         {showRegisterLink && (
           <AuthLink>
-            Don&rsquo;t have an account?{' '}
-            {RegisterLinkComponent || <RouterLink to={registerLink}>{registerText}</RouterLink>}
+            {dontHaveAnAccount}
+            {RegisterLinkComponent || <RouterLink to={registerLink}>{register}</RouterLink>}
           </AuthLink>
         )}
       </StyledForm>

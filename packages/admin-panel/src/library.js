@@ -26,7 +26,7 @@ export {
   QRCodeColumn,
   externalDataTabRoutes,
 } from './routes';
-export { LoginPage, LogoutPage } from './pages';
+export { LoginPage } from './pages';
 export { PrivateRoute } from './authentication';
 export { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
 export * from './pages/resources';
@@ -51,7 +51,11 @@ export {
   TabPageLayout,
   PageContentWrapper,
   AppPageLayout,
+  AuthLayout,
 } from './layout';
 export { getFlattenedChildViews } from './App';
 export { ExportModal } from './importExport';
 export { ColumnActionButton } from './table/columnTypes/ColumnActionButton';
+export { AUTH_ROUTES } from './routes';
+export { useLogin, useLogout, useOneTimeLogin, useResetPassword } from './api/mutations';
+export { useUser } from './api/queries';
