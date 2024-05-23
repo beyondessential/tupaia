@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { DialogActions, Paper, Typography } from '@material-ui/core';
 import { SpinningLoader } from '@tupaia/ui-components';
@@ -102,6 +103,8 @@ const sortAlphanumerically = (a: ListItemType, b: ListItemType) => {
 export const SurveySelectPage = () => {
   const navigate = useNavigate();
   const [selectedSurvey, setSelectedSurvey] = useState<ListItemType | null>(null);
+  const [urlSearchParams] = useSearchParams();
+  const urlProjectId = urlSearchParams.get('projectId');
   const {
     countries,
     selectedCountry,
@@ -112,7 +115,7 @@ export const SurveySelectPage = () => {
   const navigateToSurvey = () => {
     navigate(`/survey/${selectedCountry?.code}/${selectedSurvey?.value}`);
   };
-  const { mutate: updateUser, isLoading: isUpdatingUser } = useEditUser(navigateToSurvey);
+  const { mutateAsync: updateUser, isLoading: isUpdatingUser } = useEditUser();
   const user = useCurrentUserContext();
 
   const { data: surveys, isLoading } = useProjectSurveys(user.projectId, selectedCountry?.name);
@@ -162,7 +165,12 @@ export const SurveySelectPage = () => {
   const handleSelectSurvey = () => {
     if (countryHasUpdated) {
       // update user with new country. If the user goes 'back' and doesn't select a survey, and does not yet have a country selected, that's okay because it will be set whenever they next select a survey
-      updateUser({ countryId: selectedCountry?.id });
+      updateUser(
+        { countryId: selectedCountry?.id },
+        {
+          onSuccess: navigateToSurvey,
+        },
+      );
     } else navigateToSurvey();
   };
 
@@ -173,7 +181,20 @@ export const SurveySelectPage = () => {
     }
   }, [JSON.stringify(surveys)]);
 
-  const showLoader = isLoading || isLoadingCountries || isUpdatingUser;
+  useEffect(() => {
+    const updateUserProject = async () => {
+      if (urlProjectId && user.projectId !== urlProjectId) {
+        updateUser({ projectId: urlProjectId });
+      }
+    };
+    updateUserProject();
+  }, [urlProjectId]);
+
+  const showLoader =
+    isLoading ||
+    isLoadingCountries ||
+    isUpdatingUser ||
+    (urlProjectId && urlProjectId !== user?.projectId);
   return (
     <Container>
       <HeaderWrapper>
@@ -181,11 +202,13 @@ export const SurveySelectPage = () => {
           <Typography variant="h1">Select survey</Typography>
           <Subheader>Select a survey from the list below</Subheader>
         </div>
-        <SurveyCountrySelector
-          countries={countries}
-          selectedCountry={selectedCountry}
-          onChangeCountry={updateSelectedCountry}
-        />
+        {!showLoader && (
+          <SurveyCountrySelector
+            countries={countries}
+            selectedCountry={selectedCountry}
+            onChangeCountry={updateSelectedCountry}
+          />
+        )}
       </HeaderWrapper>
       {showLoader ? (
         <LoadingContainer>
