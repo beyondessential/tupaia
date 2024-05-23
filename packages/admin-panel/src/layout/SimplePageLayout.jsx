@@ -4,15 +4,24 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Outlet } from 'react-router-dom';
 import { Main } from './Page';
 import { TopNavbar } from './navigation';
 
-export const SimplePageLayout = () => {
+export const SimplePageLayout = ({ children }) => {
   return (
     <Main>
       <TopNavbar />
-      <Outlet />
+      {children || <Outlet />}
     </Main>
   );
+};
+
+SimplePageLayout.propTypes = {
+  children: PropTypes.node,
+};
+
+SimplePageLayout.defaultProps = {
+  children: null,
 };

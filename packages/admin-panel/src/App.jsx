@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppPageLayout, Footer, SimplePageLayout } from './layout';
+import { AppPageLayout, AuthLayout, Footer } from './layout';
 import { ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { PrivateRoute } from './authentication';
@@ -13,6 +13,7 @@ import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 import { useUser } from './api/queries';
 import { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
+import { ForgotPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -72,8 +73,9 @@ const App = () => {
   const accessibleRoutes = getAccessibleRoutes();
   return (
     <Routes>
-      <Route element={<SimplePageLayout />}>
+      <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Route>
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<AppPageLayout routes={accessibleRoutes} />}>

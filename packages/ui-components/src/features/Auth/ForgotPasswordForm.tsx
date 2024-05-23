@@ -52,6 +52,7 @@ export const ForgotPasswordForm = ({
   formContext,
   loginLink,
   registerLink,
+  RegisterLinkComponent,
 }: ForgotPasswordFormProps) => {
   const HEADING_TEXT = {
     title: 'Forgot password',
@@ -84,7 +85,12 @@ export const ForgotPasswordForm = ({
             Back to log in
           </AuthSubmitButton>
           <AuthLink align="center">
-            Don&rsquo;t have an account? <RouterLink to={registerLink}>Register here</RouterLink>
+            Don&rsquo;t have an account?{' '}
+            {RegisterLinkComponent ? (
+              RegisterLinkComponent
+            ) : (
+              <RouterLink to={registerLink}>Sign up</RouterLink>
+            )}
           </AuthLink>
         </StyledForm>
       )}

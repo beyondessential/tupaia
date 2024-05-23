@@ -2,23 +2,23 @@
  * Tupaia
  *  Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
+import { ForgotPasswordForm } from '@tupaia/ui-components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { LoginForm } from '@tupaia/ui-components';
-import { useLogin } from '../api/mutations';
+import { useRequestResetPassword } from '../api/mutations';
 import { RegisterLink } from '../authentication';
 
-export const LoginPage = () => {
+export const ForgotPasswordPage = () => {
   const formContext = useForm();
-  const { mutate: onLogin, isLoading, error } = useLogin();
+  const { mutate: onRequestResetPassword, isLoading, error, isSuccess } = useRequestResetPassword();
   return (
-    <LoginForm
-      onSubmit={onLogin}
+    <ForgotPasswordForm
+      onSubmit={onRequestResetPassword}
       isLoading={isLoading}
       error={error}
+      isSuccess={isSuccess}
+      loginLink="/login"
       formContext={formContext}
-      forgotPasswordLink="/forgot-password"
       RegisterLinkComponent={<RegisterLink />}
     />
   );
