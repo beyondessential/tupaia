@@ -194,7 +194,7 @@ export const SurveySelectPage = () => {
     isLoading ||
     isLoadingCountries ||
     isUpdatingUser ||
-    (urlProjectId && urlProjectId !== user?.projectId);
+    (urlProjectId && urlProjectId !== user?.projectId); // in this case the user will be updating and all surveys etc will be reloaded, so showing a loader when this is the case means a more seamless experience
   return (
     <Container>
       <HeaderWrapper>
