@@ -8,8 +8,6 @@ import { parse } from 'content-disposition-header';
 
 import { verifyResponseStatus, stringifyQuery } from '@tupaia/utils';
 
-import { logout } from '../authentication';
-
 const FETCH_TIMEOUT = 120 * 1000; // 120 seconds in milliseconds
 
 const isJsonResponse = response => {
@@ -34,16 +32,6 @@ export class TupaiaApi {
 
   dispatch(action) {
     this.store.dispatch(action);
-  }
-
-  async login(loginCredentials) {
-    const { body: authenticationDetails } = await this.post(
-      'login',
-      null,
-      loginCredentials,
-      this.clientBasicAuthHeader,
-    );
-    return authenticationDetails;
   }
 
   get(endpoint, queryParameters) {
@@ -149,20 +137,9 @@ export class TupaiaApi {
     return { headers: response.headers, body };
   }
 
-  async checkIfAuthorized(response) {
-    // Unauthorized
-    if (response.status === 401) {
-      const data = await response.json();
-      this.dispatch(logout(data.error)); // log out if user is unauthorized
-      throw new Error(data.error);
-    }
-  }
-
   async request(endpoint, queryParameters, fetchConfig) {
     const queryUrl = stringifyQuery(this.apiUrl, endpoint, queryParameters);
     const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
-
-    await this.checkIfAuthorized(response);
 
     await verifyResponseStatus(response);
     return response;
