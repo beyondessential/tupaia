@@ -11,8 +11,11 @@ export const useUser = () => {
   const query = useQuery(['user'], () => get('me'), {
     ...DEFAULT_REACT_QUERY_OPTIONS,
   });
-  const user = query.data;
-  const isLoggedIn = user && Object.keys(user).length > 0;
 
-  return { ...query, isLoggedIn };
+  const isLoggedIn = !query.isError && !!query.data && !!query.data.id;
+
+  return {
+    ...query,
+    isLoggedIn,
+  };
 };
