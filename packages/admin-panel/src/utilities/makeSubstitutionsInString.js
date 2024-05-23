@@ -4,7 +4,7 @@
  */
 
 const extractParams = template =>
-  [...template.matchAll(/\{(\w+)\}/gi)].map(matchArray => matchArray[1]);
+  [...template.matchAll(/(?<=\{)(.*?)(?=\})/gi)].map(matchArray => matchArray[1]);
 
 export const makeSubstitutionsInString = (template, variables) => {
   const params = extractParams(template);
