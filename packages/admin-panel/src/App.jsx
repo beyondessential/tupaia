@@ -5,7 +5,7 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppPageLayout, AuthLayout, Footer } from './layout';
-import { ROUTES } from './routes';
+import { AUTH_ROUTES, ROUTES } from './routes';
 import { PROFILE_ROUTES } from './profileRoutes';
 import { PrivateRoute } from './authentication';
 import { LoginPage } from './pages/LoginPage';
@@ -74,9 +74,9 @@ const App = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path={AUTH_ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={AUTH_ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+        <Route path={AUTH_ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
       </Route>
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<AppPageLayout routes={accessibleRoutes} />}>

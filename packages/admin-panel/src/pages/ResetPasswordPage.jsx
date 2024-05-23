@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { SpinningLoader, ResetPasswordForm } from '@tupaia/ui-components';
 import { useResetPassword, useOneTimeLogin } from '../api/mutations';
 import { PASSWORD_RESET_TOKEN_PARAM } from '../authentication';
+import { AUTH_ROUTES } from '../routes';
 
 export const ResetPasswordPage = () => {
   const [urlSearchParams] = useSearchParams();
@@ -39,7 +40,7 @@ export const ResetPasswordPage = () => {
       isLoading={isSubmitting}
       error={error}
       isSuccess={submitSuccess}
-      loginLink="/login"
+      loginLink={AUTH_ROUTES.LOGIN}
       formContext={formContext}
     />
   );

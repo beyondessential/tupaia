@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useUser } from '../api/queries';
+import { AUTH_ROUTES } from '../routes';
 
 /*
  * A wrapper for <Route> that redirects to the login
@@ -26,5 +27,5 @@ PrivateRoute.propTypes = {
 };
 
 PrivateRoute.defaultProps = {
-  loginPath: '/login',
+  loginPath: AUTH_ROUTES.LOGIN,
 };
