@@ -115,25 +115,23 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
   const objectValidator = new ObjectValidator(constructQuestionValidators(models));
   let hasPrimaryEntityQuestion = false;
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-    const row = rows[rowIndex];
-    const constructImportValidationError = (message, field, { details }) => {
-      return {
-        message: new ImportValidationError(message, excelRowNumber, field).message,
-        details,
-      };
-    };
-
-    if (row.type === SURVEY_METADATA) {
-      await validateSurveyMetadataRow(rows, rowIndex, constructImportValidationError);
-      await processSurveyMetadataRow(models, rows, rowIndex, survey.id);
-      continue;
-    }
-
-    const questionObject = row;
-    const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
-
     // Validate rows
     try {
+      const row = rows[rowIndex];
+
+      const questionObject = row;
+      const excelRowNumber = rowIndex + 2; // +2 to make up for header and 0 index
+
+      const constructImportValidationError = (message, field, { details }) => {
+        return new ImportValidationError(message, excelRowNumber, field, undefined, details);
+      };
+
+      if (row.type === SURVEY_METADATA) {
+        await validateSurveyMetadataRow(rows, rowIndex, constructImportValidationError);
+        await processSurveyMetadataRow(models, rows, rowIndex, survey.id);
+        continue;
+      }
+
       await objectValidator.validate(questionObject, constructImportValidationError);
 
       // Validate no duplicate codes
@@ -167,125 +165,129 @@ export async function importSurveysQuestions({ models, file, survey, dataGroup, 
         }
         hasSeenDateOfDataQuestion = true;
       }
+
+      // Extract question details from spreadsheet row
+      const {
+        code,
+        type,
+        name,
+        text,
+        questionLabel,
+        detail,
+        detailLabel,
+        options,
+        optionLabels,
+        optionColors,
+        newScreen,
+        visibilityCriteria,
+        validationCriteria,
+        optionSet,
+        hook,
+      } = questionObject;
+
+      let dataElement;
+      if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
+        dataElement = await updateOrCreateDataElementInGroup(
+          models,
+          code,
+          dataGroup,
+          permissionGroup,
+        );
+      }
+
+      // Compose question based on details from spreadsheet
+      const questionToUpsert = {
+        code,
+        type,
+        name,
+        text,
+        detail,
+        hook,
+        options: processOptions(options, optionLabels, optionColors, type),
+        option_set_id: await processOptionSetName(models, optionSet, excelRowNumber, tabName),
+        data_element_id: dataElement && dataElement.id,
+      };
+
+      // Either create or update the question depending on if there exists a matching code
+      let question;
+      if (code) {
+        question = await models.question.updateOrCreate({ code }, questionToUpsert);
+      } else {
+        // No code in spreadsheet, can't match so just create a new question
+        question = await models.question.create(questionToUpsert);
+      }
+
+      // Generate the screen and screen component
+      const shouldStartNewScreen = caseAndSpaceInsensitiveEquals(newScreen, 'yes');
+      if (!currentScreen || shouldStartNewScreen) {
+        // Spreadsheet indicates this question starts a new screen
+        // Create a new survey screen
+        currentScreen = await models.surveyScreen.create({
+          survey_id: survey.id,
+          screen_number: currentScreen ? currentScreen.screen_number + 1 : 1, // Next screen
+        });
+        // Clear existing survey screen component
+        currentSurveyScreenComponent = undefined;
+      }
+
+      // Create a new survey screen component to display this question
+      const visibilityCriteriaObject = await convertCellToJson(
+        visibilityCriteria,
+        splitStringOnComma,
+      );
+      const processedVisibilityCriteria = {};
+      await Promise.all(
+        Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
+          if (questionCode === VIS_CRITERIA_CONJUNCTION) {
+            // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
+            // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
+            const [conjunctionType] = answers;
+            processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
+          } else if (questionCode === 'hidden') {
+            processedVisibilityCriteria.hidden = answers[0] === 'true';
+          } else {
+            const { id: questionId } = await models.question.findOne({
+              code: questionCode,
+            });
+            processedVisibilityCriteria[questionId] = answers;
+          }
+        }),
+      );
+
+      currentSurveyScreenComponent = await models.surveyScreenComponent.create({
+        screen_id: currentScreen.id,
+        question_id: question.id,
+        component_number: currentSurveyScreenComponent
+          ? currentSurveyScreenComponent.component_number + 1
+          : 1,
+        visibility_criteria: JSON.stringify(processedVisibilityCriteria),
+        validation_criteria: JSON.stringify(
+          convertCellToJson(validationCriteria, processValidationCriteriaValue),
+        ),
+        question_label: questionLabel,
+        detail_label: detailLabel,
+      });
+
+      try {
+        const componentId = currentSurveyScreenComponent.id;
+        await configImporter.add(rowIndex, componentId);
+      } catch (error) {
+        throw new ImportValidationError(error.message, 'config', excelRowNumber);
+      }
     } catch (e) {
       errors.push(e);
-      continue;
-    }
-
-    // Extract question details from spreadsheet row
-    const {
-      code,
-      type,
-      name,
-      text,
-      questionLabel,
-      detail,
-      detailLabel,
-      options,
-      optionLabels,
-      optionColors,
-      newScreen,
-      visibilityCriteria,
-      validationCriteria,
-      optionSet,
-      hook,
-    } = questionObject;
-
-    let dataElement;
-    if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
-      dataElement = await updateOrCreateDataElementInGroup(
-        models,
-        code,
-        dataGroup,
-        permissionGroup,
-      );
-    }
-
-    // Compose question based on details from spreadsheet
-    const questionToUpsert = {
-      code,
-      type,
-      name,
-      text,
-      detail,
-      hook,
-      options: processOptions(options, optionLabels, optionColors, type),
-      option_set_id: await processOptionSetName(models, optionSet, excelRowNumber, tabName),
-      data_element_id: dataElement && dataElement.id,
-    };
-
-    // Either create or update the question depending on if there exists a matching code
-    let question;
-    if (code) {
-      question = await models.question.updateOrCreate({ code }, questionToUpsert);
-    } else {
-      // No code in spreadsheet, can't match so just create a new question
-      question = await models.question.create(questionToUpsert);
-    }
-
-    // Generate the screen and screen component
-    const shouldStartNewScreen = caseAndSpaceInsensitiveEquals(newScreen, 'yes');
-    if (!currentScreen || shouldStartNewScreen) {
-      // Spreadsheet indicates this question starts a new screen
-      // Create a new survey screen
-      currentScreen = await models.surveyScreen.create({
-        survey_id: survey.id,
-        screen_number: currentScreen ? currentScreen.screen_number + 1 : 1, // Next screen
-      });
-      // Clear existing survey screen component
-      currentSurveyScreenComponent = undefined;
-    }
-
-    // Create a new survey screen component to display this question
-    const visibilityCriteriaObject = await convertCellToJson(
-      visibilityCriteria,
-      splitStringOnComma,
-    );
-    const processedVisibilityCriteria = {};
-    await Promise.all(
-      Object.entries(visibilityCriteriaObject).map(async ([questionCode, answers]) => {
-        if (questionCode === VIS_CRITERIA_CONJUNCTION) {
-          // This is the special _conjunction key, extract the 'and' or the 'or' from answers,
-          // i.e. { conjunction: ['and'] } -> { conjunction: 'and' }
-          const [conjunctionType] = answers;
-          processedVisibilityCriteria[VIS_CRITERIA_CONJUNCTION] = conjunctionType;
-        } else if (questionCode === 'hidden') {
-          processedVisibilityCriteria.hidden = answers[0] === 'true';
-        } else {
-          const { id: questionId } = await models.question.findOne({
-            code: questionCode,
-          });
-          processedVisibilityCriteria[questionId] = answers;
-        }
-      }),
-    );
-
-    currentSurveyScreenComponent = await models.surveyScreenComponent.create({
-      screen_id: currentScreen.id,
-      question_id: question.id,
-      component_number: currentSurveyScreenComponent
-        ? currentSurveyScreenComponent.component_number + 1
-        : 1,
-      visibility_criteria: JSON.stringify(processedVisibilityCriteria),
-      validation_criteria: JSON.stringify(
-        convertCellToJson(validationCriteria, processValidationCriteriaValue),
-      ),
-      question_label: questionLabel,
-      detail_label: detailLabel,
-    });
-
-    try {
-      const componentId = currentSurveyScreenComponent.id;
-      await configImporter.add(rowIndex, componentId);
-    } catch (error) {
-      const validationError = constructImportValidationError(error.message, 'config');
-      errors.push(validationError);
       continue;
     }
   }
 
   if (errors.length > 0) {
-    throw new MultiValidationError('Errors occurred while importing questions', errors);
+    throw new MultiValidationError(
+      'Errors occurred while importing questions',
+      errors.map(({ message, extraFields }) => ({
+        message,
+        extraFields,
+      })),
+    );
   }
 
   await configImporter.import();
