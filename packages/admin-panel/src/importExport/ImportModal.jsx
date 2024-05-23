@@ -46,7 +46,7 @@ export const ImportModalComponent = React.memo(
     const [isOpen, setIsOpen] = useState(false);
     const [values, setValues] = useState({});
     const [files, setFiles] = useState([]);
-    const [fileName, setFileName] = useState(noFileMessage);
+    const [fileName, setFileName] = useState(null);
 
     const handleOpen = () => setIsOpen(true);
 
@@ -161,6 +161,15 @@ export const ImportModalComponent = React.memo(
 
     const buttons = getButtons();
 
+    const onChangeFile = (event, newName) => {
+      setFileName(newName);
+      if (event?.target?.files?.length > 0) {
+        setFiles(Array.from(event.target.files));
+      } else {
+        setFiles([]);
+      }
+    };
+
     return (
       <>
         <Modal
@@ -196,10 +205,7 @@ export const ImportModalComponent = React.memo(
                     );
                   })}
                 <FileUploadField
-                  onChange={({ target }, newName) => {
-                    setFileName(newName);
-                    setFiles(Array.from(target.files));
-                  }}
+                  onChange={onChangeFile}
                   name="file-upload"
                   fileName={fileName}
                   multiple={actionConfig.multiple}

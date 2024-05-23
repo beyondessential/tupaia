@@ -104,12 +104,14 @@ export const entities = {
   endpoint: ENTITIES_ENDPOINT,
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
-  nestedView: {
-    title: 'Survey responses',
-    endpoint: `${ENTITIES_ENDPOINT}/{id}/surveyResponses`,
-    columns: SURVEY_RESPONSE_COLUMNS,
-    path: '/:id/surveyResponses',
-    displayProperty: 'name',
-    getNestedViewLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
-  },
+  nestedViews: [
+    {
+      title: 'Survey responses',
+      endpoint: `${ENTITIES_ENDPOINT}/{id}/surveyResponses`,
+      columns: SURVEY_RESPONSE_COLUMNS,
+      path: '/:id/surveyResponses',
+      displayProperty: 'name',
+      getNestedViewLink: ({ id }) => `/surveys/survey-responses/${id}/answers`,
+    },
+  ],
 };

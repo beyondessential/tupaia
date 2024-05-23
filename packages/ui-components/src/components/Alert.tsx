@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { CheckCircle, Warning } from '@material-ui/icons';
@@ -26,17 +26,28 @@ const StyledAlert = styled(MuiAlert)`
   }
 `;
 
-export const Alert = ({
-  variant = 'filled',
-  severity = 'success',
-  iconMapping = {
-    success: <CheckCircle />,
-    error: <Error />,
-    warning: <Warning />,
-  },
-  ...props
-}: AlertProps) => (
-  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+export const Alert = forwardRef<HTMLDivElement, AlertProps>(
+  (
+    {
+      variant = 'filled',
+      severity = 'success',
+      iconMapping = {
+        success: <CheckCircle />,
+        error: <Error />,
+        warning: <Warning />,
+      },
+      ...props
+    },
+    ref,
+  ) => (
+    <StyledAlert
+      variant={variant}
+      severity={severity}
+      iconMapping={iconMapping}
+      {...props}
+      ref={ref}
+    />
+  ),
 );
 
 const StyledSmallAlert = styled(StyledAlert)`

@@ -113,10 +113,12 @@ export const getMapOverlayGroupsPageConfig = translate => {
     columns: COLUMNS,
     editorConfig,
     createConfig,
-    nestedView: {
-      ...mapOverlayGroups.nestedView,
-      title: translate('admin.mapOverlayGroupRelations'),
-      columns: RELATION_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...mapOverlayGroups.nestedViews[0],
+        title: translate('admin.mapOverlayGroupRelations'),
+        columns: RELATION_COLUMNS,
+      },
+    ],
   };
 };

@@ -12,7 +12,9 @@ import {
   EDITOR_DISMISS,
   EDITOR_ERROR,
   EDITOR_FIELD_EDIT,
-  EDITOR_OPEN,
+  LOAD_EDITOR,
+  OPEN_EDIT_MODAL,
+  RESET_EDITS,
 } from './constants';
 
 const defaultState = {
@@ -30,12 +32,15 @@ const defaultState = {
 };
 
 const stateChanges = {
-  [EDITOR_DATA_FETCH_BEGIN]: payload => ({
-    isLoading: true,
-    ...payload,
-  }),
+  [EDITOR_DATA_FETCH_BEGIN]: payload => {
+    return {
+      isLoading: true,
+      ...payload,
+    };
+  },
   [EDITOR_DATA_EDIT_BEGIN]: payload => ({
     isLoading: true,
+    errorMessage: '',
     ...payload,
   }),
   [EDITOR_DATA_FETCH_SUCCESS]: payload => ({
@@ -56,13 +61,17 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [EDITOR_OPEN]: payload => ({ ...payload, isOpen: true }),
+  [LOAD_EDITOR]: payload => {
+    return { ...payload, errorMessage: '' };
+  },
+  [OPEN_EDIT_MODAL]: ({ recordId }) => ({ recordId, isOpen: true }),
   [EDITOR_FIELD_EDIT]: ({ fieldKey, newValue }, { editedFields }) => ({
     editedFields: {
       ...editedFields,
       [fieldKey]: newValue,
     },
   }),
+  [RESET_EDITS]: () => ({ editedFields: {}, errorMessage: '' }),
 };
 
 export const reducer = createReducer(defaultState, stateChanges);
