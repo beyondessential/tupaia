@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  attachSessionIfAvailable,
-  forwardRequest,
-  handleWith,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -62,7 +57,6 @@ export async function createApp() {
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
-    .useAttachSession(attachSessionIfAvailable)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(

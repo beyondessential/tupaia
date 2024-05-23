@@ -11,11 +11,7 @@ import { EmptyObject } from '../../types';
 import { RequestResetPasswordCredentials } from '../types';
 
 export interface RequestResetPasswordRequest
-  extends Request<EmptyObject, AuthResponse, RequestResetPasswordCredentials> {
-  ctx: {
-    apiName?: string;
-  };
-}
+  extends Request<EmptyObject, AuthResponse, RequestResetPasswordCredentials> {}
 
 export class RequestResetPasswordRoute extends Route<RequestResetPasswordRequest> {
   private authConnection: AuthConnection;
