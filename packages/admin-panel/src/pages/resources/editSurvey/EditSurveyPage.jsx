@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { Alert, Button, SpinningLoader } from '@tupaia/ui-components';
 import { Breadcrumbs } from '../../../layout';
 import { useItemDetails } from '../../../api/queries/useResourceDetails';
-import { useValidationScroll, withConnectedEditor } from '../../../editor';
+import { withConnectedEditor, useValidationScroll } from '../../../editor';
 import { useEditFiles } from '../../../editor/useEditFiles';
 import { FileUploadField } from '../../../widgets/InputField/FileUploadField';
 import { FieldsEditor } from '../../../editor/FieldsEditor';

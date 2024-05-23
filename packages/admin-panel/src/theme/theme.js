@@ -146,6 +146,9 @@ const overrides = {
     asterisk: {
       color: palette.error.main,
     },
+    asterisk: {
+      color: palette.error.main,
+    },
   },
   MuiInputBase: {
     input: {

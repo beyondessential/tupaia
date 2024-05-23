@@ -34,7 +34,7 @@ const GreyCard = styled(Card)`
   background: #f9f9f9;
 `;
 
-const Container = styled.div`
+const Container = styled.fieldset`
   position: relative;
 `;
 

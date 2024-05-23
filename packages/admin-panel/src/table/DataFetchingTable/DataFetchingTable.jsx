@@ -88,7 +88,7 @@ const DataFetchingTableComponent = ({
   data = [],
   numberOfPages,
   pageSize,
-  pageIndex,
+  pageIndex = 0,
   onPageChange,
   onPageSizeChange,
   initialiseTable,
@@ -295,7 +295,7 @@ const DataFetchingTableComponent = ({
         </Table>
       </TableContainer>
       <Pagination
-        page={tablePageIndex}
+        page={pageIndex}
         pageCount={pageCount}
         gotoPage={gotoPage}
         pageSize={pageSize}
