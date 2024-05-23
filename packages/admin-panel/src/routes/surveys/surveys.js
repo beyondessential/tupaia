@@ -200,6 +200,11 @@ const SURVEY_COLUMNS = [
   SURVEY_FIELDS.name,
   SURVEY_FIELDS.code,
   {
+    Header: 'Project ID',
+    source: 'project.id',
+    show: false,
+  },
+  {
     Header: 'Permission group',
     source: 'permission_group.name',
   },
@@ -211,7 +216,7 @@ const SURVEY_COLUMNS = [
     Header: 'Preview',
     type: 'externalLink',
     actionConfig: {
-      url: `${REACT_APP_DATATRAK_WEB_URL}/survey?projectCode={project.code}`,
+      url: `${REACT_APP_DATATRAK_WEB_URL}/survey?projectId={project.id}`,
       title: 'Preview survey',
     },
   },
