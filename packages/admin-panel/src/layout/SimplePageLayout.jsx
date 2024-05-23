@@ -9,10 +9,10 @@ import { Outlet } from 'react-router-dom';
 import { Main } from './Page';
 import { TopNavbar } from './navigation';
 
-export const SimplePageLayout = ({ children, logo }) => {
+export const SimplePageLayout = ({ children, logo, homeLink }) => {
   return (
     <Main>
-      <TopNavbar logo={logo} />
+      <TopNavbar logo={logo} homeLink={homeLink} />
       {children || <Outlet />}
     </Main>
   );
@@ -24,9 +24,11 @@ SimplePageLayout.propTypes = {
     url: PropTypes.string,
     alt: PropTypes.string,
   }),
+  homeLink: PropTypes.string,
 };
 
 SimplePageLayout.defaultProps = {
   children: null,
-  logo: null,
+  logo: undefined,
+  homeLink: '/',
 };

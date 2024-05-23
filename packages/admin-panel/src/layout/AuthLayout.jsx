@@ -51,6 +51,6 @@ AuthLayout.propTypes = {
 };
 
 AuthLayout.defaultProps = {
-  logo: null,
+  logo: undefined,
   homeLink: '/',
 };

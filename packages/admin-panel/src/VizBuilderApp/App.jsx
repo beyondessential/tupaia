@@ -13,15 +13,7 @@ import { CreateNew } from './views/CreateNew';
 import { useUser } from './api/queries';
 import { VizConfigProvider as StateProvider } from './context';
 import { useVizBuilderBasePath } from './utils';
-import { TopNavbar } from '../layout/navigation';
-
-const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  background: ${props => props.theme.palette.background.default};
-  height: 100vh;
-  overflow: hidden;
-`;
+import { SimplePageLayout } from '../layout';
 
 const Container = styled.div`
   flex: 1;
@@ -62,15 +54,13 @@ export const App = ({ Footer, homeLink, logo }) => {
 
   return (
     <StateProvider>
-      <Wrapper>
-        <TopNavbar logo={logo} homeLink={homeLink} />
-
+      <SimplePageLayout logo={logo} homeLink={homeLink}>
         <Container>
           {/** Workaround for handling issues with this nested app */}
           {renderMatches(matches)}
           {Footer && <Footer />}
         </Container>
-      </Wrapper>
+      </SimplePageLayout>
     </StateProvider>
   );
 };
