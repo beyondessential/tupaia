@@ -28,11 +28,11 @@ export const CenteredPageContent = styled.section`
   }
 `;
 
-export const AuthLayout = ({ logo }) => {
-  // const { isLoggedIn } = useUser();
-  // if (isLoggedIn) {
-  //   return <Navigate to="/" />;
-  // }
+export const AuthLayout = ({ logo, homeLink }) => {
+  const { isLoggedIn } = useUser();
+  if (isLoggedIn) {
+    return <Navigate to={homeLink} />;
+  }
   return (
     <SimplePageLayout logo={logo}>
       <CenteredPageContent>
@@ -47,8 +47,10 @@ AuthLayout.propTypes = {
     url: PropTypes.string,
     alt: PropTypes.string,
   },
+  homeLink: PropTypes.string,
 };
 
 AuthLayout.defaultProps = {
   logo: null,
+  homeLink: '/',
 };

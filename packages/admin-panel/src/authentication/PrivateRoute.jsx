@@ -18,7 +18,7 @@ export const PrivateRoute = ({ basePath = '' }) => {
   if (isLoading) return null;
 
   if (!isLoggedIn) {
-    return <Navigate to={`${basePath}/${AUTH_ROUTES.LOGIN}`} state={{ from: location.pathname }} />;
+    return <Navigate to={`${basePath}${AUTH_ROUTES.LOGIN}`} state={{ from: location.pathname }} />;
   }
   return <Outlet />;
 };

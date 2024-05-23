@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -52,6 +52,7 @@ const AdminPanelApp = ({ isBESAdmin }) => {
               url: '/lesmis-logo-white.svg',
               alt: 'LESMIS Admin Panel Logo',
             }}
+            homeLink={`${adminUrl}/survey-responses`}
           />
         }
       >
@@ -116,11 +117,11 @@ const AdminPanelApp = ({ isBESAdmin }) => {
               </Route>
             ))}
           </Route>
-          {/* <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} /> */}
+          <Route index element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
         </Route>
       </Route>
       <Route path="not-authorised" element={<NotAuthorisedView />} />
-      {/* <Route
+      <Route
         path="*"
         element={
           <Navigate
@@ -130,7 +131,7 @@ const AdminPanelApp = ({ isBESAdmin }) => {
             }}
           />
         }
-      /> */}
+      />
     </Routes>
   );
 };
