@@ -26,6 +26,7 @@ export const InputField = ({ type, ...inputProps }) => {
   const { options, optionsEndpoint } = inputProps;
   const inputType = getInputType({ options, optionsEndpoint, type });
   const InputComponent = InputFieldComponents[inputType];
+
   return <InputComponent {...inputProps} />;
 };
 

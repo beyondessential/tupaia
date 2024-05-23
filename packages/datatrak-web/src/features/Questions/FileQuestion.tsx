@@ -5,8 +5,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import { FileUploadField } from '@tupaia/ui-components';
 import { SurveyQuestionInputProps } from '../../types';
 import { InputHelperText } from '../../components';
@@ -14,8 +12,6 @@ import { InputHelperText } from '../../components';
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
   label {
     display: flex;
     flex-direction: column;
@@ -27,11 +23,6 @@ const Wrapper = styled.div`
       font-size: 0.875rem;
     }
   }
-`;
-
-const ClearButton = styled(IconButton)`
-  padding: 0.5rem;
-  margin-left: 0.5rem;
 `;
 
 export const FileQuestion = ({
@@ -48,9 +39,6 @@ export const FileQuestion = ({
     });
   };
 
-  const handleClearFile = () => {
-    onChange(null);
-  };
   return (
     <Wrapper>
       <FileUploadField
@@ -64,11 +52,6 @@ export const FileQuestion = ({
         FormHelperTextComponent={InputHelperText}
         required={required}
       />
-      {selectedFile?.value && (
-        <ClearButton title="Clear file" onClick={handleClearFile}>
-          <Close />
-        </ClearButton>
-      )}
     </Wrapper>
   );
 };
