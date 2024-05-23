@@ -2,8 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
-
 import { SurveyEditFields } from '../../surveys/SurveyEditFields';
+import { EditSurveyPage } from '../../pages/resources';
 
 const { REACT_APP_DATATRAK_WEB_URL } = import.meta.env;
 
@@ -32,7 +32,8 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'code',
       optionValueKey: 'code',
       allowMultipleValues: false,
-      secondaryLabel: 'Select the project this survey should be available in',
+      labelTooltip: 'Select the project this survey should be available in',
+      required: true,
     },
   },
   name: {
@@ -41,14 +42,16 @@ const SURVEY_FIELDS = {
     type: 'tooltip',
     editConfig: {
       maxLength: 50,
-      secondaryLabel: 'Max length: 50 characters',
+      secondaryLabel: 'Max 50 characters',
+      required: true,
     },
   },
   code: {
     Header: 'Code',
     source: 'code',
     editConfig: {
-      secondaryLabel: 'A short unique code. Suggestions appear when you enter a name.',
+      labelTooltip: 'A short unique code. Suggestions appear when you enter a name.',
+      required: true,
     },
   },
   country_ids: {
@@ -60,7 +63,8 @@ const SURVEY_FIELDS = {
       optionLabelKey: 'name',
       optionValueKey: 'name',
       allowMultipleValues: true,
-      secondaryLabel: 'Select the countries this survey should be available in',
+      labelTooltip: 'Select the countries this survey should be available in',
+      required: true,
     },
   },
   permission_group_id: {
@@ -71,7 +75,8 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel: 'Select the permission group this survey should be available for',
+      labelTooltip: 'Select the permission group this survey should be available for',
+      required: true,
     },
   },
   survey_group_id: {
@@ -82,7 +87,7 @@ const SURVEY_FIELDS = {
       optionsEndpoint: 'surveyGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      secondaryLabel:
+      labelTooltip:
         'Select the survey group this survey should be a part of, or leave blank for none',
       canCreateNewOptions: true,
     },
@@ -100,7 +105,7 @@ const SURVEY_FIELDS = {
     source: 'period_granularity',
     editConfig: {
       options: [{ label: 'None', value: '' }, ...PERIOD_GRANULARITIES],
-      secondaryLabel:
+      labelTooltip:
         'Select a reporting period if new responses should overwrite previous ones within the same period',
     },
   },
@@ -110,7 +115,7 @@ const SURVEY_FIELDS = {
     type: 'boolean',
     editConfig: {
       type: 'boolean',
-      secondaryLabel:
+      labelTooltip:
         'Select whether survey responses require approval before their data appear in visualisations',
     },
   },
@@ -118,7 +123,7 @@ const SURVEY_FIELDS = {
     Header: 'Data service',
     source: 'data_group.service_type',
     editConfig: {
-      secondaryLabel: 'Select the data service this survey should use',
+      labelTooltip: 'Select the data service this survey should use',
       options: SERVICE_TYPES,
       setFieldsOnChange: (newValue, currentRecord = null) => {
         const { dhisInstanceCode = 'regional' } = currentRecord
@@ -151,45 +156,13 @@ const SURVEY_FIELDS = {
           : [],
     },
   },
-  integration_metadata: {
-    Header: 'Integration details',
-    source: 'integration_metadata',
-    editConfig: {
-      type: 'json',
-      getJsonFieldSchema: () => [
-        {
-          label: 'MS1',
-          fieldName: 'ms1',
-          type: 'json',
-          variant: 'grey',
-          getJsonFieldSchema: () => [
-            {
-              label: 'Endpoint',
-              fieldName: 'endpoint',
-              type: 'json',
-              getJsonFieldSchema: () => [
-                {
-                  label: 'Route',
-                  fieldName: 'route',
-                },
-                {
-                  label: 'Method (POST or PUT)',
-                  fieldName: 'method',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  },
   surveyQuestions: {
     Header: 'Survey questions',
     source: 'surveyQuestions',
     editConfig: {
       type: 'file',
       name: 'surveyQuestions',
-      secondaryLabel:
+      labelTooltip:
         'Import a questions spreadsheet to update the questions and screens of this survey.',
     },
   },
@@ -230,11 +203,16 @@ const SURVEY_COLUMNS = [
   },
   {
     Header: 'Edit',
-    type: 'edit',
     source: 'id',
+    type: 'edit',
+    colWidth: '4.5rem',
+    filterable: false,
+    disableSortBy: true,
+    isButtonColumn: true,
     actionConfig: {
       title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: 'surveys',
+      link: `/surveys/:id/edit`,
       fields: Object.values(SURVEY_FIELDS),
     },
   },
@@ -546,11 +524,18 @@ export const surveys = {
   endpoint: 'surveys',
   columns: SURVEY_COLUMNS,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    path: '/:id/questions',
-    endpoint: 'surveys/{id}/surveyScreenComponents',
-    columns: QUESTION_COLUMNS,
-    title: 'Questions',
-    displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
-  },
+  nestedViews: [
+    {
+      path: '/:id/questions',
+      endpoint: 'surveys/{id}/surveyScreenComponents',
+      columns: QUESTION_COLUMNS,
+      title: 'Questions',
+      displayProperty: 'name', // gets used to determine what to display in the breadcrumbs
+    },
+    {
+      path: '/:id/edit',
+      Component: EditSurveyPage,
+      getDisplayValue: () => 'Edit',
+    },
+  ],
 };

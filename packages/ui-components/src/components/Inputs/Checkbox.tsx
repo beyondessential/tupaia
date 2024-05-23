@@ -22,6 +22,13 @@ const StyledCheckbox = styled(MuiCheckbox)`
 const Wrapper = styled.div`
   margin-top: -0.375rem;
   margin-bottom: 1.25rem;
+  .MuiFormControlLabel-label {
+    display: flex;
+    align-items: center;
+    span + span {
+      margin-left: 0.5rem;
+    }
+  }
 `;
 
 const FormHelperText = styled(MuiFormHelperText)`

@@ -32,6 +32,9 @@ export const DefaultFilter = styled(TextField).attrs(props => ({
   .MuiAutocomplete-inputRoot.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
     padding-inline-start: 0.3rem;
   }
+  .MuiSvgIcon-root {
+    color: ${({ theme }) => theme.palette.text.secondary};
+  }
 `;
 
 const StyledSelect = styled(Select)``;

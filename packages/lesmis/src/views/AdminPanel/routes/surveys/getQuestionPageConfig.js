@@ -101,10 +101,12 @@ export const getQuestionPageConfig = translate => {
     title: translate('admin.questions'),
     columns: QUESTION_COLUMNS,
     editorConfig: EDITOR_CONFIG,
-    nestedView: {
-      ...questions.nestedView,
-      title: translate('admin.options'),
-      columns: OPTION_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...questions.nestedViews[0],
+        title: translate('admin.options'),
+        columns: OPTION_COLUMNS,
+      },
+    ],
   };
 };

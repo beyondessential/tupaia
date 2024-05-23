@@ -165,10 +165,12 @@ export const getUsersPageConfig = translate => {
     editorConfig,
     importConfig,
     createConfig,
-    nestedView: {
-      ...users.nestedView,
-      title: translate('admin.permissions'),
-      columns: PERMISSIONS_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...users.nestedViews[0],
+        title: translate('admin.permissions'),
+        columns: PERMISSIONS_COLUMNS,
+      },
+    ],
   };
 };
