@@ -26,18 +26,25 @@ const ActiveBreadcrumb = styled(Typography)`
   font-weight: ${({ theme }) => theme.typography.fontWeightMedium};
 `;
 
-export const Breadcrumbs = ({ parent, displayProperty, title, details, getDisplayValue }) => {
+export const Breadcrumbs = ({
+  parent,
+  displayProperty,
+  title,
+  details,
+  getDisplayValue,
+  onClickLinks,
+}) => {
   const itemDisplayValue = getDisplayValue ? getDisplayValue(details) : details?.[displayProperty];
 
   const parentTitle = parent ? parent.title ?? generateTitle(parent.resourceName) : null;
 
   return (
     <Wrapper>
-      <BackButton component={Link} to={parent?.to || '/'}>
+      <BackButton component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
         <ArrowBack />
       </BackButton>
       <MuiBreadcrumbs separator="|">
-        <ActiveBreadcrumb component={Link} to={parent?.to || '/'}>
+        <ActiveBreadcrumb component={Link} to={parent?.to || '/'} onClick={onClickLinks}>
           {parentTitle}
         </ActiveBreadcrumb>
         <ActiveBreadcrumb>{title}</ActiveBreadcrumb>
@@ -53,6 +60,7 @@ Breadcrumbs.propTypes = {
   title: PropTypes.string,
   details: PropTypes.object,
   getDisplayValue: PropTypes.func,
+  onClickLinks: PropTypes.func,
 };
 
 Breadcrumbs.defaultProps = {
@@ -61,4 +69,5 @@ Breadcrumbs.defaultProps = {
   title: '',
   details: null,
   getDisplayValue: null,
+  onClickLinks: null,
 };

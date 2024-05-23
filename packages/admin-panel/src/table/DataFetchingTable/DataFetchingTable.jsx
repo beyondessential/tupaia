@@ -57,6 +57,9 @@ const TableContainer = styled(MuiTableContainer)`
     z-index: 2;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const Wrapper = styled.div`
@@ -85,7 +88,7 @@ const DataFetchingTableComponent = ({
   data = [],
   numberOfPages,
   pageSize,
-  pageIndex,
+  pageIndex = 0,
   onPageChange,
   onPageSizeChange,
   initialiseTable,
@@ -110,6 +113,7 @@ const DataFetchingTableComponent = ({
   baseFilter,
   basePath,
   resourceName,
+  defaultSorting,
 }) => {
   const {
     getTableProps,
@@ -178,7 +182,7 @@ const DataFetchingTableComponent = ({
       initialiseTable();
     }
     gotoPage(0);
-    setSortBy([]); // reset sorting when table is re-initialised
+    setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
   }, [endpoint, baseFilter]);
 
   const onChangeFilters = newFilters => {
@@ -291,7 +295,7 @@ const DataFetchingTableComponent = ({
         </Table>
       </TableContainer>
       <Pagination
-        page={tablePageIndex}
+        page={pageIndex}
         pageCount={pageCount}
         gotoPage={gotoPage}
         pageSize={pageSize}
@@ -351,6 +355,7 @@ DataFetchingTableComponent.propTypes = {
   baseFilter: PropTypes.object,
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
+  defaultSorting: PropTypes.array,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -369,6 +374,7 @@ DataFetchingTableComponent.defaultProps = {
   baseFilter: null,
   basePath: '',
   resourceName: {},
+  defaultSorting: [],
 };
 
 const mapStateToProps = (state, { columns, reduxId, ...ownProps }) => ({
