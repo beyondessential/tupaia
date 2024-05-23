@@ -2,15 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
-import { Request } from 'express';
 import { TupaiaDatabase } from '@tupaia/database';
-import {
-  OrchestratorApiBuilder,
-  SessionSwitchingAuthHandler,
-  attachSessionIfAvailable,
-  forwardRequest,
-  handleWith,
-} from '@tupaia/server-boilerplate';
+import { OrchestratorApiBuilder, forwardRequest, handleWith } from '@tupaia/server-boilerplate';
 import { getEnvVarOrDefault } from '@tupaia/utils';
 import { AdminPanelSessionModel } from '../models';
 import { hasTupaiaAdminPanelAccess } from '../utils';
@@ -52,8 +45,8 @@ import {
   ExportEntityHierarchiesRequest,
   ExportEntityHierarchiesRoute,
 } from '../routes';
+import { authHandlerProvider } from '../auth';
 
-const authHandlerProvider = (req: Request) => new SessionSwitchingAuthHandler(req);
 /**
  * Set up express server with middleware,
  */
@@ -64,7 +57,6 @@ export async function createApp() {
   const builder = new OrchestratorApiBuilder(new TupaiaDatabase(), 'admin-panel')
     .attachApiClientToContext(authHandlerProvider)
     .useSessionModel(AdminPanelSessionModel)
-    .useAttachSession(attachSessionIfAvailable)
     .verifyLogin(hasTupaiaAdminPanelAccess)
     .get('user', handleWith(UserRoute))
     .get<FetchHierarchyEntitiesRequest>(
@@ -154,7 +146,7 @@ export async function createApp() {
     )
     .use('hierarchy', forwardToEntityApi)
     .use('hierarchies', forwardToEntityApi)
-    .use('*', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }));
+    .use('*', forwardRequest(CENTRAL_API_URL));
 
   await builder.initialiseApiClient();
 
