@@ -61,6 +61,12 @@ export const StyledCheckboxWrapper = styled.div`
   }
 `;
 
+const StyledTextField = styled(TextField)`
+  .MuiOutlinedInput-inputMultiline {
+    padding: 1rem;
+  }
+`;
+
 export const registerInputFields = () => {
   registerInputField('autocomplete', props => (
     <ReduxAutocomplete
@@ -220,7 +226,7 @@ export const registerInputFields = () => {
     );
   });
   registerInputField('textarea', props => (
-    <TextField
+    <StyledTextField
       id={props.id}
       label={props.label}
       value={props.value || ''}
@@ -239,7 +245,7 @@ export const registerInputFields = () => {
     />
   ));
   registerInputField('text', props => (
-    <TextField
+    <StyledTextField
       id={props.id}
       label={props.label}
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value
@@ -263,7 +269,7 @@ export const registerInputFields = () => {
     />
   ));
   registerInputField('password', props => (
-    <TextField
+    <StyledTextField
       id={props.id}
       label={props.label}
       value={props.value === undefined || props.value === null ? '' : props.value} // we still want to show 0 value

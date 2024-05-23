@@ -9,13 +9,14 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { PageHeader, PageBody } from '../../widgets';
+import { PageBody, PageHeader } from '../../widgets';
 import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
+import { generateTitle } from './resourceName';
 
 const Container = styled(PageBody)`
   // This is a work around to put the scroll bar at the top of the section by rotating the
@@ -66,6 +67,7 @@ const useEndpoint = (endpoint, details, params) => {
 };
 
 export const ResourcePage = ({
+  resourceName,
   columns,
   createConfig,
   endpoint,
@@ -99,6 +101,8 @@ export const ResourcePage = ({
 
   const isDetailsPage = !!parent;
 
+  const pageTitle = title ?? generateTitle(resourceName);
+
   const getHasPermission = actionType => {
     if (!needsBESAdminAccess) return true;
     if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
@@ -119,14 +123,14 @@ export const ResourcePage = ({
         {isDetailsPage && (
           <Breadcrumbs
             parent={parent}
-            title={title}
+            title={pageTitle}
             displayProperty={displayProperty}
             details={details}
             getDisplayValue={getDisplayValue}
           />
         )}
         <PageHeader
-          title={title}
+          title={pageTitle}
           importConfig={canImport && importConfig}
           exportConfig={canExport && exportConfig}
           createConfig={canCreate && createConfig}
@@ -157,6 +161,10 @@ export const ResourcePage = ({
 };
 
 ResourcePage.propTypes = {
+  resourceName: PropTypes.shape({
+    singular: PropTypes.string.isRequired,
+    plural: PropTypes.string,
+  }),
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   onProcessDataForSave: PropTypes.func,
@@ -168,7 +176,7 @@ ResourcePage.propTypes = {
   ExportModalComponent: PropTypes.elementType,
   TableComponent: PropTypes.elementType,
   LinksComponent: PropTypes.elementType,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   baseFilter: PropTypes.object,
   defaultSorting: PropTypes.array,
   defaultFilters: PropTypes.array,
@@ -185,6 +193,7 @@ ResourcePage.propTypes = {
 };
 
 ResourcePage.defaultProps = {
+  resourceName: {},
   createConfig: null,
   importConfig: null,
   exportConfig: {},
@@ -193,6 +202,7 @@ ResourcePage.defaultProps = {
   TableComponent: null,
   LinksComponent: null,
   onProcessDataForSave: null,
+  title: null,
   baseFilter: {},
   defaultSorting: [],
   defaultFilters: [],

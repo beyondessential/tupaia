@@ -9,6 +9,8 @@ import { SECTION_FIELD_TYPE } from '../../editor/constants';
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
+const RESOURCE_NAME = { singular: 'landing page' };
+
 const LANDING_PAGES_ENDPOINT = 'landingPages';
 
 // the URL prefix to display in the url_segment field
@@ -95,7 +97,7 @@ const FIELDS = {
     },
   },
   EXTENDED_TITLE: {
-    Header: 'Extended title (max 60 characters)',
+    Header: 'Extended title (max. 60 characters)',
     source: 'extended_title',
     editConfig: {
       maxLength: 60,
@@ -105,7 +107,7 @@ const FIELDS = {
     },
   },
   LONG_BIO: {
-    Header: 'Long bio (max 250 characters)',
+    Header: 'Long bio (max. 250 characters)',
     source: 'long_bio',
     editConfig: {
       maxLength: 250,
@@ -135,7 +137,7 @@ const FIELDS = {
     },
   },
   PROJECTS: {
-    Header: 'Project code/s',
+    Header: 'Project code(s)',
     source: 'project_codes',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -256,7 +258,7 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      title: 'Edit Landing page',
+      title: `Edit ${RESOURCE_NAME.singular}`,
       editEndpoint: LANDING_PAGES_ENDPOINT,
       fields: EDIT_FIELDS,
     },
@@ -272,14 +274,14 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New Landing Page',
+    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: LANDING_PAGES_ENDPOINT,
     fields: CREATE_FIELDS,
   },
 };
 
 export const landingPages = {
-  title: 'Landing pages',
+  resourceName: RESOURCE_NAME,
   path: '/landing-pages',
   endpoint: LANDING_PAGES_ENDPOINT,
   columns: COLUMNS,

@@ -19,7 +19,7 @@ export const ResubmitSurveyResponseModalComponent = ({
 }) => {
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick maxWidth="md">
-      <ModalHeader onClose={onDismiss} title="Resubmit Survey Response" />
+      <ModalHeader onClose={onDismiss} title="Resubmit survey response" />
       <Form
         surveyResponseId={surveyResponseId}
         onDismiss={() => onDismiss()}

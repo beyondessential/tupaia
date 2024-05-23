@@ -116,10 +116,8 @@ export const PageRoutes = React.memo(() => {
           </>
         }
       />
-      <Route
-        path="/pdf-export/:entityCode?"
-        element={<ExportView viewType={PDF_DOWNLOAD_VIEW} />}
-      />
+      <Route path="/pdf-export/:entityCode" element={<ExportView viewType={PDF_DOWNLOAD_VIEW} />} />
+      <Route path="/pdf-export" element={<ExportView viewType={PDF_DOWNLOAD_VIEW} />} />
       <Route
         path="/:entityCode/*"
         element={
