@@ -58,6 +58,11 @@ const COMPARATORS = {
   ILIKE: 'ilike',
 };
 
+/**
+ * We only support specific functions in select statements in order to avoid SQL injection
+ */
+const supportedFunctions = ['ST_AsGeoJSON', 'COALESCE'];
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -538,9 +543,15 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
 
       // special case to handle selecting geojson - avoid generic handling of functions to keep
       // out sql injection vulnerabilities
-      if (selector.includes('ST_AsGeoJSON')) {
-        const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
-        return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
+      for (let i = 0; i < supportedFunctions.length; i++) {
+        const func = supportedFunctions[i];
+        if (selector.includes(func)) {
+          const [, argsString] = selector.match(new RegExp(`${func}\\((.*)\\)`));
+          const args = argsString.split(',').map(arg => arg.trim());
+          return {
+            [alias]: connection.raw(`${func}(${args.map(() => '??').join(',')})`, [...args]),
+          };
+        }
       }
 
       return { [alias]: connection.raw('??', [selector]) };

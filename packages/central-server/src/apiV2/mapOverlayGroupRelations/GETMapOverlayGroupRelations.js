@@ -30,10 +30,6 @@ export class GETMapOverlayGroupRelations extends GETHandler {
       nearTableKey: 'map_overlay_group_relation.map_overlay_group_id',
       farTableKey: 'map_overlay_group.id',
     },
-    map_overlay: {
-      nearTableKey: 'map_overlay_group_relation.child_id',
-      farTableKey: 'map_overlay.id',
-    },
   };
 
   async findSingleRecord(mapOverlayGroupRelationId, options) {
@@ -54,32 +50,16 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     return mapOverlayGroupRelation;
   }
 
-  async findRecords(criteria, options) {
-
-    const optionsWithoutChildCode = { ...options };
-    optionsWithoutChildCode.columns = optionsWithoutChildCode.columns.filter(
-      column => column.sort_order !== undefined,
-    );
-
-
-    console.log(' ');
-    const records = await super.findRecords(criteria, optionsWithoutChildCode);
-    console.log('\x1b[1;34mrecords\x1b[m', `\x1b[33m${records}\x1b[m`);
-
-    const recordsWithChildCode = await this.models.mapOverlayGroupRelation.find(criteria, options);
-    console.log('\x1b[1;34mfindRecords queryResults\x1b[m', recordsWithChildCode);
-    console.log(' ');
-
-    return recordsWithChildCode.map(
-      ({ id, map_overlay_group_id, child_id, child_code, child_type, sort_order }) => ({
-        id,
-        map_overlay_group_id,
-        child_id,
-        child_code,
-        child_type,
-        sort_order,
-      }),
-    );
+  async getDbQueryOptions() {
+    const { multiJoin, sort, ...restOfOptions } = await super.getDbQueryOptions();
+    console.log('sort', sort);
+    return {
+      ...restOfOptions,
+      // Stripping table prefix from child_code as it's a customColumn
+      sort: sort.map(s => s.replace('map_overlay_group_relation.child_code', 'child_code')),
+      // Appending the multi-join from the Record class so that we can fetch the 'child_code'
+      multiJoin: multiJoin.concat(this.models.mapOverlayGroupRelation.DatabaseRecordClass.joins),
+    };
   }
 
   async getPermissionsFilter(criteria, options) {

@@ -22,20 +22,19 @@ export class MapOverlayGroupRelationRecord extends DatabaseRecord {
     {
       joinType: JOIN_TYPES.LEFT,
       joinWith: RECORDS.MAP_OVERLAY,
-      joinCondition: [
-        `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
-        `${RECORDS.MAP_OVERLAY}.id`,
-      ],
-      fields: { code: 'childMapOverlayCode' },
+      joinAs: 'child_map_overlay',
+      joinCondition: [`${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`, `child_map_overlay.id`],
+      fields: { code: 'code' },
     },
     {
       joinType: JOIN_TYPES.LEFT,
       joinWith: RECORDS.MAP_OVERLAY_GROUP,
+      joinAs: 'child_map_overlay_group',
       joinCondition: [
         `${RECORDS.MAP_OVERLAY_GROUP_RELATION}.child_id`,
-        `${RECORDS.MAP_OVERLAY_GROUP}.id`,
+        `child_map_overlay_group.id`,
       ],
-      fields: { code: 'childMapOverlayGroupCode' },
+      fields: { code: 'code' },
     },
   ];
 
@@ -52,6 +51,10 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
   get RelationChildTypes() {
     return RELATION_CHILD_TYPES;
   }
+
+  customColumnSelectors = {
+    child_code: () => 'COALESCE(child_map_overlay.code, child_map_overlay_group.code)',
+  };
 
   async findTopLevelMapOverlayGroupRelations() {
     const rootMapOverlayGroup = await this.otherModels.mapOverlayGroup.findRootMapOverlayGroup();

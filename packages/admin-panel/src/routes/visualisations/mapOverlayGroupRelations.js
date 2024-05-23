@@ -32,6 +32,11 @@ const FIELDS = [
     },
   },
   {
+    Header: 'Child Code',
+    source: 'child_code',
+    type: 'tooltip',
+  },
+  {
     Header: 'Child type',
     width: 160,
     source: 'child_type',
