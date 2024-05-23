@@ -94,7 +94,6 @@ export const FieldsEditor = ({ fields, recordData, onEditField, onSetFormFile })
         />
       );
     }
-
     return (
       <InputField
         key={source}
