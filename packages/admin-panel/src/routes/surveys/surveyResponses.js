@@ -154,11 +154,13 @@ export const surveyResponses = {
   defaultFilters: [{ id: 'outdated', value: false }],
   defaultSorting: [{ id: 'data_time', desc: true }],
   ExportModalComponent: SurveyResponsesExportModal,
-  nestedView: {
-    title: 'Answers',
-    columns: ANSWER_COLUMNS,
-    endpoint: 'surveyResponses/{id}/answers',
-    path: '/:id/answers',
-    displayProperty: 'survey.name',
-  },
+  nestedViews: [
+    {
+      title: 'Answers',
+      columns: ANSWER_COLUMNS,
+      endpoint: 'surveyResponses/{id}/answers',
+      path: '/:id/answers',
+      displayProperty: 'survey.name',
+    },
+  ],
 };

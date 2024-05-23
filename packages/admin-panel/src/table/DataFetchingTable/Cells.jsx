@@ -136,7 +136,7 @@ const CellLink = styled(Link)`
   text-decoration: none;
   &:hover {
     tr:has(&) td > * {
-      background-color: ${({ theme }) => `${theme.palette.primary.main}33`};
+      background-color: ${({ theme }) => `${theme.palette.primary.main}18`}; // 18 is 10% opacity
     }
   }
 `;

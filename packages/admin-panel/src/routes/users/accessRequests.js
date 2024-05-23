@@ -169,15 +169,17 @@ export const accessRequests = {
     // Return an array of records for bulk editing on the server
     return recordData.map(record => ({ ...record, ...editedFields }));
   },
-  nestedView: {
-    resourceName: RESOURCE_NAME,
-    endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
-    columns: DETAILS_COLUMNS,
-    baseFilter: { approved: null },
-    path: '/:user_id/access-requests',
-    getDisplayValue: user => {
-      if (!user) return '';
-      return `${user['user.first_name']} ${user['user.last_name']}`;
+  nestedViews: [
+    {
+      resourceName: RESOURCE_NAME,
+      endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      columns: DETAILS_COLUMNS,
+      baseFilter: { approved: null },
+      path: '/:user_id/access-requests',
+      getDisplayValue: user => {
+        if (!user) return '';
+        return `${user['user.first_name']} ${user['user.last_name']}`;
+      },
     },
-  },
+  ],
 };

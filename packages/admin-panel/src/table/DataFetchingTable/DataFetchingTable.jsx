@@ -59,6 +59,9 @@ const TableContainer = styled(MuiTableContainer)`
   }
   tr {
     display: flex;
+    
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -81,22 +84,6 @@ const MessageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.5);
-`;
-
-const ColResize = styled.div.attrs({
-  onClick: e => {
-    // suppress other events when resizing
-    e.preventDefault();
-    e.stopPropagation();
-  },
-})`
-  width: 1rem;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  cursor: col-resize;
-  z-index: 1;
 `;
 
 const formatColumnForReactTable = (originalColumn, reduxId) => {

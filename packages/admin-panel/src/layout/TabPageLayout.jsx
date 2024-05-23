@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { Outlet } from 'react-router-dom';
 import { PageContentWrapper } from './Page';
 import { SecondaryNavbar } from './navigation';
+import { PageBody } from './PageBody';
 
 export const TabPageLayout = ({
   routes,
@@ -22,7 +23,9 @@ export const TabPageLayout = ({
         links={routes}
         basePath={basePath}
       />
-      <Outlet />
+      <PageBody>
+        <Outlet />
+      </PageBody>
       {Footer}
     </ContainerComponent>
   );

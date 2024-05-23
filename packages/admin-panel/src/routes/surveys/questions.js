@@ -100,12 +100,14 @@ export const questions = {
   columns: QUESTION_COLUMNS,
   isBESAdminOnly: true,
   editorConfig: EDITOR_CONFIG,
-  getHasNestedView: ({ option_set_id: optionSetId }) => !!optionSetId,
-  nestedView: {
-    title: 'Options',
-    endpoint: 'optionSets/{option_set_id}/options',
-    columns: OPTION_COLUMNS,
-    path: '/:id/options',
-    displayProperty: 'code',
-  },
+  nestedViews: [
+    {
+      title: 'Options',
+      endpoint: 'optionSets/{option_set_id}/options',
+      columns: OPTION_COLUMNS,
+      path: '/:id/options',
+      displayProperty: 'code',
+      getHasNestedView: ({ option_set_id: optionSetId }) => !!optionSetId,
+    },
+  ],
 };
