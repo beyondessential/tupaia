@@ -13,7 +13,7 @@ import { ResourcePage } from './pages/resources/ResourcePage';
 import { TabPageLayout } from './layout/TabPageLayout';
 import { useUser } from './api/queries';
 import { getHasBESAdminAccess } from './utilities/getHasBESAdminAccess';
-import { ForgotPasswordPage } from './pages';
+import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
@@ -76,6 +76,7 @@ const App = () => {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
       <Route path="/" element={<PrivateRoute />}>
         <Route element={<AppPageLayout routes={accessibleRoutes} />}>

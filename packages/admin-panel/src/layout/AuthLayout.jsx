@@ -15,6 +15,14 @@ export const CenteredPageContent = styled.section`
   flex-grow: 1;
   .MuiPaper-root {
     border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+    box-shadow: none;
+    height: auto;
+    .MuiTypography-colorError {
+      padding-block-start: 1rem;
+    }
+    .MuiPaper-root {
+      border: none;
+    }
   }
 `;
 
