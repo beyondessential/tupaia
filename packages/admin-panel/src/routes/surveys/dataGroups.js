@@ -51,14 +51,16 @@ export const dataGroups = {
   },
   editorConfig: EDITOR_CONFIG,
   isBESAdminOnly: true,
-  nestedView: {
-    resourceName: RESOURCE_NAME,
-    endpoint: 'dataGroups/{id}/dataElements',
-    columns: [
-      ...DATA_ELEMENT_FIELDS,
-      ...getDataSourceButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement'),
-    ],
-    path: '/:id/data-elements',
-    displayProperty: 'code',
-  },
+  nestedViews: [
+    {
+      resourceName: RESOURCE_NAME,
+      endpoint: 'dataGroups/{id}/dataElements',
+      columns: [
+        ...DATA_ELEMENT_FIELDS,
+        ...getDataSourceButtonsConfig(DATA_ELEMENT_FIELDS, 'dataElement'),
+      ],
+      path: '/:id/data-elements',
+      displayProperty: 'code',
+    },
+  ],
 };
