@@ -117,14 +117,15 @@ export const loadEditor =
   async (dispatch, getState, { api }) => {
     // explode the fields from any subsections
     const explodedFields = getExplodedFields(fields);
-
+    const endpoint = recordId ? `${editEndpoint}/${recordId}` : editEndpoint;
+    // Open the modal instantly
     dispatch({
       type: LOAD_EDITOR,
       fields,
       FieldsComponent,
       title,
       recordData: {},
-      endpoint: editEndpoint,
+      endpoint,
       extraDialogProps,
       isLoading,
       initialValues,
@@ -133,7 +134,6 @@ export const loadEditor =
     // And then fetch data / set default field values for edit/new respectively
 
     if (recordId) {
-      const endpoint = `${editEndpoint}/${recordId}`;
       dispatch({
         type: EDITOR_DATA_FETCH_BEGIN,
         recordId,
