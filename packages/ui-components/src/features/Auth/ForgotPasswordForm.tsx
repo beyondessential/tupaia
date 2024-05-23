@@ -42,6 +42,7 @@ interface ForgotPasswordFormProps {
   onSubmit: SubmitHandler<any>;
   loginLink: LinkProps['to'];
   registerLink: LinkProps['to'];
+  RegisterLinkComponent?: React.ReactNode;
 }
 
 export const ForgotPasswordForm = ({
