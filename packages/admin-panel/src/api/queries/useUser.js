@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { get } from '../../VizBuilderApp/api';
 
 export const useUser = () => {
-  const query = useQuery(['user'], () => get('me'), {
+  const query = useQuery(['user'], () => get('user'), {
     retry: false,
     staleTime: 1000 * 60 * 60 * 1,
   });

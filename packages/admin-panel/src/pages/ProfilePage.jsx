@@ -45,7 +45,7 @@ export const ProfilePage = React.memo(() => {
   const { data: user } = useUser();
   const [profileImage, setProfileImage] = useState({
     fileId: null,
-    data: user?.profile_image,
+    data: user?.profileImage,
   });
   const { handleSubmit, register, errors } = useForm();
   const { mutate: updateProfile, isSuccess, error, isLoading } = useUpdateProfile();
@@ -72,7 +72,7 @@ export const ProfilePage = React.memo(() => {
 
   if (!user) return null;
 
-  const { first_name: firstName, last_name: lastName, position, employer } = user;
+  const { firstName, lastName, position, employer } = user;
   const userInitial = (firstName || lastName).charAt(0);
 
   return (
