@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import MuiDivider from '@material-ui/core/Divider';
 import { useForm } from 'react-hook-form';
@@ -51,7 +51,7 @@ export const ChangePasswordPage = React.memo(() => {
     resetPassword(data);
   });
 
-  const password = watch('password');
+  const newPassword = watch('newPassword');
 
   return (
     <Container>
@@ -87,20 +87,20 @@ export const ChangePasswordPage = React.memo(() => {
         />
         <TextField
           label="Confirm Password"
-          name="passwordConfirm"
+          name="newPasswordConfirm"
           placeholder="Enter your password"
           required
           type="password"
-          error={!!errors.passwordConfirm}
-          helperText={errors.passwordConfirm && errors.passwordConfirm.message}
+          error={!!errors.newPasswordConfirm}
+          helperText={errors.newPasswordConfirm && errors.newPasswordConfirm.message}
           inputRef={register({
             required: 'Required',
             minLength: { value: 9, message: 'Password must be over 8 characters long.' },
-            validate: value => value === password || 'Passwords do not match.',
+            validate: value => value === newPassword || 'Passwords do not match.',
           })}
         />
         <PasswordStrengthBar
-          password={password}
+          password={newPassword}
           helperText="New password must be over 8 characters long."
           pt={1}
           pb={4}
