@@ -69,6 +69,7 @@ export const ResourcePage = ({
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
+  actionLabel,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -78,8 +79,6 @@ export const ResourcePage = ({
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
-
-  const pageTitle = title ?? generateTitle(resourceName);
 
   const getHasPermission = actionType => {
     if (!needsBESAdminAccess) return true;
@@ -128,6 +127,7 @@ export const ResourcePage = ({
         getHasNestedView={getHasNestedView}
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
+        actionLabel={actionLabel}
       />
       <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
       <LogsModal />

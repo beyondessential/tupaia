@@ -104,7 +104,11 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                       childRoute.Component ? (
                         <childRoute.Component />
                       ) : (
-                        <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
+                        <ResourcePage
+                          actionLabel={translate('admin.action')}
+                          {...childRoute}
+                          hasBESAdminAccess={isBESAdmin}
+                        />
                       )
                     }
                   />

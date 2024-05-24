@@ -108,7 +108,6 @@ export const getUsersPageConfig = translate => {
       Header: translate('admin.edit'),
       source: 'id',
       type: 'edit',
-      width: 150,
       actionConfig: {
         title: translate('admin.edit'),
         editEndpoint: 'users',

@@ -25,7 +25,6 @@ const BUTTON_COLUMN_OPTIONS = {
   isButtonColumn: true,
   disableResizing: true,
   width: 60,
-  minWidth: 0,
 };
 
 const CUSTOM_CELL_COMPONENTS = {

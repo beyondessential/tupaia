@@ -134,6 +134,7 @@ const DataFetchingTableComponent = memo(
     basePath,
     resourceName,
     defaultSorting,
+    actionLabel = 'Action',
   }) => {
     const formattedColumns = useMemo(
       () => columns.map(column => formatColumnForReactTable(column)),
@@ -163,7 +164,9 @@ const DataFetchingTableComponent = memo(
           pageIndex,
           pageSize,
           sortBy: sorting,
-          hiddenColumns: columns.filter(column => column.show === false).map(column => column.id),
+          hiddenColumns: columns
+            .filter(column => column.show === false)
+            .map(column => column.source ?? column.type),
         },
         manualPagination: true,
         pageCount: numberOfPages,
@@ -212,7 +215,7 @@ const DataFetchingTableComponent = memo(
       }
       gotoPage(0);
       setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
-    }, [endpoint, baseFilter]);
+    }, [endpoint, JSON.stringify(baseFilter)]);
 
     const onChangeFilters = newFilters => {
       onFilteredChange(newFilters);
@@ -410,6 +413,7 @@ DataFetchingTableComponent.propTypes = {
   basePath: PropTypes.string,
   resourceName: PropTypes.object,
   defaultSorting: PropTypes.array,
+  actionLabel: PropTypes.string,
 };
 
 DataFetchingTableComponent.defaultProps = {
@@ -429,6 +433,7 @@ DataFetchingTableComponent.defaultProps = {
   basePath: '',
   resourceName: {},
   defaultSorting: [],
+  actionLabel: 'Action',
 };
 
 const mapStateToProps = (state, { reduxId, ...ownProps }) => ({
