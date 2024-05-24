@@ -25,7 +25,7 @@ const BUTTON_COLUMN_OPTIONS = {
   isButtonColumn: true,
   disableResizing: true,
   width: 60,
-  maxWidth: 60,
+  minWidth: 0,
 };
 
 const CUSTOM_CELL_COMPONENTS = {
@@ -60,15 +60,17 @@ export const generateConfigForColumnType = (type = 'tooltip', actionConfig, redu
   if (!CustomCellComponent) {
     return {};
   }
-  let config = {
-    Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
-  };
+
   if (BUTTON_COLUMN_TYPES.includes(type)) {
-    config = {
-      ...config,
+    return {
+      Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
       ...BUTTON_COLUMN_OPTIONS,
     };
   }
+  let config = {
+    Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
+    minWidth: 120, // so that the filter input is not too small
+  };
   if (type === 'boolean') {
     config = {
       ...config,
