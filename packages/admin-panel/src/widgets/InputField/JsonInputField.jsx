@@ -7,11 +7,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
+import { FormLabel } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../../utilities';
-import { FormLabel } from '@material-ui/core';
 
 const getJsonFieldValues = value => {
   if (value) {
@@ -35,14 +35,20 @@ const GreyCard = styled(Card)`
   margin-bottom: 20px;
 `;
 
-const Container = styled.div`
+const Container = styled.fieldset`
   position: relative;
   margin-bottom: 20px;
+  border: none;
+  padding: 0;
 `;
 
-const CardLabel = styled(FormLabel)`
+const CardLabel = styled(FormLabel).attrs({
+  component: 'legend',
+})`
   display: block;
-  margin-bottom: 3px;
+
+  font-size: 1rem;
+  margin-block-end: 0.6rem;
 `;
 
 export const JsonInputField = props => {

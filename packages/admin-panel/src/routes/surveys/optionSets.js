@@ -96,11 +96,13 @@ export const optionSets = {
   columns: OPTION_SET_COLUMNS,
   importConfig: IMPORT_CONFIG,
   path: '/option-sets',
-  nestedView: {
-    title: 'Options',
-    endpoint: 'optionSets/{id}/options',
-    columns: OPTION_COLUMNS,
-    path: '/:id/options',
-    displayProperty: 'name',
-  },
+  nestedViews: [
+    {
+      title: 'Options',
+      endpoint: 'optionSets/{id}/options',
+      columns: OPTION_COLUMNS,
+      path: '/:id/options',
+      displayProperty: 'name',
+    },
+  ],
 };
