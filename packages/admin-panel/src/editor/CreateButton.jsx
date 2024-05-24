@@ -9,9 +9,9 @@ import { connect } from 'react-redux';
 import { loadEditor, openEditModal } from './actions';
 import { CreateActionButton } from './ActionButton';
 
-export const CreateButtonComponent = ({ label, openCreateModal }) => (
-  <CreateActionButton onClick={openCreateModal}>{label}</CreateActionButton>
-);
+export const CreateButtonComponent = ({ label, openCreateModal }) => {
+  return <CreateActionButton onClick={openCreateModal}>{label}</CreateActionButton>;
+};
 
 CreateButtonComponent.propTypes = {
   openCreateModal: PropTypes.func.isRequired,
@@ -19,7 +19,7 @@ CreateButtonComponent.propTypes = {
 };
 
 CreateButtonComponent.defaultProps = {
-  label: 'New',
+  label: '',
 };
 
 const mapDispatchToProps = (dispatch, { actionConfig }) => ({

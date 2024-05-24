@@ -79,8 +79,6 @@ export const ResourcePage = ({
 
   const isDetailsPage = !!parent;
 
-  const pageTitle = title ?? generateTitle(resourceName);
-
   const getHasPermission = actionType => {
     if (!needsBESAdminAccess) return true;
     if (needsBESAdminAccess.includes(actionType)) return !!hasBESAdminAccess;
@@ -114,6 +112,7 @@ export const ResourcePage = ({
         createConfig={canCreate && createConfig}
         ExportModalComponent={canExport && ExportModalComponent}
         LinksComponent={LinksComponent}
+        resourceName={resourceName?.singular}
       />
       <DataFetchingTable
         endpoint={updatedEndpoint}
@@ -129,7 +128,11 @@ export const ResourcePage = ({
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
       />
-      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
+      <EditModal
+        onProcessDataForSave={onProcessDataForSave}
+        resourceName={resourceName?.singular}
+        {...editorConfig}
+      />
       <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />

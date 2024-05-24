@@ -89,7 +89,6 @@ export const RELATION_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
     fields: FIELDS,
   },

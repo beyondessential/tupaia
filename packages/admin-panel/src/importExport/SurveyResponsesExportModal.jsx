@@ -27,7 +27,7 @@ export const SurveyResponsesExportModal = () => {
   };
 
   return (
-    <ExportModal title="Export Survey Responses" values={values} exportEndpoint="surveyResponses">
+    <ExportModal title="Download Survey Responses" values={values} exportEndpoint="surveyResponses">
       <ReduxAutocomplete
         label="Surveys to Include"
         helperText="Please enter the names of the surveys to be exported."

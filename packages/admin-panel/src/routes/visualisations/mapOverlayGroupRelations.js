@@ -79,7 +79,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: RELATION_ENDPOINT,
     fields: FIELDS,
   },
