@@ -108,7 +108,7 @@ const DataFetchingTableComponent = memo(
     data = [],
     numberOfPages,
     pageSize,
-    pageIndex,
+    pageIndex = 0,
     onPageChange,
     onPageSizeChange,
     initialiseTable,
