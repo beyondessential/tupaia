@@ -60,14 +60,16 @@ export const generateConfigForColumnType = (type = 'tooltip', actionConfig, redu
     return {};
   }
 
+  const Cell = generateCustomCell(CustomCellComponent, actionConfig, reduxId);
+
   if (BUTTON_COLUMN_TYPES.includes(type)) {
     return {
-      Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
+      Cell,
       ...BUTTON_COLUMN_OPTIONS,
     };
   }
   let config = {
-    Cell: generateCustomCell(CustomCellComponent, actionConfig, reduxId),
+    Cell,
     minWidth: 120, // so that the filter input is not too small
   };
   if (type === 'boolean') {

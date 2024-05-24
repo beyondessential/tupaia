@@ -293,7 +293,7 @@ const DataFetchingTableComponent = memo(
                       canResize={false}
                       colSpan={actionColumns.length}
                       width={
-                        // if there are multiple action columns, set the width to the sum of their widths, otherwise set it to auto so that the act
+                        // if there are multiple action columns, set the width to the sum of their widths, otherwise set it to auto so that the column takes up the remaining space
                         actionColumns.length > 1
                           ? actionColumns.reduce((acc, column) => acc + column.totalWidth, 0)
                           : 'auto'

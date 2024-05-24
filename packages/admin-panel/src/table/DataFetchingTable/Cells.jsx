@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { TableCell as MuiTableCell } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -26,11 +26,11 @@ const CellContentWrapper = styled.div`
   padding: 0.7rem;
   ${({ $isButtonColumn }) =>
     $isButtonColumn &&
-    `
-    padding-inline: 0;
-    padding-block: 0;
-    text-align: center;
-  `}
+    css`
+      padding-inline: 0;
+      padding-block: 0;
+      text-align: center;
+    `}
   height: 100%;
   display: flex;
   align-items: center;
