@@ -18,16 +18,22 @@ const Cell = styled(MuiTableCell)`
     padding-inline-start: 1.5rem;
   }
   &:last-child {
-    padding-inline-end: 1.5rem;
+    padding-inline-end: 1rem;
   }
 `;
 
 const CellContentWrapper = styled.div`
-  padding: ${({ $shouldCenterContent }) => ($shouldCenterContent ? '0' : '0.7rem')};
+  padding: 0.7rem;
+  ${({ $isButtonColumn }) =>
+    $isButtonColumn &&
+    `
+    padding-inline: 0;
+    padding-block: 0;
+    text-align: center;
+  `}
   height: 100%;
   display: flex;
   align-items: center;
-  text-align: ${({ $shouldCenterContent }) => ($shouldCenterContent ? 'center' : 'left')};
 
   tr:not(:last-child) & {
     border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
@@ -54,6 +60,7 @@ const HeaderCell = styled(Cell)`
   border-bottom: 1px solid ${({ theme }) => theme.palette.grey[400]};
   padding-block: 0.7rem;
   padding-inline: 0.7rem 0;
+  display: flex;
   position: initial; // override this because we have 2 sticky header rows so we will apply sticky to the thead element
   background-color: ${({ theme }) => theme.palette.background.paper};
   .MuiTableSortLabel-icon {
@@ -61,9 +68,6 @@ const HeaderCell = styled(Cell)`
   }
   .MuiTableSortLabel-active .MuiTableSortLabel-icon {
     opacity: 1;
-  }
-  ${CellContentContainer} {
-    width: ${({ $canResize }) => ($canResize ? 'calc(100% - 2rem)' : '100%')};
   }
 `;
 
@@ -76,11 +80,7 @@ const ColResize = styled.div.attrs({
 })`
   width: 2rem;
   height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
   cursor: col-resize;
-  z-index: 1;
 `;
 
 export const HeaderDisplayCell = ({ children, canResize, getResizerProps, ...props }) => {
@@ -109,8 +109,8 @@ HeaderDisplayCell.defaultProps = {
 export const TableCell = ({ children, width, isButtonColumn, url, ...props }) => {
   return (
     <Cell $isButtonColumn={isButtonColumn} {...props}>
-      <CellContentWrapper $width={width} $shouldCenterContent={isButtonColumn}>
-        <CellContentContainer to={url} as={url ? CellLink : 'div'}>
+      <CellContentWrapper $width={width} $isButtonColumn={isButtonColumn}>
+        <CellContentContainer to={url} as={url ? CellLink : 'div'} $isButtonColumn={isButtonColumn}>
           {children}
         </CellContentContainer>
       </CellContentWrapper>

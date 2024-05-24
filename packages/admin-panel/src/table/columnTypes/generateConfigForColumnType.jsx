@@ -24,7 +24,8 @@ const BUTTON_COLUMN_OPTIONS = {
   disableSortBy: true,
   isButtonColumn: true,
   disableResizing: true,
-  width: 90,
+  width: 60,
+  maxWidth: 60,
 };
 
 const CUSTOM_CELL_COMPONENTS = {
@@ -51,6 +52,7 @@ const BUTTON_COLUMN_TYPES = [
   'qrCode',
   'testDatabaseConnection',
   'bulkEdit',
+  'sync',
 ];
 
 export const generateConfigForColumnType = (type = 'tooltip', actionConfig, reduxId) => {

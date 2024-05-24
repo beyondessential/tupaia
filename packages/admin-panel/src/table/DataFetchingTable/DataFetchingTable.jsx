@@ -225,6 +225,8 @@ const DataFetchingTableComponent = memo(
 
     const { singular = 'record' } = resourceName;
 
+    const actionColumns = visibleColumns.filter(column => column.isButtonColumn);
+
     return (
       <Wrapper>
         {errorMessage && <ErrorAlert>{errorMessage}</ErrorAlert>}
@@ -255,9 +257,12 @@ const DataFetchingTableComponent = memo(
                         canSort,
                         getResizerProps,
                         canResize,
+                        isButtonColumn,
                       },
                       i,
                     ) => {
+                      // we will make a separate 'Actions' header
+                      if (isButtonColumn) return null;
                       return (
                         <HeaderDisplayCell
                           {...getHeaderProps()}
@@ -278,6 +283,22 @@ const DataFetchingTableComponent = memo(
                         </HeaderDisplayCell>
                       );
                     },
+                  )}
+                  {actionColumns.length > 0 && (
+                    <HeaderDisplayCell
+                      key="actions-header"
+                      canResize={false}
+                      colSpan={actionColumns.length}
+                      width={
+                        // if there are multiple action columns, set the width to the sum of their widths, otherwise set it to auto so that the act
+                        actionColumns.length > 1
+                          ? actionColumns.reduce((acc, column) => acc + column.totalWidth, 0)
+                          : 'auto'
+                      }
+                      isButtonColumn
+                    >
+                      Action
+                    </HeaderDisplayCell>
                   )}
                 </TableRow>
               ))}
