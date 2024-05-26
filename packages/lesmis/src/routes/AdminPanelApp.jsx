@@ -78,7 +78,6 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                   alt: 'LESMIS Admin Panel Logo',
                 }}
                 homeLink={`${adminUrl}/survey-responses`}
-                userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
                 basePath={adminUrl}
               />
             }
