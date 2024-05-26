@@ -183,7 +183,7 @@ const DataFetchingTableComponent = ({
     }
     gotoPage(0);
     setSortBy(defaultSorting ?? []); // reset sorting when table is re-initialised
-  }, [endpoint, baseFilter]);
+  }, [endpoint, JSON.stringify(baseFilter)]);
 
   const onChangeFilters = newFilters => {
     onFilteredChange(newFilters);
