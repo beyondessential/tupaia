@@ -8,12 +8,12 @@ import { SvgIcon } from '@material-ui/core';
 export const ImportIcon = props => {
   return (
     <SvgIcon
-      {...props}
       width="17"
       height="17"
       viewBox="0 0 17 17"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path
         d="M14.1128 15.0449C14.45 15.0449 14.7078 14.7871 14.7078 14.4499L14.7078 2.54992C14.7078 2.21279 14.45 1.95492 14.1128 1.95492C13.7757 1.95492 13.5178 2.21279 13.5178 2.54992L13.5178 14.4499C13.5178 14.7871 13.7954 15.0449 14.1128 15.0449Z"

@@ -15,11 +15,7 @@ export const CreateButtonComponent = ({ label, openCreateModal }) => {
 
 CreateButtonComponent.propTypes = {
   openCreateModal: PropTypes.func.isRequired,
-  label: PropTypes.string,
-};
-
-CreateButtonComponent.defaultProps = {
-  label: '',
+  label: PropTypes.string.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, { actionConfig }) => ({

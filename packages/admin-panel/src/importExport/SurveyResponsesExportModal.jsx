@@ -27,9 +27,9 @@ export const SurveyResponsesExportModal = () => {
   };
 
   return (
-    <ExportModal title="Download Survey Responses" values={values} exportEndpoint="surveyResponses">
+    <ExportModal title="Download survey responses" values={values} exportEndpoint="surveyResponses">
       <ReduxAutocomplete
-        label="Surveys to Include"
+        label="Surveys to include"
         helperText="Please enter the names of the surveys to be exported."
         reduxId="surveyCodes"
         onChange={inputValue => handleValueChange('surveyCodes', inputValue)}
@@ -56,7 +56,7 @@ export const SurveyResponsesExportModal = () => {
       />
       {mode === MODES.COUNTRY ? (
         <ReduxAutocomplete
-          label="Country to Include"
+          label="Country to include"
           helperText="Please enter the name of the country to be exported."
           reduxId="countryCode"
           onChange={inputValue => handleValueChange('countryCode', inputValue)}
@@ -66,7 +66,7 @@ export const SurveyResponsesExportModal = () => {
         />
       ) : (
         <ReduxAutocomplete
-          label="Entities to Include"
+          label="Entities to include"
           helperText="Please enter the names of the entities to be exported."
           reduxId="entityIds"
           onChange={inputValue => handleValueChange('entityIds', inputValue)}
@@ -77,7 +77,7 @@ export const SurveyResponsesExportModal = () => {
         />
       )}
       <DateTimePicker
-        label="Start Date"
+        label="Start date"
         format="yyyy-MM-dd HH:mm"
         value={
           values.startDate && moment(values.startDate).isValid
@@ -91,7 +91,7 @@ export const SurveyResponsesExportModal = () => {
         }}
       />
       <DateTimePicker
-        label="End Date"
+        label="End date"
         format="yyyy-MM-dd HH:mm"
         value={
           values.endDate && moment(values.endDate).isValid
