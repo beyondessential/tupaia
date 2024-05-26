@@ -19,7 +19,8 @@ export const handleError = (
     return;
   }
 
+  winston.error(err);
+
   const error = 'respond' in err ? err : new InternalServerError(err);
-  winston.error(error);
   error.respond(res);
 };

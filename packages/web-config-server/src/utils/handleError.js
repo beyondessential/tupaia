@@ -28,6 +28,6 @@ export const handleError = (err, req, res, next) => {
       error = new InternalServerError(err);
     }
   }
-  winston.error(error);
+  winston.error(err);
   error.respond(res);
 };
