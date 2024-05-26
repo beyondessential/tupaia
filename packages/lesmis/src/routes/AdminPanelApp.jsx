@@ -3,9 +3,7 @@
  *  Copyright (c) 2017 - 2021 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
   PrivateRoute,
@@ -17,6 +15,8 @@ import {
   PageContentWrapper,
   AUTH_ROUTES,
   AuthLayout,
+  useUser,
+  getHasBESAdminAccess,
 } from '@tupaia/admin-panel';
 
 import { LesmisAdminRedirect } from './LesmisAdminRedirect';
@@ -24,7 +24,6 @@ import { AdminPanelLoginPage } from '../views/AdminPanel/AdminPanelLoginPage';
 import { useAdminPanelUrl, useI18n } from '../utils';
 import { Footer } from '../components';
 import { getRoutes } from '../views/AdminPanel/routes';
-import { getIsBESAdmin } from '../views/AdminPanel/authentication';
 import { NotAuthorisedView } from '../views/NotAuthorisedView';
 
 const PageContentContainerComponent = styled(PageContentWrapper)`
@@ -46,11 +45,13 @@ const AdminPanelWrapper = styled.div`
   }
 `;
 
-const AdminPanelApp = ({ isBESAdmin }) => {
+const AdminPanelApp = () => {
   const { translate } = useI18n();
+  const { data: user } = useUser();
   const adminUrl = useAdminPanelUrl();
+  const hasBESAdminAccess = getHasBESAdminAccess(user);
 
-  const routes = getRoutes(adminUrl, translate, isBESAdmin);
+  const routes = getRoutes(adminUrl, translate, hasBESAdminAccess);
 
   return (
     <AdminPanelWrapper>
@@ -119,7 +120,7 @@ const AdminPanelApp = ({ isBESAdmin }) => {
                         childRoute.Component ? (
                           <childRoute.Component />
                         ) : (
-                          <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
+                          <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
                         )
                       }
                     />
@@ -147,17 +148,4 @@ const AdminPanelApp = ({ isBESAdmin }) => {
   );
 };
 
-AdminPanelApp.propTypes = {
-  isBESAdmin: PropTypes.bool,
-};
-
-AdminPanelApp.defaultProps = {
-  isBESAdmin: false,
-};
-
-export default connect(
-  state => ({
-    isBESAdmin: getIsBESAdmin(state),
-  }),
-  null,
-)(AdminPanelApp);
+export default AdminPanelApp;

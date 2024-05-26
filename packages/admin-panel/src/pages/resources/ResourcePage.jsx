@@ -45,7 +45,6 @@ const useEndpoint = (endpoint, details, params) => {
 };
 
 export const ResourcePage = ({
-  resourceName,
   columns,
   createConfig,
   endpoint,
@@ -78,8 +77,6 @@ export const ResourcePage = ({
   const updatedEndpoint = useEndpoint(endpoint, details, params);
 
   const isDetailsPage = !!parent;
-
-  const pageTitle = title ?? generateTitle(resourceName);
 
   const getHasPermission = actionType => {
     if (!needsBESAdminAccess) return true;
