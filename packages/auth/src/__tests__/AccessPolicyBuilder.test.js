@@ -22,7 +22,7 @@ describe('AccessPolicyBuilder', () => {
 
   it('builds an access policy', async () => {
     const builder = new AccessPolicyBuilder(models);
-    await builder.getPolicyForUser(userId, useLegacyFormat);
+    await builder.getPolicyForUser(userId);
     expect(buildAccessPolicyMock).toHaveBeenCalledOnceWith(models, userId);
   });
 });
