@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 export const PageWrapper = styled.div`
   display: grid;
-  grid-template-columns: 18rem 1fr;
+  grid-template-columns: 13rem 1fr;
 `;
 
 export const Main = styled.main`
