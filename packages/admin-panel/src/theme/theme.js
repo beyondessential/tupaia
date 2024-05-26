@@ -16,7 +16,7 @@ const palette = {
   },
   secondary: {
     main: COLORS.LIGHT_BLACK,
-    light: COLORS.LIGHT_BLUE,
+    light: COLORS.EXTRA_LIGHT_BLACK,
   },
   error: {
     main: COLORS.RED,
@@ -187,6 +187,11 @@ const overrides = {
           color: palette.text.secondary, // tooltip icon color
         },
       },
+    },
+  },
+  MuiAvatar: {
+    colorDefault: {
+      backgroundColor: '#E7B091',
     },
   },
 };
