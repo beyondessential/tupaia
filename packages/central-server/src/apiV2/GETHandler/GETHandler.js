@@ -78,14 +78,14 @@ export class GETHandler extends CRUDHandler {
     // add any user requested sorting to the start of the sort clause
     if (sortString) {
       const sortKeys = JSON.parse(sortString);
-      const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
-        fullyQualifyColumnSelector(this.models, sortKey, this.recordType),
+      const processedSortKeys = sortKeys.map(sortKey =>
+        processColumnSelector(this.models, sortKey, this.recordType),
       );
       // if 'distinct', we can't order by any columns that aren't included in the distinct selection
       if (distinct) {
-        dbQueryOptions.sort = fullyQualifiedSortKeys;
+        dbQueryOptions.sort = processedSortKeys;
       } else {
-        dbQueryOptions.sort.unshift(...fullyQualifiedSortKeys);
+        dbQueryOptions.sort.unshift(...processedSortKeys);
       }
     }
 
