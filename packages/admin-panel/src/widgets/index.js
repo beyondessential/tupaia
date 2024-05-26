@@ -5,7 +5,6 @@
 
 export { IconButton } from './IconButton';
 export { InputField, JsonEditorInputField } from './InputField';
-export { NavPanel } from '../layout/navigation/NavPanel';
 export { Tabs } from './Tabs';
 export { PageHeader } from './PageHeader';
 export { PageBody, Footer } from '../layout';

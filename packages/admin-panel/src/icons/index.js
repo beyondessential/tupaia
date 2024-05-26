@@ -5,3 +5,4 @@
 export { ProjectsIcon } from './ProjectsIcon';
 export { EntitiesIcon } from './EntitiesIcon';
 export { VizIcon } from './VizIcon';
+export { CaretLeftIcon } from './CaretLeftIcon';
