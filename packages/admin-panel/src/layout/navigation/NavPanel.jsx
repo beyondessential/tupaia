@@ -131,7 +131,7 @@ export const NavPanel = ({ links, user, logo, homeLink, profileLink, basePath, i
         </HeaderContainer>
 
         <Container>
-          {links.length && (
+          {links.length > 0 && (
             <Nav>
               <List>
                 {links.map(link => (

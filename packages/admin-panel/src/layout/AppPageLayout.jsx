@@ -37,7 +37,7 @@ const ArrowButton = styled(IconButton)`
   background-color: ${props => props.theme.palette.secondary.main};
   color: ${props => props.theme.palette.common.white};
   z-index: 1201; // above the drawer
-  transition: right 0.2s;
+  transition: right 0.2s ease, transform 0.2s ease;
   .MuiSvgIcon-root {
     font-size: 1rem;
     transform: ${props => (props.$navOpen ? 'rotate(0)' : 'rotate(180deg)')};

@@ -57,7 +57,7 @@ export const UserProfileInfo = ({ user, profileLink, isFullWidth }) => {
           {profileLink.label}
         </UserLink>
       )}
-      <UserLink to="/logout">Logout</UserLink>
+      <UserLink to="/logout">Log out</UserLink>
     </Wrapper>
   );
 };
