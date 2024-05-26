@@ -17,7 +17,7 @@ import { ForgotPasswordPage, ResetPasswordPage } from './pages';
 
 export const getFlattenedChildViews = (route, basePath = '') => {
   return route.childViews.reduce((acc, childView) => {
-    const { nestedView } = childView;
+    const { nestedViews } = childView;
 
     const childViewWithRoute = {
       ...childView,
@@ -26,23 +26,21 @@ export const getFlattenedChildViews = (route, basePath = '') => {
       to: `${basePath}${route.path}${childView.path}`, // this is an absolute route so that the breadcrumbs work
     };
 
-    if (!nestedView) return [...acc, childViewWithRoute];
+    if (!nestedViews) return [...acc, childViewWithRoute];
+    const updatedNestedViews = nestedViews.map(nestedView => ({
+      ...nestedView,
+      path: `${route.path}${childView.path}${nestedView.path}`,
 
-    const updatedNestedView = nestedView
-      ? {
-          ...nestedView,
-          path: `${route.path}${childView.path}${nestedView.path}`,
-          parent: childViewWithRoute,
-        }
-      : null;
+      parent: childViewWithRoute,
+    }));
 
     return [
       ...acc,
       {
         ...childViewWithRoute,
-        nestedView: updatedNestedView,
+        nestedViews: updatedNestedViews,
       },
-      updatedNestedView,
+      ...updatedNestedViews,
     ];
   }, []);
 };
@@ -79,7 +77,14 @@ const App = () => {
         <Route path={AUTH_ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
       </Route>
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout routes={accessibleRoutes} />}>
+        <Route
+          element={
+            <AppPageLayout
+              routes={accessibleRoutes}
+              profileLink={{ label: 'Profile', to: '/profile' }}
+            />
+          }
+        >
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
@@ -100,7 +105,7 @@ const App = () => {
                   path={childRoute.path}
                   element={
                     childRoute.Component ? (
-                      <childRoute.Component />
+                      <childRoute.Component {...childRoute} />
                     ) : (
                       <ResourcePage {...childRoute} hasBESAdminAccess={hasBESAdminAccess} />
                     )

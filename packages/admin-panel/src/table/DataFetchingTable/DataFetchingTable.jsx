@@ -57,6 +57,9 @@ const TableContainer = styled(MuiTableContainer)`
     z-index: 2;
     background-color: ${({ theme }) => theme.palette.background.paper};
   }
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: ${({ theme }) => theme.palette.primary.main};
+  }
 `;
 
 const Wrapper = styled.div`
@@ -85,7 +88,7 @@ const DataFetchingTableComponent = ({
   data = [],
   numberOfPages,
   pageSize,
-  pageIndex,
+  pageIndex = 0,
   onPageChange,
   onPageSizeChange,
   initialiseTable,
@@ -292,7 +295,7 @@ const DataFetchingTableComponent = ({
         </Table>
       </TableContainer>
       <Pagination
-        page={tablePageIndex}
+        page={pageIndex}
         pageCount={pageCount}
         gotoPage={gotoPage}
         pageSize={pageSize}

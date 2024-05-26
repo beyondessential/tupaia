@@ -6,7 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Divider, Typography } from '@material-ui/core';
+import { Avatar, Divider, Typography } from '@material-ui/core';
+import { Tooltip } from '@tupaia/ui-components';
 import { UserLink } from './UserLink';
 import { useUser } from '../../api/queries';
 import { useLogout } from '../../api/mutations';
@@ -28,39 +29,55 @@ const UserEmail = styled(Typography)`
   margin-block-end: 0.9rem;
 `;
 
-export const UserProfileInfo = ({ userLinks }) => {
+export const UserProfileInfo = ({ profileLink, isFullWidth }) => {
   const { isLoggedIn, data: user, isLoading } = useUser();
   const { mutate: logout } = useLogout();
 
   if (isLoading) return null;
 
+  if (!user) return null;
+
   const name = user.firstName || user.lastName ? `${user.firstName} ${user.lastName}` : null;
+
+  // If the navbar is collapsed and profileLink is not provided, we don't need to render anything
+  if (!isFullWidth && !profileLink) return null;
+
+  // If the navbar is collapsed and profileLink is provided, we render the user's initials as an avatar with a tooltip and a link to the profile
+  if (!isFullWidth) {
+    const initials = `${user.firstName ? user.firstName[0] : ''}${
+      user.lastName ? user.lastName[0] : ''
+    }`;
+    return (
+      <Tooltip title={profileLink.label}>
+        <UserLink to={profileLink.to} aria-label={profileLink.label}>
+          <Avatar>{initials}</Avatar>
+        </UserLink>
+      </Tooltip>
+    );
+  }
   return (
     <Wrapper>
       {name && <UserName>{name}</UserName>}
       <UserEmail>{user.email}</UserEmail>
       <Divider />
-      {userLinks &&
-        userLinks.map(({ label, to }) => (
-          <UserLink key={to} to={to} component={Link}>
-            {label}
-          </UserLink>
-        ))}
-
+      {profileLink && (
+        <UserLink key={profileLink.to} to={profileLink.to}>
+          {profileLink.label}
+        </UserLink>
+      )}
       {isLoggedIn && <UserLink onClick={logout}>Log out</UserLink>}
     </Wrapper>
   );
 };
 
 UserProfileInfo.propTypes = {
-  userLinks: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      to: PropTypes.string.isRequired,
-    }).isRequired,
-  ),
+  profileLink: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    to: PropTypes.string.isRequired,
+  }),
+  isFullWidth: PropTypes.bool.isRequired,
 };
 
 UserProfileInfo.defaultProps = {
-  userLinks: [],
+  profileLink: null,
 };

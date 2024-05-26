@@ -44,9 +44,6 @@ export { useApiContext } from './utilities/ApiProvider';
 export { DataChangeAction, ActionButton } from './editor';
 export { App as VizBuilderApp } from './VizBuilderApp/App';
 export {
-  NavPanel,
-  PageWrapper,
-  Main,
   SecondaryNavbar,
   TabPageLayout,
   PageContentWrapper,

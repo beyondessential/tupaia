@@ -134,10 +134,12 @@ export const getDashboardsPageConfig = translate => {
     editorConfig,
     deleteConfig,
     needsBESAdminAccess: [],
-    nestedView: {
-      ...dashboards.nestedView,
-      title: translate('admin.dashboardRelations'),
-      columns: RELATION_COLUMNS,
-    },
+    nestedViews: [
+      {
+        ...dashboards.nestedViews[0],
+        title: translate('admin.dashboardRelations'),
+        columns: RELATION_COLUMNS,
+      },
+    ],
   };
 };

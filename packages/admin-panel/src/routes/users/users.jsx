@@ -173,15 +173,17 @@ export const users = {
   columns: COLUMNS,
   importConfig: IMPORT_CONFIG,
   createConfig: CREATE_CONFIG,
-  nestedView: {
-    title: 'Permissions',
-    endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
-    columns: PERMISSIONS_COLUMNS,
-    path: '/:id/permissions',
-    getDisplayValue: user => {
-      if (!user) return '';
-      const { first_name: firstName, last_name: lastName } = user;
-      return `${firstName} ${lastName}`;
+  nestedViews: [
+    {
+      title: 'Permissions',
+      endpoint: `users/{id}/${PERMISSIONS_ENDPOINT}`,
+      columns: PERMISSIONS_COLUMNS,
+      path: '/:id/permissions',
+      getDisplayValue: user => {
+        if (!user) return '';
+        const { first_name: firstName, last_name: lastName } = user;
+        return `${firstName} ${lastName}`;
+      },
     },
-  },
+  ],
 };
