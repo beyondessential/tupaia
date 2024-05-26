@@ -39,3 +39,4 @@ export const BLUE_E8 = '#E8F6FF';
 export const BLUE_F6 = '#F6FBFF';
 
 export const LIGHT_BLACK = '#2E2F33';
+export const EXTRA_LIGHT_BLACK = '#424347';
