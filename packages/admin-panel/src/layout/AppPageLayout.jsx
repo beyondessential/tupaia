@@ -57,7 +57,7 @@ const NavWrapper = styled.div`
 `;
 
 export const AppPageLayout = ({ user, routes, logo, homeLink, profileLink, basePath }) => {
-  const [navOpen, setNavOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(true);
   const toggleOpen = () => {
     setNavOpen(!navOpen);
   };
