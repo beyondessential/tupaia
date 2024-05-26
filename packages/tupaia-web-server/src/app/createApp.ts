@@ -76,6 +76,10 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
       'export/surveyResponses',
       handleWith(routes.ExportSurveyResponsesRoute),
     )
+    .get<routes.ExportSurveyResponsesRequest>(
+      'export/surveyDataDownload',
+      handleWith(routes.ExportSurveyResponsesRoute),
+    )
     .post<routes.ChangePasswordRequest>('changePassword', handleWith(routes.ChangePasswordRoute))
     .post<routes.SubscribeDashboardRequest>(
       'dashboard/:projectCode/:entityCode/:dashboardCode/subscribe',
@@ -93,7 +97,6 @@ export async function createApp(db: TupaiaDatabase = new TupaiaDatabase()) {
     .use('me/countries', forwardRequest(CENTRAL_API_URL, { authHandlerProvider }))
     // Forward everything else to webConfigApi
     .use('dashboards', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
-    .use('export/surveyDataDownload', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('export/chart', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('landingPage/:landingPageUrl', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))
     .use('login/oneTimeLogin', forwardRequest(WEB_CONFIG_API_URL, { authHandlerProvider }))

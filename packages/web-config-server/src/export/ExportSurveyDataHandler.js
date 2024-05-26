@@ -29,6 +29,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
       startDate,
       endDate,
       timeZone,
+      respondWithEmailTimeout,
+      emailExportFileMode,
     } = this.query;
 
     const { headers, cookies } = this.req;
@@ -55,6 +57,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
       endDate,
       legacy,
       isExpanded: true,
+      respondWithEmailTimeout,
+      emailExportFileMode,
     };
 
     const data = await requestFromTupaiaConfigServer(
@@ -67,6 +71,10 @@ export class ExportSurveyDataHandler extends RouteHandler {
         authorization: authHeader,
       },
     );
+
+    if (data.emailTimeoutHit) {
+      return data;
+    }
 
     const sheetNames = [];
     const sheets = {};
