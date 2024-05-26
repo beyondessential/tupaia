@@ -72,7 +72,7 @@ const request = async (endpoint: string, options?: RequestParametersWithMethod) 
       const { data } = error.response;
       let errorObject = error;
 
-      // This is usually in the case of data downloads, which means the error is formatted differently
+      // This is usually in the case of data downloads, which means the error is formatted differently because we request a blob
       if (data instanceof Blob) {
         const result = JSON.parse(await data.text());
         errorObject = {
