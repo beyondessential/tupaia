@@ -20,7 +20,7 @@ export class Route<
     const { session } = this.req;
     const { entity: entityApi, central: centralApi, report: reportApi } = this.req.ctx.services;
     this.entityConnection = new EntityConnection(entityApi);
-    this.centralConnection = new CentralConnection(centralApi, session.email);
+    this.centralConnection = new CentralConnection(centralApi, session?.email || '');
     this.reportConnection = new ReportConnection(reportApi);
   }
 }
