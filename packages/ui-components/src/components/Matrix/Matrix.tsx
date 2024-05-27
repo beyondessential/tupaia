@@ -37,7 +37,7 @@ interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(50);
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {
     expandedRows: [],
   });
