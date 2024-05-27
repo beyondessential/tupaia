@@ -36,7 +36,7 @@ const FIELDS = [
   {
     Header: 'Creation date',
     source: 'creation_date',
-    type: 'tooltip',
+
     accessor: row => moment(row.creation_date).local().toString(),
     editConfig: {
       type: 'datetime-local',

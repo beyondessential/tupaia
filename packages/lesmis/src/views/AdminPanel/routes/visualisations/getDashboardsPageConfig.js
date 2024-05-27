@@ -17,7 +17,7 @@ export const getDashboardsPageConfig = translate => {
     {
       Header: translate('admin.code'),
       source: 'code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {

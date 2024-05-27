@@ -18,13 +18,11 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Name',
     source: 'name',
     width: 140,
-    type: 'tooltip',
   },
   {
     Header: 'Permission group',

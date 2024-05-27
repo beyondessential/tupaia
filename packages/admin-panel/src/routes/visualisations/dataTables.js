@@ -16,7 +16,6 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Description',
@@ -35,7 +34,6 @@ const FIELDS = [
   {
     Header: 'Permission groups',
     source: 'permission_groups',
-    type: 'tooltip',
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
     editConfig: {

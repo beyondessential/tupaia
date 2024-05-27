@@ -110,7 +110,6 @@ const ENTRY_FIELDS = [
   {
     Header: 'Email',
     source: 'dashboard_mailing_list_entry.email',
-    type: 'tooltip',
   },
   {
     Header: 'Subscribed',

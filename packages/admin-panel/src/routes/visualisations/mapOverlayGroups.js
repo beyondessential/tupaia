@@ -16,12 +16,10 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
   },
 ];
 
@@ -42,7 +40,7 @@ export const RELATION_FIELDS = [
   {
     Header: 'Child ID',
     source: 'child_id',
-    type: 'tooltip',
+
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'mapOverlay.id',
@@ -53,7 +51,7 @@ export const RELATION_FIELDS = [
   {
     Header: 'Child type',
     source: 'child_type',
-    type: 'tooltip',
+
     editConfig: {
       options: [
         {
@@ -70,7 +68,6 @@ export const RELATION_FIELDS = [
   {
     Header: 'Sort order',
     source: 'sort_order',
-    type: 'tooltip',
   },
 ];
 
