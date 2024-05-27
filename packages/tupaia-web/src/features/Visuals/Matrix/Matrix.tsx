@@ -111,46 +111,42 @@ const parseRows = (
       );
       // if there are no child rows, e.g. because the search filter is hiding them, then we don't need to render this row
       if (!children.length) return result;
-      return [
-        ...result,
-        {
-          title: category,
-          ...rest,
-          children,
-        },
-      ];
+      result.push({
+        title: category,
+        ...rest,
+        children,
+      });
+      return result;
     }
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
     if (searchFilter && !dataElement.toLowerCase().includes(searchFilter.toLowerCase()))
       return result;
     // otherwise, handle as a regular row
-    return [
-      ...result,
-      {
-        title: dataElement,
-        onClick: drillDown ? () => onDrillDown(row) : undefined,
-        ...Object.entries(rest).reduce((acc, [key, item]) => {
-          // some items are objects, and we need to parse them to get the value
-          if (typeof item === 'object' && item !== null) {
-            const { value, metadata } = item as { value: any; metadata?: any };
-            return {
-              ...acc,
-              [key]: formatDataValueByType(
-                {
-                  value,
-                  metadata,
-                },
-                valueTypeToUse,
-              ),
-            };
-          }
-          return {
-            ...acc,
-            [key]: formatDataValueByType({ value: item }, valueTypeToUse),
-          };
-        }, {}),
-      },
-    ];
+
+    const formattedProperties = Object.entries(rest).reduce((acc, [key, item]) => {
+      // some items are objects, and we need to parse them to get the value
+      if (typeof item === 'object' && item !== null) {
+        const { value, metadata } = item as { value: any; metadata?: any };
+        acc[key] = formatDataValueByType(
+          {
+            value,
+            metadata,
+          },
+          valueTypeToUse,
+        );
+        return acc;
+      }
+
+      acc[key] = formatDataValueByType({ value: item }, valueTypeToUse);
+      return acc;
+    }, {});
+
+    result.push({
+      title: dataElement,
+      onClick: drillDown ? () => onDrillDown(row) : undefined,
+      ...formattedProperties,
+    });
+    return result;
   }, [] as MatrixRowType[]);
 };
 
