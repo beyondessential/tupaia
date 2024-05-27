@@ -35,6 +35,7 @@ export const MatrixPagination = ({
   handleChangePageSize,
 }: MatrixPaginationProps) => {
   const pageCount = Math.ceil(totalRows / pageSize);
+  if (pageCount === 1) return null;
   return (
     <Wrapper>
       <Pagination
