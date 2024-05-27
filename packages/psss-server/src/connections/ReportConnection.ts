@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertPeriodStringToDateRange, getEnvVarOrDefault } from '@tupaia/utils';
-import { ApiConnection } from './ApiConnection';
+import { convertPeriodStringToDateRange } from '@tupaia/utils';
 import { PSSS_HIERARCHY } from '../constants';
+import { TupaiaApiClient } from '@tupaia/api-client';
 
 const buildEmptyReport = (periods: string[]) => ({
   results: [],
@@ -22,10 +22,14 @@ type ReportObject = {
 };
 
 /**
- * @deprecated use @tupaia/api-client
+ * Wrapper around the ReportApi
  */
-export class ReportConnection extends ApiConnection {
-  public baseUrl = getEnvVarOrDefault('REPORT_API_URL', 'http://localhost:8030/v1');
+export class ReportConnection {
+  private readonly reportApi: TupaiaApiClient['report'];
+
+  public constructor(reportApi: TupaiaApiClient['report']) {
+    this.reportApi = reportApi;
+  }
 
   public async fetchReport(
     reportCode: string,
@@ -44,7 +48,7 @@ export class ReportConnection extends ApiConnection {
     const [startDate] = convertPeriodStringToDateRange(startWeek);
     const [, endDate] = convertPeriodStringToDateRange(endWeek);
 
-    return this.get(`fetchReport/${reportCode}`, {
+    return this.reportApi.fetchReport(reportCode, {
       organisationUnitCodes: orgUnitCodes.join(','),
       startDate,
       endDate,

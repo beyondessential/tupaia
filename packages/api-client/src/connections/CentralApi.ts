@@ -83,8 +83,8 @@ export class CentralApi extends BaseApi {
     return this.connection.put(endpoint, stringifyParams(params), body);
   }
 
-  public async deleteResource(endpoint: string) {
-    return this.connection.delete(endpoint);
+  public async deleteResource(endpoint: string, params?: Record<string, unknown>) {
+    return this.connection.delete(endpoint, stringifyParams(params));
   }
 
   public async upsertResource(
