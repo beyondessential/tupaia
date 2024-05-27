@@ -6,9 +6,10 @@
 
 import { DatabaseModel, DatabaseRecord } from '@tupaia/database';
 import { AccessPolicy } from '@tupaia/access-policy';
-import { createBearerHeader, getTokenExpiry } from '@tupaia/utils';
+import { RespondingError, createBearerHeader, getTokenExpiry } from '@tupaia/utils';
 import { AccessPolicyObject } from '../../types';
 import { AuthConnection } from '../auth';
+import { Request } from 'express';
 
 interface SessionDetails {
   email: string;
@@ -64,9 +65,22 @@ export class SessionRecord extends DatabaseRecord {
     return this.access_token_expiry <= Date.now();
   }
 
-  public async getAuthHeader() {
+  public async getAuthHeader(req: Request) {
     if (this.isAccessTokenExpired()) {
-      await this.refreshAccessToken();
+      try {
+        await this.refreshAccessToken();
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error instanceof RespondingError &&
+          error.statusCode === 401
+        ) {
+          // Refresh token is no longer valid
+          await this.delete(); // Delete this session from the database
+          req.sessionCookie?.reset?.(); // Delete the cookie from the user's browser
+        }
+        throw error;
+      }
     }
     return createBearerHeader(this.access_token);
   }
