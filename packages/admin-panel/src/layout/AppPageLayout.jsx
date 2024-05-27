@@ -11,18 +11,10 @@ import { labelToId } from '../utilities';
 import { NavPanel } from './navigation';
 import { CaretLeftIcon } from '../icons';
 import { NAV_PANEL_CLOSED_WIDTH, NAV_PANEL_OPEN_WIDTH } from './navigation/NavPanel';
+import { Main } from './Page';
 
 const PageWrapper = styled.div`
   display: flex;
-`;
-
-const Main = styled.main`
-  overflow-x: auto;
-  height: 100vh;
-  // This is so that we can make the PageBody component fill the whole remaining height of the screen
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 `;
 
 const ArrowButton = styled(IconButton)`
@@ -77,7 +69,7 @@ export const AppPageLayout = ({ routes, logo, homeLink, profileLink, basePath })
           <CaretLeftIcon />
         </ArrowButton>
       </NavWrapper>
-      <Main $navOpen={navOpen}>
+      <Main>
         <Outlet />
       </Main>
     </PageWrapper>
