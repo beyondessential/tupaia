@@ -55,9 +55,9 @@ export class GETMapOverlayGroupRelations extends GETHandler {
     console.log('sort', sort);
     return {
       ...restOfOptions,
-      // Stripping table prefix from child_code as it's a customColumn
+      // Strip table prefix from `child_code` as it’s a `customColumn`
       sort: sort.map(s => s.replace('map_overlay_group_relation.child_code', 'child_code')),
-      // Appending the multi-join from the Record class so that we can fetch the 'child_code'
+      // Appending the multi-join from the Record class so that we can fetch the `child_code`
       multiJoin: multiJoin.concat(this.models.mapOverlayGroupRelation.DatabaseRecordClass.joins),
     };
   }
