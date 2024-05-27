@@ -3,7 +3,7 @@
  *  Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useSearchParams } from 'react-router-dom';
 import { Clear, Search } from '@material-ui/icons';
@@ -193,16 +193,28 @@ const MatrixVisual = () => {
 
   const { periodGranularity, drillDown, valueType } = config;
 
-  const parsedRows = parseRows(
-    rows,
-    undefined,
-    searchFilter,
-    drillDown,
-    valueType,
-    urlSearchParams,
-    setUrlSearchParams,
+  // memoise the parsed rows and columns so that they don't get recalculated on every render, for performance reasons
+  const parsedRows = useMemo(
+    () =>
+      parseRows(
+        rows,
+        undefined,
+        searchFilter,
+        drillDown,
+        valueType,
+        urlSearchParams,
+        setUrlSearchParams,
+      ),
+    [
+      JSON.stringify(rows),
+      searchFilter,
+      JSON.stringify(drillDown),
+      valueType,
+      JSON.stringify(urlSearchParams),
+      setUrlSearchParams,
+    ],
   );
-  const parsedColumns = parseColumns(columns);
+  const parsedColumns = useMemo(() => parseColumns(columns), [JSON.stringify(columns)]);
 
   const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchFilter(e.target.value);
