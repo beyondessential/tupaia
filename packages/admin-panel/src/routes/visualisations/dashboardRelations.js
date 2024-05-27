@@ -6,7 +6,7 @@
 import { ArrayFilter } from '../../table/columnTypes/columnFilters';
 import { prettyArray } from '../../utilities';
 
-const RESOURCE_NAME = { singular: 'dashboard relation' };
+export const RESOURCE_NAME = { singular: 'dashboard relation' };
 
 // export for use on users page
 export const DASHBOARD_RELATION_ENDPOINT = 'dashboardRelations';
@@ -106,7 +106,7 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: 'New relation between dashboard and dashboard item',
+    title: 'Add relation between dashboard and dashboard item',
     editEndpoint: DASHBOARD_RELATION_ENDPOINT,
     fields: DASHBOARD_RELATION_COLUMNS,
   },

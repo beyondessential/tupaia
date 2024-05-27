@@ -96,7 +96,6 @@ export const SOCIAL_FEED_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'feedItems',
     fields: FIELDS,
   },
@@ -104,6 +103,7 @@ const CREATE_CONFIG = {
 
 export const socialFeed = {
   title: 'Social feed',
+  resourceName: RESOURCE_NAME,
   path: '/social-feed',
   endpoint: 'feedItems',
   baseFilter: { type: 'markdown' },

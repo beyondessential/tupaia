@@ -82,7 +82,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,
