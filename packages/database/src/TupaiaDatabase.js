@@ -541,10 +541,9 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
         return { [alias]: connection.raw(`??::${castAs}`, [alias]) };
       }
 
-      // special case to handle selecting geojson - avoid generic handling of functions to keep
-      // out sql injection vulnerabilities
-      for (let i = 0; i < supportedFunctions.length; i++) {
-        const func = supportedFunctions[i];
+      // Special case to handle allowlisted SQL functions, namely for selecting GeoJSON and COALESCE
+      // attributes. Avoid generic handling of functions to keep out SQL injection vulnerabilities.
+      for (const func of supportedFunctions) {
         if (selector.includes(func)) {
           const [, argsString] = selector.match(new RegExp(`${func}\\((.*)\\)`));
           const args = argsString.split(',').map(arg => arg.trim());
