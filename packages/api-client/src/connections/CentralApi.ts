@@ -48,6 +48,10 @@ export class CentralApi extends BaseApi {
     return this.connection.post('me/changePassword', null, passwordChangeFields);
   }
 
+  public async verifyUserEmail(token: string) {
+    return this.connection.post('auth/verifyEmail', null, { token });
+  }
+
   public async createSurveyResponses(
     responses: MeditrakSurveyResponseRequest[],
     queryParameters?: QueryParameters,
