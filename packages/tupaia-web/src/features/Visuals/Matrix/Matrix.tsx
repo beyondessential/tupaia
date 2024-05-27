@@ -16,7 +16,13 @@ import {
   NoData,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
-import { MatrixConfig, MatrixReportColumn, MatrixReportRow, isMatrixReport } from '@tupaia/types';
+import {
+  DashboardItemType,
+  MatrixConfig,
+  MatrixReportColumn,
+  MatrixReportRow,
+  isMatrixReport,
+} from '@tupaia/types';
 import { DashboardItemContext } from '../../DashboardItem';
 import { MOBILE_BREAKPOINT, URL_SEARCH_PARAMS } from '../../../constants';
 import { MatrixPreview } from './MatrixPreview';
@@ -176,7 +182,7 @@ const MatrixVisual = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
   const activeDrillDownId = urlSearchParams.get(URL_SEARCH_PARAMS.REPORT_DRILLDOWN_ID);
 
-  const { report, isEnlarged } = context;
+  const { report } = context;
 
   // While we know that this component only ever gets a MatrixConfig, the Matrix component doesn't know that as it all comes from the same context, so we cast it here so it trickles down to child components
   const config = context.config as MatrixConfig;
@@ -186,11 +192,6 @@ const MatrixVisual = () => {
   const [searchFilter, setSearchFilter] = useState('');
 
   const { periodGranularity, drillDown, valueType } = config;
-
-  // in the dashboard, show a placeholder image
-  if (!isEnlarged) {
-    return <MatrixPreview config={config} />;
-  }
 
   const parsedRows = parseRows(
     rows,
@@ -283,6 +284,11 @@ const MobileWarning = () => {
 };
 
 export const Matrix = () => {
+  const { isEnlarged, config } = useContext(DashboardItemContext);
+  // add a typeguard here to keep TS happy
+  // if the item is not enlarged and is a matrix, then we show the preview, because there won't be any loaded data at this point
+  if (!isEnlarged && config?.type === DashboardItemType.Matrix)
+    return <MatrixPreview config={config} />;
   return (
     <Container>
       <MobileWarning />

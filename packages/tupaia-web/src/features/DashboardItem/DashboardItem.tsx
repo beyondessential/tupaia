@@ -81,6 +81,8 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
 
   const type = dashboardItem?.config?.type;
 
+  const isEnabled = type !== DashboardItemType.Matrix; // don't fetch the report if the item is a matrix, because we only view the matrix in the modal
+
   const {
     data: report,
     isLoading,
@@ -97,7 +99,7 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
       endDate: defaultEndDate,
       legacy: dashboardItem?.legacy,
     },
-    type !== DashboardItemType.Matrix, // don't fetch the report if the item is a matrix, because we only view the matrix in the modal
+    isEnabled, // don't fetch the report if the item is a matrix, because we only view the matrix in the modal
   );
 
   const { config, legacy } = dashboardItem;
@@ -111,7 +113,8 @@ export const DashboardItem = ({ dashboardItem }: { dashboardItem: DashboardItemT
         value={{
           config: dashboardItem?.config,
           report,
-          isLoading,
+          isLoading: isEnabled && isLoading,
+          isEnabled,
           error,
           refetch,
           reportCode: dashboardItem?.reportCode,
