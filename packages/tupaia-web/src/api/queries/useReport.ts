@@ -42,6 +42,7 @@ export const useReport = (
       formattedStartDate,
       formattedEndDate,
       ...Object.values(rest),
+      enabled,
     ],
     (): Promise<TupaiaWebReportRequest.ResBody> =>
       get(`${endPoint}/${reportCode}`, {
