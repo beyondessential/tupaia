@@ -47,6 +47,14 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
   const pageEnd = pageStart + pageSize;
   const visibleRows = pageSize === -1 ? rows : rows.slice(pageStart, pageEnd);
 
+  const onPageChange = (newPageIndex: number) => {
+    setPageIndex(newPageIndex);
+    if (tableEl.current) {
+      // scroll to the top of the table when changing pages
+      tableEl.current.scrollIntoView({ behavior: 'auto' });
+    }
+  };
+
   return (
     <MatrixContext.Provider
       value={{
@@ -73,7 +81,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
           totalRows={rows.length}
           pageSize={pageSize}
           pageIndex={pageIndex}
-          handleChangePage={setPageIndex}
+          handleChangePage={onPageChange}
           handleChangePageSize={setPageSize}
           columnsCount={columns.length}
         />
