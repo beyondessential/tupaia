@@ -67,7 +67,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
     fields: FIELDS,
   },

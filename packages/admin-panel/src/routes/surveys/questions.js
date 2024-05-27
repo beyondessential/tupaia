@@ -103,6 +103,7 @@ export const questions = {
   nestedViews: [
     {
       title: 'Options',
+      resourceName: { singular: 'option' },
       endpoint: 'optionSets/{option_set_id}/options',
       columns: OPTION_COLUMNS,
       path: '/:id/options',

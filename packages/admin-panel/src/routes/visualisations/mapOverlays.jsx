@@ -184,7 +184,7 @@ const IMPORT_CONFIG = {
 
 const LinksComponent = () => (
   <CreateActionButton to="/viz-builder/map-overlay/new" component={Link}>
-    New
+    Add map overlay
   </CreateActionButton>
 );
 

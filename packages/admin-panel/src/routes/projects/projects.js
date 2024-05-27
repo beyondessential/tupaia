@@ -155,7 +155,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: PROJECTS_ENDPOINT,
     fields: NEW_PROJECT_COLUMNS,
   },
