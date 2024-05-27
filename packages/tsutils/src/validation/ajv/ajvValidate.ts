@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2022 Beyond Essential Systems Pty Ltd
  */
 import { Schema } from 'ajv';
-import betterAjvErrors from 'better-ajv-errors';
 import { getAjv } from './getAjv';
+import { formatAjvErrors } from './formatAjvErrors';
 
 export const ajvValidate = <T>(schema: Schema, data: unknown) => {
   const ajv = getAjv();
@@ -14,6 +14,6 @@ export const ajvValidate = <T>(schema: Schema, data: unknown) => {
     return data;
   }
 
-  const betterErrors = betterAjvErrors(schema, data, validate.errors || [], { format: 'js' });
-  throw new Error(`Validation Error: ${betterErrors.map(err => err.error)}`);
+  const errors = validate.errors || [];
+  throw new Error(formatAjvErrors(errors));
 };

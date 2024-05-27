@@ -24,7 +24,6 @@
     "@tupaia/utils": "workspace:*",
     "ajv": "^8.12.0",
     "ajv-formats": "v3.0.0-rc.0",
-    "better-ajv-errors": "^1.2.0",
     "camelcase-keys": "^6.2.2",
     "lodash.get": "^4.4.2",
     "moment": "^2.24.0",

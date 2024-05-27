@@ -9,7 +9,7 @@ import addFormats from 'ajv-formats';
 import { IdFormat } from './customFormats';
 
 export const getAjv = () => {
-  const ajv = new Ajv();
+  const ajv = new Ajv({ allErrors: true });
   addFormats(ajv);
 
   ajv.addFormat(IdFormat.name, IdFormat.config);
