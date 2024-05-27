@@ -6,7 +6,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ExportIcon from '@material-ui/icons/GetApp';
-import { IconButton } from '../widgets';
 import { makeSubstitutionsInString } from '../utilities';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';

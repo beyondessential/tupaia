@@ -21,7 +21,6 @@ const FIELDS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'countries',
     fields: FIELDS,
   },

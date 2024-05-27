@@ -110,7 +110,7 @@ const IMPORT_CONFIG = {
 
 const LinksComponent = () => (
   <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
-    New
+    Add dashboard item
   </CreateActionButton>
 );
 
