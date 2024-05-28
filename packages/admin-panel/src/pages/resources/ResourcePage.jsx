@@ -5,18 +5,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { DataFetchingTable } from '../../table';
 import { EditModal } from '../../editor';
-import { PageBody, PageHeader } from '../../widgets';
+import { PageHeader } from '../../widgets';
 import { getExplodedFields } from '../../utilities';
 import { LogsModal } from '../../logsTable';
 import { QrCodeModal } from '../../qrCode';
 import { ResubmitSurveyResponseModal } from '../../surveyResponse/ResubmitSurveyResponseModal';
 import { Breadcrumbs } from '../../layout';
 import { useItemDetails } from '../../api/queries/useResourceDetails';
-import { generateTitle } from './resourceName';
 
 const TableComponent = ({ children }) => (
   <div className="scroll-container">
@@ -69,6 +67,7 @@ export const ResourcePage = ({
   hasBESAdminAccess,
   needsBESAdminAccess,
   actionLabel,
+  resourceName,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -171,6 +170,7 @@ ResourcePage.propTypes = {
   basePath: PropTypes.string,
   hasBESAdminAccess: PropTypes.bool.isRequired,
   needsBESAdminAccess: PropTypes.arrayOf(PropTypes.string),
+  actionLabel: PropTypes.string,
 };
 
 ResourcePage.defaultProps = {
@@ -197,4 +197,5 @@ ResourcePage.defaultProps = {
   getNestedViewLink: null,
   basePath: '',
   needsBESAdminAccess: [],
+  actionLabel: 'Action',
 };

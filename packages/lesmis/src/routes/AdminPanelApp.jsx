@@ -68,7 +68,7 @@ const AdminPanelApp = () => {
           <Route path={AUTH_ROUTES.LOGIN} element={<AdminPanelLoginPage />} />
         </Route>
 
-        <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
+        <Route path="/" element={<PrivateRoute basePath={adminUrl} />}>
           <Route path="/" element={<LesmisAdminRedirect />}>
             {routes.map(route => (
               <Route
