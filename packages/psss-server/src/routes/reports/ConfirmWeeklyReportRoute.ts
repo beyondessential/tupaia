@@ -4,7 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { RespondingError, dateStringToPeriod, UnauthenticatedError } from '@tupaia/utils';
+import { RespondingError, dateStringToPeriod } from '@tupaia/utils';
 import { Request } from 'express';
 import { Route } from '../Route';
 import { validateIsNumber } from '../../utils';
@@ -45,9 +45,6 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
   }
 
   private async confirmData(countryCode: string, week: string) {
-    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const report = await this.reportConnection.fetchReport(
       WEEKLY_REPORT_CODE,
       [countryCode],
@@ -72,8 +69,6 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
   }
 
   private async updateAlerts(countryCode: string, week: string) {
-    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const report = await this.reportConnection.fetchReport(
       CONFIRMED_WEEKLY_REPORT_CODE,
       [countryCode],
@@ -141,8 +136,6 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
   }
 
   private async createAlert(countryCode: string, week: string, syndromeCode: string) {
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     return this.centralConnection.createSurveyResponse(ALERT_SURVEY, countryCode, week, [
       { code: 'PSSS_Alert_Syndrome', value: syndromeCode },
       { code: 'PSSS_Alert_Archived', value: 'No' },
@@ -150,8 +143,6 @@ export class ConfirmWeeklyReportRoute extends Route<ConfirmWeeklyReportRequest> 
   }
 
   private async archiveAlert(alertId: string, countryCode: string, week: string) {
-    if (!this.centralConnection) throw new UnauthenticatedError('Unauthenticated');
-
     return this.centralConnection.updateSurveyResponse(alertId, countryCode, ALERT_SURVEY, week, [
       { code: 'PSSS_Alert_Archived', value: 'Yes' },
     ]);
