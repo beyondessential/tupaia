@@ -12,14 +12,17 @@ import { HeaderCell } from './Cell';
 
 const SearchInput = styled(TextField)`
   margin: 0;
-
+  min-width: 9rem; // apply a min-width to prevent the input from shrinking too much if the column content is too narrow
   .MuiInputBase-root {
     background-color: transparent;
-    font-size: inherit; // override this to inherit the font size from the cell
+    font-size: 0.7rem; // override this to inherit the font size from the cell
+  }
+  .MuiSvgIcon-root {
+    font-size: 1rem;
   }
   .MuiInputBase-input {
-    font-size: inherit; // override this to inherit the font size from the cell
-    padding: 0.7rem;
+    padding-block: 0.7rem;
+    padding-inline: 0.2rem;
   }
 `;
 
@@ -81,8 +84,8 @@ export const MatrixSearchRow = () => {
 
   return (
     <TableRow>
-      {columnsToFilter.map(({ key }) => (
-        <HeaderCell key={key}>
+      {columnsToFilter.map(({ key }, i) => (
+        <HeaderCell key={key} className={i === 0 ? 'MuiTableCell-row-head' : ''}>
           <Search
             value={searchFilters?.find(filter => filter.key === key)?.value ?? ''}
             onChange={onUpdate}

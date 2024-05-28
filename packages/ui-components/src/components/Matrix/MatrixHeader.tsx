@@ -15,7 +15,10 @@ const ColGroup = styled.colgroup`
 `;
 
 const THead = styled(TableHead)`
-  background-color: ${({ theme }) => theme.palette.background.paper};
+  // Apply sticky positioning to the header element, as we now have 2 header rows
+  position: sticky;
+  top: 0;
+  z-index: 3;
 `;
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.

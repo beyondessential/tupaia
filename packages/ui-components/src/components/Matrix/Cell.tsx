@@ -20,6 +20,7 @@ export const Cell = styled(TableCell)<{
 
 export const HeaderCell = styled(Cell)`
   line-height: 1.4;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.divider};
   z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
   &:first-child {
     z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
