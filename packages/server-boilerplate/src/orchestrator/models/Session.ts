@@ -70,15 +70,17 @@ export class SessionRecord extends DatabaseRecord {
       try {
         await this.refreshAccessToken();
       } catch (error) {
-        if (
-          error instanceof Error &&
-          error instanceof RespondingError &&
-          error.statusCode === 401
-        ) {
+        if (error instanceof RespondingError && error.statusCode === 401) {
           // Refresh token is no longer valid
           await this.delete(); // Delete this session from the database
-          req.sessionCookie?.reset?.(); // Delete the cookie from the user's browser
+          const { res } = req;
+          if (res) {
+            res.clearCookie('sessionCookie'); // Delete the cookie from the user's browser
+          }
+
+          error.extraFields.redirectClient = '/login'; // Redirect client browser to the login page
         }
+
         throw error;
       }
     }
