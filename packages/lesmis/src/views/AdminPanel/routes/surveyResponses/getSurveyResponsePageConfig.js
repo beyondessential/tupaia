@@ -21,7 +21,7 @@ export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
     Header: translate('admin.survey'),
     source: 'survey.name',
     editable: false,
-    type: 'tooltip',
+
     Filter: getColumnFilter(translate),
   };
 
@@ -35,7 +35,7 @@ export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
   const date = {
     Header: translate('admin.dateOfSurvey'),
     source: 'end_time',
-    type: 'tooltip',
+
     accessor: row => moment(row.end_time).local().format('ddd, MMM Do YYYY, HH:mm:ss ZZ'),
     filterable: false,
     editable: false,
@@ -44,7 +44,7 @@ export const getSurveyResponsePageConfig = (translate, path, adminUrl) => {
   const dateOfData = {
     Header: translate('admin.dateOfData'),
     source: 'data_time',
-    type: 'tooltip',
+
     accessor: row => moment.parseZone(row.data_time).format('ddd, MMM Do YYYY, HH:mm:ss'),
     filterable: false,
     editConfig: {

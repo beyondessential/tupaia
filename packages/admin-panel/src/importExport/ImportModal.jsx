@@ -6,13 +6,13 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ImportIcon from '@material-ui/icons/Publish';
 import { FileUploadField } from '@tupaia/ui-components';
 import { InputField, Modal } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { DATA_CHANGE_ERROR, DATA_CHANGE_REQUEST, DATA_CHANGE_SUCCESS } from '../table/constants';
 import { checkVisibilityCriteriaAreMet, labelToId } from '../utilities';
 import { ActionButton } from '../editor';
+import { ImportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',

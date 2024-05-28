@@ -6,20 +6,11 @@ import { NextFunction, Request, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 import { AuthHandler } from '@tupaia/api-client';
-import { UnauthenticatedError } from '@tupaia/utils';
+import { RequiresSessionAuthHandler } from '../orchestrator';
 
 type AuthHandlerProvider = (req: Request) => AuthHandler;
 
-const defaultAuthHandlerProvider = (req: Request) => {
-  const { session } = req;
-
-  if (!session) {
-    throw new UnauthenticatedError('Session is not attached');
-  }
-
-  // Session already has a getAuthHeader function so can act as an AuthHandler
-  return session;
-};
+const defaultAuthHandlerProvider = (req: Request) => new RequiresSessionAuthHandler(req);
 
 const stripVersionFromPath = (path: string) => {
   if (path.startsWith('/v')) {
