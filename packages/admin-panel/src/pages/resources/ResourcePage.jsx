@@ -68,6 +68,7 @@ export const ResourcePage = ({
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
+  actionLabel,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -111,6 +112,7 @@ export const ResourcePage = ({
         createConfig={canCreate && createConfig}
         ExportModalComponent={canExport && ExportModalComponent}
         LinksComponent={LinksComponent}
+        resourceName={resourceName?.singular}
       />
       <DataFetchingTable
         endpoint={updatedEndpoint}
@@ -125,8 +127,13 @@ export const ResourcePage = ({
         getHasNestedView={getHasNestedView}
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
+        actionLabel={actionLabel}
       />
-      <EditModal onProcessDataForSave={onProcessDataForSave} {...editorConfig} />
+      <EditModal
+        onProcessDataForSave={onProcessDataForSave}
+        resourceName={resourceName?.singular}
+        {...editorConfig}
+      />
       <LogsModal />
       <QrCodeModal />
       <ResubmitSurveyResponseModal />

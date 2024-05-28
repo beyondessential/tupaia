@@ -3,6 +3,8 @@
  * Copyright (c) 2017 - 2024 Beyond Essential Systems Pty Ltd
  */
 
+import { RESOURCE_NAME as DASHBOARD_RELATION_RESOURCE_NAME } from './dashboardRelations';
+
 const RESOURCE_NAME = { singular: 'dashboard' };
 
 const DASHBOARDS_ENDPOINT = 'dashboards';
@@ -11,7 +13,6 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Name',
@@ -115,7 +116,6 @@ const RELATION_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DASHBOARDS_ENDPOINT,
     fields: FIELDS,
   },
@@ -129,7 +129,7 @@ export const dashboards = {
   createConfig: CREATE_CONFIG,
   nestedViews: [
     {
-      resourceName: RESOURCE_NAME,
+      resourceName: DASHBOARD_RELATION_RESOURCE_NAME,
       columns: RELATION_COLUMNS,
       endpoint: 'dashboards/{id}/dashboardRelations',
       path: '/:id/dashboard-relations',

@@ -20,14 +20,14 @@ export const getMapOverlaysPageConfig = (translate, adminUrl, isBESAdmin) => {
     {
       Header: translate('admin.code'),
       source: 'code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
       Header: translate('admin.name'),
       source: 'name',
       width: 140,
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {
@@ -95,7 +95,7 @@ export const getMapOverlaysPageConfig = (translate, adminUrl, isBESAdmin) => {
       Header: translate('admin.reportCode'),
       source: 'report_code',
       width: 140,
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {

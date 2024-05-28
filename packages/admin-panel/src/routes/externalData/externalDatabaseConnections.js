@@ -14,7 +14,6 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
   },
   {
     Header: 'Name',
@@ -54,7 +53,8 @@ const COLUMNS = [
   {
     Header: 'Test',
     type: 'testDatabaseConnection',
-    colWidth: '6.5rem',
+    width: 90,
+    disableResizing: true,
   },
   {
     Header: 'Delete',
@@ -67,7 +67,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: EXTERNAL_DATABASE_CONNECTIONS_ENDPOINT,
     fields: FIELDS,
   },
