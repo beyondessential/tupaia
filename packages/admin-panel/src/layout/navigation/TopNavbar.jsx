@@ -12,7 +12,7 @@ import { useLogout } from '../../api/mutations';
 
 const Wrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
-  padding-block: 0.3rem;
+  padding-block: 0.9rem;
   padding-inline: 1.25rem;
   display: flex;
   justify-content: space-between;
@@ -22,6 +22,9 @@ const Wrapper = styled.div`
   z-index: 1000;
   ${UserLink} {
     font-size: 0.875rem;
+  }
+  img {
+    height: 2rem;
   }
 `;
 
