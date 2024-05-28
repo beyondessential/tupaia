@@ -98,6 +98,7 @@ export {
   EntityQuestionConfigFieldValue,
   EntityQuestionConfigFieldKey,
   ProjectConfig,
+  DateOffsetSpec,
 } from './models-extra';
 export * from './requests';
 export * from './css';

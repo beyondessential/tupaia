@@ -53,6 +53,11 @@ export type BaseConfig = {
   defaultTimePeriod?: DefaultTimePeriod;
 
   /**
+   * @description The number of periods to offset the date range by, for single date period granularities. E.g. if the period granularity is 'one_year_at_a_time' and the date offset is 6 months, the year will run from July-June
+   */
+  dateOffset?: DateOffsetSpec;
+
+  /**
    * @description Maximum date ranges that the date picker can be used to choose from
    */
   datePickerLimits?: {
