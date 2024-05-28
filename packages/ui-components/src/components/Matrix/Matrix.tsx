@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2023 Beyond Essential Systems Pty Ltd
  */
 
-import React, { ReactNode, useReducer, useRef } from 'react';
+import React, { useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import { Table, TableBody, TableContainer } from '@material-ui/core';
-import { MatrixConfig } from '@tupaia/types';
-import { MatrixColumnType, MatrixRowType } from '../../types';
 import { MatrixHeader } from './MatrixHeader';
-import { MatrixContext, MatrixDispatchContext, matrixReducer } from './MatrixContext';
+import { MatrixContext, MatrixDispatchContext, MatrixProps, matrixReducer } from './MatrixContext';
 import { MatrixRow } from './MatrixRow';
 import { MatrixLegend } from './MatrixLegend';
 
@@ -26,13 +24,6 @@ const ScrollContainer = styled(TableContainer)`
     60rem
   ); // We already tell users the matrix can't be viewed properly on small screens, but we set some sensible limits just in case
 `;
-
-interface MatrixProps extends Omit<MatrixConfig, 'type' | 'name'> {
-  columns: MatrixColumnType[];
-  rows: MatrixRowType[];
-  disableExpand?: boolean;
-  rowHeaderColumnTitle?: ReactNode;
-}
 
 export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: MatrixProps) => {
   const [{ expandedRows }, dispatch] = useReducer(matrixReducer, {

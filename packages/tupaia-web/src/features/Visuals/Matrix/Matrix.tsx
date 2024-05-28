@@ -14,6 +14,7 @@ import {
   Matrix as MatrixComponent,
   TextField,
   NoData,
+  SearchFilter,
 } from '@tupaia/ui-components';
 import { formatDataValueByType } from '@tupaia/utils';
 import { MatrixConfig, MatrixReportColumn, MatrixReportRow, isMatrixReport } from '@tupaia/types';
@@ -36,33 +37,35 @@ const Wrapper = styled.div`
   }
 `;
 
-const SearchInput = styled(TextField)`
-  margin: 0;
-  min-width: 10rem;
-
-  .MuiInputBase-root {
-    background-color: transparent;
-    font-size: inherit; // override this to inherit the font size from the cell
-  }
-  .MuiInputBase-input {
-    font-size: inherit; // override this to inherit the font size from the cell
-    padding: 0.875rem;
-  }
-  .MuiTableCell-root:has(&) {
-    padding-right: 0.7rem;
-    padding-left: 0.7rem;
-  }
-`;
-
 const NoResultsMessage = styled(Typography)`
   padding: 1rem;
 `;
+
+const getValueMatchesSearchFilter = (value: any, searchTerm: SearchFilter['value']) => {
+  if (typeof value !== 'string' && typeof value !== 'number') return false;
+  const stringifiedValue = value.toString().toLowerCase();
+  // handle % search - if the search term starts with %, then we want to check if the value includes the search term
+  if (searchTerm.startsWith('%')) {
+    const searchTermWithoutPercent = searchTerm.slice(1);
+    return stringifiedValue.includes(searchTermWithoutPercent);
+  }
+
+  // otherwise, check if the value starts with the search term
+  return stringifiedValue.startsWith(searchTerm);
+};
+
+const getRowMatchesSearchFilter = (row: MatrixReportRow, searchFilters: SearchFilter[]) => {
+  return searchFilters.every(filter => {
+    const rowValue = row[filter.key];
+    return getValueMatchesSearchFilter(rowValue, filter.value);
+  });
+};
 
 // This is a recursive function that parses the rows of the matrix into a format that the Matrix component can use.
 const parseRows = (
   rows: MatrixReportRow[],
   categoryId: MatrixReportRow['categoryId'] | undefined,
-  searchFilter: string | undefined,
+  searchFilters: SearchFilter[],
   drillDown: MatrixConfig['drillDown'] | undefined,
   valueType: MatrixConfig['valueType'] | undefined,
   urlSearchParams: URLSearchParams,
@@ -97,7 +100,7 @@ const parseRows = (
       const children = parseRows(
         rows,
         category,
-        searchFilter,
+        searchFilters,
         drillDown,
         valueTypeToUse,
         urlSearchParams,
@@ -115,8 +118,11 @@ const parseRows = (
       ];
     }
     // if the row is a regular row, and there is a search filter, then we need to check if the row matches the search filter, and ignore this row if it doesn't. This filter only applies to standard rows, not category rows.
-    if (searchFilter && !dataElement.toLowerCase().includes(searchFilter.toLowerCase()))
-      return result;
+    if (searchFilters?.length > 0) {
+      const matchesSearchFilter = getRowMatchesSearchFilter(row, searchFilters);
+
+      if (!matchesSearchFilter) return result;
+    }
     // otherwise, handle as a regular row
     return [
       ...result,
@@ -183,9 +189,9 @@ const MatrixVisual = () => {
   // type guard to ensure that the report is a matrix report, even though we know it is
   if (!isMatrixReport(report)) return null;
   const { columns = [], rows = [] } = report;
-  const [searchFilter, setSearchFilter] = useState('');
+  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
 
-  const { periodGranularity, drillDown, valueType } = config;
+  const { drillDown, valueType } = config;
 
   // in the dashboard, show a placeholder image
   if (!isEnlarged) {
@@ -195,28 +201,40 @@ const MatrixVisual = () => {
   const parsedRows = parseRows(
     rows,
     undefined,
-    searchFilter,
+    searchFilters,
     drillDown,
     valueType,
     urlSearchParams,
     setUrlSearchParams,
   );
+
   const parsedColumns = parseColumns(columns);
 
-  const updateSearchFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchFilter(e.target.value);
+  const updateSearchFilter = ({ key, value }: SearchFilter) => {
+    const filtersWithoutKey = searchFilters.filter(filter => filter.key !== key);
+    const updatedSearchFilters = value
+      ? [
+          ...filtersWithoutKey,
+          {
+            key,
+            value,
+          },
+        ]
+      : filtersWithoutKey;
+
+    setSearchFilters(updatedSearchFilters);
   };
 
-  const clearSearchFilter = () => {
-    setSearchFilter('');
+  const clearSearchFilter = key => {
+    setSearchFilters(searchFilters.filter(filter => filter.key !== key));
   };
 
   useEffect(() => {
     // if the drillDownId changes, then we need to clear the search filter so that it doesn't persist across different drillDowns
-    clearSearchFilter();
+    setSearchFilters([]);
   }, [activeDrillDownId]);
 
-  if (!parsedRows.length && !searchFilter) {
+  if (!parsedRows.length && !searchFilters) {
     return <NoData config={config} report={report} />;
   }
 
@@ -227,28 +245,32 @@ const MatrixVisual = () => {
         {...config}
         rows={parsedRows}
         columns={parsedColumns}
-        disableExpand={!!searchFilter}
-        rowHeaderColumnTitle={
-          periodGranularity ? null : (
-            <SearchInput
-              value={searchFilter}
-              onChange={updateSearchFilter}
-              placeholder="Search..."
-              InputProps={{
-                endAdornment: searchFilter ? (
-                  <IconButton onClick={clearSearchFilter}>
-                    <Clear />
-                  </IconButton>
-                ) : (
-                  <Search />
-                ),
-              }}
-            />
-          )
-        }
+        disableExpand={!!searchFilters.length}
+        searchFilters={searchFilters}
+        updateSearchFilter={updateSearchFilter}
+        clearSearchFilter={clearSearchFilter}
+        enableSearch
+        // rowHeaderColumnTitle={
+        //   periodGranularity ? null : (
+        //     <SearchInput
+        //       value={searchFilter}
+        //       onChange={updateSearchFilter}
+        //       placeholder="Search..."
+        //       InputProps={{
+        //         endAdornment: searchFilter ? (
+        //           <IconButton onClick={clearSearchFilter}>
+        //             <Clear />
+        //           </IconButton>
+        //         ) : (
+        //           <Search />
+        //         ),
+        //       }}
+        //     />
+        //   )
+        // }
       />
-      {searchFilter && !parsedRows.length && (
-        <NoResultsMessage>No results found for the term: {searchFilter}</NoResultsMessage>
+      {searchFilters?.length > 0 && !parsedRows.length && (
+        <NoResultsMessage>No results found</NoResultsMessage>
       )}
     </Wrapper>
   );

@@ -7,26 +7,21 @@ import { darken, TableHead, TableRow } from '@material-ui/core';
 import styled from 'styled-components';
 import { MatrixColumnType } from '../../types';
 import { MatrixContext } from './MatrixContext';
-import { Cell } from './Cell';
-
-const HeaderCell = styled(Cell)`
-  line-height: 1.4;
-  z-index: 3; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
-  &:first-child {
-    z-index: 4; // set the z-index of the first cell to be above the rest of the column header cells so that it doesn't get covered on horizontal scroll
-    max-width: 12rem; // set the max-width of the first cell so that on larger screens the row header column doesn't take up too much space
-  }
-`;
+import { HeaderCell } from './Cell';
+import { MatrixSearchRow } from './MatrixSearchRow';
 
 const ColGroup = styled.colgroup`
   border: 2px solid ${({ theme }) => darken(theme.palette.text.primary, 0.4)};
 `;
 
+const THead = styled(TableHead)`
+  background-color: ${({ theme }) => theme.palette.background.paper};
+`;
 /**
  * This is a component that renders the header rows in the matrix. It renders the column groups and columns.
  */
 export const MatrixHeader = () => {
-  const { columns, hideColumnTitles = false, rowHeaderColumnTitle } = useContext(MatrixContext);
+  const { columns, hideColumnTitles = false } = useContext(MatrixContext);
   // Get the grouped columns
   const columnGroups = columns.reduce((result: MatrixColumnType[], column: MatrixColumnType) => {
     if (!column.children?.length) return result;
@@ -37,10 +32,9 @@ export const MatrixHeader = () => {
   const hasParents = columnGroups.length > 0;
 
   const RowHeaderColumn = (
-    <HeaderCell rowSpan={hasParents ? 2 : 1} scope="row" className="MuiTableCell-row-head">
-      {rowHeaderColumnTitle}
-    </HeaderCell>
+    <HeaderCell rowSpan={hasParents ? 2 : 1} scope="row" className="MuiTableCell-row-head" />
   );
+
   return (
     /**
      * If there are no parents, then there are only column groups to style for the row header column and the rest of the table. Otherwise, there are column groups for each displayed column group, plus one for the row header column.
@@ -56,7 +50,7 @@ export const MatrixHeader = () => {
       ) : (
         <ColGroup span={columns.length} />
       )}
-      <TableHead>
+      <THead>
         {hasParents && (
           <TableRow>
             {RowHeaderColumn}
@@ -80,7 +74,9 @@ export const MatrixHeader = () => {
             </HeaderCell>
           ))}
         </TableRow>
-      </TableHead>
+
+        <MatrixSearchRow />
+      </THead>
     </>
   );
 };
