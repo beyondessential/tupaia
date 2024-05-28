@@ -138,9 +138,6 @@ const RowsSelectComponent = ({
   pageSizeOptions,
 }: RowsSelectComponentProps) => {
   const displayOptions = pageSizeOptions.map(size => {
-    if (size === -1) {
-      return { label: 'Show all', value: size };
-    }
     return { label: `Rows per page: ${size}`, value: size };
   });
 

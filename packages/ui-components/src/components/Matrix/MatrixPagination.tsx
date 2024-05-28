@@ -42,7 +42,6 @@ export const MatrixPagination = ({
         pageCount={pageCount}
         pageSize={pageSize}
         totalRecords={totalRows}
-        pageSizeOptions={[5, 10, 20, 25, 50, -1]}
         applyRowsPerPage={false}
         showEntriesCount={false}
       />

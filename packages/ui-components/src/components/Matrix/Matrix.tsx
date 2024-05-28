@@ -46,7 +46,7 @@ export const Matrix = ({ columns = [], rows = [], disableExpand, ...config }: Ma
 
   const pageStart = pageIndex * DEFAULT_PAGE_SIZE;
   const pageEnd = pageStart + DEFAULT_PAGE_SIZE;
-  const visibleRows = DEFAULT_PAGE_SIZE === -1 ? rows : rows.slice(pageStart, pageEnd);
+  const visibleRows = rows.slice(pageStart, pageEnd);
 
   const onPageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
