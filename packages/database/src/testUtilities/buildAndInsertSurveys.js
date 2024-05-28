@@ -60,14 +60,18 @@ export const buildAndInsertSurvey = async (
   models,
   { dataGroup: dataSourceFields, questions: questionFields = [], code, ...surveyFields },
 ) => {
+  const allSurveyFields = { ...surveyFields };
   const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataSourceFields });
 
-  const project = await buildAndInsertProject(models);
+  if (!surveyFields.project_id) {
+    const project = await buildAndInsertProject(models);
+    allSurveyFields.project_id = project.id;
+  }
 
   const survey = await findOrCreateDummyRecord(
     models.survey,
     { code },
-    { ...surveyFields, data_group_id: dataGroup.id, project_id: project.id },
+    { ...allSurveyFields, data_group_id: dataGroup.id },
   );
   const surveyScreen = await findOrCreateDummyRecord(
     models.surveyScreen,

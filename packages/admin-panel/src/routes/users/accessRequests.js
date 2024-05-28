@@ -11,7 +11,6 @@ const USER_FIELDS = [
   {
     Header: 'Email address',
     source: 'user_account.email',
-    type: 'tooltip',
   },
   {
     Header: 'First name',
@@ -50,7 +49,6 @@ const ACCESS_REQUEST_FIELDS = [
   {
     Header: 'Message',
     source: 'message',
-    type: 'tooltip',
     editable: false,
   },
   {
@@ -98,7 +96,6 @@ const USER_COLUMNS = [
           Header: 'Message',
           source: 'message',
           bulkAccessor: rows => rows.map(row => (row.message ? row.message : 'blank')).join(', '),
-          type: 'tooltip',
           editable: false,
         },
         {
@@ -172,15 +169,17 @@ export const accessRequests = {
     // Return an array of records for bulk editing on the server
     return recordData.map(record => ({ ...record, ...editedFields }));
   },
-  nestedView: {
-    resourceName: RESOURCE_NAME,
-    endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
-    columns: DETAILS_COLUMNS,
-    baseFilter: { approved: null },
-    path: '/:user_id/access-requests',
-    getDisplayValue: user => {
-      if (!user) return '';
-      return `${user['user.first_name']} ${user['user.last_name']}`;
+  nestedViews: [
+    {
+      resourceName: RESOURCE_NAME,
+      endpoint: `users/{user_id}/${ACCESS_REQUESTS_ENDPOINT}`,
+      columns: DETAILS_COLUMNS,
+      baseFilter: { approved: null },
+      path: '/:user_id/access-requests',
+      getDisplayValue: user => {
+        if (!user) return '';
+        return `${user['user.first_name']} ${user['user.last_name']}`;
+      },
     },
-  },
+  ],
 };

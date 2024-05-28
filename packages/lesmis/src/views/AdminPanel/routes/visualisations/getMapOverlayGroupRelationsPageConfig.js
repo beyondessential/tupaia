@@ -16,7 +16,7 @@ export const getMapOverlayGroupRelationsPageConfig = translate => {
     {
       Header: translate('admin.code'),
       source: 'map_overlay_group.code',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlayGroups',
@@ -28,7 +28,7 @@ export const getMapOverlayGroupRelationsPageConfig = translate => {
     {
       Header: translate('admin.childId'),
       source: 'child_id',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
       editConfig: {
         optionsEndpoint: 'mapOverlays',
@@ -42,7 +42,7 @@ export const getMapOverlayGroupRelationsPageConfig = translate => {
       Header: translate('admin.childType'),
       width: 160,
       source: 'child_type',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
       editConfig: {
         options: [
@@ -60,7 +60,7 @@ export const getMapOverlayGroupRelationsPageConfig = translate => {
     {
       Header: translate('admin.sortOrder'),
       source: 'sort_order',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
   ];
