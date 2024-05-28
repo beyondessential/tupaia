@@ -17,13 +17,11 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
     required: true,
   },
   {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
     required: true,
   },
 ];
@@ -62,7 +60,6 @@ export const RELATION_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: MAP_OVERLAY_GROUPS_ENDPOINT,
     fields: FIELDS,
   },

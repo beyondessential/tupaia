@@ -106,6 +106,7 @@ export const optionSets = {
     {
       title: 'Options',
       endpoint: 'optionSets/{id}/options',
+      resourceName: { singular: 'option' },
       columns: OPTION_COLUMNS,
       path: '/:id/options',
       displayProperty: 'name',

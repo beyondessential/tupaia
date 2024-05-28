@@ -11,7 +11,6 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
   MAP_OVERLAY_GROUP_CODE: {
     Header: 'Map overlay group code',
     source: 'map_overlay_group.code',
-    type: 'tooltip',
     required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlayGroups',
@@ -23,7 +22,6 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
   CHILD_ID: {
     Header: 'Child ID',
     source: 'child_id',
-    type: 'tooltip',
     required: true,
     editConfig: {
       optionsEndpoint: 'mapOverlays',
@@ -37,7 +35,6 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
     Header: 'Child type',
     width: 160,
     source: 'child_type',
-    type: 'tooltip',
     required: true,
     editConfig: {
       options: [
@@ -55,7 +52,6 @@ export const MAP_OVERLAY_GROUP_RELATION_FIELDS = {
   SORT_ORDER: {
     Header: 'Sort order',
     source: 'sort_order',
-    type: 'tooltip',
   },
 };
 
@@ -84,7 +80,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: RELATION_ENDPOINT,
     fields: FIELDS,
   },

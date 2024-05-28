@@ -34,6 +34,8 @@ export const EditModalComponent = withConnectedEditor(
     saveButtonText,
     extraDialogProps,
     validationErrors,
+    resourceName,
+    isNew,
   }) => {
     const { files, handleSetFormFile } = useEditFiles(fields, onEditField);
 
@@ -64,6 +66,16 @@ export const EditModalComponent = withConnectedEditor(
       },
     ];
 
+    const generateModalTitle = () => {
+      if (title) return title;
+      if (isLoading) return '';
+      if (!resourceName) return isNew ? 'Add' : 'Edit';
+      if (isNew) return `Add ${resourceName}`;
+      return `Edit ${resourceName}`;
+    };
+
+    const modalTitle = generateModalTitle();
+
     return (
       <Modal
         errorMessage={errorMessage}
@@ -71,7 +83,7 @@ export const EditModalComponent = withConnectedEditor(
         onClose={onDismiss}
         isOpen={isOpen}
         disableBackdropClick
-        title={title}
+        title={modalTitle}
         buttons={buttons}
         {...extraDialogProps}
       >

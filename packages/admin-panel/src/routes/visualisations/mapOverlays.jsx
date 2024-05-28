@@ -18,14 +18,12 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
     required: true,
   },
   {
     Header: 'Name',
     source: 'name',
     width: 140,
-    type: 'tooltip',
     required: true,
   },
   {
@@ -188,7 +186,7 @@ const IMPORT_CONFIG = {
 
 const LinksComponent = () => (
   <CreateActionButton to="/viz-builder/map-overlay/new" component={Link}>
-    New
+    Add map overlay
   </CreateActionButton>
 );
 

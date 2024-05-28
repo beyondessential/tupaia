@@ -72,7 +72,7 @@ const COLUMNS = [
     source: 'sync_status',
     filterable: false,
     disableSortBy: true,
-    colWidth: '12rem',
+    width: 200,
     actionConfig: {
       syncStatusEndpoint: 'dataServiceSyncGroups/{id}',
       latestSyncLogEndpoint: 'dataServiceSyncGroups/{id}/logs?limit=1',
@@ -87,7 +87,6 @@ const EDITOR_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'dataServiceSyncGroups',
     fields: FIELDS,
   },

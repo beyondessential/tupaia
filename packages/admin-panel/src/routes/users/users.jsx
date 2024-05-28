@@ -40,7 +40,6 @@ const EDIT_FIELDS = [
   {
     Header: 'Email address',
     source: 'email',
-    type: 'tooltip',
     required: true,
   },
   {
@@ -54,13 +53,10 @@ const EDIT_FIELDS = [
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',
     source: 'verified_email',
-    type: 'tooltip',
-
     editConfig: {
       options: [
         {
@@ -99,12 +95,10 @@ const COLUMNS = [
   {
     Header: 'Email Address',
     source: 'email',
-    type: 'tooltip',
   },
   {
     Header: 'Employer',
     source: 'employer',
-    type: 'tooltip',
   },
   {
     Header: 'Verified',
@@ -133,7 +127,6 @@ const IMPORT_CONFIG = {
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'users',
     fields: [
       ...EDIT_FIELDS,

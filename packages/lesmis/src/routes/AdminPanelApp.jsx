@@ -36,6 +36,15 @@ const PageContentContainerComponent = styled(PageContentWrapper)`
   }
 `;
 
+const AdminPanelWrapper = styled.div`
+  nav a {
+    font-size: 0.875rem; // make the font size smaller to fit more text in the nav and match the default font size
+  }
+  .MuiDrawer-paper img {
+    width: 10rem; // the logo has different dimensions to the default, so override the default
+  }
+`;
+
 const AdminPanelApp = ({ user, isBESAdmin }) => {
   const { translate } = useI18n();
   const location = useLocation();
@@ -45,43 +54,15 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
   const routes = getRoutes(adminUrl, translate, isBESAdmin);
 
   return (
-    <Routes>
-      <Route path="/login" element={<AdminPanelLoginPage />} />
-      <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
+    <AdminPanelWrapper>
+      <Routes>
+        <Route path="/login" element={<AdminPanelLoginPage />} />
+        <Route path="/logout" element={<LogoutPage redirectTo={`${adminUrl}/login`} />} />
 
-      <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
-        <Route
-          path="/"
-          element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
-        >
+        <Route path="/" element={<PrivateRoute loginPath={`${adminUrl}/login`} />}>
           <Route
-            path="/viz-builder/*"
-            hasAdminPanelAccess={userHasAdminPanelAccess}
-            element={
-              <VizBuilderApp
-                logo={{
-                  url: '/lesmis-logo-white.svg',
-                  alt: 'LESMIS Admin Panel Logo',
-                }}
-                homeLink={`${adminUrl}/survey-responses`}
-                Footer={Footer}
-              />
-            }
-          />
-          <Route
-            element={
-              <AppPageLayout
-                user={user}
-                routes={routes}
-                logo={{
-                  url: '/lesmis-logo-white.svg',
-                  alt: 'LESMIS Admin Panel Logo',
-                }}
-                homeLink={`${adminUrl}/survey-responses`}
-                userLinks={[{ label: 'Logout', to: `${adminUrl}/logout` }]}
-                basePath={adminUrl}
-              />
-            }
+            path="/"
+            element={<LesmisAdminRedirect hasAdminPanelAccess={userHasAdminPanelAccess} />}
           >
             {routes.map(route => (
               <Route
@@ -104,7 +85,11 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
                       childRoute.Component ? (
                         <childRoute.Component />
                       ) : (
-                        <ResourcePage {...childRoute} hasBESAdminAccess={isBESAdmin} />
+                        <ResourcePage
+                          actionLabel={translate('admin.action')}
+                          {...childRoute}
+                          hasBESAdminAccess={isBESAdmin}
+                        />
                       )
                     }
                   />
@@ -114,20 +99,20 @@ const AdminPanelApp = ({ user, isBESAdmin }) => {
             <Route path="*" element={<Navigate to={`${adminUrl}/survey-responses`} replace />} />
           </Route>
         </Route>
-      </Route>
-      <Route path="not-authorised" element={<NotAuthorisedView />} />
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to={`${adminUrl}/login`}
-            state={{
-              referrer: location.pathname,
-            }}
-          />
-        }
-      />
-    </Routes>
+        <Route path="not-authorised" element={<NotAuthorisedView />} />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={`${adminUrl}/login`}
+              state={{
+                referrer: location.pathname,
+              }}
+            />
+          }
+        />
+      </Routes>
+    </AdminPanelWrapper>
   );
 };
 

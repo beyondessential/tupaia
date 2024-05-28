@@ -4,6 +4,7 @@ import {
   DataSourceConfigView,
   getDataSourceButtonsConfig,
 } from '../../common';
+import { RESOURCE_NAME as DATA_ELEMENT_RESOURCE_NAME } from './dataElements';
 
 const RESOURCE_NAME = { singular: 'data group' };
 
@@ -45,7 +46,6 @@ export const dataGroups = {
   path: '/data-groups',
   createConfig: {
     actionConfig: {
-      title: `New ${RESOURCE_NAME.singular}`,
       editEndpoint: 'dataGroups',
       fields: DATA_GROUP_FIELDS,
     },
@@ -54,7 +54,7 @@ export const dataGroups = {
   isBESAdminOnly: true,
   nestedViews: [
     {
-      resourceName: RESOURCE_NAME,
+      resourceName: DATA_ELEMENT_RESOURCE_NAME,
       endpoint: 'dataGroups/{id}/dataElements',
       columns: [
         ...DATA_ELEMENT_FIELDS,

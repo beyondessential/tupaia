@@ -45,7 +45,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'supersetInstances',
     fields: FIELDS,
   },
@@ -54,6 +53,7 @@ const CREATE_CONFIG = {
 export const supersetInstances = {
   title: 'mSupply superset instances',
   endpoint: 'supersetInstances',
+  resourceName: RESOURCE_NAME,
   columns: COLUMNS,
   createConfig: CREATE_CONFIG,
   path: '/superset-instances',

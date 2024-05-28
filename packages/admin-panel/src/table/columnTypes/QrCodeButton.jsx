@@ -29,14 +29,18 @@ const LittleQrCodeIcon = () => {
   );
 };
 
-export const QrCodeButtonComponent = ({ openModal }) => (
-  <ColumnActionButton className="edit-button" onClick={openModal}>
-    <LittleQrCodeIcon />
-  </ColumnActionButton>
-);
+export const QrCodeButtonComponent = ({ openModal, actionConfig }) => {
+  const { title = 'View QR code' } = actionConfig;
+  return (
+    <ColumnActionButton className="edit-button" onClick={openModal} title={title}>
+      <LittleQrCodeIcon />
+    </ColumnActionButton>
+  );
+};
 
 QrCodeButtonComponent.propTypes = {
   openModal: PropTypes.func.isRequired,
+  actionConfig: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

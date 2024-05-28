@@ -23,7 +23,6 @@ const FIELDS = [
     Header: 'Code',
     source: 'code',
     required: true,
-    type: 'tooltip',
   },
   {
     Header: 'Description',
@@ -48,7 +47,6 @@ const FIELDS = [
   {
     Header: 'Permission groups',
     source: 'permission_groups',
-    type: 'tooltip',
     required: true,
     Filter: ArrayFilter,
     Cell: ({ value }) => prettyArray(value),
@@ -100,7 +98,6 @@ const COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: DATA_TABLES_ENDPOINT,
     fields: FIELDS,
     FieldsComponent: DataTableEditFields,

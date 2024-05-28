@@ -20,7 +20,6 @@ export const FIELDS = {
   name: {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
     required: true,
   },
   type: {

@@ -5,10 +5,10 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ExportIcon from '@material-ui/icons/GetApp';
 import { Modal } from '../widgets';
 import { useApiContext } from '../utilities/ApiProvider';
 import { ActionButton } from '../editor';
+import { ExportIcon } from '../icons';
 
 const STATUS = {
   IDLE: 'idle',
@@ -157,7 +157,7 @@ ExportModal.propTypes = {
 ExportModal.defaultProps = {
   fileName: null,
   title: 'Export',
-  exportButtonText: 'Export',
+  exportButtonText: 'Download',
   cancelButtonText: 'Cancel',
   isExportingMessage:
     'Export is taking a while, and will continue in the background. You will be emailed the exported file when the process completes.',

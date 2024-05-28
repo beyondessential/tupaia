@@ -15,13 +15,11 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
-    type: 'tooltip',
     required: true,
   },
   {
     Header: 'Report code',
     source: 'report_code',
-    type: 'tooltip',
     required: true,
   },
   {
@@ -112,7 +110,7 @@ const IMPORT_CONFIG = {
 
 const LinksComponent = () => (
   <CreateActionButton to="/viz-builder/dashboard-item/new" component={Link}>
-    New
+    Add dashboard item
   </CreateActionButton>
 );
 

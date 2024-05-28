@@ -33,12 +33,15 @@ export const openBulkEditModal =
     // explode the fields from any subsections
     const explodedFields = getExplodedFields(fields);
     dispatch(openEditModal(recordId));
+    dispatch({
+      type: LOAD_EDITOR,
+      fields,
+      endpoint: bulkUpdateEndpoint,
+      title,
+    });
     if (recordId) {
       dispatch({
         type: EDITOR_DATA_FETCH_BEGIN,
-        fields,
-        title,
-        endpoint: bulkUpdateEndpoint,
       });
       // Set up filter
       const filterString = JSON.stringify(convertSearchTermToFilter({ ...baseFilter }));
@@ -55,12 +58,6 @@ export const openBulkEditModal =
         dispatch({
           type: EDITOR_DATA_FETCH_SUCCESS,
           recordData: response.body,
-        });
-        dispatch({
-          type: LOAD_EDITOR,
-          fields,
-          recordData: response.body,
-          endpoint: bulkUpdateEndpoint,
         });
       } catch (error) {
         dispatch({
