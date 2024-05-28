@@ -251,7 +251,6 @@ const MatrixVisual = () => {
         searchFilters={searchFilters}
         updateSearchFilter={updateSearchFilter}
         clearSearchFilter={clearSearchFilter}
-        enableSearch
       />
       {searchFilters?.length > 0 && !parsedRows.length && (
         <NoResultsMessage>No results found</NoResultsMessage>
