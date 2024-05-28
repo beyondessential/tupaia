@@ -37,7 +37,6 @@ const SURVEY_FIELDS = {
   name: {
     Header: 'Name',
     source: 'name',
-    type: 'tooltip',
     editConfig: {
       maxLength: 50,
       secondaryLabel: 'Max 50 characters',
@@ -213,7 +212,6 @@ const SURVEY_COLUMNS = [
 
 const CREATE_CONFIG = {
   actionConfig: {
-    title: `New ${RESOURCE_NAME.singular}`,
     editEndpoint: 'surveys',
     // All fields except Integration Metadata
     // (Only one project uses it, hidden to improve UX for everyone else, see MDEV-48)
@@ -246,7 +244,6 @@ const QUESTION_FIELDS = [
   {
     Header: 'Code',
     source: 'question.code',
-    type: 'tooltip',
     editable: false,
   },
   {
@@ -256,27 +253,22 @@ const QUESTION_FIELDS = [
   {
     Header: 'Name',
     source: 'question.name',
-    type: 'tooltip',
   },
   {
     Header: 'Question',
     source: 'question.text',
-    type: 'tooltip',
   },
   {
     Header: 'Detail',
     source: 'question.detail',
-    type: 'tooltip',
   },
   {
     Header: 'Question label',
     source: 'question_label',
-    type: 'tooltip',
   },
   {
     Header: 'Detail label',
     source: 'detail_label',
-    type: 'tooltip',
   },
 ];
 

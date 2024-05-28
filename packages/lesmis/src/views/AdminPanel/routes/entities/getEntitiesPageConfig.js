@@ -20,7 +20,7 @@ export const getEntitiesPageConfig = translate => {
     {
       Header: translate('admin.name'),
       source: 'name',
-      type: 'tooltip',
+
       Filter: getColumnFilter(translate),
     },
     {

@@ -15,11 +15,12 @@ export const EditButtonComponent = ({ onEdit, actionConfig, row }) => {
   const parsedLink = actionConfig?.link
     ? actionConfig.link.replace(/:id/g, row?.original?.id)
     : null;
+  const { title = 'Edit record' } = actionConfig;
   return (
     <ColumnActionButton
       className="edit-button"
       onClick={parsedLink ? null : onEdit}
-      title="Edit record"
+      title={title}
       to={parsedLink}
       component={parsedLink ? Link : 'button'}
     >

@@ -11,9 +11,10 @@ import { openLogsModal } from './actions';
 import { ColumnActionButton } from '../table/columnTypes/ColumnActionButton';
 
 export const LogsButtonComponent = props => {
-  const { openModal } = props;
+  const { openModal, actionConfig } = props;
+  const { title = 'View logs' } = actionConfig;
   return (
-    <ColumnActionButton className="logs-button" onClick={openModal}>
+    <ColumnActionButton className="logs-button" onClick={openModal} title={title}>
       <DescriptionIcon />
     </ColumnActionButton>
   );
@@ -21,6 +22,7 @@ export const LogsButtonComponent = props => {
 
 LogsButtonComponent.propTypes = {
   openModal: PropTypes.func.isRequired,
+  actionConfig: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, { actionConfig, value: recordId, row }) => ({

@@ -16,7 +16,7 @@ const palette = {
   },
   secondary: {
     main: COLORS.LIGHT_BLACK,
-    light: COLORS.LIGHT_BLUE,
+    light: COLORS.EXTRA_LIGHT_BLACK,
   },
   error: {
     main: COLORS.RED,
@@ -194,6 +194,11 @@ const overrides = {
           fill: 'transparent',
         },
       },
+    },
+  },
+  MuiAvatar: {
+    colorDefault: {
+      backgroundColor: '#E7B091',
     },
   },
 };

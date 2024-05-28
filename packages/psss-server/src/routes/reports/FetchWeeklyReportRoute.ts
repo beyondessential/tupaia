@@ -4,7 +4,6 @@
  */
 
 import { Request } from 'express';
-import { UnauthenticatedError } from '@tupaia/utils';
 import { Route } from '../Route';
 import { validateSyndrome } from './helpers';
 
@@ -17,9 +16,6 @@ export type FetchWeeklyReportRequest = Request<
 
 export class FetchWeeklyReportRoute extends Route<FetchWeeklyReportRequest> {
   public async buildResponse() {
-    if (!this.reportConnection) throw new UnauthenticatedError('Unauthenticated');
-    if (!this.entityConnection) throw new UnauthenticatedError('Unauthenticated');
-
     const { startWeek, endWeek, syndrome } = this.req.query;
     const { countryCode, sites } = this.req.params;
 
