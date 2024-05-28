@@ -22,9 +22,12 @@ const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryPar
 export const ExportButton = ({ actionConfig, row }) => {
   const api = useApiContext();
 
+  const { title = 'Export record' } = actionConfig;
+
   return (
     <ColumnActionButton
       className="export-button"
+      title={title}
       onClick={async () => {
         const { exportEndpoint, rowIdQueryParameter, extraQueryParameters, fileName } =
           actionConfig;

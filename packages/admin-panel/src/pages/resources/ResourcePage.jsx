@@ -69,6 +69,7 @@ export const ResourcePage = ({
   basePath,
   hasBESAdminAccess,
   needsBESAdminAccess,
+  actionLabel,
 }) => {
   const { '*': unusedParam, locale, ...params } = useParams();
   const { data: details } = useItemDetails(params, parent);
@@ -127,6 +128,7 @@ export const ResourcePage = ({
         getHasNestedView={getHasNestedView}
         getNestedViewLink={getNestedViewLink}
         basePath={basePath}
+        actionLabel={actionLabel}
       />
       <EditModal
         onProcessDataForSave={onProcessDataForSave}

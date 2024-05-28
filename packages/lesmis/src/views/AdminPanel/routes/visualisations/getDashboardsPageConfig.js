@@ -129,6 +129,7 @@ export const getDashboardsPageConfig = translate => {
 
   return {
     ...dashboards,
+    title: translate('admin.dashboards'),
     columns: COLUMNS,
     createConfig,
     editorConfig,
