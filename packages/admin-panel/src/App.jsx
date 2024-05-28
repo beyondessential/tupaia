@@ -72,7 +72,15 @@ export const App = ({ user, hasBESAdminAccess }) => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/logout" element={<LogoutPage />} />
       <Route path="/" element={<PrivateRoute />}>
-        <Route element={<AppPageLayout user={user} routes={accessibleRoutes} />}>
+        <Route
+          element={
+            <AppPageLayout
+              user={user}
+              routes={accessibleRoutes}
+              profileLink={{ label: 'Profile', to: '/profile' }}
+            />
+          }
+        >
           <Route index element={<Navigate to="/surveys" replace />} />
           <Route path="*" element={<Navigate to="/surveys" replace />} />
           {[...accessibleRoutes, ...PROFILE_ROUTES].map(route => (
